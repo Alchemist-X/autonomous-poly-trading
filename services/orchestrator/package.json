@@ -1,0 +1,23 @@
+{
+  "name": "@autopoly/orchestrator",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/services/orchestrator/src/index.js"
+  },
+  "dependencies": {
+    "@autopoly/contracts": "workspace:*",
+    "@autopoly/db": "workspace:*",
+    "bullmq": "5.71.0",
+    "drizzle-orm": "0.45.1",
+    "dotenv": "17.2.3",
+    "fastify": "5.8.2",
+    "ioredis": "5.10.0",
+    "node-cron": "4.2.1"
+  }
+}

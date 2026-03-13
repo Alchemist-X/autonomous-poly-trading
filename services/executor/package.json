@@ -1,0 +1,26 @@
+{
+  "name": "@autopoly/executor",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/services/executor/src/index.js",
+    "ops:check": "tsx src/ops/live-check.ts",
+    "ops:trade": "tsx src/ops/live-check.ts --trade"
+  },
+  "dependencies": {
+    "@autopoly/contracts": "workspace:*",
+    "@autopoly/db": "workspace:*",
+    "@polymarket/clob-client": "5.8.0",
+    "bullmq": "5.71.0",
+    "drizzle-orm": "0.45.1",
+    "dotenv": "17.2.3",
+    "ethers": "5.7.2",
+    "fastify": "5.8.2",
+    "ioredis": "5.10.0"
+  }
+}

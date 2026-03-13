@@ -1,0 +1,35 @@
+{
+  "repositories": [
+    {
+      "name": "polymarket-trading-TUI",
+      "url": "https://github.com/Alchemist-X/polymarket-trading-TUI",
+      "commit": "f06cd56df1aef952659312705d56ecee320ae7f5",
+      "role": "execution-signal reference"
+    },
+    {
+      "name": "polymarket-market-pulse",
+      "url": "https://github.com/Alchemist-X/polymarket-market-pulse",
+      "commit": "9699ce74a7eb5ef43d05e79b7f2cc061779bfcc6",
+      "role": "market research and pulse generation"
+    },
+    {
+      "name": "alert-stop-loss-pm",
+      "url": "https://github.com/Alchemist-X/alert-stop-loss-pm",
+      "commit": "24d5863562836c47d3b9c3af5133870e04d5ac81",
+      "role": "position stop-loss reference"
+    },
+    {
+      "name": "all-polymarket-skill",
+      "url": "https://github.com/Alchemist-X/all-polymarket-skill",
+      "commit": "f3175cd5b2ef2252002af8dbe9770681f597f2b7",
+      "role": "Claude Code skill orchestration"
+    },
+    {
+      "name": "pm-PlaceOrder",
+      "url": "https://github.com/Alchemist-X/pm-PlaceOrder",
+      "commit": "1347d4ff9a8ef69a23bb36c8534634d1f6fb45c2",
+      "role": "deployment latency benchmark"
+    }
+  ]
+}
+
