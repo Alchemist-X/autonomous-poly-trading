@@ -1,6 +1,9 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { createAdminCookieValue, getAdminCookieName } from "../../../../lib/auth";
+import {
+  createAdminCookieValue,
+  getAdminCookieName,
+  resolveRequestOrigin
+} from "../../../../lib/auth";
 
 export async function POST(request: Request) {
   const form = await request.formData();
@@ -9,13 +12,15 @@ export async function POST(request: Request) {
     return new Response("Invalid password", { status: 401 });
   }
 
-  const cookieStore = await cookies();
-  cookieStore.set(getAdminCookieName(), createAdminCookieValue(password), {
+  const response = NextResponse.redirect(new URL("/admin", request.url), {
+    status: 303
+  });
+  response.headers.set("location", new URL("/admin", resolveRequestOrigin(request)).toString());
+  response.cookies.set(getAdminCookieName(), createAdminCookieValue(password), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/"
   });
-
-  return NextResponse.redirect(new URL("/admin", request.url));
+  return response;
 }

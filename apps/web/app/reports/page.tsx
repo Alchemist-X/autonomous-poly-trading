@@ -10,9 +10,8 @@ export default async function ReportsPage() {
         published_at_utc: String(report.published_at_utc)
       }))}
       endpoint="/api/public/reports"
-      title="Daily pulse, review, and resolution artifacts"
-      kicker="Reports"
+      title="每日脉冲、复盘与结算跟踪产物"
+      kicker="报告"
     />
   );
 }
-

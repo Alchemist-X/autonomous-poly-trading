@@ -10,9 +10,8 @@ export default async function BacktestsPage() {
         published_at_utc: String(report.published_at_utc)
       }))}
       endpoint="/api/public/backtests"
-      title="Daily backtests and calibration reports"
-      kicker="Backtests"
+      title="每日回测与校准报告"
+      kicker="回测"
     />
   );
 }
-

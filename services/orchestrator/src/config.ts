@@ -1,5 +1,7 @@
 import "dotenv/config";
 
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { loadEnvFile } from "./lib/env-file.js";
 
 function readNumber(name: string, fallback: number): number {
@@ -11,7 +13,54 @@ function readNumber(name: string, fallback: number): number {
   return Number.isFinite(value) ? value : fallback;
 }
 
+function readString(name: string, fallback: string): string {
+  const raw = process.env[name];
+  return raw && raw.trim() ? raw.trim() : fallback;
+}
+
+function readEnum<T extends readonly string[]>(
+  name: string,
+  fallback: T[number],
+  allowed: T
+): T[number] {
+  const raw = process.env[name];
+  if (!raw) {
+    return fallback;
+  }
+  return allowed.includes(raw) ? raw : fallback;
+}
+
+export const agentRuntimeProviders = ["codex", "openclaw"] as const;
+export type AgentRuntimeProvider = (typeof agentRuntimeProviders)[number];
+
+export const skillLocales = ["en", "zh"] as const;
+export type SkillLocale = (typeof skillLocales)[number];
+
+export const pulseSourceRepos = ["all-polymarket-skill", "polymarket-market-pulse"] as const;
+export type PulseSourceRepo = (typeof pulseSourceRepos)[number];
+
+export interface SkillProviderConfig {
+  command: string;
+  model: string;
+  skillRootDir: string;
+  skillLocale: SkillLocale;
+  skills: string;
+}
+
+export interface PulseConfig {
+  sourceRepo: PulseSourceRepo;
+  sourceRepoDir: string;
+  pages: number;
+  eventsPerPage: number;
+  minLiquidityUsd: number;
+  maxCandidates: number;
+  minTradeableCandidates: number;
+  maxAgeMinutes: number;
+  maxMarkdownChars: number;
+}
+
 export interface OrchestratorConfig {
+  repoRoot: string;
   port: number;
   redisUrl: string;
   envFilePath: string | null;
@@ -27,13 +76,48 @@ export interface OrchestratorConfig {
   maxPositions: number;
   maxTradePct: number;
   initialBankrollUsd: number;
-  claudeCodeCommand: string;
-  claudeWorkspaceDir: string;
+  runtimeProvider: AgentRuntimeProvider;
+  artifactStorageRoot: string;
+  providerTimeoutSeconds: number;
+  pulseFetchTimeoutSeconds: number;
+  pulse: PulseConfig;
+  codex: SkillProviderConfig;
+  openclaw: SkillProviderConfig;
+}
+
+function readSkillProviderConfig(input: {
+  prefix: "CODEX" | "OPENCLAW";
+  defaultSkillRootDir: string;
+  defaultSkillLocale: SkillLocale;
+  defaultSkills: string;
+}): SkillProviderConfig {
+  return {
+    command: readString(`${input.prefix}_COMMAND`, ""),
+    model: readString(`${input.prefix}_MODEL`, ""),
+    skillRootDir: path.resolve(readString(`${input.prefix}_SKILL_ROOT_DIR`, input.defaultSkillRootDir)),
+    skillLocale: readEnum(`${input.prefix}_SKILL_LOCALE`, input.defaultSkillLocale, skillLocales),
+    skills: readString(`${input.prefix}_SKILLS`, input.defaultSkills)
+  };
 }
 
 export function loadConfig(): OrchestratorConfig {
   const envFilePath = loadEnvFile();
+  const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+  const defaultSkillRootDir = path.resolve(repoRoot, "vendor/repos/all-polymarket-skill");
+  const pulseSourceRepo = readEnum("PULSE_SOURCE_REPO", "all-polymarket-skill", pulseSourceRepos);
+  const defaultPulseSourceRepoDir = pulseSourceRepo === "polymarket-market-pulse"
+    ? path.resolve(repoRoot, "vendor/repos/polymarket-market-pulse")
+    : defaultSkillRootDir;
+  const defaultSkills = [
+    "polymarket-market-pulse",
+    "portfolio-review-polymarket",
+    "poly-position-monitor",
+    "poly-resolution-tracking",
+    "api-trade-polymarket"
+  ].join(",");
+
   return {
+    repoRoot,
     port: readNumber("PORT", 4001),
     redisUrl: process.env.REDIS_URL ?? "redis://localhost:6379",
     envFilePath,
@@ -49,7 +133,32 @@ export function loadConfig(): OrchestratorConfig {
     maxPositions: readNumber("MAX_POSITIONS", 10),
     maxTradePct: readNumber("MAX_TRADE_PCT", 0.05),
     initialBankrollUsd: readNumber("INITIAL_BANKROLL_USD", 10000),
-    claudeCodeCommand: process.env.CLAUDE_CODE_COMMAND ?? "",
-    claudeWorkspaceDir: process.env.CLAUDE_WORKSPACE_DIR ?? "/workspace/vendor/repos"
+    runtimeProvider: readEnum("AGENT_RUNTIME_PROVIDER", "codex", agentRuntimeProviders),
+    artifactStorageRoot: path.resolve(readString("ARTIFACT_STORAGE_ROOT", path.join(repoRoot, "runtime-artifacts"))),
+    providerTimeoutSeconds: readNumber("PROVIDER_TIMEOUT_SECONDS", 90),
+    pulseFetchTimeoutSeconds: readNumber("PULSE_FETCH_TIMEOUT_SECONDS", 60),
+    pulse: {
+      sourceRepo: pulseSourceRepo,
+      sourceRepoDir: path.resolve(readString("PULSE_SOURCE_REPO_DIR", defaultPulseSourceRepoDir)),
+      pages: readNumber("PULSE_PAGES", 1),
+      eventsPerPage: readNumber("PULSE_EVENTS_PER_PAGE", 20),
+      minLiquidityUsd: readNumber("PULSE_MIN_LIQUIDITY_USD", 5000),
+      maxCandidates: readNumber("PULSE_MAX_CANDIDATES", 12),
+      minTradeableCandidates: readNumber("PULSE_MIN_TRADEABLE_CANDIDATES", 5),
+      maxAgeMinutes: readNumber("PULSE_MAX_AGE_MINUTES", 30),
+      maxMarkdownChars: readNumber("PULSE_MAX_MARKDOWN_CHARS", 24000)
+    },
+    codex: readSkillProviderConfig({
+      prefix: "CODEX",
+      defaultSkillRootDir,
+      defaultSkillLocale: "zh",
+      defaultSkills
+    }),
+    openclaw: readSkillProviderConfig({
+      prefix: "OPENCLAW",
+      defaultSkillRootDir,
+      defaultSkillLocale: "zh",
+      defaultSkills
+    })
   };
 }

@@ -115,6 +115,14 @@ export interface PublicTrade {
   timestamp_utc: string;
 }
 
+export interface PublicArtifactListItem {
+  id: string;
+  title: string;
+  kind: z.infer<typeof artifactSchema>["kind"];
+  path: string;
+  published_at_utc: string;
+}
+
 export interface PublicRunSummary {
   id: string;
   mode: RunMode;

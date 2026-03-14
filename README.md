@@ -9,8 +9,8 @@
 - 只跑一个真钱包实例
 - 网站对外公开，只读围观
 - 管理操作只在站内管理员页面可用
-- 先支持 Claude Code
-- 后续再接 OpenClaw
+- 默认支持 `codex` skill runtime
+- 预留 `openclaw` skill runtime 接口
 
 ## 项目目标
 
@@ -95,6 +95,28 @@
 - 即使模型想下单，服务层仍然会做风控裁剪
 - 进入 `HALTED` 状态后，不允许继续新开仓
 - 止损和人工 flatten 的优先级高于常规策略动作
+
+完整规则见 [risk-controls.md](risk-controls.md)。
+
+## Provider Runtime
+
+当前 orchestrator 已经切到 provider-based runtime：
+
+- `AGENT_RUNTIME_PROVIDER=codex|openclaw`
+- `codex` 和 `openclaw` 都有独立的 skill 配置
+- skill 可配置：
+  - skill 根目录
+  - 中文或英文 locale
+  - 参与本轮决策的 skill 列表
+- 当前不再保留 mock pulse fallback
+- 如果 provider 命令缺失、skill 文件缺失或 pulse 抓取失败，运行会直接 fail-closed
+
+当前默认的 pulse 存储命名为：
+
+```text
+reports/pulse/YYYY/MM/DD/pulse-<timestamp>-<runtime>-<mode>-<runId>.md
+reports/pulse/YYYY/MM/DD/pulse-<timestamp>-<runtime>-<mode>-<runId>.json
+```
 
 ## 外部仓库依赖
 
@@ -185,7 +207,9 @@ ENV_FILE=../pm-PlaceOrder/.env.aizen
   - signature type
   - chain id
 - orchestrator
-  - Claude runtime 命令
+  - provider 选择
+  - codex / openclaw skill 设置
+  - pulse 抓取与存储参数
   - 调度周期
   - 风控参数
 
@@ -207,12 +231,36 @@ pnpm db:migrate
 pnpm db:seed
 ```
 
+E2E 工作区：
+
+```bash
+pnpm e2e:install-browsers
+pnpm e2e:local-lite
+AUTOPOLY_E2E_REMOTE=1 pnpm e2e:remote-real
+```
+
 执行层 live 检查：
 
 ```bash
 pnpm --filter @autopoly/executor ops:check
 pnpm --filter @autopoly/executor ops:check -- --slug <market-slug>
 pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
+```
+
+试运行 provider runtime：
+
+```bash
+pnpm trial:run
+```
+
+推荐首次 `codex` 试运行参数：
+
+```bash
+CODEX_SKILLS=polymarket-market-pulse \
+CODEX_SKILL_LOCALE=zh \
+PROVIDER_TIMEOUT_SECONDS=180 \
+CODEX_COMMAND='codex exec --skip-git-repo-check -C {{repo_root}} -s read-only --color never -c model_reasoning_effort="low" --output-schema {{schema_file}} -o {{output_file}} < {{prompt_file}}' \
+pnpm trial:run
 ```
 
 ## 部署形态
@@ -235,7 +283,7 @@ pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
 
 ## 当前状态
 
-截至 `2026-03-13`，当前仓库已经完成这些基础工作：
+截至 `2026-03-14`，当前仓库已经完成这些基础工作：
 
 - monorepo 已经搭起来
 - 围观站页面和管理员页面已经存在
@@ -243,8 +291,13 @@ pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
 - executor / orchestrator 的服务骨架已完成
 - `.env.aizen` 自动发现已经接通
 - 已经成功完成一次不超过 `$1` 的真实下单测试
+- orchestrator 已切到 `codex/openclaw` provider runtime 结构
+- pulse 已改为真实抓取并按命名空间落盘，不再使用 mock pulse fallback
+- 已成功完成一次 `codex` 试运行，拿到真实 pulse + 结构化决策输出
 
 更详细的实现进度见 [progress.md](progress.md)。
+
+端到端测试驱动开发工作区见 [E2E Test Driven Development/README.md](E2E%20Test%20Driven%20Development/README.md)。
 
 ## 当前限制
 
@@ -252,8 +305,8 @@ pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
 
 - 这台开发机器没有 Docker，所以没有完成本地 Docker 运行态验证
 - Vercel 和云主机的正式部署还没做
-- Claude Code 虽然已经有 runtime 抽象和接入位置，但完整生产决策闭环还需要继续打通
-- OpenClaw 还没有实现
+- `codex` 试运行链路已接入，但完整生产闭环还需要继续打通
+- `openclaw` 运行接口已预留，但本机尚未安装 `openclaw` CLI
 
 ## 后续规划
 

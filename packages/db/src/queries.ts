@@ -1,4 +1,5 @@
 import type {
+  PublicArtifactListItem,
   OverviewResponse,
   PublicPosition,
   PublicRunDetail,
@@ -19,18 +20,12 @@ import {
 } from "./schema.js";
 import { asNumber } from "./helpers.js";
 import {
-  mockBacktests,
-  mockOverview,
-  mockPositions,
-  mockReports,
-  mockRunDetail,
-  mockRuns,
-  mockTrades
+  getConfiguredMockQueryState
 } from "./mock-data.js";
 
 export async function getOverview(): Promise<OverviewResponse> {
   if (!hasDatabaseUrl()) {
-    return mockOverview;
+    return (await getConfiguredMockQueryState()).overview;
   }
 
   const db = getDb();
@@ -53,7 +48,7 @@ export async function getOverview(): Promise<OverviewResponse> {
     .limit(24);
 
   if (!latestSnapshot) {
-    return mockOverview;
+    return (await getConfiguredMockQueryState()).overview;
   }
 
   return {
@@ -75,7 +70,7 @@ export async function getOverview(): Promise<OverviewResponse> {
 
 export async function getPublicPositions(): Promise<PublicPosition[]> {
   if (!hasDatabaseUrl()) {
-    return mockPositions;
+    return (await getConfiguredMockQueryState()).positions;
   }
 
   const db = getDb();
@@ -105,7 +100,7 @@ export async function getPublicPositions(): Promise<PublicPosition[]> {
 
 export async function getPublicTrades(): Promise<PublicTrade[]> {
   if (!hasDatabaseUrl()) {
-    return mockTrades;
+    return (await getConfiguredMockQueryState()).trades;
   }
 
   const db = getDb();
@@ -131,7 +126,7 @@ export async function getPublicTrades(): Promise<PublicTrade[]> {
 
 export async function getPublicRuns(): Promise<PublicRunSummary[]> {
   if (!hasDatabaseUrl()) {
-    return mockRuns;
+    return (await getConfiguredMockQueryState()).runs;
   }
 
   const db = getDb();
@@ -163,7 +158,8 @@ export async function getPublicRuns(): Promise<PublicRunSummary[]> {
 
 export async function getPublicRunDetail(runId: string): Promise<PublicRunDetail | null> {
   if (!hasDatabaseUrl()) {
-    return runId === mockRunDetail.id ? mockRunDetail : null;
+    const state = await getConfiguredMockQueryState();
+    return state.runDetails[runId] ?? null;
   }
 
   const db = getDb();
@@ -222,13 +218,13 @@ export async function getPublicRunDetail(runId: string): Promise<PublicRunDetail
   };
 }
 
-export async function getReports() {
+export async function getReports(): Promise<PublicArtifactListItem[]> {
   if (!hasDatabaseUrl()) {
-    return mockReports;
+    return (await getConfiguredMockQueryState()).reports;
   }
 
   const db = getDb();
-  return db
+  const rows = await db
     .select({
       id: artifacts.id,
       title: artifacts.title,
@@ -239,15 +235,21 @@ export async function getReports() {
     .from(artifacts)
     .orderBy(desc(artifacts.publishedAtUtc))
     .limit(100);
+
+  return rows.map((row) => ({
+    ...row,
+    kind: row.kind as PublicArtifactListItem["kind"],
+    published_at_utc: row.published_at_utc.toISOString()
+  }));
 }
 
-export async function getBacktests() {
+export async function getBacktests(): Promise<PublicArtifactListItem[]> {
   if (!hasDatabaseUrl()) {
-    return mockBacktests;
+    return (await getConfiguredMockQueryState()).backtests;
   }
 
   const db = getDb();
-  return db
+  const rows = await db
     .select({
       id: artifacts.id,
       title: artifacts.title,
@@ -259,5 +261,10 @@ export async function getBacktests() {
     .where(eq(artifacts.kind, "backtest-report"))
     .orderBy(desc(artifacts.publishedAtUtc))
     .limit(30);
-}
 
+  return rows.map((row) => ({
+    ...row,
+    kind: row.kind as PublicArtifactListItem["kind"],
+    published_at_utc: row.published_at_utc.toISOString()
+  }));
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@autopoly/e2e-suite",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:local-lite": "vitest run --config vitest.config.ts src/tests/local-lite.test.ts",
+    "test:remote-real": "vitest run --config vitest.config.ts src/tests/remote-real.test.ts",
+    "install:browsers": "playwright install chromium",
+    "scenario:local-lite": "tsx src/bin/run-local-lite.ts",
+    "scenario:remote-real": "tsx src/bin/run-remote-real.ts"
+  },
+  "dependencies": {
+    "@autopoly/contracts": "workspace:*",
+    "@autopoly/db": "workspace:*",
+    "@autopoly/executor": "workspace:*",
+    "@autopoly/orchestrator": "workspace:*",
+    "playwright": "1.56.1"
+  },
+  "devDependencies": {
+    "@types/node": "25.5.0",
+    "tsx": "4.20.6",
+    "vitest": "3.2.4"
+  }
+}

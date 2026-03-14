@@ -7,7 +7,7 @@ import { runAgentCycle } from "./jobs/agent-cycle.js";
 import { runBacktestJob } from "./jobs/backtest.js";
 import { runResolutionSweep } from "./jobs/resolution.js";
 import { getOverview } from "@autopoly/db";
-import { ClaudeCodeRuntime } from "./runtime/claude-code-runtime.js";
+import { createAgentRuntime } from "./runtime/runtime-factory.js";
 import { registerAdminRoutes } from "./routes/admin.js";
 
 const config = loadConfig();
@@ -16,7 +16,7 @@ const connection = {
   maxRetriesPerRequest: null
 };
 const executionQueue = new Queue(QUEUES.execution, { connection });
-const runtime = new ClaudeCodeRuntime(config);
+const runtime = createAgentRuntime(config);
 const app = Fastify({ logger: true });
 
 app.get("/health", async () => ({

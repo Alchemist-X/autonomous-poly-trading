@@ -1,0 +1,81 @@
+{
+  "stopLossCases": [
+    {
+      "id": "trigger-at-thirty-percent-loss",
+      "avgCost": 1,
+      "currentPrice": 0.69,
+      "thresholdPct": 0.3,
+      "expected": true
+    },
+    {
+      "id": "do-not-trigger-above-threshold",
+      "avgCost": 1,
+      "currentPrice": 0.75,
+      "thresholdPct": 0.3,
+      "expected": false
+    }
+  ],
+  "drawdownCases": [
+    {
+      "id": "halt-at-twenty-percent-drawdown",
+      "totalEquityUsd": 800,
+      "highWaterMarkUsd": 1000,
+      "thresholdPct": 0.2,
+      "expected": true
+    },
+    {
+      "id": "do-not-halt-below-threshold",
+      "totalEquityUsd": 850,
+      "highWaterMarkUsd": 1000,
+      "thresholdPct": 0.2,
+      "expected": false
+    }
+  ],
+  "tradeGuardCases": [
+    {
+      "id": "reject-when-max-positions-hit",
+      "input": {
+        "requestedUsd": 100,
+        "bankrollUsd": 1000,
+        "maxTradePct": 0.1,
+        "liquidityCapUsd": 100,
+        "totalExposureUsd": 200,
+        "maxTotalExposurePct": 0.5,
+        "openPositions": 10,
+        "maxPositions": 10,
+        "edge": 0.2
+      },
+      "expected": 0
+    },
+    {
+      "id": "scale-high-edge-order",
+      "input": {
+        "requestedUsd": 100,
+        "bankrollUsd": 1000,
+        "maxTradePct": 0.1,
+        "liquidityCapUsd": 100,
+        "totalExposureUsd": 0,
+        "maxTotalExposurePct": 0.5,
+        "openPositions": 1,
+        "maxPositions": 10,
+        "edge": 0.15
+      },
+      "expected": 60
+    },
+    {
+      "id": "reject-low-edge-order",
+      "input": {
+        "requestedUsd": 100,
+        "bankrollUsd": 1000,
+        "maxTradePct": 0.1,
+        "liquidityCapUsd": 100,
+        "totalExposureUsd": 0,
+        "maxTotalExposurePct": 0.5,
+        "openPositions": 1,
+        "maxPositions": 10,
+        "edge": 0.01
+      },
+      "expected": 0
+    }
+  ]
+}

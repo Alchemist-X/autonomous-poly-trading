@@ -1,0 +1,23 @@
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://127.0.0.1:58829
+- Network:       http://127.0.0.1:58829
+
+✓ Starting...
+Creating turbopack project {
+  dir: '/Users/Aincrad/dev-proj/autonomous-poly-trading/apps/web',
+  testMode: true
+}
+✓ Ready in 564ms
+ GET /api/public/overview 200 in 274ms (compile: 264ms, render: 10ms)
+ GET / 200 in 2.7s (compile: 2.7s, render: 88ms)
+ GET /positions 200 in 192ms (compile: 157ms, render: 36ms)
+ GET /trades 200 in 145ms (compile: 124ms, render: 21ms)
+ GET /runs 200 in 156ms (compile: 134ms, render: 22ms)
+ GET /reports 200 in 127ms (compile: 104ms, render: 23ms)
+ GET /backtests 200 in 123ms (compile: 103ms, render: 19ms)
+ GET /api/public/overview 200 in 3ms (compile: 860µs, render: 1815µs)
+ GET /api/public/positions 200 in 48ms (compile: 45ms, render: 3ms)
+ GET /admin 200 in 149ms (compile: 129ms, render: 21ms)
+ POST /api/admin/run-now 401 in 58ms (compile: 54ms, render: 4ms)
+ POST /api/admin/session 307 in 62ms (compile: 57ms, render: 5ms)
+ POST /admin 200 in 15ms (compile: 944µs, render: 14ms)

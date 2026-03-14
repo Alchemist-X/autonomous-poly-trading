@@ -13,7 +13,9 @@ import { Queue } from "bullmq";
 import type { OrchestratorConfig } from "../config.js";
 import { applyTradeGuards } from "../lib/risk.js";
 import { getSystemStatus } from "../lib/state.js";
+import { generatePulseSnapshot } from "../pulse/market-pulse.js";
 import type { AgentRuntime } from "../runtime/agent-runtime.js";
+import { resolveProviderSkillSettings } from "../runtime/skill-settings.js";
 
 function sanitizeDecisionSet(decisionSet: TradeDecisionSet): TradeDecisionSet {
   return tradeDecisionSetSchema.parse(decisionSet);
@@ -92,7 +94,23 @@ export async function runAgentCycle(deps: {
   }
 
   const [overview, positions] = await Promise.all([getOverview(), getPublicPositions()]);
-  const result = await deps.runtime.run({ overview, positions });
+  const runId = randomUUID();
+  const mode = "full";
+  const skillSettings = resolveProviderSkillSettings(deps.config, deps.config.runtimeProvider);
+  const pulse = await generatePulseSnapshot({
+    config: deps.config,
+    provider: deps.config.runtimeProvider,
+    locale: skillSettings.locale,
+    runId,
+    mode
+  });
+  const result = await deps.runtime.run({
+    runId,
+    mode,
+    overview,
+    positions,
+    pulse
+  });
   const decisionSet = sanitizeDecisionSet(result.decisionSet);
   const decisionIdMap = await persistRun({ ...result, decisionSet });
 
@@ -161,4 +179,3 @@ export async function runAgentCycle(deps: {
     decisions: decisionSet.decisions.length
   };
 }
-

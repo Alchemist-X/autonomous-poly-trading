@@ -2,7 +2,7 @@
 
 Chinese version: [progress.md](progress.md)
 
-Last updated: 2026-03-13
+Last updated: 2026-03-14
 
 ## Current state
 
@@ -69,6 +69,9 @@ The following base pieces are already in place:
 - base risk logic
 - vendor sync script
 - database seed and query layer
+- `codex/openclaw` provider-runtime configuration scaffolding
+- real pulse fetch, storage, and namespaced artifact output
+- the `pnpm trial:run` entry point
 
 ### 4. Risk rules
 
@@ -76,6 +79,10 @@ The currently implemented hard rules are:
 
 - per-position `30%` stop loss
 - `20%` drawdown halt relative to portfolio high-water mark
+- no new opens whenever pulse risk flags are present
+- `open` actions may only use `token_id` values from pulse candidates
+- `hold/close/reduce` may only target current live positions
+- the unified risk document now lives in [risk-controls.en.md](risk-controls.en.md)
 
 ### 5. Credential loading
 
@@ -89,6 +96,17 @@ The project already has:
 - market and orderbook sanity checks
 - a capped live trade script limited to `$1`
 
+### 7. E2E TDD workspace
+
+The repository now also includes `E2E Test Driven Development/`, with:
+
+- bilingual top-level docs
+- a standalone `suite` test package
+- a local-lite fake orchestrator
+- dynamic mock-state driven pages
+- Playwright recording and tracing
+- remote-real scenario entry points
+
 ## Verified
 
 The following items have already been verified:
@@ -100,6 +118,7 @@ The following items have already been verified:
 - successful read of the real USDC balance
 - successful submission of one live order below `$1`
 - successful readback of the resulting position from Polymarket account data
+- one successful `codex` trial run using real pulse fetch plus structured decisions
 
 ## Most recent live trade
 
@@ -117,6 +136,30 @@ Readback position data:
 - size: `2.040815`
 - average cost: `0.49`
 
+## Most recent Codex trial run
+
+This trial run used:
+
+- provider: `codex`
+- skill: `polymarket-market-pulse`
+- locale: `zh`
+- pulse source: real `fetch_markets.py`
+- mock pulse fallback: disabled
+
+Trial result:
+
+- pulse candidates: `12`
+- pulse risk flags: `0`
+- decisions kept: `5`
+- `hold` decisions: `3`
+- `open` decisions: `2`
+
+Stored artifacts:
+
+- Pulse Markdown: `reports/pulse/2026/03/14/pulse-20260314T015337Z-codex-full-99fcf009-a9ac-42e4-bae9-222c894d7d77.md`
+- Pulse JSON: `reports/pulse/2026/03/14/pulse-20260314T015337Z-codex-full-99fcf009-a9ac-42e4-bae9-222c894d7d77.json`
+- Runtime Log: `reports/runtime-log/2026/03/14/runtime-log-20260314T015454Z-codex-full-99fcf009-a9ac-42e4-bae9-222c894d7d77.md`
+
 ## Fixes made during live testing
 
 Several important issues were corrected during the live test workflow:
@@ -131,16 +174,16 @@ Several important issues were corrected during the live test workflow:
 The main missing pieces are:
 
 - Docker runtime validation has not been completed because Docker is not installed on this machine
-- the full Claude Code production decision loop is not fully connected yet
-- external vendor repositories are pinned, but many capabilities are not yet integrated into scheduled runtime flows
+- the full `codex` production decision loop is not fully connected yet
+- the `openclaw` runtime surface is wired, but the CLI is not installed on this machine yet
+- external vendor repositories are pinned, but many capabilities are not yet integrated into full scheduled runtime flows
 - Vercel deployment and cloud-host deployment are not done yet
-- the OpenClaw runtime is still missing
 
 ## Next priorities
 
-1. Connect the real Claude Code decision loop.
+1. Connect the real `codex` decision loop.
 2. Integrate market pulse, backtesting, and resolution tracking into the orchestrator.
-3. Replace sample display paths with real runtime data paths.
+3. Finish `openclaw` CLI integration and run the same trial path through it.
 4. Deploy Postgres, Redis, orchestrator, and executor.
 5. Deploy the web app to Vercel.
 6. Run a longer dry-run before increasing real-money scope.

@@ -5,7 +5,7 @@ describe("tradeDecisionSetSchema", () => {
   it("accepts a valid decision set", () => {
     const parsed = tradeDecisionSetSchema.parse({
       run_id: "47a9e19f-7352-4c7a-a41e-3d18c4487bb9",
-      runtime: "claude-code-headless",
+      runtime: "codex-skill-runtime",
       generated_at_utc: "2026-03-13T10:00:00.000Z",
       bankroll_usd: 10000,
       mode: "full",
@@ -37,14 +37,14 @@ describe("tradeDecisionSetSchema", () => {
       artifacts: []
     });
 
-    expect(parsed.runtime).toBe("claude-code-headless");
+    expect(parsed.runtime).toBe("codex-skill-runtime");
   });
 
   it("rejects decisions without sources", () => {
     expect(() =>
       tradeDecisionSetSchema.parse({
         run_id: "47a9e19f-7352-4c7a-a41e-3d18c4487bb9",
-        runtime: "claude-code-headless",
+        runtime: "codex-skill-runtime",
         generated_at_utc: "2026-03-13T10:00:00.000Z",
         bankroll_usd: 10000,
         mode: "full",
@@ -72,4 +72,3 @@ describe("tradeDecisionSetSchema", () => {
     ).toThrow();
   });
 });
-

@@ -2,7 +2,7 @@
 
 英文版见 [progress.en.md](progress.en.md)。
 
-最后更新：2026-03-13
+最后更新：2026-03-14
 
 ## 当前状态
 
@@ -69,6 +69,9 @@
 - 风控逻辑基础实现
 - vendor 同步脚本
 - 数据库种子和查询层
+- `codex/openclaw` provider runtime 配置骨架
+- 真正的 pulse 抓取、存储和命名空间落盘
+- 试运行入口 `pnpm trial:run`
 
 ### 4. 风控规则
 
@@ -76,6 +79,10 @@
 
 - 单仓 `30%` 止损
 - 总资金相对高水位 `20%` 回撤停机
+- pulse 风险标记存在时禁止新开仓
+- `open` 只能使用 pulse candidates 中的 `token_id`
+- `hold/close/reduce` 只能作用于当前持仓
+- 统一风险文档已写入 [risk-controls.md](risk-controls.md)
 
 ### 5. 凭据加载
 
@@ -89,6 +96,17 @@
 - 市场与盘口检查脚本
 - 不超过 `$1` 的 capped live trade 脚本
 
+### 7. E2E TDD 工作区
+
+已经新增 `E2E Test Driven Development/`，包含：
+
+- 双语总文档
+- `suite` 独立测试 package
+- local-lite fake orchestrator
+- 动态 mock state 驱动
+- Playwright 录屏与 trace
+- remote-real 场景入口
+
 ## 已验证
 
 目前已经验证通过的内容：
@@ -100,6 +118,7 @@
 - 成功读取真实 USDC 余额
 - 成功提交一次不超过 `$1` 的真实下单
 - 成功从 Polymarket 账户状态中读回该笔仓位
+- 成功完成一次 `codex` trial run，使用真实 pulse 抓取和结构化决策输出
 
 ## 最近一次真实测试单
 
@@ -117,6 +136,30 @@
 - 持仓数量：`2.040815`
 - 平均成本：`0.49`
 
+## 最近一次 Codex 试运行
+
+本次试运行使用：
+
+- provider：`codex`
+- skill：`polymarket-market-pulse`
+- locale：`zh`
+- pulse：真实 `fetch_markets.py` 抓取
+- mock pulse fallback：已关闭
+
+本次试运行结果：
+
+- pulse candidates：`12`
+- pulse risk flags：`0`
+- 保留决策数：`5`
+- 其中 `hold`：`3`
+- 其中 `open`：`2`
+
+本次落盘产物：
+
+- Pulse Markdown：`reports/pulse/2026/03/14/pulse-20260314T015337Z-codex-full-99fcf009-a9ac-42e4-bae9-222c894d7d77.md`
+- Pulse JSON：`reports/pulse/2026/03/14/pulse-20260314T015337Z-codex-full-99fcf009-a9ac-42e4-bae9-222c894d7d77.json`
+- Runtime Log：`reports/runtime-log/2026/03/14/runtime-log-20260314T015454Z-codex-full-99fcf009-a9ac-42e4-bae9-222c894d7d77.md`
+
 ## 在真实测试中修掉的问题
 
 这次实盘测试过程中，已经顺手修掉几个关键问题：
@@ -131,16 +174,16 @@
 目前还缺这些关键环节：
 
 - 没有完成 Docker 运行态验证，因为当前机器未安装 Docker
-- Claude Code 的完整生产决策闭环还没彻底接通
-- 外部 vendor 仓库虽然已经锁定，但很多能力还没有真正接入调度链路
+- `codex` 的完整生产决策闭环还没彻底接通
+- `openclaw` 运行接口已接好，但本机没有 CLI，尚未完成试跑
+- 外部 vendor 仓库虽然已经锁定，但很多能力还没有真正接入完整调度链路
 - Vercel 和云主机生产部署还没完成
-- OpenClaw runtime 还没做
 
 ## 下一步优先级
 
-1. 打通真实 Claude Code 决策闭环
+1. 打通真实 `codex` 决策闭环
 2. 把 market pulse / backtesting / resolution tracking 真正接入 orchestrator
-3. 用真实运行数据替换样例展示路径
+3. 完成 `openclaw` CLI 接入与同构试运行
 4. 部署 Postgres、Redis、orchestrator、executor
 5. 把 web 部署到 Vercel
 6. 在扩大量化范围前，先完成更长时间的 dry-run

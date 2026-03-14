@@ -9,8 +9,8 @@ The v1 scope is intentionally narrow:
 - run a single real wallet
 - expose a public read-only website
 - keep all controls inside the admin surface
-- support Claude Code first
-- support OpenClaw later
+- support `codex` as the default skill runtime
+- keep an `openclaw` skill runtime integration path ready
 
 ## Project goals
 
@@ -94,6 +94,28 @@ This means:
 - model outputs are still constrained by service-side risk checks
 - once the system enters `HALTED`, no new positions should be opened
 - stop-loss exits and manual flatten actions take priority over normal strategy activity
+
+See [risk-controls.en.md](risk-controls.en.md) for the full hard-control document.
+
+## Provider runtime
+
+The orchestrator now runs on a provider-based runtime:
+
+- `AGENT_RUNTIME_PROVIDER=codex|openclaw`
+- `codex` and `openclaw` each have independent skill settings
+- each provider can configure:
+  - skill root directory
+  - Chinese or English skill locale
+  - the list of skills used in the current decision cycle
+- the runtime no longer keeps a mock pulse fallback
+- if the provider command is missing, a skill file is missing, or pulse fetch fails, the run fails closed
+
+The current pulse storage naming is:
+
+```text
+reports/pulse/YYYY/MM/DD/pulse-<timestamp>-<runtime>-<mode>-<runId>.md
+reports/pulse/YYYY/MM/DD/pulse-<timestamp>-<runtime>-<mode>-<runId>.json
+```
 
 ## External repository dependencies
 
@@ -184,7 +206,9 @@ The environment variables are grouped into four logical sets:
   - signature type
   - chain id
 - orchestrator
-  - Claude runtime command
+  - provider selection
+  - codex / openclaw skill settings
+  - pulse fetch and storage settings
   - schedules
   - risk parameters
 
@@ -206,12 +230,36 @@ pnpm db:migrate
 pnpm db:seed
 ```
 
+E2E workspace:
+
+```bash
+pnpm e2e:install-browsers
+pnpm e2e:local-lite
+AUTOPOLY_E2E_REMOTE=1 pnpm e2e:remote-real
+```
+
 Executor live checks:
 
 ```bash
 pnpm --filter @autopoly/executor ops:check
 pnpm --filter @autopoly/executor ops:check -- --slug <market-slug>
 pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
+```
+
+Provider trial run:
+
+```bash
+pnpm trial:run
+```
+
+Recommended first `codex` trial-run command:
+
+```bash
+CODEX_SKILLS=polymarket-market-pulse \
+CODEX_SKILL_LOCALE=zh \
+PROVIDER_TIMEOUT_SECONDS=180 \
+CODEX_COMMAND='codex exec --skip-git-repo-check -C {{repo_root}} -s read-only --color never -c model_reasoning_effort="low" --output-schema {{schema_file}} -o {{output_file}} < {{prompt_file}}' \
+pnpm trial:run
 ```
 
 ## Deployment shape
@@ -234,7 +282,7 @@ Admin actions remain inside the site and call protected orchestrator endpoints i
 
 ## Current status
 
-As of `2026-03-13`, the repository already has:
+As of `2026-03-14`, the repository already has:
 
 - the monorepo structure
 - public pages and admin pages
@@ -242,8 +290,13 @@ As of `2026-03-13`, the repository already has:
 - orchestrator and executor service scaffolding
 - `.env.aizen` auto-discovery
 - one successful capped live trade test below `$1`
+- a `codex/openclaw` provider runtime structure inside the orchestrator
+- real pulse fetch plus namespaced pulse artifact storage, with no mock pulse fallback
+- one successful `codex` trial run with real pulse plus structured decisions
 
 See [progress.md](progress.md) for detailed progress tracking.
+
+The E2E test driven development workspace lives in [E2E Test Driven Development/README.md](E2E%20Test%20Driven%20Development/README.md).
 
 ## Current limitations
 
@@ -251,8 +304,8 @@ The main current limitations are:
 
 - Docker runtime validation has not been completed on this machine
 - production deployment to Vercel and the cloud host is not done yet
-- Claude Code has a runtime abstraction and integration point, but the full production decision loop still needs work
-- OpenClaw is not implemented yet
+- the `codex` trial-run path is connected, but the full production loop still needs more validation
+- the `openclaw` runtime surface is wired, but the CLI is not installed on this machine
 
 ## Next steps
 

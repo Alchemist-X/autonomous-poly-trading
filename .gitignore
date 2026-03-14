@@ -9,3 +9,7 @@ coverage
 .env.*
 !.env.example
 vendor/repos
+runtime-artifacts/*
+!runtime-artifacts/.gitkeep
+E2E Test Driven Development/artifacts/*
+!E2E Test Driven Development/artifacts/.gitkeep
