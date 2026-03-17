@@ -203,6 +203,100 @@ describe("runLoopOnce", () => {
     }
   }, 15_000);
 
+  it("treats placeholder blocked markers as invalid and still completes when verification passes", async () => {
+    const repoRoot = await initTempRepo();
+    try {
+      await mkdir(path.join(repoRoot, "docs"), { recursive: true });
+      await writeLoopDoc(repoRoot, {
+        locale: "zh",
+        rules: ["规则"],
+        queue: [
+          {
+            id: "RL-105",
+            title: "忽略占位 blocked 原因",
+            status: "todo",
+            priority: "P1",
+            dependsOn: [],
+            allowedPaths: ["docs"],
+            definitionOfDone: ["生成 docs/placeholder-blocked.md"],
+            verification: ['node -e "process.exit(0)"'],
+            context: ["测试 placeholder blocked 不应直接阻塞任务"],
+            latestResult: ["尚未开始"],
+            attempts: 0,
+            section: "queue",
+            createdOrder: 0
+          }
+        ],
+        running: [],
+        blocked: [],
+        done: []
+      });
+
+      process.env.FAKE_ROUGH_LOOP_MODE = "blocked-placeholder";
+      process.env.FAKE_ROUGH_LOOP_TARGET = "docs/placeholder-blocked.md";
+      process.env.FAKE_ROUGH_LOOP_CONTENT = "# placeholder blocked\n";
+
+      const outcome = await runLoopOnce(createConfig(repoRoot, { autoCommit: false }));
+      const loopContent = await readFile(path.join(repoRoot, "rough-loop.md"), "utf8");
+      const noteContent = await readFile(path.join(repoRoot, "docs", "placeholder-blocked.md"), "utf8");
+
+      expect(outcome.kind).toBe("done");
+      expect(loopContent).toContain("## Done（已完成）");
+      expect(loopContent).not.toContain("<原因>");
+      expect(noteContent).toContain("# placeholder blocked");
+    } finally {
+      delete process.env.FAKE_ROUGH_LOOP_MODE;
+      delete process.env.FAKE_ROUGH_LOOP_TARGET;
+      delete process.env.FAKE_ROUGH_LOOP_CONTENT;
+      await rm(repoRoot, { recursive: true, force: true });
+    }
+  }, 15_000);
+
+  it("still blocks tasks when the provider returns a concrete blocked reason", async () => {
+    const repoRoot = await initTempRepo();
+    try {
+      await mkdir(path.join(repoRoot, "docs"), { recursive: true });
+      await writeLoopDoc(repoRoot, {
+        locale: "zh",
+        rules: ["规则"],
+        queue: [
+          {
+            id: "RL-106",
+            title: "保留真实 blocked 原因",
+            status: "todo",
+            priority: "P1",
+            dependsOn: [],
+            allowedPaths: ["docs"],
+            definitionOfDone: ["需要人工判断时应阻塞"],
+            verification: ['node -e "process.exit(0)"'],
+            context: ["测试真实 blocked 原因仍然生效"],
+            latestResult: ["尚未开始"],
+            attempts: 0,
+            section: "queue",
+            createdOrder: 0
+          }
+        ],
+        running: [],
+        blocked: [],
+        done: []
+      });
+
+      process.env.FAKE_ROUGH_LOOP_MODE = "blocked";
+
+      const outcome = await runLoopOnce(createConfig(repoRoot, { autoCommit: false }));
+      const loopContent = await readFile(path.join(repoRoot, "rough-loop.md"), "utf8");
+
+      expect(outcome.kind).toBe("blocked");
+      expect(loopContent).toContain("## Blocked（阻塞）");
+      expect(loopContent).toContain("Human judgment is required.");
+    } finally {
+      delete process.env.FAKE_ROUGH_LOOP_MODE;
+      delete process.env.FAKE_ROUGH_LOOP_TARGET;
+      delete process.env.FAKE_ROUGH_LOOP_CONTENT;
+      await rm(repoRoot, { recursive: true, force: true });
+    }
+  }, 15_000);
+
   it("refuses to start when non-system files are already dirty", async () => {
     const repoRoot = await initTempRepo();
     try {

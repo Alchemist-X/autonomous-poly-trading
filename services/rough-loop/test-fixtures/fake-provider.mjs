@@ -11,8 +11,23 @@ await new Promise((resolve) => {
   process.stdin.on("end", resolve);
 });
 
+const targetPath = path.resolve(process.cwd(), targetFile);
+const content = process.env.FAKE_ROUGH_LOOP_CONTENT || "# fake provider output\n";
+
 if (mode === "blocked") {
   console.log("ROUGH_LOOP_BLOCKED: Human judgment is required.");
+  process.exit(0);
+}
+
+if (mode === "blocked-placeholder") {
+  writeFileSync(targetPath, content, "utf8");
+  console.log("ROUGH_LOOP_BLOCKED: <原因>。");
+  process.exit(0);
+}
+
+if (mode === "summary-placeholder") {
+  writeFileSync(targetPath, content, "utf8");
+  console.log("ROUGH_LOOP_SUMMARY: <一句话总结>。");
   process.exit(0);
 }
 
@@ -26,9 +41,6 @@ if (mode === "noop") {
   console.log("ROUGH_LOOP_SUMMARY: No file changes were made.");
   process.exit(0);
 }
-
-const targetPath = path.resolve(process.cwd(), targetFile);
-const content = process.env.FAKE_ROUGH_LOOP_CONTENT || "# fake provider output\n";
 
 if (mode === "append" && targetFile) {
   let previous = "";

@@ -12,6 +12,9 @@ export interface ProviderExecutionResult {
   timedOut: boolean;
 }
 
+const placeholderOnlyPattern = /^(?:<[^>\n]+>|＜[^＞\n]+＞|\[[^\]\n]+\])(?:[.。!！?？]+)?$/u;
+const genericPlaceholderValues = new Set(["reason", "summary", "原因", "一句话总结"]);
+
 function getProviderConfig(config: RoughLoopConfig): { provider: RoughLoopProvider; command: string; model: string } {
   if (config.provider === "openclaw") {
     return {
@@ -28,20 +31,50 @@ function getProviderConfig(config: RoughLoopConfig): { provider: RoughLoopProvid
   };
 }
 
+function isPlaceholderStructuredValue(value: string): boolean {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return true;
+  }
+  if (placeholderOnlyPattern.test(trimmed)) {
+    return true;
+  }
+  const normalized = trimmed.replace(/[.。!！?？]+$/u, "").trim();
+  return genericPlaceholderValues.has(normalized) || genericPlaceholderValues.has(normalized.toLowerCase());
+}
+
+function invalidStructuredMessage(kind: "ROUGH_LOOP_BLOCKED" | "ROUGH_LOOP_SUMMARY", value: string): string {
+  return `Provider emitted placeholder ${kind} text (${value.trim()}). Use a concrete sentence instead of a template placeholder.`;
+}
+
 function parseOutcome(text: string): { blocked: boolean; summary: string } {
   const blockedMatch = text.match(/ROUGH_LOOP_BLOCKED:\s*(.+)/i);
   if (blockedMatch?.[1]) {
+    const summary = blockedMatch[1].trim();
+    if (isPlaceholderStructuredValue(summary)) {
+      return {
+        blocked: false,
+        summary: invalidStructuredMessage("ROUGH_LOOP_BLOCKED", summary)
+      };
+    }
     return {
       blocked: true,
-      summary: blockedMatch[1].trim()
+      summary
     };
   }
 
   const summaryMatch = text.match(/ROUGH_LOOP_SUMMARY:\s*(.+)/i);
   if (summaryMatch?.[1]) {
+    const summary = summaryMatch[1].trim();
+    if (isPlaceholderStructuredValue(summary)) {
+      return {
+        blocked: false,
+        summary: invalidStructuredMessage("ROUGH_LOOP_SUMMARY", summary)
+      };
+    }
     return {
       blocked: false,
-      summary: summaryMatch[1].trim()
+      summary
     };
   }
 

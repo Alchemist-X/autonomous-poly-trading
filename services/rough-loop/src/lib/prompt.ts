@@ -22,14 +22,16 @@ export function buildTaskPrompt(input: {
       "- 当前处于显式放宽护栏模式，可以在整个仓库内修改代码并接受脏工作树。",
       "- 仍然不要执行危险 git 操作，例如 reset --hard、checkout --、clean -fd、force push。",
       "- 完成后请在输出末尾写一行 ROUGH_LOOP_SUMMARY: <一句话总结>。",
-      "- 如果任务需要人工判断，可以输出 ROUGH_LOOP_BLOCKED: <原因>。"
+      "- 如果任务需要人工判断，可以输出 ROUGH_LOOP_BLOCKED: <原因>。",
+      "- 不要原样输出模板占位符；禁止直接写 `ROUGH_LOOP_SUMMARY: <一句话总结>`、`ROUGH_LOOP_BLOCKED: <原因>`、`<reason>`、`<summary>` 这类占位文本。"
     ]
     : [
       "- 只修改 Allowed Paths 列出的路径，以及系统维护的 rough-loop.md / rough-loop.en.md。",
       "- 不要读取或改动任何 secrets、.env.aizen、私钥、生产 host 配置。",
       "- 不要执行危险 git 操作，例如 reset --hard、checkout --、clean -fd、force push。",
       "- 完成后请在输出末尾写一行 ROUGH_LOOP_SUMMARY: <一句话总结>。",
-      "- 如果任务需要人工判断、缺少必要信息、或会触碰高风险资源，请不要继续修改，并输出 ROUGH_LOOP_BLOCKED: <原因>。"
+      "- 如果任务需要人工判断、缺少必要信息、或会触碰高风险资源，请不要继续修改，并输出 ROUGH_LOOP_BLOCKED: <原因>。",
+      "- 不要原样输出模板占位符；禁止直接写 `ROUGH_LOOP_SUMMARY: <一句话总结>`、`ROUGH_LOOP_BLOCKED: <原因>`、`<reason>`、`<summary>` 这类占位文本。"
     ];
 
   return [
