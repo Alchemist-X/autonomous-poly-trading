@@ -13,6 +13,8 @@ function buildWebEnv(context: ScenarioContext, webPort: number, orchestratorBase
   return {
     ...process.env,
     NODE_ENV: "development",
+    AUTOPOLY_EXECUTION_MODE: "paper",
+    AUTOPOLY_LOCAL_STATE_FILE: context.stateFilePath ?? "",
     APP_URL: `http://127.0.0.1:${webPort}`,
     ADMIN_PASSWORD: context.credentials.adminPassword,
     ORCHESTRATOR_INTERNAL_URL: orchestratorBaseUrl,

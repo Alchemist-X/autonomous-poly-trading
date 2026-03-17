@@ -30,6 +30,7 @@ describe("orchestrator risk helpers", () => {
     const amount = applyTradeGuards({
       requestedUsd: 200,
       bankrollUsd: 1000,
+      minTradeUsd: 10,
       maxTradePct: 0.05,
       liquidityCapUsd: 120,
       totalExposureUsd: 100,
@@ -41,5 +42,40 @@ describe("orchestrator risk helpers", () => {
 
     expect(amount).toBeCloseTo(30);
   });
-});
 
+  it("clips trade size by per-event exposure headroom", () => {
+    const amount = applyTradeGuards({
+      requestedUsd: 200,
+      bankrollUsd: 1000,
+      minTradeUsd: 10,
+      maxTradePct: 0.1,
+      liquidityCapUsd: 200,
+      totalExposureUsd: 100,
+      maxTotalExposurePct: 0.8,
+      eventExposureUsd: 280,
+      maxEventExposurePct: 0.3,
+      openPositions: 1,
+      maxPositions: 10,
+      edge: 0.3
+    });
+
+    expect(amount).toBeCloseTo(20);
+  });
+
+  it("allows tiny trades when the configured minimum ticket size is lowered", () => {
+    const amount = applyTradeGuards({
+      requestedUsd: 0.42,
+      bankrollUsd: 20,
+      minTradeUsd: 0.01,
+      maxTradePct: 0.5,
+      liquidityCapUsd: 10,
+      totalExposureUsd: 0,
+      maxTotalExposurePct: 1,
+      openPositions: 0,
+      maxPositions: 10,
+      edge: 0.3
+    });
+
+    expect(amount).toBeCloseTo(0.42);
+  });
+});

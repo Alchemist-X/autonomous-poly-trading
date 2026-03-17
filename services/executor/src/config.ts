@@ -11,6 +11,20 @@ function readNumber(name: string, fallback: number): number {
   return Number.isFinite(value) ? value : fallback;
 }
 
+function readFirstString(names: string[], fallback = ""): string {
+  for (const name of names) {
+    const raw = process.env[name];
+    if (!raw) {
+      continue;
+    }
+    const value = raw.trim();
+    if (value) {
+      return value;
+    }
+  }
+  return fallback;
+}
+
 export interface ExecutorConfig {
   port: number;
   redisUrl: string;
@@ -32,8 +46,8 @@ export function loadConfig(): ExecutorConfig {
     port: readNumber("PORT", 4002),
     redisUrl: process.env.REDIS_URL ?? "redis://localhost:6379",
     envFilePath,
-    privateKey: process.env.PRIVATE_KEY ?? "",
-    funderAddress: process.env.FUNDER_ADDRESS ?? "",
+    privateKey: readFirstString(["PRIVATE_KEY"]),
+    funderAddress: readFirstString(["FUNDER_ADDRESS", "ADDRESS", "WALLET_ADDRESS", "EVM_ADDRESS"]),
     signatureType: readNumber("SIGNATURE_TYPE", 1),
     polymarketHost: process.env.POLYMARKET_HOST ?? "https://clob.polymarket.com",
     chainId: readNumber("CHAIN_ID", 137),

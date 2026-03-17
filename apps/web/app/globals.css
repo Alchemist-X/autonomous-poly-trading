@@ -1,4 +1,6 @@
 :root {
+  --font-space: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-mono: "SFMono-Regular", "IBM Plex Mono", "Roboto Mono", monospace;
   --paper: #f6f0e6;
   --ink: #191510;
   --muted: #665c52;
@@ -349,4 +351,3 @@ button {
     max-width: none;
   }
 }
-

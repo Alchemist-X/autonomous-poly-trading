@@ -6,34 +6,32 @@ import type {
   PublicRunSummary,
   PublicTrade
 } from "@autopoly/contracts";
-import { createMockQueryState, type MockQueryState } from "@autopoly/db";
-import { ensureDir, readJsonFile, writeJsonFile } from "./fs.js";
+import {
+  type LocalAppState,
+  createDefaultLocalAppState,
+  readLocalAppState,
+  updateLocalAppState,
+  writeLocalAppState
+} from "@autopoly/db";
+import { ensureDir } from "./fs.js";
 
-export interface LocalLiteState extends MockQueryState {
-  actionLog: string[];
-}
+export interface LocalLiteState extends LocalAppState {}
 
 export function createDefaultLocalLiteState(): LocalLiteState {
-  return {
-    ...createMockQueryState(),
-    actionLog: []
-  };
+  return createDefaultLocalAppState();
 }
 
 export async function createLocalLiteStateFile(filePath: string) {
   await ensureDir(path.dirname(filePath));
-  await writeJsonFile(filePath, createDefaultLocalLiteState());
+  await writeLocalAppState(createDefaultLocalLiteState(), filePath);
 }
 
 export async function readLocalLiteState(filePath: string): Promise<LocalLiteState> {
-  return readJsonFile<LocalLiteState>(filePath);
+  return readLocalAppState(filePath);
 }
 
 export async function updateLocalLiteState(filePath: string, updater: (state: LocalLiteState) => LocalLiteState | Promise<LocalLiteState>) {
-  const current = await readLocalLiteState(filePath);
-  const next = await updater(current);
-  await writeJsonFile(filePath, next);
-  return next;
+  return updateLocalAppState(updater, filePath);
 }
 
 export function appendAction(state: LocalLiteState, action: string): LocalLiteState {
@@ -166,6 +164,40 @@ function buildSyntheticRun(now: string, bankrollUsd: number): {
         path: report.path,
         content: "# Local-lite pulse\n\nGenerated during E2E verification.",
         published_at_utc: now
+      }
+    ],
+    tracked_sources: [
+      {
+        id: randomUUID(),
+        run_id: run.id,
+        decision_id: null,
+        event_slug: "local-lite-macro-cycle",
+        market_slug: "local-lite-macro-cycle",
+        title: "Local-lite pulse",
+        url: "https://example.com/local-lite-pulse",
+        source_kind: "external",
+        role: "decision-source",
+        status: "captured",
+        retrieved_at_utc: now,
+        last_checked_at: now,
+        note: null,
+        content_hash: null
+      }
+    ],
+    resolution_checks: [
+      {
+        id: randomUUID(),
+        event_slug: "local-lite-macro-cycle",
+        market_slug: "local-lite-macro-cycle",
+        track_status: "watching",
+        interval_minutes: 60,
+        next_check_at: new Date(Date.parse(now) + 60 * 60 * 1000).toISOString(),
+        last_checked_at: now,
+        summary: "Local-lite resolution tracking placeholder is active.",
+        trackability: "完全",
+        source_url: "https://example.com/local-lite-pulse",
+        source_type: "generic_url",
+        report_path: "reports/resolution/local-lite.md"
       }
     ]
   };

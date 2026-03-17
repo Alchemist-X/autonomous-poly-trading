@@ -33,6 +33,9 @@ function readEnum<T extends readonly string[]>(
 export const agentRuntimeProviders = ["codex", "openclaw"] as const;
 export type AgentRuntimeProvider = (typeof agentRuntimeProviders)[number];
 
+export const agentDecisionStrategies = ["provider-runtime", "pulse-direct"] as const;
+export type AgentDecisionStrategy = (typeof agentDecisionStrategies)[number];
+
 export const skillLocales = ["en", "zh"] as const;
 export type SkillLocale = (typeof skillLocales)[number];
 
@@ -54,6 +57,9 @@ export interface PulseConfig {
   eventsPerPage: number;
   minLiquidityUsd: number;
   maxCandidates: number;
+  reportCandidates: number;
+  reportCommentLimit: number;
+  reportTimeoutSeconds: number;
   minTradeableCandidates: number;
   maxAgeMinutes: number;
   maxMarkdownChars: number;
@@ -73,10 +79,13 @@ export interface OrchestratorConfig {
   drawdownStopPct: number;
   positionStopLossPct: number;
   maxTotalExposurePct: number;
+  maxEventExposurePct: number;
   maxPositions: number;
   maxTradePct: number;
+  minTradeUsd: number;
   initialBankrollUsd: number;
   runtimeProvider: AgentRuntimeProvider;
+  decisionStrategy: AgentDecisionStrategy;
   artifactStorageRoot: string;
   providerTimeoutSeconds: number;
   pulseFetchTimeoutSeconds: number;
@@ -122,7 +131,7 @@ export function loadConfig(): OrchestratorConfig {
     redisUrl: process.env.REDIS_URL ?? "redis://localhost:6379",
     envFilePath,
     internalToken: process.env.ORCHESTRATOR_INTERNAL_TOKEN ?? "replace-me",
-    agentPollCron: process.env.AGENT_POLL_CRON ?? "0 */4 * * *",
+    agentPollCron: process.env.AGENT_POLL_CRON ?? "0 */3 * * *",
     syncIntervalSeconds: readNumber("SYNC_INTERVAL_SECONDS", 30),
     backtestCron: process.env.BACKTEST_CRON ?? "10 0 * * *",
     resolutionBaseIntervalMinutes: readNumber("RESOLUTION_BASE_INTERVAL_MINUTES", 60),
@@ -130,12 +139,15 @@ export function loadConfig(): OrchestratorConfig {
     drawdownStopPct: readNumber("DRAWDOWN_STOP_PCT", 0.2),
     positionStopLossPct: readNumber("POSITION_STOP_LOSS_PCT", 0.3),
     maxTotalExposurePct: readNumber("MAX_TOTAL_EXPOSURE_PCT", 0.5),
+    maxEventExposurePct: readNumber("MAX_EVENT_EXPOSURE_PCT", 0.3),
     maxPositions: readNumber("MAX_POSITIONS", 10),
     maxTradePct: readNumber("MAX_TRADE_PCT", 0.05),
+    minTradeUsd: readNumber("MIN_TRADE_USD", 10),
     initialBankrollUsd: readNumber("INITIAL_BANKROLL_USD", 10000),
     runtimeProvider: readEnum("AGENT_RUNTIME_PROVIDER", "codex", agentRuntimeProviders),
+    decisionStrategy: readEnum("AGENT_DECISION_STRATEGY", "provider-runtime", agentDecisionStrategies),
     artifactStorageRoot: path.resolve(readString("ARTIFACT_STORAGE_ROOT", path.join(repoRoot, "runtime-artifacts"))),
-    providerTimeoutSeconds: readNumber("PROVIDER_TIMEOUT_SECONDS", 90),
+    providerTimeoutSeconds: readNumber("PROVIDER_TIMEOUT_SECONDS", 0),
     pulseFetchTimeoutSeconds: readNumber("PULSE_FETCH_TIMEOUT_SECONDS", 60),
     pulse: {
       sourceRepo: pulseSourceRepo,
@@ -144,6 +156,9 @@ export function loadConfig(): OrchestratorConfig {
       eventsPerPage: readNumber("PULSE_EVENTS_PER_PAGE", 20),
       minLiquidityUsd: readNumber("PULSE_MIN_LIQUIDITY_USD", 5000),
       maxCandidates: readNumber("PULSE_MAX_CANDIDATES", 12),
+      reportCandidates: readNumber("PULSE_REPORT_CANDIDATES", 4),
+      reportCommentLimit: readNumber("PULSE_REPORT_COMMENT_LIMIT", 20),
+      reportTimeoutSeconds: readNumber("PULSE_REPORT_TIMEOUT_SECONDS", 0),
       minTradeableCandidates: readNumber("PULSE_MIN_TRADEABLE_CANDIDATES", 5),
       maxAgeMinutes: readNumber("PULSE_MAX_AGE_MINUTES", 30),
       maxMarkdownChars: readNumber("PULSE_MAX_MARKDOWN_CHARS", 24000)

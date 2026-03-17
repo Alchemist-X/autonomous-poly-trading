@@ -21,11 +21,19 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "trial:run": "tsx src/ops/trial-run.ts"
+    "pretrial:run": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/terminal-ui build",
+    "pretrial:recommend": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/terminal-ui build",
+    "pretrial:approve": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/terminal-ui build",
+    "pretrial:reset-paper": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/terminal-ui build",
+    "trial:run": "tsx src/ops/trial-run.ts",
+    "trial:recommend": "tsx src/ops/trial-recommend.ts",
+    "trial:approve": "tsx src/ops/trial-approve.ts",
+    "trial:reset-paper": "tsx src/ops/trial-reset-paper.ts"
   },
   "dependencies": {
     "@autopoly/contracts": "workspace:*",
     "@autopoly/db": "workspace:*",
+    "@autopoly/terminal-ui": "workspace:*",
     "bullmq": "5.71.0",
     "drizzle-orm": "0.45.1",
     "dotenv": "17.2.3",

@@ -213,6 +213,40 @@ export function createMockQueryState(): MockQueryState {
         content: "# 市场脉冲\n\n当前首要想法：美联储在六月前降息。",
         published_at_utc: now.toISOString()
       }
+    ],
+    tracked_sources: [
+      {
+        id: "c52cc014-a98f-4c08-a480-0223dcd120e9",
+        run_id: runs[0]!.id,
+        decision_id: null,
+        event_slug: "will-the-fed-cut-rates-by-june",
+        market_slug: "fed-cut-rates-by-june",
+        title: "Fed watch",
+        url: "https://example.com/fed-watch",
+        source_kind: "external",
+        role: "decision-source",
+        status: "captured",
+        retrieved_at_utc: now.toISOString(),
+        last_checked_at: now.toISOString(),
+        note: null,
+        content_hash: null
+      }
+    ],
+    resolution_checks: [
+      {
+        id: "36b4033b-6989-48a5-a354-37fc3d1e02be",
+        event_slug: "will-the-fed-cut-rates-by-june",
+        market_slug: "fed-cut-rates-by-june",
+        track_status: "watching",
+        interval_minutes: 60,
+        next_check_at: new Date(now.getTime() + 60 * 60 * 1000).toISOString(),
+        last_checked_at: now.toISOString(),
+        summary: "结算源可自动追踪，当前快照无变化。",
+        trackability: "完全",
+        source_url: "https://example.com/fed-watch",
+        source_type: "generic_url",
+        report_path: "reports/resolution/2026/03/13/resolution-20260313T100000Z-resolution-watch-fed-cut-rates-by-june.md"
+      }
     ]
   };
 

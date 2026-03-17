@@ -112,6 +112,24 @@ export const resolutionChecks = pgTable("resolution_checks", {
   metadata: jsonb("metadata")
 });
 
+export const trackedSources = pgTable("tracked_sources", {
+  id: uuid("id").primaryKey(),
+  runId: uuid("run_id").references(() => agentRuns.id, { onDelete: "set null" }),
+  decisionId: uuid("decision_id").references(() => agentDecisions.id, { onDelete: "set null" }),
+  eventSlug: text("event_slug").notNull(),
+  marketSlug: text("market_slug").notNull(),
+  title: text("title").notNull(),
+  url: text("url").notNull(),
+  sourceKind: varchar("source_kind", { length: 64 }).notNull(),
+  role: varchar("role", { length: 32 }).notNull(),
+  status: varchar("status", { length: 32 }).notNull(),
+  retrievedAtUtc: timestamp("retrieved_at_utc", { withTimezone: true }).notNull(),
+  lastCheckedAt: timestamp("last_checked_at", { withTimezone: true }),
+  note: text("note"),
+  contentHash: varchar("content_hash", { length: 128 }),
+  metadata: jsonb("metadata")
+});
+
 export const artifacts = pgTable("artifacts", {
   id: uuid("id").primaryKey(),
   runId: uuid("run_id").references(() => agentRuns.id, { onDelete: "cascade" }),

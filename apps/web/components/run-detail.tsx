@@ -25,6 +25,8 @@ function formatRunStatus(status: string): string {
       return "失败";
     case "queued":
       return "排队中";
+    case "awaiting-approval":
+      return "等待批准";
     default:
       return status;
   }
@@ -62,6 +64,25 @@ function formatConfidence(confidence: PublicRunDetail["decisions"][number]["conf
   }
 }
 
+function formatTrackingStatus(status: string): string {
+  switch (status) {
+    case "captured":
+      return "已记录";
+    case "watching":
+      return "观察中";
+    case "changed":
+      return "已变化";
+    case "manual-review":
+      return "人工复核";
+    case "untrackable":
+      return "不可追踪";
+    case "error":
+      return "抓取失败";
+    default:
+      return status;
+  }
+}
+
 export function RunDetail({ runId, initialData }: { runId: string; initialData: PublicRunDetail }) {
   const { data } = usePollingJson(`/api/public/runs/${runId}`, initialData);
 
@@ -90,7 +111,7 @@ export function RunDetail({ runId, initialData }: { runId: string; initialData: 
           </div>
           <div>
             <dt>运行摘要</dt>
-            <dd>{data.prompt_summary}</dd>
+            <dd data-testid="run-detail-prompt-summary">{data.prompt_summary}</dd>
           </div>
         </dl>
       </section>
@@ -129,6 +150,10 @@ export function RunDetail({ runId, initialData }: { runId: string; initialData: 
                   <dd>{formatUsd(decision.notional_usd)}</dd>
                 </div>
                 <div>
+                  <dt>仓位占比</dt>
+                  <dd>{formatPct(data.bankroll_usd > 0 ? decision.notional_usd / data.bankroll_usd : 0)}</dd>
+                </div>
+                <div>
                   <dt>市场概率</dt>
                   <dd>{formatPct(decision.market_prob)}</dd>
                 </div>
@@ -144,7 +169,65 @@ export function RunDetail({ runId, initialData }: { runId: string; initialData: 
                   <dt>置信度</dt>
                   <dd>{formatConfidence(decision.confidence)}</dd>
                 </div>
+                <div>
+                  <dt>结算跟踪</dt>
+                  <dd>{decision.resolution_track_required ? "需要" : "不需要"}</dd>
+                </div>
               </dl>
+              <div className="decision-sources">
+                <strong>信息源</strong>
+                <ul>
+                  {decision.sources.map((source) => (
+                    <li key={`${source.url}-${source.retrieved_at_utc}`}>
+                      <a href={source.url} target="_blank" rel="noreferrer">{source.title}</a>
+                      <span> · {formatDate(source.retrieved_at_utc)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-header">
+          <div>
+            <p className="panel-kicker">跟踪</p>
+            <h2>信息源跟踪</h2>
+          </div>
+        </div>
+        <div className="report-list">
+          {data.tracked_sources.map((source) => (
+            <article key={source.id} className="report-card">
+              <span className="badge">{formatTrackingStatus(source.status)}</span>
+              <h3>{source.title}</h3>
+              <p>{source.market_slug}</p>
+              <p>
+                <a href={source.url} target="_blank" rel="noreferrer">{source.url}</a>
+              </p>
+              <small>{formatDate(source.retrieved_at_utc)}</small>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-header">
+          <div>
+            <p className="panel-kicker">跟踪</p>
+            <h2>结算检查</h2>
+          </div>
+        </div>
+        <div className="report-list">
+          {data.resolution_checks.map((check) => (
+            <article key={check.id} className="report-card">
+              <span className="badge">{formatTrackingStatus(check.track_status)}</span>
+              <h3>{check.market_slug}</h3>
+              <p>{check.summary}</p>
+              <p>等级：{check.trackability ?? "未获取"} · 类型：{check.source_type ?? "未获取"}</p>
+              <p>{check.source_url ?? "未检测到结算源 URL"}</p>
+              <small>{check.last_checked_at ? formatDate(check.last_checked_at) : "尚未检查"}</small>
             </article>
           ))}
         </div>

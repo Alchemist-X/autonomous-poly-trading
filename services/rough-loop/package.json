@@ -1,0 +1,24 @@
+{
+  "name": "@autopoly/rough-loop",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/cli.js",
+  "types": "dist/cli.d.ts",
+  "scripts": {
+    "predoctor": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build",
+    "preonce": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build",
+    "predev": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build",
+    "prestart": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsx watch src/cli.ts daemon",
+    "start": "node dist/cli.js daemon",
+    "once": "tsx src/cli.ts once",
+    "doctor": "tsx src/cli.ts doctor"
+  },
+  "dependencies": {
+    "@autopoly/contracts": "workspace:*",
+    "@autopoly/terminal-ui": "workspace:*",
+    "dotenv": "17.2.3"
+  }
+}

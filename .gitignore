@@ -8,6 +8,8 @@ coverage
 .env
 .env.*
 !.env.example
+.rough-loop.pause
+.rough-loop.lock
 vendor/repos
 runtime-artifacts/*
 !runtime-artifacts/.gitkeep

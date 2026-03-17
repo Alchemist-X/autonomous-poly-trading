@@ -1,5 +1,20 @@
 import { loadConfig } from "../config.js";
-import { executeMarketOrder, getClobClient, readBook, type BookSnapshot } from "../lib/polymarket.js";
+import {
+  executeMarketOrder,
+  fetchActiveMarkets,
+  fetchEventBySlug,
+  fetchMarketBySlug,
+  getCollateralBalanceAllowance,
+  readBook,
+  type BookSnapshot
+} from "../lib/polymarket.js";
+import {
+  createTerminalPrinter,
+  formatUsd,
+  getErrorMessage,
+  printErrorSummary,
+  shouldUseHumanOutput
+} from "@autopoly/terminal-ui";
 
 interface CandidateMarket {
   eventSlug: string;
@@ -33,6 +48,7 @@ function parseArgs() {
   };
 
   return {
+    json: has("--json"),
     shouldTrade: has("--trade"),
     maxUsd: Math.min(1, Number(get("--max-usd", "1"))),
     direction: get("--direction", "auto").toLowerCase() as "auto" | "yes" | "no",
@@ -110,12 +126,8 @@ async function chooseTradeablePick(
   return yesOption ?? noOption;
 }
 
-async function resolveEventSlug(slug: string): Promise<CandidateMarket | null> {
-  const response = await fetch(`https://gamma-api.polymarket.com/events/slug/${slug}`);
-  if (!response.ok) {
-    throw new Error(`Failed to resolve event slug "${slug}": ${response.status}`);
-  }
-  const event = await response.json() as Record<string, unknown>;
+async function resolveEventSlug(config: ReturnType<typeof loadConfig>, slug: string): Promise<CandidateMarket | null> {
+  const event = await fetchEventBySlug(config, slug);
   const markets = Array.isArray(event.markets) ? event.markets as Array<Record<string, unknown>> : [];
 
   for (const market of markets) {
@@ -151,12 +163,8 @@ async function resolveEventSlug(slug: string): Promise<CandidateMarket | null> {
   return null;
 }
 
-async function resolveMarketSlug(slug: string): Promise<CandidateMarket | null> {
-  const response = await fetch(`https://gamma-api.polymarket.com/markets?slug=${slug}`);
-  if (!response.ok) {
-    throw new Error(`Failed to resolve market slug "${slug}": ${response.status}`);
-  }
-  const markets = await response.json() as Array<Record<string, unknown>>;
+async function resolveMarketSlug(config: ReturnType<typeof loadConfig>, slug: string): Promise<CandidateMarket | null> {
+  const markets = await fetchMarketBySlug(config, slug);
   const market = markets[0];
   if (!market) {
     return null;
@@ -193,11 +201,7 @@ async function fetchTopCandidate(config: ReturnType<typeof loadConfig>, directio
   candidate: CandidateMarket;
   pick: CandidatePick;
 }> {
-  const response = await fetch("https://gamma-api.polymarket.com/markets?limit=100&active=true&closed=false&order=liquidity&ascending=false");
-  if (!response.ok) {
-    throw new Error(`Gamma API failed: ${response.status}`);
-  }
-  const markets = await response.json() as Array<Record<string, unknown>>;
+  const markets = await fetchActiveMarkets(config, 100);
 
   for (const market of markets) {
     const marketSlug = String(market.slug ?? "");
@@ -246,18 +250,17 @@ async function fetchTopCandidate(config: ReturnType<typeof loadConfig>, directio
 
 async function main() {
   const args = parseArgs();
+  const useHumanOutput = !args.json && shouldUseHumanOutput(process.stdout);
+  const printer = createTerminalPrinter();
   const config = loadConfig();
-  const client = await getClobClient(config);
-
-  if (!client) {
+  const balance = await getCollateralBalanceAllowance(config);
+  if (!balance) {
     throw new Error("No live Polymarket client available. Check env file discovery.");
   }
-
-  const balance = await (client as any).getBalanceAllowance({ asset_type: "COLLATERAL" });
   const usdcBalance = Number((balance as any)?.balance ?? 0) / 1e6;
   const resolved = args.slug
     ? await (async () => {
-        const candidate = await resolveMarketSlug(args.slug) ?? await resolveEventSlug(args.slug);
+        const candidate = await resolveMarketSlug(config, args.slug) ?? await resolveEventSlug(config, args.slug);
         if (!candidate) {
           return null;
         }
@@ -271,8 +274,7 @@ async function main() {
   }
 
   const { candidate, pick } = resolved;
-
-  console.log(JSON.stringify({
+  const snapshot = {
     envFilePath: config.envFilePath,
     funderAddressPreview: `${config.funderAddress.slice(0, 6)}***${config.funderAddress.slice(-4)}`,
     usdcBalance,
@@ -291,7 +293,44 @@ async function main() {
     chosenDirection: pick.label,
     tokenIdPreview: `${pick.tokenId.slice(0, 10)}...`,
     orderBook: pick.book
-  }, null, 2));
+  };
+
+  if (args.json) {
+    if (!args.shouldTrade) {
+      console.log(JSON.stringify(snapshot, null, 2));
+      return;
+    }
+  } else if (useHumanOutput) {
+    printer.section(args.shouldTrade ? "Executor Live Trade" : "Executor Live Check");
+    printer.table([
+      ["Env File", config.envFilePath ?? "-"],
+      ["Wallet", snapshot.funderAddressPreview],
+      ["USDC Balance", formatUsd(snapshot.usdcBalance)],
+      ["Market", candidate.marketSlug],
+      ["Event", candidate.eventTitle],
+      ["Direction", pick.label],
+      ["Token", snapshot.tokenIdPreview]
+    ]);
+    printer.section("Market Snapshot");
+    printer.table([
+      ["Question", candidate.question],
+      ["Liquidity", formatUsd(candidate.liquidity)],
+      ["YES Price", candidate.priceYes.toFixed(4)],
+      ["NO Price", candidate.priceNo.toFixed(4)],
+      ["Best Bid", String(candidate.bestBid ?? "-")],
+      ["Best Ask", String(candidate.bestAsk ?? "-")],
+      ["Restricted", candidate.restricted === true ? "yes" : "no"]
+    ]);
+    printer.section("Order Book");
+    printer.table([
+      ["Best Bid", pick.book.bestBid.toFixed(4)],
+      ["Best Ask", pick.book.bestAsk.toFixed(4)],
+      ["Midpoint", (((pick.book.bestBid + pick.book.bestAsk) / 2)).toFixed(4)],
+      ["Spread", (pick.book.bestAsk - pick.book.bestBid).toFixed(4)]
+    ]);
+  } else {
+    console.log(JSON.stringify(snapshot, null, 2));
+  }
 
   if (!args.shouldTrade) {
     return;
@@ -301,23 +340,67 @@ async function main() {
     throw new Error(`--max-usd must be > 0 and <= 1. Received ${args.maxUsd}`);
   }
 
-  console.log(`Submitting live BUY for ${pick.label} with max ${args.maxUsd} USDC on ${candidate.marketSlug}`);
+  if (useHumanOutput) {
+    printer.note("warn", `Submitting live BUY for ${pick.label}`, `${args.maxUsd} USDC max on ${candidate.marketSlug}`);
+  } else {
+    console.log(`Submitting live BUY for ${pick.label} with max ${args.maxUsd} USDC on ${candidate.marketSlug}`);
+  }
   const result = await executeMarketOrder(config, {
     tokenId: pick.tokenId,
     side: "BUY",
     amount: args.maxUsd
   });
 
-  console.log(JSON.stringify({
+  const tradeOutput = {
     ok: result.ok,
     orderId: result.orderId,
     avgPrice: result.avgPrice,
     filledNotionalUsd: result.filledNotionalUsd,
     rawResponse: result.rawResponse
-  }, null, 2));
+  };
+
+  if (args.json) {
+    console.log(JSON.stringify({
+      ...snapshot,
+      trade: tradeOutput
+    }, null, 2));
+    return;
+  }
+
+  if (useHumanOutput) {
+    printer.section("Trade Result");
+    printer.note(result.ok ? "success" : "error", result.ok ? "Order accepted" : "Order rejected", result.orderId ?? "no order id");
+    printer.table([
+      ["Average Price", result.avgPrice == null ? "-" : result.avgPrice.toFixed(4)],
+      ["Filled Notional", result.filledNotionalUsd == null ? "-" : formatUsd(result.filledNotionalUsd)]
+    ]);
+    return;
+  }
+
+  console.log(JSON.stringify(tradeOutput, null, 2));
 }
 
 main().catch((error) => {
-  console.error(error instanceof Error ? error.message : String(error));
+  const args = parseArgs();
+  if (args.json) {
+    console.log(JSON.stringify({
+      ok: false,
+      command: "ops:check",
+      error: getErrorMessage(error)
+    }, null, 2));
+    process.exit(1);
+  }
+
+  const printer = createTerminalPrinter();
+  printErrorSummary(printer, {
+    title: "Executor Live Check Failed",
+    stage: "live-check",
+    error,
+    context: [["Command", "pnpm --filter @autopoly/executor ops:check"]],
+    nextSteps: [
+      "Verify PRIVATE_KEY and FUNDER_ADDRESS in the active env file.",
+      "Retry with --json if you need machine-readable diagnostics."
+    ]
+  });
   process.exit(1);
 });

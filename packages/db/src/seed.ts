@@ -7,7 +7,9 @@ import {
   executionEvents,
   portfolioSnapshots,
   positions,
+  resolutionChecks,
   riskEvents,
+  trackedSources,
   systemState
 } from "./schema.js";
 import {
@@ -134,10 +136,48 @@ async function main() {
       publishedAtUtc: new Date(report.published_at_utc)
     }).onConflictDoNothing();
   }
+
+  for (const trackedSource of mockRunDetail.tracked_sources) {
+    await db.insert(trackedSources).values({
+      id: trackedSource.id,
+      runId: trackedSource.run_id,
+      decisionId: trackedSource.decision_id,
+      eventSlug: trackedSource.event_slug,
+      marketSlug: trackedSource.market_slug,
+      title: trackedSource.title,
+      url: trackedSource.url,
+      sourceKind: trackedSource.source_kind,
+      role: trackedSource.role,
+      status: trackedSource.status,
+      retrievedAtUtc: new Date(trackedSource.retrieved_at_utc),
+      lastCheckedAt: trackedSource.last_checked_at ? new Date(trackedSource.last_checked_at) : null,
+      note: trackedSource.note,
+      contentHash: trackedSource.content_hash,
+      metadata: {}
+    }).onConflictDoNothing();
+  }
+
+  for (const check of mockRunDetail.resolution_checks) {
+    await db.insert(resolutionChecks).values({
+      id: check.id,
+      eventSlug: check.event_slug,
+      marketSlug: check.market_slug,
+      trackStatus: check.track_status,
+      intervalMinutes: check.interval_minutes,
+      nextCheckAt: check.next_check_at ? new Date(check.next_check_at) : null,
+      lastCheckedAt: check.last_checked_at ? new Date(check.last_checked_at) : null,
+      summary: check.summary,
+      metadata: {
+        trackability: check.trackability,
+        source_url: check.source_url,
+        source_type: check.source_type,
+        report_path: check.report_path
+      }
+    }).onConflictDoNothing();
+  }
 }
 
 main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
-

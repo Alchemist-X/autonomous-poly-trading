@@ -2,7 +2,7 @@
 
 英文版见 [multi-wallet-register.en.md](multi-wallet-register.en.md)。
 
-最后更新：2026-03-13
+最后更新：2026-03-16
 
 ## 调研问题
 
@@ -230,6 +230,82 @@ WALLET_2_SIGNATURE_TYPE=0
 - 多账户轮询更清晰
 - 风控和日志更好打标签
 - 不容易把不同地址的订单、仓位、风险事件混起来
+
+## 当前仓库里的推荐落地流程
+
+当前仓库的 executor 仍然是单钱包模型。
+
+这意味着：
+
+- 它当前只直接读取一套 `PRIVATE_KEY`
+- 它当前只直接读取一套 `FUNDER_ADDRESS`
+- 因此更稳的落地方式不是“先改主交易链路去同时吃 10 个钱包”
+- 而是“先生成 10 份独立 env 文件，再按 `ENV_FILE` 切换运行”
+
+推荐流程：
+
+1. 在 OKX Wallet 中批量创建 `10` 个 EVM derived accounts
+2. 逐个导出私钥，整理成一个只保存在本地的 JSON 文件
+3. 建议把这个输入文件放在：
+   - `runtime-artifacts/local/polymarket-wallets.json`
+4. 参考仓库里的示例文件：
+   - `scripts/polymarket-wallets.example.json`
+5. 用脚本生成 10 份 env：
+
+```bash
+pnpm tsx scripts/generate-wallet-envs.ts \
+  --input runtime-artifacts/local/polymarket-wallets.json \
+  --output-dir .env.wallets
+```
+
+脚本会生成：
+
+- `.env.wallets/poly-01.env`
+- `.env.wallets/poly-02.env`
+- ...
+- `.env.wallets/poly-10.env`
+- `.env.wallets/manifest.json`
+
+之后就可以按当前单钱包运行方式切换：
+
+```bash
+ENV_FILE=.env.wallets/poly-01.env pnpm live:test
+ENV_FILE=.env.wallets/poly-02.env pnpm live:test
+```
+
+### 这条路径为什么更适合当前仓库
+
+- 不需要先重构 executor 的单钱包主逻辑
+- 不会把 10 个私钥长期塞进一个 `.env.aizen`
+- 每个地址都有独立 env 文件，更适合后续做轮询、停用、审计和故障隔离
+
+### Polymarket 侧的关键参数建议
+
+对于 OKX 批量创建出来的 EVM 地址，更符合文档的接法通常是：
+
+- `SIGNATURE_TYPE=0`
+- `FUNDER_ADDRESS` 使用该 EOA 自己的地址
+
+并且要注意：
+
+- 每个地址都需要自己准备可交易资金
+- EOA 路线需要自己支付 gas
+- 当前仓库的 executor 在首次使用时会尝试为该钱包 `derive/create API key`
+- 但这不等于自动替你完成充值、授权、地区准入或平台侧首单前置动作
+
+### 仍然需要人工完成的步骤
+
+- OKX Wallet 中的批量创建动作
+- 每个账户私钥的导出动作
+- 确认你的账户状态和所在地区符合 Polymarket 当前规则
+- 每个地址的资金准备、gas 准备和必要授权
+- 如平台当前仍要求首登或首单前置确认，这些动作也应逐个地址完成
+
+### 不建议的自动化方式
+
+- 不建议做网页层“连续 10 次注册/点击”的脆弱自动化
+- 不建议把 10 个私钥长期放在单个共享 env 文件中
+- 不建议在没有确认平台规则前，直接把多地址批量投入真实交易
 
 ## 推荐结论
 

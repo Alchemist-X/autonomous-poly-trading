@@ -48,10 +48,13 @@ export function calculateQuarterKelly(input: KellyInput): KellyOutput {
 export interface TradeGuardInput {
   requestedUsd: number;
   bankrollUsd: number;
+  minTradeUsd?: number;
   maxTradePct: number;
   liquidityCapUsd: number;
   totalExposureUsd: number;
   maxTotalExposurePct: number;
+  eventExposureUsd?: number;
+  maxEventExposurePct?: number;
   openPositions: number;
   maxPositions: number;
   edge: number;
@@ -68,6 +71,10 @@ export function applyTradeGuards(input: TradeGuardInput): number {
     input.liquidityCapUsd
   );
   const exposureHeadroom = Math.max(0, input.bankrollUsd * input.maxTotalExposurePct - input.totalExposureUsd);
+  const eventExposureHeadroom =
+    typeof input.maxEventExposurePct === "number"
+      ? Math.max(0, input.bankrollUsd * input.maxEventExposurePct - (input.eventExposureUsd ?? 0))
+      : Number.POSITIVE_INFINITY;
 
   let edgeMultiplier = 0;
   if (input.edge > 0.2) {
@@ -78,7 +85,7 @@ export function applyTradeGuards(input: TradeGuardInput): number {
     edgeMultiplier = 0.3;
   }
 
-  const amount = Math.min(hardCap * edgeMultiplier, exposureHeadroom);
-  return amount >= 10 ? amount : 0;
+  const amount = Math.min(hardCap * edgeMultiplier, exposureHeadroom, eventExposureHeadroom);
+  const minTradeUsd = input.minTradeUsd ?? 10;
+  return amount >= minTradeUsd ? amount : 0;
 }
-

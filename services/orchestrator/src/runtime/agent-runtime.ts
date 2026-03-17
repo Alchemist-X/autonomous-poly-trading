@@ -1,4 +1,5 @@
 import type { OverviewResponse, PublicPosition, RunMode, TradeDecisionSet } from "@autopoly/contracts";
+import type { ProgressReporter } from "../lib/terminal-progress.js";
 import type { PulseSnapshot } from "../pulse/market-pulse.js";
 
 export interface RuntimeExecutionContext {
@@ -7,6 +8,7 @@ export interface RuntimeExecutionContext {
   overview: OverviewResponse;
   positions: PublicPosition[];
   pulse: PulseSnapshot;
+  progress?: ProgressReporter;
 }
 
 export interface RuntimeExecutionResult {

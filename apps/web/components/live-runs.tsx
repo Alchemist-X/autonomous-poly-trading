@@ -5,6 +5,15 @@ import type { PublicRunSummary } from "@autopoly/contracts";
 import { formatDate, formatUsd } from "../lib/format";
 import { usePollingJson } from "../lib/use-polling";
 
+function formatRunStatus(status: PublicRunSummary["status"]): string {
+  switch (status) {
+    case "awaiting-approval":
+      return "Awaiting approval";
+    default:
+      return status;
+  }
+}
+
 export function LiveRuns({ initialData }: { initialData: PublicRunSummary[] }) {
   const { data } = usePollingJson("/api/public/runs", initialData);
 
@@ -35,7 +44,7 @@ export function LiveRuns({ initialData }: { initialData: PublicRunSummary[] }) {
                 <td>{formatDate(run.generated_at_utc)}</td>
                 <td>{run.runtime}</td>
                 <td>{run.mode}</td>
-                <td>{run.status}</td>
+                <td>{formatRunStatus(run.status)}</td>
                 <td>{formatUsd(run.bankroll_usd)}</td>
                 <td>{run.decision_count}</td>
                 <td>
@@ -51,4 +60,3 @@ export function LiveRuns({ initialData }: { initialData: PublicRunSummary[] }) {
     </section>
   );
 }
-

@@ -192,12 +192,16 @@ ENV_FILE=../pm-PlaceOrder/.env.aizen
 
 当前 executor 和 orchestrator 都支持在开发环境自动发现相邻目录中的 `.env.aizen`。
 
+如果你显式设置了 `ENV_FILE`，现在会优先加载这个文件并覆盖默认 `.env*` 发现结果。真实资金单次测试建议固定使用独立的 `.env.live-test`。
+
 环境变量大致分为四组：
 
 - shared
   - 数据库
   - Redis
   - App URL
+  - `AUTOPOLY_EXECUTION_MODE=paper|live`
+  - `AUTOPOLY_LOCAL_STATE_FILE`
 - web
   - 管理员密码
   - orchestrator 内部 token
@@ -212,6 +216,17 @@ ENV_FILE=../pm-PlaceOrder/.env.aizen
   - pulse 抓取与存储参数
   - 调度周期
   - 风控参数
+
+## Rough Loop
+
+现在仓库已经内置了一个独立的 `Rough Loop` 代码任务持续执行器。
+
+- 主入口文档是 [rough-loop.md](rough-loop.md)
+- 使用说明见 [rough-loop-guide.md](rough-loop-guide.md)
+- 它会持续读取任务卡片、调用 `codex|openclaw`、执行验证、更新状态，并把产物写入 `runtime-artifacts/rough-loop/`
+- 每次任务完成后，它会立即提交本轮任务实际触碰到的文件
+- 首版默认只处理代码任务，不处理真实交易、生产部署和私钥操作
+- 如果你要在当前脏工作树里强行启动，可以显式设置 `ROUGH_LOOP_RELAX_GUARDRAILS=1`
 
 ## 常用命令
 
@@ -239,13 +254,70 @@ pnpm e2e:local-lite
 AUTOPOLY_E2E_REMOTE=1 pnpm e2e:remote-real
 ```
 
+Rough Loop：
+
+```bash
+pnpm rough-loop:doctor
+pnpm rough-loop:once
+pnpm rough-loop:start
+pnpm rough-loop:dev
+pnpm rough-loop:doctor -- --json
+```
+
 执行层 live 检查：
 
 ```bash
 pnpm --filter @autopoly/executor ops:check
 pnpm --filter @autopoly/executor ops:check -- --slug <market-slug>
 pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
+pnpm --filter @autopoly/executor ops:check -- --json
 ```
+
+真实资金单次测试：
+
+```bash
+ENV_FILE=.env.live-test pnpm live:test
+ENV_FILE=.env.live-test pnpm live:test -- --json
+ENV_FILE=.env.live-test pnpm live:test:stateless -- --recommend-only
+ENV_FILE=.env.live-test pnpm live:test:stateless -- --json
+```
+
+在 `live:test` 模式下：
+
+- 运行顺序固定为 `preflight -> recommend -> queue execute -> sync -> summary`
+- 只有 `AUTOPOLY_EXECUTION_MODE=live` 且专用 env 文件加载成功时才允许继续
+- preflight 会拒绝空私钥、Redis/DB 不可达、Polymarket client 初始化失败、远端地址已有持仓、或数据库里已有未平仓状态
+- 本轮有效 bankroll 固定要求为 `$20`，并要求 `MAX_TRADE_PCT<=0.1`、`MAX_EVENT_EXPOSURE_PCT<=0.3`
+- 任一推荐、下单或 sync 关键错误都会 fail fast，并把系统状态写成 `halted`
+- 产物统一写到 `runtime-artifacts/live-test/<timestamp>-<runId>/`
+- 归档目录至少包含 `preflight.json`、`recommendation.json`、`execution-summary.json`，失败时额外写 `error.json`
+- TTY 终端会输出彩色阶段和错误摘要；`--json` 会退回机器可读结果
+
+在 `live:test:stateless` 模式下：
+
+- 运行顺序固定为 `preflight -> fetch remote portfolio -> pulse -> decision runtime -> guards + token cap -> direct execute -> summary`
+- 不依赖本地 `Postgres` 或 `Redis`，只依赖 live wallet、Polymarket 和 provider runtime
+- `--recommend-only` 只生成推荐和归档，不会真实下单
+- `STATELESS_MAX_BUY_TOKENS` 默认是 `1`，每笔 `BUY` 最多只买 `1` 个代币
+- 为了让 `1 token` 买单可执行，stateless 路径默认把最小交易额降到 `0.01 USD`；也可以显式设置 `STATELESS_MIN_TRADE_USD`
+- 产物统一写到 `runtime-artifacts/live-stateless/<timestamp>-<runId>/`
+
+本地 paper 测试盘：
+
+```bash
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend -- --json
+```
+
+在 `paper` 模式下：
+
+- 默认状态文件路径是 `runtime-artifacts/local/paper-state.json`
+- `trial:recommend` 会先生成推荐并把 run 写成 `awaiting-approval`
+- TTY 终端会显示带颜色的阶段进度、最终金额和 bankroll 比例
+- 只有 `trial:approve` 才会把 paper 持仓、成交和总览写回状态文件
+- 如果 web 也使用同一个 `AUTOPOLY_LOCAL_STATE_FILE`，`/runs`、`/positions`、`/trades` 会直接反映这份本地状态
+- `--json`、非 TTY、CI 和 `NO_COLOR=1` 会自动退回机器可读或无颜色输出
 
 试运行 provider runtime：
 
@@ -258,10 +330,17 @@ pnpm trial:run
 ```bash
 CODEX_SKILLS=polymarket-market-pulse \
 CODEX_SKILL_LOCALE=zh \
-PROVIDER_TIMEOUT_SECONDS=180 \
+PROVIDER_TIMEOUT_SECONDS=0 \
+PULSE_REPORT_TIMEOUT_SECONDS=0 \
 CODEX_COMMAND='codex exec --skip-git-repo-check -C {{repo_root}} -s read-only --color never -c model_reasoning_effort="low" --output-schema {{schema_file}} -o {{output_file}} < {{prompt_file}}' \
 pnpm trial:run
 ```
+
+说明：
+
+- `PROVIDER_TIMEOUT_SECONDS=0` 表示 decision runtime 不设超时
+- `PULSE_REPORT_TIMEOUT_SECONDS=0` 表示 pulse 渲染与 pulse research 子命令不设超时
+- 目前保留 `PULSE_FETCH_TIMEOUT_SECONDS` 等非模型推理超时，避免外部抓取永久挂死
 
 ## 部署形态
 

@@ -2,11 +2,13 @@ import type {
   PublicArtifactListItem,
   OverviewResponse,
   PublicPosition,
+  PublicResolutionCheck,
   PublicRunDetail,
   PublicRunSummary,
+  PublicTrackedSource,
   PublicTrade
 } from "@autopoly/contracts";
-import { desc, eq, isNull } from "drizzle-orm";
+import { desc, eq, inArray, isNull, or } from "drizzle-orm";
 import { getDb, hasDatabaseUrl } from "./client.js";
 import {
   agentDecisions,
@@ -15,17 +17,32 @@ import {
   executionEvents,
   portfolioSnapshots,
   positions,
+  resolutionChecks,
   riskEvents,
+  trackedSources,
   systemState
 } from "./schema.js";
 import { asNumber } from "./helpers.js";
 import {
   getConfiguredMockQueryState
 } from "./mock-data.js";
+import {
+  readLocalAppState,
+  shouldUseLocalState
+} from "./local-state.js";
+
+async function getReadableState() {
+  if (shouldUseLocalState()) {
+    const { actionLog: _actionLog, ...state } = await readLocalAppState();
+    return state;
+  }
+
+  return getConfiguredMockQueryState();
+}
 
 export async function getOverview(): Promise<OverviewResponse> {
-  if (!hasDatabaseUrl()) {
-    return (await getConfiguredMockQueryState()).overview;
+  if (shouldUseLocalState() || !hasDatabaseUrl()) {
+    return (await getReadableState()).overview;
   }
 
   const db = getDb();
@@ -48,7 +65,7 @@ export async function getOverview(): Promise<OverviewResponse> {
     .limit(24);
 
   if (!latestSnapshot) {
-    return (await getConfiguredMockQueryState()).overview;
+    return (await getReadableState()).overview;
   }
 
   return {
@@ -69,8 +86,8 @@ export async function getOverview(): Promise<OverviewResponse> {
 }
 
 export async function getPublicPositions(): Promise<PublicPosition[]> {
-  if (!hasDatabaseUrl()) {
-    return (await getConfiguredMockQueryState()).positions;
+  if (shouldUseLocalState() || !hasDatabaseUrl()) {
+    return (await getReadableState()).positions;
   }
 
   const db = getDb();
@@ -99,8 +116,8 @@ export async function getPublicPositions(): Promise<PublicPosition[]> {
 }
 
 export async function getPublicTrades(): Promise<PublicTrade[]> {
-  if (!hasDatabaseUrl()) {
-    return (await getConfiguredMockQueryState()).trades;
+  if (shouldUseLocalState() || !hasDatabaseUrl()) {
+    return (await getReadableState()).trades;
   }
 
   const db = getDb();
@@ -125,8 +142,8 @@ export async function getPublicTrades(): Promise<PublicTrade[]> {
 }
 
 export async function getPublicRuns(): Promise<PublicRunSummary[]> {
-  if (!hasDatabaseUrl()) {
-    return (await getConfiguredMockQueryState()).runs;
+  if (shouldUseLocalState() || !hasDatabaseUrl()) {
+    return (await getReadableState()).runs;
   }
 
   const db = getDb();
@@ -147,7 +164,7 @@ export async function getPublicRuns(): Promise<PublicRunSummary[]> {
         id: row.id,
         mode: row.mode as PublicRunSummary["mode"],
         runtime: row.runtime,
-        status: row.status,
+        status: row.status as PublicRunSummary["status"],
         bankroll_usd: asNumber(row.bankrollUsd),
         decision_count: decisionRows.length,
         generated_at_utc: row.generatedAtUtc.toISOString()
@@ -157,8 +174,8 @@ export async function getPublicRuns(): Promise<PublicRunSummary[]> {
 }
 
 export async function getPublicRunDetail(runId: string): Promise<PublicRunDetail | null> {
-  if (!hasDatabaseUrl()) {
-    const state = await getConfiguredMockQueryState();
+  if (shouldUseLocalState() || !hasDatabaseUrl()) {
+    const state = await getReadableState();
     return state.runDetails[runId] ?? null;
   }
 
@@ -179,12 +196,30 @@ export async function getPublicRunDetail(runId: string): Promise<PublicRunDetail
     where: eq(artifacts.runId, runId),
     orderBy: (table, helpers) => helpers.desc(table.publishedAtUtc)
   });
+  const marketSlugs = [...new Set(decisions.map((row) => row.marketSlug))];
+  const trackedSourceRows = await db.query.trackedSources.findMany({
+    where: marketSlugs.length === 0
+      ? eq(trackedSources.runId, runId)
+      : or(
+          eq(trackedSources.runId, runId),
+          inArray(trackedSources.marketSlug, marketSlugs)
+        ),
+    orderBy: (table, helpers) => helpers.desc(table.retrievedAtUtc),
+    limit: 100
+  });
+  const resolutionRows = marketSlugs.length === 0
+    ? []
+    : await db.query.resolutionChecks.findMany({
+        where: inArray(resolutionChecks.marketSlug, marketSlugs),
+        orderBy: (table, helpers) => helpers.desc(table.lastCheckedAt),
+        limit: 50
+      });
 
   return {
     id: run.id,
     mode: run.mode as PublicRunDetail["mode"],
     runtime: run.runtime,
-    status: run.status,
+    status: run.status as PublicRunDetail["status"],
     bankroll_usd: asNumber(run.bankrollUsd),
     decision_count: decisions.length,
     generated_at_utc: run.generatedAtUtc.toISOString(),
@@ -214,13 +249,46 @@ export async function getPublicRunDetail(runId: string): Promise<PublicRunDetail
       path: row.path,
       content: row.content ?? undefined,
       published_at_utc: row.publishedAtUtc.toISOString()
-    }))
+    })),
+    tracked_sources: trackedSourceRows.map((row): PublicTrackedSource => ({
+      id: row.id,
+      run_id: row.runId,
+      decision_id: row.decisionId,
+      event_slug: row.eventSlug,
+      market_slug: row.marketSlug,
+      title: row.title,
+      url: row.url,
+      source_kind: row.sourceKind,
+      role: row.role,
+      status: row.status,
+      retrieved_at_utc: row.retrievedAtUtc.toISOString(),
+      last_checked_at: row.lastCheckedAt?.toISOString() ?? null,
+      note: row.note,
+      content_hash: row.contentHash
+    })),
+    resolution_checks: resolutionRows.map((row) => {
+      const metadata = (row.metadata ?? {}) as Record<string, unknown>;
+      return {
+        id: row.id,
+        event_slug: row.eventSlug,
+        market_slug: row.marketSlug,
+        track_status: row.trackStatus,
+        interval_minutes: row.intervalMinutes,
+        next_check_at: row.nextCheckAt?.toISOString() ?? null,
+        last_checked_at: row.lastCheckedAt?.toISOString() ?? null,
+        summary: row.summary,
+        trackability: typeof metadata.trackability === "string" ? metadata.trackability : null,
+        source_url: typeof metadata.source_url === "string" ? metadata.source_url : null,
+        source_type: typeof metadata.source_type === "string" ? metadata.source_type : null,
+        report_path: typeof metadata.report_path === "string" ? metadata.report_path : null
+      } satisfies PublicResolutionCheck;
+    })
   };
 }
 
 export async function getReports(): Promise<PublicArtifactListItem[]> {
-  if (!hasDatabaseUrl()) {
-    return (await getConfiguredMockQueryState()).reports;
+  if (shouldUseLocalState() || !hasDatabaseUrl()) {
+    return (await getReadableState()).reports;
   }
 
   const db = getDb();
@@ -244,8 +312,8 @@ export async function getReports(): Promise<PublicArtifactListItem[]> {
 }
 
 export async function getBacktests(): Promise<PublicArtifactListItem[]> {
-  if (!hasDatabaseUrl()) {
-    return (await getConfiguredMockQueryState()).backtests;
+  if (shouldUseLocalState() || !hasDatabaseUrl()) {
+    return (await getReadableState()).backtests;
   }
 
   const db = getDb();

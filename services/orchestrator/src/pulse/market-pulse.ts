@@ -5,7 +5,9 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import type { RunMode } from "@autopoly/contracts";
 import type { AgentRuntimeProvider, OrchestratorConfig, SkillLocale } from "../config.js";
-import { buildArtifactRelativePath, writeStoredArtifact } from "../lib/artifacts.js";
+import { buildArtifactRelativePath } from "../lib/artifacts.js";
+import type { ProgressReporter } from "../lib/terminal-progress.js";
+import { buildFullPulseArchive } from "./full-pulse.js";
 
 interface RawPulseMarket {
   question: string;
@@ -116,13 +118,6 @@ function buildPulseTitle(generatedAtUtc: string, provider: AgentRuntimeProvider,
     : `Pulse ${formatted} ${time} [${provider}]`;
 }
 
-function truncateMarkdown(markdown: string, maxChars: number): string {
-  if (markdown.length <= maxChars) {
-    return markdown;
-  }
-  return `${markdown.slice(0, maxChars - 32)}\n\n... truncated by pulse storage guard.\n`;
-}
-
 export function evaluatePulseRiskFlags(snapshot: {
   generatedAtUtc: string;
   candidates: PulseCandidate[];
@@ -158,69 +153,11 @@ export function evaluatePulseRiskFlags(snapshot: {
   return flags;
 }
 
-function buildPulseMarkdown(snapshot: {
-  generatedAtUtc: string;
-  provider: AgentRuntimeProvider;
-  locale: SkillLocale;
-  totalFetched: number;
-  totalFiltered: number;
-  minLiquidityUsd: number;
-  candidates: PulseCandidate[];
-  riskFlags: string[];
-}): string {
-  const zh = isChineseLocale(snapshot.locale);
-  const lines = [
-    zh ? "# 市场脉冲" : "# Market Pulse",
-    "",
-    zh ? `生成时间：${snapshot.generatedAtUtc}` : `Generated at ${snapshot.generatedAtUtc}`,
-    zh ? `目标 provider：${snapshot.provider}` : `Provider target: ${snapshot.provider}`,
-    zh ? `抓取市场数：${snapshot.totalFetched}` : `Fetched markets: ${snapshot.totalFetched}`,
-    zh ? `过滤后市场数：${snapshot.totalFiltered}` : `Filtered markets: ${snapshot.totalFiltered}`,
-    zh ? `最小流动性阈值：$${snapshot.minLiquidityUsd.toFixed(0)}` : `Min liquidity threshold: $${snapshot.minLiquidityUsd.toFixed(0)}`,
-    ""
-  ];
-
-  if (snapshot.riskFlags.length === 0) {
-    lines.push(
-      zh ? "## 风险控制" : "## Risk Controls",
-      "",
-      zh ? "- 本次市场脉冲未触发额外风险标记。" : "- No pulse-specific risk flags were raised.",
-      ""
-    );
-  } else {
-    lines.push(zh ? "## 风险控制" : "## Risk Controls", "", ...snapshot.riskFlags.map((flag) => `- ${flag}`), "");
-  }
-
-  lines.push(zh ? "## 候选市场" : "## Top Candidates", "");
-
-  if (snapshot.candidates.length === 0) {
-    lines.push(
-      zh
-        ? "当前没有候选市场通过抓取与过滤规则。"
-        : "No tradeable candidates passed the current fetch and filter rules."
-    );
-    return lines.join("\n");
-  }
-
-  lines.push(
-    zh
-      ? "| 排名 | 问题 | 流动性 | 24 小时成交量 | 价格 | Tokens | 链接 |"
-      : "| Rank | Question | Liquidity | 24h Volume | Prices | Tokens | URL |"
-  );
-  lines.push("| --- | --- | ---: | ---: | --- | --- | --- |");
-
-  snapshot.candidates.forEach((candidate, index) => {
-    const prices = candidate.outcomePrices.map((value) => value.toFixed(3)).join(" / ");
-    const tokens = candidate.clobTokenIds.slice(0, 2).join(" / ");
-    lines.push(
-      `| ${index + 1} | ${candidate.question.replaceAll("|", "/")} | $${candidate.liquidityUsd.toFixed(0)} | $${candidate.volume24hUsd.toFixed(0)} | ${prices} | ${tokens} | ${candidate.url} |`
-    );
-  });
-
-  return lines.join("\n");
-}
-
-async function runPulseFetch(scriptPath: string, config: OrchestratorConfig): Promise<RawPulseOutput> {
+async function runPulseFetch(
+  scriptPath: string,
+  config: OrchestratorConfig,
+  progress?: ProgressReporter
+): Promise<RawPulseOutput> {
   const tempDir = await mkdtemp(path.join(tmpdir(), "autopoly-pulse-"));
   const outputPath = path.join(tempDir, "pulse.json");
 
@@ -243,6 +180,16 @@ async function runPulseFetch(scriptPath: string, config: OrchestratorConfig): Pr
         stdio: ["ignore", "pipe", "pipe"]
       });
       const timeoutMs = config.pulseFetchTimeoutSeconds * 1000;
+      const startedAt = Date.now();
+      const heartbeat = setInterval(() => {
+        progress?.heartbeat({
+          percent: 14,
+          label: "Pulse fetch in progress",
+          detail: path.basename(scriptPath),
+          elapsedMs: Date.now() - startedAt,
+          timeoutMs
+        });
+      }, 10000);
 
       let stderr = "";
       const timeout = setTimeout(() => {
@@ -253,10 +200,12 @@ async function runPulseFetch(scriptPath: string, config: OrchestratorConfig): Pr
         stderr += String(chunk);
       });
       child.on("error", (error) => {
+        clearInterval(heartbeat);
         clearTimeout(timeout);
         reject(error);
       });
       child.on("close", (code) => {
+        clearInterval(heartbeat);
         clearTimeout(timeout);
         if (code === 0) {
           resolve();
@@ -279,15 +228,26 @@ export async function generatePulseSnapshot(input: {
   locale: SkillLocale;
   runId: string;
   mode: RunMode;
+  progress?: ProgressReporter;
 }): Promise<PulseSnapshot> {
   const generatedAtUtc = new Date().toISOString();
   const scriptDir = resolvePulseScriptsDir(input.config, input.locale);
   const scriptPath = path.join(scriptDir, "fetch_markets.py");
-  const raw = await runPulseFetch(scriptPath, input.config);
+  input.progress?.stage({
+    percent: 10,
+    label: "Pulse fetch started",
+    detail: `reading market list via ${path.basename(scriptPath)}`
+  });
+  const raw = await runPulseFetch(scriptPath, input.config, input.progress);
   const candidates = raw.markets
     .map(toPulseCandidate)
     .filter((candidate) => candidate.clobTokenIds.length > 0)
     .slice(0, input.config.pulse.maxCandidates);
+  input.progress?.stage({
+    percent: 20,
+    label: "Pulse market list ready",
+    detail: `${raw.total_fetched} fetched | ${raw.total_filtered} filtered | ${candidates.length} selected`
+  });
   const baseFlags = evaluatePulseRiskFlags({ generatedAtUtc, candidates }, input.config, input.locale);
   const title = buildPulseTitle(generatedAtUtc, input.provider, input.locale);
   const relativeMarkdownPath = buildArtifactRelativePath({
@@ -307,50 +267,36 @@ export async function generatePulseSnapshot(input: {
     extension: "json"
   });
 
-  const markdown = truncateMarkdown(
-    buildPulseMarkdown({
-      generatedAtUtc,
-      provider: input.provider,
-      locale: input.locale,
-      totalFetched: raw.total_fetched,
-      totalFiltered: raw.total_filtered,
-      minLiquidityUsd: raw.min_liquidity,
-      candidates,
-      riskFlags: baseFlags
-    }),
-    input.config.pulse.maxMarkdownChars
-  );
-  const absoluteMarkdownPath = await writeStoredArtifact(input.config.artifactStorageRoot, relativeMarkdownPath, markdown);
-  const absoluteJsonPath = await writeStoredArtifact(
-    input.config.artifactStorageRoot,
+  const archive = await buildFullPulseArchive({
+    config: input.config,
+    provider: input.provider,
+    locale: input.locale,
+    title,
+    generatedAtUtc,
+    totalFetched: raw.total_fetched,
+    totalFiltered: raw.total_filtered,
+    minLiquidityUsd: raw.min_liquidity,
+    candidates,
+    riskFlags: baseFlags,
     relativeJsonPath,
-    JSON.stringify(
-      {
-        id: randomUUID(),
-        generated_at_utc: generatedAtUtc,
-        provider: input.provider,
-        mode: input.mode,
-        total_fetched: raw.total_fetched,
-        total_filtered: raw.total_filtered,
-        selected_candidates: candidates.length,
-        min_liquidity_usd: raw.min_liquidity,
-        risk_flags: baseFlags,
-        candidates
-      },
-      null,
-      2
-    )
-  );
+    relativeMarkdownPath,
+    progress: input.progress
+  });
+  input.progress?.stage({
+    percent: 68,
+    label: "Full pulse archive written",
+    detail: relativeMarkdownPath
+  });
 
   return {
     id: randomUUID(),
     generatedAtUtc,
     title,
     relativeMarkdownPath,
-    absoluteMarkdownPath,
+    absoluteMarkdownPath: archive.absoluteMarkdownPath,
     relativeJsonPath,
-    absoluteJsonPath,
-    markdown,
+    absoluteJsonPath: archive.absoluteJsonPath,
+    markdown: archive.markdown,
     totalFetched: raw.total_fetched,
     totalFiltered: raw.total_filtered,
     selectedCandidates: candidates.length,

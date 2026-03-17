@@ -1,179 +1,263 @@
-import { randomUUID } from "node:crypto";
-import { ClobClient, OrderType, Side, type Chain } from "@polymarket/clob-client";
-import { Wallet } from "ethers";
+import path from "node:path";
+import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import type { ClobClient } from "@polymarket/clob-client";
 import type { ExecutorConfig } from "../config.js";
+import {
+  type BookSnapshot,
+  type GammaRecord,
+  type RemotePosition,
+  computeAvgCost as computeAvgCostSdk,
+  executeMarketOrder as executeMarketOrderSdk,
+  fetchActiveMarkets as fetchActiveMarketsSdk,
+  fetchEventBySlug as fetchEventBySlugSdk,
+  fetchMarketBySlug as fetchMarketBySlugSdk,
+  fetchRemotePositions as fetchRemotePositionsSdk,
+  getClobClient as getClobClientSdk,
+  getCollateralBalanceAllowance as getCollateralBalanceAllowanceSdk,
+  readBook as readBookSdk
+} from "./polymarket-sdk.js";
 
-export interface BookSnapshot {
-  bestBid: number;
-  bestAsk: number;
+type PolyCliAction =
+  | "read-book"
+  | "fetch-remote-positions"
+  | "compute-avg-cost"
+  | "get-collateral-balance-allowance"
+  | "fetch-event-by-slug"
+  | "fetch-market-by-slug"
+  | "fetch-active-markets"
+  | "execute-market-order";
+
+interface PolyCliPayload {
+  action: PolyCliAction;
+  config: ExecutorConfig;
+  input?: unknown;
 }
 
-export interface RemotePosition {
-  tokenId: string;
-  outcome: string;
-  size: number;
-  title?: string;
-  eventSlug?: string;
-  marketSlug?: string;
+interface PolyCliEnvelope<T> {
+  ok: boolean;
+  data?: T;
+  error?: string;
 }
 
-let cachedClientPromise: Promise<ClobClient | null> | null = null;
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../");
+const defaultPolyCliPath = path.join(repoRoot, "scripts", "poly-cli.ts");
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return String(error);
+}
+
+function isPolyCliEnabled() {
+  return process.env.POLY_CLI_ENABLED !== "false";
+}
+
+function isPolyCliStrict() {
+  return process.env.POLY_CLI_STRICT === "true";
+}
+
+function resolvePolyCliCommand() {
+  const raw = process.env.POLY_CLI_COMMAND?.trim();
+  if (!raw) {
+    return ["pnpm", "exec", "tsx", defaultPolyCliPath];
+  }
+  const tokens = raw.split(/\s+/).filter(Boolean);
+  if (!tokens.some((token) => token.includes("poly-cli.ts"))) {
+    tokens.push(defaultPolyCliPath);
+  }
+  return tokens;
+}
+
+async function runPolyCli<T>(payload: PolyCliPayload): Promise<T> {
+  const [command, ...commandArgs] = resolvePolyCliCommand();
+  if (!command) {
+    throw new Error("POLY_CLI_COMMAND resolved to an empty command.");
+  }
+
+  return await new Promise<T>((resolve, reject) => {
+    const child = spawn(command, [...commandArgs, "--json"], {
+      cwd: repoRoot,
+      env: process.env,
+      stdio: ["pipe", "pipe", "pipe"]
+    });
+
+    let stdout = "";
+    let stderr = "";
+
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk.toString();
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk.toString();
+    });
+    child.on("error", (error) => {
+      reject(error);
+    });
+
+    child.on("close", (code) => {
+      const output = stdout.trim();
+      if (code !== 0) {
+        reject(new Error(`poly-cli exited with code ${code}: ${(stderr || output).trim()}`));
+        return;
+      }
+
+      let envelope: PolyCliEnvelope<T>;
+      try {
+        envelope = JSON.parse(output) as PolyCliEnvelope<T>;
+      } catch (error) {
+        reject(new Error(`poly-cli returned non-JSON output: ${output || getErrorMessage(error)}`));
+        return;
+      }
+
+      if (!envelope.ok) {
+        reject(new Error(envelope.error ?? "poly-cli returned ok=false without error message."));
+        return;
+      }
+
+      resolve(envelope.data as T);
+    });
+
+    child.stdin.end(JSON.stringify(payload));
+  });
+}
+
+async function withPolyCliReadFallback<T>(payload: PolyCliPayload, fallback: () => Promise<T>) {
+  if (!isPolyCliEnabled()) {
+    return await fallback();
+  }
+  try {
+    return await runPolyCli<T>(payload);
+  } catch (error) {
+    if (isPolyCliStrict()) {
+      throw new Error(`poly-cli read failed in strict mode: ${getErrorMessage(error)}`);
+    }
+    return await fallback();
+  }
+}
+
+export type { BookSnapshot, RemotePosition };
+export type { GammaRecord };
 
 export async function getClobClient(config: ExecutorConfig): Promise<ClobClient | null> {
-  if (!config.privateKey || !config.funderAddress) {
-    return null;
+  return await getClobClientSdk(config);
+}
+
+export async function getCollateralBalanceAllowance(config: ExecutorConfig): Promise<Record<string, unknown> | null> {
+  const payload: PolyCliPayload = {
+    action: "get-collateral-balance-allowance",
+    config
+  };
+
+  if (!isPolyCliEnabled()) {
+    try {
+      return await getCollateralBalanceAllowanceSdk(config);
+    } catch (error) {
+      if (isPolyCliStrict()) {
+        throw new Error(`collateral check failed in strict mode: ${getErrorMessage(error)}`);
+      }
+      return null;
+    }
   }
 
-  if (!cachedClientPromise) {
-    cachedClientPromise = (async () => {
-      const signer = new Wallet(config.privateKey);
-      const boot = new ClobClient(config.polymarketHost, config.chainId as Chain, signer);
-      const deriveCreds = (boot as any).deriveApiKey?.bind(boot);
-      const createCreds = (boot as any).createOrDeriveApiKey?.bind(boot);
-      let creds: unknown;
-
-      if (deriveCreds) {
-        try {
-          creds = await deriveCreds();
-        } catch {
-          creds = undefined;
-        }
-      }
-
-      if (!creds && createCreds) {
-        creds = await createCreds();
-      }
-
-      return new ClobClient(
-        config.polymarketHost,
-        config.chainId as Chain,
-        signer,
-        creds as any,
-        config.signatureType,
-        config.funderAddress
-      );
-    })();
+  try {
+    return await runPolyCli<Record<string, unknown> | null>(payload);
+  } catch (error) {
+    if (isPolyCliStrict()) {
+      throw new Error(`poly-cli collateral check failed in strict mode: ${getErrorMessage(error)}`);
+    }
+    try {
+      return await getCollateralBalanceAllowanceSdk(config);
+    } catch {
+      return null;
+    }
   }
-
-  return cachedClientPromise;
 }
 
 export async function executeMarketOrder(
   config: ExecutorConfig,
   signal: { tokenId: string; side: "BUY" | "SELL"; amount: number }
 ) {
-  const client = await getClobClient(config);
-  if (!client) {
-    return {
-      ok: true,
-      orderId: `mock-${randomUUID()}`,
-      avgPrice: signal.side === "BUY" ? 0.52 : 0.48,
-      filledNotionalUsd: signal.side === "BUY" ? signal.amount : signal.amount * 0.48,
-      rawResponse: {
-        mock: true
-      }
-    };
+  if (!isPolyCliEnabled()) {
+    return await executeMarketOrderSdk(config, signal);
   }
 
-  const response = await (client as any).createAndPostMarketOrder(
-    {
-      tokenID: signal.tokenId,
-      amount: signal.amount,
-      side: signal.side === "BUY" ? Side.BUY : Side.SELL,
-      orderType: OrderType.FOK
-    },
-    undefined,
-    OrderType.FOK
-  );
-
-  const avgPrice = Number((response as any)?.price ?? (response as any)?.avgPrice ?? 0.5);
-  return {
-    ok: Boolean((response as any)?.success ?? (response as any)?.orderID),
-    orderId: (response as any)?.orderID ?? (response as any)?.orderId ?? null,
-    avgPrice,
-    filledNotionalUsd:
-      signal.side === "BUY"
-        ? signal.amount
-        : Number((response as any)?.filledNotionalUsd ?? signal.amount * avgPrice),
-    rawResponse: response
-  };
+  try {
+    return await runPolyCli<Awaited<ReturnType<typeof executeMarketOrderSdk>>>({
+      action: "execute-market-order",
+      config,
+      input: signal
+    });
+  } catch (error) {
+    if (isPolyCliStrict()) {
+      throw new Error(`poly-cli market order failed in strict mode: ${getErrorMessage(error)}`);
+    }
+    throw new Error(`poly-cli market order failed: ${getErrorMessage(error)}`);
+  }
 }
 
 export async function readBook(config: ExecutorConfig, tokenId: string): Promise<BookSnapshot | null> {
-  const client = await getClobClient(config);
-  if (!client) {
-    return {
-      bestBid: 0.48,
-      bestAsk: 0.52
-    };
-  }
-  const book = await client.getOrderBook(tokenId);
-  const bids = (book as any)?.bids ?? [];
-  const asks = (book as any)?.asks ?? [];
-  if (bids.length === 0 || asks.length === 0) {
-    return null;
-  }
-  const bestBid = bids.reduce((max: number, level: { price: string | number }) => {
-    const price = Number(level.price);
-    return Number.isFinite(price) ? Math.max(max, price) : max;
-  }, Number.NEGATIVE_INFINITY);
-  const bestAsk = asks.reduce((min: number, level: { price: string | number }) => {
-    const price = Number(level.price);
-    return Number.isFinite(price) ? Math.min(min, price) : min;
-  }, Number.POSITIVE_INFINITY);
-  if (!Number.isFinite(bestBid) || !Number.isFinite(bestAsk)) {
-    return null;
-  }
-  return {
-    bestBid,
-    bestAsk
-  };
+  return await withPolyCliReadFallback<BookSnapshot | null>(
+    {
+      action: "read-book",
+      config,
+      input: { tokenId }
+    },
+    async () => await readBookSdk(config, tokenId)
+  );
 }
 
 export async function fetchRemotePositions(config: ExecutorConfig): Promise<RemotePosition[]> {
-  if (!config.funderAddress) {
-    return [];
-  }
-  const response = await fetch(`https://data-api.polymarket.com/positions?user=${config.funderAddress}&sizeThreshold=.1`);
-  if (!response.ok) {
-    throw new Error(`fetch positions failed: ${response.status}`);
-  }
-  const data = await response.json() as Array<Record<string, unknown>>;
-  return data
-    .map((row) => ({
-      tokenId: String(row.asset ?? row.asset_id ?? row.token_id ?? ""),
-      outcome: String(row.outcome ?? ""),
-      size: Number(row.size ?? row.currentValue ?? 0),
-      title: typeof row.title === "string" ? row.title : typeof row.question === "string" ? row.question : undefined,
-      eventSlug: typeof row.slug === "string" ? row.slug : typeof row.event_slug === "string" ? row.event_slug : undefined,
-      marketSlug: typeof row.market_slug === "string" ? row.market_slug : typeof row.slug === "string" ? row.slug : undefined
-    }))
-    .filter((row) => row.tokenId && row.size > 0);
+  return await withPolyCliReadFallback<RemotePosition[]>(
+    {
+      action: "fetch-remote-positions",
+      config
+    },
+    async () => await fetchRemotePositionsSdk(config)
+  );
 }
 
 export async function computeAvgCost(config: ExecutorConfig, tokenId: string): Promise<number | null> {
-  const client = await getClobClient(config);
-  if (!client || !config.funderAddress) {
-    return null;
-  }
-  try {
-    const trades = await (client as any).getTrades(
-      { maker_address: config.funderAddress, asset_id: tokenId },
-      true
-    );
-    const buys = Array.isArray(trades) ? trades.filter((trade) => trade.side === "BUY" || trade.side === Side.BUY) : [];
-    let totalCost = 0;
-    let totalSize = 0;
-    for (const trade of buys) {
-      const size = Number(trade.size ?? 0);
-      const price = Number(trade.price ?? 0);
-      if (size > 0 && price > 0) {
-        totalCost += size * price;
-        totalSize += size;
-      }
-    }
-    return totalSize > 0 ? totalCost / totalSize : null;
-  } catch {
-    return null;
-  }
+  return await withPolyCliReadFallback<number | null>(
+    {
+      action: "compute-avg-cost",
+      config,
+      input: { tokenId }
+    },
+    async () => await computeAvgCostSdk(config, tokenId)
+  );
+}
+
+export async function fetchEventBySlug(config: ExecutorConfig, slug: string): Promise<GammaRecord> {
+  return await withPolyCliReadFallback<GammaRecord>(
+    {
+      action: "fetch-event-by-slug",
+      config,
+      input: { slug }
+    },
+    async () => await fetchEventBySlugSdk(config, slug)
+  );
+}
+
+export async function fetchMarketBySlug(config: ExecutorConfig, slug: string): Promise<GammaRecord[]> {
+  return await withPolyCliReadFallback<GammaRecord[]>(
+    {
+      action: "fetch-market-by-slug",
+      config,
+      input: { slug }
+    },
+    async () => await fetchMarketBySlugSdk(config, slug)
+  );
+}
+
+export async function fetchActiveMarkets(config: ExecutorConfig, limit = 100): Promise<GammaRecord[]> {
+  return await withPolyCliReadFallback<GammaRecord[]>(
+    {
+      action: "fetch-active-markets",
+      config,
+      input: { limit }
+    },
+    async () => await fetchActiveMarketsSdk(config, limit)
+  );
 }

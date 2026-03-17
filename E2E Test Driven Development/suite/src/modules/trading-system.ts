@@ -235,8 +235,8 @@ export const assertPublicSiteUpdated: ScenarioModule = {
       { path: "/positions", marker: "Current live inventory" },
       { path: "/trades", marker: "Execution history" },
       { path: "/runs", marker: "Decision cycles" },
-      { path: "/reports", marker: "Daily pulse, review, and resolution artifacts" },
-      { path: "/backtests", marker: "Daily backtests and calibration reports" }
+      { path: "/reports", marker: "每日脉冲、复盘与结算跟踪产物" },
+      { path: "/backtests", marker: "每日回测与校准报告" }
     ];
 
     const assertions = [];
@@ -460,7 +460,7 @@ export const recordBrowserWalkthrough: ScenarioModule = {
 
         if (latestRunId) {
           await page.goto(`${context.baseUrls.web}/runs/${latestRunId}`, { waitUntil: "networkidle" });
-          await page.getByText("Prompt summary").waitFor();
+          await page.getByTestId("run-detail-prompt-summary").waitFor();
           context.runtime ??= { cleanup: [], processes: [] };
           context.runtime.latestRunId = latestRunId;
         }

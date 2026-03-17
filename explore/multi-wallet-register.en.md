@@ -2,7 +2,7 @@
 
 Chinese version: [multi-wallet-register.md](multi-wallet-register.md)
 
-Last updated: 2026-03-13
+Last updated: 2026-03-16
 
 ## Research questions
 
@@ -230,6 +230,83 @@ Reasons:
 - clearer wallet rotation and scheduling
 - better tagging in risk and logs
 - lower chance of mixing orders, positions, and risk events across addresses
+
+## Recommended repository workflow
+
+The current executor is still a single-wallet runtime.
+
+That means:
+
+- it directly reads only one `PRIVATE_KEY`
+- it directly reads only one `FUNDER_ADDRESS`
+- so the safer implementation path is not “teach the trading runtime to ingest 10 wallets first”
+- it is “generate 10 separate env files first, then switch with `ENV_FILE`”
+
+Recommended workflow:
+
+1. create `10` EVM derived accounts in bulk inside OKX Wallet
+2. export the private key for each account
+3. put them into a local-only JSON file
+4. the suggested local path is:
+   - `runtime-artifacts/local/polymarket-wallets.json`
+5. use the committed example file as the shape reference:
+   - `scripts/polymarket-wallets.example.json`
+6. generate one env file per wallet:
+
+```bash
+pnpm tsx scripts/generate-wallet-envs.ts \
+  --input runtime-artifacts/local/polymarket-wallets.json \
+  --output-dir .env.wallets
+```
+
+The script writes:
+
+- `.env.wallets/poly-01.env`
+- `.env.wallets/poly-02.env`
+- ...
+- `.env.wallets/poly-10.env`
+- `.env.wallets/manifest.json`
+
+Then you can run the existing single-wallet flow by switching `ENV_FILE`:
+
+```bash
+ENV_FILE=.env.wallets/poly-01.env pnpm live:test
+ENV_FILE=.env.wallets/poly-02.env pnpm live:test
+```
+
+### Why this fits the current repository better
+
+- no immediate executor refactor is required
+- the 10 private keys do not have to live in one shared `.env.aizen`
+- one env file per address is cleaner for rotation, disabling, auditing, and fault isolation
+
+### Key Polymarket parameters
+
+For OKX-derived EVM addresses, the more natural Polymarket integration is usually:
+
+- `SIGNATURE_TYPE=0`
+- `FUNDER_ADDRESS` set to the EOA itself
+
+Also note:
+
+- each address needs its own trading funds
+- the EOA path pays its own gas
+- this repository's executor already attempts to `derive/create API key` on first use
+- that still does not replace funding, approvals, regional eligibility, or platform-side first-use steps
+
+### Steps that still need manual handling
+
+- bulk creation inside OKX Wallet
+- private-key export for each account
+- confirming that your account status and region are eligible under the current Polymarket rules
+- funding, gas setup, and any required approvals per address
+- any first-login or first-trade confirmation that the platform may still require per address
+
+### Automation that is not recommended
+
+- brittle web automation for “click through registration 10 times”
+- long-term storage of all 10 private keys in one shared env file
+- deploying the whole wallet batch into real trading before the platform rules are confirmed
 
 ## Recommendation
 

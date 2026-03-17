@@ -21,10 +21,14 @@ function formatTimestampId(isoTimestamp: string): string {
   return `${year}${month}${day}T${hour}${minute}${second}Z`;
 }
 
-function reportFolder(kind: "pulse-report" | "runtime-log" | "backtest-report"): string {
+function reportFolder(kind: "pulse-report" | "review-report" | "resolution-report" | "runtime-log" | "backtest-report"): string {
   switch (kind) {
     case "pulse-report":
       return "pulse";
+    case "review-report":
+      return "review";
+    case "resolution-report":
+      return "resolution";
     case "runtime-log":
       return "runtime-log";
     case "backtest-report":
@@ -33,7 +37,7 @@ function reportFolder(kind: "pulse-report" | "runtime-log" | "backtest-report"):
 }
 
 export function buildArtifactRelativePath(input: {
-  kind: "pulse-report" | "runtime-log" | "backtest-report";
+  kind: "pulse-report" | "review-report" | "resolution-report" | "runtime-log" | "backtest-report";
   publishedAtUtc: string;
   runtime: string;
   mode: string;

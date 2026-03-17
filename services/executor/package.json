@@ -21,12 +21,15 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/services/executor/src/index.js",
+    "preops:check": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/terminal-ui build",
+    "preops:trade": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/terminal-ui build",
     "ops:check": "tsx src/ops/live-check.ts",
     "ops:trade": "tsx src/ops/live-check.ts --trade"
   },
   "dependencies": {
     "@autopoly/contracts": "workspace:*",
     "@autopoly/db": "workspace:*",
+    "@autopoly/terminal-ui": "workspace:*",
     "@polymarket/clob-client": "5.8.0",
     "bullmq": "5.71.0",
     "drizzle-orm": "0.45.1",

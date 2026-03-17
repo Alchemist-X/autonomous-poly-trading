@@ -191,12 +191,16 @@ ENV_FILE=../pm-PlaceOrder/.env.aizen
 
 The executor and orchestrator also support auto-discovering a sibling `.env.aizen` during development.
 
+If you explicitly set `ENV_FILE`, that file now takes precedence and overrides the default `.env*` discovery chain. Real-fund single-run tests should use a dedicated `.env.live-test`.
+
 The environment variables are grouped into four logical sets:
 
 - shared
   - database
   - Redis
   - app URL
+  - `AUTOPOLY_EXECUTION_MODE=paper|live`
+  - `AUTOPOLY_LOCAL_STATE_FILE`
 - web
   - admin password
   - internal orchestrator token
@@ -211,6 +215,17 @@ The environment variables are grouped into four logical sets:
   - pulse fetch and storage settings
   - schedules
   - risk parameters
+
+## Rough Loop
+
+The repository now includes a standalone `Rough Loop` code-task continuous executor.
+
+- Main task file: [rough-loop.md](rough-loop.md)
+- Usage guide: [rough-loop-guide.en.md](rough-loop-guide.en.md)
+- It continuously reads task cards, invokes `codex|openclaw`, runs verification, updates task state, and writes artifacts under `runtime-artifacts/rough-loop/`
+- After each completed task, it immediately commits only the files touched by that task
+- v1 only handles code tasks by default, not live trading, production deploys, or secret operations
+- If you want to force-start it in the current dirty worktree, explicitly set `ROUGH_LOOP_RELAX_GUARDRAILS=1`
 
 ## Common commands
 
@@ -238,13 +253,70 @@ pnpm e2e:local-lite
 AUTOPOLY_E2E_REMOTE=1 pnpm e2e:remote-real
 ```
 
+Rough Loop:
+
+```bash
+pnpm rough-loop:doctor
+pnpm rough-loop:once
+pnpm rough-loop:start
+pnpm rough-loop:dev
+pnpm rough-loop:doctor -- --json
+```
+
 Executor live checks:
 
 ```bash
 pnpm --filter @autopoly/executor ops:check
 pnpm --filter @autopoly/executor ops:check -- --slug <market-slug>
 pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
+pnpm --filter @autopoly/executor ops:check -- --json
 ```
+
+Single-run live fund test:
+
+```bash
+ENV_FILE=.env.live-test pnpm live:test
+ENV_FILE=.env.live-test pnpm live:test -- --json
+ENV_FILE=.env.live-test pnpm live:test:stateless -- --recommend-only
+ENV_FILE=.env.live-test pnpm live:test:stateless -- --json
+```
+
+In `live:test` mode:
+
+- The flow is fixed to `preflight -> recommend -> queue execute -> sync -> summary`
+- The command only continues when `AUTOPOLY_EXECUTION_MODE=live` and the dedicated env file loads successfully
+- Preflight rejects missing live credentials, unavailable Redis/DB, failed Polymarket client initialization, non-empty remote positions, or existing open DB positions
+- The effective bankroll is pinned to `$20`, with `MAX_TRADE_PCT<=0.1` and `MAX_EVENT_EXPOSURE_PCT<=0.3`
+- Any recommendation, execution, or sync failure fails fast and writes system status to `halted`
+- Artifacts are stored under `runtime-artifacts/live-test/<timestamp>-<runId>/`
+- The archive always includes `preflight.json`, `recommendation.json`, and `execution-summary.json`, plus `error.json` on failure
+- TTY terminals get colored stage output and error summaries; `--json` falls back to machine-readable output
+
+In `live:test:stateless` mode:
+
+- The flow is fixed to `preflight -> fetch remote portfolio -> pulse -> decision runtime -> guards + token cap -> direct execute -> summary`
+- It does not require local `Postgres` or `Redis`; it only depends on the live wallet, Polymarket, and the provider runtime
+- `--recommend-only` generates recommendations and archives only, without sending live orders
+- `STATELESS_MAX_BUY_TOKENS` defaults to `1`, so each `BUY` is capped to at most `1` token
+- To keep one-token buys executable, the stateless path lowers the minimum trade floor to `0.01 USD` by default; you can override it with `STATELESS_MIN_TRADE_USD`
+- Artifacts are stored under `runtime-artifacts/live-stateless/<timestamp>-<runId>/`
+
+Local paper trading:
+
+```bash
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend -- --json
+```
+
+In `paper` mode:
+
+- The default state file is `runtime-artifacts/local/paper-state.json`
+- `trial:recommend` generates recommendations first and persists the run as `awaiting-approval`
+- A TTY terminal shows colored stage progress plus the final notional and bankroll ratio for each recommendation
+- Only `trial:approve` mutates paper positions, trades, and overview state
+- If the web app points to the same `AUTOPOLY_LOCAL_STATE_FILE`, `/runs`, `/positions`, and `/trades` read directly from that local file
+- `--json`, non-TTY shells, CI, and `NO_COLOR=1` automatically fall back to machine-readable or colorless output
 
 Provider trial run:
 
@@ -257,10 +329,17 @@ Recommended first `codex` trial-run command:
 ```bash
 CODEX_SKILLS=polymarket-market-pulse \
 CODEX_SKILL_LOCALE=zh \
-PROVIDER_TIMEOUT_SECONDS=180 \
+PROVIDER_TIMEOUT_SECONDS=0 \
+PULSE_REPORT_TIMEOUT_SECONDS=0 \
 CODEX_COMMAND='codex exec --skip-git-repo-check -C {{repo_root}} -s read-only --color never -c model_reasoning_effort="low" --output-schema {{schema_file}} -o {{output_file}} < {{prompt_file}}' \
 pnpm trial:run
 ```
+
+Notes:
+
+- `PROVIDER_TIMEOUT_SECONDS=0` disables the decision-runtime timeout
+- `PULSE_REPORT_TIMEOUT_SECONDS=0` disables the full-pulse render and pulse-research subcommand timeouts
+- Non-model operational timeouts such as `PULSE_FETCH_TIMEOUT_SECONDS` remain in place so external fetches do not hang forever
 
 ## Deployment shape
 

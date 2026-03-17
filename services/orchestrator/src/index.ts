@@ -9,6 +9,10 @@ import { runResolutionSweep } from "./jobs/resolution.js";
 import { getOverview } from "@autopoly/db";
 import { createAgentRuntime } from "./runtime/runtime-factory.js";
 import { registerAdminRoutes } from "./routes/admin.js";
+import {
+  createPrettyServiceLogger,
+  shouldUsePrettyServiceLogger
+} from "@autopoly/terminal-ui";
 
 const config = loadConfig();
 const connection = {
@@ -17,7 +21,13 @@ const connection = {
 };
 const executionQueue = new Queue(QUEUES.execution, { connection });
 const runtime = createAgentRuntime(config);
-const app = Fastify({ logger: true });
+const app = Fastify(shouldUsePrettyServiceLogger()
+  ? {
+      loggerInstance: createPrettyServiceLogger({ serviceName: "orchestrator" }) as any
+    }
+  : {
+      logger: true
+    });
 
 app.get("/health", async () => ({
   ok: true,
@@ -57,7 +67,10 @@ setInterval(() => {
 }, config.syncIntervalSeconds * 1000);
 
 setInterval(() => {
-  void runResolutionSweep(config.resolutionBaseIntervalMinutes).catch((error) => {
+  void runResolutionSweep({
+    config,
+    intervalMinutes: config.resolutionBaseIntervalMinutes
+  }).catch((error) => {
     app.log.error({ error }, "resolution sweep failed");
   });
 }, config.resolutionBaseIntervalMinutes * 60 * 1000);
@@ -66,3 +79,4 @@ await app.listen({
   port: config.port,
   host: "0.0.0.0"
 });
+app.log.info({ port: config.port }, "orchestrator listening");

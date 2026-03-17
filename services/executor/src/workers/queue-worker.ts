@@ -1,8 +1,8 @@
 import type { Job } from "bullmq";
 import { Worker } from "bullmq";
-import { JOBS, type TradeDecision } from "@autopoly/contracts";
-import { getDb, positions } from "@autopoly/db";
-import { and, eq, isNull } from "drizzle-orm";
+import { JOBS, inferPaperSellAmount, type TradeDecision } from "@autopoly/contracts";
+import { executionEvents, getDb, positions } from "@autopoly/db";
+import { and, eq, gt, isNull } from "drizzle-orm";
 import type { ExecutorConfig } from "../config.js";
 import { executeMarketOrder, fetchRemotePositions, readBook, computeAvgCost } from "../lib/polymarket.js";
 import { calculatePositionPnlPct, shouldTriggerStopLoss } from "../lib/risk.js";
@@ -18,18 +18,27 @@ import {
 } from "../lib/store.js";
 
 function inferSellAmount(position: Awaited<ReturnType<typeof findOpenPosition>>, decision: TradeDecision): number {
-  if (!position) {
-    return 0;
-  }
-  const size = Number(position.size);
-  const currentValue = Number(position.currentValueUsd);
-  if (decision.action === "close") {
-    return size;
-  }
-  if (decision.action === "reduce" && currentValue > 0) {
-    return Math.min(size, size * (decision.notional_usd / currentValue));
-  }
-  return size;
+  return inferPaperSellAmount(
+    position
+      ? {
+          id: position.id,
+          event_slug: position.eventSlug,
+          market_slug: position.marketSlug,
+          token_id: position.tokenId,
+          side: position.side as "BUY" | "SELL",
+          outcome_label: position.outcomeLabel,
+          size: Number(position.size),
+          avg_cost: Number(position.avgCost),
+          current_price: Number(position.currentPrice),
+          current_value_usd: Number(position.currentValueUsd),
+          unrealized_pnl_pct: Number(position.unrealizedPnlPct),
+          stop_loss_pct: Number(position.stopLossPct),
+          opened_at: position.openedAt.toISOString(),
+          updated_at: position.updatedAt.toISOString()
+        }
+      : null,
+    decision
+  );
 }
 
 async function handleTradeJob(job: Job, config: ExecutorConfig) {
@@ -171,13 +180,26 @@ async function handleSyncJob(config: ExecutorConfig) {
   });
   const openExposureUsd = await currentOpenExposureUsd();
   const previousCash = latest ? Number(latest.cashBalanceUsd) : config.initialBankrollUsd;
-  const totalEquityUsd = previousCash + openExposureUsd;
+  const recentEvents = await db.query.executionEvents.findMany({
+    where: latest
+      ? gt(executionEvents.timestampUtc, latest.createdAt)
+      : undefined
+  });
+  const cashDeltaUsd = recentEvents.reduce((sum, event) => {
+    const filled = Number(event.filledNotionalUsd);
+    if (!(filled > 0)) {
+      return sum;
+    }
+    return event.side === "SELL" ? sum + filled : sum - filled;
+  }, 0);
+  const cashBalanceUsd = Number((previousCash + cashDeltaUsd).toFixed(2));
+  const totalEquityUsd = Number((cashBalanceUsd + openExposureUsd).toFixed(2));
   const highWaterMarkUsd = Math.max(latest ? Number(latest.highWaterMarkUsd) : config.initialBankrollUsd, totalEquityUsd);
   const drawdownPct = highWaterMarkUsd > 0 ? Math.max(0, (highWaterMarkUsd - totalEquityUsd) / highWaterMarkUsd) : 0;
   const halted = drawdownPct >= config.drawdownStopPct;
 
   await writeSnapshot({
-    cashBalanceUsd: previousCash,
+    cashBalanceUsd,
     totalEquityUsd,
     highWaterMarkUsd,
     drawdownPct,
@@ -258,4 +280,3 @@ export function createQueueWorker(config: ExecutorConfig, connection: { host?: s
     { connection }
   );
 }
-

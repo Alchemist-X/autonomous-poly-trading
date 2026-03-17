@@ -3,6 +3,18 @@ import path from "node:path";
 import dotenv from "dotenv";
 
 export function loadEnvFile(): string | null {
+  const explicitEnvFile = process.env.ENV_FILE?.trim();
+  if (explicitEnvFile) {
+    const resolved = path.isAbsolute(explicitEnvFile)
+      ? explicitEnvFile
+      : path.resolve(process.cwd(), explicitEnvFile);
+    if (fs.existsSync(resolved)) {
+      dotenv.config({ path: resolved, override: true });
+      return resolved;
+    }
+    return null;
+  }
+
   const candidates = new Set<string>();
   let currentDir = process.cwd();
 
@@ -18,10 +30,6 @@ export function loadEnvFile(): string | null {
       break;
     }
     currentDir = parent;
-  }
-
-  if (process.env.ENV_FILE) {
-    candidates.add(process.env.ENV_FILE);
   }
 
   for (const candidate of candidates) {
