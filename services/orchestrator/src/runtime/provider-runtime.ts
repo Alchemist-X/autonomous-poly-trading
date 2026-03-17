@@ -63,6 +63,8 @@ function normalizeSourceUrl(url: string): string {
   }
 }
 
+const supportedDecisionSetWrapperKeys = ["decisionSet", "tradeDecisionSet", "result", "output", "payload", "final"] as const;
+
 function normalizeDecisionSetLike(value: unknown): unknown {
   const record = value as Record<string, unknown> | null;
   if (!record || typeof record !== "object") {
@@ -103,7 +105,7 @@ function normalizeDecisionSetLike(value: unknown): unknown {
   };
 
   const normalized = normalizeCore(record);
-  for (const key of ["decisionSet", "tradeDecisionSet", "result", "output", "payload", "final"]) {
+  for (const key of supportedDecisionSetWrapperKeys) {
     const nested = normalized[key] as Record<string, unknown> | undefined;
     if (nested && typeof nested === "object") {
       normalized[key] = normalizeCore(nested);
@@ -124,7 +126,8 @@ function parseDecisionSetValue(value: unknown): TradeDecisionSet {
     throw new Error("Provider output did not contain a TradeDecisionSet object.");
   }
 
-  for (const key of ["decisionSet", "tradeDecisionSet", "result", "output", "payload", "final"]) {
+  const wrapperIssues: Array<{ key: string; issues: unknown }> = [];
+  for (const key of supportedDecisionSetWrapperKeys) {
     if (!(key in record)) {
       continue;
     }
@@ -132,6 +135,16 @@ function parseDecisionSetValue(value: unknown): TradeDecisionSet {
     if (nested.success) {
       return nested.data;
     }
+    wrapperIssues.push({ key, issues: nested.error.issues });
+  }
+
+  if (wrapperIssues.length > 0) {
+    throw new Error(
+      "Provider output JSON used a supported wrapper key, but the wrapped TradeDecisionSet was invalid.\n" +
+      wrapperIssues
+        .map(({ key, issues }) => `Wrapper key ${key} issues:\n${JSON.stringify(issues, null, 2)}`)
+        .join("\n\n")
+    );
   }
 
   throw new Error(
@@ -612,8 +625,9 @@ async function finalizeRuntimeExecution(input: {
   try {
     parsed = extractJsonPayload(input.rawOutput);
   } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
     throw new Error(
-      `Provider output could not be parsed as TradeDecisionSet.\n\n${truncate(input.rawOutput, 1600)}`,
+      `Provider output could not be parsed as TradeDecisionSet.\nReason: ${reason}\n\nOutput snippet:\n${truncate(input.rawOutput, 1600)}`,
       { cause: error }
     );
   }
