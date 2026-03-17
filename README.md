@@ -298,6 +298,7 @@ ENV_FILE=.env.live-test pnpm live:test:stateless -- --json
 - 运行顺序固定为 `preflight -> fetch remote portfolio -> pulse -> decision runtime -> guards + token cap -> direct execute -> summary`
 - 不依赖本地 `Postgres` 或 `Redis`，只依赖 live wallet、Polymarket 和 provider runtime
 - `--recommend-only` 只生成推荐和归档，不会真实下单
+- TTY 终端会在 preflight、recommendation 和 summary 中明确打印当前 `execution mode` 与 `decision strategy`；`--json` 输出同样包含这两个字段
 - `STATELESS_MAX_BUY_TOKENS` 默认是 `1`，每笔 `BUY` 最多只买 `1` 个代币
 - 为了让 `1 token` 买单可执行，stateless 路径默认把最小交易额降到 `0.01 USD`；也可以显式设置 `STATELESS_MIN_TRADE_USD`
 - 产物统一写到 `runtime-artifacts/live-stateless/<timestamp>-<runId>/`

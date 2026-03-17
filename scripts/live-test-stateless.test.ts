@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   STATELESS_MIN_TRADE_USD,
+  buildStatelessRunIdentityRows,
   buildStatelessOverview,
   calculatePositionPnlPct,
   calculatePositionValueUsd,
@@ -56,6 +57,16 @@ describe("stateless live test helpers", () => {
 
   it("keeps the stateless minimum trade low enough for one-token orders", () => {
     expect(STATELESS_MIN_TRADE_USD).toBeLessThan(1);
+  });
+
+  it("surfaces execution mode and decision strategy in terminal summary rows", () => {
+    expect(buildStatelessRunIdentityRows({
+      executionMode: "live",
+      decisionStrategy: "pulse-direct"
+    })).toEqual([
+      ["Execution Mode", "live"],
+      ["Decision Strategy", "pulse-direct"]
+    ]);
   });
 
   it("computes position value and pnl from market price", () => {

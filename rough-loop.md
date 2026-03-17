@@ -8,13 +8,22 @@
 - 每次任务完成后，Rough Loop 都应立即提交本轮任务触碰到的文件。
 
 ## Queue（待执行）
+请在这里追加新的任务卡片。
+
+## Running（进行中）
+暂无任务。
+
+## Blocked（阻塞）
+暂无任务。
+
+## Done（已完成）
 ### RL-003 | 确保 live:test:stateless 明确输出 execution mode 与 decision strategy / Ensure live:test:stateless prints execution mode and decision strategy
 
 #### Title（标题）
 确保 live:test:stateless 明确输出 execution mode 与 decision strategy / Ensure live:test:stateless prints execution mode and decision strategy
 
 #### Status（状态）
-todo
+done
 
 #### Priority（优先级）
 P1
@@ -36,23 +45,17 @@ P1
 
 #### Verification（验证命令）
 - pnpm vitest run scripts/live-test-stateless.test.ts
+- pnpm exec tsx -e "import('./scripts/live-test-stateless.ts').then(() => console.log('import-ok'))"
 
 #### Context（上下文）
 - 仓库规则要求任何一次执行都必须明确当前使用的 `execution mode` 与 `decision strategy` / Repository rules require every execution path to state the current `execution mode` and `decision strategy`
 
 #### Latest Result（最近结果）
-- 尚未开始 / Not started
+- 已在 preflight、recommendation、execution 和 error 输出中补齐 `Execution Mode` / `Decision Strategy`，并把同样字段带到 `--json` 输出；目标测试与模块导入 smoke check 已通过。 / Added `Execution Mode` / `Decision Strategy` to preflight, recommendation, execution, and error output, mirrored the same fields into `--json`, and passed the targeted test plus module-import smoke check.
 
 #### Attempts（尝试次数）
-0
+1
 
-## Running（进行中）
-暂无任务。
-
-## Blocked（阻塞）
-暂无任务。
-
-## Done（已完成）
 ### RL-002 | 补齐 provider-runtime 结构化输出回归覆盖 / Add provider-runtime structured-output regression coverage
 
 #### Title（标题）

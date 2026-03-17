@@ -8,13 +8,22 @@ Chinese version: [rough-loop.md](rough-loop.md).
 - 每次任务完成后，Rough Loop 都应立即提交本轮任务触碰到的文件。
 
 ## Queue
+Add new task cards here.
+
+## Running
+No tasks.
+
+## Blocked
+No tasks.
+
+## Done
 ### RL-003 | 确保 live:test:stateless 明确输出 execution mode 与 decision strategy / Ensure live:test:stateless prints execution mode and decision strategy
 
 #### Title
 确保 live:test:stateless 明确输出 execution mode 与 decision strategy / Ensure live:test:stateless prints execution mode and decision strategy
 
 #### Status
-todo
+done
 
 #### Priority
 P1
@@ -36,23 +45,17 @@ P1
 
 #### Verification
 - pnpm vitest run scripts/live-test-stateless.test.ts
+- pnpm exec tsx -e "import('./scripts/live-test-stateless.ts').then(() => console.log('import-ok'))"
 
 #### Context
 - 仓库规则要求任何一次执行都必须明确当前使用的 `execution mode` 与 `decision strategy` / Repository rules require every execution path to state the current `execution mode` and `decision strategy`
 
 #### Latest Result
-- 尚未开始 / Not started
+- Added `Execution Mode` / `Decision Strategy` to preflight, recommendation, execution, and error output, mirrored the same fields into `--json`, and passed the targeted test plus module-import smoke check.
 
 #### Attempts
-0
+1
 
-## Running
-No tasks.
-
-## Blocked
-No tasks.
-
-## Done
 ### RL-002 | 补齐 provider-runtime 结构化输出回归覆盖 / Add provider-runtime structured-output regression coverage
 
 #### Title

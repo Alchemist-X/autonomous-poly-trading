@@ -33,6 +33,7 @@ import { loadPulseSnapshotFromArtifacts } from "./live-test-stateless-pulse.ts";
 import {
   STATELESS_MAX_BUY_TOKENS,
   STATELESS_MIN_TRADE_USD,
+  buildStatelessRunIdentityRows,
   buildStatelessOverview,
   calculatePositionPnlPct,
   calculatePositionValueUsd,
@@ -54,6 +55,7 @@ interface PreflightReport {
   ok: boolean;
   envFilePath: string | null;
   executionMode: string;
+  decisionStrategy: string;
   signerAddress: string;
   funderAddress: string;
   collateralBalanceUsd: number;
@@ -240,6 +242,8 @@ function buildContextRows(input: {
   envFilePath: string | null;
   archiveDir: string;
   funderAddress: string;
+  executionMode: string;
+  decisionStrategy: string;
   runId?: string | null;
   marketSlug?: string;
   tokenId?: string;
@@ -247,6 +251,10 @@ function buildContextRows(input: {
 }) {
   return [
     ["Env File", input.envFilePath ?? "-"],
+    ...buildStatelessRunIdentityRows({
+      executionMode: input.executionMode,
+      decisionStrategy: input.decisionStrategy
+    }),
     ["Archive Dir", input.archiveDir],
     ["Wallet", maskAddress(input.funderAddress)],
     ["Run ID", input.runId ?? "-"],
@@ -431,6 +439,7 @@ async function runPreflight(input: {
       ok: checks.every((check) => check.ok),
       envFilePath: input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath,
       executionMode: process.env.AUTOPOLY_EXECUTION_MODE ?? "live",
+      decisionStrategy: input.orchestratorConfig.decisionStrategy,
       signerAddress,
       funderAddress: input.executorConfig.funderAddress,
       collateralBalanceUsd: effectiveCollateralBalanceUsd,
@@ -588,6 +597,8 @@ async function executePlans(input: {
   archiveDir: string;
   runId: string;
   envFilePath: string | null;
+  executionMode: string;
+  decisionStrategy: string;
 }) {
   const executed: ExecutedOrderSummary[] = [];
   for (const plan of input.plans) {
@@ -614,6 +625,8 @@ async function executePlans(input: {
           envFilePath: input.envFilePath,
           archiveDir: input.archiveDir,
           funderAddress: input.executorConfig.funderAddress,
+          executionMode: input.executionMode,
+          decisionStrategy: input.decisionStrategy,
           runId: input.runId,
           marketSlug: plan.marketSlug,
           tokenId: plan.tokenId,
@@ -654,6 +667,7 @@ async function buildFinalPortfolioState(input: {
 
 function printRecommendationSummary(input: {
   executionMode: string;
+  decisionStrategy: string;
   envFilePath: string | null;
   runId: string;
   archiveDir: string;
@@ -666,10 +680,14 @@ function printRecommendationSummary(input: {
   runtimeLogPath: string | null;
 }) {
   const printer = createTerminalPrinter();
-  printer.section("Stateless Recommendation", `mode ${input.executionMode}`);
+  printer.section("Stateless Recommendation", "route live:test:stateless");
   printer.table([
     ["Run ID", input.runId],
     ["Env File", input.envFilePath ?? "-"],
+    ...buildStatelessRunIdentityRows({
+      executionMode: input.executionMode,
+      decisionStrategy: input.decisionStrategy
+    }),
     ["Wallet Collateral", formatUsd(input.collateralBalanceUsd)],
     ["Effective Bankroll", formatUsd(input.overview.total_equity_usd)],
     ["Archive Dir", input.archiveDir]
@@ -702,6 +720,8 @@ function printRecommendationSummary(input: {
 }
 
 function printExecutionSummary(input: {
+  executionMode: string;
+  decisionStrategy: string;
   runId: string;
   archiveDir: string;
   overview: OverviewResponse;
@@ -710,6 +730,10 @@ function printExecutionSummary(input: {
   const printer = createTerminalPrinter();
   printer.section("Stateless Execution Summary", `run ${input.runId}`);
   printer.table([
+    ...buildStatelessRunIdentityRows({
+      executionMode: input.executionMode,
+      decisionStrategy: input.decisionStrategy
+    }),
     ["Archive Dir", input.archiveDir],
     ["Cash", formatUsd(input.overview.cash_balance_usd)],
     ["Equity", formatUsd(input.overview.total_equity_usd)],
@@ -787,9 +811,13 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
     await writeJson(preflightPath, preflight.report);
     if (useHumanOutput) {
       const printer = createTerminalPrinter();
-      printer.section("Stateless Live Preflight");
+      printer.section("Stateless Live Preflight", "route live:test:stateless");
       printer.table([
         ["Env File", preflight.report.envFilePath ?? "-"],
+        ...buildStatelessRunIdentityRows({
+          executionMode: preflight.report.executionMode,
+          decisionStrategy: preflight.report.decisionStrategy
+        }),
         ["Signer", maskAddress(preflight.report.signerAddress)],
         ["Wallet", maskAddress(preflight.report.funderAddress)],
         ["Effective Collateral", formatUsd(preflight.report.collateralBalanceUsd)],
@@ -813,7 +841,9 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
         buildContextRows({
           envFilePath: preflight.report.envFilePath,
           archiveDir,
-          funderAddress: executorConfig.funderAddress
+          funderAddress: executorConfig.funderAddress,
+          executionMode: preflight.report.executionMode,
+          decisionStrategy: preflight.report.decisionStrategy
         })
       );
     }
@@ -903,7 +933,8 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
 
     if (useHumanOutput) {
       printRecommendationSummary({
-        executionMode: "live-stateless",
+        executionMode: preflight.report.executionMode,
+        decisionStrategy: preflight.report.decisionStrategy,
         envFilePath: preflight.report.envFilePath,
         runId,
         archiveDir,
@@ -965,6 +996,8 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
       const output = {
         ok: true,
         mode: "recommend-only",
+        executionMode: preflight.report.executionMode,
+        decisionStrategy: preflight.report.decisionStrategy,
         runId,
         archiveDir,
         recommendationPath,
@@ -981,7 +1014,9 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
       executorConfig,
       archiveDir,
       runId,
-      envFilePath: preflight.report.envFilePath
+      envFilePath: preflight.report.envFilePath,
+      executionMode: preflight.report.executionMode,
+      decisionStrategy: preflight.report.decisionStrategy
     });
     const finalState = await buildFinalPortfolioState({
       executorConfig,
@@ -1001,6 +1036,8 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
     reporter.done(`Stateless live run completed | ${runId}`);
     if (useHumanOutput) {
       printExecutionSummary({
+        executionMode: preflight.report.executionMode,
+        decisionStrategy: preflight.report.decisionStrategy,
         runId,
         archiveDir,
         overview: finalState.overview,
@@ -1069,6 +1106,8 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
 
     const output = {
       ok: true,
+      executionMode: preflight.report.executionMode,
+      decisionStrategy: preflight.report.decisionStrategy,
       runId,
       archiveDir,
       recommendationPath,
@@ -1082,6 +1121,16 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const stage = error instanceof StatelessLiveError ? error.stage : "unknown";
+    const errorContext = error instanceof StatelessLiveError
+      ? error.context
+      : buildContextRows({
+          envFilePath: preflightReport?.envFilePath ?? (orchestratorConfig.envFilePath ?? executorConfig.envFilePath),
+          archiveDir,
+          funderAddress: executorConfig.funderAddress,
+          executionMode: preflightReport?.executionMode ?? (process.env.AUTOPOLY_EXECUTION_MODE ?? "live"),
+          decisionStrategy: preflightReport?.decisionStrategy ?? orchestratorConfig.decisionStrategy,
+          runId
+        });
     errorPath = path.join(archiveDir, "error.json");
     await ensureDirectory(archiveDir);
     await writeJson(errorPath, {
@@ -1089,7 +1138,7 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
       message,
       archiveDir,
       runId,
-      context: error instanceof StatelessLiveError ? error.context : []
+      context: errorContext
     });
     await writeRunSummaryArtifacts({
       mode: "live:test:stateless",
@@ -1161,6 +1210,8 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
     if (args.json) {
       console.log(JSON.stringify({
         ok: false,
+        executionMode: preflightReport?.executionMode ?? (process.env.AUTOPOLY_EXECUTION_MODE ?? "live"),
+        decisionStrategy: preflightReport?.decisionStrategy ?? orchestratorConfig.decisionStrategy,
         stage,
         message,
         archiveDir,
@@ -1172,7 +1223,7 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
         title: "Stateless Live Test Failed",
         stage,
         error,
-        context: error instanceof StatelessLiveError ? error.context : [],
+        context: errorContext,
         artifactDir: archiveDir,
         nextSteps: [
           "Inspect error.json and recommendation.json in the stateless archive.",
@@ -1182,6 +1233,8 @@ export async function runStatelessLiveTest(args: Args = parseArgs()) {
     }
     return {
       ok: false,
+      executionMode: preflightReport?.executionMode ?? (process.env.AUTOPOLY_EXECUTION_MODE ?? "live"),
+      decisionStrategy: preflightReport?.decisionStrategy ?? orchestratorConfig.decisionStrategy,
       archiveDir,
       runId,
       errorPath
@@ -1202,6 +1255,13 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
       title: "Stateless Live Test Failed",
       stage: "bootstrap",
       error,
+      context: buildContextRows({
+        envFilePath: process.env.ENV_FILE?.trim() || null,
+        archiveDir: "-",
+        funderAddress: process.env.FUNDER_ADDRESS ?? "",
+        executionMode: process.env.AUTOPOLY_EXECUTION_MODE ?? "live",
+        decisionStrategy: process.env.AGENT_DECISION_STRATEGY ?? "provider-runtime"
+      }),
       nextSteps: ["Inspect the stack trace above and retry after fixing the bootstrap error."]
     });
     process.exit(1);

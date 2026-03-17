@@ -3,6 +3,16 @@ import type { OverviewResponse, PublicPosition } from "@autopoly/contracts";
 export const STATELESS_MAX_BUY_TOKENS = 1;
 export const STATELESS_MIN_TRADE_USD = 0.01;
 
+export function buildStatelessRunIdentityRows(input: {
+  executionMode: string;
+  decisionStrategy: string;
+}): Array<[string, string]> {
+  return [
+    ["Execution Mode", input.executionMode],
+    ["Decision Strategy", input.decisionStrategy]
+  ];
+}
+
 function roundCurrency(value: number): number {
   return Number(value.toFixed(2));
 }

@@ -297,6 +297,7 @@ In `live:test:stateless` mode:
 - The flow is fixed to `preflight -> fetch remote portfolio -> pulse -> decision runtime -> guards + token cap -> direct execute -> summary`
 - It does not require local `Postgres` or `Redis`; it only depends on the live wallet, Polymarket, and the provider runtime
 - `--recommend-only` generates recommendations and archives only, without sending live orders
+- TTY output explicitly prints the current `execution mode` and `decision strategy` in preflight, recommendation, and summary sections; `--json` output includes the same fields
 - `STATELESS_MAX_BUY_TOKENS` defaults to `1`, so each `BUY` is capped to at most `1` token
 - To keep one-token buys executable, the stateless path lowers the minimum trade floor to `0.01 USD` by default; you can override it with `STATELESS_MIN_TRADE_USD`
 - Artifacts are stored under `runtime-artifacts/live-stateless/<timestamp>-<runId>/`
