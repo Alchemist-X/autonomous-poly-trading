@@ -1,264 +1,214 @@
 # Autonomous Poly Trading
 
-Chinese version: [README.md](README.md)
+中文版见 [README.md](README.md)。
 
-This repository is a cloud-hosted autonomous trading system for Polymarket. The goal is to build a trading agent that can run with real funds, expose live activity publicly, and enforce hard risk controls at the service layer.
+Last updated: 2026-03-24
 
-The v1 scope is intentionally narrow:
+---
 
-- run a single real wallet
-- expose a public read-only website
-- keep all controls inside the admin surface
-- support `codex` as the default skill runtime
-- keep an `openclaw` skill runtime integration path ready
+A cloud-native autonomous trading system for [Polymarket](https://polymarket.com). The goal is to build a trading Agent that **runs for real, is publicly observable, and enforces hard risk controls at the service layer**.
 
-## Project goals
+Core positioning:
 
-This system is designed to solve three practical problems:
+- Single real-money wallet instance with a public read-only website
+- Risk controls enforced as service-layer hard rules, not prompt suggestions
+- Agent runs continuously in the cloud, not as ad-hoc local scripts
+- Third parties can view real positions, trade history, NAV curves, and run reports on the web
 
-- keep the agent running continuously in the cloud instead of as a local script
-- expose real positions, trade history, equity, and reports on the web
-- move risk management out of prompts and into hard service-side rules
+## Table of Contents
 
-## Fast Handoff For A Remote Agent
+- [Architecture Overview](#architecture-overview)
+- [Monorepo Structure](#monorepo-structure)
+- [Three Execution Paths](#three-execution-paths)
+- [Decision Engine](#decision-engine)
+- [Risk Control System](#risk-control-system)
+- [Quick Start](#quick-start)
+- [Environment Variables](#environment-variables)
+- [Command Reference](#command-reference)
+- [Deployment](#deployment)
+- [External Repository Dependencies](#external-repository-dependencies)
+- [Run Archives](#run-archives)
+- [Current Status](#current-status)
+- [Documentation Index](#documentation-index)
 
-If you are taking over this repository for the first time and do not know its prior skills, progress, or chat context, use this order:
-
-1. read this README fully
-2. inspect [.env.example](.env.example) for runtime modes and dependencies
-3. inspect [risk-controls.en.md](risk-controls.en.md) for hard controls
-4. inspect [Illustration/onboarding-architecture.en.md](Illustration/onboarding-architecture.en.md) first for module boundaries, state sources, and the default main path
-5. inspect [Illustration/trading-modes-flowchart.en.md](Illustration/trading-modes-flowchart.en.md) for execution-route branching
-6. only then read [progress.en.md](progress.en.md) and the documents under `Illustration/` if you need more detail
-
-If the immediate goal is only to build the project remotely, you do not need to understand every skill detail first.
-
-## Dependency Matrix
-
-It is easiest to understand dependencies by separating build, local stack, and live execution:
-
-| Dependency | Required | Purpose | Notes |
-| --- | --- | --- | --- |
-| `git` | required | clone, vendor sync, push | any recent version |
-| `Node.js >= 20` | required | workspace build and runtime | declared in the root `package.json` |
-| `pnpm 10.x` | required | workspace package manager | currently pinned to `pnpm@10.28.1` |
-| `TypeScript 5.9.x` | bundled | compile services and packages | installed through the workspace |
-| `Docker` / `docker compose` | optional | local `Postgres + Redis` | not required for `live:test:stateless` or plain `build` |
-| `Postgres 17` | optional | stateful web / orchestrator / executor flows | provided in `docker-compose.yml` |
-| `Redis 8` | optional | queues, sync, background jobs | provided in `docker-compose.yml` |
-| `Codex CLI` | required for pulse/runtime execution | provider runtime | not required for plain `pnpm build` |
-| `OpenClaw CLI` | optional | alternate provider | not the main path today |
-| Polymarket wallet credentials | required for live routes | real trading and balance checks | only needed for live execution |
-
-Main workspace runtime dependencies:
-
-- `apps/web`
-  - `next@16.1.6`
-  - `react@19.2.0`
-  - `react-dom@19.2.0`
-- `services/orchestrator`
-  - `fastify@5.8.2`
-  - `bullmq@5.71.0`
-  - `ioredis@5.10.0`
-  - `drizzle-orm@0.45.1`
-  - `dotenv@17.2.3`
-  - `node-cron@4.2.1`
-- `services/executor`
-  - `@polymarket/clob-client@5.8.0`
-  - `ethers@5.7.2`
-  - `fastify@5.8.2`
-  - `bullmq@5.71.0`
-  - `ioredis@5.10.0`
-  - `drizzle-orm@0.45.1`
-- `packages/db`
-  - `postgres@3.4.8`
-  - `drizzle-orm@0.45.1`
-  - `drizzle-kit@0.31.9`
-- `packages/contracts`
-  - `zod@4.1.12`
+---
 
 ## Architecture Overview
 
-If this is your first time inside the codebase, read [Illustration/onboarding-architecture.en.md](Illustration/onboarding-architecture.en.md) before mapping the four layers below.
+The system has four layers; data flows top to bottom:
 
-The current system is easiest to understand as four layers:
-
-### 1. Research / Pulse layer
-
-- generates `pulse` from Polymarket market data plus vendor skills
-- writes artifacts to `runtime-artifacts/reports/pulse/...`
-- acts as the research input for later decisions
-
-### 2. Decision / Runtime layer
-
-- orchestrator turns `pulse + portfolio context` into structured decisions
-- the default main path is now:
-  - `pulse-direct`
-- one legacy comparison path still exists:
-  - `pulse-direct`
-  - `provider-runtime`
-- `provider-runtime` still works, but it is no longer the default main path
-
-### 3. Execution / Risk layer
-
-- executor handles:
-  - order placement
-  - remote position sync
-  - stop-loss
-  - flatten
-- risk controls are hard service-side rules rather than prompt instructions:
-  - per-trade cap
-  - per-event cap
-  - total exposure cap
-  - max positions
-  - drawdown halt
-
-### 4. State / Archive / UI layer
-
-- `packages/db`
-  - database schema, queries, and file-backed local state
-- `runtime-artifacts/`
-  - pulse, runtime-log, live runs, paper state, and rough-loop archives
-- `apps/web`
-  - public read-only UI plus the admin console
-
-From an execution-path perspective, there are currently three main modes:
-
-| Mode | Typical command | Dependencies | Purpose |
-| --- | --- | --- | --- |
-| `paper` | `pnpm trial:recommend` / `trial:approve` | local file state + daily pulse core | local simulation with human approval |
-| `live:test:stateless` | `pnpm live:test:stateless` | wallet + Polymarket + daily pulse core | fastest real-fund closed loop |
-| `live:test` | `pnpm live:test` | wallet + DB + Redis + queue worker + daily pulse core | closer to the full production path |
-
-## Repository structure
-
-This repository is a `pnpm` monorepo with the following main parts:
-
-- `apps/web`
-  - Next.js site
-  - public spectator pages and admin console
-  - intended for Vercel
-- `services/orchestrator`
-  - agent scheduling
-  - risk state management
-  - periodic jobs such as backtests, resolution checks, and reviews
-- `services/executor`
-  - Polymarket CLOB integration
-  - order execution, fill sync, and position sync
-  - live ops scripts
-- `services/rough-loop`
-  - standalone continuous code-task runner
-  - not a prerequisite for the main trading path
-- `packages/contracts`
-  - shared zod schemas
-  - validation for `TradeDecisionSet` and related payloads
-- `packages/db`
-  - Drizzle schema
-  - queries
-  - seeds and migrations
-- `packages/terminal-ui`
-  - shared colored terminal output, error summaries, and table rendering
-- `scripts`
-  - workspace-level entrypoints for live test, stateless live, wallet env generation, and summaries
-- `vendor`
-  - pinned manifest for external repositories
-  - external repos are locked to explicit commits here
-
-## Website shape
-
-The public site currently includes:
-
-- `/`
-  - overview page
-  - cash, equity, and system status
-- `/positions`
-  - current positions
-- `/trades`
-  - trade history
-- `/runs`
-  - agent run list
-- `/runs/[id]`
-  - run detail
-  - reasoning, logs, and decisions
-- `/reports`
-  - pulse, review, and resolution outputs
-- `/backtests`
-  - daily backtest results
-
-The admin page supports:
-
-- `pause`
-- `resume`
-- `run-now`
-- `cancel-open-orders`
-- `flatten`
-
-V1 does not provide a public developer API. The site reads from the database or internal site handlers only.
-
-## Risk rules
-
-The current hard risk rules are:
-
-- per-position stop loss: `30%`
-- portfolio drawdown halt: `20%`
-- max total exposure: `50%`
-- max concurrent positions: `10`
-- max single trade size: `5%` of bankroll
-
-The first execution version uses `FOK` market orders.
-
-This means:
-
-- model outputs are still constrained by service-side risk checks
-- once the system enters `HALTED`, no new positions should be opened
-- stop-loss exits and manual flatten actions take priority over normal strategy activity
-
-See [risk-controls.en.md](risk-controls.en.md) for the full hard-control document.
-
-## Provider runtime
-
-The orchestrator now runs on a provider-based runtime:
-
-- `AGENT_RUNTIME_PROVIDER=codex|openclaw`
-- `codex` and `openclaw` each have independent skill settings
-- each provider can configure:
-  - skill root directory
-  - Chinese or English skill locale
-  - the list of skills used in the current decision cycle
-- the runtime no longer keeps a mock pulse fallback
-- if the provider command is missing, a skill file is missing, or pulse fetch fails, the run fails closed
-
-The current pulse storage naming is:
-
-```text
-reports/pulse/YYYY/MM/DD/pulse-<timestamp>-<runtime>-<mode>-<runId>.md
-reports/pulse/YYYY/MM/DD/pulse-<timestamp>-<runtime>-<mode>-<runId>.json
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Layer 1 · Research / Pulse                                 │
+│  Fetches Polymarket market listings, generates Pulse pool   │
+│  Output → runtime-artifacts/reports/pulse/...               │
+└───────────────────────────┬─────────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Layer 2 · Decision / Runtime                               │
+│  Orchestrator turns Pulse + portfolio context → decisions   │
+│  Primary: pulse-direct │ Legacy: provider-runtime           │
+└───────────────────────────┬─────────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Layer 3 · Execution / Risk                                 │
+│  Service-layer hard risk trimming → executor order / sync   │
+│  FOK market orders · per-trade ≤5% · total exposure ≤50%   │
+└───────────────────────────┬─────────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Layer 4 · State / Archive / UI                             │
+│  DB / local state / runtime-artifacts archive / apps/web    │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-## External repository dependencies
+See [Illustration/onboarding-architecture.en.md](Illustration/onboarding-architecture.en.md) for the Mermaid diagram and detailed module connections.
 
-The current system is built around the following external repositories:
+## Monorepo Structure
 
-- `polymarket-trading-TUI`
-  - trading terminal and CLOB wiring reference
-- `polymarket-market-pulse`
-  - core market recommendation and sizing input
-- `alert-stop-loss-pm`
-  - stop-loss logic reference
-- `all-polymarket-skill`
-  - references for backtesting, monitoring, and resolution tracking
-- `pm-PlaceOrder`
-  - execution reference and local credential source
+This is a `pnpm` monorepo (`pnpm@10.28.1`, Node ≥ 20) with no root-level `src/`. Source code is distributed across these packages:
 
-The `vendor` directory exists so these repositories can be pinned to explicit versions instead of being pulled ad hoc at runtime.
+```
+autonomous-poly-trading/
+├── apps/
+│   └── web/                          # Next.js 16: public dashboard + admin console
+├── services/
+│   ├── orchestrator/                 # Scheduling, Pulse, decision runtime, risk, reports
+│   ├── executor/                     # Polymarket CLOB, order execution, sync, queue worker
+│   └── rough-loop/                   # Standalone code-task loop (not on the trading path)
+├── packages/
+│   ├── contracts/                    # Zod schemas: TradeDecisionSet and shared contracts
+│   ├── db/                           # Drizzle schema, migrations, queries, local-state
+│   └── terminal-ui/                  # Terminal colored output, error summaries, tables
+├── scripts/                          # Workspace-level entry points: daily-pulse, live-test
+├── vendor/                           # External repo lock manifest (manifest.json)
+├── deploy/hostinger/                 # VPS deployment scripts and env templates
+├── Illustration/                     # Architecture diagrams, flow charts (bilingual)
+├── Plan/                             # Phase planning documents
+├── E2E Test Driven Development/      # Playwright + Vitest E2E suite
+├── runtime-artifacts/                # Run artifacts (.gitignored, only .gitkeep tracked)
+├── docker-compose.yml                # Local Postgres 17 + Redis 8
+├── docker-compose.hostinger.yml      # Production-oriented container orchestration
+└── package.json                      # Root scripts + workspace dependencies
+```
 
-The current `vendor/manifest.json` already pins the exact commits, so a remote agent does not need to guess external repository versions.
+### Module Responsibilities
 
-## Quick start
+| Module | Purpose | Key Entry |
+| --- | --- | --- |
+| `apps/web` | Public pages (overview/positions/trades/runs/reports/backtests) + admin ops | `app/page.tsx` |
+| `services/orchestrator` | Pulse generation → decision runtime → risk trimming → report artifacts | `src/jobs/daily-pulse-core.ts` |
+| `services/executor` | Polymarket CLOB orders, position sync, stop-loss, flatten | `src/workers/queue-worker.ts`, `src/lib/polymarket.ts` |
+| `packages/contracts` | `TradeDecisionSet`, `actionSchema`, queue/job names | `src/index.ts` |
+| `packages/db` | DB schema + queries; file-backed local state for paper mode | `src/queries.ts`, `src/local-state.ts` |
+| `packages/terminal-ui` | Terminal UI utilities | `src/index.ts` |
+| `scripts/` | CLI entry points that wire up different run modes | `daily-pulse.ts`, `live-test-stateless.ts`, `live-test.ts` |
+| `services/rough-loop` | Automated code-task loop (not involved in trading) | `src/cli.ts` |
 
-### Build-only remote bootstrap
+## Three Execution Paths
 
-If the only goal is to let an unfamiliar remote agent build the repository, the shortest path is:
+```mermaid
+flowchart LR
+  paper["paper\nLocal simulation"] --> core["Pulse + Decision Core"]
+  stateless["live:test:stateless\nFastest real-money loop"] --> core
+  stateful["live:test\nFull production path"] --> core
+
+  core --> risk["Hard risk trimming"]
+  risk --> out1["Paper state file"]
+  risk --> out2["Direct Polymarket execution"]
+  risk --> out3["BullMQ queue → Executor"]
+```
+
+| Path | Command | Dependencies | Best For |
+| --- | --- | --- | --- |
+| **paper** | `pnpm trial:recommend` / `trial:approve` | Local file | Simulation & manual confirmation |
+| **live:test:stateless** | `pnpm live:test:stateless` | Wallet + Polymarket | Fastest real-money loop, onboarding default |
+| **live:test** | `pnpm live:test` | Wallet + DB + Redis + Queue | Full production path |
+
+Note: `pnpm daily:pulse` is not a fourth path — it's a convenience wrapper around `live:test:stateless` that defaults to `.env.pizza`, `AUTOPOLY_EXECUTION_MODE=live`, and `pulse-direct`.
+
+### Execution Flow
+
+**All live paths must go through Preflight** — it's a mandatory phase, not a standalone mode.
+
+**live:test:stateless**:
+
+```
+Preflight → Fetch remote positions/collateral → Pulse generation → Decision runtime → Risk guards + token cap → Direct execution → Summary archive
+```
+
+**live:test**:
+
+```
+Preflight (+DB/Redis/Queue) → Pulse generation → Agent cycle (decisions + persistence) → Queue dispatch → Executor worker → Sync → Summary archive
+```
+
+**paper**:
+
+```
+Load portfolio context → Pulse generation → Decision runtime → Risk guards → awaiting-approval → trial:approve → Paper state update
+```
+
+## Decision Engine
+
+Two decision strategies controlled by `AGENT_DECISION_STRATEGY`:
+
+### pulse-direct (Current Default)
+
+```
+Pulse markdown → Regex/table parsing → PulseEntryPlan
+                                              ↓
+Current positions → reviewCurrentPositions → hold/reduce/close
+                                              ↓
+                      composePulseDirectDecisions → TradeDecisionSet
+```
+
+No external LLM process needed. Extracts entry candidates directly from structured Pulse sections and combines with position review.
+
+### provider-runtime (Legacy)
+
+Spawns an external process (Codex / OpenClaw CLI), passes Pulse + portfolio context to the LLM, and parses stdout into a `TradeDecisionSet`. Still functional but no longer the default.
+
+## Risk Control System
+
+Risk controls are service-layer hard rules. Regardless of which provider or strategy is used upstream, everything entering the orchestrator / executor pipeline is constrained.
+
+### System Level
+
+| Rule | Threshold | Effect |
+| --- | --- | --- |
+| Portfolio drawdown halt | NAV drawdown from HWM ≥ **20%** | Enter `halted`, block all new opens |
+| Recovery | Admin `resume` only | Fail-closed by design |
+
+### Position Level
+
+| Rule | Threshold |
+| --- | --- |
+| Per-position stop-loss | Unrealized loss ≥ **30%** |
+| Stop-loss priority | Higher than regular strategy actions |
+
+### Execution Level
+
+| Rule | Default |
+| --- | --- |
+| Order type | **FOK** market orders |
+| Per-trade cap | **5%** of bankroll |
+| Max total exposure | **50%** of bankroll |
+| Max event exposure | **30%** of bankroll |
+| Max concurrent positions | **10** |
+| Min effective notional | Below threshold → discard |
+
+### Pulse Level
+
+- Must come from real `fetch_markets.py` — no mock fallback
+- Stale pulse, insufficient candidates, or missing `clobTokenIds` → risk state, no new `open` allowed
+- `open` actions' `token_id` must originate from Pulse candidates
+
+Full rules: [risk-controls.en.md](risk-controls.en.md).
+
+## Quick Start
+
+### Minimal Build (Verify Compilation)
 
 ```bash
 git clone https://github.com/Alchemist-X/autonomous-poly-trading.git
@@ -267,154 +217,103 @@ pnpm install
 pnpm build
 ```
 
-Notes:
+No Docker, Codex CLI, or wallet credentials required — just verifying TS / Next.js compilation.
 
-- this path does not require `Docker`
-- this path does not require `Codex CLI`
-- this path does not require a real wallet or `.env` secrets
-- this path only verifies the workspace can complete its TS / Next.js build
-
-### Remote bootstrap for pulse / runtime execution
-
-If the remote machine should not only build but also run pulse and recommendation flows:
+### Run Pulse and Recommendation
 
 ```bash
 cp .env.example .env
 pnpm vendor:sync
+# Fill in CODEX_COMMAND / wallet credentials
+pnpm daily:pulse              # Convenience entry point
+# or
+pnpm live:test:stateless -- --recommend-only   # View recommendations without trading
 ```
 
-Then fill in:
-
-- `CODEX_COMMAND`
-- `ENV_FILE` or a real `.env`
-- Polymarket wallet credentials if live execution is needed
-
-### Remote bootstrap for the full local stateful stack
-
-If the goal is to run web + orchestrator + executor locally:
-
-```bash
-docker compose up -d postgres redis
-pnpm db:migrate
-pnpm db:seed
-pnpm dev
-```
-
-1. Copy the env template:
+### Full Local Stack (Stateful)
 
 ```bash
 cp .env.example .env
-```
-
-2. Install dependencies:
-
-```bash
 pnpm install
-```
-
-3. Sync external vendor repositories:
-
-```bash
 pnpm vendor:sync
-```
-
-Notes:
-
-- `pnpm build` itself does not depend on `vendor`
-- but `pulse`, `trial:*`, and `live:test*` should be treated as vendor-dependent and should run after `pnpm vendor:sync`
-
-4. Start local data services:
-
-```bash
 docker compose up -d postgres redis
-```
-
-5. Run migrations and seed data:
-
-```bash
 pnpm db:migrate
 pnpm db:seed
-```
-
-6. Start the monorepo:
-
-```bash
 pnpm dev
 ```
 
-Default local ports:
+Default ports: Web `3000` / Orchestrator `4001` / Executor `4002`
 
-- web: `http://localhost:3000`
-- orchestrator: `http://localhost:4001`
-- executor: `http://localhost:4002`
-
-## Environment configuration
-
-See [.env.example](.env.example) for the full template.
-
-If your Polymarket credentials are stored in a sibling repository, set:
+### Paper Mode
 
 ```bash
-ENV_FILE=../pm-PlaceOrder/.env.aizen
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
 ```
 
-The executor and orchestrator also support auto-discovering a sibling `.env.aizen` during development.
+State defaults to `runtime-artifacts/local/paper-state.json`.
 
-If you explicitly set `ENV_FILE`, that file now takes precedence and overrides the default `.env*` discovery chain. Real-fund single-run tests should use a dedicated `.env.live-test`.
+## Environment Variables
 
-The environment variables are grouped into four logical sets:
+Full template: [.env.example](.env.example)
 
-- shared
-  - database
-  - Redis
-  - app URL
-  - `AUTOPOLY_EXECUTION_MODE=paper|live`
-  - `AUTOPOLY_LOCAL_STATE_FILE`
-- web
-  - admin password
-  - internal orchestrator token
-- executor
-  - private key
-  - funder address
-  - signature type
-  - chain id
-- orchestrator
-  - provider selection
-  - codex / openclaw skill settings
-  - pulse fetch and storage settings
-  - schedules
-  - risk parameters
+Organized in four groups:
 
-## Rough Loop
+| Group | Key Variables | Purpose |
+| --- | --- | --- |
+| **Shared** | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE` | Execution mode (paper/live), infra connections |
+| **Web** | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN` | Admin authentication |
+| **Executor** | `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` | Polymarket wallet & chain config |
+| **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*` | Provider selection, Pulse fetching, risk params |
 
-The repository now includes a standalone `Rough Loop` code-task continuous executor.
+If Polymarket credentials live in an adjacent repo, set `ENV_FILE=../pm-PlaceOrder/.env.aizen`. For real-money testing, use a dedicated `.env.live-test`.
 
-- Main task file: [rough-loop.md](rough-loop.md)
-- Usage guide: [rough-loop-guide.en.md](rough-loop-guide.en.md)
-- It continuously reads task cards, invokes `codex|openclaw`, runs verification, updates task state, and writes artifacts under `runtime-artifacts/rough-loop/`
-- After each completed task, it immediately commits only the files touched by that task
-- v1 only handles code tasks by default, not live trading, production deploys, or secret operations
-- If you want to force-start it in the current dirty worktree, explicitly set `ROUGH_LOOP_RELAX_GUARDRAILS=1`
+## Command Reference
 
-## Common commands
-
-Workspace validation:
+### Build & Validation
 
 ```bash
-pnpm typecheck
-pnpm test
-pnpm build
+pnpm build              # Full workspace build
+pnpm typecheck          # Full type check
+pnpm test               # Vitest unit tests
 ```
 
-Database:
+### Database
 
 ```bash
-pnpm db:generate
-pnpm db:migrate
-pnpm db:seed
+pnpm db:generate        # Generate migration
+pnpm db:migrate         # Run migrations
+pnpm db:seed            # Seed data
 ```
 
-E2E workspace:
+### Trading Paths
+
+```bash
+# Paper
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
+
+# Live Stateless
+ENV_FILE=.env.live-test pnpm live:test:stateless
+ENV_FILE=.env.live-test pnpm live:test:stateless -- --recommend-only
+ENV_FILE=.env.live-test pnpm live:test:stateless -- --json
+
+# Live Stateful
+ENV_FILE=.env.live-test pnpm live:test
+
+# Daily Pulse (convenience wrapper for stateless)
+pnpm daily:pulse
+```
+
+### Executor Ops
+
+```bash
+pnpm --filter @autopoly/executor ops:check
+pnpm --filter @autopoly/executor ops:check -- --slug <market-slug>
+pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
+```
+
+### E2E
 
 ```bash
 pnpm e2e:install-browsers
@@ -422,154 +321,199 @@ pnpm e2e:local-lite
 AUTOPOLY_E2E_REMOTE=1 pnpm e2e:remote-real
 ```
 
-Rough Loop:
+### Rough Loop
 
 ```bash
 pnpm rough-loop:doctor
 pnpm rough-loop:once
 pnpm rough-loop:start
-pnpm rough-loop:dev
-pnpm rough-loop:doctor -- --json
 ```
 
-Executor live checks:
+### Vendor
 
 ```bash
-pnpm --filter @autopoly/executor ops:check
-pnpm --filter @autopoly/executor ops:check -- --slug <market-slug>
-pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
-pnpm --filter @autopoly/executor ops:check -- --json
+pnpm vendor:sync        # Sync external repos to vendor/repos/
 ```
 
-Single-run live fund test:
+## Deployment
 
-```bash
-ENV_FILE=.env.live-test pnpm live:test
-ENV_FILE=.env.live-test pnpm live:test -- --json
-ENV_FILE=.env.live-test pnpm live:test:stateless -- --recommend-only
-ENV_FILE=.env.live-test pnpm live:test:stateless -- --json
-```
+| Component | Recommended Deployment |
+| --- | --- |
+| `apps/web` | Vercel (read-only Postgres credentials) |
+| `services/orchestrator` | Single cloud VM |
+| `services/executor` | Same VM |
+| Postgres 17 | Managed database |
+| Redis 8 | Co-located or managed |
 
-In `live:test` mode:
+Hostinger VPS deployment: see [Illustration/hostinger-vps-deploy-runbook.en.md](Illustration/hostinger-vps-deploy-runbook.en.md), with `docker-compose.hostinger.yml` and `deploy/hostinger/stack.env.example`.
 
-- The flow is fixed to `preflight -> recommend -> queue execute -> sync -> summary`
-- The command only continues when `AUTOPOLY_EXECUTION_MODE=live` and the dedicated env file loads successfully
-- Preflight rejects missing live credentials, unavailable Redis/DB, failed Polymarket client initialization, non-empty remote positions, or existing open DB positions
-- The effective bankroll is pinned to `$20`, with `MAX_TRADE_PCT<=0.1` and `MAX_EVENT_EXPOSURE_PCT<=0.3`
-- Any recommendation, execution, or sync failure fails fast and writes system status to `halted`
-- Artifacts are stored under `runtime-artifacts/live-test/<timestamp>-<runId>/`
-- The archive always includes `preflight.json`, `recommendation.json`, and `execution-summary.json`, plus `error.json` on failure
-- TTY terminals get colored stage output and error summaries; `--json` falls back to machine-readable output
+Admin operations go through protected internal API to orchestrator; ports 4001/4002/5432/6379 are not publicly exposed.
 
-In `live:test:stateless` mode:
+## External Repository Dependencies
 
-- The flow is fixed to `preflight -> fetch remote portfolio -> pulse -> decision runtime -> guards + token cap -> direct execute -> summary`
-- It does not require local `Postgres` or `Redis`; it only depends on the live wallet, Polymarket, and the provider runtime
-- `--recommend-only` generates recommendations and archives only, without sending live orders
-- TTY output explicitly prints the current `execution mode` and `decision strategy` in preflight, recommendation, and summary sections; `--json` output includes the same fields
-- `STATELESS_MAX_BUY_TOKENS` defaults to `1`, so each `BUY` is capped to at most `1` token
-- To keep one-token buys executable, the stateless path lowers the minimum trade floor to `0.01 USD` by default; you can override it with `STATELESS_MIN_TRADE_USD`
-- Artifacts are stored under `runtime-artifacts/live-stateless/<timestamp>-<runId>/`
+`vendor/manifest.json` pins these external repos to specific commits:
 
-Local paper trading:
+| Repository | Purpose |
+| --- | --- |
+| `polymarket-trading-TUI` | Trading terminal and CLOB wiring reference |
+| `polymarket-market-pulse` | Pulse research input |
+| `alert-stop-loss-pm` | Stop-loss logic reference |
+| `all-polymarket-skill` | Backtesting, monitor, resolution skills reference |
+| `pm-PlaceOrder` | Order placement reference and local credential source |
 
-```bash
-AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
-AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
-AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend -- --json
-```
+Run `pnpm vendor:sync` to sync them into `vendor/repos/`. Plain `pnpm build` doesn't need vendor, but pulse / trial / live paths require it.
 
-In `paper` mode:
+## Run Archives
 
-- The default state file is `runtime-artifacts/local/paper-state.json`
-- `trial:recommend` generates recommendations first and persists the run as `awaiting-approval`
-- A TTY terminal shows colored stage progress plus the final notional and bankroll ratio for each recommendation
-- Only `trial:approve` mutates paper positions, trades, and overview state
-- If the web app points to the same `AUTOPOLY_LOCAL_STATE_FILE`, `/runs`, `/positions`, and `/trades` read directly from that local file
-- `--json`, non-TTY shells, CI, and `NO_COLOR=1` automatically fall back to machine-readable or colorless output
+All run artifacts go to `runtime-artifacts/` (gitignored), rooted at `ARTIFACT_STORAGE_ROOT`.
 
-Provider trial run:
+| Path | Contents |
+| --- | --- |
+| `reports/pulse/YYYY/MM/DD/` | Pulse markdown + JSON (`pulse-<timestamp>-<runtime>-<mode>-<runId>`) |
+| `reports/review\|monitor\|rebalance/` | Portfolio reports |
+| `reports/runtime-log/` | Decision runtime explanatory logs |
+| `live-stateless/<timestamp>-<runId>/` | Stateless runs: preflight, recommendation, execution-summary, run-summary |
+| `live-test/<timestamp>-<runId>/` | Stateful runs: same + error.json on failure |
+| `checkpoints/trial-recommend/` | Paper recommendation resume checkpoints |
+| `local/paper-state.json` | Default paper state file |
+| `rough-loop/` | Rough Loop task artifacts |
 
-```bash
-pnpm trial:run
-```
+Failure archives (per AGENTS convention) go to `run-error/` with stage, core context, root-cause summary, and next-step command.
 
-Recommended first `codex` trial-run command:
+## Current Status
 
-```bash
-CODEX_SKILLS=polymarket-market-pulse \
-CODEX_SKILL_LOCALE=zh \
-PROVIDER_TIMEOUT_SECONDS=0 \
-PULSE_REPORT_TIMEOUT_SECONDS=0 \
-CODEX_COMMAND='codex exec --skip-git-repo-check -C {{repo_root}} -s read-only --color never -c model_reasoning_effort="low" --output-schema {{schema_file}} -o {{output_file}} < {{prompt_file}}' \
-pnpm trial:run
-```
+As of 2026-03-24.
 
-Notes:
-
-- `PROVIDER_TIMEOUT_SECONDS=0` disables the decision-runtime timeout
-- `PULSE_REPORT_TIMEOUT_SECONDS=0` disables the full-pulse render and pulse-research subcommand timeouts
-- Non-model operational timeouts such as `PULSE_FETCH_TIMEOUT_SECONDS` remain in place so external fetches do not hang forever
-
-## Deployment shape
-
-Recommended deployment layout:
-
-- `apps/web`
-  - deploy to Vercel
-  - use read-only Postgres credentials
-- `services/orchestrator`
-  - deploy to a single cloud host
-- `services/executor`
-  - deploy to the same cloud host
-- Postgres
-  - preferably managed
-- Redis
-  - only for backend coordination and queues
-
-Admin actions remain inside the site and call protected orchestrator endpoints instead of being exposed publicly.
-
-## Current status
-
-As of `2026-03-17`, the practical completion state is:
+### Subsystem Completion
 
 | Subsystem | Status | Notes |
 | --- | --- | --- |
-| monorepo / workspace build | complete | `pnpm build`, `pnpm typecheck`, and `pnpm test` are first-class workspace operations |
-| web spectator/admin UI | complete | overview, positions, trades, runs, reports, backtests, and admin pages exist |
-| shared contracts / db / terminal-ui | complete | schemas, queries, local state, and terminal rendering are implemented |
-| local `paper` trading | complete | recommendation, human approval, and file-backed state are connected |
-| `live:test:stateless` | complete | DB-less real-fund closed loop plus archives is implemented |
-| `live:test` stateful path | implemented, still being validated | queue worker, preflight, sync, and summaries exist but depend more on infra |
-| real pulse fetch and archiving | complete | no mock pulse fallback in the main path |
-| bilingual run summaries | complete | live runs can write Chinese + English summaries |
-| Polymarket proxy wallet / signature type compatibility | complete | funder-address and signature-type handling has been clarified in the code and env flow |
-| review / monitor / rebalance reports | complete and connected | these artifacts are now written as part of the main daily pulse / live paths |
-| resolution tracking | implemented | independent recurring capability, not the main trading entrypoint |
-| backtest | connected to the shared artifact layer | still lightweight, but now emits bilingual artifacts |
-| openclaw provider | reserved | wired, but not the primary path |
-| rough-loop | separate subsystem | present and runnable, but not a prerequisite for remote build or the trading path |
+| Monorepo build | ✅ Done | `build` / `typecheck` / `test` workspace support |
+| Web dashboard + admin | ✅ Done | Overview, positions, trades, runs, reports, backtests, admin |
+| Shared contracts / DB / Terminal UI | ✅ Done | Schema, queries, local state, terminal rendering |
+| Paper test bench | ✅ Done | Recommend → manual approve → file-backed state |
+| `live:test:stateless` | ✅ Done and actively running | 37 live-stateless run archives (03/16–03/24) |
+| `live:test` stateful | ⚠️ Implemented but blocked | Code works, local machine lacks DB/Redis so preflight always fails |
+| Real Pulse fetching | ✅ Done | ~50+ Pulse reports produced (03/14–03/23) |
+| `pulse-direct` decision engine | ✅ Live | Default since 03/20, replacing provider-runtime |
+| Bilingual run summaries | ✅ Done | Chinese + English per live run |
+| Review / Monitor / Rebalance reports | ✅ Done | Auto-generated with daily pulse / live runs since 03/20 |
+| Hard risk controls | ✅ Done | `applyTradeGuards` + halt + stop-loss |
+| Polymarket proxy wallet compat | ✅ Done | `FUNDER_ADDRESS` / `SIGNATURE_TYPE` |
+| Resolution tracking | ✅ Implemented | Independent periodic capability with real artifacts |
+| Backtest | ⚠️ Lightweight | Connected to artifact layer, not production-grade |
+| OpenClaw provider | 🔲 Reserved | Interface exists, not current default |
+| Rough Loop | ✅ Standalone | 5 automated code-task runs on 03/17 |
+| VPS deployment | ✅ Documented | Hostinger runbook + Docker compose |
+| CI/CD | 🔲 Pending | No GitHub Actions yet |
 
-If the immediate goal is only to let a remote agent build the project, the repository is already in good enough shape. The environment-sensitive pieces are:
+### Actual Run Data
 
-- pulse / recommendation execution
-- live wallet access
-- the stateful DB/Redis-backed stack
+**Active wallet: Pizza** (`0x6664***614e`), collateral ~$96.95 USDC.
 
-See [progress.md](progress.md) for detailed progress tracking.
+**Current on-chain positions (pizza wallet, last snapshot 2026-03-23)**:
 
-The E2E test driven development workspace lives in [E2E Test Driven Development/README.md](E2E%20Test%20Driven%20Development/README.md).
+| Market | Direction | Size | Avg Cost | Current Price | Unrealized P&L |
+| --- | --- | --- | --- | --- | --- |
+| Bitcoin dip to 65k in March 2026 | BUY No | 1.34 | $0.746 | $0.742 | -0.5% |
+| Gavin Newsom 2028 Dem nomination | BUY No | 1.32 | $0.758 | $0.758 | 0% |
+| Gavin Newsom 2028 presidential election | BUY No | 1.21 | $0.825 | $0.835 | +1.2% |
 
-## Current limitations
+**Paper state**: $200 bankroll / $176 cash / 2 simulated positions (Vance + Avalanche), last run 03/16.
 
-The main current limitations are:
+### Run Timeline
 
-- a dedicated production deployment handbook has not been finalized yet
-- `live:test` is more infra-dependent than `live:test:stateless`, so remote reproducibility is harder
-- `provider-runtime` is still present as a legacy path and will be de-emphasized further
-- `backtest` is still lightweight and should not be treated as production-grade evaluation
-- the `openclaw` runtime surface exists, but it is not the default recommended path today
+| Date | Event |
+| --- | --- |
+| **03/14** | First Pulse reports generated (codex provider-runtime), 15 pulses; first real $1 test trade matched |
+| **03/16** | Paper mode full loop completed (recommend → approve → state update); first live-stateless runs; Pizza wallet connectivity verified |
+| **03/17** | Multiple live-stateless runs; no1 wallet snapshot showed 12 real positions / $128 total equity; Rough Loop completed 5 code-task runs |
+| **03/18** | Portfolio review report generated independently for first time; live-stateless preflight pending |
+| **03/20** | **pulse-direct engine goes live**, replacing provider-runtime as default; review / monitor / rebalance reports auto-generated per run; one crude oil order rejected by Polymarket ($0.34) |
+| **03/23** | Heavy run day — 8 live-stateless runs (pizza wallet); live:test attempt failed (DATABASE_URL not configured); VPS SSH connectivity postmortem; last complete run artifact at 15:05 UTC |
+| **03/24** | One pending preflight exists, full run not completed |
 
-## Next steps
+### Known Issues and Blockers
 
-See [todo-loop.md](todo-loop.md) for the current high-priority follow-up items.
+| Issue | Impact | Status |
+| --- | --- | --- |
+| No local Postgres / Redis | `live:test` stateful path always fails at preflight | Needs Docker or remote DB |
+| Pulse provider timeout | Some runs degrade to deterministic fallback, lower entry candidate quality | Intermittent |
+| Min trade threshold | Risk guard $10 minimum blocks small stateless open candidates | By design; stateless path lowered to $0.01 |
+| Order rejected by Polymarket | One crude oil $0.34 order rejected | Archived, no impact on subsequent runs |
+
+### Known Limitations
+
+- `live:test` stateful path cannot be verified on local machine, needs remote infrastructure
+- Full production deployment not yet condensed into a single deploy handbook
+- `provider-runtime` will continue to be de-emphasized as a legacy path
+- Backtest remains lightweight
+- No CI/CD pipeline
+- No automated reconciliation or alert notifications
+
+## Dependency Matrix
+
+| Dependency | Required | Purpose |
+| --- | --- | --- |
+| Node.js ≥ 20 | ✅ Yes | Monorepo build and runtime |
+| pnpm 10.x | ✅ Yes | Workspace package management (currently `10.28.1`) |
+| TypeScript 5.9.x | Built-in | TS compilation |
+| Docker / docker compose | Optional | Local Postgres + Redis |
+| Postgres 17 | Optional | Required for `live:test` |
+| Redis 8 | Optional | Required for `live:test` |
+| Codex CLI | Runtime | `provider-runtime` / Pulse generation |
+| Polymarket wallet credentials | Live paths | Real-money orders |
+
+### Core Runtime Dependencies
+
+| Package | Main Dependencies |
+| --- | --- |
+| `apps/web` | Next.js 16, React 19 |
+| `services/orchestrator` | Fastify 5, BullMQ 5, ioredis 5, drizzle-orm, node-cron |
+| `services/executor` | @polymarket/clob-client 5, ethers 5, Fastify 5, BullMQ 5 |
+| `packages/db` | postgres, drizzle-orm, drizzle-kit |
+| `packages/contracts` | zod 4 |
+
+## Documentation Index
+
+### Root
+
+| Document | Contents |
+| --- | --- |
+| [risk-controls.en.md](risk-controls.en.md) | Full risk control rules |
+| [.env.example](.env.example) | Environment variable template |
+| [progress.en.md](progress.en.md) | Implementation progress |
+| [todo-loop.en.md](todo-loop.en.md) | Upcoming high-priority items |
+| [rough-loop.md](rough-loop.md) | Rough Loop main documentation |
+| [AGENTS.en.md](AGENTS.en.md) | Project collaboration conventions |
+
+### Illustration/
+
+| Document | Contents |
+| --- | --- |
+| [onboarding-architecture.en.md](Illustration/onboarding-architecture.en.md) | Onboarding architecture + module map + state source guide |
+| [trading-modes-flowchart.en.md](Illustration/trading-modes-flowchart.en.md) | Trading mode flowchart |
+| [portfolio-ops-report-design.en.md](Illustration/portfolio-ops-report-design.en.md) | Monitor / Review / Rebalance report design |
+| [hostinger-vps-deploy-runbook.en.md](Illustration/hostinger-vps-deploy-runbook.en.md) | Hostinger VPS deployment runbook |
+| [repo-slimming-plan.en.md](Illustration/repo-slimming-plan.en.md) | Module keep/merge/drop checklist |
+
+### Plan/
+
+| Document | Contents |
+| --- | --- |
+| [2026-03-17-rough-loop-8h-run-plan.en.md](Plan/2026-03-17-rough-loop-8h-run-plan.en.md) | Rough Loop 8-hour continuous run plan |
+| [2026-03-17-position-review-module-plan.en.md](Plan/2026-03-17-position-review-module-plan.en.md) | Position Review module design |
+
+## Onboarding Path for New Contributors
+
+If this is your first time working with this repository:
+
+1. **Read this document** — understand the four layers and three execution paths
+2. **Check [.env.example](.env.example)** — understand run modes and dependencies
+3. **Check [risk-controls.en.md](risk-controls.en.md)** — understand hard risk rules
+4. **Check [Illustration/onboarding-architecture.en.md](Illustration/onboarding-architecture.en.md)** — understand module boundaries, state sources, and the default primary path
+5. **Check [Illustration/trading-modes-flowchart.en.md](Illustration/trading-modes-flowchart.en.md)** — understand execution path branching
+6. **Run `pnpm build`** — verify the build works
+7. **Run `pnpm daily:pulse` or `pnpm live:test:stateless -- --recommend-only`** — see a full decision output
+
+If you just need to "get the project building", step 6 is enough.

@@ -2,263 +2,213 @@
 
 英文版见 [README.en.md](README.en.md)。
 
-这是一个面向 Polymarket 的云端自主交易系统仓库，目标是做出一套可以真实运行、可公开围观、并且具备硬风控约束的交易 Agent。
+最后更新：2026-03-24
 
-第一版的定位很明确：
+---
 
-- 只跑一个真钱包实例
-- 网站对外公开，只读围观
-- 管理操作只在站内管理员页面可用
-- 默认支持 `codex` skill runtime
-- 预留 `openclaw` skill runtime 接口
+面向 [Polymarket](https://polymarket.com) 的云端自主交易系统。目标是做一套**可真实运行、可公开围观、具备服务层硬风控**的交易 Agent。
 
-## 项目目标
+核心定位：
 
-这个系统希望同时解决三件事：
+- 单真钱包实例，网站公开只读围观
+- 风控不靠提示词，靠服务层硬规则
+- Agent 在云端持续运行，而非本地脚本临时执行
+- 第三方可在网页看到真实仓位、成交记录、净值曲线和运行报告
 
-- 让 Agent 可以在云端持续运行，而不是只在本地脚本里临时执行
-- 让第三方用户可以在网页上看到真实仓位、交易历史、净值和报告
-- 把风控从提示词里拿出来，变成服务层的硬规则
+## 目录
 
-## 给远程 Agent 的最短接手路径
+- [架构总览](#架构总览)
+- [Monorepo 结构](#monorepo-结构)
+- [三条运行链路](#三条运行链路)
+- [决策引擎](#决策引擎)
+- [风控体系](#风控体系)
+- [快速开始](#快速开始)
+- [环境变量](#环境变量)
+- [命令速查](#命令速查)
+- [部署形态](#部署形态)
+- [外部依赖仓库](#外部依赖仓库)
+- [运行归档](#运行归档)
+- [当前状态](#当前状态)
+- [文档索引](#文档索引)
 
-如果你是第一次接手这个仓库，且之前不了解这里的 skills、进度和历史上下文，建议按下面的顺序理解：
+---
 
-1. 读完本 README
-2. 查看 [.env.example](.env.example) 了解运行模式和依赖
-3. 查看 [risk-controls.md](risk-controls.md) 了解硬风控
-4. 查看 [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md) 先理解模块边界、状态源和默认主路径
-5. 查看 [Illustration/trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md) 了解执行路径分叉
-6. 需要更细设计时，再看 [progress.md](progress.md) 和 `Illustration/` 下的说明文档
+## 架构总览
 
-如果目标只是“远程把项目 build 起来”，并不需要先理解全部 skill 细节。
+系统分为四层，数据从上到下流动：
 
-## 依赖矩阵
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Layer 1 · Research / Pulse                                 │
+│  从 Polymarket 抓取市场列表，生成 Pulse 候选池              │
+│  产物 → runtime-artifacts/reports/pulse/...                 │
+└───────────────────────────┬─────────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Layer 2 · Decision / Runtime                               │
+│  orchestrator 将 Pulse + 持仓上下文 → 结构化决策            │
+│  主路径: pulse-direct │ legacy: provider-runtime            │
+└───────────────────────────┬─────────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Layer 3 · Execution / Risk                                 │
+│  服务层硬风控裁剪 → executor 下单 / 同步 / 止损 / flatten   │
+│  FOK 市价单 · 单笔≤5% · 总敞口≤50% · 回撤≥20% halt        │
+└───────────────────────────┬─────────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Layer 4 · State / Archive / UI                             │
+│  DB / 本地状态 / runtime-artifacts 归档 / apps/web 展示     │
+└─────────────────────────────────────────────────────────────┘
+```
 
-建议按“构建 / 本地运行 / 真正跑策略”来理解依赖：
+Mermaid 版和更细的模块连接见 [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md)。
 
-| 依赖 | 是否必需 | 用途 | 备注 |
+## Monorepo 结构
+
+本仓库是 `pnpm` monorepo（`pnpm@10.28.1`，Node ≥ 20），没有根级 `src/`，源码分布在以下子包中：
+
+```
+autonomous-poly-trading/
+├── apps/
+│   └── web/                          # Next.js 16 网站：公开围观 + 管理员控制台
+├── services/
+│   ├── orchestrator/                 # 调度、Pulse、决策运行时、风控、报告
+│   ├── executor/                     # Polymarket CLOB 对接、下单、同步、队列 worker
+│   └── rough-loop/                   # 独立的代码任务循环器（非交易主链路）
+├── packages/
+│   ├── contracts/                    # Zod schema：TradeDecisionSet 等共享契约
+│   ├── db/                           # Drizzle schema、迁移、查询、local-state
+│   └── terminal-ui/                  # 终端彩色输出、错误摘要、表格渲染
+├── scripts/                          # 工作区级入口：daily-pulse、live-test、poly-cli
+├── vendor/                           # 外部仓库锁定清单（manifest.json）
+├── deploy/hostinger/                 # VPS 部署脚本与环境模板
+├── Illustration/                     # 架构图、流程图、运维说明（中英双语）
+├── Plan/                             # 阶段性规划文档
+├── E2E Test Driven Development/      # Playwright + Vitest E2E 套件
+├── runtime-artifacts/                # 运行产物归档（.gitignore，仅保留 .gitkeep）
+├── docker-compose.yml                # 本地 Postgres 17 + Redis 8
+├── docker-compose.hostinger.yml      # 生产向容器编排
+└── package.json                      # 根 scripts + workspace 依赖
+```
+
+### 各模块职责速查
+
+| 模块 | 做什么 | 关键入口 |
+| --- | --- | --- |
+| `apps/web` | 公开页面（总览/持仓/成交/runs/reports/backtests）+ 管理员操作 | `app/page.tsx` |
+| `services/orchestrator` | Pulse 生成 → 决策运行时 → 风控裁剪 → 报告产物 | `src/jobs/daily-pulse-core.ts` |
+| `services/executor` | Polymarket CLOB 下单、仓位同步、止损、flatten | `src/workers/queue-worker.ts`、`src/lib/polymarket.ts` |
+| `packages/contracts` | `TradeDecisionSet`、`actionSchema`、队列/任务名等 | `src/index.ts` |
+| `packages/db` | DB schema + 查询；paper 模式下的 file-backed local state | `src/queries.ts`、`src/local-state.ts` |
+| `packages/terminal-ui` | 终端 UI 工具库 | `src/index.ts` |
+| `scripts/` | CLI 入口，拼接不同运行模式 | `daily-pulse.ts`、`live-test-stateless.ts`、`live-test.ts` |
+| `services/rough-loop` | 代码任务自动循环（不参与交易） | `src/cli.ts` |
+
+## 三条运行链路
+
+```mermaid
+flowchart LR
+  paper["paper\n本地模拟"] --> core["Pulse + Decision Core"]
+  stateless["live:test:stateless\n最快真钱闭环"] --> core
+  stateful["live:test\n完整生产链路"] --> core
+
+  core --> risk["风控硬裁剪"]
+  risk --> out1["Paper state file"]
+  risk --> out2["直接 Polymarket 执行"]
+  risk --> out3["BullMQ 队列 → Executor"]
+```
+
+| 链路 | 命令 | 依赖 | 适合场景 |
 | --- | --- | --- | --- |
-| `git` | 必需 | clone、vendor sync、推送代码 | 任意较新版本即可 |
-| `Node.js >= 20` | 必需 | monorepo 构建与运行 | 根 `package.json` 已声明 |
-| `pnpm 10.x` | 必需 | workspace 包管理 | 当前锁定 `pnpm@10.28.1` |
-| `TypeScript 5.9.x` | 已内置 | 构建 TS 服务和包 | 随 workspace 安装 |
-| `Docker` / `docker compose` | 可选 | 跑本地 `Postgres + Redis` | `live:test:stateless` 和纯 `build` 不要求 |
-| `Postgres 17` | 可选 | stateful web / orchestrator / executor | `docker-compose.yml` 已提供 |
-| `Redis 8` | 可选 | queue、sync、后台任务 | `docker-compose.yml` 已提供 |
-| `Codex CLI` | 跑 pulse/runtime 时必需 | provider runtime | 纯 `pnpm build` 不要求 |
-| `OpenClaw CLI` | 可选 | 备用 provider | 当前不是主路径 |
-| Polymarket 钱包凭据 | live 路径必需 | 真钱下单或余额检查 | 仅 live 路径需要 |
+| **paper** | `pnpm trial:recommend` / `trial:approve` | 本地文件 | 模拟与人工确认 |
+| **live:test:stateless** | `pnpm live:test:stateless` | 钱包 + Polymarket | 最快真钱闭环，onboarding 首选 |
+| **live:test** | `pnpm live:test` | 钱包 + DB + Redis + Queue | 完整生产链路 |
 
-工作区内主要运行时依赖如下：
+补充：`pnpm daily:pulse` 不是第四种链路，它是 `live:test:stateless` 的便捷包装，默认帮你配好 `.env.pizza`、`AUTOPOLY_EXECUTION_MODE=live` 和 `pulse-direct`。
 
-- `apps/web`
-  - `next@16.1.6`
-  - `react@19.2.0`
-  - `react-dom@19.2.0`
-- `services/orchestrator`
-  - `fastify@5.8.2`
-  - `bullmq@5.71.0`
-  - `ioredis@5.10.0`
-  - `drizzle-orm@0.45.1`
-  - `dotenv@17.2.3`
-  - `node-cron@4.2.1`
-- `services/executor`
-  - `@polymarket/clob-client@5.8.0`
-  - `ethers@5.7.2`
-  - `fastify@5.8.2`
-  - `bullmq@5.71.0`
-  - `ioredis@5.10.0`
-  - `drizzle-orm@0.45.1`
-- `packages/db`
-  - `postgres@3.4.8`
-  - `drizzle-orm@0.45.1`
-  - `drizzle-kit@0.31.9`
-- `packages/contracts`
-  - `zod@4.1.12`
+### 执行流程
 
-## 整体架构
+**所有 live 路径都必须经过 Preflight**——它不是独立模式，而是必经阶段。
 
-如果你是第一次进入代码，建议先看 [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md)，再回来看下面这四层。
+**live:test:stateless**：
 
-建议把当前系统理解成四层：
+```
+Preflight → 拉远端持仓/Collateral → Pulse 生成 → 决策运行时 → 风控 + Token Cap → 直接下单 → Summary 归档
+```
 
-### 1. Research / Pulse 层
+**live:test**：
 
-- 从 Polymarket 市场列表和 vendor skills 中生成 `pulse`
-- 产物写入 `runtime-artifacts/reports/pulse/...`
-- 这是所有后续决策的研究输入
+```
+Preflight(+DB/Redis/Queue) → Pulse 生成 → Agent Cycle(决策+持久化) → 队列投递 → Executor Worker 执行 → Sync → Summary 归档
+```
 
-### 2. Decision / Runtime 层
+**paper**：
 
-- orchestrator 负责把 `pulse + portfolio context` 转成结构化决策
-- 当前主路径默认是：
-  - `pulse-direct`
-- 同时保留一个 legacy 对照入口：
-  - `pulse-direct`
-  - `provider-runtime`
-- `provider-runtime` 仍可用，但不再是默认主路径
+```
+加载组合上下文 → Pulse 生成 → 决策运行时 → 风控 → awaiting-approval → trial:approve → Paper State 更新
+```
 
-### 3. Execution / Risk 层
+## 决策引擎
 
-- executor 负责：
-  - 下单
-  - sync 远端仓位
-  - stop-loss
-  - flatten
-- 风控不依赖提示词，而是在服务层硬裁剪：
-  - 单笔上限
-  - 事件暴露上限
-  - 总暴露上限
-  - 最大持仓数
-  - 回撤 halt
+当前有两种决策策略，由 `AGENT_DECISION_STRATEGY` 环境变量控制：
 
-### 4. State / Archive / UI 层
+### pulse-direct（当前默认主路径）
 
-- `packages/db`
-  - DB schema、查询与 file-backed local state
-- `runtime-artifacts/`
-  - pulse、runtime-log、live runs、paper state、rough-loop 等归档
-- `apps/web`
-  - 公开只读展示和管理员控制台
+```
+Pulse markdown → 正则/表格解析 → PulseEntryPlan
+                                        ↓
+当前持仓 → reviewCurrentPositions → hold/reduce/close
+                                        ↓
+                   composePulseDirectDecisions → TradeDecisionSet
+```
 
-从运行路径看，当前仓库主要有三种模式：
+不依赖外部 LLM 进程，直接从 Pulse 结构化章节提取开仓候选，结合持仓 review 组装决策。
 
-| 模式 | 典型命令 | 依赖 | 用途 |
-| --- | --- | --- | --- |
-| `paper` | `pnpm trial:recommend` / `trial:approve` | 本地文件状态 + daily pulse core | 本地模拟与人工确认 |
-| `live:test:stateless` | `pnpm live:test:stateless` | 钱包 + Polymarket + daily pulse core | 最快的真钱闭环 |
-| `live:test` | `pnpm live:test` | 钱包 + DB + Redis + queue worker + daily pulse core | 更接近完整生产链路 |
+### provider-runtime（legacy 对照）
 
-## 仓库结构
+通过 spawn 外部进程（Codex / OpenClaw CLI），把 Pulse + 持仓上下文传给 LLM，解析 stdout 得到 `TradeDecisionSet`。仍可用，但不再是默认路径。
 
-本仓库是一个 `pnpm` monorepo，主要分为以下几部分：
+## 风控体系
 
-- `apps/web`
-  - Next.js 网站
-  - 用于公开围观页和管理员控制台
-  - 目标部署平台是 Vercel
-- `services/orchestrator`
-  - 负责调度 Agent 运行
-  - 负责风控状态管理
-  - 负责 backtest、resolution、review 等周期任务
-- `services/executor`
-  - 负责对接 Polymarket CLOB
-  - 负责下单、成交同步、仓位同步
-  - 负责 live ops 脚本
-- `services/rough-loop`
-  - 独立的代码任务持续执行器
-  - 不是主交易链路的前置条件
-- `packages/contracts`
-  - 共享的 zod schema
-  - 用来约束 `TradeDecisionSet` 等结构化数据
-- `packages/db`
-  - Drizzle schema
-  - 数据查询
-  - 种子数据与迁移
-- `packages/terminal-ui`
-  - 统一的终端彩色输出、错误摘要和表格渲染
-- `scripts`
-  - live test、stateless live、wallet env、summary 等工作区级入口脚本
-- `vendor`
-  - 外部依赖仓库的固定清单
-  - 用于把外部 repo 锁到特定 commit
+风控是服务层硬规则，无论上游用哪种 provider 或策略，进入 orchestrator / executor 链路后都受约束。
 
-## 网站形态
+### 系统级
 
-公开围观页当前规划和实现的页面包括：
+| 规则 | 阈值 | 效果 |
+| --- | --- | --- |
+| 组合回撤 halt | 净值相对高水位回撤 ≥ **20%** | 进入 `halted`，禁止新开仓 |
+| 恢复 | 仅管理员 `resume` | fail-closed 设计 |
 
-- `/`
-  - 总览页
-  - 展示资金、净值、系统状态等信息
-- `/positions`
-  - 当前持仓
-- `/trades`
-  - 历史成交
-- `/runs`
-  - Agent 运行列表
-- `/runs/[id]`
-  - 单次运行详情
-  - 包括 reasoning、日志、决策等
-- `/reports`
-  - pulse、review、resolution 结果
-- `/backtests`
-  - 每日回测结果
+### 仓位级
 
-管理员页面提供以下操作：
+| 规则 | 阈值 |
+| --- | --- |
+| 单仓止损 | 浮亏 ≥ **30%** |
+| 止损优先级 | 高于常规策略动作 |
 
-- `pause`
-- `resume`
-- `run-now`
-- `cancel-open-orders`
-- `flatten`
+### 执行级
 
-第一版不提供对外开发者 API。网站只读数据库或走站内内部接口，不做公开可集成的 API 产品。
+| 规则 | 默认值 |
+| --- | --- |
+| 下单类型 | **FOK** 市价单 |
+| 单笔上限 | 资金的 **5%** |
+| 最大总敞口 | 资金的 **50%** |
+| 单事件敞口上限 | 资金的 **30%** |
+| 最大并发持仓 | **10** 个 |
+| 最小有效额度 | 低于此直接丢弃 |
 
-## 风控规则
+### Pulse 级
 
-当前已经明确的硬风控包括：
-
-- 单仓止损：`30%`
-- 总体资金回撤停机：`20%`
-- 最大总敞口：`50%`
-- 最大并发持仓数：`10`
-- 单笔最大下单比例：资金的 `5%`
-
-执行层首版统一使用 `FOK` 市价单。
-
-这意味着：
-
-- 即使模型想下单，服务层仍然会做风控裁剪
-- 进入 `HALTED` 状态后，不允许继续新开仓
-- 止损和人工 flatten 的优先级高于常规策略动作
+- 必须来自真实 `fetch_markets.py` 抓取，不再有 mock fallback
+- Pulse 超龄、候选不足、缺 `clobTokenIds` 均视为风险状态，本轮禁止新 `open`
+- `open` 的 `token_id` 必须来自 Pulse candidates
 
 完整规则见 [risk-controls.md](risk-controls.md)。
 
-## Provider Runtime
-
-当前 orchestrator 已经切到 provider-based runtime：
-
-- `AGENT_RUNTIME_PROVIDER=codex|openclaw`
-- `codex` 和 `openclaw` 都有独立的 skill 配置
-- skill 可配置：
-  - skill 根目录
-  - 中文或英文 locale
-  - 参与本轮决策的 skill 列表
-- 当前不再保留 mock pulse fallback
-- 如果 provider 命令缺失、skill 文件缺失或 pulse 抓取失败，运行会直接 fail-closed
-
-当前默认的 pulse 存储命名为：
-
-```text
-reports/pulse/YYYY/MM/DD/pulse-<timestamp>-<runtime>-<mode>-<runId>.md
-reports/pulse/YYYY/MM/DD/pulse-<timestamp>-<runtime>-<mode>-<runId>.json
-```
-
-## 外部仓库依赖
-
-当前系统围绕以下外部仓库进行集成：
-
-- `polymarket-trading-TUI`
-  - 作为交易终端和 CLOB 接线参考
-- `polymarket-market-pulse`
-  - 作为下注建议和仓位建议的核心输入
-- `alert-stop-loss-pm`
-  - 作为止损逻辑参考
-- `all-polymarket-skill`
-  - 提供 backtesting、monitor、resolution tracking 等能力参考
-- `pm-PlaceOrder`
-  - 作为下单参考和本地凭据来源
-
-`vendor` 目录的作用，是把这些外部依赖锁定在明确版本，而不是在运行时临时拉代码。
-
-当前 `vendor/manifest.json` 已锁定具体 commit，因此远端 Agent 不需要自己猜外部依赖版本。
-
 ## 快速开始
 
-### 只验证能否远程 build
-
-如果目标只是让一个陌生 Agent 在远端把项目 build 起来，最短命令是：
+### 最小 Build（验证构建）
 
 ```bash
 git clone https://github.com/Alchemist-X/autonomous-poly-trading.git
@@ -267,154 +217,103 @@ pnpm install
 pnpm build
 ```
 
-说明：
+不需要 Docker、Codex CLI 或真钱包凭据——只验证 TS / Next.js 能否编译通过。
 
-- 这条路径不要求 `Docker`
-- 这条路径不要求 `Codex CLI`
-- 这条路径不要求真钱包或 `.env` 凭据
-- 这条路径只验证 workspace 能否完成 TS / Next.js 构建
-
-### 远程准备能运行 pulse / runtime
-
-如果远端不仅要 build，还要能跑 pulse 和 recommendation，请继续做：
+### 跑 Pulse 和 Recommendation
 
 ```bash
 cp .env.example .env
 pnpm vendor:sync
+# 补齐 CODEX_COMMAND / 钱包凭据
+pnpm daily:pulse              # 便捷入口
+# 或者
+pnpm live:test:stateless -- --recommend-only   # 只看建议不下单
 ```
 
-然后补齐：
-
-- `CODEX_COMMAND`
-- `ENV_FILE` 或真实 `.env`
-- 必要时的 Polymarket wallet 凭据
-
-### 远程准备完整 stateful 本地栈
-
-如果目标是启动完整 web + orchestrator + executor 本地栈，再继续：
-
-```bash
-docker compose up -d postgres redis
-pnpm db:migrate
-pnpm db:seed
-pnpm dev
-```
-
-1. 复制环境变量模板：
+### 完整本地栈（Stateful）
 
 ```bash
 cp .env.example .env
-```
-
-2. 安装依赖：
-
-```bash
 pnpm install
-```
-
-3. 同步外部 vendor 仓库：
-
-```bash
 pnpm vendor:sync
-```
-
-说明：
-
-- `pnpm build` 本身不依赖 `vendor` 目录
-- 但只要你要跑 `pulse`、`trial:*`、`live:test*`，就应先执行 `pnpm vendor:sync`
-
-4. 启动本地数据服务：
-
-```bash
 docker compose up -d postgres redis
-```
-
-5. 执行数据库迁移并写入初始数据：
-
-```bash
 pnpm db:migrate
 pnpm db:seed
-```
-
-6. 启动整个 monorepo：
-
-```bash
 pnpm dev
 ```
 
-本地默认端口：
+默认端口：Web `3000` / Orchestrator `4001` / Executor `4002`
 
-- web：`http://localhost:3000`
-- orchestrator：`http://localhost:4001`
-- executor：`http://localhost:4002`
-
-## 环境变量说明
-
-完整模板见 [.env.example](.env.example)。
-
-如果你的 Polymarket 凭据放在相邻仓库里，可以在 `.env` 中设置：
+### Paper 模式
 
 ```bash
-ENV_FILE=../pm-PlaceOrder/.env.aizen
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
 ```
 
-当前 executor 和 orchestrator 都支持在开发环境自动发现相邻目录中的 `.env.aizen`。
+状态默认写入 `runtime-artifacts/local/paper-state.json`。
 
-如果你显式设置了 `ENV_FILE`，现在会优先加载这个文件并覆盖默认 `.env*` 发现结果。真实资金单次测试建议固定使用独立的 `.env.live-test`。
+## 环境变量
 
-环境变量大致分为四组：
+完整模板：[.env.example](.env.example)
 
-- shared
-  - 数据库
-  - Redis
-  - App URL
-  - `AUTOPOLY_EXECUTION_MODE=paper|live`
-  - `AUTOPOLY_LOCAL_STATE_FILE`
-- web
-  - 管理员密码
-  - orchestrator 内部 token
-- executor
-  - 私钥
-  - funder address
-  - signature type
-  - chain id
-- orchestrator
-  - provider 选择
-  - codex / openclaw skill 设置
-  - pulse 抓取与存储参数
-  - 调度周期
-  - 风控参数
+分四组理解：
 
-## Rough Loop
+| 组 | 关键变量 | 说明 |
+| --- | --- | --- |
+| **共享** | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE` | 执行模式（paper/live）、基础设施连接 |
+| **Web** | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN` | 管理员鉴权 |
+| **Executor** | `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` | Polymarket 钱包与链配置 |
+| **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*` | Provider 选择、Pulse 抓取、风控参数 |
 
-现在仓库已经内置了一个独立的 `Rough Loop` 代码任务持续执行器。
+如果 Polymarket 凭据放在相邻仓库，可以设 `ENV_FILE=../pm-PlaceOrder/.env.aizen`。真实资金测试建议固定使用独立的 `.env.live-test`。
 
-- 主入口文档是 [rough-loop.md](rough-loop.md)
-- 使用说明见 [rough-loop-guide.md](rough-loop-guide.md)
-- 它会持续读取任务卡片、调用 `codex|openclaw`、执行验证、更新状态，并把产物写入 `runtime-artifacts/rough-loop/`
-- 每次任务完成后，它会立即提交本轮任务实际触碰到的文件
-- 首版默认只处理代码任务，不处理真实交易、生产部署和私钥操作
-- 如果你要在当前脏工作树里强行启动，可以显式设置 `ROUGH_LOOP_RELAX_GUARDRAILS=1`
+## 命令速查
 
-## 常用命令
-
-工作区校验：
+### 构建与校验
 
 ```bash
-pnpm typecheck
-pnpm test
-pnpm build
+pnpm build              # 全量构建
+pnpm typecheck          # 全量类型检查
+pnpm test               # Vitest 单测
 ```
 
-数据库相关：
+### 数据库
 
 ```bash
-pnpm db:generate
-pnpm db:migrate
-pnpm db:seed
+pnpm db:generate        # 生成迁移
+pnpm db:migrate         # 执行迁移
+pnpm db:seed            # 种子数据
 ```
 
-E2E 工作区：
+### 交易链路
+
+```bash
+# Paper
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
+AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
+
+# Live Stateless
+ENV_FILE=.env.live-test pnpm live:test:stateless
+ENV_FILE=.env.live-test pnpm live:test:stateless -- --recommend-only
+ENV_FILE=.env.live-test pnpm live:test:stateless -- --json
+
+# Live Stateful
+ENV_FILE=.env.live-test pnpm live:test
+
+# Daily Pulse（stateless 的便捷入口）
+pnpm daily:pulse
+```
+
+### Executor Ops
+
+```bash
+pnpm --filter @autopoly/executor ops:check
+pnpm --filter @autopoly/executor ops:check -- --slug <market-slug>
+pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
+```
+
+### E2E
 
 ```bash
 pnpm e2e:install-browsers
@@ -422,154 +321,199 @@ pnpm e2e:local-lite
 AUTOPOLY_E2E_REMOTE=1 pnpm e2e:remote-real
 ```
 
-Rough Loop：
+### Rough Loop
 
 ```bash
 pnpm rough-loop:doctor
 pnpm rough-loop:once
 pnpm rough-loop:start
-pnpm rough-loop:dev
-pnpm rough-loop:doctor -- --json
 ```
 
-执行层 live 检查：
+### Vendor
 
 ```bash
-pnpm --filter @autopoly/executor ops:check
-pnpm --filter @autopoly/executor ops:check -- --slug <market-slug>
-pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
-pnpm --filter @autopoly/executor ops:check -- --json
+pnpm vendor:sync        # 同步外部仓库到 vendor/repos/
 ```
-
-真实资金单次测试：
-
-```bash
-ENV_FILE=.env.live-test pnpm live:test
-ENV_FILE=.env.live-test pnpm live:test -- --json
-ENV_FILE=.env.live-test pnpm live:test:stateless -- --recommend-only
-ENV_FILE=.env.live-test pnpm live:test:stateless -- --json
-```
-
-在 `live:test` 模式下：
-
-- 运行顺序固定为 `preflight -> recommend -> queue execute -> sync -> summary`
-- 只有 `AUTOPOLY_EXECUTION_MODE=live` 且专用 env 文件加载成功时才允许继续
-- preflight 会拒绝空私钥、Redis/DB 不可达、Polymarket client 初始化失败、远端地址已有持仓、或数据库里已有未平仓状态
-- 本轮有效 bankroll 固定要求为 `$20`，并要求 `MAX_TRADE_PCT<=0.1`、`MAX_EVENT_EXPOSURE_PCT<=0.3`
-- 任一推荐、下单或 sync 关键错误都会 fail fast，并把系统状态写成 `halted`
-- 产物统一写到 `runtime-artifacts/live-test/<timestamp>-<runId>/`
-- 归档目录至少包含 `preflight.json`、`recommendation.json`、`execution-summary.json`，失败时额外写 `error.json`
-- TTY 终端会输出彩色阶段和错误摘要；`--json` 会退回机器可读结果
-
-在 `live:test:stateless` 模式下：
-
-- 运行顺序固定为 `preflight -> fetch remote portfolio -> pulse -> decision runtime -> guards + token cap -> direct execute -> summary`
-- 不依赖本地 `Postgres` 或 `Redis`，只依赖 live wallet、Polymarket 和 provider runtime
-- `--recommend-only` 只生成推荐和归档，不会真实下单
-- TTY 终端会在 preflight、recommendation 和 summary 中明确打印当前 `execution mode` 与 `decision strategy`；`--json` 输出同样包含这两个字段
-- `STATELESS_MAX_BUY_TOKENS` 默认是 `1`，每笔 `BUY` 最多只买 `1` 个代币
-- 为了让 `1 token` 买单可执行，stateless 路径默认把最小交易额降到 `0.01 USD`；也可以显式设置 `STATELESS_MIN_TRADE_USD`
-- 产物统一写到 `runtime-artifacts/live-stateless/<timestamp>-<runId>/`
-
-本地 paper 测试盘：
-
-```bash
-AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
-AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
-AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend -- --json
-```
-
-在 `paper` 模式下：
-
-- 默认状态文件路径是 `runtime-artifacts/local/paper-state.json`
-- `trial:recommend` 会先生成推荐并把 run 写成 `awaiting-approval`
-- TTY 终端会显示带颜色的阶段进度、最终金额和 bankroll 比例
-- 只有 `trial:approve` 才会把 paper 持仓、成交和总览写回状态文件
-- 如果 web 也使用同一个 `AUTOPOLY_LOCAL_STATE_FILE`，`/runs`、`/positions`、`/trades` 会直接反映这份本地状态
-- `--json`、非 TTY、CI 和 `NO_COLOR=1` 会自动退回机器可读或无颜色输出
-
-试运行 provider runtime：
-
-```bash
-pnpm trial:run
-```
-
-推荐首次 `codex` 试运行参数：
-
-```bash
-CODEX_SKILLS=polymarket-market-pulse \
-CODEX_SKILL_LOCALE=zh \
-PROVIDER_TIMEOUT_SECONDS=0 \
-PULSE_REPORT_TIMEOUT_SECONDS=0 \
-CODEX_COMMAND='codex exec --skip-git-repo-check -C {{repo_root}} -s read-only --color never -c model_reasoning_effort="low" --output-schema {{schema_file}} -o {{output_file}} < {{prompt_file}}' \
-pnpm trial:run
-```
-
-说明：
-
-- `PROVIDER_TIMEOUT_SECONDS=0` 表示 decision runtime 不设超时
-- `PULSE_REPORT_TIMEOUT_SECONDS=0` 表示 pulse 渲染与 pulse research 子命令不设超时
-- 目前保留 `PULSE_FETCH_TIMEOUT_SECONDS` 等非模型推理超时，避免外部抓取永久挂死
 
 ## 部署形态
 
-推荐部署方式如下：
+| 组件 | 推荐部署方式 |
+| --- | --- |
+| `apps/web` | Vercel（只读 Postgres 凭据） |
+| `services/orchestrator` | 单台云主机 |
+| `services/executor` | 同一台云主机 |
+| Postgres 17 | 托管数据库 |
+| Redis 8 | 同机或托管 |
 
-- `apps/web`
-  - 部署到 Vercel
-  - 使用只读 Postgres 凭据
-- `services/orchestrator`
-  - 部署到单台云主机
-- `services/executor`
-  - 部署到同一台云主机
-- Postgres
-  - 建议使用托管数据库
-- Redis
-  - 仅供后台任务和队列使用
+Hostinger VPS 部署方案见 [Illustration/hostinger-vps-deploy-runbook.md](Illustration/hostinger-vps-deploy-runbook.md)，配合 `docker-compose.hostinger.yml` 和 `deploy/hostinger/stack.env.example`。
 
-管理员操作保持在站内，通过受保护的内部接口调用 orchestrator，不向公众暴露。
+管理员操作通过站内受保护接口调 orchestrator，不向公众暴露 4001/4002/5432/6379。
+
+## 外部依赖仓库
+
+`vendor/manifest.json` 锁定了以下外部仓库的具体 commit：
+
+| 仓库 | 用途 |
+| --- | --- |
+| `polymarket-trading-TUI` | 交易终端和 CLOB 接线参考 |
+| `polymarket-market-pulse` | Pulse 研究输入 |
+| `alert-stop-loss-pm` | 止损逻辑参考 |
+| `all-polymarket-skill` | Backtesting、Monitor、Resolution 等 skill 参考 |
+| `pm-PlaceOrder` | 下单参考和本地凭据源 |
+
+运行 `pnpm vendor:sync` 把它们同步到 `vendor/repos/`。纯 `pnpm build` 不需要 vendor，但跑 pulse / trial / live 链路前必须先 sync。
+
+## 运行归档
+
+所有运行产物写入 `runtime-artifacts/`（已 `.gitignore`），由 `ARTIFACT_STORAGE_ROOT` 控制根目录。
+
+| 路径 | 内容 |
+| --- | --- |
+| `reports/pulse/YYYY/MM/DD/` | Pulse markdown + JSON（命名规范：`pulse-<timestamp>-<runtime>-<mode>-<runId>` ） |
+| `reports/review\|monitor\|rebalance/` | 组合报告 |
+| `reports/runtime-log/` | 决策运行时解释性日志 |
+| `live-stateless/<timestamp>-<runId>/` | Stateless 运行：preflight、recommendation、execution-summary、run-summary |
+| `live-test/<timestamp>-<runId>/` | Stateful 运行：同上 + error.json（失败时） |
+| `checkpoints/trial-recommend/` | Paper 推荐断点续跑检查点 |
+| `local/paper-state.json` | Paper 默认状态文件 |
+| `rough-loop/` | Rough Loop 任务产物 |
+
+失败归档（按 AGENTS 约定）写入 `run-error/`，包含失败阶段、核心上下文、原因摘要和下一步命令。
 
 ## 当前状态
 
-截至 `2026-03-17`，建议把当前完成度理解成下面这张表：
+截至 2026-03-24。
+
+### 子系统完成度
 
 | 子系统 | 状态 | 说明 |
 | --- | --- | --- |
-| monorepo / workspace 构建 | 已完成 | `pnpm build`、`pnpm typecheck`、`pnpm test` 已具备基础工作区支持 |
-| web 围观页 / 管理页 | 已完成 | 首页、持仓、成交、runs、reports、backtests、admin 页面已存在 |
-| shared contracts / db / terminal-ui | 已完成 | schema、查询、本地 state、终端渲染都已落地 |
-| `paper` 本地测试盘 | 已完成 | 推荐、人工确认、file-backed state 已打通 |
-| `live:test:stateless` | 已完成 | 无 DB/Redis 的真钱闭环与归档已打通 |
-| `live:test` stateful 路径 | 已实现，持续验证中 | queue worker、preflight、sync、summary 已存在，但更依赖远端基础设施 |
-| pulse 真实抓取与归档 | 已完成 | 不再依赖 mock pulse fallback |
-| bilingual run summaries | 已完成 | live 路径每轮可生成中英总结 |
-| Polymarket proxy wallet / signature type 兼容 | 已完成 | `FUNDER_ADDRESS` 与 `SIGNATURE_TYPE` 兼容逻辑已澄清 |
-| review / monitor / rebalance 报告 | 已完成并接入主链路 | 现在会随 daily pulse / live 运行一起写入 artifact |
-| resolution tracking | 已实现 | 属于独立周期能力，不是主交易入口 |
-| backtest | 已接入统一 artifact 层 | 当前仍是轻量版，但已输出中英双语 artifact |
-| openclaw provider | 预留 | 接口存在，但不是当前主路径 |
-| rough-loop | 独立子系统 | 存在且可运行，但不是远程 build 主前置条件 |
+| Monorepo 构建 | ✅ 已完成 | `build` / `typecheck` / `test` 基础工作区支持 |
+| Web 围观页 + 管理页 | ✅ 已完成 | 首页、持仓、成交、Runs、Reports、Backtests、Admin |
+| 共享契约 / DB / Terminal UI | ✅ 已完成 | Schema、查询、local state、终端渲染 |
+| Paper 本地测试盘 | ✅ 已完成 | 推荐 → 人工确认 → file-backed state |
+| `live:test:stateless` | ✅ 已完成并持续运行 | 37 次 live-stateless 运行归档（03/16–03/24） |
+| `live:test` stateful | ⚠️ 已实现但受阻 | 代码可用，本机缺 DB/Redis 导致 preflight 始终失败 |
+| Pulse 真实抓取 | ✅ 已完成 | 累计产出约 50+ 份 Pulse 报告（03/14–03/23） |
+| `pulse-direct` 决策引擎 | ✅ 已上线 | 03/20 起成为默认主路径，取代 provider-runtime |
+| 双语运行总结 | ✅ 已完成 | Live 路径每轮生成中英 summary |
+| Review / Monitor / Rebalance 报告 | ✅ 已完成 | 03/20 起随 daily pulse / live 运行自动写入 artifact |
+| 风控硬规则 | ✅ 已完成 | `applyTradeGuards` + halt + stop-loss |
+| Polymarket proxy wallet 兼容 | ✅ 已完成 | `FUNDER_ADDRESS` / `SIGNATURE_TYPE` |
+| Resolution tracking | ✅ 已实现 | 独立周期能力，有真实产物 |
+| Backtest | ⚠️ 轻量版 | 已接入 artifact 层，非生产级评估 |
+| OpenClaw provider | 🔲 预留 | 接口存在，非当前默认 |
+| Rough Loop | ✅ 独立子系统 | 03/17 完成 5 轮自动代码任务运行 |
+| VPS 部署 | ✅ 已文档化 | Hostinger 部署 runbook + Docker compose |
+| CI/CD | 🔲 待建设 | 暂无 GitHub Actions |
 
-如果你只是让远程 Agent “先把项目 build 起来”，当前完成度已经足够。真正需要额外环境的是：
+### 实际运行数据
 
-- pulse / recommendation 运行
-- live wallet 访问
-- DB/Redis 的 stateful 本地栈
+**活跃钱包：Pizza**（`0x6664***614e`），collateral 约 $96.95 USDC。
 
-更详细的实现进度见 [progress.md](progress.md)。
+**当前链上持仓（pizza wallet，2026-03-23 最后快照）**：
 
-端到端测试驱动开发工作区见 [E2E Test Driven Development/README.md](E2E%20Test%20Driven%20Development/README.md)。
+| 市场 | 方向 | 持仓量 | 均价 | 现价 | 浮盈/亏 |
+| --- | --- | --- | --- | --- | --- |
+| Bitcoin dip to 65k in March 2026 | BUY No | 1.34 | $0.746 | $0.742 | -0.5% |
+| Gavin Newsom 2028 Dem nomination | BUY No | 1.32 | $0.758 | $0.758 | 0% |
+| Gavin Newsom 2028 presidential election | BUY No | 1.21 | $0.825 | $0.835 | +1.2% |
 
-## 当前限制
+**Paper 状态**：$200 bankroll / $176 现金 / 2 个模拟持仓（Vance + Avalanche），上次运行 03/16。
 
-目前仍有以下限制：
+### 运行时间线
 
-- 完整生产部署说明还没有收敛成单独 deploy handbook
-- `live:test` 比 `live:test:stateless` 更依赖远端基础设施，远程复现成本更高
-- `provider-runtime` 仍保留为 legacy 路径，后续会继续弱化
-- `backtest` 当前仍是轻量版，不适合作为生产级评估结论
-- `openclaw` 运行接口已预留，但不是当前默认推荐路径
+| 日期 | 事件 |
+| --- | --- |
+| **03/14** | 首批 Pulse 报告生成（codex provider-runtime），15 份 pulse；首次真实 $1 测试单成交 |
+| **03/16** | Paper 模式打通完整闭环（recommend → approve → state update）；首批 live-stateless 运行；Pizza 钱包连通验证 |
+| **03/17** | 大量 live-stateless 运行；no1 钱包快照显示 12 个真实持仓 / $128 总权益；Rough Loop 完成 5 轮代码任务 |
+| **03/18** | Portfolio review 报告首次独立生成；live-stateless preflight 待处理 |
+| **03/20** | **pulse-direct 引擎上线**，取代 provider-runtime 成为默认；review / monitor / rebalance 三类报告随运行自动生成；一笔原油市场订单被 Polymarket 拒单（$0.34） |
+| **03/23** | 密集运行日——8 次 live-stateless 运行（pizza wallet）；live:test 尝试失败（DATABASE_URL 未配置）；VPS SSH 连通性复盘；最后一次完整运行产物时间 15:05 UTC |
+| **03/24** | 一个 pending preflight 存在，但未完成完整运行 |
 
-## 后续规划
+### 已发现的问题与阻塞
 
-接下来的高优先级事项见 [todo-loop.md](todo-loop.md)。
+| 问题 | 影响 | 状态 |
+| --- | --- | --- |
+| 本机无 Postgres / Redis | `live:test` stateful 链路始终 preflight 失败 | 需要 Docker 或远端 DB |
+| Pulse provider 超时 | 部分运行退化为 deterministic fallback，开仓候选质量降低 | 间歇性 |
+| 最小交易额拦截 | 风控 `$10` 最小额度拦截了 stateless 的小额开仓候选 | 设计如此，stateless 路径已调低到 `$0.01` |
+| 订单被 Polymarket 拒绝 | 原油市场一笔 $0.34 订单被拒 | 已归档，未影响后续运行 |
+
+### 当前限制
+
+- `live:test` stateful 链路在本机无法验证，需要远端基础设施
+- 完整生产部署流程尚未收敛为单独 deploy handbook
+- `provider-runtime` 作为 legacy 路径将继续弱化
+- Backtest 仍是轻量版
+- 无 CI/CD 流水线
+- 无自动对账和告警通知
+
+## 依赖矩阵
+
+| 依赖 | 是否必需 | 用途 |
+| --- | --- | --- |
+| Node.js ≥ 20 | ✅ 必需 | Monorepo 构建与运行 |
+| pnpm 10.x | ✅ 必需 | Workspace 包管理（当前 `10.28.1`） |
+| TypeScript 5.9.x | 已内置 | TS 编译 |
+| Docker / docker compose | 可选 | 本地 Postgres + Redis |
+| Postgres 17 | 可选 | `live:test` 需要 |
+| Redis 8 | 可选 | `live:test` 需要 |
+| Codex CLI | 运行时按需 | `provider-runtime` / Pulse 生成 |
+| Polymarket 钱包凭据 | live 路径必需 | 真钱下单 |
+
+### 核心运行时依赖
+
+| 包 | 主要依赖 |
+| --- | --- |
+| `apps/web` | Next.js 16、React 19 |
+| `services/orchestrator` | Fastify 5、BullMQ 5、ioredis 5、drizzle-orm、node-cron |
+| `services/executor` | @polymarket/clob-client 5、ethers 5、Fastify 5、BullMQ 5 |
+| `packages/db` | postgres、drizzle-orm、drizzle-kit |
+| `packages/contracts` | zod 4 |
+
+## 文档索引
+
+### 根目录
+
+| 文档 | 内容 |
+| --- | --- |
+| [risk-controls.md](risk-controls.md) | 风控硬规则完整说明 |
+| [.env.example](.env.example) | 环境变量模板 |
+| [progress.md](progress.md) | 实现进度 |
+| [todo-loop.md](todo-loop.md) | 后续高优先级事项 |
+| [rough-loop.md](rough-loop.md) | Rough Loop 主入口文档 |
+| [AGENTS.md](AGENTS.md) | 项目协作约定 |
+
+### Illustration/
+
+| 文档 | 内容 |
+| --- | --- |
+| [onboarding-architecture.md](Illustration/onboarding-architecture.md) | 新人架构图 + 模块地图 + 状态源说明 |
+| [trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md) | 下单模式流程图 |
+| [portfolio-ops-report-design.md](Illustration/portfolio-ops-report-design.md) | Monitor / Review / Rebalance 报告设计 |
+| [hostinger-vps-deploy-runbook.md](Illustration/hostinger-vps-deploy-runbook.md) | Hostinger VPS 部署 runbook |
+| [repo-slimming-plan.md](Illustration/repo-slimming-plan.md) | 模块取舍 checklist |
+
+### Plan/
+
+| 文档 | 内容 |
+| --- | --- |
+| [2026-03-17-rough-loop-8h-run-plan.md](Plan/2026-03-17-rough-loop-8h-run-plan.md) | Rough Loop 8 小时持续运行方案 |
+| [2026-03-17-position-review-module-plan.md](Plan/2026-03-17-position-review-module-plan.md) | Position Review 模块设计 |
+
+## 新人接手路径
+
+如果你是第一次接手这个仓库：
+
+1. **读本文档**——理解四层架构和三条链路
+2. **看 [.env.example](.env.example)**——了解运行模式和依赖
+3. **看 [risk-controls.md](risk-controls.md)**——了解硬风控
+4. **看 [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md)**——理解模块边界、状态源和默认主路径
+5. **看 [Illustration/trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md)**——理解执行路径分叉
+6. **跑 `pnpm build`**——验证构建
+7. **跑 `pnpm daily:pulse` 或 `pnpm live:test:stateless -- --recommend-only`**——看一次完整决策输出
+
+如果只是「先把项目 build 起来」，到第 6 步就够了。
