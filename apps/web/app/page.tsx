@@ -1,44 +1,37 @@
-import { CashflowLedger } from "../components/cashflow-ledger";
+import { BalancerFlowPreview } from "../components/preview-balancer-variants";
 import { LiveOverview } from "../components/live-overview";
 import { LiveRuns } from "../components/live-runs";
 import { PnlPortfolio } from "../components/pnl-portfolio";
-import { PulseRecommendationExamples } from "../components/pulse-recommendation-examples";
 import { ReportsList } from "../components/reports-list";
 import { formatUsd } from "../lib/format";
+import { getPreviewDashboardData } from "../lib/preview-dashboard";
 import {
   getPublicOverviewData,
   getPublicPositionsData,
   getPublicRunsData,
   getPublicTradesData,
   getReportsData,
-  getSpectatorActivityData,
   getSpectatorClosedPositionsData,
-  getSpectatorProfileData,
   isSpectatorWalletMode
 } from "../lib/public-wallet";
-import { getPublicPulseRecommendationExamples } from "../lib/public-run-pulse";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function shortenAddress(address: string | null | undefined): string {
-  if (!address) {
-    return "Not available";
-  }
-  return `${address.slice(0, 8)}...${address.slice(-6)}`;
-}
-
 export default async function HomePage() {
   const spectatorMode = isSpectatorWalletMode();
-  const [overview, positions, pulseExamples, trades, runs, reports, profile, activity, closedPositions] = await Promise.all([
+
+  if (spectatorMode) {
+    const data = await getPreviewDashboardData();
+    return <BalancerFlowPreview data={data} />;
+  }
+
+  const [overview, positions, trades, runs, reports, closedPositions] = await Promise.all([
     getPublicOverviewData(),
     getPublicPositionsData(),
-    spectatorMode ? getPublicPulseRecommendationExamples() : Promise.resolve([]),
     getPublicTradesData(),
     getPublicRunsData(),
     getReportsData(),
-    getSpectatorProfileData(),
-    getSpectatorActivityData(),
     getSpectatorClosedPositionsData()
   ]);
 
@@ -47,37 +40,21 @@ export default async function HomePage() {
       <section className="lead-grid">
         <div className="panel page-lead page-lead-primary">
           <div>
-            <p className="panel-kicker">{spectatorMode ? "钱包围观" : "围观面板"}</p>
-            <h2>
-              {spectatorMode
-                ? `${profile?.display_name ?? "钱包"}：一个能看懂的账户视图`
-                : "一个只读页面看完实时净值、持仓、成交和报告。"}
-            </h2>
+            <p className="panel-kicker">围观面板</p>
+            <h2>一个只读页面看完实时净值、持仓、成交和报告。</h2>
           </div>
-          <p className="panel-note">
-            {spectatorMode
-              ? "这个部署围绕一个公开的 Polymarket 钱包展开。它优先回答三个问题：这个钱包现在持有什么、刚刚交易了什么、按当前价格看大概赚亏多少。"
-              : "这个站点会轮询公共接口，让外部用户在不接触管理权限的前提下看到账户变化。"}
-          </p>
-          <p className="panel-note">
-            {spectatorMode
-              ? "这里包含：当前持仓、最近成交、redeem 记录，以及已平仓的 realized P&L。这里暂时不完整的部分：bridge 出入金历史。"
-              : "这个页面对外保持只读，实际操作控制仍然和公开围观界面分开。"}
-          </p>
+          <p className="panel-note">这个站点会轮询公共接口，让外部用户在不接触管理权限的前提下看到账户变化。</p>
+          <p className="panel-note">这个页面对外保持只读，实际操作控制仍然和公开围观界面分开。</p>
         </div>
 
         <aside className="panel page-brief">
           <div className="panel-header">
             <div>
               <p className="panel-kicker">一眼看完</p>
-              <h2>{spectatorMode ? "这个页面里哪些数字最值得先看" : "页面摘要"}</h2>
+              <h2>页面摘要</h2>
             </div>
           </div>
           <dl className="brief-grid">
-            <div>
-              <dt>钱包</dt>
-              <dd className="table-code">{shortenAddress(profile?.address)}</dd>
-            </div>
             <div>
               <dt>账户总额</dt>
               <dd>{formatUsd(overview.total_equity_usd)}</dd>
@@ -88,45 +65,15 @@ export default async function HomePage() {
             </div>
             <div>
               <dt>活动记录数</dt>
-              <dd>{activity.length}</dd>
-            </div>
-            <div>
-              <dt>主页</dt>
-              <dd>
-                {spectatorMode && profile ? (
-                  <a className="action-link" href={profile.profile_url} target="_blank" rel="noreferrer">去 Polymarket 主页</a>
-                ) : "未公开"}
-              </dd>
+              <dd>不在主页展示</dd>
             </div>
             <div>
               <dt>现金部分</dt>
-              <dd>{spectatorMode ? "实时拉取，可见部分已并入总额" : "内部跟踪"}</dd>
+              <dd>内部跟踪</dd>
             </div>
           </dl>
         </aside>
       </section>
-
-      {spectatorMode ? <PulseRecommendationExamples initialData={pulseExamples} /> : null}
-
-      {spectatorMode ? (
-        <section className="glance-grid">
-          <article className="glance-card">
-            <p className="panel-kicker">持仓</p>
-            <h3>看的是账户规模，不只是仓位列表</h3>
-            <p>最上面的金额不再只是持仓市值，而是尽量把可见的 cash 也并进去，让人一眼就知道这个账户现在大概有多少钱。</p>
-          </article>
-          <article className="glance-card">
-            <p className="panel-kicker">活动</p>
-            <h3>成交和 redeem 放在同一条时间带里</h3>
-            <p>现金流页面只展示公共接口今天真正能拿到的事件，不假装自己已经完整还原了一整本资金流水账。</p>
-          </article>
-          <article className="glance-card">
-            <p className="panel-kicker">边界</p>
-            <h3>公共数据依然有盲区</h3>
-            <p>bridge 入金和出金历史仍然不是完整公开的，所以这个站会尽量把能确认的 cash 算进去，但不会把看不到的部分伪装成精确数字。</p>
-          </article>
-        </section>
-      ) : null}
 
       <div className="dashboard-grid">
         <LiveOverview initialData={overview} />
@@ -139,24 +86,20 @@ export default async function HomePage() {
         />
       </div>
 
-      {spectatorMode ? (
-        <CashflowLedger initialData={activity} />
-      ) : (
-        <div className="dashboard-grid dashboard-grid-secondary">
-          <LiveRuns
-            initialData={runs}
-          />
-          <ReportsList
-            initialData={reports.map((report) => ({
-              ...report,
-              published_at_utc: String(report.published_at_utc)
-            }))}
-            endpoint="/api/public/reports"
-            title="Pulse, review, monitor, and rebalance artifacts"
-            kicker="Reports"
-          />
-        </div>
-      )}
+      <div className="dashboard-grid dashboard-grid-secondary">
+        <LiveRuns
+          initialData={runs}
+        />
+        <ReportsList
+          initialData={reports.map((report) => ({
+            ...report,
+            published_at_utc: String(report.published_at_utc)
+          }))}
+          endpoint="/api/public/reports"
+          title="Pulse, review, monitor, and rebalance artifacts"
+          kicker="Reports"
+        />
+      </div>
     </div>
   );
 }
