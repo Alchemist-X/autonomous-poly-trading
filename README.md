@@ -41,6 +41,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │  Layer 1 · Research / Pulse                                 │
 │  从 Polymarket 抓取市场列表，生成 Pulse 候选池              │
+│  ⊕ market-intelligence: 标签分类 + 情报融合 + Pace 策略     │
 │  产物 → runtime-artifacts/reports/pulse/...                 │
 └───────────────────────────┬─────────────────────────────────┘
                             ▼
@@ -79,6 +80,7 @@ autonomous-poly-trading/
 ├── packages/
 │   ├── contracts/                    # Zod schema：TradeDecisionSet 等共享契约
 │   ├── db/                           # Drizzle schema、迁移、查询、local-state
+│   ├── market-intelligence/          # Python：市场标签分类 + World Monitor 情报 + Pace 策略
 │   └── terminal-ui/                  # 终端彩色输出、错误摘要、表格渲染
 ├── scripts/                          # 工作区级入口：daily-pulse、live-test、poly-cli
 ├── vendor/                           # 外部仓库锁定清单（manifest.json）
@@ -102,6 +104,7 @@ autonomous-poly-trading/
 | `services/executor` | Polymarket CLOB 下单、仓位同步、止损、flatten | `src/workers/queue-worker.ts`、`src/lib/polymarket.ts` |
 | `packages/contracts` | `TradeDecisionSet`、`actionSchema`、队列/任务名等 | `src/index.ts` |
 | `packages/db` | DB schema + 查询；paper 模式下的 file-backed local state | `src/queries.ts`、`src/local-state.ts` |
+| `packages/market-intelligence` | **Python 模块**：市场标签分类（7 类型 36 标签）+ World Monitor 30+ API 情报融合 + Pace 节奏策略。可作为 `fetch_markets.py` 的 drop-in 替换，输出兼容 `RawPulseOutput` | `enriched_fetcher.py` |
 | `packages/terminal-ui` | 终端 UI 工具库 | `src/index.ts` |
 | `scripts/` | CLI 入口，拼接不同运行模式 | `daily-pulse.ts`、`live-test-stateless.ts`、`live-test.ts` |
 | `services/rough-loop` | 代码任务自动循环（不参与交易） | `src/cli.ts` |
@@ -229,7 +232,7 @@ Pulse markdown → 正则/表格解析 → PulseEntryPlan
 
 ### Pulse 级
 
-- 必须来自真实 `fetch_markets.py` 抓取，不再有 mock fallback
+- 必须来自真实 `fetch_markets.py`（或 `enriched_fetcher.py`）抓取，不再有 mock fallback
 - Pulse 超龄（>120 分钟）或候选不足（<1 个）视为风险状态，本轮禁止新 `open`
 - CLOB token ID 风险标志已移除（坏候选在生成阶段已被过滤）
 - `open` 的 `token_id` 必须来自 Pulse candidates
@@ -504,6 +507,7 @@ Hostinger VPS 部署方案见 [Illustration/hostinger-vps-deploy-runbook.md](Ill
 | `services/executor` | @polymarket/clob-client 5、ethers 5、Fastify 5、BullMQ 5 |
 | `packages/db` | postgres、drizzle-orm、drizzle-kit |
 | `packages/contracts` | zod 4 |
+| `packages/market-intelligence` | Python 3.9+、requests ≥ 2.28（独立于 Node monorepo，无 pnpm 依赖） |
 
 ## 文档索引
 
@@ -554,5 +558,6 @@ Hostinger VPS 部署方案见 [Illustration/hostinger-vps-deploy-runbook.md](Ill
 5. **看 [Illustration/trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md)**——理解执行路径分叉
 6. **跑 `pnpm build`**——验证构建
 7. **跑 `pnpm daily:pulse` 或 `pnpm live:test:stateless -- --recommend-only`**——看一次完整决策输出
+8. **看 [packages/market-intelligence/README.md](packages/market-intelligence/README.md)**——了解市场分类标签、World Monitor 情报融合和 Pace 节奏策略；如需将 `enriched_fetcher.py` 接入 orchestrator 替换 `fetch_markets.py`，参考该文档的"使用方式"章节
 
 如果只是「先把项目 build 起来」，到第 6 步就够了。
