@@ -370,6 +370,8 @@ def extract_market_info(m: dict) -> dict:
         "end_date": m.get("endDate", ""),
         "enable_order_book": m.get("enableOrderBook", False),
         "neg_risk": bool(m.get("negRisk", False)),
+        "fees_enabled": m.get("feesEnabled"),
+        "fee_schedule": m.get("feeSchedule"),
         "created_at": m.get("createdAt", ""),
     }
 

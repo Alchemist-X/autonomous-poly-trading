@@ -38,6 +38,11 @@ interface RawPulseMarket {
     label?: string | null;
   }>;
   neg_risk?: boolean;
+  fees_enabled?: boolean;
+  fee_schedule?: {
+    fee_rate?: number;
+    exponent?: number;
+  } | null;
 }
 
 interface RawPulseBucketStat {
@@ -113,6 +118,11 @@ export interface PulseCandidate {
   categorySource?: string | null;
   tags?: PulseTag[];
   negRisk?: boolean;
+  feesEnabled?: boolean;
+  feeSchedule?: {
+    feeRate: number;
+    exponent: number;
+  };
 }
 
 export interface PulseSnapshot {
@@ -190,6 +200,22 @@ function toPulseFetchConfig(raw: RawPulseOutput, config: OrchestratorConfig): Pu
   };
 }
 
+function toPulseFeeSchedule(market: RawPulseMarket): PulseCandidate["feeSchedule"] {
+  const feeRate = market.fee_schedule?.fee_rate;
+  if (feeRate == null) {
+    return undefined;
+  }
+  const normalizedFeeRate = Number(feeRate);
+  const normalizedExponent = Number(market.fee_schedule?.exponent ?? 1);
+  if (!Number.isFinite(normalizedFeeRate) || !Number.isFinite(normalizedExponent)) {
+    return undefined;
+  }
+  return {
+    feeRate: normalizedFeeRate,
+    exponent: normalizedExponent
+  };
+}
+
 function toPulseCandidate(market: RawPulseMarket): PulseCandidate {
   return {
     question: market.question,
@@ -213,7 +239,9 @@ function toPulseCandidate(market: RawPulseMarket): PulseCandidate {
           .map((tag) => toPulseTag(tag))
           .filter((tag): tag is PulseTag => tag != null)
       : [],
-    negRisk: typeof market.neg_risk === "boolean" ? market.neg_risk : false
+    negRisk: typeof market.neg_risk === "boolean" ? market.neg_risk : false,
+    feesEnabled: typeof market.fees_enabled === "boolean" ? market.fees_enabled : undefined,
+    feeSchedule: toPulseFeeSchedule(market)
   };
 }
 

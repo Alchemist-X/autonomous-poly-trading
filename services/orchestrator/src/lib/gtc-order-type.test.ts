@@ -36,13 +36,14 @@ describe("chooseOrderType", () => {
   });
 
   describe("returns FOK for fee-free markets", () => {
-    it("uses FOK when negRisk is true", () => {
+    it("uses FOK when negRisk is true and fees are disabled", () => {
       const result = chooseOrderType({
         action: "open",
         side: "BUY",
         bestBid: 0.80,
         bestAsk: 0.82,
         negRisk: true,
+        feesEnabled: false,
         feeRate: 0
       });
       expect(result.orderType).toBe("FOK");
@@ -76,6 +77,20 @@ describe("chooseOrderType", () => {
   });
 
   describe("returns GTC for fee-bearing open orders with reasonable spread", () => {
+    it("uses GTC for fee-enabled negRisk markets", () => {
+      const result = chooseOrderType({
+        action: "open",
+        side: "BUY",
+        bestBid: 0.580,
+        bestAsk: 0.585,
+        negRisk: true,
+        feesEnabled: true,
+        feeRate: 0.04
+      });
+      expect(result.orderType).toBe("GTC");
+      expect(result.gtcLimitPrice).toBe(0.581);
+    });
+
     it("uses GTC for politics market with tight spread", () => {
       const result = chooseOrderType({
         action: "open",

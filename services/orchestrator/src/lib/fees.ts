@@ -13,6 +13,12 @@ export interface FeeParams {
   readonly exponent: number;
 }
 
+export interface NegRiskFeeOptions {
+  negRisk?: boolean;
+  feesEnabled?: boolean;
+  feeSchedule?: FeeParams;
+}
+
 const CATEGORY_FEE_PARAMS: Readonly<Record<string, FeeParams>> = {
   geopolitics: { feeRate: 0, exponent: 0 },
   sports: { feeRate: 0.03, exponent: 1 },
@@ -77,17 +83,19 @@ const CATEGORY_ALIASES: ReadonlyArray<{ pattern: string; canonical: string }> = 
  * matches.
  */
 /**
- * Neg-risk (multi-outcome) markets on Polymarket have 0% taker fees.
- * The complement mechanism replaces traditional fee charging.
- * Pass `negRisk: true` to override the category-based lookup.
+ * Neg-risk (multi-outcome) markets often have 0% taker fees, but Gamma can
+ * also return a real fee schedule for fee-enabled neg-risk markets.
  */
 const NEG_RISK_FEE_PARAMS: FeeParams = { feeRate: 0, exponent: 0 };
 
 export function lookupCategoryFeeParams(
   categorySlug: string | null | undefined,
-  options?: { negRisk?: boolean }
+  options?: NegRiskFeeOptions
 ): FeeParams {
   if (options?.negRisk) {
+    if (options.feesEnabled && options.feeSchedule) {
+      return options.feeSchedule;
+    }
     return NEG_RISK_FEE_PARAMS;
   }
 
@@ -272,8 +280,14 @@ export function verifyFeeEstimate(input: {
   categorySlug: string | null;
   actualBaseFee: number;
   negRisk?: boolean;
+  feesEnabled?: boolean;
+  feeSchedule?: FeeParams;
 }): FeeDiscrepancy {
-  const params = lookupCategoryFeeParams(input.categorySlug, { negRisk: input.negRisk });
+  const params = lookupCategoryFeeParams(input.categorySlug, {
+    negRisk: input.negRisk,
+    feesEnabled: input.feesEnabled,
+    feeSchedule: input.feeSchedule
+  });
   const estimatedHasFee = params.feeRate > 0;
   const actualHasFee = input.actualBaseFee > 0;
 

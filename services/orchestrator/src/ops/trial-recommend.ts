@@ -561,6 +561,7 @@ export async function runTrialRecommendCli(options?: { forceJson?: boolean }) {
     overview,
     config,
     minTradeUsd: config.minTradeUsd,
+    pulseCandidates: resolvedPulse?.candidates,
     readBook: async (tokenId) => {
       const book = await readBook(executorConfig, tokenId);
       if (!book) {

@@ -49,13 +49,23 @@ describe("lookupCategoryFeeParams", () => {
     expect(lookupCategoryFeeParams("some-random-slug")).toEqual(other);
   });
 
-  it("returns 0% fee for negRisk markets regardless of category", () => {
+  it("keeps 0% fee for negRisk markets when fee data is missing or disabled", () => {
     const zero = { feeRate: 0, exponent: 0 };
     expect(lookupCategoryFeeParams("politics", { negRisk: true })).toEqual(zero);
+    expect(lookupCategoryFeeParams("sports", { negRisk: true, feesEnabled: false })).toEqual(zero);
+    expect(lookupCategoryFeeParams("politics", { negRisk: true, feesEnabled: true })).toEqual(zero);
     expect(lookupCategoryFeeParams("sports", { negRisk: true })).toEqual(zero);
     expect(lookupCategoryFeeParams("crypto", { negRisk: true })).toEqual(zero);
     expect(lookupCategoryFeeParams("world-elections", { negRisk: true })).toEqual(zero);
     expect(lookupCategoryFeeParams(null, { negRisk: true })).toEqual(zero);
+  });
+
+  it("uses fee schedule for fee-enabled negRisk markets", () => {
+    expect(lookupCategoryFeeParams("politics", {
+      negRisk: true,
+      feesEnabled: true,
+      feeSchedule: { feeRate: 0.04, exponent: 1 }
+    })).toEqual({ feeRate: 0.04, exponent: 1 });
   });
 
   it("uses category-based fee when negRisk is false or omitted", () => {
@@ -161,11 +171,19 @@ describe("calculateNetEdge", () => {
     expect(calculateNetEdge(0.10, 0.5, params)).toBeCloseTo(0.10, 6);
   });
 
-  it("returns gross edge unchanged for negRisk markets", () => {
-    // negRisk markets get 0% fee regardless of category
+  it("returns gross edge unchanged for fee-free negRisk markets", () => {
     const negRiskParams = lookupCategoryFeeParams("politics", { negRisk: true });
     expect(calculateNetEdge(0.10, 0.5, negRiskParams)).toBeCloseTo(0.10, 6);
     expect(calculateNetEdge(0.10, 0.5, negRiskParams, false)).toBeCloseTo(0.10, 6);
+  });
+
+  it("deducts fees for fee-enabled negRisk markets", () => {
+    const feeEnabledNegRiskParams = lookupCategoryFeeParams("politics", {
+      negRisk: true,
+      feesEnabled: true,
+      feeSchedule: { feeRate: 0.04, exponent: 1 }
+    });
+    expect(calculateNetEdge(0.10, 0.5, feeEnabledNegRiskParams)).toBeCloseTo(0.09, 6);
   });
 
   it("can produce negative net edge if fee exceeds gross edge", () => {
@@ -277,5 +295,19 @@ describe("verifyFeeEstimate", () => {
     });
     expect(result.mismatch).toBe(true);
     expect(result.estimatedFeeRate).toBe(0);
+  });
+
+  it("reports no mismatch for fee-enabled negRisk markets with a real schedule", () => {
+    const result = verifyFeeEstimate({
+      tokenId: "tok-6",
+      marketSlug: "trump-ag-pick",
+      categorySlug: "politics",
+      actualBaseFee: 1000,
+      negRisk: true,
+      feesEnabled: true,
+      feeSchedule: { feeRate: 0.04, exponent: 1 }
+    });
+    expect(result.mismatch).toBe(false);
+    expect(result.estimatedFeeRate).toBe(0.04);
   });
 });

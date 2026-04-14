@@ -1,6 +1,6 @@
 # Backlog — 按优先级排列的待办清单
 
-最后更新：2026-03-31（session 2 完成后）
+最后更新：2026-04-14（neg-risk 手续费修复完成后）
 
 ---
 
@@ -10,6 +10,7 @@
 
 ## P1 — 本轮应做
 
+- [x] ~~neg-risk fee bug 修复：fee-enabled 多结果市场改为读取 Gamma `fees_enabled/fee_schedule`，并同步修正 net edge / GTC 判断 / fee verify~~
 - [x] ~~用 `--category tech` 和 `--category sports` 重新验证 filter（前置过滤已确认：sports=266、tech=8 候选可用）~~
 - [x] ~~Vercel 重新部署（production 构建成功，线上页面 + API 验证通过）~~
 
