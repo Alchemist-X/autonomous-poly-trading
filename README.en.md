@@ -2,7 +2,7 @@
 
 中文版见 [README.md](README.md)。
 
-Last updated: 2026-03-24
+Last updated: 2026-04-21
 
 ---
 
@@ -455,7 +455,7 @@ As of 2026-03-24.
 
 ### TODO
 
-- [ ] Manual review and optimization of the Pulse flow (end-to-end: prompts / skill docs, candidate and artifact quality, keep `Illustration/pulse-live-flow.md` / `pulse-live-flow.en.md` aligned with real runs).
+- [ ] **High priority · logged 2026-04-21** — Manual review and optimization of the Pulse flow (end-to-end: prompts / skill docs, candidate and artifact quality, keep `Illustration/pulse-live-flow.md` / `pulse-live-flow.en.md` aligned with real runs).
 
 ## Dependency Matrix
 

@@ -492,7 +492,7 @@ Hostinger VPS 部署方案见 [Illustration/hostinger-vps-deploy-runbook.md](Ill
 
 ### 待办
 
-- [ ] Pulse 流程人为检查与优化（端到端：prompt / 技能文档、候选与归档质量、`Illustration/pulse-live-flow.md` 等与真实运行对齐）。
+- [ ] **高优 · 2026-04-21 记入** — Pulse 流程人为检查与优化（端到端：prompt / 技能文档、候选与归档质量、`Illustration/pulse-live-flow.md` 等与真实运行对齐）。
 
 ## 依赖矩阵
 
