@@ -453,6 +453,10 @@ As of 2026-03-24.
 - No CI/CD pipeline
 - No automated reconciliation or alert notifications
 
+### TODO
+
+- [ ] Manual review and optimization of the Pulse flow (end-to-end: prompts / skill docs, candidate and artifact quality, keep `Illustration/pulse-live-flow.md` / `pulse-live-flow.en.md` aligned with real runs).
+
 ## Dependency Matrix
 
 | Dependency | Required | Purpose |

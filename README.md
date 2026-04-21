@@ -2,7 +2,7 @@
 
 > This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [README.en.md](README.en.md) for the full English README.
 
-最后更新：2026-03-24
+最后更新：2026-04-21
 
 ---
 
@@ -489,6 +489,10 @@ Hostinger VPS 部署方案见 [Illustration/hostinger-vps-deploy-runbook.md](Ill
 - Backtest 仍是轻量版
 - 无 CI/CD 流水线
 - 无自动对账和告警通知
+
+### 待办
+
+- [ ] Pulse 流程人为检查与优化（端到端：prompt / 技能文档、候选与归档质量、`Illustration/pulse-live-flow.md` 等与真实运行对齐）。
 
 ## 依赖矩阵
 
