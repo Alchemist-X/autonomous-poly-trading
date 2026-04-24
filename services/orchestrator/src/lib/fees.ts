@@ -3,15 +3,26 @@
  *
  * Fee formula: fee_usdc = shares * price * feeRate * (price * (1 - price))^exponent
  *
- * Category-specific fee parameters are sourced from the Polymarket fee schedule
- * effective 2026-03-30.  The static lookup table avoids hitting the CLOB fee API
- * on every trade, which would be too slow for batch decision-making.
+ * Two fee resolution paths exist:
  *
- * V2 NOTE (2026-04-28+): the CLOB V2 SDK exposes getClobMarketInfo(conditionID)
- * returning FeeDetails {r, e, to} — same shape as {feeRate, exponent, takerOnly}.
- * Since the protocol computes and collects the real fee onchain at match time,
- * this static table is only used for pre-trade sizing estimates. Backlog item:
- * replace with dynamic per-market lookup once sizing can tolerate async fee fetch.
+ * 1. STATIC (default, sync) — `lookupCategoryFeeParams` reads a hardcoded
+ *    schedule keyed by Polymarket category slug. Calibrated 2026-03-30.
+ *    Used in the sync sizing path because it doesn't block on a network call.
+ *
+ * 2. DYNAMIC (V2-ready, async) — `fetchDynamicFeeParams` calls the V2 SDK's
+ *    `getClobMarketInfo(conditionID)` and converts the returned FeeDetails
+ *    {r, e, to} into FeeParams {feeRate, exponent}. Used post-cutover when
+ *    the caller has a conditionId and can tolerate a small async lookup.
+ *    Cached in-process with a 1-hour TTL so a batch of orders against the
+ *    same market only pays one network round-trip.
+ *
+ * Both paths return the same FeeParams shape so downstream calculation
+ * functions (calculateTakerFee, calculateNetEdge, etc.) work uniformly.
+ *
+ * Since V2 collects the real fee onchain at match time, the static estimate
+ * is only used for pre-trade sizing — a few bps of inaccuracy translates to
+ * cents of mis-sizing, never wrong direction. Hard risk caps are enforced
+ * separately by the executor.
  */
 
 export interface FeeParams {
@@ -326,4 +337,80 @@ export async function logFeeDiscrepancyIfNeeded(
   }
   const logPath = join(logDir, "fee-discrepancies.jsonl");
   appendFileSync(logPath, JSON.stringify(discrepancy) + "\n");
+}
+
+// ---------------------------------------------------------------------------
+// V2 dynamic fee resolution — fetch live FeeDetails from CLOB V2 SDK
+// ---------------------------------------------------------------------------
+
+interface DynamicFeeCacheEntry {
+  params: FeeParams;
+  expiresAt: number;
+}
+
+const dynamicFeeCache = new Map<string, DynamicFeeCacheEntry>();
+const DYNAMIC_FEE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+/**
+ * Convert V2 SDK FeeDetails {r?: number; e?: number; to: boolean} into the
+ * FeeParams {feeRate, exponent} shape used everywhere else in this file.
+ *
+ * Missing rate/exponent default to 0 (no fee).
+ */
+export function feeDetailsToFeeParams(details: {
+  r?: number;
+  e?: number;
+  to?: boolean;
+} | null | undefined): FeeParams {
+  if (!details) {
+    return { feeRate: 0, exponent: 0 };
+  }
+  return {
+    feeRate: typeof details.r === "number" ? details.r : 0,
+    exponent: typeof details.e === "number" ? details.e : 0,
+  };
+}
+
+/**
+ * Fetch fee parameters for a market from the V2 SDK.
+ *
+ * Uses a 1-hour in-process cache so repeated lookups for the same market in
+ * a single batch only hit the network once.
+ *
+ * Returns null on any failure (network, missing market, malformed response).
+ * Callers should fall back to `lookupCategoryFeeParams` on null.
+ *
+ * @param client       A V2 ClobClient instance with `getClobMarketInfo` method.
+ * @param conditionId  The market's conditionID (bytes32 hex string).
+ */
+export async function fetchDynamicFeeParams(
+  client: { getClobMarketInfo: (conditionId: string) => Promise<{ fd?: { r?: number; e?: number; to?: boolean } }> },
+  conditionId: string
+): Promise<FeeParams | null> {
+  if (!conditionId) {
+    return null;
+  }
+  const now = Date.now();
+  const cached = dynamicFeeCache.get(conditionId);
+  if (cached && cached.expiresAt > now) {
+    return cached.params;
+  }
+  try {
+    const info = await client.getClobMarketInfo(conditionId);
+    const params = feeDetailsToFeeParams(info?.fd);
+    dynamicFeeCache.set(conditionId, {
+      params,
+      expiresAt: now + DYNAMIC_FEE_TTL_MS,
+    });
+    return params;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Clear the dynamic fee cache. Mainly for tests; not normally needed.
+ */
+export function clearDynamicFeeCache(): void {
+  dynamicFeeCache.clear();
 }

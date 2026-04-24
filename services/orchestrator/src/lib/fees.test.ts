@@ -1,10 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   calculateFeePct,
   calculateNetEdge,
   calculateRoundTripFee,
   calculateRoundTripFeePct,
   calculateTakerFee,
+  clearDynamicFeeCache,
+  feeDetailsToFeeParams,
+  fetchDynamicFeeParams,
   formatCategoryFee,
   formatEdgeWithFee,
   lookupCategoryFeeParams,
@@ -309,5 +312,86 @@ describe("verifyFeeEstimate", () => {
     });
     expect(result.mismatch).toBe(false);
     expect(result.estimatedFeeRate).toBe(0.04);
+  });
+});
+
+describe("feeDetailsToFeeParams", () => {
+  it("maps complete FeeDetails to FeeParams", () => {
+    expect(feeDetailsToFeeParams({ r: 0.04, e: 1, to: true })).toEqual({
+      feeRate: 0.04,
+      exponent: 1
+    });
+  });
+
+  it("defaults missing rate/exponent to zero (no fee)", () => {
+    expect(feeDetailsToFeeParams({ to: false })).toEqual({ feeRate: 0, exponent: 0 });
+    expect(feeDetailsToFeeParams({})).toEqual({ feeRate: 0, exponent: 0 });
+  });
+
+  it("returns zero-fee params for null or undefined input", () => {
+    expect(feeDetailsToFeeParams(null)).toEqual({ feeRate: 0, exponent: 0 });
+    expect(feeDetailsToFeeParams(undefined)).toEqual({ feeRate: 0, exponent: 0 });
+  });
+});
+
+describe("fetchDynamicFeeParams", () => {
+  beforeEach(() => {
+    clearDynamicFeeCache();
+  });
+
+  it("returns FeeParams from a successful SDK call", async () => {
+    const client = {
+      getClobMarketInfo: vi.fn().mockResolvedValue({ fd: { r: 0.072, e: 1, to: true } })
+    };
+    const result = await fetchDynamicFeeParams(client, "0xabc");
+    expect(result).toEqual({ feeRate: 0.072, exponent: 1 });
+    expect(client.getClobMarketInfo).toHaveBeenCalledWith("0xabc");
+  });
+
+  it("returns null when conditionId is empty", async () => {
+    const client = { getClobMarketInfo: vi.fn() };
+    const result = await fetchDynamicFeeParams(client, "");
+    expect(result).toBeNull();
+    expect(client.getClobMarketInfo).not.toHaveBeenCalled();
+  });
+
+  it("returns null and swallows error when SDK throws", async () => {
+    const client = {
+      getClobMarketInfo: vi.fn().mockRejectedValue(new Error("network down"))
+    };
+    const result = await fetchDynamicFeeParams(client, "0xdef");
+    expect(result).toBeNull();
+  });
+
+  it("returns zero-fee FeeParams when market has no fee details", async () => {
+    const client = {
+      getClobMarketInfo: vi.fn().mockResolvedValue({ fd: undefined })
+    };
+    const result = await fetchDynamicFeeParams(client, "0xnegrisk");
+    expect(result).toEqual({ feeRate: 0, exponent: 0 });
+  });
+
+  it("caches the result so repeated calls hit the network only once", async () => {
+    const client = {
+      getClobMarketInfo: vi.fn().mockResolvedValue({ fd: { r: 0.04, e: 1, to: true } })
+    };
+    await fetchDynamicFeeParams(client, "0xrepeated");
+    await fetchDynamicFeeParams(client, "0xrepeated");
+    await fetchDynamicFeeParams(client, "0xrepeated");
+    expect(client.getClobMarketInfo).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not cache failures (next call retries)", async () => {
+    const client = {
+      getClobMarketInfo: vi
+        .fn()
+        .mockRejectedValueOnce(new Error("transient"))
+        .mockResolvedValueOnce({ fd: { r: 0.05, e: 1, to: true } })
+    };
+    const first = await fetchDynamicFeeParams(client, "0xretry");
+    const second = await fetchDynamicFeeParams(client, "0xretry");
+    expect(first).toBeNull();
+    expect(second).toEqual({ feeRate: 0.05, exponent: 1 });
+    expect(client.getClobMarketInfo).toHaveBeenCalledTimes(2);
   });
 });
