@@ -40,10 +40,10 @@
     "@autopoly/contracts": "workspace:*",
     "@autopoly/db": "workspace:*",
     "@autopoly/terminal-ui": "workspace:*",
-    "@polymarket/clob-client": "5.8.0",
+    "@polymarket/clob-client-v2": "1.0.2",
     "bullmq": "5.71.0",
-    "drizzle-orm": "0.45.1",
     "dotenv": "17.2.3",
+    "drizzle-orm": "0.45.1",
     "ethers": "5.7.2",
     "fastify": "5.8.2",
     "ioredis": "5.10.0"

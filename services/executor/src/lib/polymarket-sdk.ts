@@ -1,10 +1,10 @@
 import { randomUUID } from "node:crypto";
-import { ClobClient, OrderType, Side, type Chain } from "@polymarket/clob-client";
+import { ClobClient, OrderType, Side, type Chain } from "@polymarket/clob-client-v2";
 import { buildPaperOrderResult } from "@autopoly/contracts";
 import { Wallet } from "ethers";
 import type { ExecutorConfig } from "../config.js";
 
-// Polymarket Conditional Tokens Framework (ERC1155) on Polygon
+// Polymarket Conditional Tokens Framework (ERC1155) on Polygon — unchanged across V1/V2
 const CTF_CONTRACT = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045";
 const DEFAULT_POLYGON_RPC = "https://polygon-bor-rpc.publicnode.com";
 
@@ -88,17 +88,21 @@ export async function getClobClient(config: ExecutorConfig): Promise<ClobClient 
     cachedClientPromise = (async () => {
       try {
         const signer = new Wallet(config.privateKey);
-        const boot = new ClobClient(config.polymarketHost, config.chainId as Chain, signer);
+        const boot = new ClobClient({
+          host: config.polymarketHost,
+          chain: config.chainId as Chain,
+          signer,
+        });
         const creds = await resolveApiCredentials(boot);
 
-        return new ClobClient(
-          config.polymarketHost,
-          config.chainId as Chain,
+        return new ClobClient({
+          host: config.polymarketHost,
+          chain: config.chainId as Chain,
           signer,
-          creds as any,
-          config.signatureType,
-          config.funderAddress
-        );
+          creds,
+          signatureType: config.signatureType,
+          funderAddress: config.funderAddress,
+        });
       } catch (error) {
         cachedClientPromise = null;
         throw error;

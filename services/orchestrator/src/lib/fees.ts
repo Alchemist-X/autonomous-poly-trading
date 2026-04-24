@@ -6,6 +6,12 @@
  * Category-specific fee parameters are sourced from the Polymarket fee schedule
  * effective 2026-03-30.  The static lookup table avoids hitting the CLOB fee API
  * on every trade, which would be too slow for batch decision-making.
+ *
+ * V2 NOTE (2026-04-28+): the CLOB V2 SDK exposes getClobMarketInfo(conditionID)
+ * returning FeeDetails {r, e, to} — same shape as {feeRate, exponent, takerOnly}.
+ * Since the protocol computes and collects the real fee onchain at match time,
+ * this static table is only used for pre-trade sizing estimates. Backlog item:
+ * replace with dynamic per-market lookup once sizing can tolerate async fee fetch.
  */
 
 export interface FeeParams {

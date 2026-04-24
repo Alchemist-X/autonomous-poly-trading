@@ -1,7 +1,7 @@
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import type { ClobClient } from "@polymarket/clob-client";
+import type { ClobClient } from "@polymarket/clob-client-v2";
 import type { ExecutorConfig } from "../config.js";
 import {
   type BookSnapshot,

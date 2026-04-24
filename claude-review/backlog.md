@@ -1,12 +1,13 @@
 # Backlog — 按优先级排列的待办清单
 
-最后更新：2026-04-14（neg-risk 手续费修复完成后）
+最后更新：2026-04-24（登记 v2 迁移 + Builder code P0）
 
 ---
 
 ## P0 — 必须立即做
 
-（当前无 P0）
+- [ ] **Polymarket v2 迁移**（截止 2026-04-28 11:00 UTC）— SDK 升级到 `@polymarket/clob-client-v2@1.0.0`、USDC.e → pUSD 抵押品切换、`fees.ts` 改用链上 `getClobMarketInfo`。详见 `Plan/2026-04-24-polymarket-v2-migration.md`。
+- [ ] **接 Polymarket Builder Code**（v2 迁移稳定后立刻做）— v2 原生支持 `builderCode` 字段，绑定 Builder Profile 可拿下单返佣。步骤：去 https://polymarket.com/settings?tab=builder 申请 builder code → 存 `POLYMARKET_BUILDER_CODE` env → 在 `polymarket-sdk.ts` 的 FOK/GTC 下单调用里带上字段。本次迁移故意不带它，避免混淆 breaking-change 归因。
 
 ## P1 — 本轮应做
 
@@ -180,6 +181,7 @@
 
 ## 已完成
 
+- [x] 通用版 CLAUDE / AGENTS 协作模板重写（跨项目可复用，补充 sub-agents 使用规范，中英同步）
 - [x] 手续费集成（fees.ts + netEdge 排序 + Pulse 报告显示 + CLOB 验证）
 - [x] Filter 验证（sports/tech 测试）
 - [x] Filter 前置到候选选择前（pre-selection filtering）

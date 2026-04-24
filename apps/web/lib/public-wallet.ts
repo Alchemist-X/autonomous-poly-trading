@@ -272,7 +272,12 @@ async function fetchOnchainUsdcBalance(address: string): Promise<number | null> 
   }
 
   const rpcUrl = process.env.POLYGON_RPC_URL?.trim() || "https://polygon-bor-rpc.publicnode.com";
-  const usdcContract = process.env.POLYGON_USDC_CONTRACT?.trim() || "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+  // Post-V2 (2026-04-28) Polymarket collateral is pUSD (0xC011a7E1...), not USDC.e.
+  // POLYGON_PUSD_CONTRACT is the preferred override; POLYGON_USDC_CONTRACT remains for backward compatibility.
+  const usdcContract =
+    process.env.POLYGON_PUSD_CONTRACT?.trim()
+    || process.env.POLYGON_USDC_CONTRACT?.trim()
+    || "0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB";
   const normalized = address.toLowerCase().replace(/^0x/, "");
 
   if (normalized.length !== 40) {
