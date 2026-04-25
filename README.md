@@ -10,20 +10,19 @@
 
 > This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [README.en.md](README.en.md) for the full English README.
 
-最后更新：2026-04-26（rename to predict-raven；运行在 Polymarket CLOB V2 SDK 之上）
+最后更新：2026-04-26
 
 ---
 
-**predict-raven** 是一个在 [Polymarket](https://polymarket.com) 上能自主运行的 AI Agent —— **全球首个自主持久化运行**的预测市场交易 Agent。
+**Predict-Raven** 是第一个在Polymarket上实现自主交易的Agent框架，可以通过claude code / codex等常见架构在本地端持久化部署
 
-实盘观看：
-
-- **决策日志 / 净值曲线**：[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
-- **链上仓位 / 成交（Polymarket profile）**：[`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
+实盘公开：
+- **持仓和决策记录**：[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
+- **实盘地址 Polymarket profile**：[`https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
 ## 系统设计
 
-系统围绕 **Market Pulse** 这一核心组件设计：让 AI 自主评估事件发生的概率，动态地从信息源收集证据，将其与市场隐含的赔率对比，综合交易的 edge 和资金回报效率给出交易指示。
+Predict-Raven围绕**Market Pulse** 这一核心组件设计：让 AI 自主评估事件发生的概率，动态地从信息源收集证据，将其与市场隐含的赔率对比，综合交易的edge和资金回报效率给出交易指示。
 
 ### 为什么让 Agent 来做这件事
 
@@ -41,45 +40,54 @@
 
 全部通过 AI Agent（Claude Code / Codex / OpenClaw）自然语言驱动，不用记命令。
 
+> **前置**：你需要先装好 [Claude Code](https://claude.com/claude-code) 或 [Codex CLI](https://github.com/openai/codex) 任一个，`git clone` 本仓库后在仓库目录里启动它，再开始下面 4 步。
+
 ### 1. 准备环境
 
 对 Agent 说：
 
 ```
-build
+帮我装好 predict-raven 需要的依赖
 ```
 
-预期：跑 `pnpm install` + `pnpm build`，输出"✅ 编译通过"。不需要 Docker、真钱包。
+预期：Agent 会跑 `pnpm install` + `pnpm build`，告诉你环境是否就绪。如果你电脑上还没装 Node.js / pnpm，它也会先把这两样装上。这一步不需要 Docker、也不需要真钱包。
 
 ### 2. 配置资金
 
-把 Polymarket 凭据填进 `.env.live-test`，然后对 Agent 说：
+Polymarket 钱包凭据可以从 polymarket.com → Settings → Export Wallet 拿到。新建 `.env.live-test`（参考 `.env.example` 模板），把这 4 个字段填进去：
+
+- `PRIVATE_KEY` — 钱包私钥
+- `FUNDER_ADDRESS` — Polymarket proxy wallet 地址
+- `SIGNATURE_TYPE` — 签名类型（`0` 或 `1`）
+- `CHAIN_ID` — `137`（Polygon mainnet）
+
+填完后对 Agent 说：
 
 ```
-用 .env.live-test 做 preflight
+我想配置钱包
 ```
 
-预期：打印 `ENV_FILE`、钱包地址、collateral（pUSD）余额。缺字段直接 fail-fast。
+预期：Agent 会读取你的 `.env.live-test`，确认钱包能连上 Polymarket，并打印钱包地址和当前余额。如果有字段没填，会立刻告诉你缺哪一个。
 
-### 3. 看推荐不下单
+### 3. 看推荐不下单（也适合还没充值的用户）
 
 对 Agent 说：
 
 ```
-跑一次 pulse，只看推荐
+帮我推荐一些交易，不用下单
 ```
 
-预期：候选表（market / action / size / edge / monthlyReturn），Summary 写到 `runtime-artifacts/pulse-live/<ts>-<runId>/`。
+预期：Agent 会列出几个推荐交易，每条带上市场、方向、押注金额，以及它估算的胜率优势（edge）和资金回报效率。完整的推理过程也会落盘成 markdown，方便你回头复盘。这一步**不会真的下单**，所以钱包里没有 USDC 也能完整跑通。
 
 ### 4. 真金实盘
 
 对 Agent 说：
 
 ```
-刚才那次 pulse 直接下单
+使用真实资金运行 pulse
 ```
 
-预期：FOK 下单，完成后输出 `execution-summary.md` 路径，列出成交 / 拒单 / 裁剪明细。
+预期：Agent 会按上一步的推荐真实下单，完成后告诉你成交了哪几笔、哪些被拒。
 
 > 想看具体的 pnpm 命令、环境变量、归档目录，见 [Illustration/dev-reference.md](Illustration/dev-reference.md)。
 

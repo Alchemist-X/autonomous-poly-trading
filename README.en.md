@@ -41,45 +41,54 @@ The system is built around a single core component, **Market Pulse**: it lets th
 
 Driven entirely through an AI Agent (Claude Code / Codex / OpenClaw) in natural language. No commands to memorise.
 
+> **Prerequisite**: install either [Claude Code](https://claude.com/claude-code) or [Codex CLI](https://github.com/openai/codex), `git clone` this repo, and start the Agent inside the repo directory before going through the 4 steps below.
+
 ### 1. Set up
 
 Say to the Agent:
 
 ```
-build
+install the dependencies for predict-raven
 ```
 
-Expected: runs `pnpm install` + `pnpm build`, prints "✅ build passed". No Docker, no real wallet needed.
+Expected: the Agent runs `pnpm install` + `pnpm build` and tells you whether the environment is ready. If you don't have Node.js / pnpm yet, it'll install those first. No Docker, no real wallet required at this stage.
 
 ### 2. Configure funds
 
-Put your Polymarket credentials in `.env.live-test`, then say:
+Get your Polymarket wallet credentials from polymarket.com → Settings → Export Wallet. Create a new `.env.live-test` (use `.env.example` as the template) and fill in these 4 fields:
+
+- `PRIVATE_KEY` — the wallet private key
+- `FUNDER_ADDRESS` — the Polymarket proxy wallet address
+- `SIGNATURE_TYPE` — signature type (`0` or `1`)
+- `CHAIN_ID` — `137` (Polygon mainnet)
+
+Then say:
 
 ```
-preflight with .env.live-test
+configure my wallet
 ```
 
-Expected: prints `ENV_FILE`, wallet address, collateral (pUSD) balance. Missing fields fail-fast.
+Expected: the Agent reads your `.env.live-test`, confirms the wallet can talk to Polymarket, and prints the wallet address and current balance. If any field is missing, it tells you exactly which one.
 
-### 3. Recommendations only
+### 3. Recommendations only (also fine if you haven't funded yet)
 
 Say:
 
 ```
-pulse, recommendations only
+recommend some trades, no actual orders
 ```
 
-Expected: candidate table (market / action / size / edge / monthlyReturn), Summary written to `runtime-artifacts/pulse-live/<ts>-<runId>/`.
+Expected: the Agent lists a few suggested trades — each with the market, side, stake size, and its estimated edge and capital return efficiency. The full reasoning is also written to disk as markdown so you can review it later. **No orders are placed in this step**, so you can run it end-to-end even without USDC in the wallet.
 
 ### 4. Real-money live trading
 
 Say:
 
 ```
-rerun the pulse, place real orders
+run the pulse with real money
 ```
 
-Expected: FOK orders, then prints `execution-summary.md` path with fills / rejections / trimming details.
+Expected: the Agent places real orders based on the recommendations from step 3 and tells you which ones filled and which got rejected.
 
 > For concrete pnpm commands, env vars, and archive directories, see [Illustration/dev-reference.md](Illustration/dev-reference.md).
 
