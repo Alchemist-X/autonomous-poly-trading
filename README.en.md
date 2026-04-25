@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/predict-raven.png" alt="predict-raven" width="220" />
+</p>
+
 # Predict Raven
 
 > This is the English README. 中文版见 [README.md](README.md).
@@ -6,7 +10,7 @@ Last updated: 2026-04-26 (renamed to predict-raven; runs on Polymarket CLOB V2 S
 
 ---
 
-**predict-raven** is an AI agent framework that autonomously trades on [Polymarket](https://polymarket.com).
+**predict-raven** is an AI Agent that autonomously runs on [Polymarket](https://polymarket.com) — the **first autonomous, continuously-running** trading agent for prediction markets.
 
 Three weeks of live trading, +9% PnL. A small group of geek and trader friends are testing it.
 

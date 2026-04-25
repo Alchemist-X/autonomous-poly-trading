@@ -1,9 +1,13 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { OrchestratorConfig } from "../config.js";
 import { resolvePulseRenderTimeoutMs } from "./full-pulse.js";
 
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
+
 const baseConfig: OrchestratorConfig = {
-  repoRoot: "/Users/Aincrad/dev-proj/autonomous-poly-trading",
+  repoRoot: REPO_ROOT,
   port: 4001,
   redisUrl: "redis://localhost:6379",
   envFilePath: null,

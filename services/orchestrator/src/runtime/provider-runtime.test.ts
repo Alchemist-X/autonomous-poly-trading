@@ -1,12 +1,13 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { OrchestratorConfig } from "../config.js";
 import type { RuntimeExecutionContext } from "./agent-runtime.js";
 import { resumeRuntimeExecutionFromOutputFile } from "./provider-runtime.js";
 
-const REPO_ROOT = "/Users/Aincrad/dev-proj/autonomous-poly-trading";
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 const RUN_ID = "11111111-1111-4111-8111-111111111111";
 const GENERATED_AT_UTC = "2026-03-16T00:00:00.000Z";
 

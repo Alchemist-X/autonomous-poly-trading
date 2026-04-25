@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/predict-raven.png" alt="predict-raven" width="220" />
+</p>
+
 # Predict Raven
 
 > This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [README.en.md](README.en.md) for the full English README.
@@ -6,7 +10,7 @@
 
 ---
 
-**predict-raven** 是一个在 [Polymarket](https://polymarket.com) 上自主交易的 AI agent 框架。
+**predict-raven** 是一个在 [Polymarket](https://polymarket.com) 上能自主运行的 AI Agent —— **全球首个自主持久化运行**的预测市场交易 Agent。
 
 实盘 3 周 +9% 收益。一小群极客和交易员朋友也在测试它。
 

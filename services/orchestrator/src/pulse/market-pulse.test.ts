@@ -1,10 +1,14 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { buildArtifactRelativePath } from "../lib/artifacts.js";
 import { evaluatePulseRiskFlags, resolvePulseFetchTimeoutMs } from "./market-pulse.js";
 import type { OrchestratorConfig } from "../config.js";
 
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
+
 const baseConfig: OrchestratorConfig = {
-  repoRoot: "/Users/Aincrad/dev-proj/autonomous-poly-trading",
+  repoRoot: REPO_ROOT,
   port: 4001,
   redisUrl: "redis://localhost:6379",
   envFilePath: null,

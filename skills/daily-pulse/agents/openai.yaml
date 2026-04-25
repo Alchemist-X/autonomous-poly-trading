@@ -1,4 +1,4 @@
 interface:
   display_name: "Daily Pulse"
   short_description: "Run the repository's daily pulse real-money flow."
-  default_prompt: "Use $daily-pulse to run the autonomous-poly-trading daily pulse flow. Treat live real-money execution as the default, use .env.pizza when no env is specified, and only downgrade to recommend-only if I explicitly ask."
+  default_prompt: "Use $daily-pulse to run the predict-raven daily pulse flow. Treat live real-money execution as the default, use .env.pizza when no env is specified, and only downgrade to recommend-only if I explicitly ask."

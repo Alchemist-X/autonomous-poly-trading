@@ -2,12 +2,14 @@ import { execFile as execFileCallback } from "node:child_process";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
 import { serializeRoughLoopDocument } from "./lib/markdown.js";
 
 const execFile = promisify(execFileCallback);
-const fakeProviderPath = path.resolve("services/rough-loop/test-fixtures/fake-provider.mjs");
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+const fakeProviderPath = path.resolve(REPO_ROOT, "services/rough-loop/test-fixtures/fake-provider.mjs");
 
 describe("rough-loop CLI smoke", () => {
   it("runs pnpm rough-loop:once against a temporary repo", async () => {
@@ -59,7 +61,7 @@ describe("rough-loop CLI smoke", () => {
       };
 
       await execFile("pnpm", ["rough-loop:once"], {
-        cwd: "/Users/Aincrad/dev-proj/autonomous-poly-trading",
+        cwd: REPO_ROOT,
         env
       });
 
