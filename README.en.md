@@ -1,12 +1,26 @@
-# Autonomous Poly Trading
+# Predict Raven
 
 > This is the English README. 中文版见 [README.md](README.md).
 
-Last updated: 2026-04-24 (migrated to Polymarket CLOB V2 SDK)
+Last updated: 2026-04-26 (renamed to predict-raven; runs on Polymarket CLOB V2 SDK)
 
 ---
 
-A cloud-native autonomous trading system for [Polymarket](https://polymarket.com). Now on `@polymarket/clob-client-v2` with pUSD as the default collateral. V2 cutover is 2026-04-28 11:00 UTC; see `Plan/2026-04-28-v2-cutover-runbook.md` for the cutover runbook.
+**predict-raven** is an AI agent framework that autonomously trades on [Polymarket](https://polymarket.com).
+
+Three weeks of live trading, +9% PnL. A small group of geek and trader friends are testing it.
+
+## Why this exists
+
+AI now has reasoning capability that exceeds humans — especially on multi-turn and complex tasks, as benchmarks like Humanity's Last Exam have shown.
+
+**Trading is probably not fundamentally different from a reasoning task.** What AI lacks is mostly a better interaction environment and context. Prediction markets make this particularly clean: what you actually trade is the gap between your subjective probability estimate and the market's implied probability — the simple corollary being that the better you predict the future, the more likely you profit.
+
+Prediction itself may be an intelligence built from the orthogonal combination of **information gathering** and **reasoning**. Orthogonal because either dimension can be improved independently and turn into PnL: better information (insider sources, exclusive feeds, data integrations), or better reasoning (assembling existing facts into judgment).
+
+raven offers a `soul.md`-style mechanism (similar to lobster) that carries through your trading style or biases. After tuning, I run it with a **long-shot bias** (markets tend to overprice the probability of low-probability events — many bloggers have written about this). You can also filter the candidate pool by liquidity, market type, and tags.
+
+## System design notes
 
 The system is built around a single core component, **Market Pulse**: it lets the AI independently estimate the probability of an event, dynamically gathers evidence from information sources, compares that evidence against the market's implied odds, and issues trading instructions that combine edge with capital return efficiency.
 
@@ -20,6 +34,7 @@ The system is built around a single core component, **Market Pulse**: it lets th
 
 - Every order the Agent places and its decision reasoning are published on the website
 - The Agent runs continuously in the cloud — not as ad-hoc local scripts — with no human in the loop
+- Runs on `@polymarket/clob-client-v2` with pUSD as the default collateral; V2 cutover is 2026-04-28 11:00 UTC, see [`Plan/2026-04-28-v2-cutover-runbook.md`](Plan/2026-04-28-v2-cutover-runbook.md) for the runbook
 
 ## Architecture Overview
 

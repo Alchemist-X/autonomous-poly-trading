@@ -1,12 +1,26 @@
-# Autonomous Poly Trading
+# Predict Raven
 
 > This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [README.en.md](README.en.md) for the full English README.
 
-最后更新：2026-04-24（已迁移到 Polymarket CLOB V2 SDK）
+最后更新：2026-04-26（rename to predict-raven；运行在 Polymarket CLOB V2 SDK 之上）
 
 ---
 
-面向 [Polymarket](https://polymarket.com) 的云端自主交易系统。已使用 `@polymarket/clob-client-v2`，抵押品默认 pUSD。V2 切换日 2026-04-28 11:00 UTC，cutover runbook 见 `Plan/2026-04-28-v2-cutover-runbook.md`。
+**predict-raven** 是一个在 [Polymarket](https://polymarket.com) 上自主交易的 AI agent 框架。
+
+实盘 3 周 +9% 收益。一小群极客和交易员朋友也在测试它。
+
+## 为什么做这个
+
+AI 已经拥有了超过人类的推理能力——尤其在多轮和复杂任务上，Humanity's Last Exam 等 benchmark 的高完成度都佐证了这一点。
+
+**交易很可能和推理任务也没有本质区别**。AI 所欠缺的，可能只是更好的交互环境和上下文。预测市场又把这件事做得较为特殊：你交易的其实是「主观预测事件会发生的概率」与「市场隐含概率」的差值——一个简单的推论是，预测未来越准，就越有可能获利。
+
+而预测本身可能是一个由「**信息搜集**」与「**推理**」正交组合成的智能。这里说正交的原因是：得到更好的信息（内幕、独家消息源、数据接入），或者得到更好的推理（拼凑已有的判断），任一维度变强都能转化为收益。
+
+raven 提供类似龙虾 `soul.md` 的机制——能贯彻你的交易风格或偏见。我自己经过调试后带入的是 **long-shot bias**（市场倾向于高估小概率事件的发生，很多博主都提过这点）。你也可以根据流动性高低、市场类型和标签自行筛选候选池。
+
+## 系统设计要点
 
 系统围绕 **Market Pulse** 这一核心组件设计：让 AI 自主评估事件发生的概率，动态地从信息源收集证据，将其与市场隐含的赔率对比，综合交易的 edge 和资金回报效率给出交易指示。
 
@@ -20,6 +34,7 @@
 
 - Agent 下单、决策思路全部在网页上公开
 - Agent 在云端持续运行，而非本地脚本临时执行，不需要人类介入
+- 已使用 `@polymarket/clob-client-v2`，抵押品默认 pUSD；V2 切换日 2026-04-28 11:00 UTC，cutover runbook 见 [`Plan/2026-04-28-v2-cutover-runbook.md`](Plan/2026-04-28-v2-cutover-runbook.md)
 
 ## 架构总览
 
