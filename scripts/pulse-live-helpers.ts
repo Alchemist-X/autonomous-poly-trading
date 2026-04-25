@@ -71,7 +71,7 @@ export function calculatePositionPnlPct(avgCost: number, currentPrice: number) {
 export function loadPulseFilterFile(filePath: string | null): PulseFilterArgs {
   if (!filePath) {
     // Try default location
-    const defaultPath = path.resolve(process.cwd(), "pulse-filters.json");
+    const defaultPath = path.resolve(process.cwd(), "services/orchestrator/pulse-filters.json");
     if (!existsSync(defaultPath)) {
       return { category: null, tag: null, minProb: null, maxProb: null, minLiquidity: null };
     }

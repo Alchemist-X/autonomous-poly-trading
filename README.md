@@ -8,7 +8,7 @@
 
 # Predict Raven
 
-> This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [README.en.md](README.en.md) for the full English README.
+> This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [docs/en/README.md](docs/en/README.md) for the full English README.
 
 最后更新：2026-04-26
 
@@ -34,7 +34,7 @@ Predict-Raven围绕**Market Pulse** 这一核心组件设计：让 AI 自主评�
 
 - Agent 下单、决策思路全部在网页上公开
 - Agent 在云端持续运行，而非本地脚本临时执行，不需要人类介入
-- 已使用 `@polymarket/clob-client-v2`，抵押品默认 pUSD；V2 切换日 2026-04-28 11:00 UTC，cutover runbook 见 [`Plan/2026-04-28-v2-cutover-runbook.md`](Plan/2026-04-28-v2-cutover-runbook.md)
+- 已使用 `@polymarket/clob-client-v2`，抵押品默认 pUSD；V2 切换日 2026-04-28 11:00 UTC，cutover runbook 见 [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](docs/internal/plan/2026-04-28-v2-cutover-runbook.md)
 
 ## 快速开始
 
@@ -89,7 +89,7 @@ Polymarket 钱包凭据可以从 polymarket.com → Settings → Export Wallet �
 
 预期：Agent 会按上一步的推荐真实下单，完成后告诉你成交了哪几笔、哪些被拒。
 
-> 想看具体的 pnpm 命令、环境变量、归档目录，见 [Illustration/dev-reference.md](Illustration/dev-reference.md)。
+> 想看具体的 pnpm 命令、环境变量、归档目录，见 [docs/diagrams/dev-reference.md](docs/diagrams/dev-reference.md)。
 
 ## 架构总览
 
@@ -260,11 +260,11 @@ Agent 每次 preflight 都会打印当前 `ENV_FILE`、钱包地址、collateral
 - [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — Agent 协作约定（必读）
 - [risk-controls.md](docs/risk-controls.md) — 风控硬规则完整说明
 - [.env.example](.env.example) — 环境变量模板
-- [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md) — 架构图 + 模块地图
-- [Illustration/trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md) — 下单模式流程图
-- [Illustration/hostinger-vps-deploy-runbook.md](Illustration/hostinger-vps-deploy-runbook.md) — VPS 部署 runbook
-- [Illustration/dev-reference.md](Illustration/dev-reference.md) — 命令速查 / 依赖矩阵 / 部署形态
+- [docs/diagrams/onboarding-architecture.md](docs/diagrams/onboarding-architecture.md) — 架构图 + 模块地图
+- [docs/diagrams/trading-modes-flowchart.md](docs/diagrams/trading-modes-flowchart.md) — 下单模式流程图
+- [docs/diagrams/hostinger-vps-deploy-runbook.md](docs/diagrams/hostinger-vps-deploy-runbook.md) — VPS 部署 runbook
+- [docs/diagrams/dev-reference.md](docs/diagrams/dev-reference.md) — 命令速查 / 依赖矩阵 / 部署形态
 - [progress.md](docs/progress.md) — 实现进度与运行数据快照
 - [rough-loop.md](rough-loop.md) — Rough Loop 子系统入口
 
-历史 handoff 和一次性探索稿归档在 [Wasted/README.md](Wasted/README.md)。
+历史 handoff 和一次性探索稿归档在 [docs/archive/README.md](docs/archive/README.md)。

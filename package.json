@@ -10,7 +10,7 @@
     "build": "pnpm -r build",
     "dev": "concurrently -n web,orchestrator,executor -c auto \"pnpm --filter @autopoly/web dev\" \"pnpm --filter @autopoly/orchestrator dev\" \"pnpm --filter @autopoly/executor dev\"",
     "typecheck": "pnpm -r typecheck",
-    "test": "vitest run",
+    "test": "vitest run --config config/vitest.config.ts",
     "rough-loop:once": "pnpm --filter @autopoly/rough-loop run once",
     "rough-loop:dev": "pnpm --filter @autopoly/rough-loop run dev",
     "rough-loop:start": "pnpm --filter @autopoly/rough-loop run start",

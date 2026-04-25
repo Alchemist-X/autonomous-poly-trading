@@ -41,9 +41,9 @@ output/
 .playwright-cli/
 
 # --- E2E suite artifacts ---
-E2E Test Driven Development/artifacts/*
-!E2E Test Driven Development/artifacts/.gitkeep
-E2E Test Driven Development/E2E Test Driven Development/
+e2e/artifacts/*
+!e2e/artifacts/.gitkeep
+e2e/e2e/
 
 # --- Deploy adapters (auto-generated on link) ---
 .vercel

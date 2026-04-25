@@ -1,14 +1,14 @@
 <p align="center">
-  <img src="assets/predict-raven.png" alt="predict-raven" width="220" />
+  <img src="../../assets/predict-raven.png" alt="predict-raven" width="220" />
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT" /></a>
+  <a href="../../LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT" /></a>
 </p>
 
 # Predict Raven
 
-> This is the English README. 中文版见 [README.md](README.md).
+> This is the English README. 中文版见 [README.md](../../README.md).
 
 Last updated: 2026-04-26 (renamed to predict-raven; runs on Polymarket CLOB V2 SDK)
 
@@ -35,7 +35,7 @@ The system is built around a single core component, **Market Pulse**: it lets th
 
 - Every order the Agent places and its decision reasoning are published on the website
 - The Agent runs continuously in the cloud — not as ad-hoc local scripts — with no human in the loop
-- Runs on `@polymarket/clob-client-v2` with pUSD as the default collateral; V2 cutover is 2026-04-28 11:00 UTC, see [`Plan/2026-04-28-v2-cutover-runbook.md`](Plan/2026-04-28-v2-cutover-runbook.md) for the runbook
+- Runs on `@polymarket/clob-client-v2` with pUSD as the default collateral; V2 cutover is 2026-04-28 11:00 UTC, see [`Plan/2026-04-28-v2-cutover-runbook.md`](../internal/plan/2026-04-28-v2-cutover-runbook.md) for the runbook
 
 ## Quick Start
 
@@ -90,7 +90,7 @@ run the pulse with real money
 
 Expected: the Agent places real orders based on the recommendations from step 3 and tells you which ones filled and which got rejected.
 
-> For concrete pnpm commands, env vars, and archive directories, see [Illustration/dev-reference.md](Illustration/dev-reference.md).
+> For concrete pnpm commands, env vars, and archive directories, see [Illustration/dev-reference.md](../diagrams/dev-reference.md).
 
 ## Architecture Overview
 
@@ -129,7 +129,7 @@ The system is not tied to a single AI framework. Swapping between Codex / Claude
 AGENT_RUNTIME_PROVIDER=codex        # options: codex / claude-code / openclaw
 ```
 
-Custom Agents are plugged in via a template command configured through `<PROVIDER>_COMMAND`. See [.env.example](.env.example) for examples and placeholders.
+Custom Agents are plugged in via a template command configured through `<PROVIDER>_COMMAND`. See [.env.example](../../.env.example) for examples and placeholders.
 
 ## Decision Engine
 
@@ -189,11 +189,11 @@ Spawns an external process (Codex / OpenClaw / Claude Code CLI), passes Pulse + 
 - Stale Pulse (>120 minutes) or too few candidates (<1) is treated as a risk state; no new `open` in that round
 - `open` actions' `token_id` must originate from the Pulse candidate set
 
-Full rules: [risk-controls.md](docs/risk-controls.md).
+Full rules: [risk-controls.md](../risk-controls.md).
 
 ## Environment Variables
 
-Full template: [.env.example](.env.example)
+Full template: [.env.example](../../.env.example)
 
 Organised into four groups:
 
@@ -258,14 +258,14 @@ Failure archives (per the AGENTS convention) go to `run-error/` with the failing
 
 ## Doc Index
 
-- [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — Agent collaboration conventions (required reading)
-- [risk-controls.md](docs/risk-controls.md) — Full write-up of the hard risk rules
-- [.env.example](.env.example) — Environment variable template
-- [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md) — Architecture diagram + module map
-- [Illustration/trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md) — Trading mode flowchart
-- [Illustration/hostinger-vps-deploy-runbook.md](Illustration/hostinger-vps-deploy-runbook.md) — VPS deployment runbook
-- [Illustration/dev-reference.md](Illustration/dev-reference.md) — Command cheatsheet / dependency matrix / deployment shapes
-- [progress.md](docs/progress.md) — Implementation progress and run-data snapshot
-- [rough-loop.md](rough-loop.md) — Rough Loop subsystem entry point
+- [AGENTS.md](../../AGENTS.md) / [CLAUDE.md](../../CLAUDE.md) — Agent collaboration conventions (required reading)
+- [risk-controls.md](../risk-controls.md) — Full write-up of the hard risk rules
+- [.env.example](../../.env.example) — Environment variable template
+- [Illustration/onboarding-architecture.md](../diagrams/onboarding-architecture.md) — Architecture diagram + module map
+- [Illustration/trading-modes-flowchart.md](../diagrams/trading-modes-flowchart.md) — Trading mode flowchart
+- [Illustration/hostinger-vps-deploy-runbook.md](../diagrams/hostinger-vps-deploy-runbook.md) — VPS deployment runbook
+- [Illustration/dev-reference.md](../diagrams/dev-reference.md) — Command cheatsheet / dependency matrix / deployment shapes
+- [progress.md](../progress.md) — Implementation progress and run-data snapshot
+- [rough-loop.md](../../rough-loop.md) — Rough Loop subsystem entry point
 
-Historical handoff docs and one-off exploration notes are archived under [Wasted/README.md](Wasted/README.md).
+Historical handoff docs and one-off exploration notes are archived under [Wasted/README.md](../archive/README.md).

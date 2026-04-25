@@ -172,7 +172,7 @@ Running `live:test` requires a local Postgres + Redis:
 cp .env.example .env
 pnpm install
 pnpm vendor:sync
-docker compose up -d postgres redis
+docker compose -f deploy/docker-compose.yml up -d postgres redis
 pnpm db:migrate
 pnpm db:seed
 pnpm dev

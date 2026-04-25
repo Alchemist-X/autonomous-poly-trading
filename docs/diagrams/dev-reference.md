@@ -172,7 +172,7 @@ Hostinger VPS 方案见 [hostinger-vps-deploy-runbook.md](hostinger-vps-deploy-r
 cp .env.example .env
 pnpm install
 pnpm vendor:sync
-docker compose up -d postgres redis
+docker compose -f deploy/docker-compose.yml up -d postgres redis
 pnpm db:migrate
 pnpm db:seed
 pnpm dev

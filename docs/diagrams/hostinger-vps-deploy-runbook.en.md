@@ -23,7 +23,7 @@ This runbook does not bundle `apps/web` into the same Hostinger container stack 
 
 ## Hostinger deployment assets added in this repository
 
-- [docker-compose.hostinger.yml](../docker-compose.hostinger.yml)
+- [docker-compose.hostinger.yml](../../deploy/hostinger/docker-compose.yml)
 - [services/orchestrator/Dockerfile.hostinger](../services/orchestrator/Dockerfile.hostinger)
 - [services/executor/Dockerfile.hostinger](../services/executor/Dockerfile.hostinger)
 - [deploy/hostinger/stack.env.example](../deploy/hostinger/stack.env.example)
@@ -98,14 +98,14 @@ Notes:
 
 ```bash
 STACK_ENV_FILE=./deploy/hostinger/stack.env \
-docker compose -f docker-compose.hostinger.yml up -d --build
+docker compose -f deploy/hostinger/docker-compose.yml up -d --build
 ```
 
 ### 4. Check service health
 
 ```bash
 STACK_ENV_FILE=./deploy/hostinger/stack.env \
-docker compose -f docker-compose.hostinger.yml ps
+docker compose -f deploy/hostinger/docker-compose.yml ps
 
 curl -fsS http://127.0.0.1:4001/health
 curl -fsS http://127.0.0.1:4002/health
@@ -115,7 +115,7 @@ curl -fsS http://127.0.0.1:4002/health
 
 ```bash
 STACK_ENV_FILE=./deploy/hostinger/stack.env \
-docker compose -f docker-compose.hostinger.yml logs -f orchestrator executor
+docker compose -f deploy/hostinger/docker-compose.yml logs -f orchestrator executor
 ```
 
 ## Runtime constraints
@@ -154,7 +154,7 @@ If the repo is already on the VPS:
 cd /opt/autopoly
 cp deploy/hostinger/stack.env.example deploy/hostinger/stack.env
 vi deploy/hostinger/stack.env
-STACK_ENV_FILE=./deploy/hostinger/stack.env docker compose -f docker-compose.hostinger.yml up -d --build
+STACK_ENV_FILE=./deploy/hostinger/stack.env docker compose -f deploy/hostinger/docker-compose.yml up -d --build
 ```
 
 The most effective next input from the user is one of:
