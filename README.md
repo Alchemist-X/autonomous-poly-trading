@@ -2,6 +2,10 @@
   <img src="assets/predict-raven.png" alt="predict-raven" width="220" />
 </p>
 
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT" /></a>
+</p>
+
 # Predict Raven
 
 > This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [README.en.md](README.en.md) for the full English README.

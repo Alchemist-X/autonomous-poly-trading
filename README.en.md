@@ -2,6 +2,10 @@
   <img src="assets/predict-raven.png" alt="predict-raven" width="220" />
 </p>
 
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT" /></a>
+</p>
+
 # Predict Raven
 
 > This is the English README. 中文版见 [README.md](README.md).
