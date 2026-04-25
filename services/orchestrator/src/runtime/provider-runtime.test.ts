@@ -97,7 +97,7 @@ function createReplayDecisionSet(repoRoot: string) {
         sources: [
           {
             title: "Risk controls",
-            url: path.join(repoRoot, "risk-controls.md"),
+            url: path.join(repoRoot, "docs", "risk-controls.md"),
             retrieved_at_utc: GENERATED_AT_UTC
           }
         ],

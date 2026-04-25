@@ -843,6 +843,7 @@ export class ProviderRuntime implements AgentRuntime {
     const settings = resolveProviderSkillSettings(this.config, this.provider);
     const riskDocPath = path.resolve(
       this.config.repoRoot,
+      "docs",
       settings.locale === "zh" ? "risk-controls.md" : "risk-controls.en.md"
     );
     const prompt = buildPrompt(context, settings, riskDocPath);

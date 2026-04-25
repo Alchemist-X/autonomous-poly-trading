@@ -180,7 +180,7 @@ Spawns an external process (Codex / OpenClaw / Claude Code CLI), passes Pulse + 
 - Stale Pulse (>120 minutes) or too few candidates (<1) is treated as a risk state; no new `open` in that round
 - `open` actions' `token_id` must originate from the Pulse candidate set
 
-Full rules: [risk-controls.md](risk-controls.md).
+Full rules: [risk-controls.md](docs/risk-controls.md).
 
 ## Environment Variables
 
@@ -250,13 +250,13 @@ Failure archives (per the AGENTS convention) go to `run-error/` with the failing
 ## Doc Index
 
 - [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — Agent collaboration conventions (required reading)
-- [risk-controls.md](risk-controls.md) — Full write-up of the hard risk rules
+- [risk-controls.md](docs/risk-controls.md) — Full write-up of the hard risk rules
 - [.env.example](.env.example) — Environment variable template
 - [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md) — Architecture diagram + module map
 - [Illustration/trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md) — Trading mode flowchart
 - [Illustration/hostinger-vps-deploy-runbook.md](Illustration/hostinger-vps-deploy-runbook.md) — VPS deployment runbook
 - [Illustration/dev-reference.md](Illustration/dev-reference.md) — Command cheatsheet / dependency matrix / deployment shapes
-- [progress.md](progress.md) — Implementation progress and run-data snapshot
+- [progress.md](docs/progress.md) — Implementation progress and run-data snapshot
 - [rough-loop.md](rough-loop.md) — Rough Loop subsystem entry point
 
 Historical handoff docs and one-off exploration notes are archived under [Wasted/README.md](Wasted/README.md).

@@ -1,23 +1,49 @@
+# --- Build artifacts ---
 node_modules
 .next
 dist
 coverage
 .turbo
-.DS_Store
 *.tsbuildinfo
+
+# --- OS noise ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# --- Editor noise ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- Secrets / env ---
 .env
 .env.*
 !.env.example
 agents.env
+
+# --- Local-only state files ---
 .rough-loop.pause
 .rough-loop.lock
+
+# --- Vendor mirrors (synced via pnpm vendor:sync) ---
 vendor/repos
+
+# --- Runtime artifacts (large + per-run) ---
 runtime-artifacts/*
 !runtime-artifacts/.gitkeep
+run-error/
+output/
+.local/
+.playwright-cli/
+
+# --- E2E suite artifacts ---
 E2E Test Driven Development/artifacts/*
 !E2E Test Driven Development/artifacts/.gitkeep
 E2E Test Driven Development/E2E Test Driven Development/
+
+# --- Deploy adapters (auto-generated on link) ---
 .vercel
-.local/
-.playwright-cli/
-output/

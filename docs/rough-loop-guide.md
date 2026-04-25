@@ -5,7 +5,7 @@
 
 `Rough Loop` 是这个仓库里的代码任务持续执行器。
 
-你只需要维护根目录的 [rough-loop.md](rough-loop.md)，不断往 `Queue` 里追加任务卡片；服务会自动读取任务、执行 Codex、运行验证、回写状态，并把过程产物写入 `runtime-artifacts/rough-loop/`。
+你只需要维护根目录的 [rough-loop.md](../rough-loop.md)，不断往 `Queue` 里追加任务卡片；服务会自动读取任务、执行 Codex、运行验证、回写状态，并把过程产物写入 `runtime-artifacts/rough-loop/`。
 
 ## 启动命令
 

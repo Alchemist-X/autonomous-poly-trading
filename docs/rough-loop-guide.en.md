@@ -5,7 +5,7 @@ Chinese version: [rough-loop-guide.md](rough-loop-guide.md).
 
 `Rough Loop` is the code-task continuous executor for this repository.
 
-You only maintain [rough-loop.md](rough-loop.md) at the repo root and keep adding task cards under `Queue`. The service reads tasks, runs Codex, verifies the result, updates task status, and stores artifacts under `runtime-artifacts/rough-loop/`.
+You only maintain [rough-loop.md](../rough-loop.md) at the repo root and keep adding task cards under `Queue`. The service reads tasks, runs Codex, verifies the result, updates task status, and stores artifacts under `runtime-artifacts/rough-loop/`.
 
 ## Commands
 

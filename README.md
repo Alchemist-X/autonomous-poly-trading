@@ -180,7 +180,7 @@ Pulse markdown → 正则/表格解析 → PulseEntryPlan
 - Pulse 超龄（>120 分钟）或候选不足（<1 个）视为风险状态，本轮禁止新 `open`
 - `open` 的 `token_id` 必须来自 Pulse candidates
 
-完整规则见 [risk-controls.md](risk-controls.md)。
+完整规则见 [risk-controls.md](docs/risk-controls.md)。
 
 ## 环境变量
 
@@ -250,13 +250,13 @@ Agent 每次 preflight 都会打印当前 `ENV_FILE`、钱包地址、collateral
 ## 文档索引
 
 - [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — Agent 协作约定（必读）
-- [risk-controls.md](risk-controls.md) — 风控硬规则完整说明
+- [risk-controls.md](docs/risk-controls.md) — 风控硬规则完整说明
 - [.env.example](.env.example) — 环境变量模板
 - [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md) — 架构图 + 模块地图
 - [Illustration/trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md) — 下单模式流程图
 - [Illustration/hostinger-vps-deploy-runbook.md](Illustration/hostinger-vps-deploy-runbook.md) — VPS 部署 runbook
 - [Illustration/dev-reference.md](Illustration/dev-reference.md) — 命令速查 / 依赖矩阵 / 部署形态
-- [progress.md](progress.md) — 实现进度与运行数据快照
+- [progress.md](docs/progress.md) — 实现进度与运行数据快照
 - [rough-loop.md](rough-loop.md) — Rough Loop 子系统入口
 
 历史 handoff 和一次性探索稿归档在 [Wasted/README.md](Wasted/README.md)。
