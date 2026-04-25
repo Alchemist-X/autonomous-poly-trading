@@ -21,6 +21,22 @@ Watch live:
 - **Decision log / equity curve**: [autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
 - **On-chain positions / fills (Polymarket profile)**: [`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
+## System Design
+
+The system is built around a single core component, **Market Pulse**: it lets the AI independently estimate the probability of an event, dynamically gathers evidence from information sources, compares that evidence against the market's implied odds, and issues trading instructions that combine edge with capital return efficiency.
+
+### Why let an Agent do this
+
+1. **Superhuman reasoning on complex tasks** — Agents now match or exceed human-level reasoning on complex problems. Most of the time, the human edge is better information sources rather than reasoning, and engineering can close that gap. The core analytical capability is already in place.
+2. **Broad coverage and fast reaction time** — An Agent can monitor thousands of markets 24/7 and spot pricing dislocations no individual could track. When news breaks, the Agent responds in seconds; a human needs at least three minutes. Opportunities like this appear across countless markets.
+3. **Prediction markets are still a blue ocean** — Most participants in political and tech prediction markets lack a clear pricing model and broadly fear inventory management and adverse-selection risk. Systematic Agent trading faces very little competition in these areas. Even in sports, there is plenty beyond moneyline markets.
+
+### Core positioning
+
+- Every order the Agent places and its decision reasoning are published on the website
+- The Agent runs continuously in the cloud — not as ad-hoc local scripts — with no human in the loop
+- Runs on `@polymarket/clob-client-v2` with pUSD as the default collateral; V2 cutover is 2026-04-28 11:00 UTC, see [`Plan/2026-04-28-v2-cutover-runbook.md`](Plan/2026-04-28-v2-cutover-runbook.md) for the runbook
+
 ## Quick Start
 
 Driven entirely through an AI Agent (Claude Code / Codex / OpenClaw) in natural language. No commands to memorise.
@@ -66,22 +82,6 @@ rerun the pulse, place real orders
 Expected: FOK orders, then prints `execution-summary.md` path with fills / rejections / trimming details.
 
 > For concrete pnpm commands, env vars, and archive directories, see [Illustration/dev-reference.md](Illustration/dev-reference.md).
-
-## System design notes
-
-The system is built around a single core component, **Market Pulse**: it lets the AI independently estimate the probability of an event, dynamically gathers evidence from information sources, compares that evidence against the market's implied odds, and issues trading instructions that combine edge with capital return efficiency.
-
-### Why let an Agent do this
-
-1. **Superhuman reasoning on complex tasks** — Agents now match or exceed human-level reasoning on complex problems. Most of the time, the human edge is better information sources rather than reasoning, and engineering can close that gap. The core analytical capability is already in place.
-2. **Broad coverage and fast reaction time** — An Agent can monitor thousands of markets 24/7 and spot pricing dislocations no individual could track. When news breaks, the Agent responds in seconds; a human needs at least three minutes. Opportunities like this appear across countless markets.
-3. **Prediction markets are still a blue ocean** — Most participants in political and tech prediction markets lack a clear pricing model and broadly fear inventory management and adverse-selection risk. Systematic Agent trading faces very little competition in these areas. Even in sports, there is plenty beyond moneyline markets.
-
-### Core positioning
-
-- Every order the Agent places and its decision reasoning are published on the website
-- The Agent runs continuously in the cloud — not as ad-hoc local scripts — with no human in the loop
-- Runs on `@polymarket/clob-client-v2` with pUSD as the default collateral; V2 cutover is 2026-04-28 11:00 UTC, see [`Plan/2026-04-28-v2-cutover-runbook.md`](Plan/2026-04-28-v2-cutover-runbook.md) for the runbook
 
 ## Architecture Overview
 
