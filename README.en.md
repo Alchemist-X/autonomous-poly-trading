@@ -16,17 +16,53 @@ Last updated: 2026-04-26 (renamed to predict-raven; runs on Polymarket CLOB V2 S
 
 **predict-raven** is an AI Agent that autonomously runs on [Polymarket](https://polymarket.com) — the **first autonomous, continuously-running** trading agent for prediction markets.
 
-Three weeks of live trading, +9% PnL. A small group of geek and trader friends are testing it.
+Live account: <!-- TODO: live URL (spectator page / Polymarket profile / other) -->
 
-## Why this exists
+## Quick Start
 
-AI now has reasoning capability that exceeds humans — especially on multi-turn and complex tasks, as benchmarks like Humanity's Last Exam have shown.
+Driven entirely through an AI Agent (Claude Code / Codex / OpenClaw) in natural language. No commands to memorise.
 
-**Trading is probably not fundamentally different from a reasoning task.** What AI lacks is mostly a better interaction environment and context. Prediction markets make this particularly clean: what you actually trade is the gap between your subjective probability estimate and the market's implied probability — the simple corollary being that the better you predict the future, the more likely you profit.
+### 1. Set up
 
-Prediction itself may be an intelligence built from the orthogonal combination of **information gathering** and **reasoning**. Orthogonal because either dimension can be improved independently and turn into PnL: better information (insider sources, exclusive feeds, data integrations), or better reasoning (assembling existing facts into judgment).
+Say to the Agent:
 
-raven offers a `soul.md`-style mechanism (similar to lobster) that carries through your trading style or biases. After tuning, I run it with a **long-shot bias** (markets tend to overprice the probability of low-probability events — many bloggers have written about this). You can also filter the candidate pool by liquidity, market type, and tags.
+```
+build
+```
+
+Expected: runs `pnpm install` + `pnpm build`, prints "✅ build passed". No Docker, no real wallet needed.
+
+### 2. Configure funds
+
+Put your Polymarket credentials in `.env.live-test`, then say:
+
+```
+preflight with .env.live-test
+```
+
+Expected: prints `ENV_FILE`, wallet address, collateral (pUSD) balance. Missing fields fail-fast.
+
+### 3. Recommendations only
+
+Say:
+
+```
+pulse, recommendations only
+```
+
+Expected: candidate table (market / action / size / edge / monthlyReturn), Summary written to `runtime-artifacts/pulse-live/<ts>-<runId>/`.
+
+### 4. Real-money live trading
+
+Say:
+
+```
+rerun the pulse, place real orders
+```
+
+Expected: FOK orders, then prints `execution-summary.md` path with fills / rejections / trimming details.
+
+> For concrete pnpm commands, env vars, and archive directories, see [Illustration/dev-reference.md](Illustration/dev-reference.md).
 
 ## System design notes
 
@@ -72,37 +108,6 @@ The system has four layers; data flows top to bottom:
 │  DB / local state / runtime-artifacts archive / apps/web    │
 └─────────────────────────────────────────────────────────────┘
 ```
-
-## Three Execution Paths
-
-```mermaid
-flowchart LR
-  paper["paper\nLocal simulation"] --> core["Pulse + Decision Core"]
-  pulseLive["pulse:live\nFastest real-money loop"] --> core
-  stateful["live:test\nFull production path"] --> core
-
-  core --> risk["Hard risk trimming"]
-  risk --> out1["Paper state file"]
-  risk --> out2["Direct Polymarket execution"]
-  risk --> out3["BullMQ queue → Executor"]
-```
-
-| Path | Dependencies | Best For |
-| --- | --- | --- |
-| **paper** | Local file | Simulated recommendations and manual confirmation |
-| **pulse:live** | Wallet + Polymarket | Fastest real-money loop, the onboarding default |
-| **live:test** | Wallet + DB + Redis + Queue | Full production path |
-
-### How you run it: natural language
-
-The system is driven by an AI Agent (Claude Code / Codex / OpenClaw) through natural language. You do not need to memorise commands — just tell the Agent what you want to do:
-
-- "Run a pulse and give me recommendations, but don't place any orders"
-- "The recommendation looks good, place the orders for real"
-- "Show me current positions and equity"
-- "Switch to paper mode and dry-run one round first"
-
-The Agent reads this repo's [AGENTS.md](AGENTS.md) and per-package operating conventions to pick the right path (paper / pulse:live / live:test), env file, and preflight steps automatically. **Every live path goes through Preflight first and will refuse to place orders if it does not pass**; failure reasons are printed to the terminal in colour.
 
 ## Provider Switching
 
@@ -173,67 +178,6 @@ Spawns an external process (Codex / OpenClaw / Claude Code CLI), passes Pulse + 
 - `open` actions' `token_id` must originate from the Pulse candidate set
 
 Full rules: [risk-controls.md](risk-controls.md).
-
-## Quick Start
-
-Everything is driven through an AI Agent (Claude Code / Codex / OpenClaw) in natural language. Each step below gives you "what to say to the Agent" and the "Expected result" — no need to memorise commands.
-
-### 1. Set up the environment
-
-Say to the Agent:
-
-```
-Clone the autonomous-poly-trading repo, install deps, and verify the build passes
-```
-
-Expected result:
-
-- The Agent runs `pnpm install` and `pnpm build`
-- The terminal prints "✅ build passed" or equivalent
-- This step does not require Docker, Codex CLI, or real wallet credentials
-
-### 2. Configure funds and account
-
-Say to the Agent:
-
-```
-I've put my Polymarket wallet credentials in .env.live-test — wire them up and run a preflight
-```
-
-Expected result:
-
-- The Agent reads `PRIVATE_KEY` / `FUNDER_ADDRESS` / `SIGNATURE_TYPE` / `CHAIN_ID`
-- Preflight prints the `ENV_FILE` in use, the wallet address, collateral balance, and execution mode
-- Missing fields fail-fast and tell you exactly which one is missing
-
-### 3. Recommendations only, no orders
-
-Say to the Agent:
-
-```
-Do one pulse:live run, recommendations only, no real-money orders
-```
-
-Expected result:
-
-- The Agent runs Pulse fetching plus the decision runtime
-- The terminal prints the candidate table (market / action / size / edge / monthlyReturn)
-- A Summary file is written to `runtime-artifacts/pulse-live/<ts>-<runId>/` and the path is printed
-
-### 4. Real-money live trading
-
-Say to the Agent:
-
-```
-The recommendation looks good — run pulse:live for real and place the orders
-```
-
-Expected result:
-
-- The Agent drops the `--recommend-only` switch and submits FOK orders
-- On completion, the `execution-summary.md` path is printed; it lists fills, rejections, and trimming details
-
-> Paper mode (simulation) and the full-stack live:test path follow similar natural-language flows. For the concrete pnpm commands, env vars, and archive directories, see [Illustration/dev-reference.md](Illustration/dev-reference.md).
 
 ## Environment Variables
 

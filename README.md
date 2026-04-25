@@ -16,17 +16,53 @@
 
 **predict-raven** 是一个在 [Polymarket](https://polymarket.com) 上能自主运行的 AI Agent —— **全球首个自主持久化运行**的预测市场交易 Agent。
 
-实盘 3 周 +9% 收益。一小群极客和交易员朋友也在测试它。
+实盘账户：<!-- TODO: 填入实盘 URL（spectator 页 / Polymarket profile / 其他） -->
 
-## 为什么做这个
+## 快速开始
 
-AI 已经拥有了超过人类的推理能力——尤其在多轮和复杂任务上，Humanity's Last Exam 等 benchmark 的高完成度都佐证了这一点。
+全部通过 AI Agent（Claude Code / Codex / OpenClaw）自然语言驱动，不用记命令。
 
-**交易很可能和推理任务也没有本质区别**。AI 所欠缺的，可能只是更好的交互环境和上下文。预测市场又把这件事做得较为特殊：你交易的其实是「主观预测事件会发生的概率」与「市场隐含概率」的差值——一个简单的推论是，预测未来越准，就越有可能获利。
+### 1. 准备环境
 
-而预测本身可能是一个由「**信息搜集**」与「**推理**」正交组合成的智能。这里说正交的原因是：得到更好的信息（内幕、独家消息源、数据接入），或者得到更好的推理（拼凑已有的判断），任一维度变强都能转化为收益。
+对 Agent 说：
 
-raven 提供类似龙虾 `soul.md` 的机制——能贯彻你的交易风格或偏见。我自己经过调试后带入的是 **long-shot bias**（市场倾向于高估小概率事件的发生，很多博主都提过这点）。你也可以根据流动性高低、市场类型和标签自行筛选候选池。
+```
+build
+```
+
+预期：跑 `pnpm install` + `pnpm build`，输出"✅ 编译通过"。不需要 Docker、真钱包。
+
+### 2. 配置资金
+
+把 Polymarket 凭据填进 `.env.live-test`，然后对 Agent 说：
+
+```
+用 .env.live-test 做 preflight
+```
+
+预期：打印 `ENV_FILE`、钱包地址、collateral（pUSD）余额。缺字段直接 fail-fast。
+
+### 3. 看推荐不下单
+
+对 Agent 说：
+
+```
+跑一次 pulse，只看推荐
+```
+
+预期：候选表（market / action / size / edge / monthlyReturn），Summary 写到 `runtime-artifacts/pulse-live/<ts>-<runId>/`。
+
+### 4. 真金实盘
+
+对 Agent 说：
+
+```
+刚才那次 pulse 直接下单
+```
+
+预期：FOK 下单，完成后输出 `execution-summary.md` 路径，列出成交 / 拒单 / 裁剪明细。
+
+> 想看具体的 pnpm 命令、环境变量、归档目录，见 [Illustration/dev-reference.md](Illustration/dev-reference.md)。
 
 ## 系统设计要点
 
@@ -72,37 +108,6 @@ raven 提供类似龙虾 `soul.md` 的机制——能贯彻你的交易风格或
 │  DB / 本地状态 / runtime-artifacts 归档 / apps/web 展示     │
 └─────────────────────────────────────────────────────────────┘
 ```
-
-## 三条运行链路
-
-```mermaid
-flowchart LR
-  paper["paper\n本地模拟"] --> core["Pulse + Decision Core"]
-  pulseLive["pulse:live\n最快真钱闭环"] --> core
-  stateful["live:test\n完整生产链路"] --> core
-
-  core --> risk["风控硬裁剪"]
-  risk --> out1["Paper state file"]
-  risk --> out2["直接 Polymarket 执行"]
-  risk --> out3["BullMQ 队列 → Executor"]
-```
-
-| 链路 | 依赖 | 适合场景 |
-| --- | --- | --- |
-| **paper** | 本地文件 | 模拟推荐与人工确认 |
-| **pulse:live** | 钱包 + Polymarket | 最快真钱闭环，onboarding 首选 |
-| **live:test** | 钱包 + DB + Redis + Queue | 完整生产链路 |
-
-### 运行方式：自然语言驱动
-
-系统通过 AI Agent（Claude Code / Codex / OpenClaw）用自然语言驱动。你不需要记住具体命令，直接告诉 Agent 你想做什么：
-
-- "跑一次 pulse，给我推荐但不要下单"
-- "刚才的推荐没问题，正式下单"
-- "看一下现在的持仓和净值"
-- "切到 paper 模式先验一轮"
-
-Agent 会根据项目里的 [AGENTS.md](AGENTS.md) 和子包操作约定，自动选择链路（paper / pulse:live / live:test）、环境文件、preflight 步骤。**所有 live 路径都会先走 Preflight，通不过绝不下单**，不通过的原因会在终端彩色输出。
 
 ## Provider 切换
 
@@ -173,67 +178,6 @@ Pulse markdown → 正则/表格解析 → PulseEntryPlan
 - `open` 的 `token_id` 必须来自 Pulse candidates
 
 完整规则见 [risk-controls.md](risk-controls.md)。
-
-## 快速开始
-
-通过 AI Agent（Claude Code / Codex / OpenClaw）的自然语言入口操作。每一步给出「对 Agent 说什么」和「预期结果」，不用背命令。
-
-### 1. 准备环境
-
-对 Agent 说：
-
-```
-帮我克隆 autonomous-poly-trading 这个仓库，装依赖，校验能编译过
-```
-
-预期结果：
-
-- Agent 跑 `pnpm install`、`pnpm build`
-- 终端出现 "✅ 编译通过" 或等价提示
-- 这一步不需要 Docker、Codex CLI、真钱包凭据
-
-### 2. 配置资金与账号
-
-对 Agent 说：
-
-```
-我把 Polymarket 钱包凭据放在 .env.live-test，帮我接入并跑一次 preflight
-```
-
-预期结果：
-
-- Agent 读取 `PRIVATE_KEY` / `FUNDER_ADDRESS` / `SIGNATURE_TYPE` / `CHAIN_ID`
-- Preflight 打印当前使用的 `ENV_FILE`、钱包地址、collateral 余额、执行模式
-- 缺字段会 fail-fast 并告诉你还差哪一项
-
-### 3. 只看推荐，不下单
-
-对 Agent 说：
-
-```
-用 pulse:live 跑一次，只给我建议不要下真钱单
-```
-
-预期结果：
-
-- Agent 跑 Pulse 抓取 + 决策运行时
-- 终端打印候选表（market / action / size / edge / monthlyReturn）
-- Summary 文件写到 `runtime-artifacts/pulse-live/<ts>-<runId>/`，路径会打印出来
-
-### 4. 真金实盘
-
-对 Agent 说：
-
-```
-刚才的建议没问题，跑一次 pulse:live 正式下单
-```
-
-预期结果：
-
-- Agent 去掉 `--recommend-only` 开关，执行 FOK 下单
-- 完成后输出 `execution-summary.md` 路径，里面列出成交 / 拒单 / 裁剪明细
-
-> Paper 模式（模拟盘）和 live:test 全栈链路走类似的自然语言流程。具体 pnpm 命令、环境变量、归档目录见 [Illustration/dev-reference.md](Illustration/dev-reference.md)。
 
 ## 环境变量
 
