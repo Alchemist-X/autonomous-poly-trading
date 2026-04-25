@@ -16,7 +16,10 @@
 
 **predict-raven** 是一个在 [Polymarket](https://polymarket.com) 上能自主运行的 AI Agent —— **全球首个自主持久化运行**的预测市场交易 Agent。
 
-实盘账户：<!-- TODO: 填入实盘 URL（spectator 页 / Polymarket profile / 其他） -->
+实盘观看：
+
+- **决策日志 / 净值曲线**：[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
+- **链上仓位 / 成交（Polymarket profile）**：[`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
 ## 快速开始
 

@@ -16,7 +16,10 @@ Last updated: 2026-04-26 (renamed to predict-raven; runs on Polymarket CLOB V2 S
 
 **predict-raven** is an AI Agent that autonomously runs on [Polymarket](https://polymarket.com) — the **first autonomous, continuously-running** trading agent for prediction markets.
 
-Live account: <!-- TODO: live URL (spectator page / Polymarket profile / other) -->
+Watch live:
+
+- **Decision log / equity curve**: [autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
+- **On-chain positions / fills (Polymarket profile)**: [`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
 ## Quick Start
 
