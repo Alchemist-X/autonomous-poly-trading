@@ -111,7 +111,7 @@ Last updated: 2026-04-26
 ### 30-second must-read
 
 - **Live by default**: `pnpm daily:pulse` / `pnpm pulse:live` places real orders. To inspect without trading, you must explicitly pass `--recommend-only` or say "no orders" in the prompt.
-- **Default wallet**: `.env.pizza` (active account). To switch wallets, set `ENV_FILE=.env.<name>` explicitly; preflight prints the current wallet address + collateral, abort immediately if it does not match expectation.
+- **Default wallet**: `.env.pizza` (active account) — **this is the default, not hardcoded**. When deploying to a new machine or pairing a new agent with a different primary wallet, replace `.env.pizza` with your own env file and update the corresponding line in `skills/daily-pulse/agents/openai.yaml` (`use .env.pizza when no env is specified`). For ad-hoc wallet switches use `ENV_FILE=.env.<name>`. Preflight prints the current wallet address + collateral, abort immediately if it does not match expectation.
 - **Hard risk caps** (enforced at the executor service layer, no override): per-trade ≤ 15% bankroll / total exposure ≤ 80% / per-event ≤ 30% / max 22 positions / min $5 trade.
 - **Existing positions default to hold**: pulse-direct's Position Review module never closes positions blindly; every `hold` decision carries a reason. `reduce` / `close` requires contradicting evidence.
 - **`claude --print` occasionally hangs at 0 bytes for 5+ minutes** — that is not a failure. The Pulse render has a 30-minute internal timeout; let it finish.
@@ -120,6 +120,7 @@ Last updated: 2026-04-26
 
 | Topic | File |
 | --- | --- |
+| **First-time agent onboarding to this project** | [`docs/en/agent-onboarding.md`](agent-onboarding.md) |
 | Full risk-control rules | [`docs/risk-controls.en.md`](../risk-controls.en.md) |
 | V2 cutover runbook (2026-04-28 11:00 UTC) | [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](../internal/plan/2026-04-28-v2-cutover-runbook.md) |
 | Command cheatsheet / deployment / dependency matrix | [`docs/diagrams/dev-reference.en.md`](../diagrams/dev-reference.en.md) |

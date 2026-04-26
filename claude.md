@@ -111,7 +111,7 @@
 ### 30 秒必读
 
 - **默认实盘下单**：`pnpm daily:pulse` / `pnpm pulse:live` 直接打真单。需要"只看不下单"必须显式加 `--recommend-only` 或在 prompt 里明说"不要下单"。
-- **默认钱包**：`.env.pizza`（活跃账户）。切换钱包必须显式 `ENV_FILE=.env.<name>`；preflight 会打印当前钱包地址 + collateral 余额，对不上立刻 abort。
+- **默认钱包**：`.env.pizza`（活跃账户）—— **这是默认值，不是写死**。新部署或新 agent 接手到不同主钱包时，可以把 `.env.pizza` 替换成自己的 env 文件，并同步更新 `skills/daily-pulse/agents/openai.yaml` 里那行 `use .env.pizza when no env is specified`。临时切换钱包用 `ENV_FILE=.env.<name>`。preflight 会打印当前钱包地址 + collateral 余额，对不上立刻 abort。
 - **风控硬上限**（无法绕过，executor 服务层强制裁剪）：单笔 ≤ 15% bankroll / 总敞口 ≤ 80% / 单事件 ≤ 30% / 最多 22 仓 / 最小 $5。
 - **现有持仓默认 hold**：pulse-direct 的 Position Review 模块不会乱平仓，每个 hold 决策都会带理由；`reduce` / `close` 必须有反向证据。
 - **claude --print 偶尔 0 字节挂 5+ 分钟**——不是失败。Pulse 渲染内部 timeout 是 30 分钟，等它出来。
@@ -120,6 +120,7 @@
 
 | 内容 | 文件 |
 | --- | --- |
+| **第一次接手这个项目的 agent 起步** | [`docs/agent-onboarding.md`](docs/agent-onboarding.md) |
 | 风控完整规则 | [`docs/risk-controls.md`](docs/risk-controls.md) |
 | V2 cutover runbook（2026-04-28 11:00 UTC 切换日） | [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](docs/internal/plan/2026-04-28-v2-cutover-runbook.md) |
 | 命令速查 / 部署形态 / 依赖矩阵 | [`docs/diagrams/dev-reference.md`](docs/diagrams/dev-reference.md) |
