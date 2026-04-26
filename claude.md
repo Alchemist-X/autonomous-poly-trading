@@ -120,7 +120,8 @@
 
 | 内容 | 文件 |
 | --- | --- |
-| **第一次接手这个项目的 agent 起步** | [`docs/agent-onboarding.md`](docs/agent-onboarding.md) |
+| **每次接手必看** — 当前状态 + 待办（wrap-up 时更新） | [`docs/agent-handoff.md`](docs/agent-handoff.md) |
+| **第一次接手才看**（仅一次） | [`docs/agent-onboarding.md`](docs/agent-onboarding.md) |
 | 风控完整规则 | [`docs/risk-controls.md`](docs/risk-controls.md) |
 | V2 cutover runbook（2026-04-28 11:00 UTC 切换日） | [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](docs/internal/plan/2026-04-28-v2-cutover-runbook.md) |
 | 命令速查 / 部署形态 / 依赖矩阵 | [`docs/diagrams/dev-reference.md`](docs/diagrams/dev-reference.md) |
@@ -128,12 +129,10 @@
 | 实盘运行总结归档 | `runtime-artifacts/pulse-live/<ts>-<runId>/run-summary.md` |
 | Pulse AI 推理报告 | `runtime-artifacts/reports/pulse/YYYY/MM/DD/pulse-*.md` |
 
-### P0 Cutover-day TODO（2026-04-28）
+### Wrap-up 时必做
 
-- [ ] V2 切换 11:00 UTC：暂停所有 cron + 等切换完成 + 验证 SDK 连通后重启
-- [ ] 跑一次 `pnpm exec tsx scripts/v2-smoke-balance.ts` 确认 pUSD 余额 + 新 spender 地址正确
+- 更新 [`docs/agent-handoff.md`](docs/agent-handoff.md)：勾掉刚完成的 P0/P1，添加新发现的 TODO，更新"上次会话留下的上下文"节，刷新 `最后更新` 行
+- 用户说"记一下" / "save this" / "update handoff" 时立刻更新，不要等 wrap-up
+- handoff 文档保持精简：actionable 而不是流水账；细节进 git log 或 `docs/internal/review/`
 
-### 后续 P0（V2 稳定 1 周内）
-
-- [ ] Builder Code 接入：申请 https://polymarket.com/settings?tab=builder，配 `POLYMARKET_BUILDER_CODE` env
-- [ ] `fees.ts` 接入 V2 SDK `getClobMarketInfo` 动态费率（已留 building block）
+> **当前 P0 / P1 / P2 待办均已迁到 [`docs/agent-handoff.md`](docs/agent-handoff.md)**——这个本节不再维护任务列表，避免双源不一致。

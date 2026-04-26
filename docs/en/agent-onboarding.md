@@ -1,5 +1,7 @@
 # Agent Onboarding — First time picking up predict-raven
 
+> 🆕 **Read this only on your first contact with this project.** For every subsequent session, jump straight to [`docs/agent-handoff.md`](../agent-handoff.md) for current state + pending TODOs.
+>
 > You are a Claude Code / Codex / OpenClaw agent **freshly started** in this repo. This doc gets you operational in **5 minutes** without stepping on landmines.
 >
 > Chinese version: [`docs/agent-onboarding.md`](../agent-onboarding.md)

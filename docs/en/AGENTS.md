@@ -120,7 +120,8 @@ Last updated: 2026-04-26
 
 | Topic | File |
 | --- | --- |
-| **First-time agent onboarding to this project** | [`docs/en/agent-onboarding.md`](agent-onboarding.md) |
+| **Read every time you take over** — current state + TODOs (updated at wrap-up) | [`docs/en/agent-handoff.md`](agent-handoff.md) |
+| **First contact only** (read once) | [`docs/en/agent-onboarding.md`](agent-onboarding.md) |
 | Full risk-control rules | [`docs/risk-controls.en.md`](../risk-controls.en.md) |
 | V2 cutover runbook (2026-04-28 11:00 UTC) | [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](../internal/plan/2026-04-28-v2-cutover-runbook.md) |
 | Command cheatsheet / deployment / dependency matrix | [`docs/diagrams/dev-reference.en.md`](../diagrams/dev-reference.en.md) |
@@ -128,12 +129,10 @@ Last updated: 2026-04-26
 | Live run summary archive | `runtime-artifacts/pulse-live/<ts>-<runId>/run-summary.md` |
 | Pulse AI reasoning report | `runtime-artifacts/reports/pulse/YYYY/MM/DD/pulse-*.md` |
 
-### P0 cutover-day TODO (2026-04-28)
+### Wrap-up rituals
 
-- [ ] At 11:00 UTC: pause all crons, wait for cutover to complete, verify SDK connectivity, then resume
-- [ ] Run `pnpm exec tsx scripts/v2-smoke-balance.ts` to confirm pUSD balance + new spender addresses
+- Update [`docs/en/agent-handoff.md`](agent-handoff.md): tick off completed P0/P1 items, add newly discovered TODOs, refresh the "Last session context" section, bump the `Last updated` line.
+- Update immediately when the user says "记一下" / "save this" / "update handoff" — do not wait until wrap-up.
+- Keep the handoff doc tight: actionable, not a running log; details belong in `git log` or `docs/internal/review/`.
 
-### Follow-up P0 (within 1 week of stable V2)
-
-- [ ] Wire up Builder Code: register at https://polymarket.com/settings?tab=builder, set `POLYMARKET_BUILDER_CODE` env
-- [ ] Hook `fees.ts` to V2 SDK `getClobMarketInfo` for dynamic per-market fees (helper already in place)
+> **Current P0 / P1 / P2 TODOs all live in [`docs/en/agent-handoff.md`](agent-handoff.md)** — this section no longer maintains its own task list to avoid two-source drift.
