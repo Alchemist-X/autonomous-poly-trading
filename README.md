@@ -14,7 +14,7 @@
 
 ---
 
-**Predict-Raven** 是第一个在Polymarket上实现自主交易的Agent框架，可以通过claude code / codex等常见架构在本地端持久化部署
+**Predict-Raven** 是一个在Polymarket上实现自主交易的Agent框架，可以通过claude code / codex等常见架构在本地端持久化部署
 
 实盘公开：
 - **持仓和决策记录**：[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
@@ -22,7 +22,7 @@
 
 ## 系统设计
 
-Predict-Raven围绕**Market Pulse** 这一核心组件设计：让 AI 自主评估事件发生的概率，动态地从信息源收集证据，将其与市场隐含的赔率对比，综合交易的edge和资金回报效率给出交易指示。
+Predict-Raven围绕**Market Pulse**这一核心组件设计：让 AI 自主评估事件发生的概率，动态地从信息源收集证据，将其与市场隐含的赔率对比，综合交易的edge和资金回报效率给出交易指示。
 
 ### 为什么让 Agent 来做这件事
 
@@ -38,7 +38,7 @@ Predict-Raven围绕**Market Pulse** 这一核心组件设计：让 AI 自主评�
 
 ## 快速开始
 
-全部通过 AI Agent（Claude Code / Codex / OpenClaw）自然语言驱动，不用记命令。
+通过 AI Agent（Claude Code / Codex / OpenClaw）自然语言快速开始
 
 > **前置**：你需要先装好 [Claude Code](https://claude.com/claude-code) 或 [Codex CLI](https://github.com/openai/codex) 任一个，`git clone` 本仓库后在仓库目录里启动它，再开始下面 4 步。
 
@@ -69,7 +69,7 @@ Polymarket 钱包凭据可以从 polymarket.com → Settings → Export Wallet �
 
 预期：Agent 会读取你的 `.env.live-test`，确认钱包能连上 Polymarket，并打印钱包地址和当前余额。如果有字段没填，会立刻告诉你缺哪一个。
 
-### 3. 看推荐不下单（也适合还没充值的用户）
+### 3. 获取推荐，不下单
 
 对 Agent 说：
 
@@ -79,13 +79,14 @@ Polymarket 钱包凭据可以从 polymarket.com → Settings → Export Wallet �
 
 预期：Agent 会列出几个推荐交易，每条带上市场、方向、押注金额，以及它估算的胜率优势（edge）和资金回报效率。完整的推理过程也会落盘成 markdown，方便你回头复盘。这一步**不会真的下单**，所以钱包里没有 USDC 也能完整跑通。
 
-### 4. 真金实盘
+### 4. 实盘交易
 
 对 Agent 说：
 
 ```
-使用真实资金运行 pulse
+实盘运行 pulse
 ```
+
 
 预期：Agent 会按上一步的推荐真实下单，完成后告诉你成交了哪几笔、哪些被拒。
 
@@ -260,11 +261,11 @@ Agent 每次 preflight 都会打印当前 `ENV_FILE`、钱包地址、collateral
 - [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — Agent 协作约定（必读）
 - [risk-controls.md](docs/risk-controls.md) — 风控硬规则完整说明
 - [.env.example](.env.example) — 环境变量模板
-- [docs/diagrams/onboarding-architecture.md](docs/diagrams/onboarding-architecture.md) — 架构图 + 模块地图
-- [docs/diagrams/trading-modes-flowchart.md](docs/diagrams/trading-modes-flowchart.md) — 下单模式流程图
-- [docs/diagrams/hostinger-vps-deploy-runbook.md](docs/diagrams/hostinger-vps-deploy-runbook.md) — VPS 部署 runbook
-- [docs/diagrams/dev-reference.md](docs/diagrams/dev-reference.md) — 命令速查 / 依赖矩阵 / 部署形态
+- [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md) — 架构图 + 模块地图
+- [Illustration/trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md) — 下单模式流程图
+- [Illustration/hostinger-vps-deploy-runbook.md](Illustration/hostinger-vps-deploy-runbook.md) — VPS 部署 runbook
+- [Illustration/dev-reference.md](Illustration/dev-reference.md) — 命令速查 / 依赖矩阵 / 部署形态
 - [progress.md](docs/progress.md) — 实现进度与运行数据快照
 - [rough-loop.md](rough-loop.md) — Rough Loop 子系统入口
 
-历史 handoff 和一次性探索稿归档在 [docs/archive/README.md](docs/archive/README.md)。
+历史 handoff 和一次性探索稿归档在 [Wasted/README.md](Wasted/README.md)。
