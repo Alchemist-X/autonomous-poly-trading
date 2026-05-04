@@ -46,7 +46,6 @@
 
 - [ ] **接 Polymarket Builder Code**（V2 稳定后立刻做）：申请 https://polymarket.com/settings?tab=builder → 配 `POLYMARKET_BUILDER_CODE` env → 在 `services/executor/src/lib/polymarket-sdk.ts` 的 FOK / GTC 调用里带 `builderCode` 字段。能拿下单返佣
 - [ ] **`fees.ts` 接入 V2 SDK 动态费率**：使用已新增的 `fetchDynamicFeeParams(client, conditionID)` helper（见 `services/orchestrator/src/lib/fees.ts:328`），把 sizing 路径里的静态查表替换掉。前置条件：`PlannedExecution` plumb 进 `conditionId` 字段（当前没有）
-- [ ] **Design philosophy 重写**（用户标记 P1，2026-05-04）：当前 [`docs/internal/plan/2026-05-04-design-elements-inventory.md`](internal/plan/2026-05-04-design-elements-inventory.md) §1 "设计思路" 写得太抽象，用户反馈"读完不知道在干嘛"。重写方向：从"7 条原则 + 后果"改成"4 条具体规则 + 长这样/不长这样正反例"。已删 "Pizza dashboard 是护城河" 这一过度声明。但 §1.1 / 1.4 / 1.5 / 1.6 / 1.7 还是抽象语调。重写示例见对话记录（§1.1 重写候选格式）。**不阻塞当前功能开发，等设计资源落地阶段再统一处理**
 
 ## 🟢 P2 — 后续 / 优化项
 
@@ -59,6 +58,7 @@
 
 ## ⛔ 已完成 / 不要重做（决策已定）
 
+- ✅ **Design philosophy §1 重写**（2026-05-04）：[`docs/internal/plan/2026-05-04-design-elements-inventory.md`](internal/plan/2026-05-04-design-elements-inventory.md) §1 由"7 条抽象原则 + 后果列表"改成"4 条具体规则 + ✅长这样/❌不长这样对照"。规则收口为：不做 gamification / 默认展示真数据 / Marketing 和 app 两套规则 / 解释机制不只说 benefit。下游 §2-§9 未动
 - ✅ **Polymarket V2 SDK 迁移**（commit `48181a5`）：执行器侧已切到 `@polymarket/clob-client-v2@1.0.2`，构造改 options 形式，SignatureType 兼容，CTF 地址 unchanged。无回归
 - ✅ **README 大幅瘦身 + Quick Start 提前**（commit `70aa9c1` `8994ad1`）：从 570 → ~290 行，删掉"三条运行链路"和过长的 manifesto
 - ✅ **Repo 重命名 `autonomous-poly-trading` → `predict-raven`** + 本地目录 `~/dev-proj/predict-raven/`（symlink 兼容旧路径）

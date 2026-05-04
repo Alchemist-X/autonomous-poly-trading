@@ -20,80 +20,45 @@
 
 ## 1. 设计思路（why before what）
 
-> 决策不是孤立的——下面 7 条原则是所有视觉 / 文案 / 组件选择的共同根。读完这 7 条，§2 拍板表格、§3 色彩 token、§5 SVG 清单、§9 执行顺序就都顺起来。**用户对哪条原则有异议，下游所有决策同步重做。**
+> 4 条规则，每条配 ✅"长这样" / ❌"不长这样"对照。读完应该能在脑子里预演出页面长相，而不是去解读一段宣言。**对哪条规则有异议，下游所有决策同步重做。**
 
-### 1.1 真钱场景，不做 gamification
+### 1.1 不做 gamification
 
-Raven 是真金白银托管。用户授权 session signer 那一刻起，每个像素都在替"我把钱托给这家"投票。Robinhood 的彩色烟花、Coinbase Pro 的橘红 CTA、launchpad 的霓虹紫——都是**反信号**。
+适用：所有页面（landing / dashboard / onboard / track-record）。Raven 是真钱托管，且目标用户是 Polymarket 老玩家——他们见过 100 个 rug 项目，对 "Web3 革命 / 3D 角色 / 彩色烟花" 的容忍度是负的。任何让产品看起来像赌场或 launchpad 的元素都是**反信号**。
 
-**直接后果**：
-- 不用霓虹 / 不用 3D 角色 / 不用动态粒子 / 不用 emoji（除产品文档）
-- 数字成为视觉主角（balance / P&L / equity curve），插画让位
-- 字体偏 Bloomberg 终端，不偏 Notion 或 Linear marketing splash
+✅ **长这样**：暗背景 `#07090D` / 主字体 Inter + 数字 JetBrains Mono / 等宽数字对齐 / 紫色 accent 仅在 CTA 和 link / Lucide line icon `strokeWidth={1.75}` / 视觉参考 Hyperliquid + Bloomberg + Linear
+
+❌ **不长这样**：橘红色 CTA / 霓虹紫光晕 / 3D 角色或吉祥物 / 动态粒子背景 / emoji 当 icon 用（除产品文档） / 大眼卡通 raven / Disney style / 抽奖动画 / "AI-Powered Web3 Revolution" 这种文案
 
 ### 1.2 默认展示真数据
 
-任何"我们很可信"的话都得有可点开的真实记录支撑。每笔仓位带 tx hash、每个推理日志挂 markdown 链接、track-record 是真曲线不是 mockup。
+适用：landing / track-record / OG 图 / 任何想说"我们可信"的位置。每个信任声明都必须能点开看到具体记录——tx hash、推理日志 markdown、真实曲线。装饰图（stock photo / illustration / AI 抽象渲染）一律不进产品页面，那些位置留给真数据可视化。
 
-**直接后果**：
-- track-record 页是营销主武器，权重 ≥ landing
-- 装饰图位置让位真数据可视化（equity curve / 仓位表 / 推理日志摘录）
-- OG 图自动注入最新真实业绩数字（`@vercel/og` build-time 渲染，每次部署刷新）
-- 文案禁用模糊形容词（"battle-tested" / "proven"），改成具体日期 + 笔数
+✅ **长这样**：track-record 页直接渲染 `equity-history.json` 真曲线 / 每仓位 row 带 tx hash 链接 / OG 图自动注入最新 NAV 数字（`@vercel/og` build-time）/ empty state 用 Lucide 64px icon + 一行灰文案 / section 分隔用 1px border + 渐变条 / "since 2026-03-15, 47 trades, 62% win rate" 这种具体数字
 
-### 1.3 数据即图像（Data is the imagery）
+❌ **不长这样**：stock photo / stock illustration library / hero 用 AI 生成的抽象渐变 / empty state 配卡通插画 / 模糊形容词如 "battle-tested" "proven" "trusted" / mockup 假数据当 hero / 占位 chart 图片
 
-任何"装饰图"都不该出现在产品页面上——位置应该被真实图表占据。这条原则一刀干掉 90% 的设计辩论（"要不要加 hero illustration"、"empty state 配什么图"、"section 之间的 divider 用什么"）。
+### 1.3 Marketing 页和 app 内是两套规则
 
-**直接后果**：
-- 不买 stock photo / 不接 stock illustration library
-- AI 生图限定 off-product marketing 表面（X / blog / 广告），**不进产品**
-- empty state 用 Lucide 大尺寸 icon（64px）+ 一行短文案，不用插画
-- section 分隔用 1px border + 渐变条，不用图形
+适用：marketing 表面（`/`、`/track-record`）vs 产品内（`/dashboard`、`/onboard`）。Linear 的玩法（大标题 + 真产品截图当 hero）适合营销，Hyperliquid 的玩法（暗背景 + 高密度数字 + 几乎无 chrome）适合产品内。强行一致只会两边都妥协——同一品牌色，**不同密度**。
 
-### 1.4 Crypto-native 用户的 BS 雷达
+✅ **长这样**：marketing body 16-18px / app body 13-15px / marketing topbar 透明 + 大 lockup logo / app topbar 实体 + 小 mark + 用户菜单 / marketing 可以 hero 大渐变 + display 48px / app 内最大标题 32px 且禁用大渐变 / marketing 留白宽松 / app 内表格密集
 
-目标用户里相当一部分已经在 Polymarket 真金白银交易过。他们见过 100 个 rug-pull launchpad 网站，对"3D 角色 hero / Midjourney 抽象渐变 / AI-Powered Web3 Revolution 文案"的容忍度是负的。**这群人是被你设计第一秒得罪还是赢得，决定后面 30 秒愿不愿意托钱**。
+❌ **不长这样**：dashboard 顶上一片白屏 hero（Vercel 风） / landing 用 13px body 像 Bloomberg 终端 / 同一个 topbar 复用到两端 / app 内 section 之间留 80px 空白 / marketing 用 12px label 当正文
 
-**直接后果**：
-- Logo 概念排除"友善吉祥物 / 大眼卡通 / Disney style / 萌化 raven"
-- 文案禁用炒作词（详见 §6 第 4 条）
-- 视觉参考来自 Hyperliquid / Linear / Bloomberg，不来自 OpenSea / launchpad / Web3 游戏
+### 1.4 解释机制，不只说 benefit
 
-### 1.5 Marketing site vs 产品内：两套规则
+适用：onboard 流程 / landing "How it works" 节 / 所有涉及"非托管"或"安全"的文案。技术受众里"非托管"四个字本身没意义——必须把 **Safe 边界 + session signer scope + Raven 摸不到什么** 三段链路讲清楚。同时和 Polymarket 自己的视觉做最低耦合（他们改 brand / 升级 SDK 不该带 Raven 一起重做）。
 
-Linear 的玩法（大标题 + 真产品截图当 hero + 客户引述）适合 landing 和 track-record。Hyperliquid 的玩法（暗背景 + 等宽数字 + 几乎无 marketing chrome）适合 dashboard 和 onboard。强行一致只会两边都妥协。
+✅ **长这样**：onboard 嵌一张 mechanism 图（Safe 边界 / session 权限 scope / 资金路径只能流向 Polymarket 合约）/ 文案 "trade-only session key, revocable, no withdrawal access" / "How it works" 4 步做成 landing 二级 hero / Raven 用紫色（不抄 Polymarket 蓝）/ 引用 Polymarket 用 hyperlink + 文字（不嵌他们的 logo）
 
-**直接后果**：
-- 同一品牌色，**不同密度**：marketing 留白多 / app 内信息密集
-- marketing 页可以有 hero 大渐变 + 大字体；app 内禁止大渐变，标题字号下调一档
-- marketing 用 16-18px body / app 内用 13-15px body
-- topbar 在两边长得不一样：marketing 透明 + 大 logo / app 实体 + 小 logo + 用户菜单
-
-### 1.6 解释机制，不只说 benefit
-
-技术受众里"非托管"四个字本身没意义——必须解释清楚 **Safe + session signer + Polymarket builder** 的三段链路才换得信任。这件事由文案 + 图解联合承担，不能甩给 FAQ。
-
-**直接后果**：
-- onboard 流程内嵌一张 mechanism 图（Safe 边界 / session 权限 scope / Raven 摸不到什么）
-- 文案优先讲机制（"trade-only session key, revocable, no withdrawal access"），不讲 benefit（"safe and easy"）
-- "How it works" 4 步解释做成 landing 二级 hero，不藏在底部
-
-### 1.7 适应 Polymarket 演进（不被锁死）
-
-Polymarket Safe / V2 SDK 还在迭代（2026-04-28 V2 切换刚发生）。设计 token 必须和 Polymarket 自己的视觉做最低耦合——他们升级 brand / 改 SDK 不应该带着 Raven 一起重做。
-
-**直接后果**：
-- Raven 不抄 Polymarket 蓝（用紫）
-- 不嵌入 Polymarket logo / icon 进 Raven 自己的视觉资产
-- 引用 Polymarket 时用 hyperlink / quote / 文字占位，不复刻其视觉系统
-- 组件库设计 token 不依赖具体 Polymarket SDK 版本的 UI 假设
+❌ **不长这样**："Safe and easy" "Set and forget" 这种纯 benefit / 把机制解释藏在 FAQ 折叠里 / 抄 Polymarket 蓝当主色 / Raven 视觉里嵌 Polymarket logo / 组件 token 写死某个 SDK 版本的假设 / "We use military-grade security" 这种空话
 
 ---
 
 ### 一句话总结
 
-**对内极简（app）+ 对外讲故事（marketing）+ 数字胜过插画 + 让 BS 雷达静音**——所有下游决策都从这一句出。
+**真钱不做赌场感 + 真数据胜过装饰图 + 营销和 app 是两套密度 + 讲机制不讲 benefit**——4 条规则同时满足，下游所有决策自动锁定。
 
 ---
 
@@ -462,4 +427,4 @@ Tool: Flux dev or Midjourney --ar 16:9
 
 ---
 
-**下一步**：你回 §1 设计思路 7 条原则有没有异议 + §2 五个核心方向（或告诉我"全按你推荐的来"），我立刻开始 §9.1 的执行——先做 color + logo SVG + favicon + OG image 四件事，1 个 commit 落地，你 review 完再继续。
+**下一步**：你回 §1 设计思路 4 条规则有没有异议 + §2 五个核心方向（或告诉我"全按你推荐的来"），我立刻开始 §9.1 的执行——先做 color + logo SVG + favicon + OG image 四件事，1 个 commit 落地，你 review 完再继续。
