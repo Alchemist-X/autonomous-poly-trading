@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { getDb, hasDatabaseUrl, managedUsers } from "@autopoly/db";
 import { eq } from "drizzle-orm";
 import { verifyPrivyToken } from "../../../../lib/privy-server";
+import { deriveSafeAddress } from "../../../../lib/polymarket-safe";
 
 type RegisterBody = {
   privyDid?: string;
@@ -52,13 +53,27 @@ export async function POST(request: Request) {
     });
   }
 
+  // Derive the Polymarket Safe proxy address deterministically. The proxy
+  // doesn't have to be deployed yet — Polymarket auto-deploys on first trade.
+  // If derivation fails (malformed input, SDK issue), proceed with null and
+  // log a warning so registration never breaks.
+  const derivation = deriveSafeAddress(eoa);
+  let safeAddress: string | null = null;
+  if (derivation.ok) {
+    safeAddress = derivation.safeAddress.toLowerCase();
+  } else {
+    console.warn(
+      `[register] safe derivation failed for ${eoa}: ${derivation.reason}`
+    );
+  }
+
   const id = randomUUID();
   await db.insert(managedUsers).values({
     id,
     privyDid,
     email: body.email ?? null,
     eoaAddress: eoa,
-    safeAddress: null,
+    safeAddress,
     status: "pending_deploy",
     aiAutoTradeEnabled: false,
     riskTier: "balanced"
@@ -66,7 +81,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     userId: id,
-    safeAddress: null,
+    safeAddress,
     status: "pending_deploy"
   });
 }

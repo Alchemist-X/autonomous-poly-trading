@@ -12,6 +12,7 @@
   "dependencies": {
     "@autopoly/contracts": "workspace:*",
     "@autopoly/db": "workspace:*",
+    "@polymarket/builder-relayer-client": "^0.0.9",
     "@privy-io/react-auth": "^2.12.2",
     "@privy-io/server-auth": "^1.18.0",
     "viem": "^2.39.2",

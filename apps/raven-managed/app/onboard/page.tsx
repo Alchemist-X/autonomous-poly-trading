@@ -76,16 +76,24 @@ export default function OnboardPage() {
         <div className="row">
           <span className="row-label">Polymarket Safe</span>
           {state?.safeAddress ? (
-            <span className="row-value">{state.safeAddress}</span>
+            <span className="row-value" style={{ fontFamily: "var(--font-mono, monospace)" }}>
+              {state.safeAddress}
+            </span>
           ) : (
-            <span className="badge badge-pending">Not deployed yet</span>
+            <span className="badge badge-pending">Address pending</span>
           )}
         </div>
         <div className="row">
-          <span className="row-label">Status</span>
-          <span className={`badge ${state?.status === "active" ? "badge-active" : "badge-pending"}`}>
-            {state?.status ?? "registering…"}
-          </span>
+          <span className="row-label">Safe status</span>
+          {state?.status === "active" ? (
+            <span className="badge badge-active">Active</span>
+          ) : state?.safeAddress ? (
+            <span className="badge badge-pending">
+              Reserved (deploys on first deposit)
+            </span>
+          ) : (
+            <span className="badge badge-pending">{state?.status ?? "registering…"}</span>
+          )}
         </div>
 
         {error && (
@@ -96,11 +104,11 @@ export default function OnboardPage() {
       </div>
 
       <div className="panel">
-        <h2>Next: deploy your Safe + fund</h2>
+        <h2>Next: fund your Safe</h2>
         <p style={{ color: "var(--text-soft)", marginTop: 0 }}>
-          Phase 1 placeholder. The on-chain Safe deployment via{" "}
-          <code>@polymarket/builder-relayer-client</code> and the USDC.e bridge guidance flow ship
-          next. For now, the Safe address is reserved for you and stored in our DB.
+          Your Polymarket Safe address is reserved deterministically — Polymarket
+          deploys the on-chain proxy automatically the first time you deposit USDC.e.
+          The USDC.e bridge guidance flow ships next.
         </p>
         <button
           type="button"
