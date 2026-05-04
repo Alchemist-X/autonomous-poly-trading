@@ -38,6 +38,12 @@ export async function GET(request: Request) {
     safeAddress: user.safeAddress,
     status: user.status,
     aiAutoTradeEnabled: user.aiAutoTradeEnabled,
+    sessionSignerAuthorizedAt: user.sessionSignerAuthorizedAt
+      ? user.sessionSignerAuthorizedAt.toISOString()
+      : null,
+    sessionSignerRevokedAt: user.sessionSignerRevokedAt
+      ? user.sessionSignerRevokedAt.toISOString()
+      : null,
     balanceUsdc: balance.usdc,
     positions: []
   });
