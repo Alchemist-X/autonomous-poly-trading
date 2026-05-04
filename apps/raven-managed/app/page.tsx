@@ -1,4 +1,14 @@
 import Link from "next/link";
+import {
+  ShieldCheck,
+  BrainCircuit,
+  Scale,
+  Receipt,
+  Eye,
+  LogOut
+} from "lucide-react";
+
+const ICON_PROPS = { size: 20, strokeWidth: 1.75 } as const;
 
 export default function LandingPage() {
   return (
@@ -51,7 +61,9 @@ export default function LandingPage() {
         <h2>Why Raven</h2>
         <div className="feature-grid">
           <div className="feature-card">
-            <div className="icon">🔒</div>
+            <div className="icon">
+              <ShieldCheck {...ICON_PROPS} />
+            </div>
             <h3>Non-custodial by design</h3>
             <p>
               Your funds live in a Polymarket Safe wallet that only you control. Raven&apos;s session
@@ -59,7 +71,9 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="feature-card">
-            <div className="icon">🧠</div>
+            <div className="icon">
+              <BrainCircuit {...ICON_PROPS} />
+            </div>
             <h3>Battle-tested AI</h3>
             <p>
               Raven&apos;s daily-pulse engine has been running real-money trades on Polymarket for
@@ -67,7 +81,9 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="feature-card">
-            <div className="icon">⚖️</div>
+            <div className="icon">
+              <Scale {...ICON_PROPS} />
+            </div>
             <h3>Hard risk caps</h3>
             <p>
               Per-position size cap, total-exposure cap, max concurrent positions, minimum trade
@@ -75,7 +91,9 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="feature-card">
-            <div className="icon">💸</div>
+            <div className="icon">
+              <Receipt {...ICON_PROPS} />
+            </div>
             <h3>Just builder fees during MVP</h3>
             <p>
               No management fee, no performance fee while we&apos;re ramping. Raven earns a share of
@@ -84,7 +102,9 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="feature-card">
-            <div className="icon">🔍</div>
+            <div className="icon">
+              <Eye {...ICON_PROPS} />
+            </div>
             <h3>Full transparency</h3>
             <p>
               Every position, every fill, every reasoning report is visible in your dashboard.
@@ -92,7 +112,9 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="feature-card">
-            <div className="icon">⏏️</div>
+            <div className="icon">
+              <LogOut {...ICON_PROPS} />
+            </div>
             <h3>Withdraw whenever</h3>
             <p>
               Revoke Raven&apos;s session key in one click. Funds remain in your Safe — you can
