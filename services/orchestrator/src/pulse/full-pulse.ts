@@ -1305,8 +1305,8 @@ export async function buildFullPulseArchive(input: {
   }
   const renderElapsedSeconds = Math.round((Date.now() - renderStartedAtMs) / 1000);
   const markdownMetrics = measureText(markdown);
-  const inputTokensEstimate = Math.round(contextJsonMetrics.estimatedTokens);
-  const outputTokensEstimate = Math.round(markdownMetrics.estimatedTokens);
+  const inputTokensEstimate = Math.round(contextJsonMetrics.approxTokens);
+  const outputTokensEstimate = Math.round(markdownMetrics.approxTokens);
 
   // Inject render stats into the top of the markdown
   const renderStatsBlock = [

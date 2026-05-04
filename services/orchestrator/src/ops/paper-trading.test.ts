@@ -67,7 +67,11 @@ describe("paper trading helpers", () => {
           bestAsk: 0.43,
           bestBid: 0.42,
           minOrderSize: 5,
-          exchangeMinNotionalUsd: 2.15
+          exchangeMinNotionalUsd: 2.15,
+          orderType: "FOK",
+          gtcLimitPrice: null,
+          categorySlug: null,
+          negRisk: false
         } satisfies PlannedExecution
       ],
       skippedDecisions: []

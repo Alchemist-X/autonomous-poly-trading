@@ -1,6 +1,7 @@
 "use client";
 
 import { PrivyProvider } from "@privy-io/react-auth";
+import { polygon } from "viem/chains";
 import type { ReactNode } from "react";
 
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? "";
@@ -30,8 +31,8 @@ export function Providers({ children }: { children: ReactNode }) {
           createOnLogin: "users-without-wallets",
           requireUserPasswordOnCreate: false
         },
-        defaultChain: { id: 137, name: "Polygon" } as never,
-        supportedChains: [{ id: 137, name: "Polygon" } as never]
+        defaultChain: polygon,
+        supportedChains: [polygon]
       }}
     >
       {children}
