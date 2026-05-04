@@ -145,3 +145,29 @@ export const systemState = pgTable("system_state", {
   value: jsonb("value").notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow()
 });
+
+export const managedUsers = pgTable("managed_users", {
+  id: uuid("id").primaryKey(),
+  privyDid: varchar("privy_did", { length: 128 }).notNull().unique(),
+  email: varchar("email", { length: 320 }),
+  eoaAddress: varchar("eoa_address", { length: 42 }).notNull(),
+  safeAddress: varchar("safe_address", { length: 42 }),
+  status: varchar("status", { length: 32 }).notNull().default("pending_deploy"),
+  aiAutoTradeEnabled: boolean("ai_auto_trade_enabled").notNull().default(false),
+  sessionSignerAuthorizedAt: timestamp("session_signer_authorized_at", { withTimezone: true }),
+  sessionSignerRevokedAt: timestamp("session_signer_revoked_at", { withTimezone: true }),
+  riskTier: varchar("risk_tier", { length: 16 }).notNull().default("balanced"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow()
+});
+
+export const managedDeposits = pgTable("managed_deposits", {
+  id: uuid("id").primaryKey(),
+  userId: uuid("user_id").notNull().references(() => managedUsers.id, { onDelete: "cascade" }),
+  txHash: varchar("tx_hash", { length: 66 }).notNull().unique(),
+  amountUsd: numeric("amount_usd", { precision: 14, scale: 2 }).notNull(),
+  tokenAddress: varchar("token_address", { length: 42 }).notNull(),
+  blockNumber: integer("block_number"),
+  observedAt: timestamp("observed_at", { withTimezone: true }).notNull().defaultNow()
+});

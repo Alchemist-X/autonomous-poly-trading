@@ -11,12 +11,20 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-04-26 by Claude（session wrap-up：v2 迁移 + repo restructure + onboarding/handoff 双文档建立完成；用户标记下次需人为 review 所有本轮中间产生的分析文档）
+> 最后更新：2026-05-04 by Claude（session wrap-up：启动 C 端 AI 资管产品 `apps/raven-managed` Phase 1 骨架）
 
 ---
 
 ## 🔴 P0 — 现在/今天
 
+- [ ] **【新主线】Raven Managed Product Phase 2**：基于 Phase 1 骨架（已完成，见下）继续推进。下一步 = session signer 授权流程 + paper trading。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md)。**Phase 1 已交付**：
+  - 新独立 app `apps/raven-managed/`（端口 3100，与 `apps/web` 互不影响）
+  - 路由：`/`（landing）/ `/signup`（Privy 邮箱+钱包）/ `/onboard`（注册落 DB）/ `/dashboard`（占位）/ `/track-record`（指向 AutoPoly 观测站）
+  - API：`POST /api/users/register`、`GET /api/users/portfolio`（验 Privy bearer token + 写 `managed_users` 表）
+  - DB schema 加 `managed_users` + `managed_deposits` 两表，migration `0002_managed_users.sql`
+  - 依赖：`@privy-io/react-auth@2.25`、`@privy-io/server-auth@1.18`、`viem`
+  - **运行前必填 env**：`NEXT_PUBLIC_PRIVY_APP_ID`、`PRIVY_APP_ID`、`PRIVY_APP_SECRET`（在 https://dashboard.privy.io 申请）
+  - **Phase 2 入口**：`apps/raven-managed/app/onboard/page.tsx` 的 "deploy Safe" 按钮目前是占位；需要接 `@polymarket/builder-relayer-client` 真实部署 Safe + 推 USDC.e approvals + 拉起 session signer 授权
 - [ ] **【用户下次会话亲自做】人为 review 所有本轮新建/重写的中间产生分析文档**：检查格式与内容是否合理。范围至少包括：
   - `docs/agent-onboarding.md` / `docs/agent-handoff.md`（中英）
   - `docs/internal/plan/2026-04-28-v2-cutover-runbook.md`
@@ -57,11 +65,12 @@
 - `git mv` 整目录时未追踪文件不会被 git 移动，要手动 `mv`
 - 4/24 跑 v2 smoke 时 no1 钱包 USDC.e 有 $3.96 但 pUSD 为 0 → 验证 SDK 接入正常但下单需要先 wrap
 
-## 🔄 上次会话留下的上下文（2026-04-26）
+## 🔄 上次会话留下的上下文（2026-05-04）
 
-- 实盘跑了一次 `daily:pulse`：3 单全成（finland eurovision $20 / crude oil $54.81 / france world cup $18.94），collateral $314.16 → $220.36，净值 $548 → $529
-- README banner 用了 `assets/predict-raven.png`（1254×1254）
-- Twitter 推首发 → 卡片图加载延迟，建议下次贴 URL 后等 30 秒再发
+- 用户决策（已锁定，写在 plan 文件 §0）：Privy / 一路推到 Phase 3 / MVP 仅收 Polymarket builder fee / 新建独立 app（不动 `apps/web`）
+- Phase 1 typecheck + `next build` 全绿；本地 `pnpm --filter @autopoly/raven-managed dev` 在 :3100 起即可。但 Privy 没填 env 时 `Providers` 会渲染配置错误页（见 `components/providers.tsx`）
+- 风险待办：`onboard` 页落库 register 后 status 永远停在 `pending_deploy`，因为 Safe 部署是 Phase 2 才接的。先填 env 跑通流程比"看到 Safe 地址"重要
+- 历史上下文（2026-04-26）：实盘跑了 `daily:pulse` 3 单全成（finland eurovision / crude oil / france world cup），net $548 → $529
 
 ## 📌 引用速查
 

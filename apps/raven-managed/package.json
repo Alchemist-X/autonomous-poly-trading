@@ -1,0 +1,26 @@
+{
+  "name": "@autopoly/raven-managed",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "prebuild": "pnpm --dir ../.. --filter @autopoly/contracts build && pnpm --dir ../.. --filter @autopoly/db build",
+    "dev": "next dev -p 3100",
+    "build": "next build",
+    "start": "next start -p 3100",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@autopoly/contracts": "workspace:*",
+    "@autopoly/db": "workspace:*",
+    "@privy-io/react-auth": "^2.12.2",
+    "@privy-io/server-auth": "^1.18.0",
+    "viem": "^2.39.2",
+    "next": "16.1.6",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3"
+  }
+}
