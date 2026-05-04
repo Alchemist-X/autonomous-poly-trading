@@ -1,18 +1,43 @@
 :root {
+  /* Background layers */
   --bg: #07090d;
   --bg-soft: #0d1117;
   --panel: #11161d;
   --panel-soft: #161c25;
+  --panel-raised: #1b2330;
+
+  /* Border layers */
   --border: #1f2733;
   --border-soft: #2a3340;
+  --border-strong: #3a4555;
+
+  /* Text layers */
   --text: #e8edf2;
   --text-soft: #a0adba;
   --text-dim: #6b7785;
-  --accent: #5b8def;
-  --accent-soft: rgba(91, 141, 239, 0.15);
-  --good: #4ade80;
+
+  /* Accent — Raven Violet */
+  --accent: #8b5cf6;
+  --accent-hover: #7c4dee;
+  --accent-soft: rgba(139, 92, 246, 0.15);
+  --accent-glow: rgba(139, 92, 246, 0.35);
+
+  /* Semantic states */
+  --pos: #4ade80;
+  --pos-soft: rgba(74, 222, 128, 0.12);
+  --neg: #ef6262;
+  --neg-soft: rgba(239, 98, 98, 0.12);
   --warn: #fbbf24;
-  --bad: #f87171;
+  --warn-soft: rgba(251, 191, 36, 0.12);
+  --info: #60a5fa;
+  --info-soft: rgba(96, 165, 250, 0.12);
+
+  /* Backwards-compat aliases — slated for removal once consumers migrate */
+  --good: var(--pos);
+  --bad: var(--neg);
+
+  /* Brand-only gradient — hero / login splash / OG image */
+  --brand-gradient: linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%);
 }
 
 * {
@@ -73,7 +98,7 @@ button {
   width: 26px;
   height: 26px;
   border-radius: 6px;
-  background: linear-gradient(135deg, var(--accent), #7c5bef);
+  background: var(--brand-gradient);
   display: grid;
   place-items: center;
   font-size: 14px;
@@ -113,8 +138,8 @@ button {
 }
 
 .btn-primary:hover {
-  background: #4a7be0;
-  border-color: #4a7be0;
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 
 .btn-ghost {
@@ -148,7 +173,7 @@ button {
 }
 
 .hero h1 .accent {
-  background: linear-gradient(135deg, var(--accent), #b389ff);
+  background: var(--brand-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -217,6 +242,7 @@ button {
   height: 36px;
   border-radius: 8px;
   background: var(--accent-soft);
+  color: var(--accent);
   display: grid;
   place-items: center;
   font-size: 18px;
@@ -270,7 +296,7 @@ button {
 .disclaimer {
   margin-top: 48px;
   padding: 16px 20px;
-  background: rgba(251, 191, 36, 0.06);
+  background: var(--warn-soft);
   border: 1px solid rgba(251, 191, 36, 0.2);
   border-radius: 10px;
   font-size: 13px;
@@ -337,13 +363,13 @@ button {
 }
 
 .badge-pending {
-  background: rgba(251, 191, 36, 0.12);
+  background: var(--warn-soft);
   color: var(--warn);
 }
 
 .badge-active {
-  background: rgba(74, 222, 128, 0.12);
-  color: var(--good);
+  background: var(--pos-soft);
+  color: var(--pos);
 }
 
 .badge-disabled {
