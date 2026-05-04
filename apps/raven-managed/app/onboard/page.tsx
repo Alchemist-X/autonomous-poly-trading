@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
-import { Badge, Button, DataRow } from "../../components/ui";
+import { AlertPanel, Badge, Button, DataRow, Panel } from "../../components/ui";
 
 type RegisterResponse = {
   userId: string;
@@ -63,9 +63,7 @@ export default function OnboardPage() {
 
   return (
     <div style={{ maxWidth: 720, margin: "32px auto" }}>
-      <div className="panel">
-        <h2>Set up your Raven account</h2>
-
+      <Panel title="Set up your Raven account">
         <DataRow label="Privy account" value={user?.email?.address ?? user?.id ?? "—"} />
         <DataRow label="Your EOA" value={user?.wallet?.address ?? "—"} />
         <DataRow
@@ -92,14 +90,13 @@ export default function OnboardPage() {
         />
 
         {error && (
-          <div className="disclaimer" style={{ marginTop: 24 }}>
+          <AlertPanel style={{ marginTop: 24 }}>
             <strong>Error:</strong> {error}
-          </div>
+          </AlertPanel>
         )}
-      </div>
+      </Panel>
 
-      <div className="panel">
-        <h2>Next: fund your Safe</h2>
+      <Panel title="Next: fund your Safe">
         <p style={{ color: "var(--text-soft)", marginTop: 0 }}>
           Your Polymarket Safe address is reserved deterministically — Polymarket
           deploys the on-chain proxy automatically the first time you deposit USDC.e.
@@ -112,7 +109,7 @@ export default function OnboardPage() {
         >
           Go to dashboard
         </Button>
-      </div>
+      </Panel>
     </div>
   );
 }

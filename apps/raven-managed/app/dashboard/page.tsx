@@ -8,7 +8,7 @@ import {
   formatAuthorizationTimestamp,
   revokeSessionSigner
 } from "../../lib/session-signer";
-import { Badge, Button, DataRow } from "../../components/ui";
+import { AlertPanel, Badge, Button, DataRow, EmptyState, Panel } from "../../components/ui";
 
 type Portfolio = {
   userId: string;
@@ -143,7 +143,7 @@ export default function DashboardPage() {
   }, [user, removeSessionSigners, getAccessToken]);
 
   if (!ready || !authenticated) {
-    return <div className="empty">Loading…</div>;
+    return <EmptyState>Loading…</EmptyState>;
   }
 
   const aiEnabled = portfolio?.aiAutoTradeEnabled === true;
@@ -158,8 +158,7 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="panel">
-        <h2>Account</h2>
+      <Panel title="Account">
         <DataRow label="Email" value={user?.email?.address ?? "—"} />
         <DataRow label="EOA" value={user?.wallet?.address ?? "—"} />
         <DataRow label="Safe" value={portfolio?.safeAddress ?? "(not deployed)"} />
@@ -167,15 +166,14 @@ export default function DashboardPage() {
           label="Status"
           value={<Badge variant="pending">{portfolio?.status ?? "loading…"}</Badge>}
         />
-      </div>
+      </Panel>
 
-      <div className="panel">
-        <h2>Balance</h2>
+      <Panel title="Balance">
         <DataRow label="USDC.e (on Safe)" value={`$${portfolio?.balanceUsdc ?? "0.00"}`} />
         <DataRow label="Open positions" value={portfolio?.positions.length ?? 0} />
-      </div>
+      </Panel>
 
-      <div className="panel">
+      <Panel>
         <div
           style={{
             display: "flex",
@@ -233,12 +231,12 @@ export default function DashboardPage() {
             Sign out
           </Button>
         </div>
-      </div>
+      </Panel>
 
       {error && (
-        <div className="disclaimer">
+        <AlertPanel>
           <strong>Error:</strong> {error}
-        </div>
+        </AlertPanel>
       )}
     </div>
   );

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
-import { Button } from "../../components/ui";
+import { Button, Panel } from "../../components/ui";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -17,8 +17,7 @@ export default function SignupPage() {
 
   return (
     <div style={{ maxWidth: 520, margin: "64px auto" }}>
-      <div className="panel">
-        <h2>Sign in to Raven</h2>
+      <Panel title="Sign in to Raven">
         <p style={{ color: "var(--text-soft)", marginTop: 0 }}>
           We&apos;ll create a non-custodial wallet for you using your email. No seed phrase, no
           MetaMask. Already have a wallet? You can connect it instead.
@@ -38,7 +37,7 @@ export default function SignupPage() {
           discretionary trading product. You confirm you are not a resident of a restricted
           jurisdiction.
         </p>
-      </div>
+      </Panel>
     </div>
   );
 }
