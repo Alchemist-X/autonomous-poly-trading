@@ -17,14 +17,15 @@
 
 ## 🔴 P0 — 现在/今天
 
-- [ ] **【新主线】Raven Managed Product — 当前在 Phase 2 中段**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md)。设计资源清单（含 AI 生图 prompt）[`docs/internal/plan/2026-05-04-design-elements-inventory.md`](internal/plan/2026-05-04-design-elements-inventory.md)。**当前 branch = `builder-raven`**（commit `1a3406b`）。
+- [ ] **【新主线】Raven Managed Product — Phase 2 全部完成，准备进 Phase 3**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md)。设计清单 [`docs/internal/plan/2026-05-04-design-elements-inventory.md`](internal/plan/2026-05-04-design-elements-inventory.md)。**当前 branch = `builder-raven`**（HEAD `26df649`）。
   - **已交付（Phase 1）**：独立 app `apps/raven-managed/` (端口 3100) + 5 路由 + 2 API + Privy bearer 验证 + DB `managed_users` / `managed_deposits` + migration `0002`
   - **已交付（Phase 2 #2）**：`lib/polymarket-safe.ts` 用 `@polymarket/builder-relayer-client@0.0.9` 推导 Safe 地址，写入 DB；onboard 页显示
   - **已交付（Phase 2 #4）**：`lib/portfolio.ts` 用 viem 读 USDC.e on Polygon 余额（30s 缓存）；portfolio API 用上
   - **已交付（Phase 2 #1）**：`services/managed-trading/` 服务骨架（`PolymarketAdapter` interface + `ManagedTradingDispatcher` 类，stub 实现，等 Phase 3 填）
+  - **已交付（Phase 2 #3，2026-05-04）**：dashboard 上 "Enable AI trading" 按钮接 Privy `useSessionSigners`；新 API `POST /api/users/session-signer` (action: authorize/revoke)；DB `sessionSignerAuthorizedAt/RevokedAt + aiAutoTradeEnabled` 状态机；状态打开/关闭文案 + 时间戳。**当前 stub 模式**——`NEXT_PUBLIC_PRIVY_SESSION_SIGNER_ID` 未设时只翻 DB，不真调 Privy SDK。Phase 3 设此 env 即生效。两个 `TODO(phase 3)` 标记已留在 `route.ts:15` + `lib/session-signer.ts:19`
   - **运行前必填 env**：`NEXT_PUBLIC_PRIVY_APP_ID` / `PRIVY_APP_ID` / `PRIVY_APP_SECRET`（已写入 `apps/raven-managed/.env.local`，gitignored；secret 在聊天日志里被暴露过，**建议下次会话前 rotate**）
   - **Polymarket builder credentials**（已申请 active）：address `0x6664e32f79aee42639f73633e40b5a842b07614e` / code `0x30cf444e70e82e9bca9db63a89565cd688c19ec2e7b30b96c9ce2ec2cfaaa95e` / API key `019df336-1894-76e8-bd11-8582cde25c3a`。**还缺 secret + passphrase**（需用户去 Polymarket 翻创建记录或 Create New 新 key）。**fee rate 当前 0%/0% — 不要改**（头部 builder 全是 0%，靠 Polymarket Weekly Rewards Pool 赚钱，不靠 user-paid fee）
-  - **下一步候选**：(a) Phase 2 #3 session signer 授权流程（前置：用户去 Privy dashboard 启用 session signers + chainId=137） / (b) 设计资源落地（先等用户对 design-elements-inventory §1 设计思路 + §2 5 个核心方向拍板）
+  - **下一步候选（Phase 3 入口）**：(a) Privy dashboard 启用 session signers + 配置 `NEXT_PUBLIC_PRIVY_SESSION_SIGNER_ID` env → 翻掉 stub 模式 / (b) 真接 daily-pulse 信号 → 多用户分发器（`services/managed-trading/dispatcher.ts` 当前是空实现）/ (c) Phase 3 风控参数 + 实盘下单 + Weekly Rewards Pool 入账对账 / (d) 设计资源落地（§9.1 color migration + Inter/JetBrains Mono + Lucide + logo SVG + OG image）
 - [ ] **【用户下次会话亲自做】review 这一轮新建的 5 个文档**：
   - `docs/internal/plan/2026-05-04-raven-managed-product-plan.md`（产品计划主文件）
   - `docs/internal/plan/2026-05-04-design-elements-inventory.md`（设计清单 + AI 生图 prompt + 5 个待拍板方向）
