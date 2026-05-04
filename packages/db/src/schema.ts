@@ -171,3 +171,46 @@ export const managedDeposits = pgTable("managed_deposits", {
   blockNumber: integer("block_number"),
   observedAt: timestamp("observed_at", { withTimezone: true }).notNull().defaultNow()
 });
+
+// Phase 2 paper-mode dispatcher run record. One row per user per daily-pulse
+// fan-out invocation. Phase 3 will add `mode = 'live'` rows + link executions.
+export const managedPaperRuns = pgTable("managed_paper_runs", {
+  id: uuid("id").primaryKey(),
+  userId: uuid("user_id").notNull().references(() => managedUsers.id, { onDelete: "cascade" }),
+  mode: varchar("mode", { length: 16 }).notNull().default("paper"),
+  status: varchar("status", { length: 32 }).notNull(),
+  bankrollUsd: numeric("bankroll_usd", { precision: 14, scale: 2 }),
+  decisionCount: integer("decision_count").notNull().default(0),
+  startedAtUtc: timestamp("started_at_utc", { withTimezone: true }).notNull(),
+  completedAtUtc: timestamp("completed_at_utc", { withTimezone: true }),
+  errorMessage: text("error_message"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow()
+});
+
+// Per-market decisions produced by the managed-trading dispatcher.
+// `risk_tier_at_decision` captures the user's tier at the moment the decision
+// was made — immutable record so audit/PnL replay does not depend on the
+// current `managed_users.risk_tier` value.
+export const managedDecisions = pgTable("managed_decisions", {
+  id: uuid("id").primaryKey(),
+  runId: uuid("run_id").notNull().references(() => managedPaperRuns.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").notNull().references(() => managedUsers.id, { onDelete: "cascade" }),
+  action: varchar("action", { length: 16 }).notNull(),
+  eventSlug: text("event_slug").notNull(),
+  marketSlug: text("market_slug").notNull(),
+  tokenId: text("token_id").notNull(),
+  side: varchar("side", { length: 8 }),
+  notionalUsd: numeric("notional_usd", { precision: 14, scale: 2 }).notNull(),
+  bankrollRatio: numeric("bankroll_ratio", { precision: 8, scale: 6 }).notNull(),
+  aiProb: numeric("ai_prob", { precision: 8, scale: 6 }).notNull(),
+  marketProb: numeric("market_prob", { precision: 8, scale: 6 }).notNull(),
+  edge: numeric("edge", { precision: 8, scale: 6 }).notNull(),
+  confidence: varchar("confidence", { length: 16 }),
+  thesisMd: text("thesis_md").notNull(),
+  riskTierAtDecision: varchar("risk_tier_at_decision", { length: 16 }).notNull(),
+  riskCapsApplied: jsonb("risk_caps_applied"),
+  skippedReason: text("skipped_reason"),
+  metadata: jsonb("metadata"),
+  createdAtUtc: timestamp("created_at_utc", { withTimezone: true }).notNull().defaultNow()
+});
