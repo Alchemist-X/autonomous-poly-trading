@@ -19,8 +19,8 @@ export default function LandingPage() {
           <span className="accent">Polymarket</span>
         </h1>
         <p>
-          Deposit USDC, set a strategy, and let Raven&apos;s AI trade prediction markets for you.
-          Your funds stay in your own non-custodial wallet — Raven only signs trades on your behalf.
+          Deposit USDC into a Polymarket Safe you control. Raven&apos;s AI scans every market
+          daily and trades through a session key — trade-only, revocable, no withdrawal access.
         </p>
         <div className="hero-cta">
           <Link href="/signup" className="btn btn-primary">
@@ -74,10 +74,10 @@ export default function LandingPage() {
             <div className="icon">
               <BrainCircuit {...ICON_PROPS} />
             </div>
-            <h3>Battle-tested AI</h3>
+            <h3>Real money since 2026-03-16</h3>
             <p>
-              Raven&apos;s daily-pulse engine has been running real-money trades on Polymarket for
-              months. View the live track record before you commit a dollar.
+              Raven&apos;s daily-pulse engine has been trading real money on Polymarket since
+              2026-03-16. Every position, fill, and reasoning report is in the public track record.
             </p>
           </div>
           <div className="feature-card">
@@ -94,11 +94,11 @@ export default function LandingPage() {
             <div className="icon">
               <Receipt {...ICON_PROPS} />
             </div>
-            <h3>Just builder fees during MVP</h3>
+            <h3>Just builder rewards during MVP</h3>
             <p>
-              No management fee, no performance fee while we&apos;re ramping. Raven earns a share of
-              Polymarket&apos;s builder fee on each trade — paid by Polymarket, not deducted from
-              your balance.
+              No management fee, no performance fee while we&apos;re ramping. Raven earns a share
+              of Polymarket&apos;s builder rewards on each trade — that&apos;s paid by Polymarket
+              out of trading volume, never deducted from your balance.
             </p>
           </div>
           <div className="feature-card">
