@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 import { AlertPanel, Badge, Button, DataRow, Panel } from "../../components/ui";
+import { MechanismDiagram } from "../../components/mechanism-diagram";
 
 type RegisterResponse = {
   userId: string;
@@ -98,6 +99,10 @@ export default function OnboardPage() {
 
       <Panel title="Next: fund your Safe">
         <p style={{ color: "var(--text-soft)", marginTop: 0 }}>
+          Raven never holds your funds. Here&apos;s the actual flow:
+        </p>
+        <MechanismDiagram />
+        <p style={{ color: "var(--text-soft)" }}>
           Your Polymarket Safe address is reserved deterministically — Polymarket
           deploys the on-chain proxy automatically the first time you deposit USDC.e.
           The USDC.e bridge guidance flow ships next.
