@@ -6,7 +6,16 @@ import {
   Eye,
   LogOut
 } from "lucide-react";
-import { AlertPanel, Hero, LinkButton, Section } from "../components/ui";
+import {
+  AlertPanel,
+  FeatureCard,
+  FeatureGrid,
+  Hero,
+  LinkButton,
+  Section,
+  StepCard,
+  StepsContainer
+} from "../components/ui";
 
 const ICON_PROPS = { size: 20, strokeWidth: 1.75 } as const;
 
@@ -34,90 +43,51 @@ export default function LandingPage() {
         title="How it works"
         lead="Four steps from sign-up to fully passive AI-managed positions on Polymarket."
       >
-        <div className="steps">
-          <div className="step">
-            <h4>Sign in with email</h4>
-            <p>Privy provisions a non-custodial wallet — no seed phrase, no MetaMask required.</p>
-          </div>
-          <div className="step">
-            <h4>Fund your Safe</h4>
-            <p>Send USDC.e on Polygon to the Polymarket Safe deployed for you. You always control it.</p>
-          </div>
-          <div className="step">
-            <h4>Authorize AI trading</h4>
-            <p>One-time signature gives Raven a trade-only session key. No withdrawal access. Revocable anytime.</p>
-          </div>
-          <div className="step">
-            <h4>Sit back</h4>
-            <p>Raven&apos;s daily-pulse AI scans every Polymarket market and trades on your behalf.</p>
-          </div>
-        </div>
+        <StepsContainer>
+          <StepCard title="Sign in with email">
+            Privy provisions a non-custodial wallet — no seed phrase, no MetaMask required.
+          </StepCard>
+          <StepCard title="Fund your Safe">
+            Send USDC.e on Polygon to the Polymarket Safe deployed for you. You always control it.
+          </StepCard>
+          <StepCard title="Authorize AI trading">
+            One-time signature gives Raven a trade-only session key. No withdrawal access. Revocable
+            anytime.
+          </StepCard>
+          <StepCard title="Sit back">
+            Raven&apos;s daily-pulse AI scans every Polymarket market and trades on your behalf.
+          </StepCard>
+        </StepsContainer>
       </Section>
 
       <Section title="Why Raven">
-        <div className="feature-grid">
-          <div className="feature-card">
-            <div className="icon">
-              <ShieldCheck {...ICON_PROPS} />
-            </div>
-            <h3>Non-custodial by design</h3>
-            <p>
-              Your funds live in a Polymarket Safe wallet that only you control. Raven&apos;s session
-              key is restricted to trade calls — it cannot withdraw, transfer, or approve new tokens.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="icon">
-              <BrainCircuit {...ICON_PROPS} />
-            </div>
-            <h3>Real money since 2026-03-16</h3>
-            <p>
-              Raven&apos;s daily-pulse engine has been trading real money on Polymarket since
-              2026-03-16. Every position, fill, and reasoning report is in the public track record.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="icon">
-              <Scale {...ICON_PROPS} />
-            </div>
-            <h3>Hard risk caps</h3>
-            <p>
-              Per-position size cap, total-exposure cap, max concurrent positions, minimum trade
-              size — every guardrail Raven enforces on its own book applies to yours.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="icon">
-              <Receipt {...ICON_PROPS} />
-            </div>
-            <h3>Just builder rewards during MVP</h3>
-            <p>
-              No management fee, no performance fee while we&apos;re ramping. Raven earns a share
-              of Polymarket&apos;s builder rewards on each trade — that&apos;s paid by Polymarket
-              out of trading volume, never deducted from your balance.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="icon">
-              <Eye {...ICON_PROPS} />
-            </div>
-            <h3>Full transparency</h3>
-            <p>
-              Every position, every fill, every reasoning report is visible in your dashboard.
-              Cross-check against the on-chain Safe balance any time.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="icon">
-              <LogOut {...ICON_PROPS} />
-            </div>
-            <h3>Withdraw whenever</h3>
-            <p>
-              Revoke Raven&apos;s session key in one click. Funds remain in your Safe — you can
-              withdraw them via the Polymarket UI directly. No lock-ups.
-            </p>
-          </div>
-        </div>
+        <FeatureGrid>
+          <FeatureCard icon={<ShieldCheck {...ICON_PROPS} />} title="Non-custodial by design">
+            Your funds live in a Polymarket Safe wallet that only you control. Raven&apos;s session
+            key is restricted to trade calls — it cannot withdraw, transfer, or approve new tokens.
+          </FeatureCard>
+          <FeatureCard icon={<BrainCircuit {...ICON_PROPS} />} title="Real money since 2026-03-16">
+            Raven&apos;s daily-pulse engine has been trading real money on Polymarket since
+            2026-03-16. Every position, fill, and reasoning report is in the public track record.
+          </FeatureCard>
+          <FeatureCard icon={<Scale {...ICON_PROPS} />} title="Hard risk caps">
+            Per-position size cap, total-exposure cap, max concurrent positions, minimum trade size
+            — every guardrail Raven enforces on its own book applies to yours.
+          </FeatureCard>
+          <FeatureCard icon={<Receipt {...ICON_PROPS} />} title="Just builder rewards during MVP">
+            No management fee, no performance fee while we&apos;re ramping. Raven earns a share of
+            Polymarket&apos;s builder rewards on each trade — that&apos;s paid by Polymarket out of
+            trading volume, never deducted from your balance.
+          </FeatureCard>
+          <FeatureCard icon={<Eye {...ICON_PROPS} />} title="Full transparency">
+            Every position, every fill, every reasoning report is visible in your dashboard.
+            Cross-check against the on-chain Safe balance any time.
+          </FeatureCard>
+          <FeatureCard icon={<LogOut {...ICON_PROPS} />} title="Withdraw whenever">
+            Revoke Raven&apos;s session key in one click. Funds remain in your Safe — you can
+            withdraw them via the Polymarket UI directly. No lock-ups.
+          </FeatureCard>
+        </FeatureGrid>
 
         <AlertPanel>
           <strong>Real money, real risk.</strong> Polymarket trades are non-recoverable. Raven&apos;s

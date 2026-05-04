@@ -11,3 +11,5 @@ export type { AlertVariant } from "./alert-panel";
 export { Section } from "./section";
 export { Hero } from "./hero";
 export { EmptyState } from "./empty-state";
+export { FeatureCard, FeatureGrid } from "./feature-card";
+export { StepCard, StepsContainer } from "./step-card";
