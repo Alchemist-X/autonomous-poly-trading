@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb, hasDatabaseUrl, managedUsers } from "@autopoly/db";
 import { verifyPrivyToken } from "../../../../lib/privy-server";
+import { getSafeBalance } from "../../../../lib/portfolio";
 
 export async function GET(request: Request) {
   if (!hasDatabaseUrl()) {
@@ -25,14 +26,19 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "user not found" }, { status: 404 });
   }
 
-  // Phase 1: stub on-chain balance read. Phase 2 will use viem to query USDC.e
-  // balance on Polygon for user.safeAddress.
+  // Phase 2: real on-chain USDC.e balance via viem. Cached 30 s per Safe.
+  // Falls back to "0.00" when no Safe yet (pre-derivation users) or on
+  // RPC failure.
+  const balance = user.safeAddress
+    ? await getSafeBalance(user.safeAddress)
+    : { usdc: "0.00" };
+
   return NextResponse.json({
     userId: user.id,
     safeAddress: user.safeAddress,
     status: user.status,
     aiAutoTradeEnabled: user.aiAutoTradeEnabled,
-    balanceUsdc: "0.00",
+    balanceUsdc: balance.usdc,
     positions: []
   });
 }
