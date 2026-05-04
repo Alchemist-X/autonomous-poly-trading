@@ -45,6 +45,7 @@
 
 - [ ] **接 Polymarket Builder Code**（V2 稳定后立刻做）：申请 https://polymarket.com/settings?tab=builder → 配 `POLYMARKET_BUILDER_CODE` env → 在 `services/executor/src/lib/polymarket-sdk.ts` 的 FOK / GTC 调用里带 `builderCode` 字段。能拿下单返佣
 - [ ] **`fees.ts` 接入 V2 SDK 动态费率**：使用已新增的 `fetchDynamicFeeParams(client, conditionID)` helper（见 `services/orchestrator/src/lib/fees.ts:328`），把 sizing 路径里的静态查表替换掉。前置条件：`PlannedExecution` plumb 进 `conditionId` 字段（当前没有）
+- [ ] **Design philosophy 重写**（用户标记 P1，2026-05-04）：当前 [`docs/internal/plan/2026-05-04-design-elements-inventory.md`](internal/plan/2026-05-04-design-elements-inventory.md) §1 "设计思路" 写得太抽象，用户反馈"读完不知道在干嘛"。重写方向：从"7 条原则 + 后果"改成"4 条具体规则 + 长这样/不长这样正反例"。已删 "Pizza dashboard 是护城河" 这一过度声明。但 §1.1 / 1.4 / 1.5 / 1.6 / 1.7 还是抽象语调。重写示例见对话记录（§1.1 重写候选格式）。**不阻塞当前功能开发，等设计资源落地阶段再统一处理**
 
 ## 🟢 P2 — 后续 / 优化项
 
