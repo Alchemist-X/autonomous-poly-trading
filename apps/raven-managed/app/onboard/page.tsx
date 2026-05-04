@@ -76,9 +76,7 @@ export default function OnboardPage() {
         <div className="row">
           <span className="row-label">Polymarket Safe</span>
           {state?.safeAddress ? (
-            <span className="row-value" style={{ fontFamily: "var(--font-mono, monospace)" }}>
-              {state.safeAddress}
-            </span>
+            <span className="row-value">{state.safeAddress}</span>
           ) : (
             <span className="badge badge-pending">Address pending</span>
           )}

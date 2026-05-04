@@ -38,6 +38,48 @@
 
   /* Brand-only gradient — hero / login splash / OG image */
   --brand-gradient: linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%);
+
+  /* Type scale — see design-elements-inventory §3.2.
+     Values are size/line-height/weight/tracking. Apply as needed. */
+  --font-display-size: 48px;
+  --font-display-line: 52px;
+  --font-display-weight: 700;
+  --font-display-tracking: -0.02em;
+
+  --font-h1-size: 32px;
+  --font-h1-line: 40px;
+  --font-h1-weight: 700;
+  --font-h1-tracking: -0.015em;
+
+  --font-h2-size: 24px;
+  --font-h2-line: 32px;
+  --font-h2-weight: 600;
+  --font-h2-tracking: -0.01em;
+
+  --font-h3-size: 18px;
+  --font-h3-line: 26px;
+  --font-h3-weight: 600;
+  --font-h3-tracking: -0.005em;
+
+  --font-body-size: 15px;
+  --font-body-line: 24px;
+  --font-body-weight: 400;
+
+  --font-body-sm-size: 13px;
+  --font-body-sm-line: 20px;
+
+  --font-label-size: 12px;
+  --font-label-line: 16px;
+  --font-label-weight: 500;
+  --font-label-tracking: 0.04em;
+
+  --font-mono-size: 13px;
+  --font-mono-line: 20px;
+
+  --font-mono-lg-size: 24px;
+  --font-mono-lg-line: 32px;
+  --font-mono-lg-weight: 500;
+  --font-mono-lg-tracking: -0.01em;
 }
 
 * {
@@ -50,8 +92,8 @@ body {
   padding: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
-  font-size: 15px;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: var(--font-body-size);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
@@ -347,8 +389,9 @@ button {
 }
 
 .row-value {
-  font-family: "SF Mono", Menlo, monospace;
-  font-size: 13px;
+  font-family: var(--font-jetbrains-mono), "SF Mono", Menlo, monospace;
+  font-size: var(--font-mono-size);
+  font-feature-settings: "tnum" 1, "cv11" 1;
 }
 
 .badge {
