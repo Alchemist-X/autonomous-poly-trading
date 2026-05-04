@@ -6,6 +6,7 @@
 
 ## changelog
 
+- 2026-05-04 营收模型修正：**Builder fee 0%/0%（不向用户收）**，靠 Polymarket Weekly Rewards Pool（约 0.5-1% of routed volume，Polymarket 出钱）。原方案"收 builder fee"是基于错误假设——头部 builder 全是 $0，竞争核心是抢 volume → 抢奖励池份额。下一步：申请 Verified tier。
 - 2026-05-04 ✅ Phase 1 骨架完成：`apps/raven-managed/` 独立 app（端口 3100）、Privy 邮箱登录、`/signup` → `/onboard` → `/dashboard` → `/track-record` 路由、`POST /api/users/register` + `GET /api/users/portfolio`、DB `managed_users` + `managed_deposits` 表 + migration `0002`。**未接入 Polymarket Safe 真实部署 / 未接入 builder-relayer-client / 未启用 session signer**——这些都是 Phase 2 范围。
 - 2026-05-04 计划修订：根据用户 inline 批注调整 §1（加 §1.1 适应性约束）、§2（session signer scope 不死锁）、§3（同上）、§7（前端不预留 KYC hook）、§8（实际文件清单）。开 `builder-raven` branch 推进。
 - 2026-05-04 决策锁定：Privy / 一路推到 Phase 3 / 仅 builder fee / 独立 app（见 §0）
@@ -14,7 +15,7 @@
 
 - **Auth provider**：Privy（邮箱 + embedded EOA + session signer 原生支持）
 - **MVP 范围**：一路推到 Phase 3 实盘（多会话推进，单会话只承诺到自然检查点）
-- **费用模型**：MVP 阶段**仅收 Polymarket builder fee**（被动分成）；管理费/业绩费等用户量起来再叠加
+- **费用模型**：MVP 阶段**仅靠 Polymarket Weekly Rewards Pool**（Polymarket 自掏奖励池按 builder volume 占比分 USDC，**不向用户收 builder fee**）；管理费/业绩费等用户量起来再叠加。**Builder fee 设 0% / 0%**——头部 70% 市占率的 betmoar / Based Prediction / Stand.trade 全是 $0，不收用户 fee 反而能拉高 volume → 抢更多奖励池份额。前提：申请到 Verified tier（mail builder@polymarket.com）。
 - **代码组织（2026-05-04 用户追加）**：**新建独立 Next.js app `apps/raven-managed/`**，不复用/不修改现有 `apps/web`（AutoPoly 观测站独立保留）。两 app 共享 `packages/db` / `packages/contracts`，独立部署独立域名。
 
 ## 1. 产品目标（一句话）
@@ -110,7 +111,7 @@ Polymarket Safe / 代理钱包的实现还在迭代（V2 已上 2026-04-28，后
 
 - 加 per-user 风控（复用 `services/executor` 现有的 15%/80%/30%/22 仓上限，按用户 bankroll 缩放）
 - 切到 live：session signer 真签真下单，订单带 Raven builder code
-- 费用账本：管理费（按月扣 X% AUM）+ 业绩费（高水位法 Y% of profit）+ builder fee（Polymarket 月结自动入账）
+- 费用账本：**MVP 阶段只对账 Polymarket Weekly Rewards Pool 的 USDC 入账**（Polymarket 每日 UTC 0:00 按 volume 占比打款到 builder 地址 `0x6664...14e`）；管理费 / 业绩费等"对用户收钱"的路径**留到 Phase 4 用户量起来再做**
 - 用户提现流程：用户在自己的 Safe 直接提，Raven 不参与，但 dashboard 给一键引导
 
 **完成标准**：1 个真钱账户跑满一个完整周期（入金 → AI 交易 → 月底结算管理费 → 用户提现），所有数字三方对账（链上 / Polymarket CLOB / Raven db）一致。
