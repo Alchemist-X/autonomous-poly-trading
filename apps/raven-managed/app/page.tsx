@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   ShieldCheck,
   BrainCircuit,
@@ -7,6 +6,7 @@ import {
   Eye,
   LogOut
 } from "lucide-react";
+import { LinkButton } from "../components/ui";
 
 const ICON_PROPS = { size: 20, strokeWidth: 1.75 } as const;
 
@@ -23,12 +23,10 @@ export default function LandingPage() {
           daily and trades through a session key — trade-only, revocable, no withdrawal access.
         </p>
         <div className="hero-cta">
-          <Link href="/signup" className="btn btn-primary">
+          <LinkButton href="/signup" variant="primary">
             Get started
-          </Link>
-          <Link href="/track-record" className="btn">
-            See live track record
-          </Link>
+          </LinkButton>
+          <LinkButton href="/track-record">See live track record</LinkButton>
         </div>
       </section>
 

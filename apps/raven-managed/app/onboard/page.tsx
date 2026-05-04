@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
+import { Badge, Button, DataRow } from "../../components/ui";
 
 type RegisterResponse = {
   userId: string;
@@ -65,34 +66,30 @@ export default function OnboardPage() {
       <div className="panel">
         <h2>Set up your Raven account</h2>
 
-        <div className="row">
-          <span className="row-label">Privy account</span>
-          <span className="row-value">{user?.email?.address ?? user?.id ?? "—"}</span>
-        </div>
-        <div className="row">
-          <span className="row-label">Your EOA</span>
-          <span className="row-value">{user?.wallet?.address ?? "—"}</span>
-        </div>
-        <div className="row">
-          <span className="row-label">Polymarket Safe</span>
-          {state?.safeAddress ? (
-            <span className="row-value">{state.safeAddress}</span>
-          ) : (
-            <span className="badge badge-pending">Address pending</span>
-          )}
-        </div>
-        <div className="row">
-          <span className="row-label">Safe status</span>
-          {state?.status === "active" ? (
-            <span className="badge badge-active">Active</span>
-          ) : state?.safeAddress ? (
-            <span className="badge badge-pending">
-              Reserved (deploys on first deposit)
-            </span>
-          ) : (
-            <span className="badge badge-pending">{state?.status ?? "registering…"}</span>
-          )}
-        </div>
+        <DataRow label="Privy account" value={user?.email?.address ?? user?.id ?? "—"} />
+        <DataRow label="Your EOA" value={user?.wallet?.address ?? "—"} />
+        <DataRow
+          label="Polymarket Safe"
+          value={
+            state?.safeAddress ? (
+              <span className="row-value">{state.safeAddress}</span>
+            ) : (
+              <Badge variant="pending">Address pending</Badge>
+            )
+          }
+        />
+        <DataRow
+          label="Safe status"
+          value={
+            state?.status === "active" ? (
+              <Badge variant="active">Active</Badge>
+            ) : state?.safeAddress ? (
+              <Badge variant="pending">Reserved (deploys on first deposit)</Badge>
+            ) : (
+              <Badge variant="pending">{state?.status ?? "registering…"}</Badge>
+            )
+          }
+        />
 
         {error && (
           <div className="disclaimer" style={{ marginTop: 24 }}>
@@ -108,14 +105,13 @@ export default function OnboardPage() {
           deploys the on-chain proxy automatically the first time you deposit USDC.e.
           The USDC.e bridge guidance flow ships next.
         </p>
-        <button
-          type="button"
-          className="btn btn-primary"
+        <Button
+          variant="primary"
           onClick={() => router.push("/dashboard")}
           disabled={!state}
         >
           Go to dashboard
-        </button>
+        </Button>
       </div>
     </div>
   );

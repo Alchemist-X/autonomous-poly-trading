@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LinkButton } from "../../components/ui";
 
 export default function TrackRecordPage() {
   return (
@@ -11,17 +11,15 @@ export default function TrackRecordPage() {
           lives at the AutoPoly observatory below.
         </p>
         <div className="hero-cta">
-          <a
+          <LinkButton
             href="https://autopoly-pizza-spectator.vercel.app"
             target="_blank"
             rel="noreferrer"
-            className="btn btn-primary"
+            variant="primary"
           >
             Open live dashboard
-          </a>
-          <Link href="/signup" className="btn">
-            Sign up for managed
-          </Link>
+          </LinkButton>
+          <LinkButton href="/signup">Sign up for managed</LinkButton>
         </div>
       </section>
 

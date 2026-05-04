@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
+import { Button, LinkButton } from "./ui";
 
 export function TopBar() {
   const { authenticated, ready, login, logout, user } = usePrivy();
@@ -33,22 +34,20 @@ export function TopBar() {
       <div className="topbar-actions">
         {ready && authenticated ? (
           <>
-            <Link href="/dashboard" className="btn btn-ghost">
+            <LinkButton href="/dashboard" variant="ghost">
               Dashboard
-            </Link>
-            <button
-              type="button"
-              className="btn"
+            </LinkButton>
+            <Button
               onClick={() => logout()}
               title={user?.email?.address ?? user?.wallet?.address ?? "Sign out"}
             >
               Sign out
-            </button>
+            </Button>
           </>
         ) : (
-          <button type="button" className="btn btn-primary" onClick={handleSignIn} disabled={!ready}>
+          <Button variant="primary" onClick={handleSignIn} disabled={!ready}>
             {ready ? "Sign in" : "Loading…"}
-          </button>
+          </Button>
         )}
       </div>
     </header>

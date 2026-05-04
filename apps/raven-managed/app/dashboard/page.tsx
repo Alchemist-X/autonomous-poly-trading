@@ -8,6 +8,7 @@ import {
   formatAuthorizationTimestamp,
   revokeSessionSigner
 } from "../../lib/session-signer";
+import { Badge, Button, DataRow } from "../../components/ui";
 
 type Portfolio = {
   userId: string;
@@ -159,34 +160,19 @@ export default function DashboardPage() {
     <div>
       <div className="panel">
         <h2>Account</h2>
-        <div className="row">
-          <span className="row-label">Email</span>
-          <span className="row-value">{user?.email?.address ?? "—"}</span>
-        </div>
-        <div className="row">
-          <span className="row-label">EOA</span>
-          <span className="row-value">{user?.wallet?.address ?? "—"}</span>
-        </div>
-        <div className="row">
-          <span className="row-label">Safe</span>
-          <span className="row-value">{portfolio?.safeAddress ?? "(not deployed)"}</span>
-        </div>
-        <div className="row">
-          <span className="row-label">Status</span>
-          <span className="badge badge-pending">{portfolio?.status ?? "loading…"}</span>
-        </div>
+        <DataRow label="Email" value={user?.email?.address ?? "—"} />
+        <DataRow label="EOA" value={user?.wallet?.address ?? "—"} />
+        <DataRow label="Safe" value={portfolio?.safeAddress ?? "(not deployed)"} />
+        <DataRow
+          label="Status"
+          value={<Badge variant="pending">{portfolio?.status ?? "loading…"}</Badge>}
+        />
       </div>
 
       <div className="panel">
         <h2>Balance</h2>
-        <div className="row">
-          <span className="row-label">USDC.e (on Safe)</span>
-          <span className="row-value">${portfolio?.balanceUsdc ?? "0.00"}</span>
-        </div>
-        <div className="row">
-          <span className="row-label">Open positions</span>
-          <span className="row-value">{portfolio?.positions.length ?? 0}</span>
-        </div>
+        <DataRow label="USDC.e (on Safe)" value={`$${portfolio?.balanceUsdc ?? "0.00"}`} />
+        <DataRow label="Open positions" value={portfolio?.positions.length ?? 0} />
       </div>
 
       <div className="panel">
@@ -200,11 +186,11 @@ export default function DashboardPage() {
         >
           <h2 style={{ margin: 0 }}>AI auto-trading</h2>
           {aiEnabled ? (
-            <span className="badge badge-active">Authorized</span>
+            <Badge variant="active">Authorized</Badge>
           ) : authorizedAt ? (
-            <span className="badge badge-disabled">Revoked</span>
+            <Badge variant="disabled">Revoked</Badge>
           ) : (
-            <span className="badge badge-disabled">Not enabled</span>
+            <Badge variant="disabled">Not enabled</Badge>
           )}
         </div>
 
@@ -231,27 +217,21 @@ export default function DashboardPage() {
 
         <div style={{ display: "flex", gap: 10 }}>
           {aiEnabled ? (
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={handleRevoke}
-              disabled={busy !== null}
-            >
+            <Button variant="ghost" onClick={handleRevoke} disabled={busy !== null}>
               {busy === "revoke" ? "Disabling…" : "Disable AI trading"}
-            </button>
+            </Button>
           ) : (
-            <button
-              type="button"
-              className="btn btn-primary"
+            <Button
+              variant="primary"
               onClick={handleAuthorize}
               disabled={busy !== null || !portfolio}
             >
               {busy === "authorize" ? "Authorizing…" : "Enable AI trading"}
-            </button>
+            </Button>
           )}
-          <button type="button" className="btn btn-ghost" onClick={() => logout()}>
+          <Button variant="ghost" onClick={() => logout()}>
             Sign out
-          </button>
+          </Button>
         </div>
       </div>
 

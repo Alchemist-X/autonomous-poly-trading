@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
+import { Button } from "../../components/ui";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -23,15 +24,14 @@ export default function SignupPage() {
           MetaMask. Already have a wallet? You can connect it instead.
         </p>
         <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
-          <button
-            type="button"
-            className="btn btn-primary"
+          <Button
+            variant="primary"
             onClick={() => login()}
             disabled={!ready}
             style={{ flex: 1, justifyContent: "center", padding: "12px 18px" }}
           >
             {ready ? "Continue with email or wallet" : "Loading…"}
-          </button>
+          </Button>
         </div>
         <p style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 24 }}>
           By continuing you agree to the Terms of Service and acknowledge that Raven is a high-risk
