@@ -31,13 +31,13 @@ Raven 是真金白银托管。用户授权 session signer 那一刻起，每个�
 - 数字成为视觉主角（balance / P&L / equity curve），插画让位
 - 字体偏 Bloomberg 终端，不偏 Notion 或 Linear marketing splash
 
-### 1.2 透明度即品牌（Pizza dashboard 是护城河）
+### 1.2 默认展示真数据
 
-Pizza 钱包公共 dashboard 已经在跑（[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)）——成绩单、推理报告、每笔成交都在链上 + 网上挂着，不是 stage-managed。这是 Raven Managed 对 betmoar / Stand.trade 等"工具型 builder"的本质差异。设计必须放大这一点。
+任何"我们很可信"的话都得有可点开的真实记录支撑。每笔仓位带 tx hash、每个推理日志挂 markdown 链接、track-record 是真曲线不是 mockup。
 
 **直接后果**：
 - track-record 页是营销主武器，权重 ≥ landing
-- 装饰图位置一律让位真数据可视化（equity curve / 仓位表 / 推理日志摘录）
+- 装饰图位置让位真数据可视化（equity curve / 仓位表 / 推理日志摘录）
 - OG 图自动注入最新真实业绩数字（`@vercel/og` build-time 渲染，每次部署刷新）
 - 文案禁用模糊形容词（"battle-tested" / "proven"），改成具体日期 + 笔数
 
