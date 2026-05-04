@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 96" fill="currentColor" aria-hidden="true">
+  <title>raven</title>
+  <!-- Mark centered horizontally, top -->
+  <g transform="translate(48,0)">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 22 C14 14, 22 10, 30 12 L40 18 L58 26 L42 28 L44 36 L36 36 L32 46 L24 46 L20 38 C16 36, 14 32, 14 28 Z M28 24 a3 3 0 1 0 0.001 0 Z"/>
+  </g>
+  <!-- Wordmark below, centered -->
+  <text x="80" y="88" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace" font-weight="600" font-size="24" letter-spacing="-0.01em">raven</text>
+</svg>
