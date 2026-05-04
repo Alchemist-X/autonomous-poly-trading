@@ -11,20 +11,26 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-05-04 by Claude（session wrap-up：启动 C 端 AI 资管产品 `apps/raven-managed` Phase 1 骨架）
+> 最后更新：2026-05-04 by Claude（session wrap-up：Raven Managed Phase 1 + Phase 2 #2/#4/#1 落地，全 build 绿）
 
 ---
 
 ## 🔴 P0 — 现在/今天
 
-- [ ] **【新主线】Raven Managed Product Phase 2**：基于 Phase 1 骨架（已完成，见下）继续推进。下一步 = session signer 授权流程 + paper trading。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md)。**Phase 1 已交付**：
-  - 新独立 app `apps/raven-managed/`（端口 3100，与 `apps/web` 互不影响）
-  - 路由：`/`（landing）/ `/signup`（Privy 邮箱+钱包）/ `/onboard`（注册落 DB）/ `/dashboard`（占位）/ `/track-record`（指向 AutoPoly 观测站）
-  - API：`POST /api/users/register`、`GET /api/users/portfolio`（验 Privy bearer token + 写 `managed_users` 表）
-  - DB schema 加 `managed_users` + `managed_deposits` 两表，migration `0002_managed_users.sql`
-  - 依赖：`@privy-io/react-auth@2.25`、`@privy-io/server-auth@1.18`、`viem`
-  - **运行前必填 env**：`NEXT_PUBLIC_PRIVY_APP_ID`、`PRIVY_APP_ID`、`PRIVY_APP_SECRET`（在 https://dashboard.privy.io 申请）
-  - **Phase 2 入口**：`apps/raven-managed/app/onboard/page.tsx` 的 "deploy Safe" 按钮目前是占位；需要接 `@polymarket/builder-relayer-client` 真实部署 Safe + 推 USDC.e approvals + 拉起 session signer 授权
+- [ ] **【新主线】Raven Managed Product — 当前在 Phase 2 中段**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md)。设计资源清单（含 AI 生图 prompt）[`docs/internal/plan/2026-05-04-design-elements-inventory.md`](internal/plan/2026-05-04-design-elements-inventory.md)。**当前 branch = `builder-raven`**（commit `1a3406b`）。
+  - **已交付（Phase 1）**：独立 app `apps/raven-managed/` (端口 3100) + 5 路由 + 2 API + Privy bearer 验证 + DB `managed_users` / `managed_deposits` + migration `0002`
+  - **已交付（Phase 2 #2）**：`lib/polymarket-safe.ts` 用 `@polymarket/builder-relayer-client@0.0.9` 推导 Safe 地址，写入 DB；onboard 页显示
+  - **已交付（Phase 2 #4）**：`lib/portfolio.ts` 用 viem 读 USDC.e on Polygon 余额（30s 缓存）；portfolio API 用上
+  - **已交付（Phase 2 #1）**：`services/managed-trading/` 服务骨架（`PolymarketAdapter` interface + `ManagedTradingDispatcher` 类，stub 实现，等 Phase 3 填）
+  - **运行前必填 env**：`NEXT_PUBLIC_PRIVY_APP_ID` / `PRIVY_APP_ID` / `PRIVY_APP_SECRET`（已写入 `apps/raven-managed/.env.local`，gitignored；secret 在聊天日志里被暴露过，**建议下次会话前 rotate**）
+  - **Polymarket builder credentials**（已申请 active）：address `0x6664e32f79aee42639f73633e40b5a842b07614e` / code `0x30cf444e70e82e9bca9db63a89565cd688c19ec2e7b30b96c9ce2ec2cfaaa95e` / API key `019df336-1894-76e8-bd11-8582cde25c3a`。**还缺 secret + passphrase**（需用户去 Polymarket 翻创建记录或 Create New 新 key）。**fee rate 当前 0%/0% — 不要改**（头部 builder 全是 0%，靠 Polymarket Weekly Rewards Pool 赚钱，不靠 user-paid fee）
+  - **下一步候选**：(a) Phase 2 #3 session signer 授权流程（前置：用户去 Privy dashboard 启用 session signers + chainId=137） / (b) 设计资源落地（先等用户对 design-elements-inventory §1 5 个核心方向拍板）/ (c) 申请 Polymarket Verified tier（mail builder@polymarket.com 附 API key + Pizza dashboard URL 当业绩证明）
+- [ ] **【用户下次会话亲自做】review 这一轮新建的 5 个文档**：
+  - `docs/internal/plan/2026-05-04-raven-managed-product-plan.md`（产品计划主文件）
+  - `docs/internal/plan/2026-05-04-design-elements-inventory.md`（设计清单 + AI 生图 prompt + 5 个待拍板方向）
+  - `apps/raven-managed/app/page.tsx`（landing 文案）
+  - `apps/raven-managed/app/dashboard/page.tsx`（用户日常视图骨架）
+  - `packages/db/src/migrations/0002_managed_users.sql`（DB lifecycle / risk_tier 命名）
 - [ ] **【用户下次会话亲自做】人为 review 所有本轮新建/重写的中间产生分析文档**：检查格式与内容是否合理。范围至少包括：
   - `docs/agent-onboarding.md` / `docs/agent-handoff.md`（中英）
   - `docs/internal/plan/2026-04-28-v2-cutover-runbook.md`
@@ -67,9 +73,11 @@
 
 ## 🔄 上次会话留下的上下文（2026-05-04）
 
-- 用户决策（已锁定，写在 plan 文件 §0）：Privy / 一路推到 Phase 3 / MVP 仅收 Polymarket builder fee / 新建独立 app（不动 `apps/web`）
-- Phase 1 typecheck + `next build` 全绿；本地 `pnpm --filter @autopoly/raven-managed dev` 在 :3100 起即可。但 Privy 没填 env 时 `Providers` 会渲染配置错误页（见 `components/providers.tsx`）
-- 风险待办：`onboard` 页落库 register 后 status 永远停在 `pending_deploy`，因为 Safe 部署是 Phase 2 才接的。先填 env 跑通流程比"看到 Safe 地址"重要
+- 用户决策（plan §0 锁定）：Privy / 一路推到 Phase 3 / **MVP 仅靠 Polymarket Weekly Rewards Pool**（不向用户收 builder fee） / 新建独立 app `apps/raven-managed/`（不动 `apps/web`）
+- 营收模型修正：原方案"收 builder fee"是错的。头部 70% 市占率的 betmoar / Based Prediction / Stand.trade 全是 \$0。靠 Polymarket Weekly Rewards Pool（约 0.5-1% of routed volume）赚钱
+- 设计原则锁定：**产品界面内不用 AI 生图**（crypto-native 用户对 Midjourney 出来的东西敏感）；off-product marketing 才用 AI 生图。详见 design-elements-inventory §3
+- 已有 6 commit on `builder-raven`：`c51cea5` Phase 1 / `22fa56f` revenue model / `11a5554` Safe / `40a7678` viem balance / `ec8c15c` managed-trading skeleton / `11e64f5` design inventory / `1a3406b` build+typecheck fixes
+- ⚠️ **worktree 拓扑陷阱**：`/Users/Aincrad/dev-proj/autonomous-poly-trading` 是 `predict-raven` 的 symlink；`/Users/Aincrad/dev-proj/predict-raven-aw` worktree 上有别的 session 的 WIP，**不要强删**
 - 历史上下文（2026-04-26）：实盘跑了 `daily:pulse` 3 单全成（finland eurovision / crude oil / france world cup），net $548 → $529
 
 ## 📌 引用速查
