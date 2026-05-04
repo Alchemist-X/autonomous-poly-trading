@@ -23,6 +23,7 @@
     "trial:reset-paper": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/orchestrator trial:reset-paper",
     "trial:run": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/orchestrator trial:run",
     "daily:pulse": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/daily-pulse.ts",
+    "agent:persistent": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/agent-persistent-runner.ts",
     "live:test": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/live-test.ts",
     "pulse:live": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/pulse-live.ts",
     "pulse:recommend": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/pulse-live.ts --recommend-only",
@@ -38,11 +39,13 @@
     "@autopoly/terminal-ui": "workspace:*",
     "bullmq": "5.71.0",
     "drizzle-orm": "0.45.1",
+    "ethers": "5.7.2",
     "ioredis": "5.10.0"
   },
   "devDependencies": {
     "@types/node": "25.5.0",
     "concurrently": "9.2.1",
+    "playwright": "1.56.1",
     "tsx": "4.20.6",
     "typescript": "5.9.3",
     "vitest": "3.2.4"
