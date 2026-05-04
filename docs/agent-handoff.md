@@ -24,7 +24,7 @@
   - **已交付（Phase 2 #1）**：`services/managed-trading/` 服务骨架（`PolymarketAdapter` interface + `ManagedTradingDispatcher` 类，stub 实现，等 Phase 3 填）
   - **运行前必填 env**：`NEXT_PUBLIC_PRIVY_APP_ID` / `PRIVY_APP_ID` / `PRIVY_APP_SECRET`（已写入 `apps/raven-managed/.env.local`，gitignored；secret 在聊天日志里被暴露过，**建议下次会话前 rotate**）
   - **Polymarket builder credentials**（已申请 active）：address `0x6664e32f79aee42639f73633e40b5a842b07614e` / code `0x30cf444e70e82e9bca9db63a89565cd688c19ec2e7b30b96c9ce2ec2cfaaa95e` / API key `019df336-1894-76e8-bd11-8582cde25c3a`。**还缺 secret + passphrase**（需用户去 Polymarket 翻创建记录或 Create New 新 key）。**fee rate 当前 0%/0% — 不要改**（头部 builder 全是 0%，靠 Polymarket Weekly Rewards Pool 赚钱，不靠 user-paid fee）
-  - **下一步候选**：(a) Phase 2 #3 session signer 授权流程（前置：用户去 Privy dashboard 启用 session signers + chainId=137） / (b) 设计资源落地（先等用户对 design-elements-inventory §1 5 个核心方向拍板）/ (c) 申请 Polymarket Verified tier（mail builder@polymarket.com 附 API key + Pizza dashboard URL 当业绩证明）
+  - **下一步候选**：(a) Phase 2 #3 session signer 授权流程（前置：用户去 Privy dashboard 启用 session signers + chainId=137） / (b) 设计资源落地（先等用户对 design-elements-inventory §1 设计思路 + §2 5 个核心方向拍板）
 - [ ] **【用户下次会话亲自做】review 这一轮新建的 5 个文档**：
   - `docs/internal/plan/2026-05-04-raven-managed-product-plan.md`（产品计划主文件）
   - `docs/internal/plan/2026-05-04-design-elements-inventory.md`（设计清单 + AI 生图 prompt + 5 个待拍板方向）
@@ -46,7 +46,9 @@
 - [ ] **接 Polymarket Builder Code**（V2 稳定后立刻做）：申请 https://polymarket.com/settings?tab=builder → 配 `POLYMARKET_BUILDER_CODE` env → 在 `services/executor/src/lib/polymarket-sdk.ts` 的 FOK / GTC 调用里带 `builderCode` 字段。能拿下单返佣
 - [ ] **`fees.ts` 接入 V2 SDK 动态费率**：使用已新增的 `fetchDynamicFeeParams(client, conditionID)` helper（见 `services/orchestrator/src/lib/fees.ts:328`），把 sizing 路径里的静态查表替换掉。前置条件：`PlannedExecution` plumb 进 `conditionId` 字段（当前没有）
 
-## 🟢 P2 — 后续
+## 🟢 P2 — 后续 / 优化项
+
+- [ ] **申请 Polymarket Verified tier**（优化项，不阻塞 MVP）：mail builder@polymarket.com 附 API key `019df336-1894-76e8-bd11-8582cde25c3a` + Pizza dashboard URL 当业绩证明。批下来后才能拿 Weekly Rewards Pool 的 USDC 分成（约 0.5-1% routed volume）。Unverified 也能正常下单 + 走 builder code，只是不进奖励池
 
 - [ ] **Vercel 项目改名** `autopoly-pizza-spectator` → `predict-raven`：Vercel dashboard → Project Settings → Name。改完 README 顶部 spectator URL 也要更新成 `predict-raven.vercel.app`
 - [ ] **README banner 升级 1200×630 PNG**：当前是 1254×1254 正方形，Twitter 卡片会上下裁剪。做一张横版替换 GitHub Settings → Social Preview

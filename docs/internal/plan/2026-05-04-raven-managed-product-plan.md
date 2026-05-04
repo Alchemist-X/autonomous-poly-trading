@@ -15,7 +15,7 @@
 
 - **Auth provider**：Privy（邮箱 + embedded EOA + session signer 原生支持）
 - **MVP 范围**：一路推到 Phase 3 实盘（多会话推进，单会话只承诺到自然检查点）
-- **费用模型**：MVP 阶段**仅靠 Polymarket Weekly Rewards Pool**（Polymarket 自掏奖励池按 builder volume 占比分 USDC，**不向用户收 builder fee**）；管理费/业绩费等用户量起来再叠加。**Builder fee 设 0% / 0%**——头部 70% 市占率的 betmoar / Based Prediction / Stand.trade 全是 $0，不收用户 fee 反而能拉高 volume → 抢更多奖励池份额。前提：申请到 Verified tier（mail builder@polymarket.com）。
+- **费用模型**：MVP 阶段**仅靠 Polymarket Weekly Rewards Pool**（Polymarket 自掏奖励池按 builder volume 占比分 USDC，**不向用户收 builder fee**）；管理费/业绩费等用户量起来再叠加。**Builder fee 设 0% / 0%**——头部 70% 市占率的 betmoar / Based Prediction / Stand.trade 全是 $0，不收用户 fee 反而能拉高 volume → 抢更多奖励池份额。Verified tier 是奖励池准入门槛（优化项，可后续邮件申请，不阻塞 MVP 上线）。
 - **代码组织（2026-05-04 用户追加）**：**新建独立 Next.js app `apps/raven-managed/`**，不复用/不修改现有 `apps/web`（AutoPoly 观测站独立保留）。两 app 共享 `packages/db` / `packages/contracts`，独立部署独立域名。
 
 ## 1. 产品目标（一句话）
