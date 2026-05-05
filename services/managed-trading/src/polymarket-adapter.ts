@@ -3,7 +3,12 @@
 // Per plan §1.1, business code must not depend on Safe / CLOB internal
 // details. This interface is the only surface the dispatcher and Phase 3
 // trading flow are allowed to call. Concrete implementations forward to
-// `@polymarket/builder-relayer-client` + `@polymarket/clob-client`.
+// `@polymarket/builder-relayer-client` + `@polymarket/clob-client-v2`.
+//
+// The real implementation lives in `./polymarket-relayer-adapter.ts`
+// (`PolymarketRelayerAdapter`). `StubPolymarketAdapter` (below) remains
+// useful for dispatcher tests that need a typed adapter without booting
+// any SDKs.
 
 export type Address = `0x${string}`;
 
@@ -67,6 +72,11 @@ export interface PolymarketAdapter {
   ): Promise<OrderResult>;
   getPositions(safeAddress: Address): Promise<Position[]>;
 }
+
+// Re-export the real implementation so callers can import via this
+// barrel without knowing the file split.
+export { PolymarketRelayerAdapter } from "./polymarket-relayer-adapter.js";
+export type { PolymarketRelayerAdapterOptions } from "./polymarket-relayer-adapter.js";
 
 // Skeleton implementation — useful for typecheck and dependency
 // injection wiring. All methods throw on invocation.

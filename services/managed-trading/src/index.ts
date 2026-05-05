@@ -8,3 +8,4 @@ export * from "./types.js";
 export * from "./polymarket-adapter.js";
 export * from "./risk-manager.js";
 export * from "./dispatcher.js";
+export * from "./config.js";
