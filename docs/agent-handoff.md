@@ -18,21 +18,30 @@
 ## 🔴 P0 — 现在/今天
 
 - [ ] **【P00 · 先修再跑 live】修复 pulse-direct market binding 校验**：2026-04-26 runId `5f9b3d43-56b9-481b-a593-a5f64863e26a` 复盘发现原油报告论证的是 `CL hit HIGH $200 by end of June` 的 Buy No（No 价 0.9395 / edge +5.05pp），但 `recommendation.json` / `execution-summary.json` 绑定并成交的是 `$115` strike 的 No（avgPrice 约 0.457）。详见 [`evaluation/runs/2026-04-26-5f9b3d43.md`](../evaluation/runs/2026-04-26-5f9b3d43.md)，eval backlog 见 [`evaluation/backlog.md`](../evaluation/backlog.md)。下次 `pulse:live` 前必须加 pre-execution 校验：marketSlug / tokenId / outcomeLabel / rule threshold 严格一致；bestBid / bestAsk / decision price 允许 3% 以内误差；同一 event 下不同 strike 不能只靠 eventSlug 绑定。
-- [ ] **【新主线】Raven Managed Product — Phase 2 全部完成，准备进 Phase 3**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md)。设计清单 [`docs/internal/plan/2026-05-04-design-elements-inventory.md`](internal/plan/2026-05-04-design-elements-inventory.md)。**当前 branch = `builder-raven`**（HEAD `26df649`）。
-  - **已交付（Phase 1）**：独立 app `apps/raven-managed/` (端口 3100) + 5 路由 + 2 API + Privy bearer 验证 + DB `managed_users` / `managed_deposits` + migration `0002`
-  - **已交付（Phase 2 #2）**：`lib/polymarket-safe.ts` 用 `@polymarket/builder-relayer-client@0.0.9` 推导 Safe 地址，写入 DB；onboard 页显示
-  - **已交付（Phase 2 #4）**：`lib/portfolio.ts` 用 viem 读 USDC.e on Polygon 余额（30s 缓存）；portfolio API 用上
-  - **已交付（Phase 2 #1）**：`services/managed-trading/` 服务骨架（`PolymarketAdapter` interface + `ManagedTradingDispatcher` 类，stub 实现，等 Phase 3 填）
-  - **已交付（Phase 2 #3，2026-05-04）**：dashboard 上 "Enable AI trading" 按钮接 Privy `useSessionSigners`；新 API `POST /api/users/session-signer` (action: authorize/revoke)；DB `sessionSignerAuthorizedAt/RevokedAt + aiAutoTradeEnabled` 状态机；状态打开/关闭文案 + 时间戳。**当前 stub 模式**——`NEXT_PUBLIC_PRIVY_SESSION_SIGNER_ID` 未设时只翻 DB，不真调 Privy SDK。Phase 3 设此 env 即生效。两个 `TODO(phase 3)` 标记已留在 `route.ts:15` + `lib/session-signer.ts:19`
-  - **运行前必填 env**：`NEXT_PUBLIC_PRIVY_APP_ID` / `PRIVY_APP_ID` / `PRIVY_APP_SECRET`（已写入 `apps/raven-managed/.env.local`，gitignored；secret 在聊天日志里被暴露过，**建议下次会话前 rotate**）
-  - **Polymarket builder credentials**（已申请 active）：address `0x6664e32f79aee42639f73633e40b5a842b07614e` / code `0x30cf444e70e82e9bca9db63a89565cd688c19ec2e7b30b96c9ce2ec2cfaaa95e` / API key `019df336-1894-76e8-bd11-8582cde25c3a`。**还缺 secret + passphrase**（需用户去 Polymarket 翻创建记录或 Create New 新 key）。**fee rate 当前 0%/0% — 不要改**（头部 builder 全是 0%，靠 Polymarket Weekly Rewards Pool 赚钱，不靠 user-paid fee）
-  - **下一步候选（Phase 3 入口）**：(a) Privy dashboard 启用 session signers + 配置 `NEXT_PUBLIC_PRIVY_SESSION_SIGNER_ID` env → 翻掉 stub 模式 / (b) 真接 daily-pulse 信号 → 多用户分发器（`services/managed-trading/dispatcher.ts` 当前是空实现）/ (c) Phase 3 风控参数 + 实盘下单 + Weekly Rewards Pool 入账对账 / (d) 设计资源落地（§9.1 color migration + Inter/JetBrains Mono + Lucide + logo SVG + OG image）
-- [ ] **【用户下次会话亲自做】review 这一轮新建的 5 个文档**：
+- [ ] **【新主线】Raven Managed Product — Phase 3a 代码全完成，剩 dogfood 启动**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md) + [`mode-a-phase-3a-plan.md`](internal/plan/2026-05-04-mode-a-phase-3a-plan.md)。**当前 branch = `main`**（HEAD ~`4d417a9`）。
+  - ✅ **DB**：Neon PG 17.8 in eu-central-1 (Frankfurt) provisioned 2026-05-05；4 migration 全跑通；连接串写进 `apps/raven-managed/.env.local`（gitignored；密码暴露聊天，dogfood 跑通后 reset）
+  - ✅ **Phase 1 + Phase 2 #1-#4**：apps/raven-managed 独立 app + Privy + Safe 推导 + viem 余额 + session signer UI（stub 模式）+ 4 表 schema
+  - ✅ **Phase 3a.0**：commit `a6513bc` — Builder code wired into services/executor（**Pizza/no1 别开**：自家钱包大概率被 Polymarket Weekly Rewards Pool 过滤，自引规则）
+  - ✅ **Phase 3a.1**：3 commits — `PolymarketRelayerAdapter` 真实现（deploySafe / getBalance / getPositions / placeOrder via session signer + builder code 双重 stamp）
+  - ✅ **Phase 3a.2**：commit `2e81400` — `scripts/managed-pulse.ts` + `proposed-decision-mapper.ts`（pulse 桥）
+  - ✅ **Phase 3a.3**：commit `7e0b956` — `scripts/managed-pulse-archive.ts` + `services/managed-trading/src/{alerts,risk-events}.ts` + `deploy/managed-pulse.cron.example`
+  - ✅ **Tests**：65/65 managed-trading + 全 9 项目 typecheck 绿
+  - **Polymarket builder credentials**（active）：address `0x6664...14e` / code `0x30cf...95e` / api key + secret + passphrase 全在 `.env.local`。**fee rate 0%/0% don't change**（头部 builder 全是 0%）
+
+- [ ] **【dogfood 启动清单 — 5 件用户操作】**（按依赖排序，DB 已搞定）：
+  1. **Polygon RPC URL**：Alchemy / QuickNode / Infura 任一免费 tier，5min 注册，URL 替换 `apps/raven-managed/.env.local` 的 `POLYGON_RPC_URL=`（公共 `polygon-rpc.com` 也能用，限流严）
+  2. **Privy dashboard 配 session signers**：登 https://dashboard.privy.io → app cmkqta0kl043dla0dg9zfaufm → Authentication → 启用 Session Signers / chainId 137 → 拿 `NEXT_PUBLIC_PRIVY_SESSION_SIGNER_ID` 给主会话 + 创建 server signer 私钥写进 `.env.local` 的 `PRIVY_SESSION_SIGNER_PRIVATE_KEY=`
+  3. **起 dev server + no1 connect-wallet 注册**：`pnpm --filter @autopoly/raven-managed dev` → localhost:3100 → "Continue with wallet" → 用 no1 私钥连进 Privy → 走完 onboard → dashboard 点 "Enable AI trading"（stub 模式翻 DB）
+  4. **给衍生 Safe 充 USDC.e**：no1 的 EOA 衍生出来的 Safe 如果跟你之前 Polymarket 用的同地址，钱已经在；否则从 no1 转 $20-30
+  5. **第一次 paper-mode 跑通**：`DATABASE_URL=... pnpm managed:pulse --json` → 看 `runtime-artifacts/managed-pulse/<ts>/<userId>/summary.md` 验证
+
+- [ ] **【可后做不阻塞 dogfood】review 这一轮新建的 6 个文档**：
   - `docs/internal/plan/2026-05-04-raven-managed-product-plan.md`（产品计划主文件）
-  - `docs/internal/plan/2026-05-04-design-elements-inventory.md`（设计清单 + AI 生图 prompt + 5 个待拍板方向）
-  - `apps/raven-managed/app/page.tsx`（landing 文案）
-  - `apps/raven-managed/app/dashboard/page.tsx`（用户日常视图骨架）
-  - `packages/db/src/migrations/0002_managed_users.sql`（DB lifecycle / risk_tier 命名）
+  - `docs/internal/plan/2026-05-04-mode-a-phase-3a-plan.md`（Mode A 实施计划）
+  - `docs/internal/plan/2026-05-04-design-elements-inventory.md`（设计清单 + 5 待拍板方向）
+  - `docs/internal/review/2026-05-04-betmoar-and-computer-use-research.md`（betmoar 调研 + CU 选型）
+  - `apps/raven-managed/app/page.tsx`（landing 文案 + Lucide icons + raven 品牌 mark）
+  - `packages/db/src/migrations/000{2,3}_*.sql`（DB lifecycle / risk_tier 命名）
 - [ ] **【用户下次会话亲自做】人为 review 所有本轮新建/重写的中间产生分析文档**：检查格式与内容是否合理。范围至少包括：
   - `docs/agent-onboarding.md` / `docs/agent-handoff.md`（中英）
   - `docs/internal/plan/2026-04-28-v2-cutover-runbook.md`
