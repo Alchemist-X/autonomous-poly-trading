@@ -95,6 +95,14 @@ export async function getClobClient(config: ExecutorConfig): Promise<ClobClient 
         });
         const creds = await resolveApiCredentials(boot);
 
+        // When builder attribution is configured, pass `builderConfig` so the
+        // V2 SDK auto-stamps `builderCode` onto every signed order. The SDK
+        // populates `builderCode` if the per-order field is unset, which keeps
+        // this purely additive — no per-call changes needed downstream.
+        const builderConfig = config.builderAttribution
+          ? { builderCode: config.builderAttribution.code }
+          : undefined;
+
         return new ClobClient({
           host: config.polymarketHost,
           chain: config.chainId as Chain,
@@ -102,6 +110,7 @@ export async function getClobClient(config: ExecutorConfig): Promise<ClobClient 
           creds,
           signatureType: config.signatureType,
           funderAddress: config.funderAddress,
+          builderConfig,
         });
       } catch (error) {
         cachedClientPromise = null;

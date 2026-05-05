@@ -105,7 +105,8 @@ const baseConfig = {
   defaultOrderType: "FOK" as const,
   drawdownStopPct: 0.2,
   positionStopLossPct: 0.3,
-  initialBankrollUsd: 1000
+  initialBankrollUsd: 1000,
+  builderAttribution: null
 };
 
 describe("queue worker", () => {

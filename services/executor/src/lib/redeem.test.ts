@@ -26,6 +26,7 @@ function makeConfig(overrides: Partial<ExecutorConfig> = {}): ExecutorConfig {
     drawdownStopPct: 0.2,
     positionStopLossPct: 0.3,
     initialBankrollUsd: 10000,
+    builderAttribution: null,
     ...overrides
   };
 }

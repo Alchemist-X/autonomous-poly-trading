@@ -61,3 +61,13 @@ await app.listen({
   host: "0.0.0.0"
 });
 app.log.info({ port: config.port }, "executor listening");
+
+if (config.builderAttribution) {
+  const { code, address } = config.builderAttribution;
+  app.log.info(
+    { builderCode: `${code.slice(0, 10)}...`, builderAddress: `${address.slice(0, 10)}...` },
+    "builder attribution: enabled"
+  );
+} else {
+  app.log.info("builder attribution: disabled (env not set)");
+}

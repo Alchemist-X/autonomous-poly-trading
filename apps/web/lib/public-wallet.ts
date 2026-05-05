@@ -257,7 +257,8 @@ async function fetchReportedCollateralBalance(address: string): Promise<number |
       defaultOrderType: "FOK",
       drawdownStopPct: Number(process.env.DRAWDOWN_STOP_PCT ?? 0.2),
       positionStopLossPct: Number(process.env.POSITION_STOP_LOSS_PCT ?? 0.3),
-      initialBankrollUsd: Number(process.env.INITIAL_BANKROLL_USD ?? 0)
+      initialBankrollUsd: Number(process.env.INITIAL_BANKROLL_USD ?? 0),
+      builderAttribution: null
     });
     const parsed = Number((balance as { balance?: unknown } | null)?.balance ?? Number.NaN);
     return Number.isFinite(parsed) ? parsed / 1e6 : null;
