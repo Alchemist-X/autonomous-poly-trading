@@ -40,6 +40,10 @@ export type OrderResult = {
   status: "open" | "filled" | "partial" | "rejected";
   filledNotionalUsd: string;
   avgPrice: number | null;
+  // Present on `rejected` results — classified human-readable message
+  // for the dispatcher to persist in `managedDecisions.errorMessage`.
+  // Absent on success.
+  errorMessage?: string;
 };
 
 // Opaque session-signer reference. Concrete adapter holds the actual
