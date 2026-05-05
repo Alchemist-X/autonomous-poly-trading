@@ -47,16 +47,20 @@
 
 **估时**：1 worktree agent，1-2h。typecheck + 单元测试，不实际打链。
 
-### 3a.2：Pulse → Dispatcher 桥（Mode A 主线第二步）
+### 3a.2：Pulse → Dispatcher 桥（✅ done 2026-05-05）
 
 > 把 `services/orchestrator` 跑出来的 daily-pulse 决策喂进 `services/managed-trading` 的 `runPaperPulseForAllAuthorizedUsers`。
 
-- 新 `scripts/managed-pulse.ts`（或 `services/managed-trading/src/bin/run-pulse.ts`）
-- 读最新 pulse 输出（runtime-artifacts/pulse-live/<ts>/）→ 解析为 `ProposedDecision[]`
-- 调 `dispatcher.runPaperPulseForAllAuthorizedUsers(proposals)`
-- Paper mode 默认；env `MANAGED_TRADING_MODE=live` 才真打单
+- ✅ 新增 `scripts/managed-pulse.ts` — 读最新 `runtime-artifacts/pulse-live/<ts>/recommendation.json`，自动选最近的 archive，也可显式 `--recommendation <path>`
+- ✅ 抽出 `services/managed-trading/src/proposed-decision-mapper.ts` — 纯函数，按 `tokenId` join `executablePlans` × `decisions`，处理 confidence 归一化（`medium-high` → `high`）+ side/action 边界 + NaN/越界 prob 防御
+- ✅ Paper mode 默认 / env `MANAGED_TRADING_MODE=live` 走真 SDK adapter；缺 builder 凭证或 session signer key 在 config 加载时直接抛
+- ✅ Stub adapter 默认（paper mode）；`MANAGED_TRADING_USE_REAL_BALANCES=true` 强制用真 RPC 读 USDC.e（dogfood 用）
+- ✅ 新增 18 个 mapper 单测（`services/managed-trading/src/proposed-decision-mapper.test.ts`），全包 4 个测试文件 55 tests pass
+- ✅ Stdout 只输出最终 JSON summary；进度 / 警告全走 stderr，pipe 友好
+- 新增 `pnpm managed:pulse` 命令；live 模式必须显式 env，不靠 CLI flag
+- TODO(3a.3) 标记已留：cron + alerting webhook + `runtime-artifacts/managed-pulse/<ts>-<userId>/` 归档目录
 
-**估时**：1 worktree agent，1-2h。
+**实际**：1 worktree agent，~1h。
 
 ### 3a.3：Cron + 观测 + 报警（Mode A 上线前最后一步）
 

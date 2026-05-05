@@ -12,6 +12,8 @@
 > Chinese version: [`docs/agent-handoff.md`](../agent-handoff.md)
 >
 > Last updated: 2026-04-26 by Claude (session wrap-up: V2 migration + repo restructure + onboarding/handoff dual-doc pair complete; user flagged a manual review of every intermediate analysis doc as next-session P0)
+>
+> **Translation pending** — the Chinese version contains Mode A Phase 3a entries (3a.0 builder code / 3a.1 adapter / 3a.2 pulse-dispatcher bridge done as of 2026-05-05) that have not yet been mirrored here. See `docs/agent-handoff.md` for the canonical state.
 
 ---
 
