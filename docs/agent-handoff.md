@@ -11,12 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-05-05 by Claude（Phase 3a.3 cron + 观测 + 报警落地，65 tests pass）
+> 最后更新：2026-05-05 by Codex（按用户 review 调整 eval：market identity 严格一致、价格 3% 容差；新增 eval backlog）
 
 ---
 
 ## 🔴 P0 — 现在/今天
 
+- [ ] **【P00 · 先修再跑 live】修复 pulse-direct market binding 校验**：2026-04-26 runId `5f9b3d43-56b9-481b-a593-a5f64863e26a` 复盘发现原油报告论证的是 `CL hit HIGH $200 by end of June` 的 Buy No（No 价 0.9395 / edge +5.05pp），但 `recommendation.json` / `execution-summary.json` 绑定并成交的是 `$115` strike 的 No（avgPrice 约 0.457）。详见 [`evaluation/runs/2026-04-26-5f9b3d43.md`](../evaluation/runs/2026-04-26-5f9b3d43.md)，eval backlog 见 [`evaluation/backlog.md`](../evaluation/backlog.md)。下次 `pulse:live` 前必须加 pre-execution 校验：marketSlug / tokenId / outcomeLabel / rule threshold 严格一致；bestBid / bestAsk / decision price 允许 3% 以内误差；同一 event 下不同 strike 不能只靠 eventSlug 绑定。
 - [ ] **【新主线】Raven Managed Product — Phase 2 全部完成，准备进 Phase 3**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md)。设计清单 [`docs/internal/plan/2026-05-04-design-elements-inventory.md`](internal/plan/2026-05-04-design-elements-inventory.md)。**当前 branch = `builder-raven`**（HEAD `26df649`）。
   - **已交付（Phase 1）**：独立 app `apps/raven-managed/` (端口 3100) + 5 路由 + 2 API + Privy bearer 验证 + DB `managed_users` / `managed_deposits` + migration `0002`
   - **已交付（Phase 2 #2）**：`lib/polymarket-safe.ts` 用 `@polymarket/builder-relayer-client@0.0.9` 推导 Safe 地址，写入 DB；onboard 页显示
