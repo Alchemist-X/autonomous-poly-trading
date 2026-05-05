@@ -22,7 +22,7 @@
 
 按依赖+独立性排：
 
-### 3a.0：Builder Code 接到 services/executor（先做，独立小任务）
+### 3a.0：Builder Code 接到 services/executor（✅ done 2026-05-04，commit `a6513bc`）
 
 > 对应原 Task #6。让现有 **Pizza 钱包**立即开始累积 builder volume，不等 Mode A 主线。
 
