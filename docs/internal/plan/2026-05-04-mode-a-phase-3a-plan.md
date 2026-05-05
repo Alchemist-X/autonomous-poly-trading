@@ -62,14 +62,26 @@
 
 **实际**：1 worktree agent，~1h。
 
-### 3a.3：Cron + 观测 + 报警（Mode A 上线前最后一步）
+### 3a.3：Cron + 观测 + 报警（✅ done 2026-05-05）
 
-- 复用现有 cron 调度（`scripts/pulse-live.ts` 的形态）
-- 每用户日志到 `runtime-artifacts/managed-pulse/<ts>-<userId>/`
-- 失败时写 `risk_events`（已有表）+ 推 stub Slack webhook（env `MANAGED_TRADING_ALERT_WEBHOOK`）
-- live mode 上线 checklist 写进 `docs/internal/plan/2026-05-XX-mode-a-cutover-runbook.md`
+> 把 3a.2 的 bridge 包成"可调度 + 可观测 + 失败有人知道"的运行体。
 
-**估时**：1 worktree agent，2-3h。
+- ✅ 每用户日志归档：`runtime-artifacts/managed-pulse/<runBatchId>/<userId>/{decisions.json,summary.md}` + 顶层 `run-summary.md` + `run-summary.json`（对应原 pulse-live 的 archive 形态）
+- ✅ 失败写 `risk_events`：event types `managed_pulse_failure`（聚合）+ `managed_pulse_user_failure`（per-user），severity `info/warn/critical` 按失败比例分级
+- ✅ Slack-style webhook hook：`services/managed-trading/src/alerts.ts` 实现 `sendAlert(payload)`；3 次重试 + 指数退避（200ms / 400ms / 800ms）；env `MANAGED_TRADING_ALERT_WEBHOOK` 未设静默 no-op；alert 失败永不阻塞 dispatch
+- ✅ Alert kinds：`run_failed` / `user_failed` / `session_revoked` / `balance_zero` / `rate_limited`（当前 dispatcher 只产 `empty_safe` skip → `balance_zero`，其余 alert kind 为后续 dispatcher 拆分预留）
+- ✅ Cron 配置 example（artifact-only，不自动启用）：`deploy/managed-pulse.cron.example`，包含 crontab + systemd timer 两种形态、enable / disable / dry-run 步骤
+- ✅ runBatchId = ISO timestamp + uuid 后缀；同一 runBatchId 重跑覆盖归档（idempotent）
+- ✅ 所有 artifact 路径在结束时打印（CLAUDE.md §7）
+- ✅ 新增 `services/managed-trading/src/alerts.test.ts`（10 tests），全包 5 测试文件 65 tests pass
+- ✅ Smoke run 通过：缺 `DATABASE_URL` 时 fail-fast 在 "DATABASE_URL is not configured"，不会在前序步骤崩
+
+**未做**（明确不在 3a.3 范围内，留给后续）：
+- 健康检查 / status endpoint：dashboard 可以查 `managed_paper_runs` 取"每用户最后成功时间戳"，但这是 Phase 3b dashboard 任务
+- `MANAGED_TRADING_PAUSED` 总开关：cron 配置文件里有占位说明，Phase 3b 实现
+- live-mode 上线 checklist 写 `docs/internal/plan/mode-a-cutover-runbook.md`：留到 dogfood 收尾时再写，先把 dogfood 跑出来再说
+
+**实际**：1 worktree agent，~1.5h。
 
 ### 3a.4：内部 dogfood（先于公开发布）
 

@@ -13,9 +13,21 @@
 //   `managed_decisions` / `managed_paper_runs`; no real CLOB calls.
 // - **live**: requires `MANAGED_TRADING_MODE=live` env. The adapter
 //   placeOrder path runs and signs orders with the Privy session
-//   signer key. Live runs need the cron schedule (Phase 3a.3) so they
-//   don't double-fire — running this script manually in live mode is
-//   discouraged for that reason.
+//   signer key. Live runs are expected to fire from the cron schedule
+//   (`deploy/managed-pulse.cron.example`) so they don't double-fire —
+//   running this script manually in live mode is discouraged for
+//   that reason.
+//
+// ## Observability (Phase 3a.3)
+//
+// - Every run gets a `runBatchId` and writes a per-user archive to
+//   `runtime-artifacts/managed-pulse/<runBatchId>/<userId>/{decisions.json,summary.md}`
+//   plus a top-level `run-summary.md` + `run-summary.json`.
+// - On failures, rows are appended to `risk_events` (event types
+//   `managed_pulse_failure` + `managed_pulse_user_failure`).
+// - Slack-style webhook alerts go to `MANAGED_TRADING_ALERT_WEBHOOK`
+//   when set; absent env var → silent no-op.
+// - All artifact paths are echoed at run end (CLAUDE.md §7).
 //
 // ## Failure modes (fail-fast per CLAUDE.md §6)
 //
@@ -41,6 +53,7 @@
 // progress lines go to stderr so a `... | jq` pipeline still works.
 
 import { promises as fs } from "node:fs";
+import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { hasDatabaseUrl, getDb } from "@autopoly/db";
@@ -55,6 +68,18 @@ import {
   type PulseRecommendationFile,
   type UnmappablePlan
 } from "../services/managed-trading/src/proposed-decision-mapper.ts";
+import {
+  hasAlertWebhookConfigured,
+  sendAlert,
+  type AlertKind,
+  type AlertPayload
+} from "../services/managed-trading/src/alerts.ts";
+import { recordRiskEvent } from "../services/managed-trading/src/risk-events.ts";
+import {
+  makeRunBatchId,
+  writeManagedPulseArchive,
+  type ArchivePaths
+} from "./managed-pulse-archive.ts";
 
 // ---------------------------------------------------------------------------
 // CLI
@@ -107,9 +132,8 @@ function log(level: LogLevel, message: string): void {
 // `agent_runs` + `agent_decisions` exist, they don't store the
 // post-orchestrator-sizing PlannedExecution rows — those only land in
 // `recommendation.json`. Filesystem is the canonical source for the
-// bridge's input shape. (TODO(3a.3): once cron runs land, we may want
-// to persist `executablePlans` to a DB column so we don't depend on
-// archive directory layout.)
+// bridge's input shape. (Future: persist `executablePlans` to a DB
+// column so we don't depend on archive directory layout.)
 async function findLatestRecommendationFile(artifactRoot: string): Promise<string | null> {
   const pulseDir = path.join(artifactRoot, "pulse-live");
   let entries: string[];
@@ -163,6 +187,7 @@ async function loadPulseRecommendation(
 interface ManagedPulseSummary {
   readonly ok: boolean;
   readonly mode: "paper" | "live";
+  readonly runBatchId: string;
   readonly recommendationPath: string;
   readonly recommendationRunId: string | null;
   readonly proposedDecisionCount: number;
@@ -180,6 +205,17 @@ interface ManagedPulseSummary {
     readonly failed: number;
   };
   readonly perUser: ReadonlyArray<RunResult>;
+  readonly archive: {
+    readonly runDir: string;
+    readonly runSummaryMd: string;
+    readonly runSummaryJson: string;
+    readonly userArtifactCount: number;
+  } | null;
+  readonly alerts: {
+    readonly webhookConfigured: boolean;
+    readonly attempted: number;
+    readonly delivered: number;
+  };
   readonly errorMessage?: string;
 }
 
@@ -217,6 +253,18 @@ function tallyPerUser(results: ReadonlyArray<RunResult>): ManagedPulseSummary["u
 
 export async function runManagedPulseBridge(args: CliArgs = parseArgs()): Promise<ManagedPulseSummary> {
   const startedAt = Date.now();
+  // `runBatchId` ties together: per-user files in runtime-artifacts,
+  // alert payloads, and risk_events rows. Re-running with the same
+  // batch is idempotent because the timestamp + uuid suffix combine to
+  // a unique directory.
+  const runBatchId = makeRunBatchId(new Date(), randomUUID().replace(/-/g, ""));
+  const webhookConfigured = hasAlertWebhookConfigured();
+  if (!webhookConfigured) {
+    log(
+      "INFO",
+      "MANAGED_TRADING_ALERT_WEBHOOK is not set — failure alerts will be skipped (silent no-op)."
+    );
+  }
 
   // Step 1 — load pulse output. Fail fast if missing or malformed.
   const recommendationPath = args.recommendationPath
@@ -227,7 +275,7 @@ export async function runManagedPulseBridge(args: CliArgs = parseArgs()): Promis
         `Run \`pnpm pulse:recommend\` (or pulse:live) first to produce one.`
     );
   }
-  log("INFO", `Loading pulse recommendation from ${recommendationPath}`);
+  log("INFO", `runBatchId=${runBatchId} loading pulse recommendation from ${recommendationPath}`);
   const recommendation = await loadPulseRecommendation(recommendationPath);
   const recommendationRunId = typeof recommendation.runId === "string" ? recommendation.runId : null;
 
@@ -248,13 +296,16 @@ export async function runManagedPulseBridge(args: CliArgs = parseArgs()): Promis
     return {
       ok: true,
       mode: loadManagedTradingConfig().mode,
+      runBatchId,
       recommendationPath,
       recommendationRunId,
       proposedDecisionCount: 0,
       unmappableCount: unmappable.length,
       unmappable: summariseUnmappable(unmappable),
       users: { total: 0, completed: 0, skipped: 0, failed: 0 },
-      perUser: []
+      perUser: [],
+      archive: null,
+      alerts: { webhookConfigured, attempted: 0, delivered: 0 }
     };
   }
 
@@ -273,15 +324,12 @@ export async function runManagedPulseBridge(args: CliArgs = parseArgs()): Promis
 
   // Step 4 — pick adapter implementation.
   //
-  // Paper mode: StubPolymarketAdapter is fine because the dispatcher's
-  // paper path only calls `getBalance`, which we replace with the real
-  // `PolymarketRelayerAdapter` so we get a real on-chain bankroll
-  // read. (A pure stub would skip every user with `empty_safe`.) Live
-  // mode obviously needs the real adapter for placeOrder.
-  //
-  // TODO(3a.3): when cron lands, wire `MANAGED_TRADING_DRY_RUN=true` to
-  // force a no-side-effect pass that uses StubPolymarketAdapter+memory
-  // DB so we can smoke-test the dispatcher path without touching prod.
+  // Paper mode: the dispatcher's paper path still calls `getBalance` so
+  // we need a real bankroll read; the real adapter handles that. A
+  // pure stub would skip every user with `empty_safe`. Live mode
+  // obviously needs the real adapter for placeOrder. The
+  // `MANAGED_TRADING_USE_REAL_BALANCES=true` knob lets paper-mode
+  // dogfood read on-chain balances without flipping live trading on.
   const adapter =
     managedConfig.mode === "live" || process.env.MANAGED_TRADING_USE_REAL_BALANCES === "true"
       ? new PolymarketRelayerAdapter({ config: managedConfig })
@@ -311,34 +359,182 @@ export async function runManagedPulseBridge(args: CliArgs = parseArgs()): Promis
   }
 
   const tally = tallyPerUser(perUser);
+
+  // Step 6 — per-user archive on disk. Best-effort; failures here log
+  // but don't abort.
+  let archive: ArchivePaths | null = null;
+  try {
+    archive = await writeManagedPulseArchive(
+      {
+        artifactRoot: args.artifactRoot,
+        runBatchId,
+        mode: managedConfig.mode,
+        recommendationPath,
+        recommendationRunId,
+        proposedDecisionCount: proposedDecisions.length,
+        unmappableCount: unmappable.length,
+        perUser
+      },
+      (level, message) => log(level, message)
+    );
+    log("INFO", `Archive: ${archive.runDir}`);
+  } catch (error) {
+    log("WARN", `Archive write failed: ${getErrorMessage(error)}`);
+  }
+
+  // Step 7 — risk_events + alerts for failures + operationally
+  // significant skips. Each is independent and best-effort.
+  const alertAttempts: Array<Promise<boolean>> = [];
+
+  for (const result of perUser) {
+    if (result.status === "failed") {
+      const message = result.errorMessage ?? "unknown error";
+      // risk_events row — synchronous-ish write so we don't lose the
+      // record if the alert webhook is also down.
+      void recordRiskEvent(db, {
+        eventType: "managed_pulse_user_failure",
+        severity: "warn",
+        message: `managed-pulse user ${result.userId} failed: ${message}`,
+        metadata: {
+          runBatchId,
+          userId: result.userId,
+          runId: result.runId,
+          recommendationRunId
+        }
+      });
+      const payload: AlertPayload = {
+        kind: "user_failed",
+        userId: result.userId,
+        runBatchId,
+        details: {
+          error: message,
+          runId: result.runId,
+          recommendationRunId
+        }
+      };
+      alertAttempts.push(safeSendAlert(payload));
+    } else if (result.status === "skipped") {
+      const reason = result.skippedReason ?? "unknown";
+      const alertKind = mapSkipReasonToAlertKind(reason);
+      if (alertKind) {
+        const payload: AlertPayload = {
+          kind: alertKind,
+          userId: result.userId,
+          runBatchId,
+          details: {
+            skippedReason: reason,
+            bankrollUsd: result.bankrollUsd,
+            recommendationRunId
+          }
+        };
+        alertAttempts.push(safeSendAlert(payload));
+      }
+    }
+  }
+
+  if (tally.failed > 0) {
+    void recordRiskEvent(db, {
+      eventType: "managed_pulse_failure",
+      severity: tally.failed >= tally.total ? "critical" : "warn",
+      message: `managed-pulse run had ${tally.failed} failed user(s) of ${tally.total}`,
+      metadata: {
+        runBatchId,
+        recommendationRunId,
+        failed: tally.failed,
+        total: tally.total,
+        failedUserIds: perUser.filter((r) => r.status === "failed").map((r) => r.userId)
+      }
+    });
+    alertAttempts.push(
+      safeSendAlert({
+        kind: "run_failed",
+        runBatchId,
+        details: {
+          failed_count: tally.failed,
+          total: tally.total,
+          archive: archive?.runDir ?? null
+        }
+      })
+    );
+  }
+
+  // Settle alert deliveries (best-effort; we never throw on alert
+  // failure). `safeSendAlert` already swallows errors.
+  const alertResults = await Promise.all(alertAttempts);
+  const delivered = alertResults.filter(Boolean).length;
+  if (alertAttempts.length > 0) {
+    log(
+      "INFO",
+      `Alerts: attempted=${alertAttempts.length} delivered=${delivered} (webhook ${webhookConfigured ? "set" : "unset"})`
+    );
+  }
+
   const elapsedMs = Date.now() - startedAt;
   log(
     "INFO",
     `Done in ${elapsedMs}ms. users total=${tally.total} completed=${tally.completed} skipped=${tally.skipped} failed=${tally.failed}`
   );
-
-  // TODO(3a.3): cron + alerting hooks live here.
-  //   * On `tally.failed > 0`, post to MANAGED_TRADING_ALERT_WEBHOOK
-  //     (Slack-style payload). Persist the failure in `risk_events`.
-  //   * On `tally.completed > 0` in live mode, write a daily summary
-  //     row to a new `managed_dispatch_summaries` table for ops dashboards.
-  //   * Per-user log files at runtime-artifacts/managed-pulse/<ts>-<userId>/
-  //     so we have a parallel archive shape to runtime-artifacts/pulse-live/.
-  //   * Cron schedule: vercel cron or a cron container — see Phase 3a.3
-  //     plan for cadence (likely 1x/day Pacific morning, mirroring
-  //     pulse-live's run window).
+  if (archive) {
+    log("INFO", `Per-user logs: ${archive.runDir}/<userId>/{decisions.json,summary.md}`);
+    log("INFO", `Run summary: ${archive.runSummaryMd}`);
+  }
 
   return {
     ok: tally.failed === 0,
     mode: managedConfig.mode,
+    runBatchId,
     recommendationPath,
     recommendationRunId,
     proposedDecisionCount: proposedDecisions.length,
     unmappableCount: unmappable.length,
     unmappable: summariseUnmappable(unmappable),
     users: tally,
-    perUser
+    perUser,
+    archive: archive
+      ? {
+          runDir: archive.runDir,
+          runSummaryMd: archive.runSummaryMd,
+          runSummaryJson: archive.runSummaryJson,
+          userArtifactCount: archive.userPaths.length
+        }
+      : null,
+    alerts: {
+      webhookConfigured,
+      attempted: alertAttempts.length,
+      delivered
+    }
   };
+}
+
+// Map dispatcher skip reasons to alert kinds. The current dispatcher
+// only emits `empty_safe` (→ balance_zero); the others (`session_revoked`,
+// `rate_limited`) are reserved for future dispatcher refactors that
+// distinguish between revocation and a generic ai_auto_trade_disabled
+// flag, or surface adapter-level rate-limit errors as skips. We map
+// what we can today and silently ignore the rest (no spam alerts on
+// expected skips like `ai_auto_trade_disabled`).
+function mapSkipReasonToAlertKind(reason: string): AlertKind | null {
+  switch (reason) {
+    case "empty_safe":
+      return "balance_zero";
+    case "session_revoked":
+      return "session_revoked";
+    case "rate_limited":
+      return "rate_limited";
+    default:
+      return null;
+  }
+}
+
+async function safeSendAlert(payload: AlertPayload): Promise<boolean> {
+  try {
+    return await sendAlert(payload);
+  } catch (error) {
+    // sendAlert already catches its own failures; this guard is
+    // defence-in-depth — alerts never abort the dispatch.
+    log("WARN", `Alert dispatch threw unexpectedly: ${getErrorMessage(error)}`);
+    return false;
+  }
 }
 
 function getErrorMessage(error: unknown): string {
