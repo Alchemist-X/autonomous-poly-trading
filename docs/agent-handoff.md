@@ -11,13 +11,15 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-05-05 by Codex（按用户 review 调整 eval：market identity 严格一致、价格 3% 容差；新增 eval backlog）
+> 最后更新：2026-05-05 by Codex（pulse 质量 P00 已实现：market binding gate + 3% 价格容差 + PnL summary 初版；392 tests pass）
 
 ---
 
 ## 🔴 P0 — 现在/今天
 
-- [ ] **【P00 · 先修再跑 live】修复 pulse-direct market binding 校验**：2026-04-26 runId `5f9b3d43-56b9-481b-a593-a5f64863e26a` 复盘发现原油报告论证的是 `CL hit HIGH $200 by end of June` 的 Buy No（No 价 0.9395 / edge +5.05pp），但 `recommendation.json` / `execution-summary.json` 绑定并成交的是 `$115` strike 的 No（avgPrice 约 0.457）。详见 [`evaluation/runs/2026-04-26-5f9b3d43.md`](../evaluation/runs/2026-04-26-5f9b3d43.md)，eval backlog 见 [`evaluation/backlog.md`](../evaluation/backlog.md)。下次 `pulse:live` 前必须加 pre-execution 校验：marketSlug / tokenId / outcomeLabel / rule threshold 严格一致；bestBid / bestAsk / decision price 允许 3% 以内误差；同一 event 下不同 strike 不能只靠 eventSlug 绑定。
+- [x] **【P00 · 已实现】pulse-direct market binding 校验**：2026-05-05 已修复。`pulse-entry-planner` 不再用同 event URL 直接绑定多 strike 市场；`execution-planning` 增加 P00 gate：marketSlug / tokenId / outcomeLabel / rule threshold 严格一致，bestBid / bestAsk / decision price 允许 3% 以内误差；`pulse-live` 遇到 `blocked_by_market_binding` 在 live 模式 fail-fast。覆盖测试：`pulse-entry-planner.test.ts` / `execution-planning.test.ts` / 全量 `pnpm test` 392 pass。
+- [ ] **【P0 · pulse 质量下一步】现有仓位真实复审**：2026-05-05 已把 no-fresh-signal 从“still has edge”改成 `stale-hold / no active edge`，但还没做真正外部信息刷新。下一步要让每个已有仓位输出 fresh evidence / adverse signal / reduce-close trigger / PnL 归因。
+- [ ] **【P1 · pulse 质量下一步】逐仓 PnL 快照**：run-summary 已新增账户级 PnL 归因初版；后续要保存成交前后每个 token 的 mark 快照，才能拆出已有仓位 mark-to-market、新仓滑点/价差、费用和 unexplained delta。
 - [ ] **【新主线】Raven Managed Product — Phase 3a 代码全完成，剩 dogfood 启动**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md) + [`mode-a-phase-3a-plan.md`](internal/plan/2026-05-04-mode-a-phase-3a-plan.md)。**当前 branch = `main`**（HEAD ~`4d417a9`）。
   - ✅ **DB**：Neon PG 17.8 in eu-central-1 (Frankfurt) provisioned 2026-05-05；4 migration 全跑通；连接串写进 `apps/raven-managed/.env.local`（gitignored；密码暴露聊天，dogfood 跑通后 reset）
   - ✅ **Phase 1 + Phase 2 #1-#4**：apps/raven-managed 独立 app + Privy + Safe 推导 + viem 余额 + session signer UI（stub 模式）+ 4 表 schema
@@ -28,12 +30,20 @@
   - ✅ **Tests**：65/65 managed-trading + 全 9 项目 typecheck 绿
   - **Polymarket builder credentials**（active）：address `0x6664...14e` / code `0x30cf...95e` / api key + secret + passphrase 全在 `.env.local`。**fee rate 0%/0% don't change**（头部 builder 全是 0%）
 
-- [ ] **【dogfood 启动清单 — 5 件用户操作】**（按依赖排序，DB 已搞定）：
-  1. **Polygon RPC URL**：Alchemy / QuickNode / Infura 任一免费 tier，5min 注册，URL 替换 `apps/raven-managed/.env.local` 的 `POLYGON_RPC_URL=`（公共 `polygon-rpc.com` 也能用，限流严）
-  2. **Privy dashboard 配 session signers**：登 https://dashboard.privy.io → app cmkqta0kl043dla0dg9zfaufm → Authentication → 启用 Session Signers / chainId 137 → 拿 `NEXT_PUBLIC_PRIVY_SESSION_SIGNER_ID` 给主会话 + 创建 server signer 私钥写进 `.env.local` 的 `PRIVY_SESSION_SIGNER_PRIVATE_KEY=`
-  3. **起 dev server + no1 connect-wallet 注册**：`pnpm --filter @autopoly/raven-managed dev` → localhost:3100 → "Continue with wallet" → 用 no1 私钥连进 Privy → 走完 onboard → dashboard 点 "Enable AI trading"（stub 模式翻 DB）
-  4. **给衍生 Safe 充 USDC.e**：no1 的 EOA 衍生出来的 Safe 如果跟你之前 Polymarket 用的同地址，钱已经在；否则从 no1 转 $20-30
-  5. **第一次 paper-mode 跑通**：`DATABASE_URL=... pnpm managed:pulse --json` → 看 `runtime-artifacts/managed-pulse/<ts>/<userId>/summary.md` 验证
+- [x] ~~**Phase 3a.4 paper-mode 端到端 SMOKE TEST**~~ ✅ 2026-05-07 完成，commit `<pending>`：
+  - no1 (`0xe14e...dff1`) 通过直接 SQL INSERT 注册成 managed_user `74a27990-300a-4d09-8e7b-af52a5c65906`（跳过浏览器 + Privy 模态——签名只能在 wallet 端做，私钥不应该上服务器）
+  - Safe 推导验证：no1 EOA → `0xC78873...2936` ✅ **完全匹配** `.env.no1` 的 FUNDER_ADDRESS，证明 3a.1 PolymarketRelayerAdapter 推导逻辑对
+  - 实测 publicnode RPC 读链上余额：no1 Safe = $3.96 USDC.e（之前充的钱还在）
+  - 用 `2026-04-26T060306Z` pulse recommendation.json 跑 `managed:pulse --json --recommendation <path>`：3 decisions 全 skip（balanced tier 15% cap → $0.59 < $5 min notional）—— **这是正确的风控行为**，bankroll 太小 AI 即使看到 99% conf 的原油单也不强行下
+  - DB 验证：`managed_paper_runs` 写了 1 row（completed，2 秒跑完），`managed_decisions` 写了 3 rows（全 skipped，原因 `blocked_by_min_notional`）
+  - 归档：`runtime-artifacts/managed-pulse/2026-05-07T08-23-06Z-484e1667/`
+  - **关键发现**：`https://polygon-rpc.com` 公共 RPC 现在返回 401（"API key disabled"），切到 `https://polygon-bor-rpc.publicnode.com`（也有 `drpc.org` / `1rpc.io/matic` 备选）。已写进 `.env.local`
+
+- [ ] **【dogfood 下一步 — 看你想走哪条】**：
+  1. **A. 给 no1 Safe 充 $30+ USDC.e** → paper-mode 重跑会真的"keep" 部分 decision，验证完整 happy path（不是只验"被 skip"）
+  2. **B. 做 Privy 真 connect-wallet 注册流程**（不是直接 INSERT）→ 验证 onboard 端到端 UX。需要你拿 no1 私钥导入 MetaMask 后浏览器走一遍
+  3. **C. 直接进 live mode**（拿 1 个真单）→ 需要 Privy dashboard 启用 session signers + 拿 `PRIVY_SESSION_SIGNER_PRIVATE_KEY`，把 `MANAGED_TRADING_MODE=live`。最 risky 但最有信息量
+  4. **D. 等几天看 cron 跑通**（搭好 cron 让 paper-mode 每天自动 run）→ 验证 cron 调度 + alert webhook + 归档累积
 
 - [ ] **【可后做不阻塞 dogfood】review 这一轮新建的 6 个文档**：
   - `docs/internal/plan/2026-05-04-raven-managed-product-plan.md`（产品计划主文件）
