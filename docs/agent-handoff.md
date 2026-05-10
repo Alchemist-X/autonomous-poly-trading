@@ -106,6 +106,21 @@
 - ✅ **MIT LICENSE** 已加
 - ✅ **rough-loop.md 留根目录**（B 方案明确取舍）：3 个 ts 硬编码路径，挪走风险高于收益
 
+## 🪵 仍在用的 git worktree（2026-05-10 整理后保留）
+
+> 主 worktree 是 `/Users/Aincrad/dev-proj/predict-raven`（branch `main`）。下面是别的实验分支留的 worktree——不要 force-remove，里面有未合并价值代码。
+> 已清理的 2 个废稿 worktree：`spike/karpathy-autoresearch`（8 周前）+ `exp/pulse-timeout-calibration`（7 周前 base 太旧），分支已删
+
+- **`/Users/Aincrad/dev-proj/predict-raven-aw`** (1.2GB, branch `raven-aw`, 22fa56f)
+  - 24 个 modified + 4 个 untracked（最大价值：`services/executor/src/lib/okx-agentic-wallet.{ts,test.ts}` + `docs/agentic-wallet-setup.md`）
+  - 状态：**未合并的 OKX agentic-wallet 实验**（独立于 Mode A / Pulse 主线）。也有一些 live-test scripts 改动 + env-file 工具
+  - 下一步：判断 OKX wallet 集成要不要继续；如要，独立 cherry-pick 进 main；如废，整个清掉（释放 1.2GB）
+
+- **`/Users/Aincrad/dev-proj/predict-raven-persistence-plan`** (679MB, branch `codex/persistent-runtime-plan`, d939b6e)
+  - 5 modified + 5 untracked（关键：`services/orchestrator/src/runtime/raven-agent-loop.{ts,test.ts}` + `docs/internal/plan/2026-05-04-persistent-runtime-plan.{md,en.md}`）
+  - 状态：**部分已合并**——`scripts/agent-persistent-runner.ts` 已经在 main（commit `6d1ca6c`）。`raven-agent-loop` 模块还没合
+  - 下一步：把 `raven-agent-loop` 独立 cherry-pick 进 main 或废弃整个 worktree
+
 ## 📝 已知踩过的坑（避免重复）
 
 - `claude --print` 子进程偶尔 0 字节挂 5+ 分钟 → 不是失败，等
