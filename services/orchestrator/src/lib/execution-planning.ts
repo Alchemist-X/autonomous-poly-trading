@@ -27,6 +27,7 @@ export interface PlanningOrderBookSnapshot {
 // ---------------------------------------------------------------------------
 
 const DEFAULT_MAX_SLIPPAGE_PCT = 0.04;
+const DEFAULT_BOOK_PREFETCH_CONCURRENCY = 4;
 
 /**
  * Compute the maximum BUY notional (USD) that can fill on the current ask
@@ -76,6 +77,7 @@ export interface PlannedExecution {
   marketSlug: string;
   eventSlug: string;
   tokenId: string;
+  outcomeLabel?: string | null;
   side: TradeDecision["side"];
   notionalUsd: number;
   bankrollRatio: number;
@@ -176,6 +178,29 @@ export interface SkippedDecision {
   reason: string;
 }
 
+interface PulseCandidateForPlanning {
+  eventSlug?: string | null;
+  marketSlug?: string | null;
+  question?: string | null;
+  outcomes?: string[];
+  outcomePrices?: number[];
+  clobTokenIds: string[];
+  categorySlug?: string | null;
+  negRisk?: boolean;
+  feesEnabled?: boolean;
+}
+
+interface CandidateTokenMeta {
+  eventSlug: string | null;
+  marketSlug: string | null;
+  question: string | null;
+  outcomeLabel: string | null;
+  outcomePrice: number | null;
+  categorySlug: string | null;
+  negRisk: boolean;
+  feesEnabled?: boolean;
+}
+
 function roundNotional(value: number): number {
   return Number(value.toFixed(4));
 }
@@ -186,6 +211,71 @@ function roundExchangeCurrency(value: number): number {
 
 function formatUsd(value: number): string {
   return `$${value.toFixed(2)}`;
+}
+
+function formatProb(value: number | null | undefined): string {
+  return value == null || !Number.isFinite(value) ? "-" : value.toFixed(4);
+}
+
+function relativeDiff(a: number, b: number) {
+  return Math.abs(a - b) / Math.max(Math.abs(b), 0.01);
+}
+
+function validateOpenDecisionBinding(input: {
+  decision: TradeDecision;
+  candidate: CandidateTokenMeta | null;
+  book?: PlanningOrderBookSnapshot | null;
+}) {
+  const { decision, candidate, book } = input;
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const priceTolerancePct = 0.03;
+
+  if (!candidate) {
+    errors.push("token_id was not found in the current pulse candidate set");
+    return { ok: false, reason: `blocked_by_market_binding:${errors.join("; ")}` };
+  }
+
+  if (candidate.marketSlug && candidate.marketSlug !== decision.market_slug) {
+    errors.push(`marketSlug mismatch: decision=${decision.market_slug} candidate=${candidate.marketSlug}`);
+  }
+  if (candidate.eventSlug && candidate.eventSlug !== decision.event_slug) {
+    errors.push(`eventSlug mismatch: decision=${decision.event_slug} candidate=${candidate.eventSlug}`);
+  }
+
+  const decisionOutcomeLabel = (decision as TradeDecision & { outcome_label?: string }).outcome_label ?? null;
+  if (decisionOutcomeLabel && candidate.outcomeLabel && decisionOutcomeLabel.toLowerCase() !== candidate.outcomeLabel.toLowerCase()) {
+    errors.push(`outcomeLabel mismatch: decision=${decisionOutcomeLabel} candidate=${candidate.outcomeLabel}`);
+  }
+
+  if (candidate.outcomePrice != null && Number.isFinite(candidate.outcomePrice)) {
+    const diff = relativeDiff(decision.market_prob, candidate.outcomePrice);
+    if (diff > priceTolerancePct) {
+      errors.push(
+        `decision market_prob ${formatProb(decision.market_prob)} differs from candidate outcome price ${formatProb(candidate.outcomePrice)} by ${(diff * 100).toFixed(2)}%`
+      );
+    }
+  }
+
+  const bookReference = decision.side === "BUY" ? book?.bestAsk : book?.bestBid;
+  if (bookReference != null && Number.isFinite(bookReference) && bookReference > 0) {
+    const diff = relativeDiff(bookReference, decision.market_prob);
+    if (diff > priceTolerancePct) {
+      errors.push(
+        `${decision.side === "BUY" ? "bestAsk" : "bestBid"} ${formatProb(bookReference)} differs from decision market_prob ${formatProb(decision.market_prob)} by ${(diff * 100).toFixed(2)}%`
+      );
+    }
+  } else if (book) {
+    warnings.push("orderbook reference price unavailable for binding price tolerance check");
+  }
+
+  if (errors.length > 0) {
+    return { ok: false, reason: `blocked_by_market_binding:${errors.join("; ")}` };
+  }
+  return {
+    ok: true,
+    reason: warnings.length > 0 ? warnings.join("; ") : null
+  };
 }
 
 export function computeExchangeBuyMinNotionalUsd(input: {
@@ -277,10 +367,36 @@ export function formatRiskCapReason(input: {
   }
 }
 
+async function prefetchOrderBooks(input: {
+  tokenIds: string[];
+  readBook: (tokenId: string) => Promise<PlanningOrderBookSnapshot | null>;
+  concurrency?: number;
+}) {
+  const result = new Map<string, PlanningOrderBookSnapshot | null>();
+  const uniqueTokenIds = [...new Set(input.tokenIds.filter(Boolean))];
+  if (uniqueTokenIds.length === 0) {
+    return result;
+  }
+
+  const concurrency = Math.max(
+    1,
+    Math.min(input.concurrency ?? DEFAULT_BOOK_PREFETCH_CONCURRENCY, uniqueTokenIds.length)
+  );
+  let cursor = 0;
+  await Promise.all(Array.from({ length: concurrency }, async () => {
+    while (cursor < uniqueTokenIds.length) {
+      const tokenId = uniqueTokenIds[cursor++]!;
+      result.set(tokenId, await input.readBook(tokenId));
+    }
+  }));
+  return result;
+}
+
 export function shouldWarnSkippedDecision(reason: string) {
   return reason.startsWith("blocked_by_risk_cap:")
     || reason.startsWith("blocked_by_strategy_min_trade:")
-    || reason.startsWith("blocked_by_exchange_min:");
+    || reason.startsWith("blocked_by_exchange_min:")
+    || reason.startsWith("blocked_by_market_binding:");
 }
 
 export async function buildExecutionPlan(input: {
@@ -293,26 +409,37 @@ export async function buildExecutionPlan(input: {
   >;
   minTradeUsd: number;
   readBook: (tokenId: string) => Promise<PlanningOrderBookSnapshot | null>;
+  bookPrefetchConcurrency?: number;
   /** Optional pulse candidates lookup for fee metadata (categorySlug + negRisk). */
-  pulseCandidates?: Array<{
-    clobTokenIds: string[];
-    categorySlug?: string | null;
-    negRisk?: boolean;
-    feesEnabled?: boolean;
-  }>;
+  pulseCandidates?: PulseCandidateForPlanning[];
 }) {
   // Build token_id → candidate map for fee metadata lookup
-  const candidateByToken = new Map<string, { categorySlug: string | null; negRisk: boolean; feesEnabled?: boolean }>();
+  const candidateByToken = new Map<string, CandidateTokenMeta>();
   for (const c of input.pulseCandidates ?? []) {
-    for (const tokenId of c.clobTokenIds ?? []) {
+    for (const [index, tokenId] of (c.clobTokenIds ?? []).entries()) {
       candidateByToken.set(tokenId, {
+        eventSlug: c.eventSlug ?? null,
+        marketSlug: c.marketSlug ?? null,
+        question: c.question ?? null,
+        outcomeLabel: c.outcomes?.[index] ?? null,
+        outcomePrice: c.outcomePrices?.[index] ?? null,
         categorySlug: c.categorySlug ?? null,
         negRisk: c.negRisk ?? false,
         feesEnabled: c.feesEnabled
       });
     }
   }
-  const feeMetaFor = (tokenId: string) => candidateByToken.get(tokenId) ?? { categorySlug: null, negRisk: false };
+  const fallbackCandidateMeta: CandidateTokenMeta = {
+    eventSlug: null,
+    marketSlug: null,
+    question: null,
+    outcomeLabel: null,
+    outcomePrice: null,
+    categorySlug: null,
+    negRisk: false
+  };
+  const feeMetaFor = (tokenId: string) => candidateByToken.get(tokenId) ?? fallbackCandidateMeta;
+  const hasPulseCandidates = (input.pulseCandidates ?? []).length > 0;
 
   const plans: PlannedExecution[] = [];
   const skipped: SkippedDecision[] = [];
@@ -327,6 +454,14 @@ export async function buildExecutionPlan(input: {
       (eventExposureUsd.get(position.event_slug) ?? 0) + position.current_value_usd
     );
   }
+  const bookByTokenId = await prefetchOrderBooks({
+    tokenIds: input.decisions
+      .filter((decision) => ["open", "close", "reduce"].includes(decision.action))
+      .map((decision) => decision.token_id),
+    readBook: input.readBook,
+    concurrency: input.bookPrefetchConcurrency
+  });
+  const getBook = (tokenId: string) => bookByTokenId.get(tokenId) ?? null;
 
   for (const decision of input.decisions) {
     if (!["open", "close", "reduce"].includes(decision.action)) {
@@ -334,7 +469,7 @@ export async function buildExecutionPlan(input: {
     }
 
     if (decision.action === "open") {
-      const book = await input.readBook(decision.token_id);
+      const book = getBook(decision.token_id);
       if (!(book?.bestAsk != null && book.bestAsk > 0)) {
         skipped.push({
           action: decision.action,
@@ -343,6 +478,22 @@ export async function buildExecutionPlan(input: {
           reason: "blocked_by_orderbook_unavailable: no executable ask book is available from Polymarket"
         });
         continue;
+      }
+      if (hasPulseCandidates) {
+        const binding = validateOpenDecisionBinding({
+          decision,
+          candidate: candidateByToken.get(decision.token_id) ?? null,
+          book
+        });
+        if (!binding.ok) {
+          skipped.push({
+            action: decision.action,
+            marketSlug: decision.market_slug,
+            tokenId: decision.token_id,
+            reason: binding.reason ?? "blocked_by_market_binding:unknown binding mismatch"
+          });
+          continue;
+        }
       }
       const exchangeMinNotionalUsd = computeExchangeBuyMinNotionalUsd({
         bestAsk: book.bestAsk,
@@ -441,6 +592,7 @@ export async function buildExecutionPlan(input: {
         marketSlug: decision.market_slug,
         eventSlug: decision.event_slug,
         tokenId: decision.token_id,
+        outcomeLabel: (decision as TradeDecision & { outcome_label?: string }).outcome_label ?? feeMetaFor(decision.token_id).outcomeLabel ?? null,
         side: decision.side,
         notionalUsd: plannedNotionalUsd,
         bankrollRatio: input.overview.total_equity_usd > 0
@@ -480,7 +632,7 @@ export async function buildExecutionPlan(input: {
       continue;
     }
 
-    const book = await input.readBook(decision.token_id);
+    const book = getBook(decision.token_id);
     if (isBelowExchangeSellMinimum({
       size: executionAmount,
       minOrderSize: book?.minOrderSize ?? null

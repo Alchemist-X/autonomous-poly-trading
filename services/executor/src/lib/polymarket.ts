@@ -56,7 +56,10 @@ function getErrorMessage(error: unknown): string {
 }
 
 function isPolyCliEnabled() {
-  return process.env.POLY_CLI_ENABLED !== "false";
+  if (process.env.POLY_CLI_STRICT === "true") {
+    return true;
+  }
+  return process.env.POLY_CLI_ENABLED === "true";
 }
 
 function isPolyCliStrict() {

@@ -134,6 +134,84 @@ describe("queue worker", () => {
     mocks.latestSnapshot.mockReset();
   });
 
+  it("uses explicit planned sell shares from queued live dispatch jobs", async () => {
+    mocks.getStatus.mockResolvedValue("running");
+    mocks.findOpenPosition.mockResolvedValue({
+      id: "position-1",
+      eventSlug: "demo-event",
+      marketSlug: "demo-market",
+      tokenId: "token-1",
+      side: "BUY",
+      outcomeLabel: "Yes",
+      size: "10",
+      avgCost: "0.5",
+      currentPrice: "0.5",
+      currentValueUsd: "5",
+      unrealizedPnlPct: "0",
+      stopLossPct: "0.3",
+      openedAt: new Date("2026-05-04T00:00:00.000Z"),
+      updatedAt: new Date("2026-05-04T00:00:00.000Z")
+    });
+    mocks.executeMarketOrder.mockResolvedValue({
+      ok: true,
+      filledNotionalUsd: 1.5,
+      avgPrice: 0.5,
+      orderId: "order-1",
+      rawResponse: { ok: true }
+    });
+    mocks.upsertPosition.mockResolvedValue(undefined);
+    mocks.recordExecutionEvent.mockResolvedValue(undefined);
+
+    createQueueWorker(baseConfig, { host: "localhost" });
+
+    expect(mocks.workerProcessor).not.toBeNull();
+    await mocks.workerProcessor!({
+      name: JOBS.executeTrade,
+      data: {
+        runId: "run-1",
+        decisionId: "decision-1",
+        decision: {
+          action: "reduce",
+          event_slug: "demo-event",
+          market_slug: "demo-market",
+          token_id: "token-1",
+          side: "SELL",
+          notional_usd: 1,
+          order_type: "FOK",
+          ai_prob: 0.5,
+          market_prob: 0.5,
+          edge: 0,
+          confidence: "medium",
+          thesis_md: "Reduce exposure.",
+          sources: [
+            {
+              title: "Pulse",
+              url: "https://example.com/pulse",
+              retrieved_at_utc: "2026-05-04T00:00:00.000Z"
+            }
+          ],
+          execution_amount: 3,
+          execution_unit: "shares",
+          stop_loss_pct: 0.3,
+          resolution_track_required: true
+        }
+      }
+    });
+
+    expect(mocks.executeMarketOrder).toHaveBeenCalledWith(baseConfig, {
+      tokenId: "token-1",
+      side: "SELL",
+      amount: 3
+    });
+    expect(mocks.recordExecutionEvent).toHaveBeenCalledWith(expect.objectContaining({
+      runId: "run-1",
+      decisionId: "decision-1",
+      status: "filled",
+      requestedNotionalUsd: 1,
+      filledNotionalUsd: 1.5
+    }));
+  });
+
   it("syncs remote positions and triggers stop-loss sells", async () => {
     mocks.positionFindMany
       .mockResolvedValueOnce([])

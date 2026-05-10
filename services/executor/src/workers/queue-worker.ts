@@ -41,6 +41,21 @@ function inferSellAmount(position: Awaited<ReturnType<typeof findOpenPosition>>,
   );
 }
 
+function resolveExecutionAmount(position: Awaited<ReturnType<typeof findOpenPosition>>, decision: TradeDecision): number {
+  if (decision.execution_amount != null && decision.execution_amount > 0) {
+    if (decision.side === "BUY" && decision.execution_unit === "usd") {
+      return decision.execution_amount;
+    }
+    if (decision.side === "SELL" && decision.execution_unit === "shares") {
+      return decision.execution_amount;
+    }
+  }
+
+  return decision.side === "BUY"
+    ? decision.notional_usd
+    : inferSellAmount(position, decision);
+}
+
 async function handleTradeJob(job: Job, config: ExecutorConfig) {
   const status = await getStatus();
   const decision = job.data.decision as TradeDecision;
@@ -61,10 +76,7 @@ async function handleTradeJob(job: Job, config: ExecutorConfig) {
   }
 
   const position = await findOpenPosition(decision.token_id);
-  const amount =
-    decision.side === "BUY"
-      ? decision.notional_usd
-      : inferSellAmount(position, decision);
+  const amount = resolveExecutionAmount(position, decision);
 
   const result = await executeMarketOrder(config, {
     tokenId: decision.token_id,

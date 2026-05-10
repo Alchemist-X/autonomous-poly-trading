@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { OverviewResponse, PublicPosition, TradeDecision } from "@autopoly/contracts";
 import { buildExecutionPlan } from "./execution-planning.js";
 
@@ -22,6 +22,7 @@ function createOpenDecision(notionalUsd: number): TradeDecision {
     event_slug: "demo-event",
     market_slug: "demo-market",
     token_id: "token-open",
+    outcome_label: "No",
     side: "BUY",
     notional_usd: notionalUsd,
     order_type: "FOK",
@@ -111,6 +112,108 @@ describe("execution planning", () => {
     expect(result.plans).toHaveLength(0);
     expect(result.skipped).toHaveLength(1);
     expect(result.skipped[0]?.reason).toContain("blocked_by_exchange_min");
+  });
+
+  it("prefetches each unique token orderbook once per planning run", async () => {
+    const readBook = vi.fn(async () => ({
+      bestAsk: 0.43,
+      bestBid: 0.42,
+      minOrderSize: 5
+    }));
+    const result = await buildExecutionPlan({
+      decisions: [createOpenDecision(50), createOpenDecision(40)],
+      positions: [],
+      overview: createOverview(),
+      config: {
+        decisionStrategy: "pulse-direct",
+        maxTradePct: 1,
+        maxTotalExposurePct: 1,
+        maxEventExposurePct: 1,
+        maxPositions: 10
+      },
+      minTradeUsd: 10,
+      readBook
+    });
+
+    expect(result.plans).toHaveLength(2);
+    expect(readBook).toHaveBeenCalledTimes(1);
+    expect(readBook).toHaveBeenCalledWith("token-open");
+  });
+
+  it("blocks open decisions whose token belongs to a different pulse market", async () => {
+    const decision = createOpenDecision(50);
+    decision.market_slug = "wrong-market";
+    const result = await buildExecutionPlan({
+      decisions: [decision],
+      positions: [],
+      overview: createOverview(),
+      config: {
+        decisionStrategy: "pulse-direct",
+        maxTradePct: 1,
+        maxTotalExposurePct: 1,
+        maxEventExposurePct: 1,
+        maxPositions: 10
+      },
+      minTradeUsd: 10,
+      pulseCandidates: [
+        {
+          question: "Demo market question",
+          eventSlug: "demo-event",
+          marketSlug: "demo-market",
+          outcomes: ["Yes", "No"],
+          outcomePrices: [0.44, 0.56],
+          clobTokenIds: ["token-yes", "token-open"]
+        }
+      ],
+      readBook: async () => ({
+        bestAsk: 0.56,
+        bestBid: 0.55,
+        minOrderSize: 5
+      })
+    });
+
+    expect(result.plans).toHaveLength(0);
+    expect(result.skipped).toHaveLength(1);
+    expect(result.skipped[0]?.reason).toContain("blocked_by_market_binding");
+    expect(result.skipped[0]?.reason).toContain("marketSlug mismatch");
+  });
+
+  it("blocks open decisions whose report price differs from the executable token price beyond tolerance", async () => {
+    const decision = createOpenDecision(50);
+    decision.market_prob = 0.9395;
+    const result = await buildExecutionPlan({
+      decisions: [decision],
+      positions: [],
+      overview: createOverview(),
+      config: {
+        decisionStrategy: "pulse-direct",
+        maxTradePct: 1,
+        maxTotalExposurePct: 1,
+        maxEventExposurePct: 1,
+        maxPositions: 10
+      },
+      minTradeUsd: 10,
+      pulseCandidates: [
+        {
+          question: "Will Crude Oil (CL) hit (HIGH) $115 by end of June?",
+          eventSlug: "demo-event",
+          marketSlug: "demo-market",
+          outcomes: ["Yes", "No"],
+          outcomePrices: [0.5435, 0.4565],
+          clobTokenIds: ["token-yes", "token-open"]
+        }
+      ],
+      readBook: async () => ({
+        bestAsk: 0.457,
+        bestBid: 0.456,
+        minOrderSize: 5
+      })
+    });
+
+    expect(result.plans).toHaveLength(0);
+    expect(result.skipped).toHaveLength(1);
+    expect(result.skipped[0]?.reason).toContain("blocked_by_market_binding");
+    expect(result.skipped[0]?.reason).toContain("decision market_prob");
   });
 
   it("provides specific max_positions reason when blocked at capacity", async () => {
