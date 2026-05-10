@@ -4,7 +4,7 @@
 
 英文版见 [`docs/en/CLAUDE.md`](docs/en/CLAUDE.md)。
 
-最后更新：2026-04-26
+最后更新：2026-05-08
 
 ## 0. 适用范围
 
@@ -102,6 +102,42 @@
 - 如果首页或目标视图已经是完整风格页，必须同时检查 layout/shell 是否还包着 legacy 外壳。
 - 没做过线上或真实环境验收前，不要对用户说"已经和本地一致"。
 
+## 9. 前端 / 设计任务的视觉验收（强制）
+
+> 适用：landing 改色 / 加 / 删组件 / 改文案 / 加 SVG / 改 layout / 任何"用户看得到"的工作。**`pnpm typecheck` + `pnpm build` 全绿不算完成**——build 绿和 hydration 成功是两件事，body 看着空白往往是 client JS 抛错把 React tree 卸了。
+
+### 9.1 强制流程：截图 → 读图 → 自评
+
+每个前端 / 设计任务收尾前必须：
+
+1. **截图**：用 Playwright headless chromium，至少抓"被改的页面 + 受影响的相邻页面"。脚本 `scripts/visual-qa.mjs`（见 §9.2）。截图存 `runtime-artifacts/screenshots/<YYYY-MM-DD-HHmm>-<task-slug>/`
+2. **读图**：用 Read tool 把生成的 PNG 真读进来（这是关键——只看路径不算），对照 `docs/internal/plan/2026-05-04-design-elements-inventory.md` §1 的 4 条规则（不做 gamification / 默认展示真数据 / Marketing 和 app 两套规则 / 解释机制）+ 当前任务 spec 自评：
+   - 视觉没破：layout 没崩、文字没溢出、对比度 ≥ WCAG AA、颜色 token 应用正确（不是默认浅色）
+   - 功能完整：CTA 可见可点、表单 label 在、loading state 不空白、空状态有合理文案 / icon
+   - 跨视口：至少 desktop 1440×900 + mobile 375×812
+3. **抓 console errors / pageerrors**：脚本捕获后写进同一目录的 `diag.json`。**任何 `pageerror` 都算 fail**——优先级高于视觉问题，先修
+4. **自评结果写进 commit message 或会话 report**：哪几张图、读了什么、判断 pass/fail、阻塞或 follow-up
+
+### 9.2 视觉 QA 脚本 `scripts/visual-qa.mjs`
+
+如果不存在第一次做前端任务时创建。最少功能：传入 url 列表 + 输出目录，逐个 goto + 截图 + 抓 console + 抓 pageerror + 写 diag.json。模板见首次创建时的 commit。
+
+### 9.3 Sub-agent 也要遵守
+
+如果你 spawn worktree agent 做前端工作，brief 里**必须**包含：
+- "完成所有 commit 后跑 `node scripts/visual-qa.mjs`"
+- "把截图路径 + 自评结果写进返回报告"
+- "console error / pageerror 出现就视为任务未完成，必须修"
+
+不要把视觉验收推回主会话——agent 自己看自己的产出，发现问题立刻修，比"主会话事后发现 → 重新派活"快。
+
+### 9.4 典型陷阱（避免重复踩）
+
+- `next build` 绿但 `pnpm dev` 页面空白 → 100% 是 hydration error 或 Privy/Provider 抛错。看 `pageerror`
+- 颜色 token 改了但页面还是旧色 → 浏览器缓存。Playwright 默认无缓存，是诊断工具，不是 caching 假设
+- Body 渲染了但视觉乱 → 通常是 next/font 的 `--font-*` CSS 变量没挂上 `<html>` 或 `<body>`，回头查 `app/layout.tsx`
+- 组件抽完页面布局崩了 → 多半是 `<Hero>` / `<Section>` 等 wrapper 把原本 `<section>` 标签嵌套两层，inspect DOM 看是不是出现了 `<section><section>`
+
 ---
 
 ## 项目执行要点（predict-raven 专属）
@@ -113,6 +149,7 @@
 - **默认实盘下单**：`pnpm daily:pulse` / `pnpm pulse:live` 直接打真单。需要"只看不下单"必须显式加 `--recommend-only` 或在 prompt 里明说"不要下单"。
 - **默认钱包**：`.env.pizza`（活跃账户）—— **这是默认值，不是写死**。新部署或新 agent 接手到不同主钱包时，可以把 `.env.pizza` 替换成自己的 env 文件，并同步更新 `skills/daily-pulse/agents/openai.yaml` 里那行 `use .env.pizza when no env is specified`。临时切换钱包用 `ENV_FILE=.env.<name>`。preflight 会打印当前钱包地址 + collateral 余额，对不上立刻 abort。
 - **风控硬上限**（无法绕过，executor 服务层强制裁剪）：单笔 ≤ 15% bankroll / 总敞口 ≤ 80% / 单事件 ≤ 30% / 最多 22 仓 / 最小 $5。
+- **事件概率评估必须走 Pulse（2026-05-08）**：任何涉及事件可能性、fair probability、edge、胜率或是否发生的评估，都必须先跑 Pulse 只读流程并引用归档路径（`recommendation.json`、Pulse markdown、相关 evidence artifact）。评估已有持仓时必须用持仓专用流程 `ENV_FILE=.env.pizza pnpm pulse:positions -- --json`（或 `pnpm pulse:live -- --recommend-only --positions-only`），只针对当前持仓重新收集资料和分析概率，不扫描/推荐新市场；只有用户明确要求找新机会时才用 `ENV_FILE=.env.pizza pnpm pulse:recommend`。没有 Pulse 产物时不得给概率/edge 数字，只能明确标注"未评估"。
 - **现有持仓默认 hold**：pulse-direct 的 Position Review 模块不会乱平仓，每个 hold 决策都会带理由；`reduce` / `close` 必须有反向证据。
 - **claude --print 偶尔 0 字节挂 5+ 分钟**——不是失败。Pulse 渲染内部 timeout 是 30 分钟，等它出来。
 

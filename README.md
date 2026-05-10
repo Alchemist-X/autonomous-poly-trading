@@ -6,7 +6,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT" /></a>
 </p>
 
-# Predict Raven
+# Predict-Raven
 
 > This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [docs/en/README.md](docs/en/README.md) for the full English README.
 

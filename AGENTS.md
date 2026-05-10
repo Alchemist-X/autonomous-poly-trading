@@ -4,7 +4,7 @@
 
 英文版见 [`docs/en/CLAUDE.md`](docs/en/CLAUDE.md)。
 
-最后更新：2026-04-26
+最后更新：2026-05-08
 
 ## 0. 适用范围
 
@@ -113,6 +113,7 @@
 - **默认实盘下单**：`pnpm daily:pulse` / `pnpm pulse:live` 直接打真单。需要"只看不下单"必须显式加 `--recommend-only` 或在 prompt 里明说"不要下单"。
 - **默认钱包**：`.env.pizza`（活跃账户）—— **这是默认值，不是写死**。新部署或新 agent 接手到不同主钱包时，可以把 `.env.pizza` 替换成自己的 env 文件，并同步更新 `skills/daily-pulse/agents/openai.yaml` 里那行 `use .env.pizza when no env is specified`。临时切换钱包用 `ENV_FILE=.env.<name>`。preflight 会打印当前钱包地址 + collateral 余额，对不上立刻 abort。
 - **风控硬上限**（无法绕过，executor 服务层强制裁剪）：单笔 ≤ 15% bankroll / 总敞口 ≤ 80% / 单事件 ≤ 30% / 最多 22 仓 / 最小 $5。
+- **事件概率评估必须走 Pulse（2026-05-08）**：任何涉及事件可能性、fair probability、edge、胜率或是否发生的评估，都必须先跑 Pulse 只读流程并引用归档路径（`recommendation.json`、Pulse markdown、相关 evidence artifact）。评估已有持仓时必须用持仓专用流程 `ENV_FILE=.env.pizza pnpm pulse:positions -- --json`（或 `pnpm pulse:live -- --recommend-only --positions-only`），只针对当前持仓重新收集资料和分析概率，不扫描/推荐新市场；只有用户明确要求找新机会时才用 `ENV_FILE=.env.pizza pnpm pulse:recommend`。没有 Pulse 产物时不得给概率/edge 数字，只能明确标注"未评估"。
 - **现有持仓默认 hold**：pulse-direct 的 Position Review 模块不会乱平仓，每个 hold 决策都会带理由；`reduce` / `close` 必须有反向证据。
 - **claude --print 偶尔 0 字节挂 5+ 分钟**——不是失败。Pulse 渲染内部 timeout 是 30 分钟，等它出来。
 

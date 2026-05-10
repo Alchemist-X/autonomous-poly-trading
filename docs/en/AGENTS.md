@@ -4,7 +4,7 @@
 
 Chinese version: see [`/CLAUDE.md`](../../CLAUDE.md).
 
-Last updated: 2026-04-26
+Last updated: 2026-05-08
 
 ## 0. Scope
 
@@ -113,6 +113,7 @@ Last updated: 2026-04-26
 - **Live by default**: `pnpm daily:pulse` / `pnpm pulse:live` places real orders. To inspect without trading, you must explicitly pass `--recommend-only` or say "no orders" in the prompt.
 - **Default wallet**: `.env.pizza` (active account) — **this is the default, not hardcoded**. When deploying to a new machine or pairing a new agent with a different primary wallet, replace `.env.pizza` with your own env file and update the corresponding line in `skills/daily-pulse/agents/openai.yaml` (`use .env.pizza when no env is specified`). For ad-hoc wallet switches use `ENV_FILE=.env.<name>`. Preflight prints the current wallet address + collateral, abort immediately if it does not match expectation.
 - **Hard risk caps** (enforced at the executor service layer, no override): per-trade ≤ 15% bankroll / total exposure ≤ 80% / per-event ≤ 30% / max 22 positions / min $5 trade.
+- **Event-probability assessments must use Pulse (2026-05-08)**: any assessment involving event likelihood, fair probability, edge, win rate, or whether an event will happen must first run a read-only Pulse flow and cite the archive paths (`recommendation.json`, Pulse markdown, relevant evidence artifact). For existing-position reviews, use the position-only flow `ENV_FILE=.env.pizza pnpm pulse:positions -- --json` (or `pnpm pulse:live -- --recommend-only --positions-only`) so the run only refreshes evidence and probabilities for current holdings and does not scan/recommend new markets; only use `ENV_FILE=.env.pizza pnpm pulse:recommend` when the user explicitly asks for new opportunities. If there is no Pulse artifact, do not provide probability/edge numbers; explicitly mark it as "not evaluated".
 - **Existing positions default to hold**: pulse-direct's Position Review module never closes positions blindly; every `hold` decision carries a reason. `reduce` / `close` requires contradicting evidence.
 - **`claude --print` occasionally hangs at 0 bytes for 5+ minutes** — that is not a failure. The Pulse render has a 30-minute internal timeout; let it finish.
 
