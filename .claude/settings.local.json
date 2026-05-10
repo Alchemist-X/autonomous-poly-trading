@@ -3,7 +3,12 @@
     "allow": [
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebFetch(domain:prophets-profit.onrender.com)",
+      "Bash(curl -s -L --max-time 30 https://prophets-profit.onrender.com/ -o /tmp/pp-index.html -D /tmp/pp-headers.txt)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -L --max-time 30 --compressed -H \"User-Agent: Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\)\" https://prophets-profit.onrender.com/ -o /tmp/pp-index.html)",
+      "Read(//private/tmp/**)"
     ]
   }
 }

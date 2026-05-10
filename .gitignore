@@ -29,6 +29,9 @@ agents.env
 .rough-loop.pause
 .rough-loop.lock
 
+# --- Claude Code transient worktrees (multi-GB sub-agent scratch dirs) ---
+.claude/worktrees/
+
 # --- Vendor mirrors (synced via pnpm vendor:sync) ---
 vendor/repos
 
