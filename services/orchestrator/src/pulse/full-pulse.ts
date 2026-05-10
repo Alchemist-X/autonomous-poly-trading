@@ -71,6 +71,7 @@ interface FullPulsePaths {
   apiTradeScriptsDir: string | null;
 }
 
+type FullPulsePurpose = "market-scan" | "position-review";
 type JsonRecord = Record<string, unknown>;
 const COMMAND_HEARTBEAT_INTERVAL_MS = 5000;
 const DEFAULT_PULSE_DIRECT_RENDER_TIMEOUT_SECONDS = 1200;
@@ -829,7 +830,65 @@ function buildFullPulsePrompt(input: {
   provider: AgentRuntimeProvider;
   paths: FullPulsePaths;
   contextJsonPath: string;
+  purpose?: FullPulsePurpose;
 }): string {
+  if (input.purpose === "position-review") {
+    if (isChineseLocale(input.locale)) {
+      return [
+        "你正在生成一份“已有持仓专用”的 Polymarket Pulse 复审报告。",
+        "这不是新市场扫描，也不是开新仓推荐。研究上下文 JSON 中的 candidates / research_candidates 全部来自当前已有持仓。",
+        "",
+        "必须先阅读这些文件：",
+        `- Pulse Skill: ${input.paths.pulseSkillFile}`,
+        `- 输出模板: ${input.paths.outputTemplateFile}`,
+        `- 分析框架: ${input.paths.analysisFrameworkFile}`,
+        `- 持仓研究上下文 JSON: ${input.contextJsonPath}`,
+        "",
+        "执行要求：",
+        "1. 只输出最终 Markdown，不要输出代码块，不要输出解释。",
+        "2. 全文必须使用中文。",
+        "3. 不要推荐任何不在研究上下文 JSON 里的新市场。",
+        "4. `research_candidates[].market.position` 是当前仓位元数据，必须用其中的 heldOutcomeLabel / shares / avgCost / currentPrice / currentValueUsd / unrealizedPnlPct 说明当前持仓方向、规模和 PnL；除非字段缺失，不得写“数据不足”。",
+        "5. 必须逐仓复审：research_candidates 里每个已有持仓都要有一个独立 `##` 章节，标题尽量保留市场问题或 market slug。",
+        "6. 每个持仓章节必须包含：链接、当前持仓方向、方向（`买入 Yes` 或 `买入 No`，表示模型现在更支持的一侧）、概率评估表、Edge、证据链、结算规则、推理逻辑、持仓动作建议（hold / reduce / close）。",
+        "7. 概率评估表必须至少包含 `| Yes | 市场定价 | AI 估算 |` 和 `| No | 市场定价 | AI 估算 |` 两行，百分比格式要能被程序解析。",
+        "8. 如果当前持仓一侧已经没有 edge，请明确给出反向一侧的概率与 edge；不要把 AI 概率机械设成市场概率。",
+        "9. 研究上下文 JSON 中没有的数据，必须明确写“未获取”或“数据不足”，不能编造。",
+        "10. 只有在完成逐仓复审所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
+        "11. 输出中不要出现“Top 3 新开仓”“推荐新开仓”这类章节；本报告只服务已有持仓概率/edge 复审。",
+        "",
+        `当前 provider：${input.provider}`,
+        "输出最终 Markdown。"
+      ].join("\n");
+    }
+
+    return [
+      "You are generating a position-only Polymarket Pulse review report for existing holdings.",
+      "This is not a new-market scan and not a new-entry recommendation. Every candidate / research_candidate in the JSON context is an existing position.",
+      "",
+      "Read these files first:",
+      `- Pulse Skill: ${input.paths.pulseSkillFile}`,
+      `- Output Template: ${input.paths.outputTemplateFile}`,
+      `- Analysis Framework: ${input.paths.analysisFrameworkFile}`,
+      `- Position research context JSON: ${input.contextJsonPath}`,
+      "",
+      "Requirements:",
+      "1. Output final Markdown only.",
+      "2. Do not recommend any market that is not present in the research context JSON.",
+      "3. Review every existing position: each research_candidate must have its own `##` section, with a title that preserves the market question or market slug.",
+      "4. `research_candidates[].market.position` contains the current position metadata; use heldOutcomeLabel / shares / avgCost / currentPrice / currentValueUsd / unrealizedPnlPct to describe the held side, size, and PnL unless those fields are missing.",
+      "5. Each position section must include: link, current held side, current favored side (`Buy Yes` or `Buy No`), probability table, edge, evidence chain, resolution rules, reasoning, and position action guidance (hold / reduce / close).",
+      "6. The probability table must include at least `| Yes | Market | AI |` and `| No | Market | AI |` rows in percentage format so the parser can read it.",
+      "7. If the held side no longer has edge, explicitly provide the opposite side's probability and edge; do not mechanically set AI probability equal to market probability.",
+      "8. If data is missing, explicitly mark it unavailable instead of inventing it.",
+      "9. Only do very limited targeted verification if the provided context is clearly insufficient for a position review.",
+      "10. Do not include Top 3 new-entry or new-market recommendation sections; this report exists only to refresh probability / edge for current holdings.",
+      "",
+      `Active provider: ${input.provider}`,
+      "Output the final Markdown."
+    ].join("\n");
+  }
+
   if (isChineseLocale(input.locale)) {
     return [
       "你正在生成一份完整的 Polymarket 市场脉冲报告。",
@@ -1024,6 +1083,7 @@ async function renderFullPulseMarkdown(input: {
   locale: SkillLocale;
   contextJsonPath: string;
   paths: FullPulsePaths;
+  purpose?: FullPulsePurpose;
   progress?: ProgressReporter;
 }): Promise<string> {
   const settings = resolveProviderSkillSettings(input.config, input.provider);
@@ -1031,7 +1091,8 @@ async function renderFullPulseMarkdown(input: {
     locale: input.locale,
     provider: input.provider,
     paths: input.paths,
-    contextJsonPath: input.contextJsonPath
+    contextJsonPath: input.contextJsonPath,
+    purpose: input.purpose
   });
   const tempDir = await mkdtemp(path.join(tmpdir(), `autopoly-pulse-render-${input.provider}-`));
   const promptPath = path.join(tempDir, "full-pulse-prompt.txt");
@@ -1150,6 +1211,8 @@ export async function buildFullPulseArchive(input: {
   config: OrchestratorConfig;
   provider: AgentRuntimeProvider;
   locale: SkillLocale;
+  purpose?: FullPulsePurpose;
+  researchCandidateCount?: number;
   title: string;
   generatedAtUtc: string;
   totalFetched: number;
@@ -1210,7 +1273,10 @@ export async function buildFullPulseArchive(input: {
     }
   }
 
-  const selectedCandidates = selectResearchCandidates([...researchPool], input.config.pulse.reportCandidates);
+  const selectedCandidates = selectResearchCandidates(
+    [...researchPool],
+    input.researchCandidateCount ?? input.config.pulse.reportCandidates
+  );
   input.progress?.stage({
     percent: 24,
     label: "Selected pulse research candidates",
@@ -1296,6 +1362,7 @@ export async function buildFullPulseArchive(input: {
       locale: input.locale,
       contextJsonPath: absoluteJsonPath,
       paths,
+      purpose: input.purpose,
       progress: input.progress
     });
   } catch (error) {

@@ -5,6 +5,7 @@ import type {
 import { inferPaperSellAmount } from "@autopoly/contracts";
 import type { RuntimeExecutionContext } from "../runtime/agent-runtime.js";
 import type {
+  PositionResearchSnapshot,
   PositionReviewResult,
   PulseEntryPlan
 } from "../runtime/decision-metadata.js";
@@ -31,6 +32,54 @@ function buildPositionSource(position: PublicPosition): TradeDecision["sources"]
     url: `runtime-context://positions/${position.id}`,
     retrieved_at_utc: new Date().toISOString()
   };
+}
+
+function buildPositionPnlSnapshot(position: PublicPosition): PositionReviewResult["pnlSnapshot"] {
+  return {
+    currentValueUsd: roundCurrency(position.current_value_usd),
+    avgCost: roundCurrency(position.avg_cost),
+    currentPrice: roundCurrency(position.current_price),
+    unrealizedPnlPct: roundCurrency(position.unrealized_pnl_pct),
+    stopLossPct: roundCurrency(position.stop_loss_pct)
+  };
+}
+
+function buildPnlEvidenceLine(position: PublicPosition): string {
+  return `Fresh mark snapshot: current price ${position.current_price.toFixed(4)}, average cost ${position.avg_cost.toFixed(4)}, unrealized PnL ${(position.unrealized_pnl_pct * 100).toFixed(2)}%, marked value $${position.current_value_usd.toFixed(2)}.`;
+}
+
+function buildDefaultStopOrReduceTriggers(position: PublicPosition): string[] {
+  return [
+    `Close if unrealized PnL breaches configured stop-loss (${(position.stop_loss_pct * 100).toFixed(1)}%).`,
+    `Reduce if unrealized PnL reaches ${(position.stop_loss_pct * NEAR_STOP_LOSS_RATIO * 100).toFixed(1)}% drawdown without fresh supporting evidence.`,
+    "Require a fresh evidence refresh before upgrading this position back to active edge."
+  ];
+}
+
+function buildResearchEvidence(position: PublicPosition, research: PositionResearchSnapshot): string[] {
+  return [
+    buildPnlEvidenceLine(position),
+    ...research.freshEvidence,
+    ...(research.unresolvedData.length > 0
+      ? [`Research gaps: ${research.unresolvedData.join("; ")}`]
+      : [])
+  ];
+}
+
+function buildResearchSources(
+  position: PublicPosition,
+  research: PositionResearchSnapshot | null
+): TradeDecision["sources"] {
+  if (!research) {
+    return [buildPositionSource(position)];
+  }
+  const sources = [buildPositionSource(position)];
+  for (const source of research.sources) {
+    if (!sources.some((item) => item.title === source.title && item.url === source.url)) {
+      sources.push(source);
+    }
+  }
+  return sources;
 }
 
 function buildHeldOutcomeProbabilities(position: PublicPosition, plan: PulseEntryPlan | null) {
@@ -77,6 +126,7 @@ function buildDecision(input: {
     event_slug: input.position.event_slug,
     market_slug: input.position.market_slug,
     token_id: input.position.token_id,
+    outcome_label: input.position.outcome_label,
     side: input.side,
     notional_usd: notionalUsd,
     order_type: "FOK",
@@ -106,6 +156,19 @@ function findRelevantPulsePlan(position: PublicPosition, plans: PulseEntryPlan[]
   };
 }
 
+function findPositionResearch(
+  position: PublicPosition,
+  research: PositionResearchSnapshot[]
+): PositionResearchSnapshot | null {
+  return research.find((item) => item.tokenId === position.token_id)
+    ?? research.find((item) =>
+      item.marketSlug === position.market_slug &&
+      item.outcomeLabel.toLowerCase() === position.outcome_label.toLowerCase()
+    )
+    ?? research.find((item) => item.eventSlug === position.event_slug)
+    ?? null;
+}
+
 function calculateReduceNotional(position: PublicPosition): number {
   return clampNotional(Math.max(position.current_value_usd / 2, 0.01), position.current_value_usd);
 }
@@ -120,6 +183,11 @@ function classifyMatchingPlan(input: {
   | "edgeAssessment"
   | "edgeValue"
   | "pulseCoverage"
+  | "evidenceRefreshStatus"
+  | "freshEvidence"
+  | "adverseSignals"
+  | "stopOrReduceTriggers"
+  | "pnlSnapshot"
   | "humanReviewFlag"
   | "confidence"
   | "reason"
@@ -136,6 +204,11 @@ function classifyMatchingPlan(input: {
 } {
   const heldOutcome = buildHeldOutcomeProbabilities(input.position, input.matching);
   const edgeValue = roundCurrency(heldOutcome.aiProb - heldOutcome.marketProb);
+  const refreshedEvidence = [
+    buildPnlEvidenceLine(input.position),
+    `Pulse refreshed the held ${input.position.outcome_label} outcome: AI probability ${heldOutcome.aiProb.toFixed(4)} vs market ${heldOutcome.marketProb.toFixed(4)}.`
+  ];
+  const defaultTriggers = buildDefaultStopOrReduceTriggers(input.position);
 
   if (edgeValue <= NEGATIVE_EDGE_CLOSE_THRESHOLD) {
     return {
@@ -144,6 +217,13 @@ function classifyMatchingPlan(input: {
       edgeAssessment: "no",
       edgeValue,
       pulseCoverage: "supporting",
+      evidenceRefreshStatus: "fresh-supporting",
+      freshEvidence: refreshedEvidence,
+      adverseSignals: [
+        `Refreshed edge is materially negative (${edgeValue.toFixed(4)}), below close threshold ${NEGATIVE_EDGE_CLOSE_THRESHOLD.toFixed(4)}.`
+      ],
+      stopOrReduceTriggers: ["Close now because refreshed edge is below the negative-edge close threshold."],
+      pnlSnapshot: buildPositionPnlSnapshot(input.position),
       humanReviewFlag: true,
       confidence: input.matching.confidence,
       reason: `Pulse still covers the current ${input.position.outcome_label} side, but the refreshed edge turned materially negative (${edgeValue.toFixed(4)}).`,
@@ -165,6 +245,16 @@ function classifyMatchingPlan(input: {
       edgeAssessment: "no",
       edgeValue,
       pulseCoverage: "supporting",
+      evidenceRefreshStatus: "fresh-supporting",
+      freshEvidence: refreshedEvidence,
+      adverseSignals: [
+        `Refreshed edge is slightly negative (${edgeValue.toFixed(4)}), so full size is no longer justified.`
+      ],
+      stopOrReduceTriggers: [
+        "Reduce now because refreshed edge is below zero.",
+        ...defaultTriggers
+      ],
+      pnlSnapshot: buildPositionPnlSnapshot(input.position),
       humanReviewFlag: true,
       confidence: input.matching.confidence,
       reason: `Pulse still references the same side, but the refreshed edge is slightly negative (${edgeValue.toFixed(4)}), so the position should be trimmed rather than left unchanged.`,
@@ -187,6 +277,13 @@ function classifyMatchingPlan(input: {
       edgeAssessment: "yes",
       edgeValue,
       pulseCoverage: "supporting",
+      evidenceRefreshStatus: "fresh-supporting",
+      freshEvidence: refreshedEvidence,
+      adverseSignals: [
+        `Residual edge is weak (${edgeValue.toFixed(4)}), below strong-edge threshold ${STRONG_EDGE_THRESHOLD.toFixed(4)}.`
+      ],
+      stopOrReduceTriggers: defaultTriggers,
+      pnlSnapshot: buildPositionPnlSnapshot(input.position),
       humanReviewFlag: true,
       confidence: input.matching.confidence,
       reason: `Pulse still supports the current ${input.position.outcome_label} thesis, but the refreshed edge is only ${edgeValue.toFixed(4)} and should be watched.`,
@@ -207,6 +304,11 @@ function classifyMatchingPlan(input: {
     edgeAssessment: "yes",
     edgeValue,
     pulseCoverage: "supporting",
+    evidenceRefreshStatus: "fresh-supporting",
+    freshEvidence: refreshedEvidence,
+    adverseSignals: [],
+    stopOrReduceTriggers: defaultTriggers,
+    pnlSnapshot: buildPositionPnlSnapshot(input.position),
     humanReviewFlag: false,
     confidence: input.matching.confidence,
     reason: `Pulse still supports the current ${input.position.outcome_label} thesis with a positive refreshed edge (${edgeValue.toFixed(4)}).`,
@@ -224,11 +326,13 @@ function classifyMatchingPlan(input: {
 export function reviewCurrentPositions(input: {
   context: RuntimeExecutionContext;
   entryPlans: PulseEntryPlan[];
+  positionResearch?: PositionResearchSnapshot[];
 }): PositionReviewResult[] {
   const results: PositionReviewResult[] = [];
 
   for (const position of input.context.positions) {
     const { matching, opposing } = findRelevantPulsePlan(position, input.entryPlans);
+    const research = findPositionResearch(position, input.positionResearch ?? input.context.positionResearch ?? []);
 
     if (position.unrealized_pnl_pct <= -position.stop_loss_pct) {
       const aiProb = Math.max(0, position.current_price - Math.abs(position.unrealized_pnl_pct));
@@ -240,7 +344,7 @@ export function reviewCurrentPositions(input: {
         marketProb: position.current_price,
         confidence: "medium",
         thesisMd: `This position breached the configured stop-loss threshold (${(position.stop_loss_pct * 100).toFixed(1)}%), so the portfolio review exits it even without waiting for a fresh pulse contradiction.`,
-        sources: [buildPositionSource(position)]
+        sources: buildResearchSources(position, research)
       });
       results.push({
         position,
@@ -249,42 +353,19 @@ export function reviewCurrentPositions(input: {
         edgeAssessment: "no",
         edgeValue: roundCurrency(aiProb - position.current_price),
         pulseCoverage: "none",
+        evidenceRefreshStatus: "risk-trigger",
+        freshEvidence: research ? buildResearchEvidence(position, research) : [buildPnlEvidenceLine(position)],
+        adverseSignals: [
+          `Unrealized PnL ${(position.unrealized_pnl_pct * 100).toFixed(2)}% breached stop-loss ${(position.stop_loss_pct * 100).toFixed(1)}%.`
+        ],
+        stopOrReduceTriggers: ["Close now because the configured stop-loss has already been breached."],
+        pnlSnapshot: buildPositionPnlSnapshot(position),
         humanReviewFlag: false,
         confidence: "medium",
         reason: "Position breached the configured stop-loss threshold.",
         reviewConclusion: "Close the position because it already breached the configured stop-loss threshold.",
         suggestedExitPct: 1,
         basis: "stop-loss-breached",
-        decision
-      });
-      continue;
-    }
-
-    if (opposing) {
-      const heldOutcome = buildHeldOutcomeProbabilities(position, opposing);
-      const decision = buildDecision({
-        position,
-        action: "close",
-        side: "SELL",
-        aiProb: heldOutcome.aiProb,
-        marketProb: heldOutcome.marketProb,
-        confidence: opposing.confidence,
-        thesisMd: `Pulse now favors the opposite outcome for this market, so the existing ${position.outcome_label} position no longer has a defended edge. ${opposing.thesisMd}`,
-        sources: [buildPositionSource(position), ...opposing.sources]
-      });
-      results.push({
-        position,
-        action: "close",
-        stillHasEdge: false,
-        edgeAssessment: "no",
-        edgeValue: roundCurrency(heldOutcome.aiProb - heldOutcome.marketProb),
-        pulseCoverage: "opposing",
-        humanReviewFlag: true,
-        confidence: opposing.confidence,
-        reason: `Pulse now favors the opposite outcome (${opposing.outcomeLabel}) for this market.`,
-        reviewConclusion: `Close the position because Pulse now prefers the opposite outcome (${opposing.outcomeLabel}) for the same market.`,
-        suggestedExitPct: 1,
-        basis: "pulse-opposes-current",
         decision
       });
       continue;
@@ -310,6 +391,11 @@ export function reviewCurrentPositions(input: {
         edgeAssessment: classification.edgeAssessment,
         edgeValue: classification.edgeValue,
         pulseCoverage: classification.pulseCoverage,
+        evidenceRefreshStatus: classification.evidenceRefreshStatus,
+        freshEvidence: classification.freshEvidence,
+        adverseSignals: classification.adverseSignals,
+        stopOrReduceTriggers: classification.stopOrReduceTriggers,
+        pnlSnapshot: classification.pnlSnapshot,
         humanReviewFlag: classification.humanReviewFlag,
         confidence: classification.confidence,
         reason: classification.reason,
@@ -321,17 +407,60 @@ export function reviewCurrentPositions(input: {
       continue;
     }
 
+    if (opposing) {
+      const heldOutcome = buildHeldOutcomeProbabilities(position, opposing);
+      const decision = buildDecision({
+        position,
+        action: "close",
+        side: "SELL",
+        aiProb: heldOutcome.aiProb,
+        marketProb: heldOutcome.marketProb,
+        confidence: opposing.confidence,
+        thesisMd: `Pulse now favors the opposite outcome for this market, so the existing ${position.outcome_label} position no longer has a defended edge. ${opposing.thesisMd}`,
+        sources: [buildPositionSource(position), ...opposing.sources]
+      });
+      results.push({
+        position,
+        action: "close",
+        stillHasEdge: false,
+        edgeAssessment: "no",
+        edgeValue: roundCurrency(heldOutcome.aiProb - heldOutcome.marketProb),
+        pulseCoverage: "opposing",
+        evidenceRefreshStatus: "fresh-opposing",
+        freshEvidence: [
+          buildPnlEvidenceLine(position),
+          `Pulse refreshed the opposite ${opposing.outcomeLabel} outcome for this market: AI probability ${opposing.aiProb.toFixed(4)} vs market ${opposing.marketProb.toFixed(4)}.`
+        ],
+        adverseSignals: [
+          `Current ${position.outcome_label} holding is contradicted by a same-market Pulse plan favoring ${opposing.outcomeLabel}.`
+        ],
+        stopOrReduceTriggers: ["Close now because fresh Pulse coverage favors the opposite outcome."],
+        pnlSnapshot: buildPositionPnlSnapshot(position),
+        humanReviewFlag: true,
+        confidence: opposing.confidence,
+        reason: `Pulse now favors the opposite outcome (${opposing.outcomeLabel}) for this market.`,
+        reviewConclusion: `Close the position because Pulse now prefers the opposite outcome (${opposing.outcomeLabel}) for the same market.`,
+        suggestedExitPct: 1,
+        basis: "pulse-opposes-current",
+        decision
+      });
+      continue;
+    }
+
     const nearStopLoss = position.unrealized_pnl_pct <= -(position.stop_loss_pct * NEAR_STOP_LOSS_RATIO);
     if (nearStopLoss) {
+      const marketProb = research?.marketProb ?? position.current_price;
       const decision = buildDecision({
         position,
         action: "reduce",
         side: "SELL",
-        aiProb: position.current_price,
-        marketProb: position.current_price,
+        aiProb: marketProb,
+        marketProb,
         confidence: "low",
-        thesisMd: "No fresh Pulse coverage was produced for this position, and it is already approaching the configured stop-loss threshold. Reduce size and flag the remainder for human review.",
-        sources: [buildPositionSource(position)],
+        thesisMd: research
+          ? "Dedicated position research refreshed this holding, but it is already approaching the configured stop-loss threshold. Reduce size and keep the remainder under human review."
+          : "No fresh Pulse coverage was produced for this position, and it is already approaching the configured stop-loss threshold. Reduce size and flag the remainder for human review.",
+        sources: buildResearchSources(position, research),
         notionalUsd: calculateReduceNotional(position)
       });
       results.push({
@@ -341,12 +470,73 @@ export function reviewCurrentPositions(input: {
         edgeAssessment: "no",
         edgeValue: 0,
         pulseCoverage: "none",
+        evidenceRefreshStatus: research ? "fresh-position-research" : "not-refreshed",
+        freshEvidence: research
+          ? buildResearchEvidence(position, research)
+          : [
+              buildPnlEvidenceLine(position),
+              "No fresh Pulse research covered this held token in the current run."
+            ],
+        adverseSignals: [
+          ...(research?.adverseSignals ?? []),
+          `Position is near stop-loss: unrealized PnL ${(position.unrealized_pnl_pct * 100).toFixed(2)}% vs stop-loss ${(position.stop_loss_pct * 100).toFixed(1)}%.`
+        ],
+        stopOrReduceTriggers: [
+          "Reduce now because the position is near stop-loss without fresh support.",
+          ...buildDefaultStopOrReduceTriggers(position)
+        ],
+        pnlSnapshot: buildPositionPnlSnapshot(position),
         humanReviewFlag: true,
         confidence: "low",
-        reason: "No fresh Pulse support was found and the position is already near its stop-loss threshold.",
-        reviewConclusion: "Trim the position because there is no fresh Pulse defense and the downside buffer is already thin.",
+        reason: research
+          ? "Dedicated position research refreshed this holding, but the position is already near its stop-loss threshold."
+          : "No fresh Pulse support was found and the position is already near its stop-loss threshold.",
+        reviewConclusion: research
+          ? "Trim the position because the fresh position-specific review does not remove the stop-loss pressure."
+          : "Trim the position because there is no fresh Pulse defense and the downside buffer is already thin.",
         suggestedExitPct: 0.5,
-        basis: "near-stop-loss-without-fresh-signal",
+        basis: research ? "position-research-adverse" : "near-stop-loss-without-fresh-signal",
+        decision
+      });
+      continue;
+    }
+
+    if (research) {
+      const marketProb = research.marketProb ?? position.current_price;
+      const decision = buildDecision({
+        position,
+        action: "hold",
+        side: position.side,
+        aiProb: marketProb,
+        marketProb,
+        confidence: research.adverseSignals.length > 0 ? "low" : "medium",
+        thesisMd: research.adverseSignals.length > 0
+          ? "Dedicated position research refreshed this holding and found watch items. Keep it unchanged for now because no model-level opposing probability was produced, but require human review before counting it as active edge."
+          : "Dedicated position research refreshed this holding without producing a same-market opposing Pulse plan. Keep it unchanged while treating the position as reviewed, not stale.",
+        sources: buildResearchSources(position, research)
+      });
+      results.push({
+        position,
+        action: "hold",
+        stillHasEdge: false,
+        edgeAssessment: "no",
+        edgeValue: 0,
+        pulseCoverage: "none",
+        evidenceRefreshStatus: "fresh-position-research",
+        freshEvidence: buildResearchEvidence(position, research),
+        adverseSignals: research.adverseSignals,
+        stopOrReduceTriggers: buildDefaultStopOrReduceTriggers(position),
+        pnlSnapshot: buildPositionPnlSnapshot(position),
+        humanReviewFlag: true,
+        confidence: research.adverseSignals.length > 0 ? "low" : "medium",
+        reason: research.adverseSignals.length > 0
+          ? "Dedicated position research refreshed this holding and found watch items, but no direct opposing probability was produced."
+          : "Dedicated position research refreshed this holding independently of the random pulse candidate set.",
+        reviewConclusion: research.adverseSignals.length > 0
+          ? "Reviewed hold: keep the position unchanged for now, but escalate the fresh watch items for human review."
+          : "Reviewed hold: keep the position unchanged because the dedicated position refresh found no direct sell trigger.",
+        suggestedExitPct: 0,
+        basis: research.adverseSignals.length > 0 ? "position-research-adverse" : "position-research-refreshed",
         decision
       });
       continue;
@@ -365,14 +555,24 @@ export function reviewCurrentPositions(input: {
     results.push({
       position,
       action: "hold",
-      stillHasEdge: true,
-      edgeAssessment: "yes",
+      stillHasEdge: false,
+      edgeAssessment: "no",
       edgeValue: 0,
       pulseCoverage: "none",
+      evidenceRefreshStatus: "not-refreshed",
+      freshEvidence: [
+        buildPnlEvidenceLine(position),
+        "No fresh Pulse research covered this held token in the current run."
+      ],
+      adverseSignals: [
+        "No direct opposing Pulse signal was found, but the position also has no refreshed external evidence in this run."
+      ],
+      stopOrReduceTriggers: buildDefaultStopOrReduceTriggers(position),
+      pnlSnapshot: buildPositionPnlSnapshot(position),
       humanReviewFlag: true,
       confidence: "low",
       reason: "No contradictory pulse signal was found, but there was also no fresh dedicated pulse support.",
-      reviewConclusion: "Keep the position unchanged for now, but require human review because no fresh Pulse edge refresh was produced.",
+      reviewConclusion: "Stale hold: keep the position unchanged for now, but do not count it as active edge until fresh evidence is produced.",
       suggestedExitPct: 0,
       basis: "no-fresh-signal",
       decision

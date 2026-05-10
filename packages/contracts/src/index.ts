@@ -39,6 +39,7 @@ export const decisionSchema = z.object({
   event_slug: z.string().min(1),
   market_slug: z.string().min(1),
   token_id: z.string().min(1),
+  outcome_label: z.string().min(1).optional(),
   side: sideSchema,
   notional_usd: z.number().positive(),
   order_type: orderTypeSchema,

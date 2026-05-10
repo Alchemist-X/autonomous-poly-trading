@@ -15,8 +15,10 @@ import { loadConfig as loadExecutorConfig } from "../services/executor/src/confi
 import {
   computeAvgCost,
   executeMarketOrder,
+  fetchMarketBySlug,
   fetchRemotePositions,
   readBook,
+  type BookSnapshot,
   type RemotePosition
 } from "../services/executor/src/lib/polymarket.ts";
 import { loadConfig as loadOrchestratorConfig } from "../services/orchestrator/src/config.ts";
@@ -25,6 +27,10 @@ import {
   runDailyPulseCore
 } from "../services/orchestrator/src/jobs/daily-pulse-core.ts";
 import {
+  generatePositionReviewPulseSnapshot,
+  type PulseCandidate
+} from "../services/orchestrator/src/pulse/market-pulse.ts";
+import {
   buildExecutionPlan,
   shouldWarnSkippedDecision,
   type PlannedExecution,
@@ -32,6 +38,7 @@ import {
 } from "../services/orchestrator/src/lib/execution-planning.ts";
 import { createTerminalProgressReporter } from "../services/orchestrator/src/lib/terminal-progress.ts";
 import { createAgentRuntime } from "../services/orchestrator/src/runtime/runtime-factory.ts";
+import { resolveProviderSkillSettings } from "../services/orchestrator/src/runtime/skill-settings.ts";
 import { loadPulseSnapshotFromArtifacts } from "./pulse-live-pulse.ts";
 import {
   buildPulseLiveRunIdentityRows,
@@ -49,6 +56,10 @@ import {
   mapOverviewToSummarySnapshot,
   writeRunSummaryArtifacts
 } from "./live-run-summary.ts";
+import {
+  writePulseEvaluationArtifacts,
+  type PositionMarkAttribution
+} from "./pulse-evaluation-ledger.ts";
 import {
   mapBlockedItemToSummaryBlockedItem,
   mapDecisionToSummaryDecision,
@@ -68,6 +79,7 @@ import {
   probeCollateralBalanceUsd
 } from "./live-preflight-probes.ts";
 import { appendEquitySnapshot } from "./equity-snapshot.ts";
+import { buildPulsePositionResearchSnapshots } from "./pulse-position-research.ts";
 import {
   autoRedeemResolved,
   type AutoRedeemSummary
@@ -76,6 +88,7 @@ import {
 interface Args {
   json: boolean;
   recommendOnly: boolean;
+  positionsOnly: boolean;
   pulseJsonPath: string | null;
   pulseMarkdownPath: string | null;
   filters: PulseFilterArgs;
@@ -138,9 +151,11 @@ function parseArgs(argv = process.argv.slice(2)): Args {
   };
   const fileFilters = loadPulseFilterFile(get("--filters"));
   const cliFilters = parsePulseFilterArgs(argv);
+  const positionsOnly = argv.includes("--positions-only") || argv.includes("--review-positions-only");
   return {
     json: argv.includes("--json"),
-    recommendOnly: argv.includes("--recommend-only"),
+    recommendOnly: argv.includes("--recommend-only") || positionsOnly,
+    positionsOnly,
     pulseJsonPath: get("--pulse-json"),
     pulseMarkdownPath: get("--pulse-markdown"),
     filters: mergePulseFilters(fileFilters, cliFilters)
@@ -171,6 +186,38 @@ function roundCurrency(value: number): number {
   return Number(value.toFixed(4));
 }
 
+function createRunMarketDataAccess(executorConfig: ReturnType<typeof loadExecutorConfig>) {
+  const bookCache = new Map<string, Promise<BookSnapshot | null>>();
+  const avgCostCache = new Map<string, Promise<number | null>>();
+
+  return {
+    readBook(tokenId: string) {
+      const cached = bookCache.get(tokenId);
+      if (cached) {
+        return cached;
+      }
+      const pending = readBook(executorConfig, tokenId).catch((error) => {
+        bookCache.delete(tokenId);
+        throw error;
+      });
+      bookCache.set(tokenId, pending);
+      return pending;
+    },
+    computeAvgCost(tokenId: string) {
+      const cached = avgCostCache.get(tokenId);
+      if (cached) {
+        return cached;
+      }
+      const pending = computeAvgCost(executorConfig, tokenId).catch((error) => {
+        avgCostCache.delete(tokenId);
+        throw error;
+      });
+      avgCostCache.set(tokenId, pending);
+      return pending;
+    }
+  };
+}
+
 function getErrorCause(error: unknown): unknown {
   return error instanceof Error ? error.cause : undefined;
 }
@@ -185,6 +232,10 @@ function getErrorRawSummary(error: unknown): string | null {
 
 function getPreflightBlockingReason(checks: PreflightReport["checks"]): string | null {
   return checks.find((check) => check.blocking && !check.ok)?.summary ?? null;
+}
+
+function getMarketBindingBlocks(items: SkippedDecision[]) {
+  return items.filter((item) => item.reason.startsWith("blocked_by_market_binding:"));
 }
 
 function buildArchivedPreflightReport(report: PreflightReport) {
@@ -257,14 +308,15 @@ function buildArchivedPreflightReport(report: PreflightReport) {
 async function buildRemotePublicPositions(
   executorConfig: ReturnType<typeof loadExecutorConfig>,
   remotePositions: RemotePosition[],
-  stopLossPct: number
+  stopLossPct: number,
+  marketData: ReturnType<typeof createRunMarketDataAccess> = createRunMarketDataAccess(executorConfig)
 ): Promise<PublicPosition[]> {
   const timestamp = new Date().toISOString();
   return Promise.all(
     remotePositions.map(async (remote) => {
       const [avgCost, book] = await Promise.all([
-        computeAvgCost(executorConfig, remote.tokenId),
-        readBook(executorConfig, remote.tokenId)
+        marketData.computeAvgCost(remote.tokenId),
+        marketData.readBook(remote.tokenId)
       ]);
       const currentPrice = book?.bestBid ?? avgCost ?? 0.5;
       const normalizedAvgCost = avgCost ?? currentPrice;
@@ -286,6 +338,154 @@ async function buildRemotePublicPositions(
       } satisfies PublicPosition;
     })
   );
+}
+
+function parseStringArrayValue(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item)).filter(Boolean);
+  }
+  if (typeof value === "string" && value.trim()) {
+    try {
+      const parsed = JSON.parse(value) as unknown;
+      return parseStringArrayValue(parsed);
+    } catch {
+      return value.split(",").map((item) => item.trim()).filter(Boolean);
+    }
+  }
+  return [];
+}
+
+function parseNumberArrayValue(value: unknown): number[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => Number(item))
+      .filter((item) => Number.isFinite(item));
+  }
+  if (typeof value === "string" && value.trim()) {
+    try {
+      const parsed = JSON.parse(value) as unknown;
+      return parseNumberArrayValue(parsed);
+    } catch {
+      return value
+        .split(",")
+        .map((item) => Number(item.trim()))
+        .filter((item) => Number.isFinite(item));
+    }
+  }
+  return [];
+}
+
+function readNumberField(record: Record<string, unknown> | null, names: string[], fallback = 0): number {
+  for (const name of names) {
+    const value = Number(record?.[name]);
+    if (Number.isFinite(value)) {
+      return value;
+    }
+  }
+  return fallback;
+}
+
+function readStringField(record: Record<string, unknown> | null, names: string[], fallback = ""): string {
+  for (const name of names) {
+    const value = record?.[name];
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+  return fallback;
+}
+
+function buildPositionContext(position: PublicPosition): PulseCandidate["position"] {
+  return {
+    positionId: position.id,
+    heldOutcomeLabel: position.outcome_label,
+    heldTokenId: position.token_id,
+    shares: position.size,
+    avgCost: position.avg_cost,
+    currentPrice: position.current_price,
+    currentValueUsd: position.current_value_usd,
+    unrealizedPnlPct: position.unrealized_pnl_pct,
+    stopLossPct: position.stop_loss_pct,
+    openedAtUtc: position.opened_at,
+    updatedAtUtc: position.updated_at
+  };
+}
+
+function buildFallbackPositionCandidate(position: PublicPosition): PulseCandidate {
+  const heldIsYes = position.outcome_label.toLowerCase() === "yes";
+  const outcomes = ["Yes", "No"];
+  const outcomePrices = heldIsYes
+    ? [position.current_price, Math.max(0, 1 - position.current_price)]
+    : [Math.max(0, 1 - position.current_price), position.current_price];
+  const clobTokenIds = heldIsYes
+    ? [position.token_id, `${position.token_id}:opposite-no`]
+    : [`${position.token_id}:opposite-yes`, position.token_id];
+  return {
+    question: position.market_slug,
+    eventSlug: position.event_slug,
+    marketSlug: position.market_slug,
+    url: `https://polymarket.com/event/${position.event_slug}`,
+    liquidityUsd: Math.max(position.current_value_usd, 1),
+    volume24hUsd: 0,
+    outcomes,
+    outcomePrices,
+    clobTokenIds,
+    endDate: position.updated_at,
+    bestBid: position.current_price,
+    bestAsk: position.current_price,
+    spread: 0,
+    categorySlug: null,
+    categoryLabel: null,
+    categorySource: null,
+    tags: [],
+    position: buildPositionContext(position)
+  };
+}
+
+async function buildPositionPulseCandidates(input: {
+  executorConfig: ReturnType<typeof loadExecutorConfig>;
+  positions: PublicPosition[];
+}): Promise<PulseCandidate[]> {
+  return await Promise.all(input.positions.map(async (position) => {
+    const fallback = buildFallbackPositionCandidate(position);
+    const [market] = await fetchMarketBySlug(input.executorConfig, position.market_slug).catch(() => []);
+    const record = market && typeof market === "object" && !Array.isArray(market)
+      ? market as Record<string, unknown>
+      : null;
+    if (!record) {
+      return fallback;
+    }
+
+    const outcomes = parseStringArrayValue(record.outcomes);
+    const outcomePrices = parseNumberArrayValue(record.outcomePrices ?? record.outcome_prices);
+    const clobTokenIds = parseStringArrayValue(record.clobTokenIds ?? record.clob_token_ids);
+    if (outcomes.length === 0 || outcomePrices.length === 0 || clobTokenIds.length === 0) {
+      return fallback;
+    }
+
+    return {
+      question: readStringField(record, ["question", "title"], fallback.question),
+      eventSlug: position.event_slug,
+      marketSlug: position.market_slug,
+      url: `https://polymarket.com/event/${position.event_slug}`,
+      liquidityUsd: readNumberField(record, ["liquidity", "liquidityNum"], fallback.liquidityUsd),
+      volume24hUsd: readNumberField(record, ["volume24hr", "volume24h", "volume24hrClob"], fallback.volume24hUsd),
+      outcomes,
+      outcomePrices,
+      clobTokenIds,
+      endDate: readStringField(record, ["endDate", "end_date"], fallback.endDate),
+      bestBid: readNumberField(record, ["bestBid", "best_bid"], fallback.bestBid),
+      bestAsk: readNumberField(record, ["bestAsk", "best_ask"], fallback.bestAsk),
+      spread: readNumberField(record, ["spread"], Math.max(0, fallback.bestAsk - fallback.bestBid)),
+      categorySlug: readStringField(record, ["category", "categorySlug", "category_slug"], "") || null,
+      categoryLabel: readStringField(record, ["categoryLabel", "category_label"], "") || null,
+      categorySource: null,
+      tags: [],
+      negRisk: typeof record.negRisk === "boolean" ? record.negRisk : typeof record.neg_risk === "boolean" ? record.neg_risk : false,
+      feesEnabled: typeof record.feesEnabled === "boolean" ? record.feesEnabled : typeof record.fees_enabled === "boolean" ? record.fees_enabled : undefined,
+      position: buildPositionContext(position)
+    } satisfies PulseCandidate;
+  }));
 }
 
 async function runPreflight(input: {
@@ -665,6 +865,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
   const useHumanOutput = !args.json && shouldUseHumanOutput(process.stdout);
   const orchestratorConfig = loadOrchestratorConfig();
   const executorConfig = loadExecutorConfig();
+  const marketData = createRunMarketDataAccess(executorConfig);
   const configuredMinTradeUsd = Math.max(0, orchestratorConfig.minTradeUsd);
   const timestamp = formatTimestampToken();
   let archiveDir = await createArchiveDir(
@@ -689,9 +890,17 @@ export async function runPulseLive(args: Args = parseArgs()) {
   let pulseJsonPath: string | null = null;
   let runtimeLogPath: string | null = null;
   let supplementalArtifactPaths: string[] = [];
+  let positionsBefore: PublicPosition[] = [];
+  let positionMarkAttribution: PositionMarkAttribution | null = null;
+  let positionMarkSnapshotPath: string | null = null;
+  let calibrationLedgerPath: string | null = null;
+  let globalCalibrationLedgerPath: string | null = null;
+  let positionResearchPath: string | null = null;
 
   try {
-    reporter.info("Flow: 1) preflight 2) auto-redeem resolved positions 3) fetch remote portfolio 4) generate pulse 5) run decision runtime 6) apply guards + exchange sizing checks 7) execute directly 8) summarize");
+    reporter.info(args.positionsOnly
+      ? "Flow: 1) preflight 2) auto-redeem resolved positions 3) fetch remote portfolio 4) run position-only Pulse review 5) emit existing-position decisions only 6) summarize"
+      : "Flow: 1) preflight 2) auto-redeem resolved positions 3) fetch remote portfolio 4) generate pulse 5) run decision runtime 6) apply guards + exchange sizing checks 7) execute directly 8) summarize");
     const preflight = await runPreflight({
       executorConfig,
       orchestratorConfig,
@@ -815,8 +1024,15 @@ export async function runPulseLive(args: Args = parseArgs()) {
     const positions = await buildRemotePublicPositions(
       executorConfig,
       effectiveRemotePositions,
-      orchestratorConfig.positionStopLossPct
+      orchestratorConfig.positionStopLossPct,
+      marketData
     );
+    positionsBefore = positions;
+    const positionResearch = await buildPulsePositionResearchSnapshots({
+      executorConfig,
+      positions,
+      readBook: marketData.readBook
+    });
     const overview = buildPulseLiveOverview({
       collateralBalanceUsd: preflight.collateralBalanceUsd,
       positions
@@ -826,14 +1042,28 @@ export async function runPulseLive(args: Args = parseArgs()) {
     reporter.stage({
       percent: 10,
       label: "Loaded pulse-live portfolio context",
-      detail: `${positions.length} positions | collateral ${formatUsd(preflight.collateralBalanceUsd)} | effective bankroll ${formatUsd(overview.total_equity_usd)}`
+      detail: `${positions.length} positions | ${positionResearch.length} position research snapshot(s) | collateral ${formatUsd(preflight.collateralBalanceUsd)} | effective bankroll ${formatUsd(overview.total_equity_usd)}`
     });
+    const pulseSkillSettings = resolveProviderSkillSettings(orchestratorConfig, orchestratorConfig.runtimeProvider);
     const pulse = args.pulseJsonPath
       ? await loadPulseSnapshotFromArtifacts({
           artifactStorageRoot: orchestratorConfig.artifactStorageRoot,
           pulseJsonPath: args.pulseJsonPath,
           pulseMarkdownPath: args.pulseMarkdownPath
         })
+      : args.positionsOnly
+        ? await generatePositionReviewPulseSnapshot({
+            config: orchestratorConfig,
+            provider: orchestratorConfig.runtimeProvider,
+            locale: pulseSkillSettings.locale,
+            runId: pulseRunId,
+            mode: "full",
+            candidates: await buildPositionPulseCandidates({
+              executorConfig,
+              positions
+            }),
+            progress: reporter
+          })
       : await ensureDailyPulseSnapshot({
           config: orchestratorConfig,
           runId: pulseRunId,
@@ -846,7 +1076,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
       label: args.pulseJsonPath ? "Reused pulse snapshot ready" : "Pulse snapshot ready",
       detail: `${pulse.selectedCandidates} candidates | risk flags ${pulse.riskFlags.length}`
     });
-    const filtersActive = hasPulseFilters(args.filters);
+    const filtersActive = !args.positionsOnly && hasPulseFilters(args.filters);
     const effectivePulse = filtersActive
       ? (() => {
           const filtered = applyPulseFilters(pulse.candidates, args.filters);
@@ -870,6 +1100,8 @@ export async function runPulseLive(args: Args = parseArgs()) {
       overview,
       positions,
       pulse: effectivePulse,
+      positionResearch,
+      reviewPositionsOnly: args.positionsOnly,
       progress: reporter
     });
     const runtimeResult = coreResult.result;
@@ -886,6 +1118,12 @@ export async function runPulseLive(args: Args = parseArgs()) {
     decisionsForSummary = coreResult.decisionSet.decisions;
     pulseMarkdownPath = pulse.absoluteMarkdownPath;
     pulseJsonPath = pulse.absoluteJsonPath;
+    positionResearchPath = path.join(archiveDir, "position-research.json");
+    await writeJsonArtifact(positionResearchPath, positionResearch);
+    supplementalArtifactPaths = [
+      ...supplementalArtifactPaths,
+      positionResearchPath
+    ];
     const { plans, skipped } = await buildExecutionPlan({
       decisions: coreResult.decisionSet.decisions,
       positions,
@@ -894,7 +1132,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
       minTradeUsd: configuredMinTradeUsd,
       pulseCandidates: effectivePulse.candidates,
       readBook: async (tokenId) => {
-        const book = await readBook(executorConfig, tokenId);
+        const book = await marketData.readBook(tokenId);
         if (!book) {
           return null;
         }
@@ -942,7 +1180,79 @@ export async function runPulseLive(args: Args = parseArgs()) {
       });
     }
 
+    const marketBindingBlocks = getMarketBindingBlocks(skipped);
+    if (!args.recommendOnly && marketBindingBlocks.length > 0) {
+      const evalArtifacts = await writePulseEvaluationArtifacts({
+        artifactStorageRoot: orchestratorConfig.artifactStorageRoot,
+        archiveDir,
+        runId,
+        generatedAtUtc: coreResult.decisionSet.generated_at_utc,
+        executionMode: "failed",
+        decisionStrategy: orchestratorConfig.decisionStrategy,
+        decisions: decisionsForSummary,
+        skipped: skippedForSummary,
+        executedOrders: [],
+        beforePositions: positionsBefore,
+        afterPositions: positionsBefore,
+        beforeSnapshotAtUtc: overview.equity_curve[0]?.timestamp ?? coreResult.decisionSet.generated_at_utc,
+        afterSnapshotAtUtc: overview.equity_curve[0]?.timestamp ?? coreResult.decisionSet.generated_at_utc
+      });
+      positionMarkAttribution = evalArtifacts.markAttribution;
+      positionMarkSnapshotPath = evalArtifacts.markSnapshotPath;
+      calibrationLedgerPath = evalArtifacts.runLedgerPath;
+      globalCalibrationLedgerPath = evalArtifacts.globalLedgerPath;
+      supplementalArtifactPaths = [
+        ...supplementalArtifactPaths,
+        positionMarkSnapshotPath,
+        calibrationLedgerPath,
+        globalCalibrationLedgerPath
+      ];
+      throw new PulseLiveError(
+        "binding-gate",
+        `P00 market binding gate blocked live execution for ${marketBindingBlocks.length} decision(s).`,
+        [
+          ...buildLiveRunContextRows({
+            envFilePath: preflight.report.envFilePath,
+            archiveDir,
+            funderAddress: executorConfig.funderAddress,
+            executionMode: preflight.report.executionMode,
+            decisionStrategy: preflight.report.decisionStrategy,
+            runId
+          }),
+          ...marketBindingBlocks.slice(0, 5).map((item, index) => [
+            `Binding Block ${index + 1}`,
+            `${item.marketSlug} | ${item.tokenId ?? "-"} | ${item.reason}`
+          ] as [string, string])
+        ]
+      );
+    }
+
     if (args.recommendOnly) {
+      const evalArtifacts = await writePulseEvaluationArtifacts({
+        artifactStorageRoot: orchestratorConfig.artifactStorageRoot,
+        archiveDir,
+        runId,
+        generatedAtUtc: coreResult.decisionSet.generated_at_utc,
+        executionMode: "recommend-only",
+        decisionStrategy: orchestratorConfig.decisionStrategy,
+        decisions: decisionsForSummary,
+        skipped: skippedForSummary,
+        executedOrders: [],
+        beforePositions: positionsBefore,
+        afterPositions: positionsBefore,
+        beforeSnapshotAtUtc: overview.equity_curve[0]?.timestamp ?? coreResult.decisionSet.generated_at_utc,
+        afterSnapshotAtUtc: overview.equity_curve[0]?.timestamp ?? coreResult.decisionSet.generated_at_utc
+      });
+      positionMarkAttribution = evalArtifacts.markAttribution;
+      positionMarkSnapshotPath = evalArtifacts.markSnapshotPath;
+      calibrationLedgerPath = evalArtifacts.runLedgerPath;
+      globalCalibrationLedgerPath = evalArtifacts.globalLedgerPath;
+      supplementalArtifactPaths = [
+        ...supplementalArtifactPaths,
+        positionMarkSnapshotPath,
+        calibrationLedgerPath,
+        globalCalibrationLedgerPath
+      ];
       await writeRunSummaryArtifacts({
         mode: "pulse:live",
         executionMode: "live",
@@ -959,6 +1269,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
         blockedItems: skippedForSummary.map(mapBlockedItemToSummaryBlockedItem),
         portfolioBefore: mapOverviewToSummarySnapshot(overview),
         portfolioAfter: mapOverviewToSummarySnapshot(overview),
+        positionMarkAttribution,
         artifacts: {
           preflightPath,
           recommendationPath,
@@ -1004,6 +1315,31 @@ export async function runPulseLive(args: Args = parseArgs()) {
       orchestratorConfig
     });
     overviewAfter = finalState.overview;
+    const evalArtifacts = await writePulseEvaluationArtifacts({
+      artifactStorageRoot: orchestratorConfig.artifactStorageRoot,
+      archiveDir,
+      runId,
+      generatedAtUtc: coreResult.decisionSet.generated_at_utc,
+      executionMode: "pulse:live",
+      decisionStrategy: orchestratorConfig.decisionStrategy,
+      decisions: decisionsForSummary,
+      skipped: skippedForSummary,
+      executedOrders: executedForSummary,
+      beforePositions: positionsBefore,
+      afterPositions: finalState.positions,
+      beforeSnapshotAtUtc: overviewBefore?.equity_curve[0]?.timestamp ?? coreResult.decisionSet.generated_at_utc,
+      afterSnapshotAtUtc: finalState.overview.equity_curve[0]?.timestamp ?? new Date().toISOString()
+    });
+    positionMarkAttribution = evalArtifacts.markAttribution;
+    positionMarkSnapshotPath = evalArtifacts.markSnapshotPath;
+    calibrationLedgerPath = evalArtifacts.runLedgerPath;
+    globalCalibrationLedgerPath = evalArtifacts.globalLedgerPath;
+    supplementalArtifactPaths = [
+      ...supplementalArtifactPaths,
+      positionMarkSnapshotPath,
+      calibrationLedgerPath,
+      globalCalibrationLedgerPath
+    ];
     executionSummaryPath = path.join(archiveDir, "execution-summary.json");
     await writeJsonArtifact(executionSummaryPath, {
       runId,
@@ -1011,7 +1347,13 @@ export async function runPulseLive(args: Args = parseArgs()) {
       overview: finalState.overview,
       collateralBalanceUsd: finalState.collateralBalanceUsd,
       positions: finalState.positions,
-      executed: executedForSummary
+      executed: executedForSummary,
+      positionMarkAttribution,
+      artifacts: {
+        positionMarkSnapshotPath,
+        calibrationLedgerPath,
+        globalCalibrationLedgerPath
+      }
     });
 
     reporter.done(`Pulse live run completed | ${runId}`);
@@ -1043,6 +1385,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
       blockedItems: skippedForSummary.map(mapBlockedItemToSummaryBlockedItem),
       portfolioBefore: overviewBefore ? mapOverviewToSummarySnapshot(overviewBefore) : null,
       portfolioAfter: overviewAfter ? mapOverviewToSummarySnapshot(overviewAfter) : null,
+      positionMarkAttribution,
       artifacts: {
         preflightPath,
         recommendationPath,
@@ -1117,6 +1460,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
       blockedItems: skippedForSummary.map(mapBlockedItemToSummaryBlockedItem),
       portfolioBefore: overviewBefore ? mapOverviewToSummarySnapshot(overviewBefore) : null,
       portfolioAfter: overviewAfter ? mapOverviewToSummarySnapshot(overviewAfter) : null,
+      positionMarkAttribution,
       failure: {
         stage,
         message,

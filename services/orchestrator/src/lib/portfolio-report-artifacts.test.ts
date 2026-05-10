@@ -125,6 +125,25 @@ function createPositionReviews(): PositionReviewResult[] {
       edgeAssessment: "yes",
       edgeValue: 0,
       pulseCoverage: "none",
+      evidenceRefreshStatus: "not-refreshed",
+      freshEvidence: [
+        "Fresh mark snapshot: current price 0.3800, average cost 0.5000, unrealized PnL -24.00%, marked value $1.14.",
+        "No fresh Pulse research covered this held token in the current run."
+      ],
+      adverseSignals: [
+        "No direct opposing Pulse signal was found, but the position also has no refreshed external evidence in this run."
+      ],
+      stopOrReduceTriggers: [
+        "Close if unrealized PnL breaches configured stop-loss (30.0%).",
+        "Require a fresh evidence refresh before upgrading this position back to active edge."
+      ],
+      pnlSnapshot: {
+        currentValueUsd: 1.14,
+        avgCost: 0.5,
+        currentPrice: 0.38,
+        unrealizedPnlPct: -0.24,
+        stopLossPct: 0.3
+      },
       humanReviewFlag: true,
       confidence: "low",
       reason: "No contradictory pulse signal was found, but there was no fresh dedicated pulse support.",
@@ -329,6 +348,8 @@ describe("portfolio report artifacts", () => {
       expect(reviewContent).toContain("## 人工优先核对");
       expect(reviewContent).toContain("仍有 edge：是");
       expect(reviewContent).toContain("Pulse 覆盖：none");
+      expect(reviewContent).toContain("证据刷新：not-refreshed");
+      expect(reviewContent).toContain("fresh evidence");
       expect(reviewContent).toContain("归因：no-fresh-signal");
       expect(reviewContent).toContain("人工复核：是");
       expect(reviewContent).toContain("## 新开仓建议");
@@ -336,6 +357,7 @@ describe("portfolio report artifacts", () => {
       expect(reviewEnglishContent).toContain("# Portfolio Review Report");
       expect(reviewEnglishContent).toContain("still has edge: yes");
       expect(reviewEnglishContent).toContain("pulse coverage: none");
+      expect(reviewEnglishContent).toContain("evidence refresh: not-refreshed");
       expect(reviewEnglishContent).toContain("Quarter Kelly 10.00% -> $2.00");
       expect(rebalanceContent).toContain("口径：基于当前持仓 + 本轮决策提案估算结构变化");
       expect(rebalanceContent).toContain("按 1/4 Kelly 目标与 liquidity_cap_usd 取更小值");

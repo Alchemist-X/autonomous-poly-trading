@@ -138,5 +138,75 @@
     "cash_usd": 389.52,
     "positions_value_usd": 117.3,
     "open_positions": 6
+  },
+  {
+    "timestamp": "2026-03-31T07:44:34.744Z",
+    "total_equity_usd": 506.92,
+    "cash_usd": 391.52,
+    "positions_value_usd": 115.4,
+    "open_positions": 4
+  },
+  {
+    "timestamp": "2026-03-31T08:19:58.605Z",
+    "total_equity_usd": 507.37,
+    "cash_usd": 391.52,
+    "positions_value_usd": 115.85,
+    "open_positions": 4
+  },
+  {
+    "timestamp": "2026-03-31T08:56:28.966Z",
+    "total_equity_usd": 475.64,
+    "cash_usd": 316.4,
+    "positions_value_usd": 159.24,
+    "open_positions": 5
+  },
+  {
+    "timestamp": "2026-04-01T06:45:58.833Z",
+    "total_equity_usd": 507.25,
+    "cash_usd": 275.19,
+    "positions_value_usd": 232.06,
+    "open_positions": 8
+  },
+  {
+    "timestamp": "2026-04-11T16:10:02.798Z",
+    "total_equity_usd": 518.12,
+    "cash_usd": 417.78,
+    "positions_value_usd": 100.34,
+    "open_positions": 3
+  },
+  {
+    "timestamp": "2026-04-11T16:25:21.299Z",
+    "total_equity_usd": 471.15,
+    "cash_usd": 314.16,
+    "positions_value_usd": 156.99,
+    "open_positions": 5
+  },
+  {
+    "timestamp": "2026-04-26T06:11:42.489Z",
+    "total_equity_usd": 529.01,
+    "cash_usd": 220.36,
+    "positions_value_usd": 308.65,
+    "open_positions": 8
+  },
+  {
+    "timestamp": "2026-05-08T01:42:47.276Z",
+    "total_equity_usd": 555.26,
+    "cash_usd": 303.96,
+    "positions_value_usd": 251.3,
+    "open_positions": 7
+  },
+  {
+    "timestamp": "2026-05-08T02:04:12.662Z",
+    "total_equity_usd": 554.93,
+    "cash_usd": 303.96,
+    "positions_value_usd": 250.97,
+    "open_positions": 7
+  },
+  {
+    "timestamp": "2026-05-08T02:16:10.964Z",
+    "total_equity_usd": 554.93,
+    "cash_usd": 303.96,
+    "positions_value_usd": 250.97,
+    "open_positions": 7
   }
 ]

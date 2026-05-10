@@ -27,6 +27,7 @@
     "live:test": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/live-test.ts",
     "pulse:live": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/pulse-live.ts",
     "pulse:recommend": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/pulse-live.ts --recommend-only",
+    "pulse:positions": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/pulse-live.ts --recommend-only --positions-only",
     "managed:pulse": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && tsx scripts/managed-pulse.ts",
     "poly:cache-order-limits": "tsx scripts/cache-polymarket-order-limits.ts",
     "db:generate": "pnpm --filter @autopoly/db drizzle-kit generate",

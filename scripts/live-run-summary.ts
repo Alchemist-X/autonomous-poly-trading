@@ -1,6 +1,7 @@
 import path from "node:path";
 import { mkdir, writeFile } from "node:fs/promises";
 import type { OverviewResponse, TradeDecision } from "@autopoly/contracts";
+import type { PositionMarkAttribution } from "./pulse-evaluation-ledger.ts";
 
 type SummaryLocale = "zh" | "en";
 
@@ -94,6 +95,7 @@ export interface LiveRunSummaryInput {
   blockedItems?: SummaryBlockedItem[];
   portfolioBefore?: SummaryPortfolioSnapshot | null;
   portfolioAfter?: SummaryPortfolioSnapshot | null;
+  positionMarkAttribution?: PositionMarkAttribution | null;
   artifacts?: SummaryArtifacts;
   failure?: SummaryFailure;
 }
@@ -326,9 +328,111 @@ function renderPortfolioSection(options: RenderOptions): string[] {
   return lines;
 }
 
+function sumFilledCashFlow(orders: SummaryOrder[]) {
+  return orders.reduce((sum, order) => {
+    const filled = order.filledNotionalUsd ?? 0;
+    if (!(order.ok ?? false) || !(filled > 0)) {
+      return sum;
+    }
+    if (order.side === "BUY") {
+      return sum - filled;
+    }
+    if (order.side === "SELL") {
+      return sum + filled;
+    }
+    return sum;
+  }, 0);
+}
+
+function countExpectedPositionDelta(orders: SummaryOrder[]) {
+  return orders.reduce((sum, order) => {
+    if (!(order.ok ?? false)) {
+      return sum;
+    }
+    if (order.action === "open") {
+      return sum + 1;
+    }
+    if (order.action === "close") {
+      return sum - 1;
+    }
+    return sum;
+  }, 0);
+}
+
+function renderPnlAttributionSection(options: RenderOptions): string[] {
+  const { locale, input } = options;
+  const before = input.portfolioBefore;
+  const after = input.portfolioAfter;
+  if (!before || !after) {
+    return [];
+  }
+
+  const orders = input.executedOrders ?? [];
+  const expectedCashFlow = sumFilledCashFlow(orders);
+  const cashDelta = after.cashUsd - before.cashUsd;
+  const equityDelta = after.equityUsd - before.equityUsd;
+  const expectedPositionDelta = countExpectedPositionDelta(orders);
+  const actualPositionDelta = after.openPositions - before.openPositions;
+  const cashResidual = cashDelta - expectedCashFlow;
+  const hasPositionDeltaMismatch = expectedPositionDelta !== actualPositionDelta;
+  const markAttribution = input.positionMarkAttribution ?? null;
+
+  const lines = [locale === "zh" ? "## 6. PnL 归因与成交后核对" : "## 6. PnL Attribution & Post-Fill Audit", ""];
+  if (!markAttribution) {
+    lines.push(locale === "zh"
+      ? "> 这是账户级初步归因。更精确的逐仓 PnL 需要保存成交前后每个 token 的 mark 快照。"
+      : "> This is account-level first-pass attribution. Precise per-position PnL requires token-level mark snapshots before and after execution.");
+    lines.push("");
+  }
+  lines.push(`| ${locale === "zh" ? "项目" : "Item"} | ${locale === "zh" ? "数值" : "Value"} | ${locale === "zh" ? "说明" : "Note"} |`);
+  lines.push("| --- | --- | --- |");
+  lines.push(`| ${locale === "zh" ? "成交现金流估算" : "Estimated fill cash flow"} | ${formatDelta(expectedCashFlow, formatUsd)} | ${locale === "zh" ? "BUY 为现金流出，SELL 为现金流入" : "BUY is cash outflow; SELL is cash inflow"} |`);
+  lines.push(`| ${locale === "zh" ? "实际现金变化" : "Actual cash delta"} | ${formatDelta(cashDelta, formatUsd)} | ${locale === "zh" ? "运行后现金 - 运行前现金" : "post-run cash minus pre-run cash"} |`);
+  lines.push(`| ${locale === "zh" ? "现金残差" : "Cash residual"} | ${formatDelta(cashResidual, formatUsd)} | ${locale === "zh" ? "实际现金变化 - 成交现金流；可能来自费用、四舍五入、未刷新余额" : "actual cash delta minus fill cash flow; may be fees, rounding, or stale balance"} |`);
+  lines.push(`| ${locale === "zh" ? "净值变化" : "Equity delta"} | ${formatDelta(equityDelta, formatUsd)} | ${locale === "zh" ? "包含已有仓位 mark-to-market、新仓即时价差、费用或估值口径变化" : "includes existing-position mark-to-market, new-fill spread, fees, or valuation differences"} |`);
+  lines.push(`| ${locale === "zh" ? "预期持仓数变化" : "Expected position-count delta"} | ${formatDelta(expectedPositionDelta, (value) => value.toFixed(0))} | ${locale === "zh" ? "按 open/close 成交估算；reduce 不改变持仓数" : "estimated from open/close fills; reduce does not change position count"} |`);
+  lines.push(`| ${locale === "zh" ? "实际持仓数变化" : "Actual position-count delta"} | ${formatDelta(actualPositionDelta, (value) => value.toFixed(0))} | ${hasPositionDeltaMismatch ? (locale === "zh" ? "需要核对 execution-summary positions 与远端仓位刷新" : "requires checking execution-summary positions and remote position refresh") : (locale === "zh" ? "与成交动作一致" : "consistent with fills")} |`);
+  lines.push("");
+
+  if (!markAttribution) {
+    return lines;
+  }
+
+  const totals = markAttribution.totals;
+  const unexplainedEquityDelta = equityDelta - expectedCashFlow - totals.markedValueDeltaUsd;
+  lines.push(locale === "zh" ? "### 逐仓 mark 快照归因" : "### Per-Position Mark Snapshot Attribution");
+  lines.push("");
+  lines.push(`| ${locale === "zh" ? "项目" : "Item"} | ${locale === "zh" ? "数值" : "Value"} |`);
+  lines.push("| --- | --- |");
+  lines.push(`| ${locale === "zh" ? "运行前持仓 mark 总值" : "Pre-run marked position value"} | ${formatUsd(totals.beforeMarkedValueUsd)} |`);
+  lines.push(`| ${locale === "zh" ? "运行后持仓 mark 总值" : "Post-run marked position value"} | ${formatUsd(totals.afterMarkedValueUsd)} |`);
+  lines.push(`| ${locale === "zh" ? "持仓 mark 总变化" : "Total marked value delta"} | ${formatDelta(totals.markedValueDeltaUsd, formatUsd)} |`);
+  lines.push(`| ${locale === "zh" ? "未成交已有仓位 mark 变化" : "Untraded existing-position mark delta"} | ${formatDelta(totals.untradedExistingMarkDeltaUsd, formatUsd)} |`);
+  lines.push(`| ${locale === "zh" ? "成交相关已有仓位 mark 变化" : "Traded existing-position mark delta"} | ${formatDelta(totals.tradedExistingMarkDeltaUsd, formatUsd)} |`);
+  lines.push(`| ${locale === "zh" ? "新仓成交后 mark-vs-fill 差额" : "New-position mark-vs-fill delta"} | ${formatDelta(totals.newPositionMarkVsFillDeltaUsd, formatUsd)} |`);
+  lines.push(`| ${locale === "zh" ? "净值未解释残差" : "Unexplained equity residual"} | ${formatDelta(unexplainedEquityDelta, formatUsd)} |`);
+  lines.push("");
+
+  const rows = markAttribution.changes.slice(0, 12);
+  if (rows.length === 0) {
+    lines.push(locale === "zh" ? "- 没有逐仓 mark 变化记录。" : "- No per-position mark changes were recorded.");
+    lines.push("");
+    return lines;
+  }
+  lines.push(`| ${locale === "zh" ? "市场" : "Market"} | ${locale === "zh" ? "状态" : "Status"} | ${locale === "zh" ? "运行前价/值" : "Before price/value"} | ${locale === "zh" ? "运行后价/值" : "After price/value"} | ${locale === "zh" ? "价值变化" : "Value delta"} | ${locale === "zh" ? "mark-vs-fill" : "mark-vs-fill"} |`);
+  lines.push("| --- | --- | --- | --- | --- | --- |");
+  for (const change of rows) {
+    const beforeCell = `${formatPct(change.beforeMarkPrice)} / ${formatUsd(change.beforeValueUsd)}`;
+    const afterCell = `${formatPct(change.afterMarkPrice)} / ${formatUsd(change.afterValueUsd)}`;
+    lines.push(`| ${change.marketSlug} | ${change.status} | ${beforeCell} | ${afterCell} | ${formatDelta(change.valueDeltaUsd, formatUsd)} | ${formatDelta(change.markVsFillDeltaUsd, formatUsd)} |`);
+  }
+  lines.push("");
+  return lines;
+}
+
 function renderReasoningSection(options: RenderOptions): string[] {
   const { locale, input } = options;
-  const lines = [locale === "zh" ? "## 6. 决策原因摘要" : "## 6. Decision Reasoning Summary", ""];
+  const lines = [locale === "zh" ? "## 7. 决策原因摘要" : "## 7. Decision Reasoning Summary", ""];
 
   lines.push(`- ${locale === "zh" ? "Prompt 摘要" : "Prompt Summary"}: ${toSingleLine(input.promptSummary)}`);
   lines.push(`- ${locale === "zh" ? "推理摘要" : "Reasoning Summary"}: ${truncate(input.reasoningMd, 500)}`);
@@ -358,7 +462,7 @@ function renderFailureSection(options: RenderOptions): string[] {
     return [];
   }
   const lines = [
-    locale === "zh" ? "## 7. 失败说明与下一步" : "## 7. Failure Context & Next Steps",
+    locale === "zh" ? "## 8. 失败说明与下一步" : "## 8. Failure Context & Next Steps",
     "",
     `- ${locale === "zh" ? "失败阶段" : "Failed Stage"}: ${failure.stage}`,
     `- ${locale === "zh" ? "错误摘要" : "Error Summary"}: ${failure.message}`
@@ -380,7 +484,7 @@ function renderFailureSection(options: RenderOptions): string[] {
 function renderArtifactSection(options: RenderOptions): string[] {
   const { locale, input } = options;
   const artifacts = input.artifacts ?? {};
-  const lines = [locale === "zh" ? "## 8. 关键产物索引" : "## 8. Artifact Index", ""];
+  const lines = [locale === "zh" ? "## 9. 关键产物索引" : "## 9. Artifact Index", ""];
   const items: Array<[string, string | null | undefined]> = [
     ["preflight.json", artifacts.preflightPath],
     ["recommendation.json", artifacts.recommendationPath],
@@ -411,6 +515,7 @@ function renderMarkdown(options: RenderOptions): string {
   lines.push(...renderExecutionSection(options));
   lines.push(...renderBlockedSection(options));
   lines.push(...renderPortfolioSection(options));
+  lines.push(...renderPnlAttributionSection(options));
   lines.push(...renderReasoningSection(options));
   lines.push(...renderFailureSection(options));
   lines.push(...renderArtifactSection(options));

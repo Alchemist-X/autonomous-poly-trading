@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { RuntimeExecutionContext } from "../runtime/agent-runtime.js";
-import type { PulseEntryPlan } from "../runtime/decision-metadata.js";
+import type { PositionResearchSnapshot, PulseEntryPlan } from "../runtime/decision-metadata.js";
 import { reviewCurrentPositions } from "./position-review.js";
 
 function createContext(): RuntimeExecutionContext {
@@ -145,6 +145,47 @@ function createEntryPlan(input: {
   };
 }
 
+function createPositionResearch(overrides: Partial<PositionResearchSnapshot> = {}): PositionResearchSnapshot {
+  return {
+    positionId: "position-1",
+    eventSlug: "demo-event",
+    marketSlug: "demo-market",
+    tokenId: "token-no",
+    outcomeLabel: "No",
+    fetchedAtUtc: "2026-03-17T01:00:00.000Z",
+    marketProb: 0.44,
+    orderbook: {
+      bestBid: 0.44,
+      bestAsk: 0.45,
+      minOrderSize: 5
+    },
+    rules: {
+      description: "Resolution rule snapshot",
+      resolutionSource: "Official source",
+      endDate: "2026-06-30T00:00:00.000Z"
+    },
+    marketStatus: {
+      active: true,
+      closed: false,
+      archived: false
+    },
+    freshEvidence: [
+      "Dedicated position research refreshed demo-market / No.",
+      "Resolution rule snapshot: Resolution rule snapshot"
+    ],
+    adverseSignals: [],
+    unresolvedData: [],
+    sources: [
+      {
+        title: "Polymarket event",
+        url: "https://polymarket.com/event/demo-event",
+        retrieved_at_utc: "2026-03-17T01:00:00.000Z"
+      }
+    ],
+    ...overrides
+  };
+}
+
 describe("position review", () => {
   it("holds when pulse still supports the current outcome", () => {
     const [result] = reviewCurrentPositions({
@@ -154,6 +195,8 @@ describe("position review", () => {
 
     expect(result?.action).toBe("hold");
     expect(result?.stillHasEdge).toBe(true);
+    expect(result?.evidenceRefreshStatus).toBe("fresh-supporting");
+    expect(result?.freshEvidence.some((line) => line.includes("Pulse refreshed"))).toBe(true);
     expect(result?.humanReviewFlag).toBe(false);
     expect(result?.basis).toBe("pulse-supports-current");
   });
@@ -166,6 +209,7 @@ describe("position review", () => {
 
     expect(result?.action).toBe("hold");
     expect(result?.humanReviewFlag).toBe(true);
+    expect(result?.adverseSignals.some((line) => line.includes("Residual edge is weak"))).toBe(true);
     expect(result?.basis).toBe("pulse-supports-current-weak-edge");
     expect(result?.reviewConclusion).toContain("flag it for human review");
   });
@@ -178,6 +222,7 @@ describe("position review", () => {
 
     expect(result?.action).toBe("reduce");
     expect(result?.stillHasEdge).toBe(false);
+    expect(result?.evidenceRefreshStatus).toBe("fresh-supporting");
     expect(result?.decision.side).toBe("SELL");
     expect(result?.decision.notional_usd).toBe(6);
     expect(result?.decision.position_value_usd).toBe(12);
@@ -194,6 +239,8 @@ describe("position review", () => {
 
     expect(result?.action).toBe("close");
     expect(result?.stillHasEdge).toBe(false);
+    expect(result?.evidenceRefreshStatus).toBe("fresh-opposing");
+    expect(result?.adverseSignals.some((line) => line.includes("contradicted"))).toBe(true);
     expect(result?.decision.side).toBe("SELL");
     expect(result?.decision.position_value_usd).toBe(1.76);
     expect(result?.decision.execution_unit).toBe("shares");
@@ -207,8 +254,32 @@ describe("position review", () => {
     });
 
     expect(result?.action).toBe("hold");
+    expect(result?.stillHasEdge).toBe(false);
+    expect(result?.edgeAssessment).toBe("no");
     expect(result?.humanReviewFlag).toBe(true);
+    expect(result?.evidenceRefreshStatus).toBe("not-refreshed");
+    expect(result?.freshEvidence).toContain("No fresh Pulse research covered this held token in the current run.");
+    expect(result?.stopOrReduceTriggers.length).toBeGreaterThan(0);
     expect(result?.basis).toBe("no-fresh-signal");
+    expect(result?.reviewConclusion).toContain("Stale hold");
+  });
+
+  it("uses dedicated position research instead of stale hold when pulse does not cover the position", () => {
+    const context = {
+      ...createContext(),
+      positionResearch: [createPositionResearch()]
+    };
+    const [result] = reviewCurrentPositions({
+      context,
+      entryPlans: []
+    });
+
+    expect(result?.action).toBe("hold");
+    expect(result?.evidenceRefreshStatus).toBe("fresh-position-research");
+    expect(result?.basis).toBe("position-research-refreshed");
+    expect(result?.freshEvidence).toContain("Dedicated position research refreshed demo-market / No.");
+    expect(result?.freshEvidence).not.toContain("No fresh Pulse research covered this held token in the current run.");
+    expect(result?.decision.sources.some((source) => source.title === "Polymarket event")).toBe(true);
   });
 
   it("reduces near-stop-loss positions when there is no fresh pulse coverage", () => {
@@ -220,9 +291,26 @@ describe("position review", () => {
     expect(result?.action).toBe("reduce");
     expect(result?.basis).toBe("near-stop-loss-without-fresh-signal");
     expect(result?.humanReviewFlag).toBe(true);
+    expect(result?.adverseSignals.some((line) => line.includes("near stop-loss"))).toBe(true);
     expect(result?.decision.notional_usd).toBe(6);
     expect(result?.decision.position_value_usd).toBe(12);
     expect(result?.decision.execution_unit).toBe("shares");
     expect(result?.decision.execution_amount).toBe(2);
+  });
+
+  it("keeps near-stop-loss action but marks evidence fresh when dedicated position research exists", () => {
+    const context = {
+      ...createNearStopLossContext(),
+      positionResearch: [createPositionResearch()]
+    };
+    const [result] = reviewCurrentPositions({
+      context,
+      entryPlans: []
+    });
+
+    expect(result?.action).toBe("reduce");
+    expect(result?.evidenceRefreshStatus).toBe("fresh-position-research");
+    expect(result?.basis).toBe("position-research-adverse");
+    expect(result?.freshEvidence).toContain("Dedicated position research refreshed demo-market / No.");
   });
 });

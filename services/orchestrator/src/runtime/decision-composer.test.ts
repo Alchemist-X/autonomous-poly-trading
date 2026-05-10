@@ -25,6 +25,21 @@ function createReview(): PositionReviewResult {
     edgeAssessment: "yes",
     edgeValue: 0.02,
     pulseCoverage: "supporting",
+    evidenceRefreshStatus: "fresh-supporting",
+    freshEvidence: [
+      "Pulse refreshed the held No outcome."
+    ],
+    adverseSignals: [],
+    stopOrReduceTriggers: [
+      "Reduce if refreshed edge turns negative."
+    ],
+    pnlSnapshot: {
+      currentValueUsd: 1.68,
+      avgCost: 0.4,
+      currentPrice: 0.42,
+      unrealizedPnlPct: 0.05,
+      stopLossPct: 0.3
+    },
     humanReviewFlag: false,
     confidence: "medium",
     reason: "Pulse still supports it.",

@@ -277,12 +277,12 @@ function buildReviewMarkdown(input: {
   const reviewLinesZh = positionReviews.length === 0
     ? ["- 当前没有独立的已有仓位复审结果。"]
     : positionReviews.map((review) =>
-        `- ${review.position.market_slug} | 结论 ${review.action} | 仍有 edge：${review.stillHasEdge ? "是" : "否"} | edge=${review.edgeValue.toFixed(4)} | Pulse 覆盖：${review.pulseCoverage} | 人工复核：${review.humanReviewFlag ? "是" : "否"} | 归因：${review.basis} | ${review.reviewConclusion} | 原因：${review.reason}`
+        `- ${review.position.market_slug} | 结论 ${review.action} | 仍有 edge：${review.stillHasEdge ? "是" : "否"} | edge=${review.edgeValue.toFixed(4)} | Pulse 覆盖：${review.pulseCoverage} | 证据刷新：${review.evidenceRefreshStatus} | 人工复核：${review.humanReviewFlag ? "是" : "否"} | fresh evidence：${review.freshEvidence.join(" / ")} | adverse：${review.adverseSignals.length > 0 ? review.adverseSignals.join(" / ") : "无"} | trigger：${review.stopOrReduceTriggers.join(" / ")} | 归因：${review.basis} | ${review.reviewConclusion} | 原因：${review.reason}`
       );
   const reviewLinesEn = positionReviews.length === 0
     ? ["- No standalone existing-position review results were produced."]
     : positionReviews.map((review) =>
-        `- ${review.position.market_slug} | action ${review.action} | still has edge: ${review.stillHasEdge ? "yes" : "no"} | edge=${review.edgeValue.toFixed(4)} | pulse coverage: ${review.pulseCoverage} | human review: ${review.humanReviewFlag ? "yes" : "no"} | basis: ${review.basis} | ${review.reviewConclusion} | reason: ${review.reason}`
+        `- ${review.position.market_slug} | action ${review.action} | still has edge: ${review.stillHasEdge ? "yes" : "no"} | edge=${review.edgeValue.toFixed(4)} | pulse coverage: ${review.pulseCoverage} | evidence refresh: ${review.evidenceRefreshStatus} | human review: ${review.humanReviewFlag ? "yes" : "no"} | fresh evidence: ${review.freshEvidence.join(" / ")} | adverse: ${review.adverseSignals.length > 0 ? review.adverseSignals.join(" / ") : "none"} | trigger: ${review.stopOrReduceTriggers.join(" / ")} | basis: ${review.basis} | ${review.reviewConclusion} | reason: ${review.reason}`
       );
   const entryLinesZh = entryPlans.length === 0
     ? ["- 本轮没有新的开仓建议。"]
@@ -292,7 +292,7 @@ function buildReviewMarkdown(input: {
     : entryPlans.slice(0, 6).map(buildEntryLineEn);
 
   const reviewTableZh = buildMarkdownTable(
-    ["市场", "结果", "当前价值", "浮盈亏", "结论", "Pulse 覆盖", "人工复核"],
+    ["市场", "结果", "当前价值", "浮盈亏", "结论", "Pulse 覆盖", "证据刷新", "人工复核"],
     positionReviews.slice(0, 8).map((review) => [
       review.position.market_slug,
       review.position.outcome_label,
@@ -300,6 +300,7 @@ function buildReviewMarkdown(input: {
       formatSignedPct(review.position.unrealized_pnl_pct),
       review.action,
       review.pulseCoverage,
+      review.evidenceRefreshStatus,
       review.humanReviewFlag ? "是" : "否"
     ])
   );
@@ -319,7 +320,7 @@ function buildReviewMarkdown(input: {
     ])
   );
   const reviewTableEn = buildMarkdownTable(
-    ["Market", "Outcome", "Current Value", "Unrealized PnL", "Action", "Pulse Coverage", "Human Review"],
+    ["Market", "Outcome", "Current Value", "Unrealized PnL", "Action", "Pulse Coverage", "Evidence Refresh", "Human Review"],
     positionReviews.slice(0, 8).map((review) => [
       review.position.market_slug,
       review.position.outcome_label,
@@ -327,6 +328,7 @@ function buildReviewMarkdown(input: {
       formatSignedPct(review.position.unrealized_pnl_pct),
       review.action,
       review.pulseCoverage,
+      review.evidenceRefreshStatus,
       review.humanReviewFlag ? "yes" : "no"
     ])
   );

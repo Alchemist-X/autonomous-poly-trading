@@ -11,6 +11,7 @@ import type { ProgressReporter } from "../lib/terminal-progress.js";
 import { generatePulseSnapshot, type PulseSnapshot } from "../pulse/market-pulse.js";
 import type { PulseFilterArgs } from "../pulse/pulse-filters.js";
 import type { AgentRuntime, RuntimeExecutionResult } from "../runtime/agent-runtime.js";
+import type { PositionResearchSnapshot } from "../runtime/decision-metadata.js";
 import { resolveProviderSkillSettings } from "../runtime/skill-settings.js";
 
 function sanitizeDecisionSet(decisionSet: TradeDecisionSet): TradeDecisionSet {
@@ -40,6 +41,8 @@ export interface DailyPulseCoreInput {
   positions: PublicPosition[];
   progress?: ProgressReporter;
   pulse?: PulseSnapshot;
+  positionResearch?: PositionResearchSnapshot[];
+  reviewPositionsOnly?: boolean;
   runtimeResult?: RuntimeExecutionResult;
 }
 
@@ -84,6 +87,8 @@ export async function runDailyPulseCore(input: DailyPulseCoreInput): Promise<Dai
     overview: input.overview,
     positions: input.positions,
     pulse,
+    positionResearch: input.positionResearch,
+    reviewPositionsOnly: input.reviewPositionsOnly,
     progress: input.progress
   });
 

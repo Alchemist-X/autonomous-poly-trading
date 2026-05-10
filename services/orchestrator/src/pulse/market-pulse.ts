@@ -80,6 +80,20 @@ export interface PulseTag {
   label: string;
 }
 
+export interface PulsePositionContext {
+  positionId: string;
+  heldOutcomeLabel: string;
+  heldTokenId: string;
+  shares: number;
+  avgCost: number;
+  currentPrice: number;
+  currentValueUsd: number;
+  unrealizedPnlPct: number;
+  stopLossPct: number;
+  openedAtUtc: string;
+  updatedAtUtc: string;
+}
+
 export interface PulseBucketStat {
   slug: string;
   label: string;
@@ -123,6 +137,7 @@ export interface PulseCandidate {
     feeRate: number;
     exponent: number;
   };
+  position?: PulsePositionContext;
 }
 
 export interface PulseSnapshot {
@@ -525,5 +540,96 @@ export async function generatePulseSnapshot(input: {
     candidates,
     riskFlags: baseFlags,
     tradeable: baseFlags.length === 0
+  };
+}
+
+export async function generatePositionReviewPulseSnapshot(input: {
+  config: OrchestratorConfig;
+  provider: AgentRuntimeProvider;
+  locale: SkillLocale;
+  runId: string;
+  mode: RunMode;
+  candidates: PulseCandidate[];
+  progress?: ProgressReporter;
+}): Promise<PulseSnapshot> {
+  const generatedAtUtc = new Date().toISOString();
+  const zh = isChineseLocale(input.locale);
+  const title = zh
+    ? `持仓复审 Pulse ${generatedAtUtc.slice(0, 16).replace("T", " ")} UTC [${input.provider}]`
+    : `Position Review Pulse ${generatedAtUtc.slice(0, 16).replace("T", " ")} UTC [${input.provider}]`;
+  const relativeMarkdownPath = buildArtifactRelativePath({
+    kind: "pulse-report",
+    publishedAtUtc: generatedAtUtc,
+    runtime: input.provider,
+    mode: input.mode,
+    runId: input.runId,
+    extension: "md"
+  });
+  const relativeJsonPath = buildArtifactRelativePath({
+    kind: "pulse-report",
+    publishedAtUtc: generatedAtUtc,
+    runtime: input.provider,
+    mode: input.mode,
+    runId: input.runId,
+    extension: "json"
+  });
+  const fetchConfig: PulseFetchConfig = {
+    pagesPerDimension: 0,
+    eventsPerPage: input.candidates.length,
+    minFetchedMarkets: input.candidates.length,
+    dimensions: ["existing-positions"]
+  };
+  const emptyStats: PulseStatsBundle = { fetched: [], filtered: [] };
+
+  input.progress?.stage({
+    percent: 20,
+    label: "Position-only Pulse context ready",
+    detail: `${input.candidates.length} existing position market(s)`
+  });
+  const archive = await buildFullPulseArchive({
+    config: input.config,
+    provider: input.provider,
+    locale: input.locale,
+    purpose: "position-review",
+    researchCandidateCount: input.candidates.length,
+    title,
+    generatedAtUtc,
+    totalFetched: input.candidates.length,
+    totalFiltered: input.candidates.length,
+    minLiquidityUsd: 0,
+    fetchConfig,
+    categoryStats: emptyStats,
+    tagStats: emptyStats,
+    candidates: input.candidates,
+    riskFlags: [],
+    relativeJsonPath,
+    relativeMarkdownPath,
+    progress: input.progress
+  });
+  input.progress?.stage({
+    percent: 68,
+    label: "Position review pulse archive written",
+    detail: relativeMarkdownPath
+  });
+
+  return {
+    id: randomUUID(),
+    generatedAtUtc,
+    title,
+    relativeMarkdownPath,
+    absoluteMarkdownPath: archive.absoluteMarkdownPath,
+    relativeJsonPath,
+    absoluteJsonPath: archive.absoluteJsonPath,
+    markdown: archive.markdown,
+    totalFetched: input.candidates.length,
+    totalFiltered: input.candidates.length,
+    selectedCandidates: input.candidates.length,
+    minLiquidityUsd: 0,
+    fetchConfig,
+    categoryStats: emptyStats,
+    tagStats: emptyStats,
+    candidates: input.candidates,
+    riskFlags: [],
+    tradeable: true
   };
 }

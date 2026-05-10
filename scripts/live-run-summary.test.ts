@@ -86,6 +86,53 @@ function createBaseInput(archiveDir: string): LiveRunSummaryInput {
       openPositions: 1,
       drawdownPct: 0
     },
+    positionMarkAttribution: {
+      beforeSnapshotAtUtc: "2026-03-17T03:00:00.000Z",
+      afterSnapshotAtUtc: "2026-03-17T03:05:00.000Z",
+      beforePositions: [],
+      afterPositions: [
+        {
+          snapshotAtUtc: "2026-03-17T03:05:00.000Z",
+          eventSlug: "demo-event",
+          marketSlug: "demo-market-open",
+          tokenId: "token-open",
+          outcomeLabel: "Yes",
+          size: 3.9,
+          avgCost: 0.5,
+          markPrice: 0.51,
+          markValueUsd: 1.99,
+          unrealizedPnlPct: 0.02,
+          stopLossPct: 0.3
+        }
+      ],
+      changes: [
+        {
+          eventSlug: "demo-event",
+          marketSlug: "demo-market-open",
+          tokenId: "token-open",
+          outcomeLabel: "Yes",
+          status: "new",
+          beforeSize: null,
+          afterSize: 3.9,
+          beforeMarkPrice: null,
+          afterMarkPrice: 0.51,
+          beforeValueUsd: null,
+          afterValueUsd: 1.99,
+          valueDeltaUsd: 1.99,
+          filledCashFlowUsd: -1.98,
+          markVsFillDeltaUsd: 0.01
+        }
+      ],
+      totals: {
+        beforeMarkedValueUsd: 0,
+        afterMarkedValueUsd: 1.99,
+        markedValueDeltaUsd: 1.99,
+        untradedExistingMarkDeltaUsd: 0,
+        tradedExistingMarkDeltaUsd: 0,
+        newPositionMarkVsFillDeltaUsd: 0.01,
+        closedPositionValueDeltaUsd: 0
+      }
+    },
     artifacts: {
       preflightPath: path.join(archiveDir, "preflight.json"),
       recommendationPath: path.join(archiveDir, "recommendation.json"),
@@ -103,8 +150,15 @@ describe("live run summary markdown", () => {
     expect(markdown.zh).toContain("# 运行总结");
     expect(markdown.zh).toContain("## 3. 新开仓与已执行订单");
     expect(markdown.zh).toContain("order-1");
+    expect(markdown.zh).toContain("## 6. PnL 归因与成交后核对");
+    expect(markdown.zh).toContain("现金残差");
+    expect(markdown.zh).toContain("实际持仓数变化");
+    expect(markdown.zh).toContain("逐仓 mark 快照归因");
+    expect(markdown.zh).toContain("demo-market-open");
     expect(markdown.en).toContain("# Run Summary");
     expect(markdown.en).toContain("## 3. New Positions & Executed Orders");
+    expect(markdown.en).toContain("## 6. PnL Attribution & Post-Fill Audit");
+    expect(markdown.en).toContain("Per-Position Mark Snapshot Attribution");
     expect(markdown.en).toContain("demo-market-open");
   });
 
@@ -156,9 +210,9 @@ describe("live run summary markdown", () => {
       }
     };
     const markdown = buildRunSummaryMarkdown(input);
-    expect(markdown.zh).toContain("## 7. 失败说明与下一步");
+    expect(markdown.zh).toContain("## 8. 失败说明与下一步");
     expect(markdown.zh).toContain("Order rejected by exchange.");
-    expect(markdown.en).toContain("## 7. Failure Context & Next Steps");
+    expect(markdown.en).toContain("## 8. Failure Context & Next Steps");
     expect(markdown.en).toContain("Retry with smaller notional.");
   });
 

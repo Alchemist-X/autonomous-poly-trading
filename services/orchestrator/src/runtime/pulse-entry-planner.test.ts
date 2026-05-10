@@ -13,6 +13,7 @@ const FIXED_NOW_MS = new Date("2026-03-17T00:00:00.000Z").getTime();
 function createContext(markdown: string, overrides?: {
   candidates?: RuntimeExecutionContext["pulse"]["candidates"];
   totalEquityUsd?: number;
+  reviewPositionsOnly?: boolean;
 }): RuntimeExecutionContext {
   return {
     runId: "11111111-1111-4111-8111-111111111111",
@@ -73,7 +74,8 @@ function createContext(markdown: string, overrides?: {
       ],
       riskFlags: [],
       tradeable: true
-    }
+    },
+    reviewPositionsOnly: overrides?.reviewPositionsOnly
   };
 }
 
@@ -233,6 +235,106 @@ describe("pulse entry planner", () => {
     expect(plans[0]?.decision.notional_usd).toBeCloseTo(1.1905, 4);
     expect(plans[0]?.decision.liquidity_cap_usd).toBe(0.8);
     expect(plans[0]?.decision.execution_amount).toBeUndefined();
+  });
+
+  it("does not bind a same-event strike by URL when the section title names a different threshold", () => {
+    const sharedUrl = "https://polymarket.com/event/cl-hit-jun-2026";
+    const candidates = [
+      {
+        question: "Will Crude Oil (CL) hit (HIGH) $115 by end of June?",
+        eventSlug: "cl-hit-jun-2026",
+        marketSlug: "will-crude-oil-cl-hit-high-115-by-end-of-june",
+        url: sharedUrl,
+        liquidityUsd: 45000,
+        volume24hUsd: 6900,
+        outcomes: ["Yes", "No"],
+        outcomePrices: [0.5435, 0.4565],
+        clobTokenIds: ["token-115-yes", "token-115-no"],
+        endDate: "2026-06-30T18:30:00Z",
+        bestBid: 0.543,
+        bestAsk: 0.544,
+        spread: 0.001,
+        categorySlug: "commodities",
+        categoryLabel: "Commodities",
+        categorySource: null,
+        tags: [] as Array<{ slug: string; label: string }>
+      },
+      {
+        question: "Will Crude Oil (CL) hit (HIGH) $200 by end of June?",
+        eventSlug: "cl-hit-jun-2026",
+        marketSlug: "will-crude-oil-cl-hit-high-200-by-end-of-june",
+        url: sharedUrl,
+        liquidityUsd: 236000,
+        volume24hUsd: 32100,
+        outcomes: ["Yes", "No"],
+        outcomePrices: [0.0605, 0.9395],
+        clobTokenIds: ["token-200-yes", "token-200-no"],
+        endDate: "2026-06-30T18:30:00Z",
+        bestBid: 0.06,
+        bestAsk: 0.061,
+        spread: 0.001,
+        categorySlug: "commodities",
+        categoryLabel: "Commodities",
+        categorySource: null,
+        tags: [] as Array<{ slug: string; label: string }>
+      }
+    ];
+    const markdown = [
+      "## 1. Crude Oil (CL) hit (HIGH) $200 by end of June 2026",
+      "",
+      `**链接：** ${sharedUrl}`,
+      "| 方向 | 买入 No |",
+      "| 建议仓位 | 15% |",
+      "| 置信度 | 高 |",
+      "",
+      "| No | 93.95% | 99% |",
+      "",
+      "### 推理逻辑",
+      "$200 is an extreme tail strike."
+    ].join("\n");
+
+    const plans = buildPulseEntryPlans({
+      context: createContext(markdown, { candidates, totalEquityUsd: 1000 }),
+      positionStopLossPct: 0.3,
+      nowMs: FIXED_NOW_MS
+    });
+
+    expect(plans).toHaveLength(1);
+    expect(plans[0]?.marketSlug).toBe("will-crude-oil-cl-hit-high-200-by-end-of-june");
+    expect(plans[0]?.tokenId).toBe("token-200-no");
+    expect(plans[0]?.decision.market_slug).toBe("will-crude-oil-cl-hit-high-200-by-end-of-june");
+    expect(plans[0]?.decision.token_id).toBe("token-200-no");
+    expect(plans[0]?.decision.outcome_label).toBe("No");
+  });
+
+  it("keeps both probability rows for position-only reviews even when one edge is negative", () => {
+    const markdown = [
+      "## 1. Demo market question",
+      "",
+      "**链接：** https://example.com/demo-market",
+      "**模型当前更支持的一侧：** 买入 Yes",
+      "**置信度：** 低",
+      "",
+      "| 结果 | 市场定价 | AI 估算 | Edge |",
+      "| --- | --- | --- | --- |",
+      "| Yes | 42% | 43% | +1% |",
+      "| No | 58% | 57% | -1% |",
+      "",
+      "### 推理逻辑",
+      "Position-only review keeps the held side edge visible."
+    ].join("\n");
+
+    const plans = buildPulseEntryPlans({
+      context: createContext(markdown, { reviewPositionsOnly: true }),
+      positionStopLossPct: 0.3,
+      nowMs: FIXED_NOW_MS
+    });
+
+    expect(plans).toHaveLength(2);
+    expect(plans.map((plan) => plan.outcomeLabel).sort()).toEqual(["No", "Yes"]);
+    expect(plans.find((plan) => plan.outcomeLabel === "No")?.aiProb).toBeCloseTo(0.57);
+    expect(plans.find((plan) => plan.outcomeLabel === "No")?.marketProb).toBeCloseTo(0.58);
+    expect(plans.find((plan) => plan.outcomeLabel === "No")?.decision.edge).toBeCloseTo(-0.01);
   });
 });
 

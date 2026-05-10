@@ -27,6 +27,7 @@ async function buildRuntimeLogArtifact(input: {
   reviewCount: number;
   entryCount: number;
   skippedEntryCount: number;
+  positionResearchCount: number;
 }) {
   const publishedAtUtc = new Date().toISOString();
   const relativePath = buildArtifactRelativePath({
@@ -43,17 +44,22 @@ async function buildRuntimeLogArtifact(input: {
       "",
       "## 流程",
       "",
-      "1. 使用 Pulse Entry Planner 解析新的开仓候选",
+      input.context.reviewPositionsOnly
+        ? "1. 使用持仓专用 Pulse 解析已有仓位概率/edge"
+        : "1. 使用 Pulse Entry Planner 解析新的开仓候选",
       "2. 使用独立 Position Review 模块复审已有仓位",
-      "3. 使用 Decision Composer 合并 review + entries",
+      input.context.reviewPositionsOnly
+        ? "3. 只输出已有仓位复审动作，不合成新开仓建议"
+        : "3. 使用 Decision Composer 合并 review + entries",
       "",
       "## 统计",
       "",
       `- 市场脉冲标题：${input.context.pulse.title}`,
       `- 市场脉冲候选数：${input.context.pulse.selectedCandidates}`,
       `- 当前持仓数：${input.context.positions.length}`,
+      `- 独立持仓研究数：${input.positionResearchCount}`,
       `- 已有仓位复审数：${input.reviewCount}`,
-      `- 新开仓候选数：${input.entryCount}`,
+      `- ${input.context.reviewPositionsOnly ? "持仓概率复审计划数" : "新开仓候选数"}：${input.entryCount}`,
       `- 被去重跳过的新候选：${input.skippedEntryCount}`,
       `- 最终决策数：${input.decisions.length}`,
       "",
@@ -118,13 +124,20 @@ export class PulseDirectRuntime implements AgentRuntime {
     });
     const positionReviews = reviewCurrentPositions({
       context,
-      entryPlans
+      entryPlans,
+      positionResearch: context.positionResearch ?? []
     });
-    const composition = composePulseDirectDecisions({
-      reviewResults: positionReviews,
-      entryPlans
-    });
+    const composition = context.reviewPositionsOnly
+      ? {
+          decisions: positionReviews.map((review) => review.decision),
+          skippedEntries: []
+        }
+      : composePulseDirectDecisions({
+          reviewResults: positionReviews,
+          entryPlans
+        });
     const reviewActionCounts = summarizeReviewActions(positionReviews);
+    const reportEntryPlans = context.reviewPositionsOnly ? [] : entryPlans;
 
     const decisions = composition.decisions.length > 0
       ? composition.decisions
@@ -139,7 +152,8 @@ export class PulseDirectRuntime implements AgentRuntime {
       decisions,
       reviewCount: positionReviews.length,
       entryCount: entryPlans.length,
-      skippedEntryCount: composition.skippedEntries.length
+      skippedEntryCount: composition.skippedEntries.length,
+      positionResearchCount: context.positionResearch?.length ?? 0
     });
     const pulseArtifact: Artifact = {
       kind: "pulse-report",
@@ -159,25 +173,32 @@ export class PulseDirectRuntime implements AgentRuntime {
         decisions,
         artifacts: [pulseArtifact, runtimeLogArtifact]
       },
-      promptSummary: "Pulse direct runtime used a standalone Position Review module plus a Pulse Entry Planner, then merged both outputs into one decision set.",
+      promptSummary: context.reviewPositionsOnly
+        ? "Pulse direct runtime used a position-only Pulse probability refresh and emitted existing-position review decisions only."
+        : "Pulse direct runtime used a standalone Position Review module plus a Pulse Entry Planner, then merged both outputs into one decision set.",
       reasoningMd: [
         "决策策略：pulse-direct",
-        "结构：Position Review + Pulse Entry Planner + Decision Composer",
+        context.reviewPositionsOnly
+          ? "结构：Position-only Pulse + Position Review（不扫描新市场，不合成新开仓）"
+          : "结构：Position Review + Pulse Entry Planner + Decision Composer",
         `市场脉冲可交易：${context.pulse.tradeable ? "是" : "否"}`,
+        `独立持仓研究数：${context.positionResearch?.length ?? 0}`,
         `已有仓位复审数：${positionReviews.length}`,
         `已有仓位复审动作：hold ${reviewActionCounts.hold} / reduce ${reviewActionCounts.reduce} / close ${reviewActionCounts.close}`,
-        `Pulse 开仓候选数：${entryPlans.length}`,
+        `${context.reviewPositionsOnly ? "Pulse 持仓概率复审计划数" : "Pulse 开仓候选数"}：${entryPlans.length}`,
         `被去重跳过的开仓候选数：${composition.skippedEntries.length}`,
         `最终决策数：${decisions.length}`
       ].join("\n"),
       logsMd: JSON.stringify({
         positionReviews,
-        entryPlans,
+        positionResearch: context.positionResearch ?? [],
+        entryPlans: reportEntryPlans,
+        positionReviewPulsePlans: context.reviewPositionsOnly ? entryPlans : [],
         skippedEntries: composition.skippedEntries,
         decisions
       }, null, 2),
       positionReviews,
-      entryPlans
+      entryPlans: reportEntryPlans
     };
   }
 }
