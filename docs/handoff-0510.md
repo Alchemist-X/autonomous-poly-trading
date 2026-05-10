@@ -1,6 +1,6 @@
 # Handoff 0510 — 收敛提交前说明
 
-最后更新：2026-05-10 by Codex（Pulse 质量主线）+ Claude (Opus 4.7)（Mode A 主线）
+最后更新：2026-05-10 by Codex（Pulse 质量主线 + Pizza snapshot 三套 preview）+ Claude (Opus 4.7)（Mode A 主线）
 
 > 本周两条主线并行：
 > 1. **Pulse 质量改进**（by Codex）—— `pulse:positions` / market binding / PnL ledger / position research / web snapshot
@@ -19,6 +19,10 @@
   - `services/orchestrator/src/lib/execution-planning.ts`
   - `services/orchestrator/src/review/position-review.ts`
   - `apps/web/lib/trading-snapshot.ts`
+- Pizza snapshot 三套非 production 预览：
+  - Folio：`https://autopoly-pizza-spectator-eixznt54x-alchemist-xs-projects.vercel.app/previews/pizza-ledger-folio`
+  - Terminal：`https://autopoly-pizza-spectator-eixznt54x-alchemist-xs-projects.vercel.app/previews/pizza-ledger-terminal`
+  - Exchange：`https://autopoly-pizza-spectator-eixznt54x-alchemist-xs-projects.vercel.app/previews/pizza-ledger-exchange`
 - position-only Pulse 入口：`ENV_FILE=.env.pizza pnpm pulse:positions -- --json`
 - 最近只读复审归档：`runtime-artifacts/pulse-live/2026-05-08T020947Z-245b4933-880f-47d7-ae86-75d5ffb8b81e/`
 - 最近 Pulse 报告：`runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md`
@@ -40,6 +44,7 @@
 - **执行路径加固**：execution planning 增加 market binding 校验、outcome label 传递、订单簿去重预取；executor queue 支持显式 `execution_amount` / `execution_unit`。
 - **持续运行/派发工具**：新增 `agent-persistent-runner` 和 `execution-dispatch`，用于把 recommendation 转为可派发订单计划，支持 mock executor。
 - **Web snapshot 页面**：根页面切到 `ProphetsProfitSnapshot`，新增 `/api/public/trading-snapshot`、`trading-snapshot.ts`、`pulse-position-review.json`、`trading-snapshot-config.json` 和对应样式。
+- **Pizza snapshot 三套预览**：在不切 production 的前提下新增 `/previews/pizza-ledger-folio`、`/previews/pizza-ledger-terminal`、`/previews/pizza-ledger-exchange`。三版共用同一份 Pizza/Polymarket 数据和 ledger 信息结构，只替换视觉风格；首页仍保留原 `variant="original"`。
 - **文档和评估资料**：新增 Pulse quality improvement plan、evaluation 目录、agent swarm prompt、handoff/onboarding 更新。
 
 ## 最近验证
@@ -50,6 +55,13 @@
   - 9 个 workspace projects 通过。
 - `ENV_FILE=.env.pizza pnpm pulse:positions -- --json`
   - 成功，`recommend-only`，`executablePlans=0`，没有下单。
+- Pizza snapshot preview：
+  - `pnpm --filter @autopoly/web typecheck` 通过。
+  - `pnpm --filter @autopoly/web build` 通过。
+  - 本地 `http://localhost:3007` 三条 preview route Playwright 通过，console/page error = 0，移动端 `overflowPx=0`。
+  - Vercel preview `dpl_D3VdKtc1YZ6YTxXSn2qRg7DGgC1P` 已 Ready，`target=preview`；线上三条 preview route Playwright 通过，确认 `$500.00` 起始资金和 `34 fills`。实时 mark 验收时约为 `ending_nav=$554.25`、`roi=+10.85%`。
+  - 截图：`output/playwright/pizza-preview-{folio,terminal,exchange}.png`、`output/playwright/pizza-preview-live-{folio,terminal,exchange}.png`。
+  - **没有执行 `vercel deploy --prod`，正式 `https://autopoly-pizza-spectator.vercel.app` 未切换。**
 
 ## 最近持仓复审结论
 
@@ -64,6 +76,7 @@
 - `docs/en/agent-handoff.md` 仍有 “Translation pending” 提示；英文版已经追加 2026-05-08/05-10 内容，commit 前确认这句是否还准确。
 - Web snapshot 新增 public JSON 是当前展示数据源；如果要提交它，确认这是期望的静态快照，不是临时导出。
 - `apps/web/public/pulse-position-review.json` 是从 2026-05-08 position-only Pulse 归档抽取的公开摘要；下次跑 `pulse:positions` 后需要自动或手动刷新，否则前端 rationale 会落后于真实持仓复审。
+- Vercel preview 注意：最终评审入口是 `autopoly-pizza-spectator-eixznt54x...` 这个部署。中间 preview `dpl_BLwwnqngFevVbmHFSPBQo2LyTyxz` 使用了错误 preview env，页面会显示 `0 fills / $11,842.77 NAV`，不要拿它做人工 review。
 - 这批改动跨度很大，建议至少拆成 4 个 commit：
   - Pulse 持仓/edge 流程：`pulse:positions`、position-only Pulse、parser/runtime/position-review。
   - 执行/派发加固：market binding、订单簿 prefetch/cache、poly-cli 默认关闭、queue worker execution amount、persistent runner/dispatch。
@@ -74,7 +87,7 @@
 ## 下次回来要做（主线 1 · Pulse 质量）
 
 - 补齐 Crude 市场规则和 CL/WTI 数据后，重跑 `pulse:positions`，确认是否能生成非零 edge。
-- 对 Web snapshot 跑一次本地页面验收，确认移动端/桌面布局和 API 数据都正常。
+- 从 Folio / Terminal / Exchange 三个 Pizza snapshot preview 里选一个方向；选定后再单独做 production promote，不要直接复用 preview URL 当正式切换。
 - 提交前重新跑 `pnpm typecheck` 和全量 `pnpm test`；若 web 改动继续保留，补一个前端 smoke 或截图验证。
 - 决定 `.claude/worktrees/`、`.claude/settings.local.json`、runtime 产物、public snapshot JSON 的提交策略。
 - 把 `pulse-position-review.json` 的生成从手动快照变成 `pulse:positions` 成功后的稳定导出步骤。
@@ -203,7 +216,7 @@ docs/internal/review/2026-05-04-betmoar-and-computer-use-research.md
 | 🔴 | Crude 市场规则 + CL/WTI 数据补全 | Pulse | 调研 |
 | 🟠 | Privy session signer 配置 → live mode 第一单 | Mode A | 用户操作 |
 | 🟠 | Pulse pulse-position-research 自动跑 + 输出 | Pulse | Codex |
-| 🟡 | Web snapshot 本地页面验收 | Pulse | Codex |
+| 🟡 | Pizza snapshot 三套 preview 选型 → 后续 production promote | Pulse/Web | 用户拍板 |
 | 🟡 | Privy connect-wallet 真注册 + cron 部署 | Mode A | 用户操作 |
 | 🟢 | 设计资源 §2 五方向拍板 → §9.1 落地 | Mode A | 用户拍板 |
 | 🟢 | Polymarket Verified tier 申请 | Mode A | mail builder@polymarket.com |

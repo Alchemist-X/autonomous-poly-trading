@@ -1,7 +1,7 @@
 # Handoff 0510 — Pre-Commit Wrap-Up
 
 Last updated: 2026-05-10
-- Track 1 (Pulse quality) by Codex
+- Track 1 (Pulse quality + Pizza snapshot previews) by Codex
 - Track 2 (Mode A managed product) by Claude (Opus 4.7)
 
 > Two parallel tracks this week:
@@ -21,6 +21,10 @@ Last updated: 2026-05-10
   - `services/orchestrator/src/lib/execution-planning.ts`
   - `services/orchestrator/src/review/position-review.ts`
   - `apps/web/lib/trading-snapshot.ts`
+- Three non-production Pizza snapshot previews:
+  - Folio: `https://autopoly-pizza-spectator-eixznt54x-alchemist-xs-projects.vercel.app/previews/pizza-ledger-folio`
+  - Terminal: `https://autopoly-pizza-spectator-eixznt54x-alchemist-xs-projects.vercel.app/previews/pizza-ledger-terminal`
+  - Exchange: `https://autopoly-pizza-spectator-eixznt54x-alchemist-xs-projects.vercel.app/previews/pizza-ledger-exchange`
 - Position-only Pulse entry point: `ENV_FILE=.env.pizza pnpm pulse:positions -- --json`
 - Latest read-only review archive: `runtime-artifacts/pulse-live/2026-05-08T020947Z-245b4933-880f-47d7-ae86-75d5ffb8b81e/`
 - Latest Pulse report: `runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md`
@@ -42,6 +46,7 @@ Last updated: 2026-05-10
 - **Execution path hardening**: execution planning now has market-binding checks, outcome-label propagation, and deduped orderbook prefetch; the executor queue honors explicit `execution_amount` / `execution_unit`.
 - **Persistent run / dispatch tooling**: added `agent-persistent-runner` and `execution-dispatch` to convert recommendations into dispatchable order plans, with mock executor support.
 - **Web snapshot page**: the root page now renders `ProphetsProfitSnapshot`; added `/api/public/trading-snapshot`, `trading-snapshot.ts`, `pulse-position-review.json`, `trading-snapshot-config.json`, and styles.
+- **Three Pizza snapshot previews**: added `/previews/pizza-ledger-folio`, `/previews/pizza-ledger-terminal`, and `/previews/pizza-ledger-exchange` without changing production. All three share the same Pizza/Polymarket data and ledger information structure, but use different visual treatments; the home page still defaults to `variant="original"`.
 - **Docs and evaluation material**: added the Pulse quality improvement plan, `evaluation/`, the agent swarm prompt, and handoff/onboarding updates.
 
 ## Latest Verification
@@ -52,6 +57,13 @@ Last updated: 2026-05-10
   - 9 workspace projects passed.
 - `ENV_FILE=.env.pizza pnpm pulse:positions -- --json`
   - Succeeded in `recommend-only` mode with `executablePlans=0`; no orders were placed.
+- Pizza snapshot preview:
+  - `pnpm --filter @autopoly/web typecheck` passed.
+  - `pnpm --filter @autopoly/web build` passed.
+  - Local `http://localhost:3007` passed Playwright checks for all three preview routes, with 0 console/page errors and mobile `overflowPx=0`.
+  - Vercel preview deploy `dpl_D3VdKtc1YZ6YTxXSn2qRg7DGgC1P` is Ready with `target=preview`; all three online preview routes passed Playwright checks and showed the Pizza data markers: `$500.00` starting capital and `34 fills`. At verification time, live marks were about `ending_nav=$554.25` and `roi=+10.85%`.
+  - Screenshots: `output/playwright/pizza-preview-{folio,terminal,exchange}.png` and `output/playwright/pizza-preview-live-{folio,terminal,exchange}.png`.
+  - **Did not run `vercel deploy --prod`; production `https://autopoly-pizza-spectator.vercel.app` was not changed.**
 
 ## Latest Position Review
 
@@ -66,6 +78,7 @@ Last updated: 2026-05-10
 - `docs/en/agent-handoff.md` still contains a “Translation pending” note. The English version now has 2026-05-08/05-10 additions, so confirm whether that note is still accurate.
 - The new web public JSON files are data sources for the snapshot view. Confirm they are intended static snapshots, not temporary exports.
 - `apps/web/public/pulse-position-review.json` is a public summary extracted from the 2026-05-08 position-only Pulse archive. Refresh it after the next `pulse:positions` run, otherwise frontend rationales will lag the real position review.
+- Vercel preview note: the final review entry point is the `autopoly-pizza-spectator-eixznt54x...` deployment. Intermediate preview `dpl_BLwwnqngFevVbmHFSPBQo2LyTyxz` used the wrong preview environment and shows `0 fills / $11,842.77 NAV`; do not use it for human review.
 - This is a wide change set. Suggested commit split:
   - Pulse position/edge flow: `pulse:positions`, position-only Pulse, parser/runtime/position review.
   - Execution/dispatch hardening: market binding, orderbook prefetch/cache, poly-cli default-off, queue worker execution amount, persistent runner/dispatch.
@@ -76,7 +89,7 @@ Last updated: 2026-05-10
 ## Next Time
 
 - Fetch Crude settlement rules and CL/WTI data, then rerun `pulse:positions` to see whether Pulse can produce a non-zero edge.
-- Smoke-test the web snapshot locally and check desktop/mobile layout plus API data.
+- Pick one of the Folio / Terminal / Exchange Pizza snapshot previews; only after a choice should a separate production promote be done.
 - Re-run `pnpm typecheck` and the full `pnpm test` before pushing; if the web changes stay, add a frontend smoke or screenshot check.
 - Decide the commit policy for `.claude/worktrees/`, `.claude/settings.local.json`, runtime artifacts, and public snapshot JSON.
 - Turn `pulse-position-review.json` generation from a manual snapshot into a stable export step after successful `pulse:positions` runs.
@@ -179,7 +192,7 @@ End-to-end pipeline ran clean, **0 bugs**. Archive: `runtime-artifacts/managed-p
 | 🔴 | Fetch Crude settlement rules + CL/WTI data | Pulse | Research |
 | 🟠 | Privy session signer config → first live order | Mode A | User action |
 | 🟠 | Pulse pulse-position-research scheduled + emitted | Pulse | Codex |
-| 🟡 | Local web snapshot acceptance | Pulse | Codex |
+| 🟡 | Pick Pizza snapshot preview → later production promote | Pulse/Web | User decision |
 | 🟡 | Privy connect-wallet real registration + cron deploy | Mode A | User action |
 | 🟢 | Lock design §2 five directions + execute §9.1 | Mode A | User decision |
 | 🟢 | Polymarket Verified tier application | Mode A | mail builder@polymarket.com |
