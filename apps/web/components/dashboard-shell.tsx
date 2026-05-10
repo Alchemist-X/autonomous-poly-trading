@@ -18,6 +18,10 @@ const navItems = [
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
+  if (pathname === "/") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="dash-shell">
       <header className="dash-topbar">

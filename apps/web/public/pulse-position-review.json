@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "source_artifact": "runtime-artifacts/pulse-live/2026-05-08T020947Z-245b4933-880f-47d7-ae86-75d5ffb8b81e/recommendation.json",
+  "generated_at_utc": "2026-05-08T02:16:10.951Z",
+  "pulse_markdown_path": "runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md",
+  "reviews": [
+    {
+      "token_id": "40500786266115784696858368154506920890106180836334235374409785583411080531337",
+      "market_slug": "will-crude-oil-cl-hit-high-115-by-end-of-june-217-913-468-473",
+      "event_slug": "will-crude-oil-cl-hit-high-115-by-end-of-june-217-913-468-473",
+      "outcome_label": "No",
+      "action": "hold",
+      "ai_prob": 0.48,
+      "market_prob": 0.48,
+      "edge": 0,
+      "confidence": "medium",
+      "thesis_md": "Dedicated position research refreshed this holding without producing a same-market opposing Pulse plan. Keep it unchanged while treating the position as reviewed, not stale.",
+      "generated_at_utc": "2026-05-08T02:16:10.951Z",
+      "pulse_markdown_path": "runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md",
+      "sources": [
+        {
+          "title": "Current position context",
+          "url": "runtime-context://positions/335cd8e7-e44e-4da5-adc4-c45c11cd3a33",
+          "retrieved_at_utc": "2026-05-08T02:16:10.951Z"
+        },
+        {
+          "title": "Polymarket event",
+          "url": "https://polymarket.com/event/will-crude-oil-cl-hit-high-115-by-end-of-june-217-913-468-473",
+          "retrieved_at_utc": "2026-05-08T02:10:31.826Z"
+        }
+      ]
+    },
+    {
+      "token_id": "6638895201070039547671726076818069674458322142629985177641367819559425166288",
+      "market_slug": "will-delcy-rodrguez-be-the-leader-of-venezuela-end-of-2026",
+      "event_slug": "will-delcy-rodrguez-be-the-leader-of-venezuela-end-of-2026",
+      "outcome_label": "No",
+      "action": "hold",
+      "ai_prob": 0.85,
+      "market_prob": 0.755,
+      "edge": 0.095,
+      "confidence": "medium",
+      "thesis_md": "Pulse still supports the current No thesis for this position. 这是一个典型 longshot 类市场：戏剧性叙事（独裁者下台 + 接班）天然吸引投机资金，市场价 24.5% 包含明显的 longshot bias 溢价。基础概率应远低于这个数字——Maduro 健在且仍掌握军方与法院；即便政权松动，Delcy 也仅是若干潜在继任者之一。AI 估 ~15% 留出了制裁强化、军方哗变等尾部情景的余地。No 侧 ~9.5% edge 在 7 个仓位中最大。",
+      "generated_at_utc": "2026-05-08T02:16:10.951Z",
+      "pulse_markdown_path": "runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md",
+      "sources": [
+        {
+          "title": "Current position context",
+          "url": "runtime-context://positions/59aad1fa-55fd-460f-9b1b-21fe539582b1",
+          "retrieved_at_utc": "2026-05-08T02:16:10.951Z"
+        },
+        {
+          "title": "Pulse market source",
+          "url": "https://polymarket.com/event/will-delcy-rodrguez-be-the-leader-of-venezuela-end-of-2026",
+          "retrieved_at_utc": "2026-05-08T02:10:44.086Z"
+        }
+      ]
+    },
+    {
+      "token_id": "46955778407439783468859052837985793249006652932715101652741257747909716565323",
+      "market_slug": "will-charles-leclerc-be-the-2026-f1-drivers-champion",
+      "event_slug": "will-charles-leclerc-be-the-2026-f1-drivers-champion",
+      "outcome_label": "No",
+      "action": "hold",
+      "ai_prob": 0.965,
+      "market_prob": 0.9505,
+      "edge": 0.0145,
+      "confidence": "medium",
+      "thesis_md": "Pulse still supports the current No thesis, but only with a weak residual edge. Hold for now and review sizing manually. 价格 4.95% Yes 略高于车手历史基准与 2026 新规年 Ferrari 不利的常识基准；No 侧 1-2% 微 edge。仓位已接近上限（0.95），剩余可赚空间仅 5%。若赛季前几站 Leclerc 表现拉胯，No 价格有望进一步上涨；若 Ferrari 突现统治力，Yes 反弹空间也有限（除非积分领先 30+）。",
+      "generated_at_utc": "2026-05-08T02:16:10.951Z",
+      "pulse_markdown_path": "runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md",
+      "sources": [
+        {
+          "title": "Current position context",
+          "url": "runtime-context://positions/192a217b-5ba9-40f8-9535-84abf01ad4b2",
+          "retrieved_at_utc": "2026-05-08T02:16:10.951Z"
+        },
+        {
+          "title": "Pulse market source",
+          "url": "https://polymarket.com/event/will-charles-leclerc-be-the-2026-f1-drivers-champion",
+          "retrieved_at_utc": "2026-05-08T02:10:44.086Z"
+        }
+      ]
+    },
+    {
+      "token_id": "90952672732964538906499472921009498563693537785116296495774276488275756476013",
+      "market_slug": "will-there-be-at-least-12500-measles-cases-in-the-us-in-2026-512-499",
+      "event_slug": "will-there-be-at-least-12500-measles-cases-in-the-us-in-2026-512-499",
+      "outcome_label": "No",
+      "action": "hold",
+      "ai_prob": 0.96,
+      "market_prob": 0.92,
+      "edge": 0.04,
+      "confidence": "medium",
+      "thesis_md": "Pulse still supports the current No thesis, but only with a weak residual edge. Hold for now and review sizing manually. 12,500 例是上世纪 90 年代以来未见的级别——典型 longshot 市场。市场 8% Yes 价位虽然相对克制，但仍体现一定 longshot 溢价。AI 估算 ~4% Yes 包含了对疫苗接种率下滑与近期局部 outbreak 趋势的尾部风险加权。No 侧 ~4% edge，方向一致。",
+      "generated_at_utc": "2026-05-08T02:16:10.951Z",
+      "pulse_markdown_path": "runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md",
+      "sources": [
+        {
+          "title": "Current position context",
+          "url": "runtime-context://positions/03f0fdeb-6a1d-414a-8255-bd086dd97d2d",
+          "retrieved_at_utc": "2026-05-08T02:16:10.951Z"
+        },
+        {
+          "title": "Pulse market source",
+          "url": "https://polymarket.com/event/will-there-be-at-least-12500-measles-cases-in-the-us-in-2026-512-499",
+          "retrieved_at_utc": "2026-05-08T02:10:44.086Z"
+        }
+      ]
+    },
+    {
+      "token_id": "109716724019363983618880291507628426436817303220087305938342349144073848356715",
+      "market_slug": "will-finland-win-eurovision-2026",
+      "event_slug": "will-finland-win-eurovision-2026",
+      "outcome_label": "No",
+      "action": "hold",
+      "ai_prob": 0.62,
+      "market_prob": 0.5785,
+      "edge": 0.0415,
+      "confidence": "low",
+      "thesis_md": "Pulse still supports the current No thesis, but only with a weak residual edge. Hold for now and review sizing manually. 仓位已浮亏 8.8%，原因是入场后 Finland Yes 价从约 36-37% 反弹到 42% 区间，市场对 Finland 信心增强。即便如此，单国冠军概率达到 42% 已属偏高（历史上能稳过 50% 的\"绝对热门\"罕见），AI 估算 38% 隐含 No 侧仍有约 4% edge。但置信度低——Pulse 上下文没有给到半决赛、博彩对比、歌曲反馈这些关键信号；如果 Finland 已经在半决赛展现压倒性优势，AI 估算应上调，No 侧 edge 可能被压缩或反转。",
+      "generated_at_utc": "2026-05-08T02:16:10.951Z",
+      "pulse_markdown_path": "runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md",
+      "sources": [
+        {
+          "title": "Current position context",
+          "url": "runtime-context://positions/d30c4545-1f67-44bf-a414-2d419e222a3b",
+          "retrieved_at_utc": "2026-05-08T02:16:10.951Z"
+        },
+        {
+          "title": "Pulse market source",
+          "url": "https://polymarket.com/event/will-finland-win-eurovision-2026",
+          "retrieved_at_utc": "2026-05-08T02:10:44.086Z"
+        }
+      ]
+    },
+    {
+      "token_id": "32270411694523539495262303868629477861017829722282576458031815333486368239544",
+      "market_slug": "will-france-win-the-2026-fifa-world-cup-924",
+      "event_slug": "will-france-win-the-2026-fifa-world-cup-924",
+      "outcome_label": "No",
+      "action": "hold",
+      "ai_prob": 0.86,
+      "market_prob": 0.8315,
+      "edge": 0.0285,
+      "confidence": "medium",
+      "thesis_md": "Pulse still supports the current No thesis, but only with a weak residual edge. Hold for now and review sizing manually. 法国是顶级争冠候选，14-17% 区间可接受。市场 16.85% Yes 略乐观（受近两届成绩与 Mbappé 光环驱动），但 48 队赛制 + 北美举办的时差/气候因素压低 Edge 估值。No 侧 ~3% 微 edge，边际利润有限。",
+      "generated_at_utc": "2026-05-08T02:16:10.951Z",
+      "pulse_markdown_path": "runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md",
+      "sources": [
+        {
+          "title": "Current position context",
+          "url": "runtime-context://positions/9b2b5780-189d-45c7-b113-558037eafe80",
+          "retrieved_at_utc": "2026-05-08T02:16:10.951Z"
+        },
+        {
+          "title": "Pulse market source",
+          "url": "https://polymarket.com/event/will-france-win-the-2026-fifa-world-cup-924",
+          "retrieved_at_utc": "2026-05-08T02:10:44.086Z"
+        }
+      ]
+    },
+    {
+      "token_id": "77121637225348873006259930776623502125079210522997384841464684944292365296940",
+      "market_slug": "will-england-win-the-2026-fifa-world-cup-937",
+      "event_slug": "will-england-win-the-2026-fifa-world-cup-937",
+      "outcome_label": "No",
+      "action": "hold",
+      "ai_prob": 0.91,
+      "market_prob": 0.8895000000000001,
+      "edge": 0.0205,
+      "confidence": "medium",
+      "thesis_md": "Pulse still supports the current No thesis, but only with a weak residual edge. Hold for now and review sizing manually. 英格兰是大赛常客但夺冠次数仅 1966 一次，作为 32 强中的次级热门，9-12% Yes 概率已计入其强阵容。市场 11.05% 略偏高于历史频率参照下的合理值（约 8-10%），No 侧仍有约 2% 微 edge。当前价 0.889 接近上限，边际收益有限。",
+      "generated_at_utc": "2026-05-08T02:16:10.951Z",
+      "pulse_markdown_path": "runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md",
+      "sources": [
+        {
+          "title": "Current position context",
+          "url": "runtime-context://positions/58782f73-e624-43a2-8b96-e712e9843b15",
+          "retrieved_at_utc": "2026-05-08T02:16:10.951Z"
+        },
+        {
+          "title": "Pulse market source",
+          "url": "https://polymarket.com/event/will-england-win-the-2026-fifa-world-cup-937",
+          "retrieved_at_utc": "2026-05-08T02:10:44.086Z"
+        }
+      ]
+    }
+  ]
+}

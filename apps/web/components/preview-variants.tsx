@@ -57,6 +57,24 @@ const previewRoutes = [
     name: "版本 I",
     title: "Clusters",
     summary: "把持仓按政治、体育、宏观等主题分组，并且所有市场都跳 Polymarket。"
+  },
+  {
+    href: "/previews/pizza-ledger-folio",
+    name: "Pizza A",
+    title: "Folio",
+    summary: "沿用 Pizza 实盘数据和原 ledger 信息结构，但改成偏研究简报的纸面卡片风格。"
+  },
+  {
+    href: "/previews/pizza-ledger-terminal",
+    name: "Pizza B",
+    title: "Terminal",
+    summary: "沿用同一组 Pizza 交易数据，改成高密度 operator terminal 风格，适合频繁扫盘。"
+  },
+  {
+    href: "/previews/pizza-ledger-exchange",
+    name: "Pizza C",
+    title: "Exchange",
+    summary: "沿用同一组 Pizza 交易数据，改成清爽券商看板风格，强调 NAV、ROI 和 ledger 可读性。"
   }
 ] as const;
 

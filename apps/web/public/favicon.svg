@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="#16a34a" stroke="#0f6f33" stroke-width="1.5"/>
+  <!-- Upward trend line -->
+  <polyline
+    points="5,23 11,17 16,19 22,11 27,7"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Arrow head -->
+  <polyline
+    points="23,7 27,7 27,11"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

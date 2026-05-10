@@ -11,7 +11,10 @@ const previewItems = [
   { href: "/previews/balancer-flow", label: "版本 F · Balancer Flow" },
   { href: "/previews/nav", label: "版本 G · NAV Beacon" },
   { href: "/previews/terminal", label: "版本 H · Terminal" },
-  { href: "/previews/clusters", label: "版本 I · Clusters" }
+  { href: "/previews/clusters", label: "版本 I · Clusters" },
+  { href: "/previews/pizza-ledger-folio", label: "Pizza A · Folio" },
+  { href: "/previews/pizza-ledger-terminal", label: "Pizza B · Terminal" },
+  { href: "/previews/pizza-ledger-exchange", label: "Pizza C · Exchange" }
 ];
 
 export default function PreviewLayout({ children }: { children: ReactNode }) {
