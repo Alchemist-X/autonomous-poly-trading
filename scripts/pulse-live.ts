@@ -18,7 +18,9 @@ import {
   fetchMarketBySlug,
   fetchRemotePositions,
   readBook,
+  resolvePolymarketSigningIdentity,
   type BookSnapshot,
+  type PolymarketSigningIdentity,
   type RemotePosition
 } from "../services/executor/src/lib/polymarket.ts";
 import { loadConfig as loadOrchestratorConfig } from "../services/orchestrator/src/config.ts";
@@ -109,6 +111,8 @@ interface PreflightReport {
   configuredMinTradeUsd: number;
   maxTradePct: number;
   maxEventExposurePct: number;
+  entryMaxPlans: number;
+  entryFixedNotionalUsd: number | null;
   collateral: {
     source: "reported" | "onchain" | "fallback";
     reportedUsd: number | null;
@@ -294,6 +298,8 @@ function buildArchivedPreflightReport(report: PreflightReport) {
       configuredMinTradeUsd: report.configuredMinTradeUsd,
       maxTradePct: report.maxTradePct,
       maxEventExposurePct: report.maxEventExposurePct,
+      entryMaxPlans: report.entryMaxPlans,
+      entryFixedNotionalUsd: report.entryFixedNotionalUsd,
       exchangeSizingRequired: true
     },
     gateChecks,
@@ -493,9 +499,19 @@ async function runPreflight(input: {
   orchestratorConfig: ReturnType<typeof loadOrchestratorConfig>;
   recommendOnly: boolean;
 }) {
+  const usesOnchainOsWallet = input.executorConfig.walletProvider === "onchainos";
+  let walletIdentity: PolymarketSigningIdentity | null = null;
+  let walletIdentityError: string | null = null;
+  try {
+    if (usesOnchainOsWallet || input.executorConfig.privateKey || input.executorConfig.funderAddress) {
+      walletIdentity = await resolvePolymarketSigningIdentity(input.executorConfig);
+    }
+  } catch (error) {
+    walletIdentityError = getErrorMessage(error);
+  }
   const remotePositions = await fetchRemotePositions(input.executorConfig);
   const collateralProbe = await probeCollateralBalanceUsd(input.executorConfig);
-  const signerAddress = input.executorConfig.privateKey
+  const privateKeySignerAddress = input.executorConfig.privateKey
     ? (() => {
         try {
           return new Wallet(input.executorConfig.privateKey).address;
@@ -504,10 +520,12 @@ async function runPreflight(input: {
         }
       })()
     : "";
+  const signerAddress = walletIdentity?.signerAddress ?? privateKeySignerAddress;
+  const funderAddress = walletIdentity?.funderAddress ?? input.executorConfig.funderAddress;
   const signerMatchesFunder =
     signerAddress &&
-    input.executorConfig.funderAddress &&
-    signerAddress.toLowerCase() === input.executorConfig.funderAddress.toLowerCase();
+    funderAddress &&
+    signerAddress.toLowerCase() === funderAddress.toLowerCase();
   const effectiveCollateralBalanceUsd = roundCurrency(
     collateralProbe.balanceUsd ?? input.orchestratorConfig.initialBankrollUsd
   );
@@ -531,22 +549,30 @@ async function runPreflight(input: {
     {
       key: "credentials",
       blocking: true,
-      ok: Boolean(input.executorConfig.privateKey && input.executorConfig.funderAddress),
-      summary: input.executorConfig.privateKey && input.executorConfig.funderAddress
-        ? "PRIVATE_KEY and FUNDER_ADDRESS are present."
-        : "Missing PRIVATE_KEY or FUNDER_ADDRESS."
+      ok: usesOnchainOsWallet ? walletIdentity != null : Boolean(input.executorConfig.privateKey && input.executorConfig.funderAddress),
+      summary: usesOnchainOsWallet
+        ? walletIdentity
+          ? `WALLET_PROVIDER=onchainos. Active signer ${maskAddressForDisplay(walletIdentity.signerAddress)}; Polymarket funder ${maskAddressForDisplay(walletIdentity.funderAddress)}; signatureType=${walletIdentity.signatureType}.`
+          : `WALLET_PROVIDER=onchainos, but wallet identity could not be resolved: ${walletIdentityError ?? "unknown error"}.`
+        : input.executorConfig.privateKey && input.executorConfig.funderAddress
+          ? "PRIVATE_KEY and FUNDER_ADDRESS are present."
+          : "Missing PRIVATE_KEY or FUNDER_ADDRESS."
     },
     {
       key: "signer-funder",
       blocking: false,
       ok: true,
-      summary: !signerAddress
+      summary: usesOnchainOsWallet
+        ? walletIdentity
+          ? `OnchainOS signer ${maskAddressForDisplay(walletIdentity.signerAddress)} trades through ${walletIdentity.walletMode} funder ${maskAddressForDisplay(walletIdentity.funderAddress)}.`
+          : "OnchainOS signer/funder alignment is unavailable until the wallet session resolves."
+        : !signerAddress
         ? "Unable to derive signer address from PRIVATE_KEY."
-        : !input.executorConfig.funderAddress
+        : !funderAddress
           ? "FUNDER_ADDRESS is missing."
           : signerMatchesFunder
             ? "Signer address matches FUNDER_ADDRESS."
-            : `Signer ${signerAddress} does not match FUNDER_ADDRESS ${input.executorConfig.funderAddress}. Proceeding in non-blocking mode (proxy/funder setup may be intentional).`
+            : `Signer ${signerAddress} does not match FUNDER_ADDRESS ${funderAddress}. Proceeding in non-blocking mode (proxy/funder setup may be intentional).`
     },
     {
       key: "collateral",
@@ -576,8 +602,8 @@ async function runPreflight(input: {
       executionMode: process.env.AUTOPOLY_EXECUTION_MODE ?? "live",
       decisionStrategy: input.orchestratorConfig.decisionStrategy,
       signerAddress,
-      funderAddress: input.executorConfig.funderAddress,
-      signerMatchesFunder: signerAddress && input.executorConfig.funderAddress
+      funderAddress,
+      signerMatchesFunder: signerAddress && funderAddress && walletIdentity?.walletMode !== "proxy"
         ? signerMatchesFunder
         : null,
       effectiveCollateralUsd: effectiveCollateralBalanceUsd,
@@ -586,6 +612,8 @@ async function runPreflight(input: {
       configuredMinTradeUsd: input.orchestratorConfig.minTradeUsd,
       maxTradePct: input.orchestratorConfig.maxTradePct,
       maxEventExposurePct: input.orchestratorConfig.maxEventExposurePct,
+      entryMaxPlans: input.orchestratorConfig.pulse.entryMaxPlans,
+      entryFixedNotionalUsd: input.orchestratorConfig.pulse.entryFixedNotionalUsd,
       collateral: {
         source: collateralProbe.source,
         reportedUsd: collateralProbe.reportedBalanceUsd,
@@ -922,6 +950,8 @@ export async function runPulseLive(args: Args = parseArgs()) {
         ["Remote Positions", String(preflight.report.remotePositionCount)],
         ["Fallback Bankroll", formatUsd(preflight.report.fallbackBankrollUsd)],
         ["Configured Min Trade", formatUsd(preflight.report.configuredMinTradeUsd)],
+        ["Entry Limit", `${preflight.report.entryMaxPlans} plan(s)`],
+        ["Fixed Entry Size", preflight.report.entryFixedNotionalUsd == null ? "-" : formatUsd(preflight.report.entryFixedNotionalUsd)],
         ["Max Trade", formatRatioPercent(preflight.report.maxTradePct)],
         ["Max Event Exposure", formatRatioPercent(preflight.report.maxEventExposurePct)],
         ["Wallet", maskAddressForDisplay(preflight.report.funderAddress)],
@@ -1279,11 +1309,18 @@ export async function runPulseLive(args: Args = parseArgs()) {
           additionalPaths: supplementalArtifactPaths
         }
       });
-      const equityResult = await appendEquitySnapshot({ overview });
+      const equityResult = await appendEquitySnapshot({
+        overview,
+        envFilePath: preflight.report.envFilePath
+      });
       if (useHumanOutput) {
         const printer = createTerminalPrinter();
-        printer.note("success", "Equity snapshot appended", `${equityResult.snapshotCount} total snapshots in ${equityResult.historyPath}`);
-        printer.note("warn", "Remember to commit + push", "equity-history.json must be pushed for the live chart to update on Vercel.");
+        if (equityResult.appended) {
+          printer.note("success", "Equity snapshot appended", `${equityResult.snapshotCount} total snapshots in ${equityResult.historyPath}`);
+          printer.note("warn", "Remember to commit + push", "equity-history.json must be pushed for the live chart to update on Vercel.");
+        } else {
+          printer.note("muted", "Equity snapshot skipped", equityResult.reason);
+        }
       }
       const output = {
         ok: true,
@@ -1397,11 +1434,18 @@ export async function runPulseLive(args: Args = parseArgs()) {
       }
     });
 
-    const equityResult = await appendEquitySnapshot({ overview: finalState.overview });
+    const equityResult = await appendEquitySnapshot({
+      overview: finalState.overview,
+      envFilePath: preflight.report.envFilePath
+    });
     if (useHumanOutput) {
       const printer = createTerminalPrinter();
-      printer.note("success", "Equity snapshot appended", `${equityResult.snapshotCount} total snapshots in ${equityResult.historyPath}`);
-      printer.note("warn", "Remember to commit + push", "equity-history.json must be pushed for the live chart to update on Vercel.");
+      if (equityResult.appended) {
+        printer.note("success", "Equity snapshot appended", `${equityResult.snapshotCount} total snapshots in ${equityResult.historyPath}`);
+        printer.note("warn", "Remember to commit + push", "equity-history.json must be pushed for the live chart to update on Vercel.");
+      } else {
+        printer.note("muted", "Equity snapshot skipped", equityResult.reason);
+      }
     }
     const output = {
       ok: true,

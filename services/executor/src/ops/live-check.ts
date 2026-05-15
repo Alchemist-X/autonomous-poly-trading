@@ -6,6 +6,7 @@ import {
   fetchMarketBySlug,
   getCollateralBalanceAllowance,
   readBook,
+  resolvePolymarketSigningIdentity,
   type BookSnapshot
 } from "../lib/polymarket.js";
 import {
@@ -50,7 +51,7 @@ function parseArgs() {
   return {
     json: has("--json"),
     shouldTrade: has("--trade"),
-    maxUsd: Math.min(1, Number(get("--max-usd", "1"))),
+    maxUsd: Number(get("--max-usd", "1")),
     direction: get("--direction", "auto").toLowerCase() as "auto" | "yes" | "no",
     slug: get("--slug", "")
   };
@@ -78,6 +79,10 @@ function parseNumberArray(value: unknown): number[] {
 function parseNumber(value: unknown, fallback = 0): number {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function maskAddress(address: string) {
+  return address ? `${address.slice(0, 6)}***${address.slice(-4)}` : "-";
 }
 
 function isReasonableBook(book: BookSnapshot | null, referencePrice: number): book is BookSnapshot {
@@ -202,6 +207,8 @@ async function fetchTopCandidate(config: ReturnType<typeof loadConfig>, directio
   pick: CandidatePick;
 }> {
   const markets = await fetchActiveMarkets(config, 100);
+  const preferred: CandidateMarket[] = [];
+  const fallbackRestricted: CandidateMarket[] = [];
 
   for (const market of markets) {
     const marketSlug = String(market.slug ?? "");
@@ -239,9 +246,15 @@ async function fetchTopCandidate(config: ReturnType<typeof loadConfig>, directio
       bestAsk,
       restricted: market.restricted === true
     };
-    const pick = await chooseTradeablePick(config, candidate, direction);
-    if (pick) {
-      return { candidate, pick };
+    (candidate.restricted ? fallbackRestricted : preferred).push(candidate);
+  }
+
+  for (const pool of [preferred, fallbackRestricted]) {
+    for (const candidate of pool) {
+      const pick = await chooseTradeablePick(config, candidate, direction);
+      if (pick) {
+        return { candidate, pick };
+      }
     }
   }
 
@@ -253,6 +266,8 @@ async function main() {
   const useHumanOutput = !args.json && shouldUseHumanOutput(process.stdout);
   const printer = createTerminalPrinter();
   const config = loadConfig();
+  const identity = await resolvePolymarketSigningIdentity(config).catch(() => null);
+  const funderAddress = identity?.funderAddress ?? config.funderAddress;
   const balance = await getCollateralBalanceAllowance(config);
   if (!balance) {
     throw new Error("No live Polymarket client available. Check env file discovery.");
@@ -276,7 +291,11 @@ async function main() {
   const { candidate, pick } = resolved;
   const snapshot = {
     envFilePath: config.envFilePath,
-    funderAddressPreview: `${config.funderAddress.slice(0, 6)}***${config.funderAddress.slice(-4)}`,
+    walletProvider: config.walletProvider ?? "private-key",
+    signerAddressPreview: identity ? maskAddress(identity.signerAddress) : "-",
+    funderAddressPreview: maskAddress(funderAddress),
+    walletMode: identity?.walletMode ?? null,
+    signatureType: identity?.signatureType ?? config.signatureType,
     usdcBalance,
     candidate: {
       eventSlug: candidate.eventSlug,
@@ -304,7 +323,11 @@ async function main() {
     printer.section(args.shouldTrade ? "Executor Live Trade" : "Executor Live Check");
     printer.table([
       ["Env File", config.envFilePath ?? "-"],
-      ["Wallet", snapshot.funderAddressPreview],
+      ["Wallet Provider", snapshot.walletProvider],
+      ["Signer", snapshot.signerAddressPreview],
+      ["Funder", snapshot.funderAddressPreview],
+      ["Wallet Mode", snapshot.walletMode ?? "-"],
+      ["Signature Type", String(snapshot.signatureType)],
       ["USDC Balance", formatUsd(snapshot.usdcBalance)],
       ["Market", candidate.marketSlug],
       ["Event", candidate.eventTitle],
@@ -336,8 +359,8 @@ async function main() {
     return;
   }
 
-  if (!(args.maxUsd > 0 && args.maxUsd <= 1)) {
-    throw new Error(`--max-usd must be > 0 and <= 1. Received ${args.maxUsd}`);
+  if (!(Number.isFinite(args.maxUsd) && args.maxUsd > 0 && args.maxUsd <= 5)) {
+    throw new Error(`--max-usd must be > 0 and <= 5. Received ${args.maxUsd}`);
   }
 
   if (useHumanOutput) {
@@ -364,6 +387,9 @@ async function main() {
       ...snapshot,
       trade: tradeOutput
     }, null, 2));
+    if (!result.ok) {
+      process.exitCode = 1;
+    }
     return;
   }
 
@@ -374,10 +400,16 @@ async function main() {
       ["Average Price", result.avgPrice == null ? "-" : result.avgPrice.toFixed(4)],
       ["Filled Notional", result.filledNotionalUsd == null ? "-" : formatUsd(result.filledNotionalUsd)]
     ]);
+    if (!result.ok) {
+      process.exitCode = 1;
+    }
     return;
   }
 
   console.log(JSON.stringify(tradeOutput, null, 2));
+  if (!result.ok) {
+    process.exitCode = 1;
+  }
 }
 
 main().catch((error) => {
@@ -398,7 +430,8 @@ main().catch((error) => {
     error,
     context: [["Command", "pnpm --filter @autopoly/executor ops:check"]],
     nextSteps: [
-      "Verify PRIVATE_KEY and FUNDER_ADDRESS in the active env file.",
+      "If WALLET_PROVIDER=private-key, verify PRIVATE_KEY and FUNDER_ADDRESS in the active env file.",
+      "If WALLET_PROVIDER=onchainos, run `onchainos wallet status` and log in again if the session expired.",
       "Retry with --json if you need machine-readable diagnostics."
     ]
   });

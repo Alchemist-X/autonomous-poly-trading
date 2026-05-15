@@ -10,7 +10,7 @@
 
 > This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [docs/en/README.md](docs/en/README.md) for the full English README.
 
-最后更新：2026-04-26
+最后更新：2026-05-15
 
 ---
 
@@ -53,6 +53,8 @@ Predict-Raven围绕**Market Pulse**这一核心组件设计：让 AI 自主评�
 预期：Agent 会跑 `pnpm install` + `pnpm build`，告诉你环境是否就绪。如果你电脑上还没装 Node.js / pnpm，它也会先把这两样装上。这一步不需要 Docker、也不需要真钱包。
 
 ### 2. 配置资金
+
+Predict-Raven 支持多种资金管理方式，包括社交登录（Google、TG）和 OKX Agentic Wallet。
 
 Polymarket 钱包凭据可以从 polymarket.com → Settings → Export Wallet 拿到。新建 `.env.live-test`（参考 `.env.example` 模板），把这 4 个字段填进去：
 

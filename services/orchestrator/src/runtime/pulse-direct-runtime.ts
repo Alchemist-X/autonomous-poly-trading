@@ -59,6 +59,7 @@ async function buildRuntimeLogArtifact(input: {
       `- 当前持仓数：${input.context.positions.length}`,
       `- 独立持仓研究数：${input.positionResearchCount}`,
       `- 已有仓位复审数：${input.reviewCount}`,
+      `- 开仓限制：最多 ${input.config.pulse.entryMaxPlans} 个${input.config.pulse.entryFixedNotionalUsd != null ? `；固定每单 $${input.config.pulse.entryFixedNotionalUsd}` : ""}`,
       `- ${input.context.reviewPositionsOnly ? "持仓概率复审计划数" : "新开仓候选数"}：${input.entryCount}`,
       `- 被去重跳过的新候选：${input.skippedEntryCount}`,
       `- 最终决策数：${input.decisions.length}`,
@@ -120,7 +121,9 @@ export class PulseDirectRuntime implements AgentRuntime {
   async run(context: RuntimeExecutionContext): Promise<RuntimeExecutionResult> {
     const entryPlans = buildPulseEntryPlans({
       context,
-      positionStopLossPct: this.config.positionStopLossPct
+      positionStopLossPct: this.config.positionStopLossPct,
+      maxPlans: this.config.pulse.entryMaxPlans,
+      fixedNotionalUsd: this.config.pulse.entryFixedNotionalUsd
     });
     const positionReviews = reviewCurrentPositions({
       context,
@@ -185,6 +188,7 @@ export class PulseDirectRuntime implements AgentRuntime {
         `独立持仓研究数：${context.positionResearch?.length ?? 0}`,
         `已有仓位复审数：${positionReviews.length}`,
         `已有仓位复审动作：hold ${reviewActionCounts.hold} / reduce ${reviewActionCounts.reduce} / close ${reviewActionCounts.close}`,
+        `开仓限制：最多 ${this.config.pulse.entryMaxPlans} 个${this.config.pulse.entryFixedNotionalUsd != null ? `；固定每单 $${this.config.pulse.entryFixedNotionalUsd}` : ""}`,
         `${context.reviewPositionsOnly ? "Pulse 持仓概率复审计划数" : "Pulse 开仓候选数"}：${entryPlans.length}`,
         `被去重跳过的开仓候选数：${composition.skippedEntries.length}`,
         `最终决策数：${decisions.length}`

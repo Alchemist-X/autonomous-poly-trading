@@ -3,6 +3,12 @@ import { ClobClient, OrderType, Side, type Chain } from "@polymarket/clob-client
 import { buildPaperOrderResult } from "@autopoly/contracts";
 import { Wallet } from "ethers";
 import type { ExecutorConfig } from "../config.js";
+import {
+  OkxAgenticSigner,
+  type ExecutorWalletProvider,
+  resolveOnchainOsAddress,
+  resolveWalletProvider
+} from "./okx-agentic-wallet.js";
 
 // Polymarket Conditional Tokens Framework (ERC1155) on Polygon — unchanged across V1/V2
 const CTF_CONTRACT = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045";
@@ -36,6 +42,19 @@ export interface RemotePosition {
 
 export type GammaRecord = Record<string, unknown>;
 
+interface PolymarketPublicProfile {
+  proxyWallet?: string | null;
+}
+
+export interface PolymarketSigningIdentity {
+  walletProvider: ExecutorWalletProvider;
+  signerAddress: string;
+  funderAddress: string;
+  signatureType: number;
+  walletMode: "eoa" | "proxy";
+  proxyWallet: string | null;
+}
+
 let cachedClientPromise: Promise<ClobClient | null> | null = null;
 
 function errorMessage(error: unknown): string {
@@ -43,6 +62,134 @@ function errorMessage(error: unknown): string {
     return error.message;
   }
   return String(error);
+}
+
+function hasApiCredentials(value: unknown): value is { key: string; secret: string; passphrase: string } {
+  if (value == null || typeof value !== "object") {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+  return [candidate.key, candidate.secret, candidate.passphrase].every(
+    (field) => typeof field === "string" && field.trim().length > 0
+  );
+}
+
+function normalizeAddress(value: string | null | undefined) {
+  const trimmed = value?.trim();
+  if (!trimmed || !/^0x[0-9a-fA-F]{40}$/.test(trimmed)) {
+    return null;
+  }
+  return trimmed.toLowerCase();
+}
+
+function resolveProxySignatureType(signatureType: number) {
+  if (signatureType === 1 || signatureType === 2 || signatureType === 3) {
+    return signatureType;
+  }
+  return 3;
+}
+
+export async function fetchPolymarketProxyWallet(address: string): Promise<string | null> {
+  const normalizedAddress = normalizeAddress(address);
+  if (!normalizedAddress) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      `https://gamma-api.polymarket.com/public-profile?address=${encodeURIComponent(normalizedAddress)}`,
+      {
+        headers: {
+          "user-agent": "@autopoly/executor"
+        }
+      }
+    );
+
+    if (response.status === 404) {
+      return null;
+    }
+    if (!response.ok) {
+      throw new Error(`profile lookup failed: ${response.status}`);
+    }
+
+    const profile = (await response.json()) as PolymarketPublicProfile;
+    const proxyWallet = normalizeAddress(profile.proxyWallet);
+    if (!proxyWallet || proxyWallet === normalizedAddress) {
+      return null;
+    }
+    return proxyWallet;
+  } catch {
+    return null;
+  }
+}
+
+export async function resolvePolymarketSigningIdentity(
+  config: Pick<ExecutorConfig, "walletProvider" | "privateKey" | "funderAddress" | "signatureType" | "onchainosBin">
+): Promise<PolymarketSigningIdentity> {
+  const walletProvider = resolveWalletProvider(config);
+  if (walletProvider === "private-key") {
+    if (!config.privateKey) {
+      throw new Error("PRIVATE_KEY is required in private-key mode.");
+    }
+    const signerAddress = normalizeAddress(new Wallet(config.privateKey).address);
+    if (!signerAddress) {
+      throw new Error("Unable to derive signer address from PRIVATE_KEY.");
+    }
+    const funderAddress = normalizeAddress(config.funderAddress) ?? signerAddress;
+    const walletMode = funderAddress === signerAddress && config.signatureType === 0 ? "eoa" : "proxy";
+    return {
+      walletProvider,
+      signerAddress,
+      funderAddress,
+      signatureType: walletMode === "proxy" ? resolveProxySignatureType(config.signatureType) : 0,
+      walletMode,
+      proxyWallet: walletMode === "proxy" ? funderAddress : null
+    };
+  }
+
+  const signerAddress = normalizeAddress(await resolveOnchainOsAddress(config));
+  if (!signerAddress) {
+    throw new Error("Unable to resolve an OnchainOS signer address.");
+  }
+
+  const explicitFunderAddress = normalizeAddress(config.funderAddress);
+  if (explicitFunderAddress) {
+    const walletMode = explicitFunderAddress === signerAddress && config.signatureType === 0 ? "eoa" : "proxy";
+    return {
+      walletProvider,
+      signerAddress,
+      funderAddress: explicitFunderAddress,
+      signatureType: walletMode === "proxy" ? resolveProxySignatureType(config.signatureType) : 0,
+      walletMode,
+      proxyWallet: walletMode === "proxy" ? explicitFunderAddress : null
+    };
+  }
+
+  const proxyWallet = await fetchPolymarketProxyWallet(signerAddress);
+  if (proxyWallet) {
+    return {
+      walletProvider,
+      signerAddress,
+      funderAddress: proxyWallet,
+      signatureType: resolveProxySignatureType(config.signatureType),
+      walletMode: "proxy",
+      proxyWallet
+    };
+  }
+
+  return {
+    walletProvider,
+    signerAddress,
+    funderAddress: signerAddress,
+    signatureType: 0,
+    walletMode: "eoa",
+    proxyWallet: null
+  };
+}
+
+export async function resolvePolymarketFunderAddress(config: ExecutorConfig): Promise<string> {
+  const identity = await resolvePolymarketSigningIdentity(config);
+  return identity.funderAddress;
 }
 
 async function resolveApiCredentials(boot: ClobClient) {
@@ -53,9 +200,10 @@ async function resolveApiCredentials(boot: ClobClient) {
   if (deriveCreds) {
     try {
       const derived = await deriveCreds();
-      if (derived) {
+      if (hasApiCredentials(derived)) {
         return derived;
       }
+      lastError = new Error(`deriveApiKey returned an invalid credential payload: ${JSON.stringify(derived)}`);
     } catch (error) {
       lastError = error;
     }
@@ -64,9 +212,10 @@ async function resolveApiCredentials(boot: ClobClient) {
   if (createCreds) {
     try {
       const created = await createCreds();
-      if (created) {
+      if (hasApiCredentials(created)) {
         return created;
       }
+      lastError = new Error(`createOrDeriveApiKey returned an invalid credential payload: ${JSON.stringify(created)}`);
     } catch (error) {
       lastError = error;
     }
@@ -80,18 +229,22 @@ async function resolveApiCredentials(boot: ClobClient) {
 }
 
 export async function getClobClient(config: ExecutorConfig): Promise<ClobClient | null> {
-  if (!config.privateKey || !config.funderAddress) {
+  const walletProvider = resolveWalletProvider(config);
+  if (walletProvider === "private-key" && (!config.privateKey || !config.funderAddress)) {
     return null;
   }
 
   if (!cachedClientPromise) {
     cachedClientPromise = (async () => {
       try {
-        const signer = new Wallet(config.privateKey);
+        const signer = walletProvider === "onchainos"
+          ? new OkxAgenticSigner(config)
+          : new Wallet(config.privateKey);
+        const identity = await resolvePolymarketSigningIdentity(config);
         const boot = new ClobClient({
           host: config.polymarketHost,
           chain: config.chainId as Chain,
-          signer,
+          signer: signer as any,
         });
         const creds = await resolveApiCredentials(boot);
 
@@ -106,10 +259,10 @@ export async function getClobClient(config: ExecutorConfig): Promise<ClobClient 
         return new ClobClient({
           host: config.polymarketHost,
           chain: config.chainId as Chain,
-          signer,
+          signer: signer as any,
           creds,
-          signatureType: config.signatureType,
-          funderAddress: config.funderAddress,
+          signatureType: identity.signatureType,
+          funderAddress: identity.funderAddress,
           builderConfig,
         });
       } catch (error) {
@@ -333,11 +486,12 @@ export async function readBook(config: ExecutorConfig, tokenId: string): Promise
 }
 
 export async function fetchRemotePositions(config: ExecutorConfig): Promise<RemotePosition[]> {
-  if (!config.funderAddress) {
+  const funderAddress = await resolvePolymarketFunderAddress(config).catch(() => normalizeAddress(config.funderAddress) ?? "");
+  if (!funderAddress) {
     return [];
   }
   const response = await fetch(
-    `https://data-api.polymarket.com/positions?user=${config.funderAddress}&sizeThreshold=.1`,
+    `https://data-api.polymarket.com/positions?user=${funderAddress}&sizeThreshold=.1`,
     {
       headers: {
         "user-agent": "@autopoly/executor"
@@ -401,12 +555,13 @@ export async function fetchActiveMarkets(_config: ExecutorConfig, limit = 100): 
 
 export async function computeAvgCost(config: ExecutorConfig, tokenId: string): Promise<number | null> {
   const client = await getClobClient(config);
-  if (!client || !config.funderAddress) {
+  const funderAddress = await resolvePolymarketFunderAddress(config).catch(() => normalizeAddress(config.funderAddress) ?? "");
+  if (!client || !funderAddress) {
     return null;
   }
   try {
     const trades = await (client as any).getTrades(
-      { maker_address: config.funderAddress, asset_id: tokenId },
+      { maker_address: funderAddress, asset_id: tokenId },
       true
     );
     const buys = Array.isArray(trades) ? trades.filter((trade) => trade.side === "BUY" || trade.side === Side.BUY) : [];

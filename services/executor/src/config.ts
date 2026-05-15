@@ -56,6 +56,8 @@ export interface ExecutorConfig {
   signatureType: number;
   polymarketHost: string;
   chainId: number;
+  walletProvider?: "private-key" | "onchainos";
+  onchainosBin?: string;
   defaultOrderType: "FOK";
   drawdownStopPct: number;
   positionStopLossPct: number;
@@ -114,15 +116,22 @@ function loadBuilderAttribution(): BuilderAttribution | null {
 
 export function loadConfig(): ExecutorConfig {
   const envFilePath = loadEnvFile();
+  const rawWalletProvider = process.env.WALLET_PROVIDER?.trim().toLowerCase();
+  const walletProvider = rawWalletProvider === "onchainos" || rawWalletProvider === "okx-agentic"
+    ? "onchainos"
+    : "private-key";
+
   return {
     port: readNumber("PORT", 4002),
     redisUrl: process.env.REDIS_URL ?? "redis://localhost:6379",
     envFilePath,
     privateKey: readFirstString(["PRIVATE_KEY"]),
     funderAddress: readFirstString(["FUNDER_ADDRESS", "ADDRESS", "WALLET_ADDRESS", "EVM_ADDRESS"]),
-    signatureType: readNumber("SIGNATURE_TYPE", 1),
+    signatureType: readNumber("SIGNATURE_TYPE", walletProvider === "onchainos" ? 0 : 1),
     polymarketHost: process.env.POLYMARKET_HOST ?? "https://clob.polymarket.com",
     chainId: readNumber("CHAIN_ID", 137),
+    walletProvider,
+    onchainosBin: process.env.ONCHAINOS_BIN?.trim() || undefined,
     defaultOrderType: "FOK",
     drawdownStopPct: readNumber("DRAWDOWN_STOP_PCT", 0.2),
     positionStopLossPct: readNumber("POSITION_STOP_LOSS_PCT", 0.3),

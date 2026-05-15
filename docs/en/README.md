@@ -10,7 +10,7 @@
 
 > This is the English README. 中文版见 [README.md](../../README.md).
 
-Last updated: 2026-04-26 (renamed to predict-raven; runs on Polymarket CLOB V2 SDK)
+Last updated: 2026-05-15
 
 ---
 
@@ -54,6 +54,8 @@ install the dependencies for predict-raven
 Expected: the Agent runs `pnpm install` + `pnpm build` and tells you whether the environment is ready. If you don't have Node.js / pnpm yet, it'll install those first. No Docker, no real wallet required at this stage.
 
 ### 2. Configure funds
+
+Predict-Raven supports multiple capital-management modes, including social login (Google, Telegram) and OKX Agentic Wallet.
 
 Get your Polymarket wallet credentials from polymarket.com → Settings → Export Wallet. Create a new `.env.live-test` (use `.env.example` as the template) and fill in these 4 fields:
 

@@ -6,6 +6,7 @@ import type { ExecutorConfig } from "../config.js";
 import {
   type BookSnapshot,
   type GammaRecord,
+  type PolymarketSigningIdentity,
   type RemotePosition,
   computeAvgCost as computeAvgCostSdk,
   executeMarketOrder as executeMarketOrderSdk,
@@ -15,7 +16,9 @@ import {
   fetchRemotePositions as fetchRemotePositionsSdk,
   getClobClient as getClobClientSdk,
   getCollateralBalanceAllowance as getCollateralBalanceAllowanceSdk,
-  readBook as readBookSdk
+  readBook as readBookSdk,
+  resolvePolymarketFunderAddress as resolvePolymarketFunderAddressSdk,
+  resolvePolymarketSigningIdentity as resolvePolymarketSigningIdentitySdk
 } from "./polymarket-sdk.js";
 import {
   persistPolymarketOrderLimit,
@@ -147,9 +150,18 @@ async function withPolyCliReadFallback<T>(payload: PolyCliPayload, fallback: () 
 
 export type { BookSnapshot, RemotePosition };
 export type { GammaRecord };
+export type { PolymarketSigningIdentity };
 
 export async function getClobClient(config: ExecutorConfig): Promise<ClobClient | null> {
   return await getClobClientSdk(config);
+}
+
+export async function resolvePolymarketSigningIdentity(config: ExecutorConfig): Promise<PolymarketSigningIdentity> {
+  return await resolvePolymarketSigningIdentitySdk(config);
+}
+
+export async function resolvePolymarketFunderAddress(config: ExecutorConfig): Promise<string> {
+  return await resolvePolymarketFunderAddressSdk(config);
 }
 
 export async function getCollateralBalanceAllowance(config: ExecutorConfig): Promise<Record<string, unknown> | null> {

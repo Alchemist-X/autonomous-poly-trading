@@ -578,6 +578,52 @@ describe("buildPulseEntryPlans top-4 selection", () => {
     expect(plans[0]?.marketSlug).toBe("market-0");
     expect(plans[1]?.marketSlug).toBe("market-1");
   });
+
+  it("can temporarily limit entries to one best plan with fixed $5 sizing", () => {
+    const candidates = Array.from({ length: 3 }, (_, i) => ({
+      question: `Limited Market ${i}`,
+      eventSlug: `limited-event-${i}`,
+      marketSlug: `limited-market-${i}`,
+      url: `https://example.com/limited-market-${i}`,
+      liquidityUsd: 10000,
+      volume24hUsd: 1000,
+      outcomes: ["Yes", "No"],
+      outcomePrices: [0.40, 0.60],
+      clobTokenIds: [`limited-token-yes-${i}`, `limited-token-no-${i}`],
+      endDate: new Date(FIXED_NOW_MS + (30 + i * 60) * 86_400_000).toISOString(),
+      bestBid: 0.39,
+      bestAsk: 0.41,
+      spread: 0.02,
+      categorySlug: null,
+      categoryLabel: null,
+      categorySource: null,
+      tags: [] as Array<{ slug: string; label: string }>
+    }));
+    const markdown = candidates.map((candidate, index) => [
+      `## ${index + 1}. ${candidate.question}`,
+      "",
+      `**Link:** ${candidate.url}`,
+      "| Direction | Buy No |",
+      "| Confidence | medium |",
+      "",
+      "| No | 60% | 70% |",
+      "",
+      "### Reasoning",
+      `Edge on limited market ${index}.`
+    ].join("\n")).join("\n\n");
+
+    const plans = buildPulseEntryPlans({
+      context: createContext(markdown, { candidates, totalEquityUsd: 1000 }),
+      positionStopLossPct: 0.3,
+      maxPlans: 1,
+      fixedNotionalUsd: 5,
+      nowMs: FIXED_NOW_MS
+    });
+
+    expect(plans).toHaveLength(1);
+    expect(plans[0]?.marketSlug).toBe("limited-market-0");
+    expect(plans[0]?.decision.notional_usd).toBe(5);
+  });
 });
 
 describe("buildPulseEntryPlans fee integration", () => {

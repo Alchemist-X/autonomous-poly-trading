@@ -5,6 +5,7 @@ export const LIVE_TEST_MAX_EVENT_EXPOSURE_PCT = 0.3;
 export interface LiveTestPreflightInput {
   executionMode: string;
   envFilePath: string | null;
+  walletProvider?: "private-key" | "onchainos";
   hasPrivateKey: boolean;
   hasFunderAddress: boolean;
   dbOk: boolean;
@@ -40,6 +41,7 @@ export function buildLiveTestDirectoryName(timestamp: string, runId: string | nu
 }
 
 export function evaluateLiveTestPreflight(input: LiveTestPreflightInput): LiveTestPreflightReport {
+  const usesOnchainOsWallet = input.walletProvider === "onchainos";
   const checks = [
     {
       key: "execution-mode",
@@ -57,10 +59,12 @@ export function evaluateLiveTestPreflight(input: LiveTestPreflightInput): LiveTe
     },
     {
       key: "credentials",
-      ok: input.hasPrivateKey && input.hasFunderAddress,
-      detail: input.hasPrivateKey && input.hasFunderAddress
-        ? "PRIVATE_KEY and FUNDER_ADDRESS are present."
-        : "PRIVATE_KEY and FUNDER_ADDRESS are required."
+      ok: usesOnchainOsWallet ? true : input.hasPrivateKey && input.hasFunderAddress,
+      detail: usesOnchainOsWallet
+        ? "WALLET_PROVIDER=onchainos. Runtime signing will use the active OnchainOS wallet session."
+        : input.hasPrivateKey && input.hasFunderAddress
+          ? "PRIVATE_KEY and FUNDER_ADDRESS are present."
+          : "PRIVATE_KEY and FUNDER_ADDRESS are required."
     },
     {
       key: "database",
