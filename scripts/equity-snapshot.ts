@@ -12,6 +12,11 @@ export interface EquitySnapshot {
   readonly open_positions: number;
 }
 
+export interface EquitySnapshotAppendPolicy {
+  readonly allowed: boolean;
+  readonly reason: string;
+}
+
 /**
  * Resolve the path to the canonical equity-history.json file.
  * This file lives in apps/web/public/ so that Next.js/Vercel serves it as a static asset.
@@ -42,6 +47,54 @@ async function readEquityHistory(historyPath: string): Promise<readonly EquitySn
   }
 }
 
+function parseBooleanOverride(value: string | undefined): boolean | null {
+  const normalized = value?.trim().toLowerCase();
+  if (!normalized) {
+    return null;
+  }
+  if (["1", "true", "yes", "on"].includes(normalized)) {
+    return true;
+  }
+  if (["0", "false", "no", "off"].includes(normalized)) {
+    return false;
+  }
+  return null;
+}
+
+export function resolveEquitySnapshotAppendPolicy(input: {
+  readonly envFilePath: string | null | undefined;
+  readonly override?: string | undefined;
+}): EquitySnapshotAppendPolicy {
+  const override = parseBooleanOverride(input.override ?? process.env.PUBLIC_EQUITY_HISTORY_ENABLED);
+  if (override === true) {
+    return {
+      allowed: true,
+      reason: "PUBLIC_EQUITY_HISTORY_ENABLED explicitly enables the public equity history append."
+    };
+  }
+  if (override === false) {
+    return {
+      allowed: false,
+      reason: "PUBLIC_EQUITY_HISTORY_ENABLED explicitly disables the public equity history append."
+    };
+  }
+
+  const envFileName = input.envFilePath ? path.basename(input.envFilePath) : "";
+  if (envFileName === ".env.pizza") {
+    return {
+      allowed: true,
+      reason: "The active env file is .env.pizza, so this run owns the public Pizza equity history."
+    };
+  }
+
+  return {
+    allowed: false,
+    reason: input.envFilePath
+      ? `The active env file is ${envFileName}; only .env.pizza updates the public Pizza equity history by default.`
+      : "No active env file was resolved; only .env.pizza updates the public Pizza equity history by default."
+  };
+}
+
 /**
  * Append an equity snapshot after a pulse:live run.
  *
@@ -50,9 +103,27 @@ async function readEquityHistory(historyPath: string): Promise<readonly EquitySn
  */
 export async function appendEquitySnapshot(input: {
   readonly overview: OverviewResponse;
-}): Promise<{ readonly historyPath: string; readonly snapshotCount: number }> {
+  readonly envFilePath?: string | null;
+}): Promise<{
+  readonly historyPath: string;
+  readonly snapshotCount: number;
+  readonly appended: boolean;
+  readonly reason: string;
+}> {
   const historyPath = resolveEquityHistoryPath();
   const existing = await readEquityHistory(historyPath);
+  const policy = resolveEquitySnapshotAppendPolicy({
+    envFilePath: input.envFilePath
+  });
+
+  if (!policy.allowed) {
+    return {
+      historyPath,
+      snapshotCount: existing.length,
+      appended: false,
+      reason: policy.reason
+    };
+  }
 
   const snapshot: EquitySnapshot = {
     timestamp: new Date().toISOString(),
@@ -68,5 +139,10 @@ export async function appendEquitySnapshot(input: {
   await ensureDirectory(path.dirname(historyPath));
   await writeFile(historyPath, JSON.stringify(updated, null, 2), "utf8");
 
-  return { historyPath, snapshotCount: updated.length };
+  return {
+    historyPath,
+    snapshotCount: updated.length,
+    appended: true,
+    reason: policy.reason
+  };
 }

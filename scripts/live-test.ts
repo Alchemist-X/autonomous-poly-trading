@@ -130,6 +130,7 @@ async function collectPreflight(input: {
   return evaluateLiveTestPreflight({
     executionMode: process.env.AUTOPOLY_EXECUTION_MODE ?? "live",
     envFilePath: input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath,
+    walletProvider: input.executorConfig.walletProvider,
     hasPrivateKey: Boolean(input.executorConfig.privateKey),
     hasFunderAddress: Boolean(input.executorConfig.funderAddress),
     dbOk,

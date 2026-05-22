@@ -5,11 +5,24 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { OrchestratorConfig } from "../config.js";
 import type { RuntimeExecutionContext } from "./agent-runtime.js";
-import { resumeRuntimeExecutionFromOutputFile } from "./provider-runtime.js";
+import {
+  resolveDefaultRuntimeProviderCommand,
+  resumeRuntimeExecutionFromOutputFile
+} from "./provider-runtime.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 const RUN_ID = "11111111-1111-4111-8111-111111111111";
 const GENERATED_AT_UTC = "2026-03-16T00:00:00.000Z";
+
+describe("provider runtime defaults", () => {
+  it("uses the OpenClaw agent wrapper instead of the removed openclaw run command", () => {
+    const command = resolveDefaultRuntimeProviderCommand("openclaw");
+
+    expect(command).toContain("scripts/openclaw-agent-command.mjs");
+    expect(command).toContain("--prompt-file");
+    expect(command).not.toContain("openclaw run");
+  });
+});
 
 function createConfig(repoRoot: string, artifactStorageRoot: string): OrchestratorConfig {
   return {
@@ -51,6 +64,8 @@ function createConfig(repoRoot: string, artifactStorageRoot: string): Orchestrat
       reportTimeoutSeconds: 0,
       directRenderTimeoutSeconds: 1200,
       minTradeableCandidates: 5,
+      entryMaxPlans: 4,
+      entryFixedNotionalUsd: null,
       maxAgeMinutes: 30,
       maxMarkdownChars: 24000
     },

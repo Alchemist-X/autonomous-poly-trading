@@ -13,6 +13,20 @@ function readNumber(name: string, fallback: number): number {
   return Number.isFinite(value) ? value : fallback;
 }
 
+function readPositiveInteger(name: string, fallback: number): number {
+  const value = Math.floor(readNumber(name, fallback));
+  return value > 0 ? value : fallback;
+}
+
+function readPositiveNumberOrNull(name: string): number | null {
+  const raw = process.env[name];
+  if (!raw) {
+    return null;
+  }
+  const value = Number(raw);
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
 function readString(name: string, fallback: string): string {
   const raw = process.env[name];
   return raw && raw.trim() ? raw.trim() : fallback;
@@ -70,6 +84,8 @@ export interface PulseConfig {
   reportTimeoutSeconds: number;
   directRenderTimeoutSeconds: number;
   minTradeableCandidates: number;
+  entryMaxPlans: number;
+  entryFixedNotionalUsd: number | null;
   maxAgeMinutes: number;
   maxMarkdownChars: number;
 }
@@ -174,6 +190,8 @@ export function loadConfig(): OrchestratorConfig {
       reportTimeoutSeconds: readNumber("PULSE_REPORT_TIMEOUT_SECONDS", 0),
       directRenderTimeoutSeconds: readNumber("PULSE_DIRECT_RENDER_TIMEOUT_SECONDS", 1800),
       minTradeableCandidates: readNumber("PULSE_MIN_TRADEABLE_CANDIDATES", 1),
+      entryMaxPlans: readPositiveInteger("PULSE_ENTRY_MAX_PLANS", 4),
+      entryFixedNotionalUsd: readPositiveNumberOrNull("PULSE_ENTRY_FIXED_NOTIONAL_USD"),
       maxAgeMinutes: readNumber("PULSE_MAX_AGE_MINUTES", 120),
       maxMarkdownChars: readNumber("PULSE_MAX_MARKDOWN_CHARS", 24000)
     },

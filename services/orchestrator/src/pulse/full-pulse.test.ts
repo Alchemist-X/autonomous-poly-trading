@@ -45,6 +45,8 @@ const baseConfig: OrchestratorConfig = {
     reportTimeoutSeconds: 0,
     directRenderTimeoutSeconds: 1200,
     minTradeableCandidates: 5,
+    entryMaxPlans: 4,
+    entryFixedNotionalUsd: null,
     maxAgeMinutes: 30,
     maxMarkdownChars: 24000
   },

@@ -322,6 +322,23 @@ export function applyBatchCap(
   });
 }
 
+function applyFixedNotional(
+  plans: readonly PulseEntryPlan[],
+  fixedNotionalUsd: number | null | undefined
+): PulseEntryPlan[] {
+  if (!(fixedNotionalUsd != null && fixedNotionalUsd > 0)) {
+    return [...plans];
+  }
+  const notionalUsd = roundCurrency(fixedNotionalUsd);
+  return plans.map((plan) => ({
+    ...plan,
+    decision: {
+      ...plan.decision,
+      notional_usd: notionalUsd
+    }
+  }));
+}
+
 function buildOpenDecision(input: {
   positionStopLossPct: number;
   eventSlug: string;
@@ -472,6 +489,7 @@ export function buildPulseEntryPlans(input: {
   positionStopLossPct: number;
   maxPlans?: number;
   batchCapPct?: number;
+  fixedNotionalUsd?: number | null;
   nowMs?: number;
 }): PulseEntryPlan[] {
   const context = input.context;
@@ -577,9 +595,10 @@ export function buildPulseEntryPlans(input: {
   }
 
   const ranked = rankByMonthlyReturn(plans, input.maxPlans);
-  return applyBatchCap(
+  const capped = applyBatchCap(
     ranked,
     context.overview.total_equity_usd,
     input.batchCapPct
   );
+  return applyFixedNotional(capped, input.fixedNotionalUsd);
 }

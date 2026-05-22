@@ -10,7 +10,7 @@
 
 > This is the English README. 中文版见 [README.md](../../README.md).
 
-Last updated: 2026-04-26 (renamed to predict-raven; runs on Polymarket CLOB V2 SDK)
+Last updated: 2026-05-15
 
 ---
 
@@ -55,12 +55,17 @@ Expected: the Agent runs `pnpm install` + `pnpm build` and tells you whether the
 
 ### 2. Configure funds
 
-Get your Polymarket wallet credentials from polymarket.com → Settings → Export Wallet. Create a new `.env.live-test` (use `.env.example` as the template) and fill in these 4 fields:
+Predict-Raven supports multiple capital-management modes, including social login (Google, Telegram) and OKX Agentic Wallet.
 
+In private-key mode, get your Polymarket wallet credentials from polymarket.com → Settings → Export Wallet. Create a new `.env.live-test` (use `.env.example` as the template) and fill in these 5 fields:
+
+- `WALLET_PROVIDER=private-key`
 - `PRIVATE_KEY` — the wallet private key
 - `FUNDER_ADDRESS` — the Polymarket proxy wallet address
 - `SIGNATURE_TYPE` — signature type (`0` or `1`)
 - `CHAIN_ID` — `137` (Polygon mainnet)
+
+OKX Agentic Wallet mode does not need `PRIVATE_KEY`, but you must log in with `onchainos wallet login/verify` first and set `WALLET_PROVIDER=onchainos`, `FUNDER_ADDRESS` (the Polymarket deposit/proxy wallet with collateral/allowance), `SIGNATURE_TYPE=3`, and `CHAIN_ID=137`.
 
 Then say:
 
@@ -201,19 +206,30 @@ Organised into four groups:
 | --- | --- | --- |
 | **Shared** | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE` | Execution mode (paper/live), infra connections |
 | **Web** | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN` | Admin authentication |
-| **Executor** | `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` | Polymarket wallet and chain config |
+| **Executor** | `WALLET_PROVIDER` `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` `ONCHAINOS_BIN` | Polymarket wallet and chain config |
 | **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*` | Provider selection, Pulse fetching, risk parameters |
 
 If your Polymarket credentials live in an adjacent repo, you can set `ENV_FILE=../pm-PlaceOrder/.env.aizen`. For real-money testing, stick to a dedicated `.env.live-test`.
 
 ## Wallet and Account Setup
 
-The Polymarket order path needs at least four fields:
+The Polymarket order path supports two signer modes.
 
+Private-key mode needs:
+
+- `WALLET_PROVIDER=private-key`
 - `PRIVATE_KEY` — wallet private key (prefer a Polymarket proxy wallet over your main wallet)
 - `FUNDER_ADDRESS` — the Polymarket proxy wallet address (the one that holds collateral)
 - `SIGNATURE_TYPE` — `0` or `1`, depending on wallet type
 - `CHAIN_ID` — `137` (Polygon mainnet)
+
+OKX Agentic Wallet / OnchainOS mode needs:
+
+- `WALLET_PROVIDER=onchainos` (`okx-agentic` remains a compatibility alias)
+- `ONCHAINOS_BIN` — defaults to `onchainos`
+- `FUNDER_ADDRESS` — Polymarket deposit/proxy wallet address with collateral/allowance
+- `SIGNATURE_TYPE=3` — deposit wallet / POLY_1271
+- `CHAIN_ID=137`
 
 Keep these in separate per-purpose files, none of which are committed:
 

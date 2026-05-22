@@ -3,7 +3,10 @@ import { sql } from "drizzle-orm";
 import { getDb } from "@autopoly/db";
 import { getErrorMessage } from "@autopoly/terminal-ui";
 import type { ExecutorConfig } from "../services/executor/src/config.ts";
-import { getCollateralBalanceAllowance } from "../services/executor/src/lib/polymarket.ts";
+import {
+  getCollateralBalanceAllowance,
+  resolvePolymarketFunderAddress
+} from "../services/executor/src/lib/polymarket.ts";
 
 export interface OnchainBalanceProbe {
   balanceUsd: number | null;
@@ -106,6 +109,7 @@ export async function probeOnchainUsdcBalanceUsd(address: string): Promise<Oncha
 export async function probeCollateralBalanceUsd(config: ExecutorConfig): Promise<CollateralProbe> {
   let reportedBalanceUsd: number | null = null;
   let reportedError: string | null = null;
+  const funderAddress = await resolvePolymarketFunderAddress(config).catch(() => config.funderAddress);
 
   try {
     const initialBalance = await getCollateralBalanceAllowance(config);
@@ -121,7 +125,7 @@ export async function probeCollateralBalanceUsd(config: ExecutorConfig): Promise
     reportedError = getErrorMessage(error);
   }
 
-  const onchainProbe = await probeOnchainUsdcBalanceUsd(config.funderAddress);
+  const onchainProbe = await probeOnchainUsdcBalanceUsd(funderAddress);
   if ((reportedBalanceUsd ?? 0) > 0) {
     return {
       balanceUsd: reportedBalanceUsd,

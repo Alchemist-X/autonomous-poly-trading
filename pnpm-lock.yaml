@@ -153,8 +153,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/terminal-ui
       '@polymarket/clob-client-v2':
-        specifier: 1.0.2
-        version: 1.0.2(bufferutil@4.1.0)(typescript@5.9.3)
+        specifier: 1.0.6
+        version: 1.0.6(bufferutil@4.1.0)(typescript@5.9.3)(zod@4.1.12)
       bullmq:
         specifier: 5.71.0
         version: 5.71.0
@@ -189,8 +189,8 @@ importers:
         specifier: ^5.8.1
         version: 5.8.1(bufferutil@4.1.0)(typescript@5.9.3)(zod@3.25.76)
       '@polymarket/clob-client-v2':
-        specifier: 1.0.2
-        version: 1.0.2(bufferutil@4.1.0)(typescript@5.9.3)(zod@3.25.76)
+        specifier: 1.0.6
+        version: 1.0.6(bufferutil@4.1.0)(typescript@5.9.3)(zod@3.25.76)
       dotenv:
         specifier: 17.2.3
         version: 17.2.3
@@ -1355,8 +1355,9 @@ packages:
   '@polymarket/builder-signing-sdk@1.0.0':
     resolution: {integrity: sha512-LNHc8Ox+2ITM6+VIEH5LH3SVh9ScE2mOUAJI789YfyNqhF4n1cNulk35Hb6IZfy1xtNfcEfNotanPLa/U8dCaw==}
 
-  '@polymarket/clob-client-v2@1.0.2':
-    resolution: {integrity: sha512-lC80Esug6s6y3uV8D5HnkxoXVZUnATjyP6PcK2IXO740iGDuLlp9Dvvkx3+VVygHahN+M3NY7JiYiTQkDfWoeQ==}
+  '@polymarket/clob-client-v2@1.0.6':
+    resolution: {integrity: sha512-Y6LefFNuxRs95fLq0m9W9EBjoM2w7EVgtsUGLydjlUFVGBeGhHOa8vll6+C6UZVnQEbdWE6i6hYRCwJE/ZVNKQ==}
+    engines: {node: '>=20.10'}
 
   '@polymarket/clob-client@5.8.1':
     resolution: {integrity: sha512-beKC4KPc9dYyFV9wFhKiGoA16q5xWz4PjkYcnEs3BzpsOKjGQGRlZQ7KQD4HQKUd3HC5RLQT0lqWHrFyaI+2fQ==}
@@ -5590,22 +5591,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@polymarket/clob-client-v2@1.0.2(bufferutil@4.1.0)(typescript@5.9.3)':
-    dependencies:
-      '@ethersproject/providers': 5.8.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
-      '@ethersproject/wallet': 5.8.0
-      axios: 1.13.6
-      browser-or-node: 3.0.0
-      tslib: 2.8.1
-      viem: 2.47.2(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.22.4)
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@polymarket/clob-client-v2@1.0.2(bufferutil@4.1.0)(typescript@5.9.3)(zod@3.25.76)':
+  '@polymarket/clob-client-v2@1.0.6(bufferutil@4.1.0)(typescript@5.9.3)(zod@3.25.76)':
     dependencies:
       '@ethersproject/providers': 5.8.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
       '@ethersproject/wallet': 5.8.0
@@ -5613,6 +5599,21 @@ snapshots:
       browser-or-node: 3.0.0
       tslib: 2.8.1
       viem: 2.47.2(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76)
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - typescript
+      - utf-8-validate
+      - zod
+
+  '@polymarket/clob-client-v2@1.0.6(bufferutil@4.1.0)(typescript@5.9.3)(zod@4.1.12)':
+    dependencies:
+      '@ethersproject/providers': 5.8.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
+      '@ethersproject/wallet': 5.8.0
+      axios: 1.13.6
+      browser-or-node: 3.0.0
+      tslib: 2.8.1
+      viem: 2.47.2(bufferutil@4.1.0)(typescript@5.9.3)(zod@4.1.12)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -7968,6 +7969,11 @@ snapshots:
       typescript: 5.9.3
       zod: 3.25.76
 
+  abitype@1.2.3(typescript@5.9.3)(zod@4.1.12):
+    optionalDependencies:
+      typescript: 5.9.3
+      zod: 4.1.12
+
   abort-controller@3.0.0:
     dependencies:
       event-target-shim: 5.0.1
@@ -8786,11 +8792,11 @@ snapshots:
     dependencies:
       ws: 8.18.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
 
-  isows@1.0.7(ws@8.18.2(bufferutil@4.1.0)):
+  isows@1.0.7(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@6.0.6)):
     dependencies:
       ws: 8.18.2(bufferutil@4.1.0)(utf-8-validate@6.0.6)
 
-  isows@1.0.7(ws@8.18.3(bufferutil@4.1.0)(utf-8-validate@6.0.6)):
+  isows@1.0.7(ws@8.18.3(bufferutil@4.1.0)):
     dependencies:
       ws: 8.18.3(bufferutil@4.1.0)(utf-8-validate@6.0.6)
 
@@ -9028,6 +9034,21 @@ snapshots:
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
       abitype: 1.2.3(typescript@5.9.3)(zod@3.25.76)
+      eventemitter3: 5.0.1
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - zod
+
+  ox@0.14.0(typescript@5.9.3)(zod@4.1.12):
+    dependencies:
+      '@adraffy/ens-normalize': 1.11.1
+      '@noble/ciphers': 1.3.0
+      '@noble/curves': 1.9.1
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
+      abitype: 1.2.3(typescript@5.9.3)(zod@4.1.12)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 5.9.3
@@ -9762,7 +9783,7 @@ snapshots:
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
       abitype: 1.0.8(typescript@5.9.3)(zod@3.25.76)
-      isows: 1.0.7(ws@8.18.2(bufferutil@4.1.0))
+      isows: 1.0.7(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@6.0.6))
       ox: 0.7.1(typescript@5.9.3)(zod@3.25.76)
       ws: 8.18.2(bufferutil@4.1.0)(utf-8-validate@6.0.6)
     optionalDependencies:
@@ -9779,7 +9800,7 @@ snapshots:
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
       abitype: 1.2.3(typescript@5.9.3)(zod@3.22.4)
-      isows: 1.0.7(ws@8.18.3(bufferutil@4.1.0)(utf-8-validate@6.0.6))
+      isows: 1.0.7(ws@8.18.3(bufferutil@4.1.0))
       ox: 0.14.0(typescript@5.9.3)(zod@3.22.4)
       ws: 8.18.3(bufferutil@4.1.0)(utf-8-validate@6.0.6)
     optionalDependencies:
@@ -9796,8 +9817,25 @@ snapshots:
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
       abitype: 1.2.3(typescript@5.9.3)(zod@3.25.76)
-      isows: 1.0.7(ws@8.18.3(bufferutil@4.1.0)(utf-8-validate@6.0.6))
+      isows: 1.0.7(ws@8.18.3(bufferutil@4.1.0))
       ox: 0.14.0(typescript@5.9.3)(zod@3.25.76)
+      ws: 8.18.3(bufferutil@4.1.0)(utf-8-validate@6.0.6)
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+
+  viem@2.47.2(bufferutil@4.1.0)(typescript@5.9.3)(zod@4.1.12):
+    dependencies:
+      '@noble/curves': 1.9.1
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
+      abitype: 1.2.3(typescript@5.9.3)(zod@4.1.12)
+      isows: 1.0.7(ws@8.18.3(bufferutil@4.1.0))
+      ox: 0.14.0(typescript@5.9.3)(zod@4.1.12)
       ws: 8.18.3(bufferutil@4.1.0)(utf-8-validate@6.0.6)
     optionalDependencies:
       typescript: 5.9.3
