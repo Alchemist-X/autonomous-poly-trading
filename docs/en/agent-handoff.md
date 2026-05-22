@@ -11,7 +11,7 @@
 >
 > Chinese version: [`docs/agent-handoff.md`](../agent-handoff.md)
 >
-> Last updated: 2026-05-15 by Codex (AW completed HSV No 5 shares live order; AW Pulse live is isolated from Pizza equity history)
+> Last updated: 2026-05-22 by Codex (GitHub issue #2 OKX signer / OpenClaw compatibility branch verified; no real-money Pulse run)
 >
 > **Translation pending** — the Chinese version contains Mode A Phase 3a entries (3a.0 builder code / 3a.1 adapter / 3a.2 pulse-dispatcher bridge done as of 2026-05-05) that have not yet been mirrored here. See `docs/agent-handoff.md` for the canonical state.
 
@@ -24,6 +24,7 @@
 - [x] **【P0 · Implemented】Existing-position reviews must use position-only Pulse probability/edge refresh**: on 2026-05-08, added `pnpm pulse:positions` (equivalent to `pulse:live --recommend-only --positions-only`). It only generates Pulse analysis for current holdings, does not scan new markets, and does not emit new-entry recommendations. Candidate JSON now includes held side / shares / average cost / mark / PnL; the parser keeps Yes/No probability rows even when edge is negative, and `Position Review` prefers the held-side Pulse edge. Verification archive: `runtime-artifacts/pulse-live/2026-05-08T020947Z-245b4933-880f-47d7-ae86-75d5ffb8b81e/`, 7 holds, 0 fills, 12 Pulse review plans; Crude kept edge=0 because Pulse explicitly refused to estimate probability without rule / CL data.
 - [x] **【P1 · Implemented】Per-position PnL snapshots + calibration ledger**: implemented on 2026-05-07. `pulse-live` / `pulse:recommend` write `position-mark-snapshot.json`, per-run `calibration-ledger.jsonl`, and append `runtime-artifacts/evaluation/pulse-calibration-ledger.jsonl`; run-summary now displays per-position mark attribution and unexplained equity residual.
 - [x] **【Temporary limit · Implemented】Pulse opens recommend only 1 best entry and support fixed sizing**: on 2026-05-15 added `PULSE_ENTRY_MAX_PLANS` and `PULSE_ENTRY_FIXED_NOTIONAL_USD`; temporary runs should set these through inline/env artifacts, not the default `.env`. This only affects new-entry recommendations; position-only reviews still do not synthesize new opens. Execution risk guards and Polymarket minimum order sizing remain active, so too-small orders are blocked rather than forced through.
+- [x] **【GitHub issue #2 · Implemented, PR pending】OKX Agentic Wallet signer + OpenClaw compatibility**: as of 2026-05-22, branch `codex/aw-agentic-wallet-cap` contains the OnchainOS/OKX EIP-712 signer, Polymarket signing identity, OnchainOS preflight, OpenClaw `openclaw agent` wrapper, `PULSE_ENTRY_*` limits, and public equity-history isolation in one PR scope. Added `ONCHAINOS_TIMEOUT_MS` fail-fast behavior, and OpenClaw defaults no longer call the incompatible `openclaw run`. Verification: `pnpm test` 50 files / 419 tests pass; `pnpm typecheck` 9 workspaces pass; `pnpm --filter @autopoly/executor build` and `pnpm --filter @autopoly/orchestrator build` pass; fake OpenClaw wrapper smoke printed `wrapped output`. No `pulse:live` / `daily:pulse` run and no real-money order this session.
 - [ ] **【User does this themselves next session】Manual review of every intermediate analysis doc produced this round**: check whether their format and content are acceptable. At minimum:
   - `docs/agent-onboarding.md` / `docs/agent-handoff.md` (zh + en)
   - `docs/internal/plan/2026-04-28-v2-cutover-runbook.md`
@@ -67,6 +68,15 @@
 - Moving `vitest.config.ts` to `config/` requires `root: REPO_ROOT` in the config, otherwise `@autopoly/*` workspace packages cannot be resolved
 - `git mv` of an entire directory does not move untracked files — those need a manual `mv`
 - During the 4/24 V2 smoke, the no1 wallet had $3.96 USDC.e but $0 pUSD → verifies SDK works but trading requires wrapping first. Rechecked on 2026-05-15: `.env.no1` CLOB `COLLATERAL balance=0`, allowances are all 0, and onchain pUSD probe is 0.
+
+## 🔄 Last Session Context (2026-05-22)
+
+- User asked to fix the GitHub issue and open a PR. The only real open issue is #2: `Integrate OKX Agentic Wallet signer and harden OpenClaw provider compatibility`; #1 is an older PR.
+- Current branch: `codex/aw-agentic-wallet-cap`, based on `origin/main`. It already had `Add OKX Agentic Wallet live support`; this session closed two remaining gaps: OnchainOS shell-out timeout (`ONCHAINOS_TIMEOUT_MS`, default 30000ms) and an OpenClaw 2026.5.x default wrapper (`scripts/openclaw-agent-command.mjs`, using `openclaw agent --agent main --message ... --json` and extracting `payloads[].text`).
+- Key files: `services/executor/src/lib/okx-agentic-wallet.ts`, `services/executor/src/lib/polymarket-sdk.ts`, `services/orchestrator/src/{pulse/full-pulse.ts,pulse/pulse-prescreen.ts,runtime/provider-runtime.ts}`, `scripts/openclaw-agent-command.mjs`, `.env.example`, and the Chinese/English READMEs.
+- Verification completed: targeted Vitest for OKX signer/provider runtime/entry planner passed 36 tests; `pnpm test` passed 50 files / 419 tests; `pnpm typecheck` passed; executor/orchestrator builds passed; fake OpenClaw wrapper smoke passed.
+- GitHub connector failed on `chatgpt.com/backend-api/wham/apps`, so the session fell back to `gh`. `gh auth status` is logged in as `Alchemist-X` with `repo/workflow` scope. Issue listing succeeded through the REST API.
+- No `pulse:live` / `daily:pulse`, no recommend/live Pulse, and no real-money order were run in this session.
 
 ## 🔄 Last Session Context (2026-05-15)
 

@@ -181,6 +181,18 @@ describe("OkxAgenticSigner", () => {
 
     expect(signature).toBe("0xsigned");
   });
+
+  it("fails fast when onchainos hangs", async () => {
+    const script = createFakeOnchainOsScript([
+      "sleep 1",
+      'echo \'{"ok":true,"data":{"loggedIn":true}}\''
+    ]);
+
+    await expect(resolveOkxAgenticAddress({
+      onchainosBin: script,
+      onchainosTimeoutMs: 50
+    })).rejects.toThrow("onchainos command timed out after 50ms");
+  });
 });
 
 describe("Polymarket signing identity", () => {

@@ -955,7 +955,7 @@ function resolveDefaultProviderCommand(provider: string): string | null {
     case "claude-code":
       return 'cat {{prompt_file}} | claude --print > {{output_file}}';
     case "openclaw":
-      return 'cat {{prompt_file}} | openclaw run --output {{output_file}} -';
+      return 'node "{{repo_root}}/scripts/openclaw-agent-command.mjs" --prompt-file "{{prompt_file}}" --output-file "{{output_file}}"';
     default:
       return null;
   }

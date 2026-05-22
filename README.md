@@ -56,12 +56,15 @@ Predict-Raven围绕**Market Pulse**这一核心组件设计：让 AI 自主评�
 
 Predict-Raven 支持多种资金管理方式，包括社交登录（Google、TG）和 OKX Agentic Wallet。
 
-Polymarket 钱包凭据可以从 polymarket.com → Settings → Export Wallet 拿到。新建 `.env.live-test`（参考 `.env.example` 模板），把这 4 个字段填进去：
+Private-key 模式下，Polymarket 钱包凭据可以从 polymarket.com → Settings → Export Wallet 拿到。新建 `.env.live-test`（参考 `.env.example` 模板），把这 5 个字段填进去：
 
+- `WALLET_PROVIDER=private-key`
 - `PRIVATE_KEY` — 钱包私钥
 - `FUNDER_ADDRESS` — Polymarket proxy wallet 地址
 - `SIGNATURE_TYPE` — 签名类型（`0` 或 `1`）
 - `CHAIN_ID` — `137`（Polygon mainnet）
+
+OKX Agentic Wallet 模式不需要 `PRIVATE_KEY`，但要先用 `onchainos wallet login/verify` 登录，并设置 `WALLET_PROVIDER=onchainos`、`FUNDER_ADDRESS`（有 collateral/allowance 的 Polymarket deposit/proxy wallet）、`SIGNATURE_TYPE=3`、`CHAIN_ID=137`。
 
 填完后对 Agent 说：
 
@@ -203,19 +206,30 @@ Pulse markdown → 正则/表格解析 → PulseEntryPlan
 | --- | --- | --- |
 | **共享** | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE` | 执行模式（paper/live）、基础设施连接 |
 | **Web** | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN` | 管理员鉴权 |
-| **Executor** | `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` | Polymarket 钱包与链配置 |
+| **Executor** | `WALLET_PROVIDER` `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` `ONCHAINOS_BIN` | Polymarket 钱包与链配置 |
 | **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*` | Provider 选择、Pulse 抓取、风控参数 |
 
 如果 Polymarket 凭据放在相邻仓库，可以设 `ENV_FILE=../pm-PlaceOrder/.env.aizen`。真实资金测试建议固定使用独立的 `.env.live-test`。
 
 ## 资金与账号配置
 
-Polymarket 下单链路至少需要四个字段：
+Polymarket 下单链路有两种 signer 模式。
 
+Private-key 模式至少需要：
+
+- `WALLET_PROVIDER=private-key`
 - `PRIVATE_KEY` — 钱包私钥（建议用 Polymarket 的代理钱包而不是主钱包）
 - `FUNDER_ADDRESS` — Polymarket proxy wallet 地址（有 collateral 的那一个）
 - `SIGNATURE_TYPE` — `0` 或 `1`，取决于钱包类型
 - `CHAIN_ID` — `137`（Polygon mainnet）
+
+OKX Agentic Wallet / OnchainOS 模式至少需要：
+
+- `WALLET_PROVIDER=onchainos`（`okx-agentic` 仍作为兼容别名）
+- `ONCHAINOS_BIN` — 默认 `onchainos`
+- `FUNDER_ADDRESS` — Polymarket deposit/proxy wallet 地址（持有 collateral/allowance）
+- `SIGNATURE_TYPE=3` — deposit wallet / POLY_1271
+- `CHAIN_ID=137`
 
 建议按用途拆独立文件，都不进 git：
 

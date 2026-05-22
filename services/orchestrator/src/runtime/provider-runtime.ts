@@ -561,6 +561,17 @@ async function runTemplateCommand(template: string, replacements: Record<string,
   return runTemplateCommandWithProgress(template, replacements, timeoutMs);
 }
 
+export function resolveDefaultRuntimeProviderCommand(provider: string): string | null {
+  switch (provider) {
+    case "claude-code":
+      return 'cat "{{prompt_file}}" | claude --print > "{{output_file}}"';
+    case "openclaw":
+      return 'node "{{repo_root}}/scripts/openclaw-agent-command.mjs" --prompt-file "{{prompt_file}}" --output-file "{{output_file}}"';
+    default:
+      return null;
+  }
+}
+
 async function runTemplateCommandWithProgress(
   template: string,
   replacements: Record<string, string>,
@@ -904,7 +915,7 @@ export class ProviderRuntime implements AgentRuntime {
       if (this.provider === "codex" && !settings.command) {
         await runCodex(prompt, settings, this.config.repoRoot, tempDir, outputPath, schemaPath, timeoutMs, context.progress);
       } else {
-        const commandTemplate = settings.command;
+        const commandTemplate = settings.command || resolveDefaultRuntimeProviderCommand(this.provider);
         if (!commandTemplate) {
           throw new Error(`No command configured for provider ${this.provider}.`);
         }

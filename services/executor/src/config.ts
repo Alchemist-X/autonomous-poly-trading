@@ -58,6 +58,7 @@ export interface ExecutorConfig {
   chainId: number;
   walletProvider?: "private-key" | "onchainos";
   onchainosBin?: string;
+  onchainosTimeoutMs?: number;
   defaultOrderType: "FOK";
   drawdownStopPct: number;
   positionStopLossPct: number;
@@ -132,6 +133,7 @@ export function loadConfig(): ExecutorConfig {
     chainId: readNumber("CHAIN_ID", 137),
     walletProvider,
     onchainosBin: process.env.ONCHAINOS_BIN?.trim() || undefined,
+    onchainosTimeoutMs: readNumber("ONCHAINOS_TIMEOUT_MS", 30000),
     defaultOrderType: "FOK",
     drawdownStopPct: readNumber("DRAWDOWN_STOP_PCT", 0.2),
     positionStopLossPct: readNumber("POSITION_STOP_LOSS_PCT", 0.3),

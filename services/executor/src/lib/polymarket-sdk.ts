@@ -124,7 +124,7 @@ export async function fetchPolymarketProxyWallet(address: string): Promise<strin
 }
 
 export async function resolvePolymarketSigningIdentity(
-  config: Pick<ExecutorConfig, "walletProvider" | "privateKey" | "funderAddress" | "signatureType" | "onchainosBin">
+  config: Pick<ExecutorConfig, "walletProvider" | "privateKey" | "funderAddress" | "signatureType" | "onchainosBin"> & Partial<Pick<ExecutorConfig, "onchainosTimeoutMs">>
 ): Promise<PolymarketSigningIdentity> {
   const walletProvider = resolveWalletProvider(config);
   if (walletProvider === "private-key") {

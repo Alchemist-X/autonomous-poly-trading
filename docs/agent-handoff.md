@@ -11,7 +11,7 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-05-15 by Codex（AW 已完成 HSV No 5 shares live order；AW Pulse live 已隔离 Pizza equity history）
+> 最后更新：2026-05-22 by Codex（GitHub issue #2 OKX signer / OpenClaw 兼容分支已验证，未跑真钱 Pulse）
 
 ---
 
@@ -22,6 +22,7 @@
 - [x] **【P0 · 已实现】已有持仓必须走 position-only Pulse 概率/edge 复审**：2026-05-08 新增 `pnpm pulse:positions`（等价 `pulse:live --recommend-only --positions-only`），只针对当前持仓生成 Pulse 报告，不扫描新市场、不输出新开仓建议；候选 JSON 带当前持仓方向 / 数量 / 均价 / mark / PnL，parser 会保留 Yes/No 两侧概率行（edge 可正可负），`Position Review` 优先用持仓侧 Pulse edge。验证归档：`runtime-artifacts/pulse-live/2026-05-08T020947Z-245b4933-880f-47d7-ae86-75d5ffb8b81e/`，7 仓 hold，0 成交，Pulse 复审计划数 12；Crude 因规则/CL 数据不足由 Pulse 明确拒绝估概率，保留 edge=0。
 - [x] **【P1 · 已实现】逐仓 PnL 快照 + calibration ledger**：2026-05-07 已实现。`pulse-live` / `pulse:recommend` 会写 `position-mark-snapshot.json`、单轮 `calibration-ledger.jsonl`，并追加 `runtime-artifacts/evaluation/pulse-calibration-ledger.jsonl`；run-summary 会展示逐仓 mark 归因和 unexplained equity residual。
 - [x] **【临时限制 · 已实现】Pulse 开仓只推荐 1 个最优仓位且支持固定金额**：2026-05-15 新增 `PULSE_ENTRY_MAX_PLANS` 与 `PULSE_ENTRY_FIXED_NOTIONAL_USD`；临时运行用 inline/env artifact 设置，不写入默认 `.env`。该限制只影响新开仓 entry recommendation；已有仓位 position-only review 不合成新开仓。执行层风控与 Polymarket 最小订单量仍生效，金额太低会被拦截而不是强行下单。
+- [x] **【GitHub issue #2 · 已实现待 PR】OKX Agentic Wallet signer + OpenClaw 兼容**：2026-05-22 当前分支 `codex/aw-agentic-wallet-cap` 已把 OnchainOS/OKX EIP-712 signer、Polymarket signing identity、OnchainOS preflight、OpenClaw `openclaw agent` wrapper、`PULSE_ENTRY_*` 限制与公开 equity history 隔离合入同一 PR 范围。新增 `ONCHAINOS_TIMEOUT_MS` fail-fast，OpenClaw 默认不再调用已不兼容的 `openclaw run`。验证：`pnpm test` 50 files / 419 tests pass；`pnpm typecheck` 9 workspace pass；`pnpm --filter @autopoly/executor build` 与 `pnpm --filter @autopoly/orchestrator build` pass；fake OpenClaw wrapper smoke 输出 `wrapped output`。本轮没有运行 `pulse:live` / `daily:pulse`，没有真实下单。
 - [ ] **【新主线】Raven Managed Product — Phase 3a 代码全完成，剩 dogfood 启动**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md) + [`mode-a-phase-3a-plan.md`](internal/plan/2026-05-04-mode-a-phase-3a-plan.md)。**当前 branch = `main`**（HEAD ~`4d417a9`）。
   - ✅ **DB**：Neon PG 17.8 in eu-central-1 (Frankfurt) provisioned 2026-05-05；4 migration 全跑通；连接串写进 `apps/raven-managed/.env.local`（gitignored；密码暴露聊天，dogfood 跑通后 reset）
   - ✅ **Phase 1 + Phase 2 #1-#4**：apps/raven-managed 独立 app + Privy + Safe 推导 + viem 余额 + session signer UI（stub 模式）+ 4 表 schema
@@ -128,6 +129,15 @@
 - 移动 `vitest.config.ts` 到 `config/` 后必须 `root: REPO_ROOT` 否则找不到 `@autopoly/*` workspace 包
 - `git mv` 整目录时未追踪文件不会被 git 移动，要手动 `mv`
 - 4/24 跑 v2 smoke 时 no1 钱包 USDC.e 有 $3.96 但 pUSD 为 0 → 验证 SDK 接入正常但下单需要先 wrap
+
+## 🔄 上次会话留下的上下文（2026-05-22）
+
+- 用户要求“修复 GitHub 上的 issue 并 PR”。GitHub open issue 里只有真正的 issue #2：`Integrate OKX Agentic Wallet signer and harden OpenClaw provider compatibility`；#1 是旧 PR。
+- 当前分支：`codex/aw-agentic-wallet-cap`，基于 `origin/main`，已有 `Add OKX Agentic Wallet live support`，本轮在其上补齐两个缺口：OnchainOS shell-out timeout（`ONCHAINOS_TIMEOUT_MS`，默认 30000ms）与 OpenClaw 2026.5.x 默认 wrapper（`scripts/openclaw-agent-command.mjs`，调用 `openclaw agent --agent main --message ... --json` 并抽取 `payloads[].text`）。
+- 关键文件：`services/executor/src/lib/okx-agentic-wallet.ts`、`services/executor/src/lib/polymarket-sdk.ts`、`services/orchestrator/src/{pulse/full-pulse.ts,pulse/pulse-prescreen.ts,runtime/provider-runtime.ts}`、`scripts/openclaw-agent-command.mjs`、`.env.example`、README 中英。
+- 验证已完成：`pnpm exec vitest run --config config/vitest.config.ts services/executor/src/lib/okx-agentic-wallet.test.ts services/orchestrator/src/runtime/provider-runtime.test.ts services/orchestrator/src/runtime/pulse-entry-planner.test.ts` 36 tests pass；`pnpm test` 50 files / 419 tests pass；`pnpm typecheck` pass；executor/orchestrator build pass；fake OpenClaw wrapper smoke pass。
+- GitHub connector曾因 `chatgpt.com/backend-api/wham/apps` 连接失败，已 fallback 到 `gh`。`gh auth status` 显示账号 `Alchemist-X` 已登录且有 `repo/workflow` scope。issue list 用 REST API 成功。
+- 本轮没有运行 `pulse:live` / `daily:pulse`，没有 recommend/live Pulse，也没有真钱下单。
 
 ## 🔄 上次会话留下的上下文（2026-05-15）
 

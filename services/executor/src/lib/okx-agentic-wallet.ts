@@ -2,6 +2,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import type { ExecutorConfig } from "../config.js";
 
 export type ExecutorWalletProvider = "private-key" | "onchainos";
+type OnchainOsRuntimeConfig = Pick<ExecutorConfig, "onchainosBin"> & Partial<Pick<ExecutorConfig, "onchainosTimeoutMs">>;
 
 type TypedDataDomain = Record<string, unknown>;
 type TypedDataTypes = Record<string, Array<{ name: string; type: string }>>;
@@ -49,6 +50,7 @@ interface OnchainOsSignMessageResult {
 }
 
 const DEFAULT_ONCHAINOS_BIN = "onchainos";
+const DEFAULT_ONCHAINOS_TIMEOUT_MS = 30000;
 const EIP712_DOMAIN_FIELDS = [
   { key: "name", type: "string" },
   { key: "version", type: "string" },
@@ -68,13 +70,21 @@ function splitCommand(raw: string): string[] {
   return raw.split(/\s+/).map((token) => token.trim()).filter(Boolean);
 }
 
-function getOnchainOsCommand(config: Pick<ExecutorConfig, "onchainosBin">) {
+function getOnchainOsCommand(config: OnchainOsRuntimeConfig) {
   const raw = config.onchainosBin?.trim() || process.env.ONCHAINOS_BIN?.trim() || DEFAULT_ONCHAINOS_BIN;
   const tokens = splitCommand(raw);
   if (tokens.length === 0) {
     throw new Error("ONCHAINOS_BIN resolved to an empty command.");
   }
   return tokens;
+}
+
+function getOnchainOsTimeoutMs(config: OnchainOsRuntimeConfig) {
+  const raw = config.onchainosTimeoutMs ?? Number(process.env.ONCHAINOS_TIMEOUT_MS);
+  if (Number.isFinite(raw) && raw > 0) {
+    return raw;
+  }
+  return DEFAULT_ONCHAINOS_TIMEOUT_MS;
 }
 
 export function resolveWalletProvider(config: Pick<ExecutorConfig, "walletProvider">) {
@@ -162,18 +172,37 @@ export function pickActiveEvmAddress(
 }
 
 async function runOnchainOsJson<T>(
-  config: Pick<ExecutorConfig, "onchainosBin">,
+  config: OnchainOsRuntimeConfig,
   args: string[]
 ): Promise<OnchainOsEnvelope<T>> {
   const resolvedCommand = getOnchainOsCommand(config);
   const command = resolvedCommand[0]!;
   const commandArgs = resolvedCommand.slice(1);
+  const timeoutMs = getOnchainOsTimeoutMs(config);
 
   return await new Promise<OnchainOsEnvelope<T>>((resolve, reject) => {
+    let settled = false;
     const child: ChildProcessWithoutNullStreams = spawn(command, [...commandArgs, ...args], {
       env: process.env,
       stdio: "pipe"
     });
+    const finish = (error: Error | null, envelope?: OnchainOsEnvelope<T>) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      clearTimeout(timeout);
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(envelope!);
+    };
+    const timeout = setTimeout(() => {
+      child.kill("SIGTERM");
+      const context = args.slice(0, 2).join(" ") || command;
+      finish(new Error(`onchainos command timed out after ${timeoutMs}ms while running ${context}.`));
+    }, timeoutMs);
 
     let stdout = "";
     let stderr = "";
@@ -185,24 +214,27 @@ async function runOnchainOsJson<T>(
       stderr += chunk.toString();
     });
     child.on("error", (error: Error) => {
-      reject(error);
+      finish(error);
     });
     child.stdin.end();
     child.on("close", (code: number | null) => {
+      if (settled) {
+        return;
+      }
       let envelope: OnchainOsEnvelope<T>;
       try {
         envelope = parseOnchainOsEnvelope<T>(stdout, stderr);
       } catch (error) {
-        reject(new Error(`onchainos returned non-JSON output: ${[stdout, stderr].filter(Boolean).join("\n").trim() || getErrorMessage(error)}`));
+        finish(new Error(`onchainos returned non-JSON output: ${[stdout, stderr].filter(Boolean).join("\n").trim() || getErrorMessage(error)}`));
         return;
       }
 
       if (code === 0 || code === 2 || envelope.ok === false || envelope.confirming === true) {
-        resolve(envelope);
+        finish(null, envelope);
         return;
       }
 
-      reject(new Error(envelope.error ?? stderr.trim() ?? `onchainos exited with code ${code}`));
+      finish(new Error(envelope.error ?? stderr.trim() ?? `onchainos exited with code ${code}`));
     });
   });
 }
@@ -224,17 +256,17 @@ function ensureSuccessfulEnvelope<T>(envelope: OnchainOsEnvelope<T>, context: st
   return envelope.data;
 }
 
-async function getOkxWalletStatus(config: Pick<ExecutorConfig, "onchainosBin">) {
+async function getOkxWalletStatus(config: OnchainOsRuntimeConfig) {
   const envelope = await runOnchainOsJson<OnchainOsWalletStatus>(config, ["wallet", "status"]);
   return ensureSuccessfulEnvelope(envelope, "wallet status");
 }
 
-async function getOkxWalletOverview(config: Pick<ExecutorConfig, "onchainosBin">) {
+async function getOkxWalletOverview(config: OnchainOsRuntimeConfig) {
   const envelope = await runOnchainOsJson<OnchainOsWalletBalanceOverview>(config, ["wallet", "balance"]);
   return ensureSuccessfulEnvelope(envelope, "wallet balance");
 }
 
-export async function resolveOnchainOsActiveAddress(config: Pick<ExecutorConfig, "onchainosBin">) {
+export async function resolveOnchainOsActiveAddress(config: OnchainOsRuntimeConfig) {
   const status = await getOkxWalletStatus(config);
   if (status.loggedIn !== true) {
     throw new Error("OnchainOS wallet session is not logged in. Run `onchainos wallet login <email>` and `onchainos wallet verify <otp>` first.");
@@ -248,14 +280,14 @@ export async function resolveOnchainOsActiveAddress(config: Pick<ExecutorConfig,
   return address;
 }
 
-export async function resolveOkxAgenticAddress(config: Pick<ExecutorConfig, "onchainosBin">) {
+export async function resolveOkxAgenticAddress(config: OnchainOsRuntimeConfig) {
   return await resolveOnchainOsActiveAddress(config);
 }
 
 export class OkxAgenticSigner {
   private addressPromise: Promise<string> | null = null;
 
-  constructor(private readonly config: Pick<ExecutorConfig, "chainId" | "onchainosBin">) {}
+  constructor(private readonly config: Pick<ExecutorConfig, "chainId" | "onchainosBin"> & Partial<Pick<ExecutorConfig, "onchainosTimeoutMs">>) {}
 
   async getAddress() {
     if (!this.addressPromise) {
