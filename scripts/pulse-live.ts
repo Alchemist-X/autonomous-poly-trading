@@ -86,6 +86,10 @@ import {
   autoRedeemResolved,
   type AutoRedeemSummary
 } from "../services/executor/src/lib/redeem.ts";
+import {
+  writePulseDecisionReportArtifacts,
+  type PulseDecisionReportResult
+} from "./pulse-decision-report.ts";
 
 interface Args {
   json: boolean;
@@ -918,6 +922,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
   let pulseJsonPath: string | null = null;
   let runtimeLogPath: string | null = null;
   let supplementalArtifactPaths: string[] = [];
+  let decisionReportResult: PulseDecisionReportResult | null = null;
   let positionsBefore: PublicPosition[] = [];
   let positionMarkAttribution: PositionMarkAttribution | null = null;
   let positionMarkSnapshotPath: string | null = null;
@@ -1309,6 +1314,26 @@ export async function runPulseLive(args: Args = parseArgs()) {
           additionalPaths: supplementalArtifactPaths
         }
       });
+      decisionReportResult = await writePulseDecisionReportArtifacts({
+        archiveDir,
+        stage: "recommend-only"
+      });
+      supplementalArtifactPaths = [
+        ...supplementalArtifactPaths,
+        decisionReportResult.markdownPath,
+        decisionReportResult.englishMarkdownPath,
+        decisionReportResult.htmlPath,
+        ...(decisionReportResult.pdfPath ? [decisionReportResult.pdfPath] : []),
+        ...(decisionReportResult.errorPath ? [decisionReportResult.errorPath] : [])
+      ];
+      if (useHumanOutput) {
+        const printer = createTerminalPrinter();
+        if (decisionReportResult.pdfPath) {
+          printer.note("success", "Decision PDF generated", decisionReportResult.pdfPath);
+        } else {
+          printer.note("warn", "Decision PDF generation failed", decisionReportResult.errorPath ?? "No error artifact written.");
+        }
+      }
       const equityResult = await appendEquitySnapshot({
         overview,
         envFilePath: preflight.report.envFilePath
@@ -1330,6 +1355,8 @@ export async function runPulseLive(args: Args = parseArgs()) {
         runId,
         archiveDir,
         recommendationPath,
+        decisionReportPath: decisionReportResult.markdownPath,
+        decisionReportPdfPath: decisionReportResult.pdfPath,
         executablePlans: plans.length
       };
       if (args.json) {
@@ -1434,6 +1461,27 @@ export async function runPulseLive(args: Args = parseArgs()) {
       }
     });
 
+    decisionReportResult = await writePulseDecisionReportArtifacts({
+      archiveDir,
+      stage: "completed"
+    });
+    supplementalArtifactPaths = [
+      ...supplementalArtifactPaths,
+      decisionReportResult.markdownPath,
+      decisionReportResult.englishMarkdownPath,
+      decisionReportResult.htmlPath,
+      ...(decisionReportResult.pdfPath ? [decisionReportResult.pdfPath] : []),
+      ...(decisionReportResult.errorPath ? [decisionReportResult.errorPath] : [])
+    ];
+    if (useHumanOutput) {
+      const printer = createTerminalPrinter();
+      if (decisionReportResult.pdfPath) {
+        printer.note("success", "Decision PDF generated", decisionReportResult.pdfPath);
+      } else {
+        printer.note("warn", "Decision PDF generation failed", decisionReportResult.errorPath ?? "No error artifact written.");
+      }
+    }
+
     const equityResult = await appendEquitySnapshot({
       overview: finalState.overview,
       envFilePath: preflight.report.envFilePath
@@ -1455,6 +1503,8 @@ export async function runPulseLive(args: Args = parseArgs()) {
       archiveDir,
       recommendationPath,
       executionSummaryPath,
+      decisionReportPath: decisionReportResult.markdownPath,
+      decisionReportPdfPath: decisionReportResult.pdfPath,
       executedOrders: executedForSummary.length
     };
     if (args.json) {
@@ -1525,6 +1575,12 @@ export async function runPulseLive(args: Args = parseArgs()) {
         additionalPaths: supplementalArtifactPaths
       }
     });
+    if (recommendationPath) {
+      decisionReportResult = await writePulseDecisionReportArtifacts({
+        archiveDir,
+        stage
+      });
+    }
     if (args.json) {
       console.log(JSON.stringify({
         ok: false,
@@ -1534,7 +1590,9 @@ export async function runPulseLive(args: Args = parseArgs()) {
         message,
         archiveDir,
         runId,
-        errorPath
+        errorPath,
+        decisionReportPath: decisionReportResult?.markdownPath ?? null,
+        decisionReportPdfPath: decisionReportResult?.pdfPath ?? null
       }, null, 2));
     } else {
       printErrorSummary(createTerminalPrinter(), {
@@ -1556,7 +1614,9 @@ export async function runPulseLive(args: Args = parseArgs()) {
       decisionStrategy: preflightReport?.decisionStrategy ?? orchestratorConfig.decisionStrategy,
       archiveDir,
       runId,
-      errorPath
+      errorPath,
+      decisionReportPath: decisionReportResult?.markdownPath ?? null,
+      decisionReportPdfPath: decisionReportResult?.pdfPath ?? null
     };
   }
 }

@@ -11,7 +11,7 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-05-22 by Codex（GitHub issue #2 OKX signer / OpenClaw 兼容分支已验证，未跑真钱 Pulse）
+> 最后更新：2026-06-04 by Codex（`.env.pizza` live daily Pulse 成功，下单 3 笔并复核远端持仓/活动）
 
 ---
 
@@ -129,6 +129,20 @@
 - 移动 `vitest.config.ts` 到 `config/` 后必须 `root: REPO_ROOT` 否则找不到 `@autopoly/*` workspace 包
 - `git mv` 整目录时未追踪文件不会被 git 移动，要手动 `mv`
 - 4/24 跑 v2 smoke 时 no1 钱包 USDC.e 有 $3.96 但 pUSD 为 0 → 验证 SDK 接入正常但下单需要先 wrap
+
+## 🔄 上次会话留下的上下文（2026-06-04）
+
+- 用户明确要求“运行一个新的 pulse 进程，并完成下单”。本轮按真钱 live 路径执行：`pnpm daily:pulse -- --json`，默认 env `/Users/Aincrad/dev-proj/predict-raven/.env.pizza`，`AUTOPOLY_EXECUTION_MODE=live`，`AGENT_DECISION_STRATEGY=pulse-direct`。没有加 `--recommend-only`。
+- 启动前检查显示 worktree 在 `HFT-Raven`，代码 HEAD `abf366d`；运行结束后 reflog 显示已切回 `main`，HEAD 仍是同一 commit。当前只有两份未提交 HFT 计划文档和本轮 handoff/equity-history 运行产物，未改交易代码；因此本轮 live Pulse 使用的交易代码等同 `main@abf366d`。
+- Preflight 通过：collateral reported/onchain 均约 `$335.66`，remote positions `6`，configured min trade `$1.50`，max trade `10%`，max event exposure `15%`。归档：`runtime-artifacts/pulse-live/2026-06-04T125934Z-c6a045aa-606e-407d-a970-0a83b1f9b5b0/`。
+- 成功成交 3 个 FOK BUY / No 订单，CLOB 均返回 `success=true`、`status=matched`：
+  - `will-ethereum-dip-to-1400-in-june-2026` No：filled `$48.829998`，size `59.694375`，order `0xd526...faf9`，tx `0x568d...01df`。
+  - `will-the-carolina-hurricanes-win-the-2026-nhl-stanley-cup` No：filled `$9.019999`，size `15.288134`，order `0x9329...2bc3`，tx `0xc9b7...2a7`。
+  - `will-unrwa-win-the-nobel-peace-prize-in-2026-983` No：filled `$32.289999`，size `35.097825`，order `0xfb85...365`，tx `0x732e...52d`。
+- 事后复核：本地 executor `fetchRemotePositions(.env.pizza)` 重新读取远端后显示 9 个持仓，包含本轮 3 个新仓；Polymarket public `activity` 最新 3 条 BUY 与上述 tx hash 一致。运行后 collateral/cash 约 `$244.65`。
+- 注意：`run-summary.md` 初次汇总里“实际持仓数变化”显示 `+2`，因为当时 post-run position snapshot 没及时包含 UNRWA；随后 public data API / executor 复核确认 UNRWA No 已进入远端持仓。后续若做自动验收，建议在 live run 后增加一次延迟刷新或 retry。
+- 注意：本轮对 Hurricanes 和 UNRWA 打印 fee mismatch warning：本地 estimated feeRate `0`，CLOB `base_fee=1000`；已记录在 `fee-discrepancies.jsonl`。这不阻塞成交，但应推动 `fees.ts` 接入 V2 dynamic fee。
+- 用户随后要求把“分析与决策 PDF 报告”固定进每次 Pulse 运行，并推送远端。已新增 `scripts/pulse-decision-report.ts`，`pulse:live` / `daily:pulse` 在 recommend-only、completed、以及已有 recommendation 的 failed run 后都会写 `decision-report.{md,en.md,html,pdf}`；JSON 输出新增 `decisionReportPath` / `decisionReportPdfPath`。报告不写死“高质量来源”白名单，而是按 market question / category / tags / resolution rule 动态生成 source needs，并展示实际来源覆盖、概率判断、证据链和推理摘录。验证：`pnpm exec vitest run --config config/vitest.config.ts scripts/pulse-decision-report.test.ts scripts/pulse-live.test.ts` pass；`pnpm typecheck` pass；artifact-only smoke 在本轮 archive 成功生成 8 页 PDF。
 
 ## 🔄 上次会话留下的上下文（2026-05-22）
 

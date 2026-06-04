@@ -11,7 +11,7 @@
 >
 > Chinese version: [`docs/agent-handoff.md`](../agent-handoff.md)
 >
-> Last updated: 2026-05-22 by Codex (GitHub issue #2 OKX signer / OpenClaw compatibility branch verified; no real-money Pulse run)
+> Last updated: 2026-06-04 by Codex (`.env.pizza` live daily Pulse completed, 3 real orders placed and verified through remote positions/activity)
 >
 > **Translation pending** — the Chinese version contains Mode A Phase 3a entries (3a.0 builder code / 3a.1 adapter / 3a.2 pulse-dispatcher bridge done as of 2026-05-05) that have not yet been mirrored here. See `docs/agent-handoff.md` for the canonical state.
 
@@ -68,6 +68,20 @@
 - Moving `vitest.config.ts` to `config/` requires `root: REPO_ROOT` in the config, otherwise `@autopoly/*` workspace packages cannot be resolved
 - `git mv` of an entire directory does not move untracked files — those need a manual `mv`
 - During the 4/24 V2 smoke, the no1 wallet had $3.96 USDC.e but $0 pUSD → verifies SDK works but trading requires wrapping first. Rechecked on 2026-05-15: `.env.no1` CLOB `COLLATERAL balance=0`, allowances are all 0, and onchain pUSD probe is 0.
+
+## 🔄 Last Session Context (2026-06-04)
+
+- The user explicitly asked to run a new Pulse process and complete live ordering. This session ran the real-money path: `pnpm daily:pulse -- --json`, default env `/Users/Aincrad/dev-proj/predict-raven/.env.pizza`, `AUTOPOLY_EXECUTION_MODE=live`, `AGENT_DECISION_STRATEGY=pulse-direct`. No `--recommend-only` flag was used.
+- Before launch, the worktree showed `HFT-Raven`, code HEAD `abf366d`; after the run, reflog showed it had switched back to `main`, still at the same commit. Current changes are only two uncommitted HFT plan docs plus this session's handoff/equity-history artifacts, with no trading-code edits; the live Pulse therefore used trading code equivalent to `main@abf366d`.
+- Preflight passed: reported/onchain collateral about `$335.66`, remote positions `6`, configured min trade `$1.50`, max trade `10%`, max event exposure `15%`. Archive: `runtime-artifacts/pulse-live/2026-06-04T125934Z-c6a045aa-606e-407d-a970-0a83b1f9b5b0/`.
+- Three FOK BUY / No orders matched successfully; CLOB returned `success=true` and `status=matched` for all:
+  - `will-ethereum-dip-to-1400-in-june-2026` No: filled `$48.829998`, size `59.694375`, order `0xd526...faf9`, tx `0x568d...01df`.
+  - `will-the-carolina-hurricanes-win-the-2026-nhl-stanley-cup` No: filled `$9.019999`, size `15.288134`, order `0x9329...2bc3`, tx `0xc9b7...2a7`.
+  - `will-unrwa-win-the-nobel-peace-prize-in-2026-983` No: filled `$32.289999`, size `35.097825`, order `0xfb85...365`, tx `0x732e...52d`.
+- Post-run verification: local executor `fetchRemotePositions(.env.pizza)` showed 9 remote positions including all 3 new holdings; Polymarket public `activity` showed the latest 3 BUY trades with the same tx hashes. Post-run collateral/cash was about `$244.65`.
+- Note: the initial `run-summary.md` showed actual position count change as `+2` because the post-run snapshot did not include UNRWA immediately. Later public data API / executor verification confirmed the UNRWA No holding exists. Future live-run validation should add a delayed refresh or retry.
+- Note: the run printed fee mismatch warnings for Hurricanes and UNRWA: local estimated feeRate `0`, CLOB `base_fee=1000`; details are in `fee-discrepancies.jsonl`. It did not block fills, but reinforces the need to wire `fees.ts` into V2 dynamic fees.
+- The user then asked to make the analysis/decision PDF report automatic for every Pulse run and push it upstream. Added `scripts/pulse-decision-report.ts`; `pulse:live` / `daily:pulse` now write `decision-report.{md,en.md,html,pdf}` for recommend-only runs, completed live runs, and failed runs that already have a recommendation. JSON output now includes `decisionReportPath` / `decisionReportPdfPath`. The report does not hard-code a whitelist of “high-quality sources”; it derives source needs from the market question / category / tags / resolution rule, then reports actual source coverage, probability judgment, evidence chain, and reasoning excerpts. Verification: `pnpm exec vitest run --config config/vitest.config.ts scripts/pulse-decision-report.test.ts scripts/pulse-live.test.ts` passed; `pnpm typecheck` passed; artifact-only smoke generated an 8-page PDF from this run archive.
 
 ## 🔄 Last Session Context (2026-05-22)
 
