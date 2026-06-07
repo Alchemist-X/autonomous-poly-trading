@@ -11,7 +11,7 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-04 by Codex（`.env.pizza` live daily Pulse 成功，下单 3 笔并复核远端持仓/活动）
+> 最后更新：2026-06-07 by Codex（今日 Pulse 只读推荐完成并生成 PDF；ETH close 与 Satoshi $1 live-check 均被 CLOB 地区限制 403 拒绝，0 成交）
 
 ---
 
@@ -23,6 +23,7 @@
 - [x] **【P1 · 已实现】逐仓 PnL 快照 + calibration ledger**：2026-05-07 已实现。`pulse-live` / `pulse:recommend` 会写 `position-mark-snapshot.json`、单轮 `calibration-ledger.jsonl`，并追加 `runtime-artifacts/evaluation/pulse-calibration-ledger.jsonl`；run-summary 会展示逐仓 mark 归因和 unexplained equity residual。
 - [x] **【临时限制 · 已实现】Pulse 开仓只推荐 1 个最优仓位且支持固定金额**：2026-05-15 新增 `PULSE_ENTRY_MAX_PLANS` 与 `PULSE_ENTRY_FIXED_NOTIONAL_USD`；临时运行用 inline/env artifact 设置，不写入默认 `.env`。该限制只影响新开仓 entry recommendation；已有仓位 position-only review 不合成新开仓。执行层风控与 Polymarket 最小订单量仍生效，金额太低会被拦截而不是强行下单。
 - [x] **【GitHub issue #2 · 已实现待 PR】OKX Agentic Wallet signer + OpenClaw 兼容**：2026-05-22 当前分支 `codex/aw-agentic-wallet-cap` 已把 OnchainOS/OKX EIP-712 signer、Polymarket signing identity、OnchainOS preflight、OpenClaw `openclaw agent` wrapper、`PULSE_ENTRY_*` 限制与公开 equity history 隔离合入同一 PR 范围。新增 `ONCHAINOS_TIMEOUT_MS` fail-fast，OpenClaw 默认不再调用已不兼容的 `openclaw run`。验证：`pnpm test` 50 files / 419 tests pass；`pnpm typecheck` 9 workspace pass；`pnpm --filter @autopoly/executor build` 与 `pnpm --filter @autopoly/orchestrator build` pass；fake OpenClaw wrapper smoke 输出 `wrapped output`。本轮没有运行 `pulse:live` / `daily:pulse`，没有真实下单。
+- [ ] **【当前阻塞 · 2026-06-07】当前出口被 Polymarket CLOB 订单 API 按地区限制拒单**：`https://polymarket.com/api/geoblock` 探针显示 `blocked=false country=MY`，但真实 `/order` 返回 `403 Trading restricted in your region`。用户授权后对 `will-satoshi-move-any-bitcoin-in-2026` / `NO` 做 `$1` live-check，订单同样到达 `/order` 后 403，事后复核 Satoshi 持仓为空、collateral 仍 `223.961524 USDC`；归档 `run-error/2026-06-07T043859Z-satoshi-geo-live-check/summary.md`。在用户切换到 Polymarket CLOB 可交易地区前，不要重复发送 live order；只读 Pulse / PDF 可以继续跑。复跑时优先用 direct 命令 `pnpm exec tsx scripts/pulse-live.ts ...`，今日 `pnpm pulse:live -- --recommend-only --json` 曾两次在启动阶段返回 `createOrDeriveApiKey` 空 payload，而 direct 入口正常。
 - [ ] **【新主线】Raven Managed Product — Phase 3a 代码全完成，剩 dogfood 启动**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md) + [`mode-a-phase-3a-plan.md`](internal/plan/2026-05-04-mode-a-phase-3a-plan.md)。**当前 branch = `main`**（HEAD ~`4d417a9`）。
   - ✅ **DB**：Neon PG 17.8 in eu-central-1 (Frankfurt) provisioned 2026-05-05；4 migration 全跑通；连接串写进 `apps/raven-managed/.env.local`（gitignored；密码暴露聊天，dogfood 跑通后 reset）
   - ✅ **Phase 1 + Phase 2 #1-#4**：apps/raven-managed 独立 app + Privy + Safe 推导 + viem 余额 + session signer UI（stub 模式）+ 4 表 schema
@@ -129,6 +130,25 @@
 - 移动 `vitest.config.ts` 到 `config/` 后必须 `root: REPO_ROOT` 否则找不到 `@autopoly/*` workspace 包
 - `git mv` 整目录时未追踪文件不会被 git 移动，要手动 `mv`
 - 4/24 跑 v2 smoke 时 no1 钱包 USDC.e 有 $3.96 但 pUSD 为 0 → 验证 SDK 接入正常但下单需要先 wrap
+
+## 🔄 上次会话留下的上下文（2026-06-07）
+
+- 用户要求“今天推荐两个市场，完成下单，并生成 PDF 报告”。按保守实盘口径使用 `.env.pizza`、`AUTOPOLY_EXECUTION_MODE=live`、`AGENT_DECISION_STRATEGY=pulse-direct`、`PULSE_ENTRY_MAX_PLANS=2`、`PULSE_ENTRY_FIXED_NOTIONAL_USD=5`。
+- 只读推荐成功：`pnpm exec tsx scripts/pulse-live.ts --recommend-only --json`，runId `118013ab-cef5-4565-95a9-676078767be8`，归档 `runtime-artifacts/pulse-live/2026-06-07T025017Z-118013ab-cef5-4565-95a9-676078767be8/`。PDF：`decision-report.pdf`。Pulse：`runtime-artifacts/reports/pulse/2026/06/07/pulse-20260607T025023Z-claude-code-full-118013ab-cef5-4565-95a9-676078767be8.{md,json}`。
+- 推荐出的两个新开仓市场：`will-new-people-nl-gain-the-most-seats-in-the-next-russian-parliamentary-election`（No 侧，AI 估 Yes 25% / No 75%，edge 约 11.65pp，低置信度，$5）和 `will-satoshi-move-any-bitcoin-in-2026`（No 侧，AI 估 No 97%，edge 约 5.05pp，$5）。
+- 两个新开仓均被执行层总敞口风控拦截：当前 exposure 约 `$382.96`，上限约 `$364.15`，headroom `$0.00`。同一轮 Position Review 触发 `will-ethereum-dip-to-1400-in-june-2026` close：止损阈值 30%，计划卖出 `59.6943` shares，约 `$32.35`。
+- 尝试先执行 ETH close 释放敞口：复用同一 Pulse 产物跑 live，runId `602da344-567c-4e03-9ae6-e5d12231e58a`，归档 `runtime-artifacts/pulse-live/2026-06-07T025942Z-602da344-567c-4e03-9ae6-e5d12231e58a/`。CLOB 拒单：`403 Trading restricted in your region`；`orderId=null`，0 成交；失败 run 也已生成 `decision-report.pdf`。
+- 用户随后授权对 `will-satoshi-move-any-bitcoin-in-2026` 做 `$1` 测试。用现有 executor 入口执行：`ENV_FILE=/Users/Aincrad/dev-proj/predict-raven/.env.pizza AUTOPOLY_EXECUTION_MODE=live pnpm --filter @autopoly/executor exec tsx src/ops/live-check.ts --json --slug will-satoshi-move-any-bitcoin-in-2026 --direction no --trade --max-usd 1`。预检读到 `NO` bestAsk `0.920`、`minOrderSize=5`、collateral `223.961524 USDC`；真实 `/order` 仍返回 `403 Trading restricted in your region`，`orderId=null`，0 成交。事后只读复核：`satoshiMatches=[]`，collateral 仍 `223961524` raw。归档：`run-error/2026-06-07T043859Z-satoshi-geo-live-check/summary.md`。
+- 本轮没有完成下单，原因是外部 CLOB 地区限制，不是余额或推荐生成失败。下一步：用户切到 CLOB 订单 API 可交易地区后，先复查 `curl -s https://polymarket.com/api/geoblock`，再复用上述 Pulse artifact 先 close ETH，随后重跑同一 Pulse 产物尝试两个 `$5` 新开仓；不要绕过总敞口硬上限。
+
+## 🔄 上次会话留下的上下文（2026-06-05）
+
+- 用户要求修改 repo：Pulse 必须做 web-search；如果尝试 2 分钟失败/超时就继续流程。
+- 已新增 `services/orchestrator/src/pulse/web-search.ts`，在 full Pulse context 中写入 `web_search`；默认 `PULSE_WEB_SEARCH_ENABLED=true`、`PULSE_WEB_SEARCH_TIMEOUT_SECONDS=120`。搜索失败/超时只记录 `status=failed/timed_out` 和 `failureReason`，不会阻断报告渲染。
+- `full-pulse` prompt 已要求模型必须读取 `web_search`：completed 时纳入证据链/概率/信息源；timed_out/failed/disabled 时明确说明已尝试但失败/超时/关闭，不得写成本次未尝试外部 web-search。
+- 验证：targeted Vitest 7 files / 19 tests pass；`pnpm test` 52 files / 426 tests pass；`pnpm typecheck` 全 9 workspace pass。没有运行 `pulse:live` / `daily:pulse`，没有真实下单。
+- 已新增泛化概率分析 skill：`skills/probability-analysis/`（中英 SKILL + agents metadata）。核心要求：先理清结算定义，按关键节点设计搜索，收集官方/主流/当事方/第三方/政治/军事证据，做条件概率模型；用户要求排除预测市场价格时不得用市场价格更新概率。
+- 本轮按该 skill 重做 US-Iran nuclear deal by 2026-06-30 的只读分析，排除预测市场价格与截图 mock 数据；独立归档：`runtime-artifacts/probability-analysis/2026-06-05-us-iran-nuclear-deal/`，zip：`runtime-artifacts/probability-analysis/2026-06-05-us-iran-nuclear-deal.zip`。结论概率：Yes 24%。按项目规则也跑了 `pnpm pulse:recommend -- --json` 只读 Pulse，归档：`runtime-artifacts/pulse-live/2026-06-04T172726Z-55625808-4a69-46f2-a2d3-82290258042c/`；没有真实下单。
 
 ## 🔄 上次会话留下的上下文（2026-06-04）
 

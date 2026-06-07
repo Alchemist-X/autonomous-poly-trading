@@ -11,6 +11,7 @@ import type { ProgressReporter } from "../lib/terminal-progress.js";
 import { resolveProviderSkillSettings } from "../runtime/skill-settings.js";
 import type { PulseBucketStat, PulseCandidate, PulseFetchConfig, PulseStatsBundle } from "./market-pulse.js";
 import { preScreenCandidates, type PreScreenResult, type PreScreenSummary } from "./pulse-prescreen.js";
+import { collectPulseWebSearchEvidence, type PulseWebSearchSummary } from "./web-search.js";
 
 interface PulseResearchOrderbook {
   outcomeLabel: string;
@@ -53,6 +54,7 @@ interface FullPulseContext {
   risk_flags: string[];
   candidates: PulseCandidate[];
   research_candidates: PulseResearchCandidate[];
+  web_search: PulseWebSearchSummary;
   pre_screen?: {
     enabled: boolean;
     results: PreScreenResult[];
@@ -854,8 +856,9 @@ function buildFullPulsePrompt(input: {
         "7. 概率评估表必须至少包含 `| Yes | 市场定价 | AI 估算 |` 和 `| No | 市场定价 | AI 估算 |` 两行，百分比格式要能被程序解析。",
         "8. 如果当前持仓一侧已经没有 edge，请明确给出反向一侧的概率与 edge；不要把 AI 概率机械设成市场概率。",
         "9. 研究上下文 JSON 中没有的数据，必须明确写“未获取”或“数据不足”，不能编造。",
-        "10. 只有在完成逐仓复审所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
-        "11. 输出中不要出现“Top 3 新开仓”“推荐新开仓”这类章节；本报告只服务已有持仓概率/edge 复审。",
+        "10. 必须阅读并使用研究上下文 JSON 的 `web_search` 字段：若 status=completed，把外部 web-search 结果纳入证据链、概率评估和信息源；若 status=timed_out/failed/disabled，明确写“已尝试 web-search 但超时/失败/关闭”，不得写成本次没有尝试外部 web-search。",
+        "11. 只有在完成逐仓复审所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
+        "12. 输出中不要出现“Top 3 新开仓”“推荐新开仓”这类章节；本报告只服务已有持仓概率/edge 复审。",
         "",
         `当前 provider：${input.provider}`,
         "输出最终 Markdown。"
@@ -881,8 +884,9 @@ function buildFullPulsePrompt(input: {
       "6. The probability table must include at least `| Yes | Market | AI |` and `| No | Market | AI |` rows in percentage format so the parser can read it.",
       "7. If the held side no longer has edge, explicitly provide the opposite side's probability and edge; do not mechanically set AI probability equal to market probability.",
       "8. If data is missing, explicitly mark it unavailable instead of inventing it.",
-      "9. Only do very limited targeted verification if the provided context is clearly insufficient for a position review.",
-      "10. Do not include Top 3 new-entry or new-market recommendation sections; this report exists only to refresh probability / edge for current holdings.",
+      "9. You must read and use the `web_search` field in the research context JSON. If status=completed, incorporate the external web-search results into the evidence chain, probability estimate, and source list. If status=timed_out/failed/disabled, explicitly say web-search was attempted but timed out/failed/was disabled; do not claim no external web-search was attempted.",
+      "10. Only do very limited targeted verification if the provided context is clearly insufficient for a position review.",
+      "11. Do not include Top 3 new-entry or new-market recommendation sections; this report exists only to refresh probability / edge for current holdings.",
       "",
       `Active provider: ${input.provider}`,
       "Output the final Markdown."
@@ -908,9 +912,10 @@ function buildFullPulsePrompt(input: {
       "5. 在正式 Top 3 推荐之前，必须增加“候选池与筛选思路”和“推荐摘要”章节，说明本轮候选从哪里来、筛掉了什么、为什么最终进入 Top 3，并先给出一张可快速浏览的摘要表。",
       "6. 必须包含：报告头部、候选池与筛选思路、推荐摘要、前 3 个推荐市场、概率评估、证据链、四维分析、结算规则、推理逻辑、仓位建议、评论区校验、信息源、元数据。",
       "7. 研究上下文 JSON 中没有的数据，必须明确写“未获取”或“数据不足”，不能编造。",
-      "8. 默认只使用已提供的研究上下文完成报告；只有在完成报告所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
-      "9. 如果无法补齐外部证据，也必须完成完整模板，并在置信度和结论中反映证据缺口。",
-      "10. Top 3 推荐必须给出明确方向、edge、概率和仓位建议，并说明它优于其余候选的原因。",
+      "8. 必须阅读并使用研究上下文 JSON 的 `web_search` 字段：若 status=completed，把外部 web-search 结果纳入候选筛选、概率评估、证据链和信息源；若 status=timed_out/failed/disabled，明确写“已尝试 web-search 但超时/失败/关闭”，不得写成本次没有尝试外部 web-search。",
+      "9. 默认只使用已提供的研究上下文完成报告；只有在完成报告所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
+      "10. 如果无法补齐外部证据，也必须完成完整模板，并在置信度和结论中反映证据缺口。",
+      "11. Top 3 推荐必须给出明确方向、edge、概率和仓位建议，并说明它优于其余候选的原因。",
       "",
       `当前 provider：${input.provider}`,
       "输出最终 Markdown。"
@@ -934,8 +939,9 @@ function buildFullPulsePrompt(input: {
     "4. Add both a candidate-pool/selection-rationale section and a recommendation-summary table before the Top 3 recommendations, explaining where the candidates came from, what was filtered out, and why the final Top 3 survived.",
     "5. Include: header, candidate-pool rationale, recommendation summary, top 3 recommendations, probability evaluation, evidence chain, four-dimensional analysis, resolution rules, reasoning logic, sizing guidance, comment review, source list, metadata.",
     "6. If data is missing, explicitly mark it as unavailable instead of inventing it.",
-    "7. Default to the provided research context. Only do very limited additional verification if the report would otherwise be incomplete.",
-    "8. Top 3 recommendations must include direction, edge, probabilities, sizing guidance, and why each beats the remaining candidates.",
+    "7. You must read and use the `web_search` field in the research context JSON. If status=completed, incorporate the external web-search results into candidate selection, probability estimates, evidence chains, and source lists. If status=timed_out/failed/disabled, explicitly say web-search was attempted but timed out/failed/was disabled; do not claim no external web-search was attempted.",
+    "8. Default to the provided research context. Only do very limited additional verification if the report would otherwise be incomplete.",
+    "9. Top 3 recommendations must include direction, edge, probabilities, sizing guidance, and why each beats the remaining candidates.",
     "",
     `Active provider: ${input.provider}`,
     "Output the final Markdown."
@@ -1300,6 +1306,11 @@ export async function buildFullPulseArchive(input: {
       return result;
     })
   );
+  const webSearch = await collectPulseWebSearchEvidence({
+    candidates: selectedCandidates.map((candidate) => candidate.market),
+    config: input.config,
+    progress: input.progress
+  });
 
   const context: FullPulseContext = {
     generated_at_utc: input.generatedAtUtc,
@@ -1327,6 +1338,7 @@ export async function buildFullPulseArchive(input: {
     risk_flags: input.riskFlags,
     candidates: input.candidates,
     research_candidates: researchCandidates,
+    web_search: webSearch,
     ...(preScreenSummary
       ? {
           pre_screen: {

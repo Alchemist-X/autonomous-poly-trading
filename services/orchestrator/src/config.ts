@@ -88,6 +88,8 @@ export interface PulseConfig {
   entryFixedNotionalUsd: number | null;
   maxAgeMinutes: number;
   maxMarkdownChars: number;
+  webSearchEnabled: boolean;
+  webSearchTimeoutSeconds: number;
 }
 
 export interface OrchestratorConfig {
@@ -193,7 +195,9 @@ export function loadConfig(): OrchestratorConfig {
       entryMaxPlans: readPositiveInteger("PULSE_ENTRY_MAX_PLANS", 4),
       entryFixedNotionalUsd: readPositiveNumberOrNull("PULSE_ENTRY_FIXED_NOTIONAL_USD"),
       maxAgeMinutes: readNumber("PULSE_MAX_AGE_MINUTES", 120),
-      maxMarkdownChars: readNumber("PULSE_MAX_MARKDOWN_CHARS", 24000)
+      maxMarkdownChars: readNumber("PULSE_MAX_MARKDOWN_CHARS", 24000),
+      webSearchEnabled: readString("PULSE_WEB_SEARCH_ENABLED", "true").toLowerCase() !== "false",
+      webSearchTimeoutSeconds: readPositiveInteger("PULSE_WEB_SEARCH_TIMEOUT_SECONDS", 120)
     },
     providers: {
       codex: readSkillProviderConfig({

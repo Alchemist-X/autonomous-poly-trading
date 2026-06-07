@@ -49,7 +49,9 @@ function createConfig(artifactStorageRoot: string): OrchestratorConfig {
       entryMaxPlans: 4,
       entryFixedNotionalUsd: null,
       maxAgeMinutes: 30,
-      maxMarkdownChars: 24000
+      maxMarkdownChars: 24000,
+      webSearchEnabled: true,
+      webSearchTimeoutSeconds: 120
     },
     providers: {
       codex: {

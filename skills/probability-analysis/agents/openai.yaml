@@ -1,0 +1,4 @@
+interface:
+  display_name: "Probability Analysis"
+  short_description: "Forecast future events with a source-weighted, auditable probability framework."
+  default_prompt: "Use $probability-analysis to estimate this event's probability. Clarify resolution criteria, collect official and credible sources, decompose the event into conditional nodes, exclude prediction-market pricing unless I ask for it, and return a concrete probability with archived sources."
