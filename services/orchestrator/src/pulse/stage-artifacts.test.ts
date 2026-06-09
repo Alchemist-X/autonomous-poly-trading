@@ -238,12 +238,19 @@ describe("stage 5 — conditional model (P(A) x P(B|A) x P(C|A,B))", () => {
     expect(validateConditionalModel(adjustedNoReason, ledgerIds).ok).toBe(false);
   });
 
-  it("rejects node probabilities outside [0.01, 0.99]", () => {
-    const overconfident: ConditionalModel = {
-      ...conditionalModel,
-      nodes: [{ ...conditionalModel.nodes[0]!, probability: 1 }, conditionalModel.nodes[1]!, conditionalModel.nodes[2]!]
+  it("accepts node probabilities up to 0.99999 but rejects absolute 0/1 certainty", () => {
+    const withNode0 = (p: number): ConditionalModel => {
+      const probs = [p, 0.65, 0.99];
+      const product = probs.reduce((acc, x) => acc * x, 1);
+      return {
+        ...conditionalModel,
+        nodes: conditionalModel.nodes.map((n, i) => ({ ...n, probability: probs[i]! })),
+        finalProbability: { computed: product, reported: product, isAdjusted: false }
+      };
     };
-    expect(validateConditionalModel(overconfident, ledgerIds).ok).toBe(false);
+    expect(validateConditionalModel(withNode0(0.99999), ledgerIds).ok).toBe(true);
+    expect(validateConditionalModel(withNode0(1), ledgerIds).ok).toBe(false);
+    expect(validateConditionalModel(withNode0(0), ledgerIds).ok).toBe(false);
   });
 
   it("rejects references to evidence ids absent from the ledger", () => {

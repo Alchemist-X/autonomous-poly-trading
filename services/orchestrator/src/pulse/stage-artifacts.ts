@@ -12,8 +12,9 @@
 // and bounded probabilities.
 
 export const PROBABILITY_TOLERANCE = 1e-6;
-export const CONDITIONAL_NODE_MIN = 0.01;
-export const CONDITIONAL_NODE_MAX = 0.99;
+// Calibration guard: forbid absolute 0/1 certainty but allow near-certainty (max 0.99999).
+export const CONDITIONAL_NODE_MIN = 0.00001;
+export const CONDITIONAL_NODE_MAX = 0.99999;
 
 export type StageValidationStatus = "valid" | "ambiguous" | "contested" | "unclarifiable";
 export type EvidenceDirection = "supports-yes" | "supports-no" | "neutral" | "ambiguous";
