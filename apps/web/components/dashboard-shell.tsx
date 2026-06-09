@@ -7,6 +7,7 @@ import { LocaleToggle } from "./locale-toggle";
 
 const navItems = [
   { href: "/", label: "Dashboard" },
+  { href: "/prediction-engine", label: "Predict" },
   { href: "/positions", label: "Positions" },
   { href: "/pnl", label: "P&L" },
   { href: "/trades", label: "Trades" },
@@ -18,7 +19,16 @@ const navItems = [
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
-  if (pathname === "/") {
+  // Public, independently-branded surfaces render without the trading-agent
+  // chrome (compliance: the World Cup product is probability research, not a
+  // Polymarket trading agent — see plan §8 R1).
+  const isPublicSurface =
+    pathname === "/" ||
+    pathname === "/terms" ||
+    pathname === "/privacy" ||
+    pathname?.startsWith("/world-cup");
+
+  if (isPublicSurface) {
     return <>{children}</>;
   }
 

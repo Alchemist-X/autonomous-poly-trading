@@ -146,6 +146,51 @@ export const systemState = pgTable("system_state", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow()
 });
 
+export const appUsers = pgTable("app_users", {
+  id: uuid("id").primaryKey(),
+  oidcIssuer: text("oidc_issuer").notNull(),
+  oidcSubject: text("oidc_subject").notNull(),
+  email: varchar("email", { length: 320 }),
+  name: text("name"),
+  imageUrl: text("image_url"),
+  role: varchar("role", { length: 24 }).notNull().default("user"),
+  status: varchar("status", { length: 24 }).notNull().default("pending_invite"),
+  activatedAt: timestamp("activated_at", { withTimezone: true }),
+  lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow()
+});
+
+export const inviteCodes = pgTable("invite_codes", {
+  id: uuid("id").primaryKey(),
+  codeHash: varchar("code_hash", { length: 128 }).notNull().unique(),
+  label: text("label"),
+  status: varchar("status", { length: 24 }).notNull().default("active"),
+  maxUses: integer("max_uses").notNull().default(1),
+  usedCount: integer("used_count").notNull().default(0),
+  allowedEmailDomain: varchar("allowed_email_domain", { length: 255 }),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+  createdByUserId: uuid("created_by_user_id").references(() => appUsers.id, { onDelete: "set null" }),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow()
+});
+
+export const predictionUsageEvents = pgTable("prediction_usage_events", {
+  id: uuid("id").primaryKey(),
+  userId: uuid("user_id").references(() => appUsers.id, { onDelete: "set null" }),
+  action: varchar("action", { length: 32 }).notNull().default("prediction_run"),
+  status: varchar("status", { length: 24 }).notNull().default("running"),
+  eventText: text("event_text"),
+  backendSource: varchar("backend_source", { length: 24 }),
+  errorMessage: text("error_message"),
+  startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+  completedAt: timestamp("completed_at", { withTimezone: true }),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow()
+});
+
 export const managedUsers = pgTable("managed_users", {
   id: uuid("id").primaryKey(),
   privyDid: varchar("privy_did", { length: 128 }).notNull().unique(),

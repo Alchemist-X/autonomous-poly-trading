@@ -9,7 +9,8 @@ export default defineConfig({
     alias: {
       "@autopoly/contracts": path.resolve(REPO_ROOT, "packages/contracts/src/index.ts"),
       "@autopoly/db": path.resolve(REPO_ROOT, "packages/db/src/index.ts"),
-      "@autopoly/terminal-ui": path.resolve(REPO_ROOT, "packages/terminal-ui/src/index.ts")
+      "@autopoly/terminal-ui": path.resolve(REPO_ROOT, "packages/terminal-ui/src/index.ts"),
+      "@autopoly/sports-model": path.resolve(REPO_ROOT, "packages/sports-model/src/index.ts")
     }
   },
   test: {

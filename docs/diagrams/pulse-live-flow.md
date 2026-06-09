@@ -1,10 +1,12 @@
 # Pulse Live 完整流程
 
-> 最后更新：2026-04-01
+> 最后更新：2026-06-07
 
 ## 一句话概括
 
 `pnpm pulse:live` = 抓市场 → 随机选 20 个 → AI 深度研究 4 个 → 写推荐报告 → 代码提取交易计划 → 风控裁剪 → 实盘下单。
+
+2026-06-07 起，Pulse research context 会额外写入 `stage_flow` 字段，把“理清定义 → query → 证据 → 权重 → 结构化模型 → 贝叶斯更新 → 市场比较”固定成机器可读流程约束。详细缺口和新增 token/耗时估算见 [`prediction-engine-stage-flow.md`](prediction-engine-stage-flow.md)。
 
 ## 流程阶段
 
