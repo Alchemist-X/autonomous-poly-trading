@@ -11,6 +11,7 @@ import type { ProgressReporter } from "../lib/terminal-progress.js";
 import { resolveProviderSkillSettings } from "../runtime/skill-settings.js";
 import type { PulseBucketStat, PulseCandidate, PulseFetchConfig, PulseStatsBundle } from "./market-pulse.js";
 import { preScreenCandidates, type PreScreenResult, type PreScreenSummary } from "./pulse-prescreen.js";
+import { buildPulseStageFlowReport, type PulseStageFlowReport } from "./stage-flow.js";
 import { collectPulseWebSearchEvidence, type PulseWebSearchSummary } from "./web-search.js";
 
 interface PulseResearchOrderbook {
@@ -55,6 +56,7 @@ interface FullPulseContext {
   candidates: PulseCandidate[];
   research_candidates: PulseResearchCandidate[];
   web_search: PulseWebSearchSummary;
+  stage_flow: PulseStageFlowReport;
   pre_screen?: {
     enabled: boolean;
     results: PreScreenResult[];
@@ -855,10 +857,11 @@ function buildFullPulsePrompt(input: {
         "6. 每个持仓章节必须包含：链接、当前持仓方向、方向（`买入 Yes` 或 `买入 No`，表示模型现在更支持的一侧）、概率评估表、Edge、证据链、结算规则、推理逻辑、持仓动作建议（hold / reduce / close）。",
         "7. 概率评估表必须至少包含 `| Yes | 市场定价 | AI 估算 |` 和 `| No | 市场定价 | AI 估算 |` 两行，百分比格式要能被程序解析。",
         "8. 如果当前持仓一侧已经没有 edge，请明确给出反向一侧的概率与 edge；不要把 AI 概率机械设成市场概率。",
-        "9. 研究上下文 JSON 中没有的数据，必须明确写“未获取”或“数据不足”，不能编造。",
-        "10. 必须阅读并使用研究上下文 JSON 的 `web_search` 字段：若 status=completed，把外部 web-search 结果纳入证据链、概率评估和信息源；若 status=timed_out/failed/disabled，明确写“已尝试 web-search 但超时/失败/关闭”，不得写成本次没有尝试外部 web-search。",
-        "11. 只有在完成逐仓复审所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
-        "12. 输出中不要出现“Top 3 新开仓”“推荐新开仓”这类章节；本报告只服务已有持仓概率/edge 复审。",
+      "9. 研究上下文 JSON 中没有的数据，必须明确写“未获取”或“数据不足”，不能编造。",
+      "10. 必须阅读并使用研究上下文 JSON 的 `web_search` 字段：若 status=completed，把外部 web-search 结果纳入证据链、概率评估和信息源；若 status=timed_out/failed/disabled，明确写“已尝试 web-search 但超时/失败/关闭”，不得写成本次没有尝试外部 web-search。",
+      "11. 必须阅读并使用研究上下文 JSON 的 `stage_flow` 字段，按其中 1-7 阶段组织复审：定义、搜索/推理、证据、权重、结构化模型、贝叶斯更新、结论/市场比较；无法完全完成的阶段必须在报告中标注缺口。",
+      "12. 只有在完成逐仓复审所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
+      "13. 输出中不要出现“Top 3 新开仓”“推荐新开仓”这类章节；本报告只服务已有持仓概率/edge 复审。",
         "",
         `当前 provider：${input.provider}`,
         "输出最终 Markdown。"
@@ -885,8 +888,9 @@ function buildFullPulsePrompt(input: {
       "7. If the held side no longer has edge, explicitly provide the opposite side's probability and edge; do not mechanically set AI probability equal to market probability.",
       "8. If data is missing, explicitly mark it unavailable instead of inventing it.",
       "9. You must read and use the `web_search` field in the research context JSON. If status=completed, incorporate the external web-search results into the evidence chain, probability estimate, and source list. If status=timed_out/failed/disabled, explicitly say web-search was attempted but timed out/failed/was disabled; do not claim no external web-search was attempted.",
-      "10. Only do very limited targeted verification if the provided context is clearly insufficient for a position review.",
-      "11. Do not include Top 3 new-entry or new-market recommendation sections; this report exists only to refresh probability / edge for current holdings.",
+      "10. You must read and use the `stage_flow` field in the research context JSON. Structure the review around its 1-7 stages: definition, search/reasoning, evidence, weighting, structured model, Bayesian-style update, and conclusion/market comparison. Mark any stage that cannot be fully completed.",
+      "11. Only do very limited targeted verification if the provided context is clearly insufficient for a position review.",
+      "12. Do not include Top 3 new-entry or new-market recommendation sections; this report exists only to refresh probability / edge for current holdings.",
       "",
       `Active provider: ${input.provider}`,
       "Output the final Markdown."
@@ -913,9 +917,10 @@ function buildFullPulsePrompt(input: {
       "6. 必须包含：报告头部、候选池与筛选思路、推荐摘要、前 3 个推荐市场、概率评估、证据链、四维分析、结算规则、推理逻辑、仓位建议、评论区校验、信息源、元数据。",
       "7. 研究上下文 JSON 中没有的数据，必须明确写“未获取”或“数据不足”，不能编造。",
       "8. 必须阅读并使用研究上下文 JSON 的 `web_search` 字段：若 status=completed，把外部 web-search 结果纳入候选筛选、概率评估、证据链和信息源；若 status=timed_out/failed/disabled，明确写“已尝试 web-search 但超时/失败/关闭”，不得写成本次没有尝试外部 web-search。",
-      "9. 默认只使用已提供的研究上下文完成报告；只有在完成报告所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
-      "10. 如果无法补齐外部证据，也必须完成完整模板，并在置信度和结论中反映证据缺口。",
-      "11. Top 3 推荐必须给出明确方向、edge、概率和仓位建议，并说明它优于其余候选的原因。",
+      "9. 必须阅读并使用研究上下文 JSON 的 `stage_flow` 字段，按其中 1-7 阶段组织每个候选的分析：定义、搜索/推理、证据、权重、结构化模型、贝叶斯更新、结论/市场比较；无法完全完成的阶段必须在报告中标注缺口。",
+      "10. 默认只使用已提供的研究上下文完成报告；只有在完成报告所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
+      "11. 如果无法补齐外部证据，也必须完成完整模板，并在置信度和结论中反映证据缺口。",
+      "12. Top 3 推荐必须给出明确方向、edge、概率和仓位建议，并说明它优于其余候选的原因。",
       "",
       `当前 provider：${input.provider}`,
       "输出最终 Markdown。"
@@ -940,8 +945,9 @@ function buildFullPulsePrompt(input: {
     "5. Include: header, candidate-pool rationale, recommendation summary, top 3 recommendations, probability evaluation, evidence chain, four-dimensional analysis, resolution rules, reasoning logic, sizing guidance, comment review, source list, metadata.",
     "6. If data is missing, explicitly mark it as unavailable instead of inventing it.",
     "7. You must read and use the `web_search` field in the research context JSON. If status=completed, incorporate the external web-search results into candidate selection, probability estimates, evidence chains, and source lists. If status=timed_out/failed/disabled, explicitly say web-search was attempted but timed out/failed/was disabled; do not claim no external web-search was attempted.",
-    "8. Default to the provided research context. Only do very limited additional verification if the report would otherwise be incomplete.",
-    "9. Top 3 recommendations must include direction, edge, probabilities, sizing guidance, and why each beats the remaining candidates.",
+    "8. You must read and use the `stage_flow` field in the research context JSON. Structure each candidate's analysis around its 1-7 stages: definition, search/reasoning, evidence, weighting, structured model, Bayesian-style update, and conclusion/market comparison. Mark any stage that cannot be fully completed.",
+    "9. Default to the provided research context. Only do very limited additional verification if the report would otherwise be incomplete.",
+    "10. Top 3 recommendations must include direction, edge, probabilities, sizing guidance, and why each beats the remaining candidates.",
     "",
     `Active provider: ${input.provider}`,
     "Output the final Markdown."
@@ -1311,6 +1317,12 @@ export async function buildFullPulseArchive(input: {
     config: input.config,
     progress: input.progress
   });
+  const stageFlow = buildPulseStageFlowReport({
+    config: input.config,
+    generatedAtUtc: input.generatedAtUtc,
+    purpose: input.purpose,
+    selectedCandidates: selectedCandidates.length
+  });
 
   const context: FullPulseContext = {
     generated_at_utc: input.generatedAtUtc,
@@ -1339,6 +1351,7 @@ export async function buildFullPulseArchive(input: {
     candidates: input.candidates,
     research_candidates: researchCandidates,
     web_search: webSearch,
+    stage_flow: stageFlow,
     ...(preScreenSummary
       ? {
           pre_screen: {
