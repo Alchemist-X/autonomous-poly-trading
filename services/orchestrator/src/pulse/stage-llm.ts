@@ -17,6 +17,8 @@ export interface StageLlmRequest {
   prompt: string;
   /** Short label for telemetry, e.g. "resolution:us-iran-nuclear-deal". */
   label: string;
+  /** Resolved model id for this stage (see stage-models.ts). Falls back to the caller default. */
+  model?: string;
   /** Per-call hard deadline in ms; <= 0 means unbounded. Defaults to the caller's default. */
   timeoutMs?: number;
 }
@@ -135,21 +137,38 @@ function runShell(command: string, cwd: string, timeoutMs: number): Promise<stri
 }
 
 /**
- * Production caller that invokes the provider CLI (`claude --print` etc.) once per request and
- * returns the parsed JSON. `resolveDefaultCommand` is injected to avoid a dependency cycle with
- * full-pulse.ts, which owns the default provider command templates.
+ * Stage-call command templates. Unlike the markdown-render default (which omits the model for
+ * claude-code), these ALWAYS pass {{model}} so each forecasting stage can run on its assigned tier.
+ * A configured provider COMMAND wins if set (it must include {{model}}).
+ */
+export function resolveStageCommandTemplate(provider: AgentRuntimeProvider, configuredCommand?: string): string | null {
+  if (configuredCommand && configuredCommand.trim()) return configuredCommand;
+  switch (provider) {
+    case "claude-code":
+      return "cat {{prompt_file}} | claude --print --model {{model}} > {{output_file}}";
+    case "codex":
+      return "cat {{prompt_file}} | codex exec --skip-git-repo-check -C {{repo_root}} -s read-only --color never -m {{model}} -o {{output_file}} -";
+    default:
+      return null;
+  }
+}
+
+/**
+ * Production caller that invokes the provider CLI (`claude --print --model <tier>`) once per
+ * request and returns the parsed JSON. The per-request model (from stage-models.ts) wins over the
+ * caller default so information stages run on Sonnet and judgment stages on Opus.
  */
 export function createCliStageLlmCaller(input: {
   config: OrchestratorConfig;
   provider: AgentRuntimeProvider;
+  defaultModel?: string;
   defaultTimeoutMs: number;
-  resolveDefaultCommand: (provider: AgentRuntimeProvider) => string | null;
 }): StageLlmCaller {
   return async (request) => {
     const startedAt = Date.now();
     const settings = resolveProviderSkillSettings(input.config, input.provider);
-    const command = settings.command || input.resolveDefaultCommand(input.provider);
-    if (!command) throw new Error(`no command template for provider ${input.provider}`);
+    const command = resolveStageCommandTemplate(input.provider, settings.command);
+    if (!command) throw new Error(`no stage-call command template for provider ${input.provider}`);
 
     const dir = await mkdtemp(path.join(tmpdir(), "pulse-stage-llm-"));
     try {
@@ -160,7 +179,7 @@ export function createCliStageLlmCaller(input: {
         repo_root: input.config.repoRoot,
         prompt_file: promptPath,
         output_file: outputPath,
-        model: settings.model ?? "",
+        model: request.model || input.defaultModel || settings.model || "",
         skill_root: settings.skillRootDir ?? ""
       });
       const stdout = await runShell(shellCommand, input.config.repoRoot, request.timeoutMs ?? input.defaultTimeoutMs);

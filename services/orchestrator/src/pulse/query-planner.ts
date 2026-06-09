@@ -13,6 +13,7 @@ import {
 } from "./stage-artifacts.js";
 import { stripSpoilerQueries } from "./spoiler-firewall.js";
 import type { StageLlmCaller } from "./stage-llm.js";
+import { modelForStage } from "./stage-models.js";
 
 export interface QueryPlanInput {
   marketSlug: string;
@@ -124,6 +125,6 @@ function coerceQueryPlan(json: unknown, input: QueryPlanInput): QueryPlan {
 
 export async function buildQueryPlan(input: QueryPlanInput): Promise<QueryPlan> {
   const prompt = buildQueryPlanPrompt(input);
-  const response = await input.callLlm({ prompt, label: `query-plan:${input.marketSlug}` });
+  const response = await input.callLlm({ prompt, label: `query-plan:${input.marketSlug}`, model: modelForStage("query_plan") });
   return coerceQueryPlan(response.json, input);
 }

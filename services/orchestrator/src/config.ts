@@ -187,7 +187,7 @@ export function loadConfig(): OrchestratorConfig {
       minFetchedMarkets: readNumber("PULSE_MIN_FETCHED_MARKETS", 5000),
       minLiquidityUsd: readNumber("PULSE_MIN_LIQUIDITY_USD", 5000),
       maxCandidates: readNumber("PULSE_MAX_CANDIDATES", 20),
-      reportCandidates: readNumber("PULSE_REPORT_CANDIDATES", 4),
+      reportCandidates: readNumber("PULSE_REPORT_CANDIDATES", 3),
       reportCommentLimit: readNumber("PULSE_REPORT_COMMENT_LIMIT", 20),
       reportTimeoutSeconds: readNumber("PULSE_REPORT_TIMEOUT_SECONDS", 0),
       directRenderTimeoutSeconds: readNumber("PULSE_DIRECT_RENDER_TIMEOUT_SECONDS", 1800),

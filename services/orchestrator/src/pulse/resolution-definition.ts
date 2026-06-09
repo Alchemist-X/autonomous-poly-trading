@@ -12,6 +12,7 @@ import {
   type StageValidationStatus
 } from "./stage-artifacts.js";
 import type { StageLlmCaller } from "./stage-llm.js";
+import { modelForStage } from "./stage-models.js";
 
 export interface ResolutionDefinitionInput {
   marketSlug: string;
@@ -135,6 +136,6 @@ function coerceResolutionDefinition(json: unknown, input: ResolutionDefinitionIn
 
 export async function buildResolutionDefinition(input: ResolutionDefinitionInput): Promise<ResolutionDefinition> {
   const prompt = buildResolutionPrompt(input);
-  const response = await input.callLlm({ prompt, label: `resolution:${input.marketSlug}` });
+  const response = await input.callLlm({ prompt, label: `resolution:${input.marketSlug}`, model: modelForStage("resolution") });
   return coerceResolutionDefinition(response.json, input);
 }
