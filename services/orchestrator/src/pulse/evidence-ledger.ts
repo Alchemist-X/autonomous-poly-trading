@@ -4,13 +4,21 @@
 // the reproducible parts (recency from publishedAt, corroboration from cross-host agreement) are
 // computed deterministically in code so the weights are auditable and unit-testable. Every ledger
 // record keeps the sources-database recordId as a foreign key and inherits its node mapping.
+//
+// Scoring is index-keyed (same protocol as stage 3): each response object must carry the record
+// "index" it scores, so a shuffled or partial response can never silently misalign. Records the
+// response does not cover fall back to the named neutral defaults, and any degraded run (call
+// failure, non-array response, or sub-half coverage) is flagged in the ledger's `gaps` field.
 
 import {
+  EVIDENCE_DIRECTIONS,
   type EvidenceDirection,
   type EvidenceLedger,
   type EvidenceLedgerRecord,
+  type ResolutionDefinition,
   type SourcesDatabase
 } from "./stage-artifacts.js";
+import { asBool, asClamped01, asEnumValue, asIndex, asRecord, sanitizeForPrompt } from "./stage-coerce.js";
 import type { StageLlmCaller } from "./stage-llm.js";
 import { modelForStage } from "./stage-models.js";
 
@@ -20,17 +28,41 @@ export interface EvidenceLedgerInput {
   generatedAtUtc: string;
   /** Reference time for deterministic recency scoring. */
   nowUtc: string;
+  /** Stage-1 artifact; when present the scoring prompt states the question being forecast. */
+  resolution?: ResolutionDefinition;
   callLlm: StageLlmCaller;
 }
 
-const DIRECTIONS: readonly EvidenceDirection[] = ["supports-yes", "supports-no", "neutral", "ambiguous"];
 const DAY_MS = 86_400_000;
+/** Recency half-life shaping constant: score = 1 / (1 + ageDays / RECENCY_DECAY_DAYS). */
+const RECENCY_DECAY_DAYS = 30;
+/** Recency score assigned when a record has no parseable publication date. */
+const UNKNOWN_RECENCY_SCORE = 0.3;
+
+// Named defaults applied to every record the scoring response does not cover.
+const DEFAULT_DIRECTION: EvidenceDirection = "neutral";
+const DEFAULT_STRENGTH = 0.3;
+const DEFAULT_CREDIBILITY = 0.5;
+const DEFAULT_PRIMARY_SOURCE = false;
 
 interface EvidenceScore {
   direction: EvidenceDirection;
   strength: number;
   primarySource: boolean;
   credibilityScore: number;
+}
+
+const UNSCORED_DEFAULTS: EvidenceScore = {
+  direction: DEFAULT_DIRECTION,
+  strength: DEFAULT_STRENGTH,
+  primarySource: DEFAULT_PRIMARY_SOURCE,
+  credibilityScore: DEFAULT_CREDIBILITY
+};
+
+interface ScoringOutcome {
+  scoresByIndex: ReadonlyMap<number, EvidenceScore>;
+  /** Set when the scoring call degraded and the named defaults are (partially) in use. */
+  degradedReason?: string;
 }
 
 interface ScoredRecord extends EvidenceScore {
@@ -41,41 +73,43 @@ interface ScoredRecord extends EvidenceScore {
   ageDays: number | null;
 }
 
-function asRecord(value: unknown): Record<string, unknown> {
-  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
-}
-
-function asDirection(value: unknown): EvidenceDirection {
-  return typeof value === "string" && (DIRECTIONS as readonly string[]).includes(value) ? (value as EvidenceDirection) : "neutral";
-}
-
-function clamp01(value: unknown, fallback: number): number {
-  const num = typeof value === "number" ? value : Number(value);
-  return Number.isFinite(num) ? Math.min(1, Math.max(0, num)) : fallback;
-}
-
 function recency(publishedAtUtc: string | undefined, nowUtc: string): { score: number; ageDays: number | null } {
-  if (!publishedAtUtc) return { score: 0.3, ageDays: null };
+  if (!publishedAtUtc) return { score: UNKNOWN_RECENCY_SCORE, ageDays: null };
   const published = Date.parse(publishedAtUtc);
   const now = Date.parse(nowUtc);
-  if (Number.isNaN(published) || Number.isNaN(now)) return { score: 0.3, ageDays: null };
+  if (Number.isNaN(published) || Number.isNaN(now)) return { score: UNKNOWN_RECENCY_SCORE, ageDays: null };
   const ageDays = Math.max(0, (now - published) / DAY_MS);
-  return { score: 1 / (1 + ageDays / 30), ageDays };
+  return { score: 1 / (1 + ageDays / RECENCY_DECAY_DAYS), ageDays };
 }
 
-function buildScoringPrompt(database: SourcesDatabase): string {
+function questionLines(resolution: ResolutionDefinition | undefined): string[] {
+  if (!resolution) {
+    return ["Market question unavailable for this run; judge each record against the market's YES outcome as described by the records themselves."];
+  }
+  const lines = [`Market question: ${sanitizeForPrompt(resolution.officialQuestion)}`];
+  const yesCondition = sanitizeForPrompt(resolution.yesBoundary?.condition);
+  return yesCondition ? [...lines, `YES resolves when: ${yesCondition}`] : lines;
+}
+
+function buildScoringPrompt(database: SourcesDatabase, resolution: ResolutionDefinition | undefined): string {
   const items = database.records
-    .map((record, index) => `[${index}] ${record.sourceHost} (${record.sourceCategory}) | ${record.title ?? ""} | ${record.summary ?? record.snippet ?? ""}`)
+    .map(
+      (record, index) =>
+        `[${index}] ${record.sourceHost} (${record.sourceCategory}) | ${sanitizeForPrompt(record.title)} | ${sanitizeForPrompt(record.summary ?? record.snippet)}`
+    )
     .join("\n");
   return [
+    ...questionLines(resolution),
+    "",
     "You are the evidence-weighting stage of an independent forecasting pipeline.",
-    "For each evidence record, judge how it bears on the YES resolution. Do NOT reference market price.",
+    "For each evidence record, judge how it bears on the YES resolution above. Do NOT reference market price.",
     "",
     "Records (index, host, category, title, summary):",
     items,
     "",
-    "Return ONLY a JSON array aligned by index, one object per record:",
-    '[ { "direction": "supports-yes"|"supports-no"|"neutral"|"ambiguous",',
+    'Return ONLY a JSON array with one object per record, each carrying the record "index" it scores:',
+    '[ { "index": number,          // the [index] of the record being scored',
+    '    "direction": "supports-yes"|"supports-no"|"neutral"|"ambiguous",',
     '    "strength": number,        // 0..1 how strongly it moves the probability',
     '    "primarySource": boolean,  // first-hand / official vs derivative',
     '    "credibilityScore": number // 0..1 source reliability',
@@ -83,26 +117,42 @@ function buildScoringPrompt(database: SourcesDatabase): string {
   ].join("\n");
 }
 
-async function scoreRecords(input: EvidenceLedgerInput): Promise<EvidenceScore[]> {
-  if (input.sourcesDatabase.records.length === 0) return [];
+async function scoreRecords(input: EvidenceLedgerInput): Promise<ScoringOutcome> {
+  const totalRecords = input.sourcesDatabase.records.length;
+  if (totalRecords === 0) return { scoresByIndex: new Map() };
   try {
     const response = await input.callLlm({
-      prompt: buildScoringPrompt(input.sourcesDatabase),
+      prompt: buildScoringPrompt(input.sourcesDatabase, input.resolution),
       label: `evidence-ledger:${input.marketSlug}`,
       model: modelForStage("evidence_ledger")
     });
-    if (!Array.isArray(response.json)) return [];
-    return response.json.map((item) => {
+    if (!Array.isArray(response.json)) {
+      return { scoresByIndex: new Map(), degradedReason: "scoring response was not a JSON array" };
+    }
+    const entries = response.json.flatMap((item): Array<[number, EvidenceScore]> => {
       const record = asRecord(item);
-      return {
-        direction: asDirection(record.direction),
-        strength: clamp01(record.strength, 0.3),
-        primarySource: typeof record.primarySource === "boolean" ? record.primarySource : false,
-        credibilityScore: clamp01(record.credibilityScore, 0.5)
-      };
+      const index = asIndex(record.index);
+      if (index === undefined || index >= totalRecords) return [];
+      return [
+        [
+          index,
+          {
+            direction: asEnumValue(record.direction, EVIDENCE_DIRECTIONS) ?? DEFAULT_DIRECTION,
+            strength: asClamped01(record.strength, DEFAULT_STRENGTH),
+            primarySource: asBool(record.primarySource, DEFAULT_PRIMARY_SOURCE),
+            credibilityScore: asClamped01(record.credibilityScore, DEFAULT_CREDIBILITY)
+          }
+        ]
+      ];
     });
-  } catch {
-    return [];
+    const scoresByIndex = new Map(entries);
+    if (scoresByIndex.size * 2 < totalRecords) {
+      return { scoresByIndex, degradedReason: `scoring response covered ${scoresByIndex.size} of ${totalRecords} records` };
+    }
+    return { scoresByIndex };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { scoresByIndex: new Map(), degradedReason: `scoring call failed (${message})` };
   }
 }
 
@@ -120,10 +170,10 @@ function countCorroboration(target: ScoredRecord, all: ScoredRecord[]): number {
 }
 
 export async function buildEvidenceLedger(input: EvidenceLedgerInput): Promise<EvidenceLedger> {
-  const scores = await scoreRecords(input);
+  const { scoresByIndex, degradedReason } = await scoreRecords(input);
 
   const scored: ScoredRecord[] = input.sourcesDatabase.records.map((record, index) => {
-    const score = scores[index] ?? { direction: "neutral" as EvidenceDirection, strength: 0.3, primarySource: false, credibilityScore: 0.5 };
+    const score = scoresByIndex.get(index) ?? UNSCORED_DEFAULTS;
     const { score: recencyScore, ageDays } = recency(record.publishedAtUtc, input.nowUtc);
     return {
       recordId: record.recordId,
@@ -169,6 +219,7 @@ export async function buildEvidenceLedger(input: EvidenceLedgerInput): Promise<E
       supportingNo,
       netStrength,
       averageRecencyDays
-    }
+    },
+    ...(degradedReason ? { gaps: [`stage-4 scoring degraded: ${degradedReason}; deterministic defaults in use`] } : {})
   };
 }

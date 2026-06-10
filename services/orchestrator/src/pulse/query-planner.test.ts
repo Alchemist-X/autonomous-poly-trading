@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildQueryPlan, type QueryPlanInput } from "./query-planner.js";
-import { validateQueryPlan } from "./stage-artifacts.js";
+import { QUERY_PLAN_NODE_MAX, QUERY_PLAN_NODE_MIN, validateQueryPlan } from "./stage-artifacts.js";
 import type { StageLlmCaller, StageLlmRequest } from "./stage-llm.js";
 
 function mockCaller(json: unknown, capture?: (request: StageLlmRequest) => void): StageLlmCaller {
@@ -76,5 +76,27 @@ describe("stage 2 — query-planner producer", () => {
     expect(captured).toContain("MUST NOT generate any");
     expect(captured).toContain("Polymarket");
     expect(captured).toContain("independent of market pricing");
+  });
+
+  it("spec in the prompt mentions timeframe and interpolates the node bounds", async () => {
+    let captured = "";
+    await buildQueryPlan(baseInput(mockCaller(planJson, (req) => { captured = req.prompt; })));
+    expect(captured).toContain('"timeframe": string | null');
+    expect(captured).toContain(`${QUERY_PLAN_NODE_MIN} to ${QUERY_PLAN_NODE_MAX} necessary-condition nodes`);
+    expect(captured).toContain(`Use ${QUERY_PLAN_NODE_MIN}-${QUERY_PLAN_NODE_MAX} nodes`);
+  });
+
+  it("records validator findings in gaps instead of throwing on a structurally bad plan", async () => {
+    const oneNodeJson = { nodes: [planJson.nodes[0]], baseQueries: ["US Iran nuclear deal June 30"] };
+    const plan = await buildQueryPlan(baseInput(mockCaller(oneNodeJson)));
+    expect(plan.nodes).toHaveLength(1);
+    expect(plan.gaps).toBeDefined();
+    expect(plan.gaps!.length).toBeGreaterThan(0);
+    expect(plan.gaps!.some((gap) => gap.includes("nodes.length"))).toBe(true);
+  });
+
+  it("omits gaps entirely on a clean plan", async () => {
+    const plan = await buildQueryPlan(baseInput(mockCaller(planJson)));
+    expect(plan.gaps).toBeUndefined();
   });
 });

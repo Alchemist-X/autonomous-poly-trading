@@ -6,11 +6,13 @@
 // and validationStatus is downgraded instead.
 
 import {
+  VALIDATION_STATUSES,
   validateResolutionDefinition,
   type ResolutionBoundary,
   type ResolutionDefinition,
   type StageValidationStatus
 } from "./stage-artifacts.js";
+import { asBool, asClamped01, asEnumValue, asRecord, asStringArray, asText } from "./stage-coerce.js";
 import type { StageLlmCaller } from "./stage-llm.js";
 import { modelForStage } from "./stage-models.js";
 
@@ -25,35 +27,6 @@ export interface ResolutionDefinitionInput {
   categoryLabel?: string | null;
   generatedAtUtc: string;
   callLlm: StageLlmCaller;
-}
-
-const VALID_STATUSES: readonly StageValidationStatus[] = ["valid", "ambiguous", "contested", "unclarifiable"];
-
-function asRecord(value: unknown): Record<string, unknown> {
-  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
-}
-
-function asText(value: unknown): string | undefined {
-  return typeof value === "string" && value.trim() ? value.trim() : undefined;
-}
-
-function asBool(value: unknown, fallback: boolean): boolean {
-  return typeof value === "boolean" ? value : fallback;
-}
-
-function asClamped01(value: unknown, fallback: number): number {
-  const num = typeof value === "number" ? value : Number(value);
-  return Number.isFinite(num) ? Math.min(1, Math.max(0, num)) : fallback;
-}
-
-function asStringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string" && item.trim().length > 0) : [];
-}
-
-function asStatus(value: unknown): StageValidationStatus | undefined {
-  return typeof value === "string" && (VALID_STATUSES as readonly string[]).includes(value)
-    ? (value as StageValidationStatus)
-    : undefined;
 }
 
 function coerceBoundary(value: unknown): ResolutionBoundary {
@@ -118,7 +91,7 @@ function coerceResolutionDefinition(json: unknown, input: ResolutionDefinitionIn
     deadline: asText(record.deadline) ?? input.endDateUtc,
     timezone: asText(record.timezone),
     resolutionDate: asText(record.resolutionDate),
-    validationStatus: asStatus(record.validationStatus) ?? "ambiguous",
+    validationStatus: asEnumValue(record.validationStatus, VALIDATION_STATUSES) ?? "ambiguous",
     gaps,
     confidence: asClamped01(record.confidence, 0.4),
     definedAtUtc: input.generatedAtUtc

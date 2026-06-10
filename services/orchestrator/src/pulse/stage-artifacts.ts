@@ -88,6 +88,8 @@ export interface QueryPlan {
   baseQueries: string[];
   totalQueriesPlanned: number;
   sourceAllowlist?: string[];
+  /** Structural-validation findings recorded by the producer (validateQueryPlan output). */
+  gaps?: string[];
 }
 
 // ---------------------------------------------------------------------------

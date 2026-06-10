@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { runStageVerifier, type VerifierInput } from "./verifier.js";
 import type { BayesDeltaLedger, ConditionalModel } from "./stage-artifacts.js";
-import type { StageLlmCaller } from "./stage-llm.js";
+import type { StageLlmCaller, StageLlmRequest } from "./stage-llm.js";
 
 const conditionalModel: ConditionalModel = {
   marketSlug: "m",
@@ -45,5 +45,35 @@ describe("stage-6 verifier", () => {
     const result = await runStageVerifier(baseInput(caller));
     expect(result.consistent).toBe(true);
     expect(result.issues.length).toBeGreaterThan(0);
+  });
+
+  it("fails open with a visible marker when the response lacks a boolean consistent", async () => {
+    const caller: StageLlmCaller = async () => ({ raw: "{}", json: { issues: ["minor note"] }, elapsedMs: 1 });
+    const result = await runStageVerifier(baseInput(caller));
+    expect(result.consistent).toBe(true);
+    expect(result.issues).toContain("minor note");
+    expect(result.issues.some((issue) => issue.includes("malformed shape"))).toBe(true);
+  });
+
+  it("treats a non-boolean consistent field as malformed", async () => {
+    const caller: StageLlmCaller = async () => ({ raw: "{}", json: { consistent: "yes", issues: [] }, elapsedMs: 1 });
+    const result = await runStageVerifier(baseInput(caller));
+    expect(result.consistent).toBe(true);
+    expect(result.issues.some((issue) => issue.includes("malformed shape"))).toBe(true);
+  });
+
+  it("never leaks the market price into the verifier prompt", async () => {
+    let captured = "";
+    const caller: StageLlmCaller = async (request: StageLlmRequest) => {
+      captured = request.prompt;
+      return { raw: "{}", json: { consistent: true, issues: [] }, elapsedMs: 1 };
+    };
+    // distinctive marketProb value that appears nowhere else in the fixtures
+    const quarantined: VerifierInput = { ...baseInput(caller), bayesLedger: { ...bayesLedger, marketProb: 0.7777 } };
+    await runStageVerifier(quarantined);
+    expect(captured).toContain("0.2900"); // conditional node probability IS rendered
+    expect(captured).toContain("0.2200"); // bayes final IS rendered
+    expect(captured).not.toContain("0.7777"); // marketProb never appears in any form
+    expect(captured).not.toContain("marketProb");
   });
 });

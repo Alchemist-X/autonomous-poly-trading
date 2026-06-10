@@ -1,16 +1,22 @@
 // Stage 2 producer — base reasoning + search-query design.
 //
-// Decomposes the event into 2-5 necessary-condition nodes, each with source-category-tagged
-// search queries. The independent-forecasting firewall is enforced in CODE (not just the prompt):
-// any query that names a prediction market / odds / sportsbook is stripped before the plan is
-// returned, and the planned total is recomputed from what survives.
+// Decomposes the event into necessary-condition nodes (QUERY_PLAN_NODE_MIN..MAX), each with
+// source-category-tagged search queries. The independent-forecasting firewall is enforced in CODE
+// (not just the prompt): any query that names a prediction market / odds / sportsbook is stripped
+// before the plan is returned, and the planned total is recomputed from what survives. The
+// deterministic validator runs on the coerced plan and its findings are recorded in `gaps`
+// (never thrown) so downstream stages can see structural problems.
 
 import {
+  QUERY_PLAN_NODE_MAX,
+  QUERY_PLAN_NODE_MIN,
+  SOURCE_CATEGORIES,
+  validateQueryPlan,
   type QueryPlan,
   type QueryPlanNode,
-  type QueryPlanSourceCategory,
-  type SourceCategory
+  type QueryPlanSourceCategory
 } from "./stage-artifacts.js";
+import { asEnumValue, asRecord, asStringArray, asText } from "./stage-coerce.js";
 import { stripSpoilerQueries } from "./spoiler-firewall.js";
 import type { StageLlmCaller } from "./stage-llm.js";
 import { modelForStage } from "./stage-models.js";
@@ -25,30 +31,10 @@ export interface QueryPlanInput {
   callLlm: StageLlmCaller;
 }
 
-const SOURCE_CATEGORIES: readonly SourceCategory[] = ["official", "mainstream", "local", "third-party", "military-map", "social"];
-
-function asRecord(value: unknown): Record<string, unknown> {
-  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
-}
-
-function asText(value: unknown): string | undefined {
-  return typeof value === "string" && value.trim() ? value.trim() : undefined;
-}
-
-function asStringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string" && item.trim().length > 0) : [];
-}
-
-function asCategory(value: unknown): SourceCategory | undefined {
-  return typeof value === "string" && (SOURCE_CATEGORIES as readonly string[]).includes(value)
-    ? (value as SourceCategory)
-    : undefined;
-}
-
 function coerceSourceCategory(value: unknown): QueryPlanSourceCategory {
   const record = asRecord(value);
   return {
-    category: asCategory(record.category) ?? "third-party",
+    category: asEnumValue(record.category, SOURCE_CATEGORIES) ?? "third-party",
     queries: stripSpoilerQueries(asStringArray(record.queries)),
     expectedEvidence: asStringArray(record.expectedEvidence)
   };
@@ -77,7 +63,7 @@ function countQueries(nodes: QueryPlanNode[]): number {
 export function buildQueryPlanPrompt(input: QueryPlanInput): string {
   return [
     "You are the search-query-design stage of an independent forecasting pipeline.",
-    "Decompose this event into 2 to 5 necessary-condition nodes (the things that must each happen",
+    `Decompose this event into ${QUERY_PLAN_NODE_MIN} to ${QUERY_PLAN_NODE_MAX} necessary-condition nodes (the things that must each happen`,
     "for the event to resolve Yes), and design source-specific search queries to gather evidence",
     "for each node. You are deliberately NOT given the market price, and you MUST NOT generate any",
     "query that targets a prediction market, sportsbook, odds aggregator, or betting site",
@@ -95,6 +81,7 @@ export function buildQueryPlanPrompt(input: QueryPlanInput): string {
     '      "label": string,',
     '      "condition": string,',
     '      "weight": number | null,  // optional importance, nodes should sum to ~1 if provided',
+    '      "timeframe": string | null,  // optional window in which the condition must hold',
     '      "sourceCategories": [',
     '        { "category": "official"|"mainstream"|"local"|"third-party"|"military-map"|"social",',
     '          "queries": string[], "expectedEvidence": string[] }',
@@ -103,7 +90,7 @@ export function buildQueryPlanPrompt(input: QueryPlanInput): string {
     "  ],",
     '  "baseQueries": string[]  // a few broad fallback queries',
     "}",
-    "Use 2-5 nodes. Each node needs at least one query. Do not name any betting/odds/market site."
+    `Use ${QUERY_PLAN_NODE_MIN}-${QUERY_PLAN_NODE_MAX} nodes. Each node needs at least one query. Do not name any betting/odds/market site.`
   ]
     .filter((line) => line !== "")
     .join("\n");
@@ -113,7 +100,7 @@ function coerceQueryPlan(json: unknown, input: QueryPlanInput): QueryPlan {
   const record = asRecord(json);
   const nodes = (Array.isArray(record.nodes) ? record.nodes : []).map(coerceNode);
   const baseQueries = stripSpoilerQueries(asStringArray(record.baseQueries));
-  return {
+  const plan: QueryPlan = {
     marketSlug: input.marketSlug,
     eventSlug: input.eventSlug,
     generatedAtUtc: input.generatedAtUtc,
@@ -121,6 +108,10 @@ function coerceQueryPlan(json: unknown, input: QueryPlanInput): QueryPlan {
     baseQueries,
     totalQueriesPlanned: countQueries(nodes)
   };
+  // Audit with the deterministic validator; findings are recorded, never thrown, so the pipeline
+  // can degrade gracefully while downstream stages still see the structural problems.
+  const validation = validateQueryPlan(plan);
+  return validation.ok ? plan : { ...plan, gaps: validation.errors };
 }
 
 export async function buildQueryPlan(input: QueryPlanInput): Promise<QueryPlan> {
