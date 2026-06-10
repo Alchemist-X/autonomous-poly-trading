@@ -143,6 +143,44 @@ describe("pulse entry planner", () => {
     expect(plans[0]?.monthlyReturn).toBeCloseTo(0.006228, 4);
   });
 
+  it("parses probability rows whose label and percent cells are bolded (2026-06-10 live regression)", () => {
+    // Exact shape from the 2026-06-10 live run (fcb6ec05): the renderer bolded the recommended
+    // row — `| **No（未同意）** | **76.5%** | **85%** | ... |` — and extractProbabilities missed
+    // it, collapsing aiProb to marketProb (edge 0) and silently dropping the only entry plan.
+    const markdown = [
+      "## 1. Trump 是否在 6/30 前同意解冻伊朗资产？",
+      "",
+      "**链接：** https://example.com/demo-market",
+      "",
+      "| 项目 | 数值 |",
+      "|------|------|",
+      "| 方向 | 买入 **No** @ 限价 ≤ 0.77（No ask = 1 − Yes bestBid 0.23） |",
+      "| **建议仓位** | **5.0% → $500 / $10,000** |",
+      "| 置信度 | 中 |",
+      "",
+      "| | 市场定价 | AI 估算 | Edge |",
+      "|---|---|---|---|",
+      "| Yes（同意解冻） | 23.5% | 15% | −8.5% |",
+      "| **No（未同意）** | **76.5%** | **85%** | **+8.5%（买 No）** |",
+      "",
+      "### 推理逻辑",
+      "NYT reports the asset unfreeze is deferred to later-stage talks."
+    ].join("\n");
+
+    const plans = buildPulseEntryPlans({
+      context: createContext(markdown),
+      positionStopLossPct: 0.3,
+      nowMs: FIXED_NOW_MS
+    });
+
+    expect(plans).toHaveLength(1);
+    expect(plans[0]?.outcomeLabel).toBe("No");
+    expect(plans[0]?.marketProb).toBeCloseTo(0.765, 6);
+    expect(plans[0]?.aiProb).toBeCloseTo(0.85, 6);
+    expect(plans[0]?.decision.action).toBe("open");
+    expect(plans[0]?.decision.notional_usd).toBeGreaterThan(0);
+  });
+
   it("extracts outcome label even when wrapped in markdown bold markers", () => {
     // LLM output often uses **No** / **Yes** to emphasize the outcome
     const markdown = [
