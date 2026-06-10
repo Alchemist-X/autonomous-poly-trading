@@ -1,8 +1,8 @@
 # Prediction Engine Stage Flow Alignment
 
-> Last updated: 2026-06-07  
+> Last updated: 2026-06-10  
 > execution mode: inspect / demo-read-only  
-> Decision source: user's flow diagram + `skills/probability-analysis` + current Pulse implementation
+> Decision source: user's flow diagram + `skills/probability-analysis` + current Pulse implementation + the `pulse-stage-flow-v2` typed pipeline branch
 
 ## Human Review Entry Points
 
@@ -27,17 +27,37 @@ Pulse research context now writes a `stage_flow` field that explicitly aligns wi
 
 The `full-pulse` prompt now requires the LLM to read `stage_flow` and organize market candidates or existing-position reviews around those stages. The frontend demo uses the same stage language to show natural-language event input, probability output, conditional model, evidence weights, and market mispricing.
 
+## Typed Pipeline Status (branch `pulse-stage-flow-v2`, 2026-06-10)
+
+Stages 1-6 plus the second-pass verifier now exist as **typed, machine-validated** standalone modules (`services/orchestrator/src/pulse/`): one structured LLM call per module, code-level coercion, and deterministic validators. **Not yet wired into the live path** — the wiring (`PULSE_TYPED_MODEL` flag) and the stage-7 cutover (switching `pulse-entry-planner`'s probability source) are the next steps.
+
+### Explicit model assignment (stage-models.ts, single source of truth)
+
+| Stage | Module | Model | Nature |
+| --- | --- | --- | --- |
+| 1. Clarify definition | `resolution-definition.ts` | Sonnet | information |
+| 2. Query plan | `query-planner.ts` | Sonnet | information |
+| 3. Evidence collection | `evidence-database.ts` | Sonnet | information |
+| 4. Evidence weighting | `evidence-ledger.ts` | Opus | judgment |
+| 5. Conditional model | `conditional-model.ts` | Opus | judgment |
+| 6. Bayes delta ledger | `bayes-ledger.ts` | Opus | judgment |
+| 6b. Second-pass audit | `verifier.ts` | Opus | judgment |
+
+### Key mechanisms (after the 2026-06-10 multi-agent review hardening)
+
+- **Machine validation** (`stage-artifacts.ts`): multiplication reconciliation, per-step Bayes posterior-chain reconciliation, cross-stage foreign-key integrity, summaries recomputed from records, explicit NaN rejection, direction-vs-delta sign consistency, zero-evidence updates rejected, stage-5->6 base linkage, marketSlug uniformity across the chain.
+- **Independent-forecasting firewall** (`spoiler-firewall.ts`): host-level plus content-level (odds quoted inside snippets) blocking; the market price is stamped onto stage 6 output but never enters a prompt — the prompt builders' signatures cannot even see marketProb at the type level; validators reject stored artifacts containing spoiler sources.
+- **LLM protocol robustness**: stage 3/4 per-item responses must carry an explicit `index` key (shuffled/partial responses can no longer silently misalign); untrusted web text is sanitized before prompt interpolation (newline-injection defense); one retry on unparseable output; timeouts kill the whole process group.
+- **Visible degradation**: a failed or under-covered stage-4 scoring call marks `gaps` on the ledger instead of silently defaulting every record to neutral.
+
 ## Remaining Gaps
 
 | Stage | Current status | Gap |
 | --- | --- | --- |
-| 1. Clarify definition | Partial | Polymarket rules and question text are fetched, but Yes/No boundaries, representative authority, timezone, and edge cases are still mainly written by the LLM in Markdown rather than validated as JSON. |
-| 2. Base reasoning/query | Partial | Queries are template-built from question/category/tags; there is no LLM-generated node-specific query plan yet. |
-| 3. Evidence collection | Partial | Pulse has Polymarket page/comment/orderbook collection plus DuckDuckGo snippets; it does not reliably fetch full page bodies, Twitter/X, Reddit, Telegram, military maps, or some local/party media. |
-| 4. Evidence weighting | Partial | Reports contain evidence chains and confidence language, but each evidence item's direction, strength, recency, primary-source status, and corroboration are not yet stored in a typed evidence ledger. |
-| 5. Structured model | Partial | The LLM can write `P(A) x P(B|A) x P(C|A,B)`, but model nodes and arithmetic checks are not forced into typed artifacts. |
-| 6. Bayesian update | Partial | The LLM can explain updates, but baseline, deltas, final probability, and credible interval are not independently audited; there is no second-pass verifier. |
-| 7. Conclusion/market comparison | Implemented for mapped markets | For mapped Polymarket markets, Pulse parses AI probability, market probability, and edge before risk controls. Arbitrary natural-language events still need event-to-market matching. |
+| 1-6 + verifier | Typed modules implemented (table above) | **Not yet wired into `full-pulse.ts`**; wiring must strip price fields from candidates (firewall requirement); a 3-candidate batch entry point is still needed. |
+| 3. Evidence collection | Typed module takes an injected search runner | No production `StageSearchRunner` bridges the existing web-search yet; full-text fetch, Twitter/X, Reddit, Telegram, military maps still missing; the current search path does not produce `publishedAtUtc`, so recency scoring will degenerate to a constant 0.3 at wiring time. |
+| 7. Conclusion/market comparison | Implemented for mapped markets (live path) | Cutover pending: switch `pulse-entry-planner.ts`'s probability source from Markdown parsing to the typed `bayes_ledger` (mind the Yes-orientation semantics of outcomeLabel); arbitrary natural-language events still need event-to-market matching. |
+| Cross-provider | `stage-models.ts` hardcodes claude-* model ids | The codex provider path (already supported by `resolveStageCommandTemplate`) needs a per-provider model mapping. |
 
 ## Incremental Cost Estimate
 

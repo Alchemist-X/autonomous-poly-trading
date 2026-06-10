@@ -1,8 +1,8 @@
 # 预测引擎 Stage Flow 对齐说明
 
-> 最后更新：2026-06-07  
+> 最后更新：2026-06-10  
 > execution mode：inspect / demo-read-only  
-> 决策来源：用户流程图 + `skills/probability-analysis` + 当前 Pulse 实现
+> 决策来源：用户流程图 + `skills/probability-analysis` + 当前 Pulse 实现 + 分支 `pulse-stage-flow-v2` typed 管线
 
 ## 人类 review 入口
 
@@ -27,17 +27,37 @@ Pulse research context 现在会写入 `stage_flow` 字段，显式对齐图片�
 
 `full-pulse` prompt 现在要求 LLM 读取 `stage_flow`，并在报告中按这些阶段组织候选或已有持仓复审。前端 demo 使用同一套阶段语言展示自然语言事件输入、概率结论、条件概率模型、证据权重和市场偏差。
 
+## Typed 管线现状（分支 `pulse-stage-flow-v2`，2026-06-10）
+
+7 步中的 1-6 + 第二遍 verifier 已落成 **typed、机器可校验**的独立模块（`services/orchestrator/src/pulse/`），每个模块一次结构化 LLM 调用 + 代码级 coerce + 确定性 validator。**尚未接入 live 路径**——接线（`PULSE_TYPED_MODEL` flag）和 stage-7 cutover（`pulse-entry-planner` 概率源切换）是下一步。
+
+### 显式模型分配（stage-models.ts，单一事实源）
+
+| 阶段 | 模块 | 模型 | 性质 |
+| --- | --- | --- | --- |
+| 1. 理清定义 | `resolution-definition.ts` | Sonnet | 信息 |
+| 2. query plan | `query-planner.ts` | Sonnet | 信息 |
+| 3. 证据收集 | `evidence-database.ts` | Sonnet | 信息 |
+| 4. 证据权重 | `evidence-ledger.ts` | Opus | 判断 |
+| 5. 条件概率模型 | `conditional-model.ts` | Opus | 判断 |
+| 6. 贝叶斯 delta ledger | `bayes-ledger.ts` | Opus | 判断 |
+| 6b. 二遍审计 | `verifier.ts` | Opus | 判断 |
+
+### 关键机制（2026-06-10 多 agent review 加固后）
+
+- **机器校验**（`stage-artifacts.ts`）：乘法对账、贝叶斯 posterior 链逐步对账、跨 stage 外键完整性、summary 从 records 重算、NaN 显式拒绝、方向与 delta 符号一致性、空证据 update 拒绝、stage5→6 基线衔接、marketSlug 全链一致。
+- **独立预测防火墙**（`spoiler-firewall.ts`）：host 级 + 内容级（snippet 里引用的赔率）双重拦截；市场价在 stage 6 只 stamp 不进 prompt，prompt builder 签名在类型层面拿不到 marketProb；validator 拒绝含 spoiler 源的存档 artifact。
+- **LLM 协议鲁棒性**：stage 3/4 的逐条响应必须带显式 `index` 键（错位/缺条不再静默错配）；不可信 web 文本进 prompt 前 sanitize（防换行注入）；解析失败重试一次；超时 kill 整个进程组。
+- **可见降级**：stage 4 打分失败/覆盖不足会在 ledger 上标 `gaps`，不再静默全部回退 neutral。
+
 ## 当前仍无法完全实现的地方
 
 | 阶段 | 当前状态 | 缺口 |
 | --- | --- | --- |
-| 1. 理清定义 | 部分实现 | Polymarket 规则和问题已抓取，但 Yes/No 边界、代表主体、时区、边界案例仍主要由 LLM 在 Markdown 中写出；还不是机器可校验 JSON。 |
-| 2. 基础推理/query | 部分实现 | 当前 query 由模板从问题、分类、标签生成；还没有让 LLM 先按事件必要条件生成 node-specific query plan。 |
-| 3. 证据收集 | 部分实现 | 已有 Polymarket 页面/评论/订单簿 + DuckDuckGo snippet 搜索；还没有稳定抓取全文、Twitter/X、Reddit、Telegram、军事地图或部分本地媒体。 |
-| 4. 证据权重 | 部分实现 | 报告会写证据链和置信度，但每条证据的方向、强度、时效、一手性、交叉印证还没有落成 typed evidence ledger。 |
-| 5. 结构化模型 | 部分实现 | LLM 可写 `P(A) x P(B|A) x P(C|A,B)`，但模型节点和乘法校验还没有被代码强制保存和验证。 |
-| 6. 贝叶斯更新 | 部分实现 | LLM 可解释更新过程，但基线、delta、最终概率、置信区间没有独立机器审计；也没有第二 LLM verifier。 |
-| 7. 结论/市场比较 | 已实现于可映射市场 | 对已映射 Polymarket 市场可解析 AI 概率、市场概率、edge，并进入风控；任意自然语言事件还缺 event-to-market matching。 |
+| 1-6 + verifier | typed 模块已实现（见上表） | **还没接进 `full-pulse.ts`**；接线时候选必须剥掉价格字段（防火墙要求），3 候选批量入口待建。 |
+| 3. 证据收集 | typed 模块依赖注入的 search runner | 还没有生产 `StageSearchRunner` 接到现有 web-search；全文抓取、Twitter/X、Reddit、Telegram、军事地图仍缺；现有搜索路径不产 `publishedAtUtc`，接线后 recency 评分会退化为常数 0.3。 |
+| 7. 结论/市场比较 | 已实现于可映射市场（live 路径） | cutover 待做：`pulse-entry-planner.ts` 概率源从解析 Markdown 换成读 typed `bayes_ledger`（注意 outcomeLabel 的 Yes 朝向语义）；任意自然语言事件还缺 event-to-market matching。 |
+| 跨提供商 | `stage-models.ts` 硬编码 claude-* 模型 id | codex provider 路径（`resolveStageCommandTemplate` 已支持）需要 per-provider 模型映射。 |
 
 ## 新增消耗预估
 

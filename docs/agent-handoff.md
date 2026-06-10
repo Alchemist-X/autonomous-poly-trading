@@ -11,7 +11,7 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-07 by Codex（今日 Pulse 只读推荐完成并生成 PDF；ETH close 与 Satoshi $1 live-check 均被 CLOB 地区限制 403 拒绝，0 成交）
+> 最后更新：2026-06-10 by Claude（pulse-stage-flow-v2：7 步 typed 管线 P3 全部完成 + 多 agent review 加固 53 项发现落地；剩 P1 接线 + P4 cutover；本轮零下单）
 
 ---
 
@@ -130,6 +130,17 @@
 - 移动 `vitest.config.ts` 到 `config/` 后必须 `root: REPO_ROOT` 否则找不到 `@autopoly/*` workspace 包
 - `git mv` 整目录时未追踪文件不会被 git 移动，要手动 `mv`
 - 4/24 跑 v2 smoke 时 no1 钱包 USDC.e 有 $3.96 但 pUSD 为 0 → 验证 SDK 接入正常但下单需要先 wrap
+
+## 🔄 上次会话留下的上下文（2026-06-10 · pulse-stage-flow-v2 typed 管线）
+
+- 分支 `pulse-stage-flow-v2`（off main）：BP 7 步 forecasting 的 typed 改造 **P3 全部完成**。4 个新 commit：`ec93e23`（stage-5/6 producer + opus verifier）→ `0867031`（validator + stage-llm 加固）→ `4214d27`（producer 加固）→ 后续 docs/NUL 修复。**真钱 live 路径零改动**（模块未接线）。
+- 用 Workflow 多 agent 编排做了一轮全管线 review：6 视角并行扫 → 每条发现独立 skeptic 对抗校验 → 完整性批判，53 项确认发现已全部落地或显式 defer。最高危修复：`validateEvidenceLedger` count-vs-sum 符号检查（既误杀合法 ledger 又放过伪造 summary，已改为从 records 重算）、NaN 旁路所有对账校验、stage-4 打分 prompt 不含市场问题、stage 3/4 LLM 响应按位置对齐会静默错配（已改显式 index 协议）、stage-llm 超时孤儿进程（已改进程组 kill）。
+- 防火墙强化：内容级 spoiler 过滤（允许站点 snippet 里引用赔率也拦）、类型级价格隔离（stage-6/verifier 的 prompt builder 签名拿不到 marketProb）、validator 拒绝含 spoiler 源的存档。
+- 验证：pulse 套件 174/174（改造前 120），全仓 `pnpm test` 67 files / 561 tests 全绿，`tsc --noEmit` 干净。设计文档已同步（`docs/diagrams/prediction-engine-stage-flow.{md,en.md}`：显式模型表 + typed 管线现状 + 残余缺口）。
+- **下一步（P1 接线）**：① `PULSE_TYPED_MODEL` flag + 在 `full-pulse.ts` 把候选（剥掉价格字段）喂给 6 个 producer、组装 `decision_model`；② 生产 `StageSearchRunner` 桥接现有 web-search（注意：现有搜索不产 `publishedAtUtc`，recency 会退化常数 0.3，接线时要补）；③ 3 候选批量入口 + 单候选失败可恢复。
+- **P4 cutover（最后、可秒回滚）**：改 `pulse-entry-planner.ts` 概率源（解析 Markdown → 读 typed `bayes_ledger`），注意 outcomeLabel 的 Yes 朝向语义（review 发现 [42]）。
+- **显式 defer**（review 发现，接线时处理）：stage-3 gather 无总时间预算；`stage-models.ts` 硬编码 claude-* id 不兼容 codex provider;stage 失败时 prompt/output 证物被 finally 清理（无归档）；QueryPlan.baseQueries fallback 的 node 标记是近似。
+- 本轮没有运行 `pulse:live` / `daily:pulse`，没有真实下单。
 
 ## 🔄 上次会话留下的上下文（2026-06-07）
 

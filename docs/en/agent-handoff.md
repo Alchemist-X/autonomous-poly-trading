@@ -11,7 +11,7 @@
 >
 > Chinese version: [`docs/agent-handoff.md`](../agent-handoff.md)
 >
-> Last updated: 2026-06-07 by Codex (today's read-only Pulse recommendation completed and generated PDF; both the ETH close and Satoshi $1 live-check were rejected by CLOB region restriction 403, 0 fills)
+> Last updated: 2026-06-10 by Claude (pulse-stage-flow-v2: all of P3 for the typed 7-step pipeline done + 53 multi-agent-review findings landed; P1 wiring + P4 cutover remain; zero orders this session)
 >
 > **Translation pending** — the Chinese version contains Mode A Phase 3a entries (3a.0 builder code / 3a.1 adapter / 3a.2 pulse-dispatcher bridge done as of 2026-05-05) that have not yet been mirrored here. See `docs/agent-handoff.md` for the canonical state.
 
@@ -69,6 +69,17 @@
 - Moving `vitest.config.ts` to `config/` requires `root: REPO_ROOT` in the config, otherwise `@autopoly/*` workspace packages cannot be resolved
 - `git mv` of an entire directory does not move untracked files — those need a manual `mv`
 - During the 4/24 V2 smoke, the no1 wallet had $3.96 USDC.e but $0 pUSD → verifies SDK works but trading requires wrapping first. Rechecked on 2026-05-15: `.env.no1` CLOB `COLLATERAL balance=0`, allowances are all 0, and onchain pUSD probe is 0.
+
+## 🔄 Last Session Context (2026-06-10 · pulse-stage-flow-v2 typed pipeline)
+
+- Branch `pulse-stage-flow-v2` (off main): the typed rebuild of the BP 7-step forecasting flow — **P3 fully done**. 4 new commits: `ec93e23` (stage-5/6 producers + opus verifier) → `0867031` (validator + stage-llm hardening) → `4214d27` (producer hardening) → follow-up docs/NUL fix. **Zero changes to the real-money live path** (modules not wired yet).
+- Ran a full-pipeline multi-agent review via the Workflow tool: 6 parallel lenses → adversarial skeptic per finding → completeness critic; all 53 confirmed findings landed or explicitly deferred. Top fixes: `validateEvidenceLedger` count-vs-sum sign check (rejected legitimate ledgers AND passed fabricated summaries — now recomputes from records), NaN bypassing every reconciliation check, the stage-4 scoring prompt never stating the market question, stage 3/4 positional LLM alignment silently misattaching results (now an explicit index protocol), stage-llm timeout orphaning the claude subprocess (now process-group kill).
+- Firewall strengthening: content-level spoiler filtering (odds quoted inside an allowed site's snippet are caught), type-level price quarantine (stage-6/verifier prompt builders cannot see marketProb in their signatures), validators reject stored artifacts containing spoiler sources.
+- Verification: pulse suite 174/174 (was 120), full-repo `pnpm test` 67 files / 561 tests green, `tsc --noEmit` clean. Design doc synced (`docs/diagrams/prediction-engine-stage-flow.{md,en.md}`: explicit model table + typed pipeline status + remaining gaps).
+- **Next (P1 wiring)**: ① `PULSE_TYPED_MODEL` flag + feed candidates (price fields STRIPPED) to the 6 producers in `full-pulse.ts`, assemble `decision_model`; ② production `StageSearchRunner` bridging the existing web-search (note: it does not produce `publishedAtUtc`, so recency degenerates to a constant 0.3 unless fixed at wiring); ③ 3-candidate batch entry with per-candidate failure recovery.
+- **P4 cutover (last, instantly revertible)**: switch `pulse-entry-planner.ts`'s probability source (Markdown parsing → typed `bayes_ledger`); mind outcomeLabel's Yes-orientation semantics (review finding [42]).
+- **Explicitly deferred** (review findings, handle at wiring): no overall time budget in stage-3 gather; `stage-models.ts` hardcodes claude-* ids (incompatible with the codex provider); prompt/output evidence is rm'd in finally on stage failure (no archival); the baseQueries fallback's node tagging is an approximation.
+- No `pulse:live` / `daily:pulse` runs this session; no real orders.
 
 ## 🔄 Last Session Context (2026-06-07)
 
