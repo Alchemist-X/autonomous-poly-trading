@@ -257,6 +257,10 @@ const MS_PER_DAY = 86_400_000;
 const FALLBACK_DAYS = 180;
 const DEFAULT_MAX_PLANS = 4;
 const DEFAULT_BATCH_CAP_PCT = 0.2;
+// A direction cell carrying one of these verdicts is a NOMINAL side, not a recommendation —
+// the report is explicitly saying "do not trade this" (live regression 2026-06-10 run b6b57205:
+// "名义买入 Yes ...（edge < 5%，实际建议观望）" was extracted as a real Buy Yes and ranked #1).
+const SKIP_DIRECTION_MARKERS = /观望|不建议|不可交易|不参与|放弃|名义|nominal|stay\s+out|no\s+trade|do\s+not\s+trade|pass\b/i;
 const DIRECTION_LABELS = [
   "方向",
   "Direction",
@@ -556,6 +560,14 @@ export function buildPulseEntryPlans(input: {
     }
 
     if (!direction) {
+      continue;
+    }
+    // Respect the report's own verdict: a nominal/watch direction or an explicit 0% suggested
+    // size means "researched, but do NOT trade" — never turn those into entry plans.
+    if (SKIP_DIRECTION_MARKERS.test(direction)) {
+      continue;
+    }
+    if (reportedSuggestedPct === 0) {
       continue;
     }
 

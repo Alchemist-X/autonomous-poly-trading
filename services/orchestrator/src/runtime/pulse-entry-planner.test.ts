@@ -181,6 +181,63 @@ describe("pulse entry planner", () => {
     expect(plans[0]?.decision.notional_usd).toBeGreaterThan(0);
   });
 
+  it("skips sections whose direction is a nominal/watch verdict, not a real recommendation (2026-06-10 run-2 regression)", () => {
+    // Exact shape from live run b6b57205: the report's verdict was 观望 (edge < 5%), the
+    // direction row only carried a NOMINAL side — yet the planner extracted 'Buy Yes' and
+    // ranked it #1 because next-day resolution inflated monthlyReturn. Only the P00 price
+    // gate stopped a trade the model itself said not to make.
+    const markdown = [
+      "## 1. South Africa 胜 Mexico（世界杯开幕战）",
+      "",
+      "**链接：** https://example.com/demo-market",
+      "",
+      "| 项目 | 数值 |",
+      "|------|------|",
+      "| 方向 | 名义买入 Yes @ 限价 0.11（edge < 5%，**实际建议观望**） |",
+      "| **建议仓位** | **0%（观望）** — edge 低于 5% 阈值且盘口深度未验证 |",
+      "| 置信度 | 低 |",
+      "",
+      "| Yes | 11% | 13% |",
+      "| No | 89% | 87% |",
+      "",
+      "### 推理逻辑",
+      "Deepest pool in the scan; pricing close to efficient, stay out."
+    ].join("\n");
+
+    const plans = buildPulseEntryPlans({
+      context: createContext(markdown),
+      positionStopLossPct: 0.3,
+      nowMs: FIXED_NOW_MS
+    });
+
+    expect(plans).toHaveLength(0);
+  });
+
+  it("skips sections whose suggested size is explicitly 0%", () => {
+    const markdown = [
+      "## Demo market question",
+      "",
+      "**链接：** https://example.com/demo-market",
+      "",
+      "| 方向 | 买入 No |",
+      "| 建议仓位 | 0%（不参与） |",
+      "| 置信度 | 中 |",
+      "",
+      "| No | 58% | 63% |",
+      "",
+      "### 推理逻辑",
+      "Edge exists on paper but execution conditions are not met."
+    ].join("\n");
+
+    const plans = buildPulseEntryPlans({
+      context: createContext(markdown),
+      positionStopLossPct: 0.3,
+      nowMs: FIXED_NOW_MS
+    });
+
+    expect(plans).toHaveLength(0);
+  });
+
   it("extracts outcome label even when wrapped in markdown bold markers", () => {
     // LLM output often uses **No** / **Yes** to emphasize the outcome
     const markdown = [
