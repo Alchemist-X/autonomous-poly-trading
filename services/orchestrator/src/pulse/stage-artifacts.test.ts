@@ -103,7 +103,8 @@ const evidenceLedger: EvidenceLedger = {
     { recordId: "src1", direction: "supports-no", strength: 0.6, recencyScore: 0.8, primarySource: true, corroborationCount: 1, credibilityScore: 0.9, affectedNodeIds: ["nodeA"] },
     { recordId: "src2", direction: "supports-no", strength: 0.5, recencyScore: 0.95, primarySource: false, corroborationCount: 2, credibilityScore: 0.6, affectedNodeIds: ["nodeA", "nodeB"] }
   ],
-  summary: { totalRecords: 2, supportingYes: 0, supportingNo: 2, netStrength: -0.55 }
+  // netStrength is the SUM of signed strengths (producer semantics): -(0.6 + 0.5) = -1.1
+  summary: { totalRecords: 2, supportingYes: 0, supportingNo: 2, netStrength: -1.1 }
 };
 
 // P(A)=0.45, P(B|A)=0.65, P(C|A,B)=0.99 -> 0.289575
@@ -119,19 +120,21 @@ const conditionalModel: ConditionalModel = {
   arithmeticConsistency: { isConsistent: true, gaps: [] }
 };
 
+// Base = the conditional model's reported probability (stage 5 -> 6 linkage), chain:
+// 0.289575 - 0.04 = 0.249575, + 0.02 = 0.269575, - 0.05 = 0.219575
 const bayesLedger: BayesDeltaLedger = {
   marketSlug: "us-iran-nuclear-deal-by-june-30",
   generatedAtUtc: "2026-06-05T00:00:00.000Z",
-  initialAssumptions: { baseProbability: 0.29, rationale: "conditional model base rate" },
+  initialAssumptions: { baseProbability: 0.289575, rationale: "conditional model base rate" },
   updates: [
-    { order: 1, label: "Missile strike escalation", evidenceIds: ["src2"], direction: "for-no", deltaProbability: -0.04, posteriorProbability: 0.25, rationale: "military escalation poisons talks" },
-    { order: 2, label: "Trump claims progress", evidenceIds: ["src1"], direction: "for-yes", deltaProbability: 0.02, posteriorProbability: 0.27, rationale: "possibly negotiation tactic" },
-    { order: 3, label: "Foreign ministry denial", evidenceIds: ["src1"], direction: "for-no", deltaProbability: -0.05, posteriorProbability: 0.22, rationale: "denies talks exist" }
+    { order: 1, label: "Missile strike escalation", evidenceIds: ["src2"], direction: "for-no", deltaProbability: -0.04, posteriorProbability: 0.249575, rationale: "military escalation poisons talks" },
+    { order: 2, label: "Trump claims progress", evidenceIds: ["src1"], direction: "for-yes", deltaProbability: 0.02, posteriorProbability: 0.269575, rationale: "possibly negotiation tactic" },
+    { order: 3, label: "Foreign ministry denial", evidenceIds: ["src1"], direction: "for-no", deltaProbability: -0.05, posteriorProbability: 0.219575, rationale: "denies talks exist" }
   ],
-  finalProbability: { value: 0.22, credibleInterval: { low: 0.15, high: 0.3 } },
+  finalProbability: { value: 0.219575, credibleInterval: { low: 0.15, high: 0.3 } },
   outcomeLabel: "Yes",
   marketProb: 0.3,
-  aiProb: 0.22,
+  aiProb: 0.219575,
   verifiedConsistent: true
 };
 
@@ -147,7 +150,7 @@ function buildModel(): CandidateDecisionModel {
     bayes_ledger: bayesLedger,
     outcomeLabel: "Yes",
     marketProb: 0.3,
-    aiProb: 0.22
+    aiProb: 0.219575
   };
 }
 
@@ -176,12 +179,46 @@ describe("stage 2 — query plan", () => {
     expect(validateQueryPlan({ ...queryPlan, nodes: [queryPlan.nodes[0]!], totalQueriesPlanned: 1 }).ok).toBe(false);
   });
 
-  it("rejects node weights that do not sum to ~1", () => {
+  it("rejects node weights that do not sum to ~1 when all nodes are weighted", () => {
     const skewed: QueryPlan = {
       ...queryPlan,
       nodes: queryPlan.nodes.map((n) => ({ ...n, weight: 0.1 }))
     };
     expect(validateQueryPlan(skewed).ok).toBe(false);
+  });
+
+  it("allows partially-weighted plans (the prompt makes weight optional per node)", () => {
+    const partial: QueryPlan = {
+      ...queryPlan,
+      nodes: queryPlan.nodes.map((n, i) => (i === 0 ? { ...n, weight: 0.5 } : { ...n, weight: undefined }))
+    };
+    expect(validateQueryPlan(partial).ok).toBe(true);
+  });
+
+  it("rejects duplicate node ids and out-of-range weights", () => {
+    const dup: QueryPlan = {
+      ...queryPlan,
+      nodes: queryPlan.nodes.map((n) => ({ ...n, nodeId: "same" }))
+    };
+    expect(validateQueryPlan(dup).ok).toBe(false);
+    const negative: QueryPlan = {
+      ...queryPlan,
+      nodes: queryPlan.nodes.map((n, i) => ({ ...n, weight: i === 0 ? -0.5 : 0.75 }))
+    };
+    expect(validateQueryPlan(negative).ok).toBe(false);
+  });
+
+  it("rejects a node with zero queries", () => {
+    const zeroQueries: QueryPlan = {
+      ...queryPlan,
+      nodes: [
+        { ...queryPlan.nodes[0]!, sourceCategories: [{ category: "official", queries: [], expectedEvidence: [] }] },
+        queryPlan.nodes[1]!,
+        queryPlan.nodes[2]!
+      ],
+      totalQueriesPlanned: 2
+    };
+    expect(validateQueryPlan(zeroQueries).ok).toBe(false);
   });
 });
 
@@ -193,6 +230,19 @@ describe("stage 3 — sources database (referential integrity to query plan)", (
       records: [{ ...sourcesDatabase.records[0]!, addressedNodeIds: ["ghost"] }, sourcesDatabase.records[1]!]
     };
     expect(validateSourcesDatabase(dangling, nodeIds).ok).toBe(false);
+  });
+
+  it("rejects a stored spoiler source regardless of how it was produced (firewall defense-in-depth)", () => {
+    const spoiled: SourcesDatabase = {
+      ...sourcesDatabase,
+      records: [
+        { ...sourcesDatabase.records[0]!, sourceUrl: "https://polymarket.com/event/foo", sourceHost: "polymarket.com" },
+        sourcesDatabase.records[1]!
+      ]
+    };
+    const res = validateSourcesDatabase(spoiled, nodeIds);
+    expect(res.ok).toBe(false);
+    expect(res.errors.join(" ")).toContain("spoiler");
   });
 });
 
@@ -206,9 +256,41 @@ describe("stage 4 — evidence ledger", () => {
     expect(validateEvidenceLedger(orphan, sourceIds, nodeIds).ok).toBe(false);
   });
 
-  it("requires netStrength sign to match the supporting majority", () => {
-    const wrongSign: EvidenceLedger = { ...evidenceLedger, summary: { ...evidenceLedger.summary, netStrength: 0.4 } };
-    expect(validateEvidenceLedger(wrongSign, sourceIds, nodeIds).ok).toBe(false);
+  it("recomputes the summary from records: netStrength must be the sum of signed strengths", () => {
+    const wrongNet: EvidenceLedger = { ...evidenceLedger, summary: { ...evidenceLedger.summary, netStrength: 0.4 } };
+    expect(validateEvidenceLedger(wrongNet, sourceIds, nodeIds).ok).toBe(false);
+  });
+
+  it("accepts a count-majority that legitimately diverges from the strength sum (2 weak yes vs 1 strong no)", () => {
+    const sources = new Set(["a", "b", "c"]);
+    const mixed: EvidenceLedger = {
+      ...evidenceLedger,
+      records: [
+        { recordId: "a", direction: "supports-yes", strength: 0.1, recencyScore: 0.5, primarySource: false, corroborationCount: 0, credibilityScore: 0.5, affectedNodeIds: ["nodeA"] },
+        { recordId: "b", direction: "supports-yes", strength: 0.1, recencyScore: 0.5, primarySource: false, corroborationCount: 0, credibilityScore: 0.5, affectedNodeIds: ["nodeA"] },
+        { recordId: "c", direction: "supports-no", strength: 0.9, recencyScore: 0.5, primarySource: true, corroborationCount: 0, credibilityScore: 0.8, affectedNodeIds: ["nodeA"] }
+      ],
+      summary: { totalRecords: 3, supportingYes: 2, supportingNo: 1, netStrength: 0.1 + 0.1 - 0.9 }
+    };
+    expect(validateEvidenceLedger(mixed, sources, nodeIds).ok).toBe(true);
+  });
+
+  it("rejects fabricated summary counts and duplicate record ids", () => {
+    const badCounts: EvidenceLedger = { ...evidenceLedger, summary: { ...evidenceLedger.summary, supportingYes: 5 } };
+    expect(validateEvidenceLedger(badCounts, sourceIds, nodeIds).ok).toBe(false);
+    const badTotal: EvidenceLedger = { ...evidenceLedger, summary: { ...evidenceLedger.summary, totalRecords: 9 } };
+    expect(validateEvidenceLedger(badTotal, sourceIds, nodeIds).ok).toBe(false);
+    const dup: EvidenceLedger = {
+      ...evidenceLedger,
+      records: [evidenceLedger.records[0]!, { ...evidenceLedger.records[1]!, recordId: evidenceLedger.records[0]!.recordId }],
+      summary: { totalRecords: 2, supportingYes: 0, supportingNo: 2, netStrength: -1.1 }
+    };
+    expect(validateEvidenceLedger(dup, sourceIds, nodeIds).ok).toBe(false);
+  });
+
+  it("rejects a non-finite netStrength (NaN must not pass reconciliation)", () => {
+    const nan: EvidenceLedger = { ...evidenceLedger, summary: { ...evidenceLedger.summary, netStrength: Number.NaN } };
+    expect(validateEvidenceLedger(nan, sourceIds, nodeIds).ok).toBe(false);
   });
 });
 
@@ -260,6 +342,52 @@ describe("stage 5 — conditional model (P(A) x P(B|A) x P(C|A,B))", () => {
     };
     expect(validateConditionalModel(ghostEvidence, ledgerIds).ok).toBe(false);
   });
+
+  it("rejects duplicate node ids, unknown/self preceding references, and over-decomposition", () => {
+    const dup: ConditionalModel = {
+      ...conditionalModel,
+      nodes: conditionalModel.nodes.map((n) => ({ ...n, nodeId: "X", precedingNodeIds: [] }))
+    };
+    expect(validateConditionalModel(dup, ledgerIds).ok).toBe(false);
+
+    const ghostPreceding: ConditionalModel = {
+      ...conditionalModel,
+      nodes: [{ ...conditionalModel.nodes[0]!, precedingNodeIds: ["nope"] }, conditionalModel.nodes[1]!, conditionalModel.nodes[2]!]
+    };
+    expect(validateConditionalModel(ghostPreceding, ledgerIds).ok).toBe(false);
+
+    const selfRef: ConditionalModel = {
+      ...conditionalModel,
+      nodes: [{ ...conditionalModel.nodes[0]!, precedingNodeIds: ["A"] }, conditionalModel.nodes[1]!, conditionalModel.nodes[2]!]
+    };
+    expect(validateConditionalModel(selfRef, ledgerIds).ok).toBe(false);
+
+    const probability = 0.9;
+    const tooMany: ConditionalModel = {
+      ...conditionalModel,
+      nodes: Array.from({ length: 9 }, (_, i) => ({
+        nodeId: `n${i}`,
+        label: `n${i}`,
+        type: i === 0 ? ("base" as const) : ("conditional" as const),
+        probability,
+        precedingNodeIds: [],
+        condition: "c",
+        rationale: "r",
+        supportingEvidenceIds: [],
+        contradictingEvidenceIds: []
+      })),
+      finalProbability: { computed: probability ** 9, reported: probability ** 9, isAdjusted: false }
+    };
+    expect(validateConditionalModel(tooMany, ledgerIds).ok).toBe(false);
+  });
+
+  it("rejects a non-finite computed value even when isAdjusted=true (NaN bypass)", () => {
+    const nanComputed: ConditionalModel = {
+      ...conditionalModel,
+      finalProbability: { computed: Number.NaN, reported: 0.3, isAdjusted: true, adjustmentReason: "override" }
+    };
+    expect(validateConditionalModel(nanComputed, ledgerIds).ok).toBe(false);
+  });
 });
 
 describe("stage 6 — bayes delta ledger", () => {
@@ -274,7 +402,7 @@ describe("stage 6 — bayes delta ledger", () => {
   });
 
   it("requires the credible interval to bracket the final value", () => {
-    const narrow: BayesDeltaLedger = { ...bayesLedger, finalProbability: { value: 0.22, credibleInterval: { low: 0.25, high: 0.3 } } };
+    const narrow: BayesDeltaLedger = { ...bayesLedger, finalProbability: { value: 0.219575, credibleInterval: { low: 0.25, high: 0.3 } } };
     expect(validateBayesDeltaLedger(narrow, ledgerIds).ok).toBe(false);
   });
 
@@ -289,6 +417,47 @@ describe("stage 6 — bayes delta ledger", () => {
       updates: [{ ...bayesLedger.updates[0]!, evidenceIds: ["ghost"] }, bayesLedger.updates[1]!, bayesLedger.updates[2]!]
     };
     expect(validateBayesDeltaLedger(ghost, ledgerIds).ok).toBe(false);
+  });
+
+  it("rejects an update that cites no evidence at all (unauditable assertion)", () => {
+    const bare: BayesDeltaLedger = {
+      ...bayesLedger,
+      updates: [{ ...bayesLedger.updates[0]!, evidenceIds: [] }, bayesLedger.updates[1]!, bayesLedger.updates[2]!]
+    };
+    expect(validateBayesDeltaLedger(bare, ledgerIds).ok).toBe(false);
+  });
+
+  it("rejects NaN deltas (NaN must not slip through reconciliation)", () => {
+    const nan: BayesDeltaLedger = {
+      ...bayesLedger,
+      updates: [{ ...bayesLedger.updates[0]!, deltaProbability: Number.NaN }, bayesLedger.updates[1]!, bayesLedger.updates[2]!]
+    };
+    expect(validateBayesDeltaLedger(nan, ledgerIds).ok).toBe(false);
+  });
+
+  it("validates the per-update posterior chain, order sequence, and direction-vs-delta sign", () => {
+    const brokenChain: BayesDeltaLedger = {
+      ...bayesLedger,
+      updates: [{ ...bayesLedger.updates[0]!, posteriorProbability: 0.5 }, bayesLedger.updates[1]!, bayesLedger.updates[2]!]
+    };
+    expect(validateBayesDeltaLedger(brokenChain, ledgerIds).ok).toBe(false);
+
+    const badOrder: BayesDeltaLedger = {
+      ...bayesLedger,
+      updates: [{ ...bayesLedger.updates[0]!, order: 7 }, bayesLedger.updates[1]!, bayesLedger.updates[2]!]
+    };
+    expect(validateBayesDeltaLedger(badOrder, ledgerIds).ok).toBe(false);
+
+    const contradiction: BayesDeltaLedger = {
+      ...bayesLedger,
+      updates: [{ ...bayesLedger.updates[0]!, direction: "for-yes" }, bayesLedger.updates[1]!, bayesLedger.updates[2]!]
+    };
+    expect(validateBayesDeltaLedger(contradiction, ledgerIds).ok).toBe(false);
+  });
+
+  it("rejects a marketProb outside [0,1] (garbage would flow into the stage-7 edge computation)", () => {
+    expect(validateBayesDeltaLedger({ ...bayesLedger, marketProb: Number.NaN }, ledgerIds).ok).toBe(false);
+    expect(validateBayesDeltaLedger({ ...bayesLedger, marketProb: 30 }, ledgerIds).ok).toBe(false);
   });
 });
 
@@ -326,8 +495,36 @@ describe("decision model integrity (end-to-end across stages 1->6)", () => {
     expect(validateDecisionModelIntegrity({ ...model, aiProb: 0.5 }).ok).toBe(false);
   });
 
+  it("catches a wrapper marketProb that does not mirror the bayes ledger", () => {
+    const model = buildModel();
+    expect(validateDecisionModelIntegrity({ ...model, marketProb: 0.9 }).ok).toBe(false);
+  });
+
   it("keeps the live hand-off probability identical to the bayes ledger within tolerance", () => {
     const model = buildModel();
     expect(Math.abs((model.aiProb ?? 0) - model.bayes_ledger!.aiProb)).toBeLessThanOrEqual(PROBABILITY_TOLERANCE);
+  });
+
+  it("enforces the stage-5 -> stage-6 linkage: bayes base must equal the conditional reported probability", () => {
+    const model = buildModel();
+    const drifted: CandidateDecisionModel = {
+      ...model,
+      bayes_ledger: {
+        ...model.bayes_ledger!,
+        initialAssumptions: { ...model.bayes_ledger!.initialAssumptions, baseProbability: 0.5 }
+      }
+    };
+    const res = validateDecisionModelIntegrity(drifted);
+    expect(res.ok).toBe(false);
+    expect(res.errors.join(" ")).toContain("baseProbability");
+  });
+
+  it("rejects artifacts describing a different market than the wrapper", () => {
+    const model = buildModel();
+    const crossed: CandidateDecisionModel = {
+      ...model,
+      query_plan: { ...model.query_plan!, marketSlug: "some-other-market" }
+    };
+    expect(validateDecisionModelIntegrity(crossed).ok).toBe(false);
   });
 });

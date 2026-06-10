@@ -31,7 +31,7 @@ const SPOILER_QUERY_TERMS: readonly string[] = [
   "betting odds", "sportsbook", "bookmaker", "vegas odds", "betting line", "implied odds"
 ];
 
-/** Normalize a host or URL to a bare lowercase hostname (strips scheme, path, leading www.). */
+/** Normalize a host or URL to a bare lowercase hostname (strips scheme, path, port, leading www., trailing dots). */
 export function normalizeHost(hostOrUrl: string): string {
   let host = hostOrUrl.trim().toLowerCase();
   if (!host) return "";
@@ -43,6 +43,13 @@ export function normalizeHost(hostOrUrl: string): string {
     }
   } else if (host.includes("/")) {
     host = host.split("/")[0] ?? host;
+  }
+  // FQDN trailing dots ("polymarket.com.") and explicit ports ("polymarket.com:443")
+  // must not bypass the blocklist match.
+  host = host.replace(/\.+$/, "");
+  const portIdx = host.lastIndexOf(":");
+  if (portIdx !== -1 && /^\d+$/.test(host.slice(portIdx + 1))) {
+    host = host.slice(0, portIdx);
   }
   return host.replace(/^www\./, "");
 }
@@ -69,4 +76,14 @@ export function queryMentionsSpoiler(query: string): boolean {
 /** Remove queries that would surface market / odds pricing; returns the cleaned list. */
 export function stripSpoilerQueries(queries: readonly string[]): string[] {
   return queries.filter((query) => !queryMentionsSpoiler(query));
+}
+
+/**
+ * Content-level spoiler check (stage 3 guard): the host firewall cannot catch market odds QUOTED
+ * inside a snippet from an allowed site ("Polymarket has Yes at 70%"). Records whose visible text
+ * names a market / odds source are dropped before they can anchor the independent reasoning.
+ */
+export function textMentionsSpoiler(text: string | undefined): boolean {
+  if (!text) return false;
+  return queryMentionsSpoiler(text);
 }

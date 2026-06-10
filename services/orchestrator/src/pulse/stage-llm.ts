@@ -107,14 +107,33 @@ function interpolateCommand(template: string, vars: Record<string, string>): str
   return command;
 }
 
+const SIGKILL_GRACE_MS = 5_000;
+
 function runShell(command: string, cwd: string, timeoutMs: number): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = spawn("/bin/sh", ["-lc", command], { cwd, stdio: ["ignore", "pipe", "pipe"], env: process.env });
+    // detached -> own process group, so a timeout kills the whole pipeline (`cat | claude`),
+    // not just the /bin/sh wrapper — otherwise the claude subprocess survives as an orphan
+    // and keeps burning tokens against a deleted temp dir.
+    const child = spawn("/bin/sh", ["-lc", command], { cwd, stdio: ["ignore", "pipe", "pipe"], env: process.env, detached: true });
     let stdout = "";
     let stderr = "";
+    let killTimer: ReturnType<typeof setTimeout> | null = null;
+    const killGroup = (signal: NodeJS.Signals) => {
+      if (child.pid === undefined) return;
+      try {
+        process.kill(-child.pid, signal);
+      } catch {
+        try {
+          child.kill(signal);
+        } catch {
+          // already gone
+        }
+      }
+    };
     const timer = timeoutMs > 0
       ? setTimeout(() => {
-          child.kill("SIGTERM");
+          killGroup("SIGTERM");
+          killTimer = setTimeout(() => killGroup("SIGKILL"), SIGKILL_GRACE_MS);
           reject(new Error(`stage LLM call timed out after ${timeoutMs}ms`));
         }, timeoutMs)
       : null;
@@ -126,10 +145,12 @@ function runShell(command: string, cwd: string, timeoutMs: number): Promise<stri
     });
     child.on("error", (error) => {
       if (timer) clearTimeout(timer);
+      if (killTimer) clearTimeout(killTimer);
       reject(error);
     });
     child.on("close", (code) => {
       if (timer) clearTimeout(timer);
+      if (killTimer) clearTimeout(killTimer);
       if (code === 0) resolve(stdout);
       else reject(new Error(stderr.trim() || stdout.trim() || `stage LLM exited with code ${code}`));
     });
@@ -163,9 +184,12 @@ export function createCliStageLlmCaller(input: {
   provider: AgentRuntimeProvider;
   defaultModel?: string;
   defaultTimeoutMs: number;
+  /** Extra attempts when the model returns unparseable JSON (a fresh call usually fixes it). Default 1. */
+  parseRetries?: number;
 }): StageLlmCaller {
-  return async (request) => {
-    const startedAt = Date.now();
+  const parseRetries = input.parseRetries ?? 1;
+
+  const callOnce = async (request: StageLlmRequest, startedAt: number): Promise<StageLlmResponse> => {
     const settings = resolveProviderSkillSettings(input.config, input.provider);
     const command = resolveStageCommandTemplate(input.provider, settings.command);
     if (!command) throw new Error(`no stage-call command template for provider ${input.provider}`);
@@ -194,5 +218,27 @@ export function createCliStageLlmCaller(input: {
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
+  };
+
+  return async (request) => {
+    const startedAt = Date.now();
+    const context = `stage LLM [${request.label}] (model ${request.model || input.defaultModel || "default"})`;
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= parseRetries; attempt += 1) {
+      try {
+        return await callOnce(request, startedAt);
+      } catch (error) {
+        lastError = error;
+        const message = error instanceof Error ? error.message : String(error);
+        // Only an unparseable-output failure is worth a fresh attempt; timeouts and spawn
+        // failures would just repeat (and double the spend) — surface those immediately.
+        const isParseFailure = message.includes("no parseable JSON") || message.includes("returned empty output");
+        if (!isParseFailure || attempt === parseRetries) {
+          throw new Error(`${context} failed after ${attempt + 1} attempt(s): ${message}`);
+        }
+      }
+    }
+    // Unreachable: the loop always returns or throws. Kept for exhaustiveness.
+    throw new Error(`${context} failed: ${String(lastError)}`);
   };
 }
