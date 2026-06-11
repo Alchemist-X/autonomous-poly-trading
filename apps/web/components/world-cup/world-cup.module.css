@@ -1270,3 +1270,11 @@
   gap: 12px;
   width: 100%;
 }
+
+.langToggle {
+  border: 1px solid #d8dce4;
+  border-radius: 999px;
+  padding: 4px 13px;
+  font-size: 13px;
+  background: #fff;
+}

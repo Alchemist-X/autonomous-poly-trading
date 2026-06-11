@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DISCLAIMER_SHORT } from "../../../lib/legal-copy";
 import { getByFamily, sortedOutcomes } from "../../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../../lib/world-cup/team-meta";
+import { langOf, t, tierLabel, withLang, type Lang } from "../../../lib/world-cup/i18n";
 import { WcHero } from "../../../components/world-cup/wc-hero";
 import bracketData from "../../../lib/world-cup/generated/bracket.generated.json";
 import styles from "../../../components/world-cup/world-cup.module.css";
@@ -50,14 +51,14 @@ function orderedTies(round: "R32" | "R16" | "QF" | "SF"): Tie[] {
   return ORDER[round].map((m) => byMatch.get(m)).filter((t): t is Tie => Boolean(t));
 }
 
-function TieCardView({ tie, tier }: { tie: Tie; tier?: string }) {
+function TieCardView({ tie, tier, lang }: { tie: Tie; tier?: string; lang: Lang }) {
   const rows = [tie.a, tie.b].map((team) => {
     const meta = resolveTeam(team);
     const isWin = team === tie.winner;
     return (
       <div key={team} className={`${styles.tieRow} ${isWin ? styles.tieWin : ""}`}>
         <span className={styles.teamFlag}>{meta.flag}</span>
-        <span className={styles.tieName}>{meta.cn}</span>
+        <span className={styles.tieName}>{lang === "en" ? meta.en : meta.cn}</span>
         <span className={`${styles.tiePct} ${isWin ? "" : styles.tiePctDim}`}>
           {Math.round((isWin ? tie.p_winner : 1 - tie.p_winner) * 100)}%
         </span>
@@ -67,14 +68,14 @@ function TieCardView({ tie, tier }: { tie: Tie; tier?: string }) {
   return <div className={`${styles.tieCard} ${tier ?? ""}`}>{rows}</div>;
 }
 
-function RoundCol({ title, ties, tier }: { title: string; ties: Tie[]; tier?: string }) {
+function RoundCol({ title, ties, tier, lang }: { title: string; ties: Tie[]; tier?: string; lang: Lang }) {
   return (
     <div className={styles.roundCol}>
       <div className={styles.roundTitle}>{title}</div>
       <div className={styles.slotCol}>
-        {ties.map((t) => (
-          <div key={t.match} className={styles.slot}>
-            <TieCardView tie={t} tier={tier} />
+        {ties.map((tie) => (
+          <div key={tie.match} className={styles.slot}>
+            <TieCardView tie={tie} tier={tier} lang={lang} />
           </div>
         ))}
       </div>
@@ -95,7 +96,7 @@ function Joiner({ count }: { count: number }) {
   );
 }
 
-function PoolList({ id, title, note }: { id: "reach-qf" | "reach-sf"; title: string; note: string }) {
+function PoolList({ id, title, note, lang }: { id: "reach-qf" | "reach-sf"; title: string; note: string; lang: Lang }) {
   const pool = getByFamily(id === "reach-qf" ? "reach_quarterfinal" : "reach_semifinal")[0];
   if (!pool) return null;
   const top = sortedOutcomes(pool).slice(0, 12);
@@ -108,11 +109,11 @@ function PoolList({ id, title, note }: { id: "reach-qf" | "reach-sf"; title: str
       {top.map((o, i) => {
         const meta = resolveTeam(o.key);
         return (
-          <Link key={o.key} href={`/world-cup/forecast/${pool.dir}`} className={styles.rankRow}>
+          <Link key={o.key} href={withLang(`/world-cup/forecast/${pool.dir}`, lang)} className={styles.rankRow}>
             <span className={styles.rankIdx}>{i + 1}</span>
             <span className={styles.rankFlag}>{meta.flag}</span>
             <span className={styles.rankName}>
-              <span className={styles.rankNameCn}>{meta.cn}</span>
+              <span className={styles.rankNameCn}>{lang === "en" ? meta.en : meta.cn}</span>
               <span className={styles.rankTrack}>
                 <span className={styles.rankFill} style={{ width: `${(o.p / max) * 100}%` }} />
               </span>
@@ -125,27 +126,26 @@ function PoolList({ id, title, note }: { id: "reach-qf" | "reach-sf"; title: str
   );
 }
 
-export default function BracketPage() {
+export default async function BracketPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
+  const lang = langOf((await searchParams).lang);
   const groups = Object.entries(bracket.standings).sort(([a], [b]) => a.localeCompare(b));
   const champMeta = resolveTeam(bracket.champion);
   const final = bracket.F[0];
 
   return (
     <div>
-      <WcHero sub="从小组出线到决赛的完整对阵推演：淘汰赛每个节点取最可能的结果并旁标该场胜率，连线一路通向决赛。" />
+      <WcHero lang={lang} subKey="subKnockout" />
 
-      <p className={styles.ruleNote}>
-        规则：每组前两名直接晋级 32 强；12 个小组的第三名中，成绩最好的 8 支同样晋级——所以每个组会有 2 支或 3 支球队出线。
-      </p>
+      <p className={styles.ruleNote}>{t(lang, "ruleNote")}</p>
 
       <div className={styles.bracketScroll}>
         <div className={styles.bracketCols}>
           <div className={`${styles.roundCol} ${styles.roundColGroups}`}>
-            <div className={styles.roundTitle}>小组出线 · 含出线概率</div>
+            <div className={styles.roundTitle}>{t(lang, "groupsCol")}</div>
             <div className={styles.groupsGrid}>
               {groups.map(([g, rows]) => (
                 <div key={g} className={styles.groupMini}>
-                  <div className={styles.groupMiniTitle}>{g} 组</div>
+                  <div className={styles.groupMiniTitle}>{lang === "en" ? `Group ${g}` : `${g} 组`}</div>
                   {rows.map((r) => {
                     const meta = resolveTeam(r.team);
                     const out = r.status === "出局";
@@ -153,8 +153,8 @@ export default function BracketPage() {
                       <div key={r.team} className={`${styles.groupMiniRow} ${out ? styles.groupMiniOut : ""}`}>
                         <span className={styles.groupMiniPos}>{r.pos}</span>
                         <span className={styles.teamFlag}>{meta.flag}</span>
-                        <span className={styles.groupMiniName}>{meta.cn}</span>
-                        {out ? <span className={styles.groupMiniTagOut}>出局</span> : null}
+                        <span className={styles.groupMiniName}>{lang === "en" ? meta.en : meta.cn}</span>
+                        {out ? <span className={styles.groupMiniTagOut}>{t(lang, "out")}</span> : null}
                         <span className={`${styles.groupMiniPct} ${out ? styles.groupMiniPctOut : ""}`}>
                           {Math.round(r.p_r32 * 100)}%
                         </span>
@@ -166,24 +166,24 @@ export default function BracketPage() {
             </div>
           </div>
 
-          <RoundCol title="32 强" ties={orderedTies("R32")} />
+          <RoundCol title={t(lang, "r32")} ties={orderedTies("R32")} lang={lang} />
           <Joiner count={8} />
-          <RoundCol title="16 强" ties={orderedTies("R16")} tier={styles.tierR16} />
+          <RoundCol title={t(lang, "r16")} ties={orderedTies("R16")} tier={styles.tierR16} lang={lang} />
           <Joiner count={4} />
-          <RoundCol title="八强" ties={orderedTies("QF")} tier={styles.tierQF} />
+          <RoundCol title={t(lang, "qf")} ties={orderedTies("QF")} tier={styles.tierQF} lang={lang} />
           <Joiner count={2} />
-          <RoundCol title="四强" ties={orderedTies("SF")} tier={styles.tierSF} />
+          <RoundCol title={t(lang, "sf")} ties={orderedTies("SF")} tier={styles.tierSF} lang={lang} />
           <Joiner count={1} />
           <div className={styles.roundCol}>
-            <div className={styles.roundTitle}>决赛 · 7 月 19 日</div>
+            <div className={styles.roundTitle}>{t(lang, "finalCol")}</div>
             <div className={styles.slotCol}>
               <div className={styles.slot}>
                 <div className={styles.finalStack}>
-                  {final ? <TieCardView tie={final} tier={styles.tierFinal} /> : null}
+                  {final ? <TieCardView tie={final} tier={styles.tierFinal} lang={lang} /> : null}
                   <div className={styles.champCard}>
                     <div className={styles.champCardFlag}>{champMeta.flag}</div>
-                    <div className={styles.champCardName}>预测冠军 · {champMeta.cn}</div>
-                    <div className={styles.champCardPct}>决赛胜率 {Math.round((final?.p_winner ?? 0) * 100)}%</div>
+                    <div className={styles.champCardName}>{t(lang, "predictedChampion")} · {lang === "en" ? champMeta.en : champMeta.cn}</div>
+                    <div className={styles.champCardPct}>{t(lang, "finalWinProb")} {Math.round((final?.p_winner ?? 0) * 100)}%</div>
                   </div>
                 </div>
               </div>
@@ -192,14 +192,14 @@ export default function BracketPage() {
         </div>
       </div>
 
-      <h2 className={styles.sectionTitle}>边际概率（每队独立计算，与上方单一剧本互补）</h2>
+      <h2 className={styles.sectionTitle}>{t(lang, "marginalTitle")}</h2>
       <div className={styles.gridWide}>
-        <PoolList id="reach-qf" title="八强概率榜" note="48 队概率之和 ≈ 8" />
-        <PoolList id="reach-sf" title="四强概率榜" note="48 队概率之和 ≈ 4" />
+        <PoolList id="reach-qf" title={t(lang, "qfBoard")} note={t(lang, "sumQf")} lang={lang} />
+        <PoolList id="reach-sf" title={t(lang, "sfBoard")} note={t(lang, "sumSf")} lang={lang} />
       </div>
 
       <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {DISCLAIMER_SHORT.zh}
+        {lang === "en" ? DISCLAIMER_SHORT.en : DISCLAIMER_SHORT.zh}
       </p>
     </div>
   );

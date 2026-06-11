@@ -2,15 +2,13 @@ import Link from "next/link";
 import { DISCLAIMER_SHORT } from "../../lib/legal-copy";
 import { getByFamily, sortedOutcomes } from "../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../lib/world-cup/team-meta";
+import { langOf, t, tierLabel, withLang } from "../../lib/world-cup/i18n";
 import { WcHero } from "../../components/world-cup/wc-hero";
 import styles from "../../components/world-cup/world-cup.module.css";
 
 // 冠军 tab — flag-cloud display of champion probabilities + full 48-team
-// ranking. Visual reference: Polymarket's World Cup map view; every number
-// here is our own market-blind model output.
+// ranking. Every number is our own market-blind model output.
 
-// Hand-tuned cloud slots (percent coordinates), ordered by rank: the
-// favourite sits center-stage, the rest spiral outward.
 const CLOUD_SLOTS: ReadonlyArray<readonly [number, number]> = [
   [50, 36], [27, 28], [71, 30], [38, 58], [62, 56],
   [18, 50], [83, 52], [30, 78], [55, 79], [74, 74],
@@ -22,14 +20,17 @@ function pct(p: number): string {
   return `${(p * 100).toFixed(2)}%`;
 }
 
-export default function ChampionPage() {
+export default async function ChampionPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
+  const lang = langOf((await searchParams).lang);
   const champion = getByFamily("champion")[0];
   const outcomes = champion ? sortedOutcomes(champion) : [];
   const cloud = outcomes.slice(0, CLOUD_SLOTS.length);
+  const detailHref = champion ? withLang(`/world-cup/forecast/${champion.dir}`, lang) : "#";
+  const teamName = (key: string) => (lang === "en" ? resolveTeam(key).en : resolveTeam(key).cn);
 
   return (
     <div>
-      <WcHero sub="谁会捧起 2026 年 7 月 19 日的大力神杯？48 支球队的夺冠概率，来自 10 万次纯 Elo 蒙特卡洛模拟与逐队证据修正——全程没有看过任何盘口。" />
+      <WcHero lang={lang} subKey="subChampion" />
 
       {champion ? (
         <div className={styles.champLayout}>
@@ -41,31 +42,31 @@ export default function ChampionPage() {
               return (
                 <Link
                   key={o.key}
-                  href={`/world-cup/forecast/${champion.dir}`}
+                  href={detailHref}
                   className={styles.cloudTile}
                   style={{ left: `${x}%`, top: `${y}%` }}
-                  title={`${meta.cn} ${pct(o.p)}`}
+                  title={`${teamName(o.key)} ${pct(o.p)}`}
                 >
                   <span className={styles.cloudFlag} style={{ fontSize: size }}>
                     {meta.flag}
                   </span>
                   <span className={styles.cloudPct}>{pct(o.p)}</span>
-                  <span className={styles.cloudName}>{meta.cn}</span>
+                  <span className={styles.cloudName}>{teamName(o.key)}</span>
                 </Link>
               );
             })}
-            <span className={styles.cloudNote}>旗帜大小 ∝ 夺冠概率 · 点击查看完整推理</span>
+            <span className={styles.cloudNote}>{t(lang, "cloudNote")}</span>
           </div>
 
           <div className={styles.rankList}>
             {outcomes.map((o, i) => {
               const meta = resolveTeam(o.key);
               return (
-                <Link key={o.key} href={`/world-cup/forecast/${champion.dir}`} className={styles.rankRow}>
+                <Link key={o.key} href={detailHref} className={styles.rankRow}>
                   <span className={styles.rankIdx}>{i + 1}</span>
                   <span className={styles.rankFlag}>{meta.flag}</span>
                   <span className={styles.rankName}>
-                    <span className={styles.rankNameCn}>{meta.cn}</span>
+                    <span className={styles.rankNameCn}>{teamName(o.key)}</span>
                     <span className={styles.rankTrack}>
                       <span
                         className={styles.rankFill}
@@ -81,31 +82,31 @@ export default function ChampionPage() {
         </div>
       ) : (
         <div className={styles.panel}>
-          <p className={styles.muted}>预测数据导入中。</p>
+          <p className={styles.muted}>{t(lang, "importing")}</p>
         </div>
       )}
 
       {champion ? (
         <>
-          <h2 className={styles.sectionTitle}>我们的观点</h2>
+          <h2 className={styles.sectionTitle}>{t(lang, "ourTake")}</h2>
           <div className={styles.panel}>
-            <p className={styles.oneLiner}>{champion.one_liner_cn}</p>
+            <p className={styles.oneLiner}>{lang === "en" ? champion.one_liner_en : champion.one_liner_cn}</p>
             <ul className={styles.reasonList}>
               {champion.key_reasons.map((r) => (
                 <li key={r.source_url + r.source_date} className={styles.reasonItem}>
-                  {r.cn}{" "}
+                  {lang === "en" ? r.en : r.cn}{" "}
                   <a href={r.source_url} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>
-                    来源 · {r.source_date}
+                    {t(lang, "source")} · {r.source_date}
                   </a>
                 </li>
               ))}
             </ul>
             <div className={styles.cardActions}>
-              <Link className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`} href={`/world-cup/forecast/${champion.dir}`}>
-                查看完整推理 →
+              <Link className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`} href={detailHref}>
+                {t(lang, "fullReasoning")}
               </Link>
               <span className={styles.muted}>
-                {champion.n_sources} 个来源 · 置信 {champion.confidence_tier}
+                {champion.n_sources} {t(lang, "sources")} · {t(lang, "confidence")} {tierLabel(lang, champion.confidence_tier)}
               </span>
             </div>
           </div>
@@ -113,7 +114,7 @@ export default function ChampionPage() {
       ) : null}
 
       <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {DISCLAIMER_SHORT.zh}
+        {lang === "en" ? DISCLAIMER_SHORT.en : DISCLAIMER_SHORT.zh}
       </p>
     </div>
   );

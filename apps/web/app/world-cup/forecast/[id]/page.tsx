@@ -36,14 +36,14 @@ export default async function ForecastReportPage({
   return (
     <div>
       <p className={styles.muted} style={{ marginTop: 24 }}>
-        <Link href="/world-cup" style={{ color: "#8fa3c8" }}>
-          ← 全部预测
+        <Link href={useEn ? "/world-cup?lang=en" : "/world-cup"} style={{ color: "#8a93a6" }}>
+          {useEn ? "← All forecasts" : "← 全部预测"}
         </Link>
         {" · "}
-        <Link href={`/world-cup/forecast/${forecast.dir}${useEn ? "" : "?lang=en"}`} style={{ color: "#8fa3c8" }}>
+        <Link href={`/world-cup/forecast/${forecast.dir}${useEn ? "" : "?lang=en"}`} style={{ color: "#8a93a6" }}>
           {useEn ? "中文版" : "English"}
         </Link>
-        {" · "}生成于 {forecast.generated_at.slice(0, 16).replace("T", " ")} UTC
+        {" · "}{useEn ? "forecast time" : "预测时间"} {forecast.generated_at.slice(0, 16).replace("T", " ")} UTC
       </p>
       <article className={styles.reportProse} dangerouslySetInnerHTML={{ __html: html }} />
     </div>
