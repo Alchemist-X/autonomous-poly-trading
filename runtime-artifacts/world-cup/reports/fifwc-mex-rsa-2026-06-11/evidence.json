@@ -1,0 +1,405 @@
+{
+  "mexNews": {
+    "summary": "Mexico enter the 2026 World Cup opener vs South Africa (Thursday 2026-06-11, 13:00 local / 19:00 GMT, Estadio Azteca, ~83,000 sellout) in their best form in over a year: unbeaten in all eight 2026 friendlies with only two goals conceded, closing with wins over Ghana (2-0), Australia (1-0) and Serbia (5-1 on June 4), after a winless final six matches of 2025 (4D 2L). Javier Aguirre's 26-man squad is essentially fully fit — only GK Luis Malagon and MF Marcel Ruiz were ruled out pre-camp, and no Mexico players are on the tournament injury table; the consensus predicted XI in a 4-3-3 is Rangel; Sanchez, Montes, E. Alvarez, Gallardo; Gutierrez, Fidalgo, Pineda; Alvarado, Jimenez, Quinones, with Raul Rangel the clear GK starter over 40-year-old Guillermo Ochoa (one outlet, Sports Mole, still predicted Ochoa for a record sixth World Cup). Lineup uncertainties are modest: captain Edson Alvarez is short of club minutes and looked rusty (yellow cards in his last two friendlies), right-back is unsettled (Sanchez struggled vs Serbia; Reyes the safer option), and 17-year-old Gilberto Mora is just back from a three-month groin injury. Structural factors lean Mexican: FIFA rank 14 vs 60, altitude (2,240m) plus a 1pm kickoff against a South Africa side with no altitude preparation and visa-delayed acclimatization, and Mexico are unbeaten in their last seven World Cup openers (5W 2D); the 2010 meeting between these teams was a 1-1 opener, and South Africa are winless in their last three friendlies. Off-field noise (large protests in Mexico City days before the match) exists but no camp disruption, late fitness tests or suspensions were reported for Mexico in the final 72 hours; official lineups release ~1 hour before kickoff and were not yet confirmed at research time. Net read: evidence is mostly one-directional in favor of Mexico relative to a generic opener, with the main caution flags being Mexico's historical opening-day tightness, the rusty-captain/right-back questions, and South Africa's compact 4-3-2-1 low-block which could keep the match low-scoring and pushes some probability mass to the draw.",
+    "facts": [
+      {
+        "claim": "Kickoff confirmed for Thursday 2026-06-11 at 13:00 local Mexico City time (19:00 GMT / 3pm ET) at Estadio Azteca, with an expected 80,000+ sellout crowd",
+        "source_url": "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+        "source_date": "2026-06-10",
+        "confidence": "high",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Mexico are unbeaten in all eight friendlies in 2026, conceding only twice, with last five results: 0-0 Portugal, 1-1 Belgium, 2-0 Ghana, 1-0 Australia, 5-1 Serbia",
+        "source_url": "https://www.sportsmole.co.uk/football/mexico/world-cup-2026/preview/mexico-vs-south-africa-prediction-team-news-lineups_598869.html",
+        "source_date": "2026-06-10",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Mexico beat Serbia 5-1 in their final pre-tournament friendly on June 4, 2026 in Toluca",
+        "source_url": "https://www.espn.com/soccer/match/_/gameId/401861776/serbia-mexico",
+        "source_date": "2026-06-04",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Mexico failed to win any of their final six matches of 2025 (4 draws, 2 losses) before the 2026 turnaround",
+        "source_url": "https://www.sportsmole.co.uk/football/mexico/world-cup-2026/preview/mexico-vs-south-africa-prediction-team-news-lineups_598869.html",
+        "source_date": "2026-06-10",
+        "confidence": "high",
+        "direction": "rsa"
+      },
+      {
+        "claim": "Mexico's 26-man squad was announced in late May 2026; GK Luis Angel Malagon and MF Marcel Ruiz were ruled out of the tournament by pre-camp injuries, but no Mexico players appear on the World Cup injury table heading into the opener",
+        "source_url": "https://www.rotowire.com/soccer/article/mexico-vs-south-africa-preview-predicted-lineups-team-news-world-cup-preview-117405",
+        "source_date": "2026-06-09",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "No suspensions reported for Mexico ahead of the opener; consensus predicted XI (4-3-3): Rangel; Sanchez, Montes, E. Alvarez, Gallardo; Gutierrez, Fidalgo, Pineda; Alvarado, Jimenez, Quinones; official team sheet releases ~1 hour before kickoff",
+        "source_url": "https://sports.yahoo.com/articles/mexico-vs-south-africa-predicted-050500848.html",
+        "source_date": "2026-06-11",
+        "confidence": "medium",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Raul Rangel is the clear starting goalkeeper per SI's June 6 analysis (Aguirre preferred him over Ochoa since the March window), though Sports Mole still predicted 40-year-old Guillermo Ochoa to start and become the first player at six World Cups — minor source disagreement",
+        "source_url": "https://www.si.com/soccer/four-biggest-question-marks-mexico-2026-world-cup-opener",
+        "source_date": "2026-06-06",
+        "confidence": "medium",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Captain Edson Alvarez has played sparingly at club level, looked 'incredibly rusty' in friendlies with yellow cards in his last two appearances, and Erik Lira has outperformed him as holding midfielder; right-back (Sanchez vs Reyes) remains unsettled after Sanchez struggled vs Serbia",
+        "source_url": "https://www.si.com/soccer/four-biggest-question-marks-mexico-2026-world-cup-opener",
+        "source_date": "2026-06-06",
+        "confidence": "high",
+        "direction": "rsa"
+      },
+      {
+        "claim": "17-year-old Gilberto Mora has just returned from a three-month groin injury and is unlikely to be fully sharp for the opener, though he is an option",
+        "source_url": "https://www.si.com/soccer/four-biggest-question-marks-mexico-2026-world-cup-opener",
+        "source_date": "2026-06-06",
+        "confidence": "high",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Manager Javier Aguirre (third World Cup stint with Mexico) sets up in a 4-3-3/4-1-4-1 built on defensive discipline, rapid transitions and using the Azteca crowd and altitude; Raul Jimenez (35, in form off a solid Fulham season) leads the line and is one goal from joint-second all-time Mexico scorer",
+        "source_url": "https://www.rotowire.com/soccer/article/mexico-vs-south-africa-preview-predicted-lineups-team-news-world-cup-preview-117405",
+        "source_date": "2026-06-09",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Mexico are FIFA-ranked 14th vs South Africa's 60th, and are unbeaten in their last seven World Cup opening matches since 1994 (5W 2D)",
+        "source_url": "https://www.sportsmole.co.uk/football/mexico/world-cup-2026/preview/mexico-vs-south-africa-prediction-team-news-lineups_598869.html",
+        "source_date": "2026-06-10",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "South Africa arrive winless in their last three friendlies, suffered visa delays that disrupted altitude acclimatization, and have no recent altitude preparation for the 2,240m / 1pm-heat Azteca kickoff; they are expected to play a compact 4-3-2-1 low block",
+        "source_url": "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+        "source_date": "2026-06-10",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Head-to-head: Mexico lead South Africa 2-1 with one draw across five meetings; the most recent meeting was the 2010 World Cup opener which ended 1-1",
+        "source_url": "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+        "source_date": "2026-06-10",
+        "confidence": "high",
+        "direction": "draw"
+      },
+      {
+        "claim": "Aguirre held his pre-match press conference at the Azteca on Wednesday June 10 saying 'We must break that trend' about Mexico's opening-day record; FOX framed Mexico as having an opening-day 'curse' narrative",
+        "source_url": "https://www.foxsports.com/stories/soccer/history-mexicos-opening-day-world-cup-curse",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Large protests (teachers, judges, animal-rights groups, families of Mexico's ~130,000 missing) hit Mexico City streets in the days before the opener amid heavy security; no reported impact on the team camp",
+        "source_url": "https://www.themirror.com/sport/soccer/gallery/mexico-city-protests-world-cup-1877285",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "neutral"
+      }
+    ],
+    "sources": [
+      "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+      "https://www.sportsmole.co.uk/football/mexico/world-cup-2026/preview/mexico-vs-south-africa-prediction-team-news-lineups_598869.html",
+      "https://www.sportsmole.co.uk/football/mexico/world-cup-2026/predicted-lineups/ochoa-out-to-make-history-mora-decision-predicted-mexico-lineup-vs-south-africa_598870.html",
+      "https://www.rotowire.com/soccer/article/mexico-vs-south-africa-preview-predicted-lineups-team-news-world-cup-preview-117405",
+      "https://www.si.com/soccer/four-biggest-question-marks-mexico-2026-world-cup-opener",
+      "https://www.si.com/soccer/mexico-predicted-lineup-vs-south-africa-world-cup-6-11-26",
+      "https://www.espn.com/soccer/match/_/gameId/401861776/serbia-mexico",
+      "https://sports.yahoo.com/articles/mexico-vs-south-africa-predicted-050500848.html",
+      "https://www.foxsports.com/stories/soccer/history-mexicos-opening-day-world-cup-curse",
+      "https://www.themirror.com/sport/soccer/gallery/mexico-city-protests-world-cup-1877285",
+      "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/all-world-cup-squad-announcements"
+    ]
+  },
+  "rsaNews": {
+    "summary": "South Africa enter the opener ranked ~60th in FIFA (vs Mexico ~14th) and winless in all of 2026: 1-1 and 1-2 vs Panama (March), 0-0 vs Nicaragua (late May), and a chaotic behind-closed-doors 1-1 vs Jamaica on June 6 in Pachuca, after exiting AFCON 2025 in the Round of 16 (1-2 to Cameroon on Jan 4) despite dominating spells — a recurring \"no cutting edge\" problem. Preparation was materially disrupted: a Mexican/US visa debacle delayed the squad's charter by 24+ hours around May 31, costing altitude-acclimatization days Broos explicitly wanted (he targeted arrival by June 1 for the 2,240m Azteca), though the team did get roughly 9-10 days at Mexican altitude before kickoff. The final 26-man squad (announced May 27, captain Ronwen Williams) is heavily domestic (19 local, 5 Europe, 2 US) with two uncapped defenders; predicted XI is a 4-3-3: Williams; Mudau, Okon, Mbokazi, Modiba; Mokoena, Sithole, Mbatha; Moremi, Foster, Appollis — with star prospect Mofokeng expected on the bench. Key fitness note favoring RSA: first-choice left-back Aubrey Modiba (hamstring) completed full training and is expected available/likely to start; no suspensions were reported in any source reviewed. Qualification quality was moderate: won CAF Group C with 18 points on the final matchday (3-0 vs Rwanda) despite a 3-point FIFA deduction for fielding the suspended Mokoena vs Lesotho, edging Nigeria and Benin (17 pts each). Broos is an experienced tournament coach (2017 AFCON winner with Cameroon, 2023 AFCON bronze with SA) preaching discipline and a fixed game plan amid an expected 80,000+ hostile Azteca crowd at a 13:00 local (19:00 UTC) Thursday June 11 kickoff — early-afternoon heat plus altitude compounds the physical ask. Net read: most evidence (winless 2026 form, blunt attack, disrupted prep, inexperienced back line, ranking gap, hostile venue) supports Mexico, partially offset by SA's drawing habit (3 draws in 4), a settled defensive structure under Broos, and Modiba's return — consistent with a probability shape near the cached MEX 0.695 / Draw 0.205 / RSA 0.105, with draw arguably the live tail given SA's low-scoring profile.",
+    "facts": [
+      {
+        "claim": "South Africa's predicted starting XI vs Mexico (4-3-3): Ronwen Williams; Khuliso Mudau, Ime Okon, Mbekezeli Mbokazi, Aubrey Modiba; Teboho Mokoena, Sphephelo Sithole, Thalente Mbatha; Tshepang Moremi, Lyle Foster, Oswin Appollis",
+        "source_url": "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Kickoff is 13:00 local Mexico City time (19:00 GMT) at Estadio Azteca with 80,000+ expected attendance; match day is Thursday (June 11, 2026 per Polymarket slug, Latin Times and SAFA scheduling; Al Jazeera page extraction showed 'June 12' which conflicts with June 11 being the Thursday)",
+        "source_url": "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Final 26-man squad announced May 27, 2026 by Hugo Broos: GKs Williams (captain), Goss, Chaine; 11 defenders incl. Mudau, Sibisi, Okon, Ndamane, Modiba, Kabini, Matuludi, Makhanya, Sebelebele, Cross, Mbokazi; 4 midfielders Mokoena, Mbatha, Sithole, Adams; 8 forwards Appollis, Rayners, Moremi, Mofokeng, Makgopa, Zwane, Foster, Maseko; two uncapped (Makhanya, Cross); 19 locally-based players, 5 in Europe, 2 in US",
+        "source_url": "https://www.safa.net/general-news/broos-names-final-bafana-squad-for-the-2026-fifa-world-cup/",
+        "source_date": "2026-05-27",
+        "confidence": "high",
+        "direction": "neutral"
+      },
+      {
+        "claim": "South Africa are winless in 2026 (0W-3D-2L): Jamaica 1-1 (Jun 6 friendly), Nicaragua 0-0 (late May friendly), Panama 2-1 loss (Mar 31), Panama 1-1 (Mar 27), Cameroon 1-2 AFCON R16 loss (Jan 4); last five form D-D-L-D-L",
+        "source_url": "https://www.afrik-foot.com/en-za/bafanas-winless-run-continues",
+        "source_date": "2026-06-07",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Final warm-up vs Jamaica (June 6, behind closed doors, Estadio Miguel Hidalgo, Pachuca) ended 1-1 — Lyle Foster scored, Dywane Atkinson equalized late; the result was only confirmed ~8 hours after full-time after score apps initially showed 1-0 SA ('ghost game'), and Jamaica fielded a weakened side",
+        "source_url": "https://www.goal.com/en-za/lists/jamaica-1-1-south-africa-confusion-reigns-after-bafana-bafana-s-behind-closed-doors-fifa-world-cup-warm-up/blt5b925bdb40e375d3",
+        "source_date": "2026-06-07",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "South Africa exited AFCON 2025 in the Round of 16, losing 2-1 to Cameroon in Rabat on Jan 4, 2026 (Tchamadeu 34', Kofane 47'); SA dominated long spells but lacked cutting edge, wasting three clear first-half chances; Broos: 'big disappointment not to qualify but I can't be unhappy with the way we played'",
+        "source_url": "https://www.cafonline.com/afcon2025/news/cameroon-charge-into-the-quarter-finals-south-africa-fall-short-2-1/",
+        "source_date": "2026-01-04",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Earlier AFCON 2025 group results: beat Angola 2-1 (Dec 22), lost to Egypt 0-1 (Dec 26), beat Zimbabwe 3-2 (Dec 29); prior friendlies: beat Ghana 1-0 (Dec 16) and Zambia 3-1 (Nov 15, 2025)",
+        "source_url": "https://www.espn.com/soccer/team/results/_/id/467/south-africa",
+        "source_date": "2026-06-11",
+        "confidence": "medium",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Left-back Aubrey Modiba (hamstring injury from CAF Champions League final) completed his first full training session without issues ~June 9-10 and Broos is hopeful/expects him fit to start vs Mexico; he is considered SA's most experienced and dependable left-back; backups are Samukele Kabini and Bradley Cross",
+        "source_url": "https://www.thesouthafrican.com/sport/soccer/soccer-world-cup/good-aubrey-modiba-injury-news-for-bafana-bafana/",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "rsa"
+      },
+      {
+        "claim": "No South Africa suspensions for the opener were reported in any source reviewed; the only fitness doubt flagged in final-week coverage was Modiba",
+        "source_url": "https://www.timeslive.co.za/sport/fifa-world-cup-2026/2026-06-09-potentially-make-or-break-selection-posers-for-broos-for-bafana-mexico-clash/",
+        "source_date": "2026-06-09",
+        "confidence": "medium",
+        "direction": "neutral"
+      },
+      {
+        "claim": "SA's World Cup departure was delayed over a Mexican/US visa debacle (~May 31): at least 20 delegation members lacked visas, some technical staff applications denied, charter left ~24h late after a SAFA emergency committee; Sports Minister McKenzie publicly slammed the 'Safa travel debacle'",
+        "source_url": "https://www.aljazeera.com/sports/2026/5/31/south-africas-world-cup-2026-departure-delayed-over-mexican-visa-debacle",
+        "source_date": "2026-05-31",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Broos wanted the team in Mexico no later than June 1 for jet-lag recovery and altitude acclimatization to the ~2,240m Azteca (sports science suggests 10-14 days ideal); the visa delay cost preparation days, though the squad did arrive in early June and trained/played at altitude in Pachuca from ~June 2-6",
+        "source_url": "https://www.latintimes.com/visa-delays-force-south-africas-world-cup-team-arrive-late-mexico-597677",
+        "source_date": "2026-06-02",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "South Africa are ranked ~60th in FIFA rankings vs Mexico's ~14th; this is SA's fourth World Cup appearance and first in 16 years (since hosting 2010)",
+        "source_url": "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+        "source_date": "2026-06-10",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "SA qualified by winning CAF Group C with 18 points despite a FIFA 3-point deduction (Sept 29, 2025 ruling: fielding suspended Teboho Mokoena vs Lesotho, match forfeited 0-3, SAFA fined CHF 10,000); they clinched top spot on the final matchday with a 3-0 win over Rwanda (Mbatha, Appollis, Makgopa), edging Nigeria and Benin (both 17 pts)",
+        "source_url": "https://furtherafrica.com/2025/10/15/south-africa-qualifies-for-2026-world-cup-despite-points-deduction/",
+        "source_date": "2025-10-15",
+        "confidence": "high",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Selection dilemmas reported June 9: centre-back partner for 19-year-old Mbokazi among Okon, Sibisi and Makhanya (Makhanya favored partly for North American/Azteca familiarity); playmaker choice between Mofokeng (form but physical concerns) and 36-year-old Zwane (fitness concerns); Goal's predicted XI has Mofokeng benched; Broos: 'I will not choose a player because of names, but I will choose a team that will work for each other'",
+        "source_url": "https://www.timeslive.co.za/sport/fifa-world-cup-2026/2026-06-09-potentially-make-or-break-selection-posers-for-broos-for-bafana-mexico-clash/",
+        "source_date": "2026-06-09",
+        "confidence": "medium",
+        "direction": "mex"
+      },
+      {
+        "claim": "Broos pre-match stance: SA will stick to a fixed game plan and ignore the hostile crowd ('It is very important that we keep ourselves to the game plan and don't listen to what is happening in the stands'); he publicly believes an upset is possible while calling Mexico a 'complete' team",
+        "source_url": "https://www.afrik-foot.com/en-za/bafana-bafana-coach-on-complete-mexico",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "neutral"
+      },
+      {
+        "claim": "SA's 2026 scoring profile is low on both ends — 3 goals scored and 4 conceded across 5 matches in 2026 (3 draws), suggesting elevated draw/under tail relative to a blowout",
+        "source_url": "https://www.sofascore.com/football/team/south-africa/4736",
+        "source_date": "2026-06-11",
+        "confidence": "medium",
+        "direction": "draw"
+      }
+    ],
+    "sources": [
+      "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+      "https://www.safa.net/general-news/broos-names-final-bafana-squad-for-the-2026-fifa-world-cup/",
+      "https://www.goal.com/en-za/lists/jamaica-1-1-south-africa-confusion-reigns-after-bafana-bafana-s-behind-closed-doors-fifa-world-cup-warm-up/blt5b925bdb40e375d3",
+      "https://www.afrik-foot.com/en-za/bafanas-winless-run-continues",
+      "https://www.cafonline.com/afcon2025/news/cameroon-charge-into-the-quarter-finals-south-africa-fall-short-2-1/",
+      "https://www.thesouthafrican.com/sport/soccer/soccer-world-cup/good-aubrey-modiba-injury-news-for-bafana-bafana/",
+      "https://www.timeslive.co.za/sport/fifa-world-cup-2026/2026-06-09-potentially-make-or-break-selection-posers-for-broos-for-bafana-mexico-clash/",
+      "https://www.aljazeera.com/sports/2026/5/31/south-africas-world-cup-2026-departure-delayed-over-mexican-visa-debacle",
+      "https://www.latintimes.com/visa-delays-force-south-africas-world-cup-team-arrive-late-mexico-597677",
+      "https://furtherafrica.com/2025/10/15/south-africa-qualifies-for-2026-world-cup-despite-points-deduction/",
+      "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_qualification_%E2%80%93_CAF_Group_C",
+      "https://www.espn.com/soccer/team/results/_/id/467/south-africa",
+      "https://www.sofascore.com/football/team/south-africa/4736",
+      "https://www.afrik-foot.com/en-za/bafana-bafana-coach-on-complete-mexico",
+      "https://www.fourfourtwo.com/team/south-africa-world-cup-2026-squad",
+      "https://khelnow.com/football/world-football-south-africa-injury-news-ahead-world-cup-opener-vs-mexico-202606"
+    ]
+  },
+  "context": {
+    "summary": "Kickoff is confirmed for Thursday 2026-06-11 at 13:00 Mexico City local (UTC-6) = 19:00 UTC = 15:00 ET at Estadio Azteca (Estadio Banorte), the first stadium ever to host three World Cup opening matches (1970, 1986, 2026), with ~80,000 expected and a Shakira-headlined ceremony 90 minutes before kickoff. The strongest pro-Mexico context factors are the historical host base rate (hosts are 16W-6D-1L in WC openers, the only loss being Qatar 2022) and the altitude/crowd combination at ~2,200m, where peer-reviewed evidence (McSharry, BMJ 2007) shows each 1,000m of altitude difference adds ~0.5 goals of goal difference to the higher team. However, the altitude edge is materially mitigated: South Africa set up base camp in Pachuca (~2,440m, higher than Mexico City), so the naive altitude narrative should not be double-counted on top of home advantage. South Africa's preparation was disrupted by visa delays, and the FIFA ranking gap is large (14 vs 60), both favoring Mexico. The draw scenario has meaningful support: 6 of 23 host openers were draws (~26%, well above the pure Elo model's 14.9%), Mexico's own 1970 opener at the Azteca ended 0-0, and the most recent competitive MEX-RSA meeting was the 1-1 2010 opener; overall H2H is Mexico 2W-1D-1L across 4 meetings (the 2005 Gold Cup group match, a 2-1 South Africa win, was also a competitive fixture). Weather adds variance: AccuWeather forecasts ~69F with up to 80% rain chance and possible afternoon thunderstorms (tropical storms Boris/Cristina nearby but no direct venue impact expected), which marginally compresses the favorite's edge and raises delay risk. Referee is Wilton Sampaio (Brazil) with Nicolas Gallo (Colombia) on VAR, per a secondary source — neutral, experienced 2022 WC official. Net read: context evidence is consistent with a strong but not overwhelming Mexico favorite, with the draw meaningfully more likely than the pure Elo baseline suggests, given host-opener base rates and weather variance.",
+    "facts": [
+      {
+        "claim": "Kickoff confirmed: Mexico vs South Africa, Group A opener, Thursday 11 June 2026, 13:00 Mexico City local time (UTC-6) = 19:00 UTC = 15:00 ET, at Estadio Azteca, Mexico City. (Note: an Al Jazeera summary said 'Thursday June 12' but June 12, 2026 is a Friday — internally inconsistent; FIFA/ESPN/AccuWeather all say Thursday June 11.)",
+        "source_url": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021443",
+        "source_date": "2026-06-11",
+        "confidence": "high",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Venue confirmed: Estadio Azteca (commercially Estadio Banorte) becomes the first stadium to host three FIFA World Cup opening matches (1970, 1986, 2026); ~80,000 fans expected; opening ceremony headlined by Shakira begins 90 minutes before kickoff — a heavily pro-Mexico crowd/atmosphere.",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026",
+        "source_date": "2026-06-11",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Estadio Azteca sits at ~7,300 ft (~2,200-2,240m). Sports scientist Sam Shepherd (AP, 2026-06-06): visiting players at this altitude face faster onset of fatigue, higher heart rates at any given running intensity, and reduced capacity for sprints and pressing actions.",
+        "source_url": "https://www.tsn.ca/soccer/fifa-world-cup/article/mexico-citys-altitude-poses-a-key-challenge-for-teams-at-the-2026-world-cup/",
+        "source_date": "2026-06-06",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Peer-reviewed altitude evidence (McSharry, BMJ 2007; 1,460 internationals in South America 1900-2004): each additional 1,000m of altitude difference increases the higher-altitude team's goal difference by ~0.5 goals; home win probability rises from 0.537 at equal altitude to 0.825 at 3,695m difference.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/18156225/",
+        "source_date": "2007-12-22",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Altitude mitigation for South Africa: Bafana Bafana established their base camp in Pachuca at 8,000+ ft (~2,440m) — HIGHER than Mexico City — providing acclimatization (2-3 weeks at altitude stimulates red-blood-cell adaptation per the same article). The altitude edge over RSA should therefore be discounted relative to a sea-level visitor.",
+        "source_url": "https://www.tsn.ca/soccer/fifa-world-cup/article/mexico-citys-altitude-poses-a-key-challenge-for-teams-at-the-2026-world-cup/",
+        "source_date": "2026-06-06",
+        "confidence": "high",
+        "direction": "rsa"
+      },
+      {
+        "claim": "South Africa's pre-tournament preparation was disrupted by visa delays affecting their arrival at the Pachuca base camp; coach Hugo Broos emphasized sticking to the game plan and avoiding crowd distractions.",
+        "source_url": "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "mex"
+      },
+      {
+        "claim": "Weather forecast for the opener (AccuWeather via Newsweek): ~69F (~21C), up to 80% chance of rain with possible afternoon thunderstorms; tropical storms Boris and Cristina are affecting Mexico but no direct venue impact expected in Mexico City; storms over the venue could cause delays. Rain raises match variance, marginally favoring draw/underdog vs a ~0.70 favorite.",
+        "source_url": "https://www.newsweek.com/heres-the-weather-for-first-world-cup-2026-games-this-weekend-12054045",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "draw"
+      },
+      {
+        "claim": "Head-to-head (4 meetings): Mexico 2W, South Africa 1W, 1 draw — 1993 friendly MEX 4-0 (Los Angeles); 2000 US Nike Cup MEX 4-2; 2005 Gold Cup RSA 2-1; 2010 World Cup opener 1-1 (Johannesburg, Tshabalala 55', Marquez 79'). The 2010 opener is the most recent competitive meeting; the 2005 Gold Cup group-stage match was also a competitive fixture.",
+        "source_url": "https://www.sportsmole.co.uk/football/mexico/head-to-head/mexico-vs-south-africa-head-to-head-record-and-past-meetings_598873.html",
+        "source_date": "2026-06-10",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Host-nation base rate in World Cup opening matches: 16W-6D-1L (goals 51-16, +35). The only host defeat ever is Qatar 0-2 Ecuador (2022). Strongly supports the host not losing.",
+        "source_url": "https://www.sofascore.com/news/every-world-cup-hosts-opening-match-what-history-says",
+        "source_date": "2026-06-11",
+        "confidence": "high",
+        "direction": "mex"
+      },
+      {
+        "claim": "Draw base rate in host openers: 6 of 23 (~26%), well above the pure Elo model's 14.9% draw probability. Mexico's own previous opener as host at the Azteca (1970 vs USSR) was a 0-0 draw, and South Africa's only WC opener as host (2010, vs Mexico) was 1-1.",
+        "source_url": "https://www.sofascore.com/news/every-world-cup-hosts-opening-match-what-history-says",
+        "source_date": "2026-06-11",
+        "confidence": "high",
+        "direction": "draw"
+      },
+      {
+        "claim": "Referee assignment: Wilton Sampaio (Brazil), with assistants Bruno Pires and Bruno Boschilia (Brazil), fourth official Juan Benitez (Paraguay), VAR Nicolas Gallo (Colombia). Sampaio is an experienced FIFA official (2022 World Cup). Secondary source — treat as probable, not FIFA-official confirmation.",
+        "source_url": "https://cupofnations2025.com/mexico-vs-south-africa-referee-var-and-match-officials-for-world-cup-2026-opener/",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "neutral"
+      },
+      {
+        "claim": "Form/ranking context from match preview: Mexico enter on an 8-match unbeaten run, FIFA rank 14 (coach Javier Aguirre); South Africa FIFA rank 60 (coach Hugo Broos). Named starting XIs published 2026-06-10 (Mexico: Jimenez leads line; RSA: Ronwen Williams in goal, Lyle Foster up front).",
+        "source_url": "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+        "source_date": "2026-06-10",
+        "confidence": "medium",
+        "direction": "mex"
+      },
+      {
+        "claim": "Mexican football commissioner Mikel Arriola publicly called hosting at the Azteca 'a massive advantage... because we're playing at the Estadio Azteca with our fans and the altitude' — partisan but confirms the crowd will be overwhelmingly pro-Mexico.",
+        "source_url": "https://www.miningjournal.net/features/2026/06/mexico-city-altitude-challenge-for-world-cup-teams/",
+        "source_date": "2026-06-06",
+        "confidence": "medium",
+        "direction": "mex"
+      }
+    ],
+    "sources": [
+      "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021443",
+      "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026",
+      "https://www.espn.com/football/story/_/id/49007230/world-cup-2026-mexico-vs-south-africa-kickoff-how-watch-stats-team-news-fifa-opener",
+      "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football",
+      "https://www.tsn.ca/soccer/fifa-world-cup/article/mexico-citys-altitude-poses-a-key-challenge-for-teams-at-the-2026-world-cup/",
+      "https://pubmed.ncbi.nlm.nih.gov/18156225/",
+      "https://www.sciencedaily.com/releases/2007/12/071221094837.htm",
+      "https://www.newsweek.com/heres-the-weather-for-first-world-cup-2026-games-this-weekend-12054045",
+      "https://www.accuweather.com/en/sports/live-news/world-cup-2026-weather-updates-forecasts-for-key-matches-stadium-conditions-and-fan-impacts/1898671",
+      "https://www.sofascore.com/news/every-world-cup-hosts-opening-match-what-history-says",
+      "https://www.sportsmole.co.uk/football/mexico/head-to-head/mexico-vs-south-africa-head-to-head-record-and-past-meetings_598873.html",
+      "https://cupofnations2025.com/mexico-vs-south-africa-referee-var-and-match-officials-for-world-cup-2026-opener/",
+      "https://www.miningjournal.net/features/2026/06/mexico-city-altitude-challenge-for-world-cup-teams/",
+      "https://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_opening_matches"
+    ]
+  },
+  "model": {
+    "p_mex": 0.7943,
+    "p_draw": 0.1488,
+    "p_rsa": 0.0569,
+    "method": "Davidson (1970) tie extension of Bradley-Terry, as implemented in the repo at /Users/Aincrad/dev-proj/predict-raven/packages/sports-model/src/elo.ts (function eloToOneXTwo). Formula: wH = 10^((R_home + HA)/scale); wA = 10^(R_away/scale); wD = drawNu * sqrt(wH * wA); (p_home, p_draw, p_away) = (wH, wD, wA) / (wH + wD + wA). Parameters used: scale = 400 (World Football Elo logistic scale, matching the eloratings.net source of the ratings; the repo default scale=600 is for FIFA-SUM ratings and was explicitly overridden), HA = +100 Elo points added to Mexico (standard World Football Elo home bonus; Mexico is the designated home side at Estadio Azteca), drawNu = 0.70 (repo default Davidson tie parameter; implies ~25.9% draw at equal strength). Effective rating gap = (1875 + 100) - 1517 = 458 -> wH/wA = 10^(458/400) ≈ 13.964, wD/wA ≈ 2.616 -> p = (0.7943, 0.1488, 0.0569). Executed via `pnpm tsx /tmp/wc-elo-calc.ts` importing the repo function directly (script kept out of the repo). Sensitivity grid from the same run: HA=+150 (Azteca altitude bump) -> 0.8224/0.1334/0.0442; HA=+65 (repo default HA) -> 0.7723/0.1600/0.0677; drawNu=0.85 at HA=+100 -> 0.7698/0.1751/0.0551; joint low corner HA=+65 with drawNu=0.85 -> 0.7467/0.1879/0.0654; repo defaults scale=600/HA=65 (mismatched scale, shown for reference only) -> 0.6631/0.2061/0.1308. Full joint HA 65-150 x drawNu 0.70-0.85 grid spans p_mex ~0.747-0.822.",
+    "inputs": {
+      "elo_mex": 1875,
+      "elo_rsa": 1517,
+      "elo_rank_mex": 18,
+      "elo_rank_rsa": 80,
+      "elo_diff_raw": 358,
+      "home_adv_elo_points": 100,
+      "elo_diff_effective": 458,
+      "fifa_rank_mex": 15,
+      "fifa_rank_rsa": 60,
+      "fifa_ranking_release": "2026-04-01 (April 2026 release; ranks not used in calculation, descriptive only)",
+      "params": {
+        "scale": 400,
+        "drawNu": 0.7,
+        "homeAdvantage": 100
+      },
+      "kickoff": "2026-06-11T13:00 local Mexico City (19:00 UTC / 15:00 ET), Estadio Azteca (Estadio Ciudad de Mexico), altitude ~2240m"
+    },
+    "sources": [
+      "https://www.eloratings.net/World.tsv — live data endpoint powering eloratings.net (World Football Elo Ratings), retrieved 2026-06-11 via curl: Mexico Elo 1875 (rank 18), South Africa Elo 1517 (rank 80). Human-readable pages https://www.eloratings.net/Mexico and https://www.eloratings.net/South_Africa are JS-rendered and load this same TSV.",
+      "https://www.espn.com/soccer/story/_/id/46664763/fifa-mens-top-50-world-rankings — ESPN, FIFA Men's Top 50 World Rankings April 2026 (released 2026-04-01): Mexico 15th, South Africa 60th. Obtained via search-result summary on 2026-06-11; direct page fetch returned no content (see caveats).",
+      "https://www.espn.com/espn/story/_/id/48998339/mexico-vs-south-africa-kick-team-news-how-watch-fifa-world-cup-opener — ESPN match preview, retrieved 2026-06-11: opener Thursday 2026-06-11, 13:00 local Mexico City / 19:00 GMT / 21:00 CAT, Estadio Azteca.",
+      "https://www.aljazeera.com/sports/2026/6/10/mexico-south-africa-fifa-world-cup-2026-match-lineup-players-news-football — Al Jazeera, 2026-06-10: confirms June 11 opener at Estadio Azteca, ~80,000 expected.",
+      "/Users/Aincrad/dev-proj/predict-raven/packages/sports-model/src/elo.ts — repo Elo module with Davidson 1X2 converter (eloToOneXTwo), read 2026-06-11.",
+      "Davidson, R. R. (1970), 'On Extending the Bradley-Terry Model to Accommodate Ties in Paired Comparison Experiments', JASA 65(329) — the tie model implemented by the repo function."
+    ],
+    "caveats": "1) Raw Elo baselines tend to overstate heavy favorites in one-off tournament matches; treat this as the statistical prior for the bounded evidence-based adjustment, not a standalone final probability. 2) World Cup openers are historically cagey and draw-prone (the 2010 RSA-MEX opener ended 1-1); drawNu=0.70 gives 14.9% draw, likely a floor — the nu=0.85 sensitivity gives 17.5%. 3) Home advantage is a judgment call: headline uses the standard flat +100 Elo bonus; Azteca altitude (~2240m) plus crowd plausibly justifies +150 (p_mex 0.822), while the repo's own default of +65 gives p_mex 0.772. Defensible p_mex range across the joint scale-400 HA x drawNu grid: ~0.75-0.82 (minimum 0.747 at HA=+65, drawNu=0.85). 4) FIFA ranks (MEX 15, RSA 60) come from a search-engine summary of the ESPN April 2026 article; the direct page fetch returned empty content and FIFA points totals were not obtained. Ranks are descriptive only and do not enter the calculation. 5) The eloratings.net TSV carries no embedded timestamp; values were pulled live on 2026-06-11 and the column mapping (rank, code, rating) was inferred from the site's data format — top-5 entries (ES 2157, AR 2115, FR 2063, EN 2024, BR 1991) sanity-checked as plausible. 6) No lineup, injury, weather, or referee adjustments are included; this is a pure ratings-based prior."
+  }
+}
