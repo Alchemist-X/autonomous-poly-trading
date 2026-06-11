@@ -1,14 +1,6 @@
-import type { Metadata } from "next";
-import { ProphetsProfitSnapshot } from "../components/prophets-profit-snapshot";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Live Trading Snapshot",
-  description: "Live Polymarket wallet ledger adapted into the Prophets Profit snapshot view.",
-  icons: {
-    icon: "/favicon.svg"
-  }
-};
-
-export default function HomePage() {
-  return <ProphetsProfitSnapshot />;
+// The forecasting hub is the product's front door.
+export default function RootPage(): never {
+  redirect("/world-cup");
 }

@@ -14,7 +14,6 @@ export function WorldCupHeader() {
           </Link>
           <nav className={styles.headerNav}>
             <Link href="/world-cup">Matches</Link>
-            <Link href="/world-cup/leaderboard">Scoreboard</Link>
             <Link href="/prediction-engine">Run your own</Link>
           </nav>
         </div>

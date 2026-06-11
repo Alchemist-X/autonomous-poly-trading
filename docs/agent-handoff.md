@@ -38,7 +38,7 @@
 - **线上**：https://web-one-sand-83.vercel.app/world-cup （Vercel 项目 `web`，prebuilt 部署；已修平台路由 bug：catch-all rewrite 缺 `check:true` 导致动态参数路由 404——`vercel build` 产物 `config.json` 需打该补丁，build 脚本化时要带上）
 - 成本账本：`runtime-artifacts/world-cup/run-ledger/`（全部 claude-fable-5；生产 150 万 output tokens；单场中位 264s/14.2k out）
 - 对阵图：`bracket-prediction.json`（模态路径：决赛西班牙 56% 胜阿根廷）
-- 残余 TODO：旧 `/world-cup/[matchId]` + leaderboard 市场时代路由待删；自定义域名未配；OG 卡未做；每晚 Elo 更新后重跑 MC 的自动化未建
+- 残余 TODO（已于 22:10-23:10 完成 AutoPoly 全站清除：交易面板页面/API/组件/数据文件 60+ 个文件删除，根路由重定向 /world-cup，R1 品牌元数据替换，线上已验证 14 个旧路由 404）；自定义域名未配；OG 卡未做；每晚 Elo 更新后重跑 MC 的自动化未建
 
 **原计划步骤（已全部执行）**：
 1. 等 workflow 完成（自动通知；或看目录数）

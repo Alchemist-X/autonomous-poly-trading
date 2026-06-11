@@ -1,34 +1,34 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { DashboardShell } from "../components/dashboard-shell";
-import { LocaleProvider } from "../lib/locale-context";
 
+// Site-wide branding: market-blind World Cup probability research.
+// The legacy AutoPoly trading-dashboard shell and metadata were removed
+// (compliance R1) — this app now serves the forecasting product only.
 export const metadata: Metadata = {
-  title: "AutoPoly — Autonomous Polymarket Trading Agent",
-  description: "The world's first autonomous AI agent trading on Polymarket. Full-market coverage, long-horizon reasoning, live positions & P&L.",
-  metadataBase: new URL("https://autopoly-pizza-spectator.vercel.app"),
+  title: "World Cup Forecast — 盲测 AI 概率研究",
+  description:
+    "An independent, market-blind AI superforecaster for the 2026 World Cup. Transparent probabilities, sourced reasoning, public Brier scoring. Probability research, not betting advice.",
+  metadataBase: new URL("https://web-one-sand-83.vercel.app"),
+  icons: {
+    icon: "/favicon.svg"
+  },
   openGraph: {
-    title: "AutoPoly — Autonomous Polymarket Trading Agent",
-    description: "The world's first autonomous AI agent trading on Polymarket. Full-market coverage, long-horizon reasoning, live positions & P&L.",
-    siteName: "AutoPoly",
-    type: "website",
-    locale: "en_US"
+    title: "World Cup Forecast — market-blind AI probability research",
+    description:
+      "Transparent World Cup probabilities produced without reading any market prices. Probability research, not betting advice.",
+    siteName: "World Cup Forecast",
+    type: "website"
   },
   twitter: {
-    card: "summary_large_image",
-    title: "AutoPoly — Autonomous Polymarket Trading Agent",
-    description: "The world's first autonomous AI agent trading on Polymarket."
+    card: "summary",
+    title: "World Cup Forecast — market-blind AI probability research"
   }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className="dash-body">
-        <LocaleProvider>
-          <DashboardShell>{children}</DashboardShell>
-        </LocaleProvider>
-      </body>
+    <html lang="zh-CN">
+      <body>{children}</body>
     </html>
   );
 }
