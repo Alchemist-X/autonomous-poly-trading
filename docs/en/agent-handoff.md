@@ -17,6 +17,19 @@
 
 ---
 
+## 🏆 World Cup market-blind forecast sprint (2026-06-11 · current mainline on this branch, IN PROGRESS)
+
+**Goal**: before the opener kicks off (2026-06-11 19:00 UTC), publish forecasts for all **87 questions** (72 group matches + 12 group winners + QF/SF/champion pools) and ship `/world-cup` to Vercel.
+
+**Iron rule (user decision 2026-06-11, permanent)**: **market-blind** — no stage of the pipeline may read/cite/display any market price or implied probability (Polymarket/FanDuel/DraftKings/Kalshi included); market data is for event structure & resolution mapping only. Rule lives in CLAUDE.md; cache writes strip prices via `stripPrices`. **Forecast = pure Elo / Monte Carlo + bounded evidence adjustment (±8pp per match, sourced).**
+
+**Done (committed)**: 87-question event list with definitions (`scripts/world-cup/build-event-list.ts`); 100k pure-Elo MC with official FIFA 2026 bracket (`runtime-artifacts/world-cup/mc-results.json`; blind champion board Spain 37.8% > Argentina 24.4% > France 12.8%); Elo table; `/world-cup` hub (cards → 2-3 sourced reasons → full report pages, CN/EN) with clean visual QA; importer `scripts/world-cup/import-predictions.ts` (→ `apps/web/lib/world-cup/generated/*.json`, commit after import).
+
+**In flight (on Aincrad's Mac, local FleetView session — collaborators cannot take over the process itself)**: workflow `wf_8db95ecb-dc7` (~160 agents): 71 match predict+verify pipeline, 12 group + 3 pool writers, sample retrofit, market-blind compliance checks. ETA ~22:15 HKT. Monitor: `ls runtime-artifacts/world-cup/reports | wc -l` (≈87 dirs when done). ⚠️ runtime-artifacts is gitignored — forecasts exist only on that machine until imported + committed.
+
+**Next, in order**: (1) wait for workflow; (2) run importer, fix WARNs, commit generated JSON; (3) visual QA per CLAUDE.md §9 (dev server on :3199, read the PNGs, any pageerror = fail); (4) per-forecast token/time/model ledger from workflow transcripts (`agent-*.jsonl`: assistant messages carry model + usage; first/last timestamps = duration; slug from prompt) + MC from `wf_58799d69-b6b` → `runtime-artifacts/world-cup/run-ledger/`; (5) Vercel: local `pnpm --filter @autopoly/web build` first, check `.vercel/` link, real post-deploy verification (open live URL, screenshot, compare); (6) cleanup: legacy `/world-cup/[matchId]` + leaderboard routes are market-era UI (404 now), delete or rebuild later.
+
+
 ## 🔴 P0 — Now / Today
 
 - [x] **【P00 · Implemented】pulse-direct market-binding validation**: Fixed on 2026-05-05. `pulse-entry-planner` no longer binds multi-strike markets by shared event URL alone; `execution-planning` adds a P00 gate requiring marketSlug / tokenId / outcomeLabel / rule threshold to match exactly, with bestBid / bestAsk / decision price allowed within 3%; `pulse-live` fail-fasts in live mode on `blocked_by_market_binding`. Test coverage: `pulse-entry-planner.test.ts` / `execution-planning.test.ts` / full `pnpm test` 392 pass.

@@ -11,9 +11,36 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-07 by Codex（预测引擎 demo 已接入 Pulse stage_flow；本地 host 服务代理 + Run Console 已验收；raven-cloud / raven-web private repo 已创建）
+> 最后更新：2026-06-11 by Claude（世界杯盲测冲刺：87 题清单 + MC + 网页骨架完成；全量预测 workflow 进行中 ETA 22:15；待导入→QA→统计→Vercel 上线）
 
 ---
+
+## 🏆 世界杯盲测预测冲刺（2026-06-11 · 本分支当前主线，进行中）
+
+**目标**：揭幕战开球（2026-06-11 19:00 UTC = 港时 6/12 凌晨 3:00）前发布全部 **87 个问题**的公开预测（72 场小组赛 + 12 个小组头名 + 八强/四强/冠军三个池子），并把 `/world-cup` 网页上线 Vercel。
+
+**铁律（用户 2026-06-11 拍板，永久）**：**市场盲测** —— 预测管线任何环节不得读取/引用/展示任何市场价格或隐含概率（Polymarket / FanDuel / DraftKings / Kalshi 等全在列），市场数据只许用于事件结构与结算映射。规则在 CLAUDE.md「项目执行要点」；缓存写入层已用 `stripPrices` 强制剥离（`scripts/world-cup/cache-markets.ts` / `check-updates.ts`）。**预测 = 纯 Elo / Monte Carlo + 有界证据调整（单场 ±8pp，带来源）**。
+
+**已完成（都已 commit）**：
+- 事件清单 87 题含结算定义（无价格）：`pnpm tsx scripts/world-cup/build-event-list.ts` → `runtime-artifacts/world-cup/event-list/`
+- 100k 次纯 Elo Monte Carlo（官方 FIFA 2026 对阵树 + 最佳第三分配）：`runtime-artifacts/world-cup/mc-results.json`。盲测冠军榜：西班牙 37.8% > 阿根廷 24.4% > 法国 12.8% > 英格兰 6.6%
+- Elo 查表（48 队 + 别名）：`runtime-artifacts/world-cup/elo-table.json`
+- `/world-cup` 网页：卡片（事件+概率条）→ 点开 2-3 条带来源理由 → `/world-cup/forecast/<id>` 完整报告页（CN/EN）。空状态视觉 QA 通过（0 pageerror）
+- 导入命令：`pnpm tsx scripts/world-cup/import-predictions.ts`（扫 `runtime-artifacts/world-cup/reports/*/prediction.json` 统一 schema → `apps/web/lib/world-cup/generated/*.json`，**导入后要 commit 这两个生成文件**，Vercel 构建依赖它们）
+
+**进行中（跑在 Aincrad 的 Mac 本地 FleetView 会话里，协作者无法直接接管这个进程）**：
+- Workflow `wf_8db95ecb-dc7`（~160 agents）：71 场比赛（预测+对抗校验流水线）、12 组 + 3 池报告、揭幕战 sample 盲测净化、市场盲测专项校验。约 20:46 起跑，ETA ~22:15 HKT
+- 监控：`ls runtime-artifacts/world-cup/reports | wc -l`（完成时 ≈ 87 个目录，每个含 report.md / report.en.md / prediction.json）
+- ⚠️ `runtime-artifacts/` 是 gitignored：**预测产物只在这台机器上**，直到导入 + commit generated JSON
+
+**接下来按顺序做**：
+1. 等 workflow 完成（自动通知；或看目录数）
+2. `pnpm tsx scripts/world-cup/import-predictions.ts` → 检查 WARN（被跳过的题要补）→ commit `apps/web/lib/world-cup/generated/`
+3. 视觉 QA（CLAUDE.md §9 强制）：`cd apps/web && pnpm exec next dev -p 3199`；`node scripts/visual-qa.mjs --base http://localhost:3199 --paths /world-cup --out runtime-artifacts/screenshots/<ts>-wc-live`；用 Read 真读 PNG；任何 pageerror = fail
+4. 逐预测 token/耗时/模型统计（用户明确要求）：解析 workflow 转录 `~/.claude/projects/-Users-Aincrad-dev-proj-predict-raven/6367ed0b-*/subagents/workflows/wf_8db95ecb-dc7/agent-*.jsonl`（每条 assistant 消息含 model + usage tokens；首末时间戳差 = 耗时；从 prompt 里抓 slug 归属）+ MC 在 `wf_58799d69-b6b` → 产出 `runtime-artifacts/world-cup/run-ledger/{ledger.csv,summary.md}`
+5. Vercel 上线：先 `pnpm --filter @autopoly/web build` 本地过；查 `apps/web/.vercel/` 是否已 link；上线后**必须真实验收**（打开线上 URL + 截图 + 对照本地）
+6. 清理待办：旧 `/world-cup/[matchId]` 与 leaderboard 路由是市场时代 UI（数据已删、现 404），后续删除或重写
+
 
 ## 🔴 P0 — 现在/今天
 
