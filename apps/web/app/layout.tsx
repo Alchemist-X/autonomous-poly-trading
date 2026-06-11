@@ -5,7 +5,7 @@ import "./globals.css";
 // The legacy AutoPoly trading-dashboard shell and metadata were removed
 // (compliance R1) — this app now serves the forecasting product only.
 export const metadata: Metadata = {
-  title: "World Cup Forecast — 盲测 AI 概率研究",
+  title: "Predict Ravens 世界杯版 — 盲测 AI 概率研究",
   description:
     "An independent, market-blind AI superforecaster for the 2026 World Cup. Transparent probabilities, sourced reasoning, public Brier scoring. Probability research, not betting advice.",
   metadataBase: new URL("https://web-one-sand-83.vercel.app"),
@@ -13,15 +13,15 @@ export const metadata: Metadata = {
     icon: "/favicon.svg"
   },
   openGraph: {
-    title: "World Cup Forecast — market-blind AI probability research",
+    title: "Predict Ravens 世界杯版 — market-blind AI probability research",
     description:
       "Transparent World Cup probabilities produced without reading any market prices. Probability research, not betting advice.",
-    siteName: "World Cup Forecast",
+    siteName: "Predict Ravens",
     type: "website"
   },
   twitter: {
     card: "summary",
-    title: "World Cup Forecast — market-blind AI probability research"
+    title: "Predict Ravens 世界杯版 — market-blind AI probability research"
   }
 };
 

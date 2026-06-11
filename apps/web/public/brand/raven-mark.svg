@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="#0f1115" aria-hidden="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
   <title>Raven</title>
   <!-- Geometric raven head silhouette: skull mass + beak right -->
   <path fill-rule="evenodd" clip-rule="evenodd" d="M14 22 C14 14, 22 10, 30 12 L40 18 L58 26 L42 28 L44 36 L36 36 L32 46 L24 46 L20 38 C16 36, 14 32, 14 28 Z M28 24 a3 3 0 1 0 0.001 0 Z"/>

@@ -233,66 +233,318 @@
  ],
  "champion": "Spain",
  "standings": {
-  "A": {
-   "1st": "Mexico",
-   "2nd": "South Korea",
-   "3rd": "Czechia (晋级)"
-  },
-  "B": {
-   "1st": "Switzerland",
-   "2nd": "Canada",
-   "3rd": "Bosnia and Herzegovina (出局)"
-  },
-  "C": {
-   "1st": "Brazil",
-   "2nd": "Morocco",
-   "3rd": "Scotland (晋级)"
-  },
-  "D": {
-   "1st": "Türkiye",
-   "2nd": "Paraguay",
-   "3rd": "USA (晋级)"
-  },
-  "E": {
-   "1st": "Ecuador",
-   "2nd": "Germany",
-   "3rd": "Ivory Coast (出局)"
-  },
-  "F": {
-   "1st": "Netherlands",
-   "2nd": "Japan",
-   "3rd": "Sweden (晋级)"
-  },
-  "G": {
-   "1st": "Belgium",
-   "2nd": "Iran",
-   "3rd": "Egypt (出局)"
-  },
-  "H": {
-   "1st": "Spain",
-   "2nd": "Uruguay",
-   "3rd": "Cape Verde (出局)"
-  },
-  "I": {
-   "1st": "France",
-   "2nd": "Norway",
-   "3rd": "Senegal (晋级)"
-  },
-  "J": {
-   "1st": "Argentina",
-   "2nd": "Austria",
-   "3rd": "Algeria (晋级)"
-  },
-  "K": {
-   "1st": "Portugal",
-   "2nd": "Colombia",
-   "3rd": "Uzbekistan (晋级)"
-  },
-  "L": {
-   "1st": "England",
-   "2nd": "Croatia",
-   "3rd": "Panama (晋级)"
-  }
+  "A": [
+   {
+    "team": "Mexico",
+    "pos": 1,
+    "p_r32": 0.9929,
+    "status": "晋级"
+   },
+   {
+    "team": "South Korea",
+    "pos": 2,
+    "p_r32": 0.8211,
+    "status": "晋级"
+   },
+   {
+    "team": "Czechia",
+    "pos": 3,
+    "p_r32": 0.7813,
+    "status": "晋级"
+   },
+   {
+    "team": "South Africa",
+    "pos": 4,
+    "p_r32": 0.1107,
+    "status": "出局"
+   }
+  ],
+  "B": [
+   {
+    "team": "Switzerland",
+    "pos": 1,
+    "p_r32": 0.9873,
+    "status": "晋级"
+   },
+   {
+    "team": "Canada",
+    "pos": 2,
+    "p_r32": 0.9849,
+    "status": "晋级"
+   },
+   {
+    "team": "Bosnia and Herzegovina",
+    "pos": 3,
+    "p_r32": 0.5497,
+    "status": "出局"
+   },
+   {
+    "team": "Qatar",
+    "pos": 4,
+    "p_r32": 0.091,
+    "status": "出局"
+   }
+  ],
+  "C": [
+   {
+    "team": "Brazil",
+    "pos": 1,
+    "p_r32": 0.9886,
+    "status": "晋级"
+   },
+   {
+    "team": "Morocco",
+    "pos": 2,
+    "p_r32": 0.873,
+    "status": "晋级"
+   },
+   {
+    "team": "Scotland",
+    "pos": 3,
+    "p_r32": 0.7779,
+    "status": "晋级"
+   },
+   {
+    "team": "Haiti",
+    "pos": 4,
+    "p_r32": 0.0935,
+    "status": "出局"
+   }
+  ],
+  "D": [
+   {
+    "team": "Türkiye",
+    "pos": 1,
+    "p_r32": 0.8921,
+    "status": "晋级"
+   },
+   {
+    "team": "Paraguay",
+    "pos": 2,
+    "p_r32": 0.7064,
+    "status": "晋级"
+   },
+   {
+    "team": "USA",
+    "pos": 3,
+    "p_r32": 0.6802,
+    "status": "晋级"
+   },
+   {
+    "team": "Australia",
+    "pos": 4,
+    "p_r32": 0.4902,
+    "status": "出局"
+   }
+  ],
+  "E": [
+   {
+    "team": "Ecuador",
+    "pos": 1,
+    "p_r32": 0.9848,
+    "status": "晋级"
+   },
+   {
+    "team": "Germany",
+    "pos": 2,
+    "p_r32": 0.9827,
+    "status": "晋级"
+   },
+   {
+    "team": "Ivory Coast",
+    "pos": 3,
+    "p_r32": 0.6763,
+    "status": "出局"
+   },
+   {
+    "team": "Curaçao",
+    "pos": 4,
+    "p_r32": 0.0506,
+    "status": "出局"
+   }
+  ],
+  "F": [
+   {
+    "team": "Netherlands",
+    "pos": 1,
+    "p_r32": 0.9737,
+    "status": "晋级"
+   },
+   {
+    "team": "Japan",
+    "pos": 2,
+    "p_r32": 0.948,
+    "status": "晋级"
+   },
+   {
+    "team": "Sweden",
+    "pos": 3,
+    "p_r32": 0.5103,
+    "status": "晋级"
+   },
+   {
+    "team": "Tunisia",
+    "pos": 4,
+    "p_r32": 0.2204,
+    "status": "出局"
+   }
+  ],
+  "G": [
+   {
+    "team": "Belgium",
+    "pos": 1,
+    "p_r32": 0.9783,
+    "status": "晋级"
+   },
+   {
+    "team": "Iran",
+    "pos": 2,
+    "p_r32": 0.8632,
+    "status": "晋级"
+   },
+   {
+    "team": "Egypt",
+    "pos": 3,
+    "p_r32": 0.6708,
+    "status": "出局"
+   },
+   {
+    "team": "New Zealand",
+    "pos": 4,
+    "p_r32": 0.1964,
+    "status": "出局"
+   }
+  ],
+  "H": [
+   {
+    "team": "Spain",
+    "pos": 1,
+    "p_r32": 0.9989,
+    "status": "晋级"
+   },
+   {
+    "team": "Uruguay",
+    "pos": 2,
+    "p_r32": 0.9587,
+    "status": "晋级"
+   },
+   {
+    "team": "Cape Verde",
+    "pos": 3,
+    "p_r32": 0.2679,
+    "status": "出局"
+   },
+   {
+    "team": "Saudi Arabia",
+    "pos": 4,
+    "p_r32": 0.2617,
+    "status": "出局"
+   }
+  ],
+  "I": [
+   {
+    "team": "France",
+    "pos": 1,
+    "p_r32": 0.9889,
+    "status": "晋级"
+   },
+   {
+    "team": "Norway",
+    "pos": 2,
+    "p_r32": 0.8904,
+    "status": "晋级"
+   },
+   {
+    "team": "Senegal",
+    "pos": 3,
+    "p_r32": 0.7893,
+    "status": "晋级"
+   },
+   {
+    "team": "Iraq",
+    "pos": 4,
+    "p_r32": 0.0757,
+    "status": "出局"
+   }
+  ],
+  "J": [
+   {
+    "team": "Argentina",
+    "pos": 1,
+    "p_r32": 0.9969,
+    "status": "晋级"
+   },
+   {
+    "team": "Austria",
+    "pos": 2,
+    "p_r32": 0.7709,
+    "status": "晋级"
+   },
+   {
+    "team": "Algeria",
+    "pos": 3,
+    "p_r32": 0.5912,
+    "status": "晋级"
+   },
+   {
+    "team": "Jordan",
+    "pos": 4,
+    "p_r32": 0.2596,
+    "status": "出局"
+   }
+  ],
+  "K": [
+   {
+    "team": "Portugal",
+    "pos": 1,
+    "p_r32": 0.9774,
+    "status": "晋级"
+   },
+   {
+    "team": "Colombia",
+    "pos": 2,
+    "p_r32": 0.9742,
+    "status": "晋级"
+   },
+   {
+    "team": "Uzbekistan",
+    "pos": 3,
+    "p_r32": 0.4242,
+    "status": "晋级"
+   },
+   {
+    "team": "Congo DR",
+    "pos": 4,
+    "p_r32": 0.222,
+    "status": "出局"
+   }
+  ],
+  "L": [
+   {
+    "team": "England",
+    "pos": 1,
+    "p_r32": 0.9925,
+    "status": "晋级"
+   },
+   {
+    "team": "Croatia",
+    "pos": 2,
+    "p_r32": 0.9595,
+    "status": "晋级"
+   },
+   {
+    "team": "Panama",
+    "pos": 3,
+    "p_r32": 0.6518,
+    "status": "晋级"
+   },
+   {
+    "team": "Ghana",
+    "pos": 4,
+    "p_r32": 0.0719,
+    "status": "出局"
+   }
+  ]
  },
  "mc_marginals_top8": [
   [

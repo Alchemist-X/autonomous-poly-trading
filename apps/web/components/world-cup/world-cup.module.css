@@ -1085,3 +1085,77 @@
   padding: 4px 12px;
   text-decoration: none;
 }
+
+/* ---------- 2026-06-12 polish: brand, bigger nav/tabs, bracket layout ---------- */
+
+.brandLogo {
+  width: 26px;
+  height: 26px;
+  align-self: center;
+}
+
+.brandEd {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eef4ff;
+  border-radius: 999px;
+  padding: 2px 9px;
+  align-self: center;
+}
+
+.headerNav {
+  font-size: 15.5px;
+  font-weight: 600;
+  gap: 24px;
+}
+
+.tabLink {
+  padding: 11px 26px;
+  font-size: 16px;
+}
+
+.roundColGroups {
+  width: 488px;
+}
+
+.groupsGrid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-content: space-around;
+}
+
+.groupMiniName {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.groupMiniPct {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #1d4ed8;
+}
+
+.groupMiniPctOut {
+  color: #b3bac7;
+}
+
+.groupMiniTagOut {
+  font-size: 10px;
+  font-weight: 700;
+  color: #b91c1c;
+  background: #fef2f2;
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.roundBodyCenter {
+  justify-content: center;
+  gap: 26px;
+}

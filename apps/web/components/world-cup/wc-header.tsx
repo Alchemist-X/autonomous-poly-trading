@@ -8,8 +8,10 @@ export function WorldCupHeader() {
       <div className={styles.container}>
         <div className={styles.headerRow}>
           <Link className={styles.brand} href="/world-cup">
-            盲测世界杯
-            <span className={styles.brandTag}>Market-blind forecasts · 公开记分</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/raven-mark.svg" alt="Predict Ravens" className={styles.brandLogo} />
+            Predict Ravens<span className={styles.brandEd}>世界杯版</span>
+            <span className={styles.brandTag}>Market-blind · 公开记分</span>
           </Link>
           <nav className={styles.headerNav}>
             <Link href="/world-cup">预测</Link>

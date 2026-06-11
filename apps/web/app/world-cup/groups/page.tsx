@@ -17,7 +17,7 @@ function teamOf(f: Forecast, key: "a" | "b") {
 
 export default function GroupsPage() {
   const matches = getByFamily("group_match");
-  const winners = new Map(getByFamily("group_winner").map((g) => [g.question_cn.slice(0, 1), g]));
+  const winners = new Map(getByFamily("group_winner").map((g) => [g.id.slice(-1).toUpperCase(), g]));
 
   const byGroup = new Map<string, Forecast[]>();
   for (const m of matches) {

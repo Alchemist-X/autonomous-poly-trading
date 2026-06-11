@@ -18,6 +18,13 @@ interface Tie {
   p_winner: number;
 }
 
+interface StandingRow {
+  team: string;
+  pos: number;
+  p_r32: number;
+  status: "晋级" | "出局";
+}
+
 interface BracketFile {
   R32: Tie[];
   R16: Tie[];
@@ -25,7 +32,7 @@ interface BracketFile {
   SF: Tie[];
   F: Tie[];
   champion: string;
-  standings: Record<string, { "1st": string; "2nd": string; "3rd": string }>;
+  standings: Record<string, StandingRow[]>;
 }
 
 const bracket = bracketData as unknown as BracketFile;
@@ -47,11 +54,11 @@ function TieCardView({ tie }: { tie: Tie }) {
   return <div className={styles.tieCard}>{rows}</div>;
 }
 
-function RoundCol({ title, ties }: { title: string; ties: Tie[] }) {
+function RoundCol({ title, ties, center }: { title: string; ties: Tie[]; center?: boolean }) {
   return (
     <div className={styles.roundCol}>
       <div className={styles.roundTitle}>{title}</div>
-      <div className={styles.roundBody}>
+      <div className={`${styles.roundBody} ${center ? styles.roundBodyCenter : ""}`}>
         {ties.map((t) => (
           <TieCardView key={t.match} tie={t} />
         ))}
@@ -97,27 +104,28 @@ export default function BracketPage() {
 
   return (
     <div>
-      <WcHero sub="从 12 个小组的出线名单到决赛的完整对阵推演：每个节点取模型最可能的结果（旁标该场胜率）。这是单一最可能剧本——边际概率见下方八强 / 四强榜单。" />
+      <WcHero sub="从 12 个小组的出线名单到决赛的完整对阵推演：小组栏给出每支球队的出线概率，淘汰赛每个节点取最可能的结果并旁标该场胜率。" />
 
       <div className={styles.bracketScroll}>
         <div className={styles.bracketCols}>
-          <div className={styles.roundCol}>
-            <div className={styles.roundTitle}>小组出线</div>
-            <div className={styles.roundBody}>
-              {groups.map(([g, s]) => (
+          <div className={`${styles.roundCol} ${styles.roundColGroups}`}>
+            <div className={styles.roundTitle}>小组出线 · 含出线概率</div>
+            <div className={styles.groupsGrid}>
+              {groups.map(([g, rows]) => (
                 <div key={g} className={styles.groupMini}>
                   <div className={styles.groupMiniTitle}>{g} 组</div>
-                  {(["1st", "2nd", "3rd"] as const).map((pos) => {
-                    const raw = s[pos];
-                    const out = raw.includes("出局");
-                    const name = raw.replace(/ \((晋级|出局)\)/, "");
-                    const meta = resolveTeam(name);
+                  {rows.map((r) => {
+                    const meta = resolveTeam(r.team);
+                    const out = r.status === "出局";
                     return (
-                      <div key={pos} className={`${styles.groupMiniRow} ${out ? styles.groupMiniOut : ""}`}>
-                        <span className={styles.groupMiniPos}>{pos === "1st" ? "1" : pos === "2nd" ? "2" : "3"}</span>
+                      <div key={r.team} className={`${styles.groupMiniRow} ${out ? styles.groupMiniOut : ""}`}>
+                        <span className={styles.groupMiniPos}>{r.pos}</span>
                         <span className={styles.teamFlag}>{meta.flag}</span>
-                        {meta.cn}
-                        {pos === "3rd" && !out ? <span className={styles.muted}>晋级</span> : null}
+                        <span className={styles.groupMiniName}>{meta.cn}</span>
+                        {out ? <span className={styles.groupMiniTagOut}>出局</span> : null}
+                        <span className={`${styles.groupMiniPct} ${out ? styles.groupMiniPctOut : ""}`}>
+                          {Math.round(r.p_r32 * 100)}%
+                        </span>
                       </div>
                     );
                   })}
@@ -128,10 +136,10 @@ export default function BracketPage() {
           <RoundCol title="32 强" ties={bracket.R32} />
           <RoundCol title="16 强" ties={bracket.R16} />
           <RoundCol title="八强" ties={bracket.QF} />
-          <RoundCol title="四强" ties={bracket.SF} />
+          <RoundCol title="四强" ties={bracket.SF} center />
           <div className={styles.roundCol}>
             <div className={styles.roundTitle}>决赛 · 7 月 19 日</div>
-            <div className={styles.roundBody}>
+            <div className={`${styles.roundBody} ${styles.roundBodyCenter}`}>
               {final ? <TieCardView tie={final} /> : null}
               <div className={styles.champCard}>
                 <div className={styles.champCardFlag}>{champMeta.flag}</div>
