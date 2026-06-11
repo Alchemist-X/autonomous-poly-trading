@@ -5,7 +5,7 @@ import { WorldCupHeader } from "../../components/world-cup/wc-header";
 import { LegalFooter } from "../../components/world-cup/legal-footer";
 import { buildPredictionDemoRun, DEFAULT_PREDICTION_EVENT } from "../../lib/prediction-engine-demo";
 import { getPredictionAccessState } from "../../lib/prediction-access";
-import { langOf, type Lang } from "../../lib/world-cup/i18n";
+import { langOf, localePe, localeSteps, type Lang } from "../../lib/world-cup/i18n";
 import styles from "../../components/world-cup/world-cup.module.css";
 
 export const metadata: Metadata = {
@@ -70,19 +70,24 @@ const STEPS: ReadonlyArray<{ n: string; title: BiText; copy: BiText; tag: BiText
 ];
 
 function Intro({ cta, lang }: { cta: { href: string; label: string } | null; lang: Lang }) {
+  const bi = (x: BiText) => (lang === "zh" ? x.zh : x.en);
+  const pe = localePe(lang);
+  const steps =
+    localeSteps(lang) ?? STEPS.map((x) => ({ n: x.n, title: bi(x.title), copy: bi(x.copy), tag: bi(x.tag) }));
   return (
     <>
       <section className={styles.peHero}>
         <p className={styles.peKicker}>
-          {lang === "en" ? "Prediction Engine · Invite-only beta" : "Prediction Engine · 邀请制 Beta"}
+          {pe.kicker ?? (lang === "zh" ? "Prediction Engine · 邀请制 Beta" : "Prediction Engine · Invite-only beta")}
         </p>
         <h1 className={styles.peTitle}>
-          {lang === "en" ? "Run a market-blind forecast yourself." : "亲手跑一次盲测预测。"}
+          {pe.title ?? (lang === "zh" ? "亲手跑一次盲测预测。" : "Run a market-blind forecast yourself.")}
         </h1>
         <p className={styles.peSub}>
-          {lang === "en"
-            ? "The exact pipeline behind our 87 published World Cup forecasts: no market prices, just evidence and statistics."
-            : "和我们发布 87 个世界杯预测用的是同一条管线：不看任何市场价格，只用证据和统计模型说话。"}
+          {pe.sub ??
+            (lang === "zh"
+              ? "和我们发布 87 个世界杯预测用的是同一条管线：不看任何市场价格，只用证据和统计模型说话。"
+              : "The exact pipeline behind our 87 published World Cup forecasts: no market prices, just evidence and statistics.")}
         </p>
         {cta ? (
           <div className={styles.ctaRow} style={{ justifyContent: "center" }}>
@@ -91,21 +96,21 @@ function Intro({ cta, lang }: { cta: { href: string; label: string } | null; lan
             </Link>
             <Link
               className={`${styles.btn} ${styles.btnGhost}`}
-              href={lang === "en" ? "/world-cup?lang=en" : "/world-cup"}
+              href={lang === "zh" ? "/world-cup" : `/world-cup?lang=${lang}`}
             >
-              {lang === "en" ? "See our forecasts first" : "先看我们的预测"}
+              {pe.seeFirst ?? (lang === "zh" ? "先看我们的预测" : "See our forecasts first")}
             </Link>
           </div>
         ) : null}
       </section>
       <div className={styles.peSteps}>
-        {STEPS.map((s) => (
+        {steps.map((s) => (
           <section key={s.n} className={styles.peStep}>
             <span className={styles.peStepNum}>{s.n}</span>
             <div>
-              <h2 className={styles.peStepTitle}>{s.title[lang]}</h2>
-              <p className={styles.peStepCopy}>{s.copy[lang]}</p>
-              <span className={styles.peStepTag}>{s.tag[lang]}</span>
+              <h2 className={styles.peStepTitle}>{s.title}</h2>
+              <p className={styles.peStepCopy}>{s.copy}</p>
+              <span className={styles.peStepTag}>{s.tag}</span>
             </div>
           </section>
         ))}
@@ -127,17 +132,17 @@ export default async function PredictionEnginePage({
   if (access.mode === "unauthenticated") {
     cta = {
       href: access.signInUrl ?? "/sign-in",
-      label: lang === "en" ? "Sign in to run" : "登录开始运行"
+      label: localePe(lang).ctaSignin ?? (lang === "zh" ? "登录开始运行" : "Sign in to run")
     };
   } else if (access.mode === "pending_invite") {
     cta = {
       href: access.inviteUrl ?? "/invite",
-      label: lang === "en" ? "Enter invite code" : "输入邀请码激活"
+      label: localePe(lang).ctaInvite ?? (lang === "zh" ? "输入邀请码激活" : "Enter invite code")
     };
   } else if (access.mode === "ready" || access.mode === "disabled") {
-    cta = { href: "#run", label: lang === "en" ? "Start running ↓" : "开始运行 ↓" };
+    cta = { href: "#run", label: localePe(lang).ctaRun ?? (lang === "zh" ? "开始运行 ↓" : "Start running ↓") };
   } else if (access.mode === "suspended") {
-    notice = lang === "en" ? "This account cannot run forecasts right now." : "这个账号当前不能运行预测任务。";
+    notice = localePe(lang).suspended ?? (lang === "zh" ? "这个账号当前不能运行预测任务。" : "This account cannot run forecasts right now.");
   } else {
     notice = "Prediction auth is required for this deployment, but required settings are missing.";
   }

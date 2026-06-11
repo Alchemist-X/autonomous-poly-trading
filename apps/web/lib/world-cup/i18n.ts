@@ -1,16 +1,36 @@
-// UI strings for the bilingual site. Forecast content (questions, one-liners,
-// key reasons, team names) is already bilingual in the data layer; this file
-// covers chrome and labels. Lang travels as the ?lang=en query param.
+// UI strings for the multilingual site (zh / en / ja / es). zh+en live here;
+// ja+es come from locales.generated.json (agent-translated) with English
+// fallback. Forecast content (questions, one-liners, reasons) is bilingual in
+// the data layer; ja/es content lives in translations.generated.json. Lang
+// travels as the ?lang= query param (zh = no param).
 
-export type Lang = "zh" | "en";
+import localesData from "./generated/locales.generated.json";
+
+export type Lang = "zh" | "en" | "ja" | "es";
+
+export const LANGS: ReadonlyArray<{ code: Lang; label: string }> = [
+  { code: "zh", label: "中文" },
+  { code: "en", label: "English" },
+  { code: "ja", label: "日本語" },
+  { code: "es", label: "Español" }
+];
+
+interface LocalePack {
+  ui: Record<string, string>;
+  teams: Record<string, string>;
+  steps: Array<{ n: string; title: string; copy: string; tag: string }>;
+  pe: Record<string, string>;
+}
+
+const LOCALES = localesData as unknown as Record<"ja" | "es", LocalePack>;
 
 export function langOf(param: string | undefined): Lang {
-  return param === "en" ? "en" : "zh";
+  return param === "en" || param === "ja" || param === "es" ? param : "zh";
 }
 
 export function withLang(href: string, lang: Lang): string {
-  if (lang !== "en") return href;
-  return href.includes("?") ? `${href}&lang=en` : `${href}?lang=en`;
+  if (lang === "zh") return href;
+  return href.includes("?") ? `${href}&lang=${lang}` : `${href}?lang=${lang}`;
 }
 
 export const STR = {
@@ -75,21 +95,46 @@ export const STR = {
   drawShort: { zh: "平", en: "D" },
   winSuffix: { zh: "胜", en: "" },
   importing: { zh: "预测数据导入中。", en: "Forecast data is being imported." },
-  qualified: { zh: "晋级", en: "IN" }
+  qualified: { zh: "晋级", en: "IN" },
+  tierHigh: { zh: "高", en: "high" },
+  tierMedium: { zh: "中", en: "medium" },
+  tierLow: { zh: "低", en: "low" },
+  langLabel: { zh: "语言", en: "Language" },
+  reportFallback: {
+    zh: "完整报告以中文/英文存档。",
+    en: "Full report available in English below; card content is localized."
+  }
 } as const;
 
 export type StrKey = keyof typeof STR;
 
 export function t(lang: Lang, key: StrKey): string {
-  return STR[key][lang];
+  if (lang === "zh" || lang === "en") return STR[key][lang];
+  return LOCALES[lang]?.ui?.[key] ?? STR[key].en;
 }
 
-const TIER: Record<string, { zh: string; en: string }> = {
-  高: { zh: "高", en: "high" },
-  中: { zh: "中", en: "medium" },
-  低: { zh: "低", en: "low" }
-};
+export function teamLabel(meta: { cn: string; en: string }, lang: Lang): string {
+  if (lang === "zh") return meta.cn;
+  if (lang === "en") return meta.en;
+  return LOCALES[lang]?.teams?.[meta.en] ?? meta.en;
+}
+
+const TIER_KEY: Record<string, StrKey> = { 高: "tierHigh", 中: "tierMedium", 低: "tierLow" };
 
 export function tierLabel(lang: Lang, tier: string): string {
-  return TIER[tier]?.[lang] ?? tier;
+  const key = TIER_KEY[tier];
+  return key ? t(lang, key) : tier;
+}
+
+export function localeSteps(lang: Lang): Array<{ n: string; title: string; copy: string; tag: string }> | null {
+  if (lang === "ja" || lang === "es") {
+    const steps = LOCALES[lang]?.steps;
+    return steps && steps.length > 0 ? steps : null;
+  }
+  return null;
+}
+
+export function localePe(lang: Lang): Record<string, string> {
+  if (lang === "ja" || lang === "es") return LOCALES[lang]?.pe ?? {};
+  return {};
 }

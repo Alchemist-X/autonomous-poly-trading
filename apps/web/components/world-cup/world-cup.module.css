@@ -1279,3 +1279,49 @@
   font-size: 13px;
   background: #fff;
 }
+
+/* language dropdown */
+.langMenu {
+  position: relative;
+}
+
+.langMenu summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.langMenu summary::-webkit-details-marker {
+  display: none;
+}
+
+.langList {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  background: #fff;
+  border: 1px solid #e8eaf0;
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(15, 17, 21, 0.12);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  min-width: 132px;
+  z-index: 30;
+}
+
+.langItem {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #0f1115 !important;
+}
+
+.langItem:hover {
+  background: #f3f5f9;
+}
+
+.langItemActive {
+  background: #eef4ff;
+  color: #1d4ed8 !important;
+  font-weight: 700;
+}

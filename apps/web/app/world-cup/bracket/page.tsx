@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DISCLAIMER_SHORT } from "../../../lib/legal-copy";
 import { getByFamily, sortedOutcomes } from "../../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../../lib/world-cup/team-meta";
-import { langOf, t, tierLabel, withLang, type Lang } from "../../../lib/world-cup/i18n";
+import { langOf, t, teamLabel, withLang, type Lang } from "../../../lib/world-cup/i18n";
 import { WcHero } from "../../../components/world-cup/wc-hero";
 import bracketData from "../../../lib/world-cup/generated/bracket.generated.json";
 import styles from "../../../components/world-cup/world-cup.module.css";
@@ -58,7 +58,7 @@ function TieCardView({ tie, tier, lang }: { tie: Tie; tier?: string; lang: Lang 
     return (
       <div key={team} className={`${styles.tieRow} ${isWin ? styles.tieWin : ""}`}>
         <span className={styles.teamFlag}>{meta.flag}</span>
-        <span className={styles.tieName}>{lang === "en" ? meta.en : meta.cn}</span>
+        <span className={styles.tieName}>{teamLabel(meta, lang)}</span>
         <span className={`${styles.tiePct} ${isWin ? "" : styles.tiePctDim}`}>
           {Math.round((isWin ? tie.p_winner : 1 - tie.p_winner) * 100)}%
         </span>
@@ -113,7 +113,7 @@ function PoolList({ id, title, note, lang }: { id: "reach-qf" | "reach-sf"; titl
             <span className={styles.rankIdx}>{i + 1}</span>
             <span className={styles.rankFlag}>{meta.flag}</span>
             <span className={styles.rankName}>
-              <span className={styles.rankNameCn}>{lang === "en" ? meta.en : meta.cn}</span>
+              <span className={styles.rankNameCn}>{teamLabel(meta, lang)}</span>
               <span className={styles.rankTrack}>
                 <span className={styles.rankFill} style={{ width: `${(o.p / max) * 100}%` }} />
               </span>
@@ -145,7 +145,7 @@ export default async function BracketPage({ searchParams }: { searchParams: Prom
             <div className={styles.groupsGrid}>
               {groups.map(([g, rows]) => (
                 <div key={g} className={styles.groupMini}>
-                  <div className={styles.groupMiniTitle}>{lang === "en" ? `Group ${g}` : `${g} 组`}</div>
+                  <div className={styles.groupMiniTitle}>{lang === "zh" ? `${g} 组` : `${t(lang, "group")} ${g}`}</div>
                   {rows.map((r) => {
                     const meta = resolveTeam(r.team);
                     const out = r.status === "出局";
@@ -153,7 +153,7 @@ export default async function BracketPage({ searchParams }: { searchParams: Prom
                       <div key={r.team} className={`${styles.groupMiniRow} ${out ? styles.groupMiniOut : ""}`}>
                         <span className={styles.groupMiniPos}>{r.pos}</span>
                         <span className={styles.teamFlag}>{meta.flag}</span>
-                        <span className={styles.groupMiniName}>{lang === "en" ? meta.en : meta.cn}</span>
+                        <span className={styles.groupMiniName}>{teamLabel(meta, lang)}</span>
                         {out ? <span className={styles.groupMiniTagOut}>{t(lang, "out")}</span> : null}
                         <span className={`${styles.groupMiniPct} ${out ? styles.groupMiniPctOut : ""}`}>
                           {Math.round(r.p_r32 * 100)}%
@@ -182,7 +182,7 @@ export default async function BracketPage({ searchParams }: { searchParams: Prom
                   {final ? <TieCardView tie={final} tier={styles.tierFinal} lang={lang} /> : null}
                   <div className={styles.champCard}>
                     <div className={styles.champCardFlag}>{champMeta.flag}</div>
-                    <div className={styles.champCardName}>{t(lang, "predictedChampion")} · {lang === "en" ? champMeta.en : champMeta.cn}</div>
+                    <div className={styles.champCardName}>{t(lang, "predictedChampion")} · {teamLabel(champMeta, lang)}</div>
                     <div className={styles.champCardPct}>{t(lang, "finalWinProb")} {Math.round((final?.p_winner ?? 0) * 100)}%</div>
                   </div>
                 </div>
@@ -199,7 +199,7 @@ export default async function BracketPage({ searchParams }: { searchParams: Prom
       </div>
 
       <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {lang === "en" ? DISCLAIMER_SHORT.en : DISCLAIMER_SHORT.zh}
+        {lang === "zh" ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
       </p>
     </div>
   );

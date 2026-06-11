@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { DISCLAIMER_SHORT } from "../../lib/legal-copy";
-import { getByFamily, sortedOutcomes } from "../../lib/world-cup/forecast-store";
+import { contentFor, getByFamily, sortedOutcomes } from "../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../lib/world-cup/team-meta";
-import { langOf, t, tierLabel, withLang } from "../../lib/world-cup/i18n";
+import { langOf, t, teamLabel, tierLabel, withLang } from "../../lib/world-cup/i18n";
 import { WcHero } from "../../components/world-cup/wc-hero";
 import styles from "../../components/world-cup/world-cup.module.css";
 
@@ -26,7 +26,8 @@ export default async function ChampionPage({ searchParams }: { searchParams: Pro
   const outcomes = champion ? sortedOutcomes(champion) : [];
   const cloud = outcomes.slice(0, CLOUD_SLOTS.length);
   const detailHref = champion ? withLang(`/world-cup/forecast/${champion.dir}`, lang) : "#";
-  const teamName = (key: string) => (lang === "en" ? resolveTeam(key).en : resolveTeam(key).cn);
+  const teamName = (key: string) => teamLabel(resolveTeam(key), lang);
+  const content = champion ? contentFor(champion, lang) : null;
 
   return (
     <div>
@@ -90,11 +91,11 @@ export default async function ChampionPage({ searchParams }: { searchParams: Pro
         <>
           <h2 className={styles.sectionTitle}>{t(lang, "ourTake")}</h2>
           <div className={styles.panel}>
-            <p className={styles.oneLiner}>{lang === "en" ? champion.one_liner_en : champion.one_liner_cn}</p>
+            <p className={styles.oneLiner}>{content?.oneLiner}</p>
             <ul className={styles.reasonList}>
-              {champion.key_reasons.map((r) => (
+              {champion.key_reasons.map((r, i) => (
                 <li key={r.source_url + r.source_date} className={styles.reasonItem}>
-                  {lang === "en" ? r.en : r.cn}{" "}
+                  {content?.reasons[i]}{" "}
                   <a href={r.source_url} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>
                     {t(lang, "source")} · {r.source_date}
                   </a>
@@ -114,7 +115,7 @@ export default async function ChampionPage({ searchParams }: { searchParams: Pro
       ) : null}
 
       <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {lang === "en" ? DISCLAIMER_SHORT.en : DISCLAIMER_SHORT.zh}
+        {lang === "zh" ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
       </p>
     </div>
   );

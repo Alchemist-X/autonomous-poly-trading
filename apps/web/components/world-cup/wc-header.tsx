@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { langOf, t, withLang } from "../../lib/world-cup/i18n";
+import { LANGS, langOf, t, withLang } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
 
 // Product header — research-framed branding (compliance R1), no trading copy.
@@ -13,7 +13,6 @@ function HeaderInner() {
   const pathname = usePathname();
   const params = useSearchParams();
   const lang = langOf(params.get("lang") ?? undefined);
-  const other = lang === "en" ? pathname : `${pathname}?lang=en`;
 
   return (
     <div className={styles.headerRow}>
@@ -26,9 +25,20 @@ function HeaderInner() {
         <Link href={withLang("/world-cup", lang)}>{t(lang, "navForecasts")}</Link>
         <Link href={withLang("/world-cup/bracket", lang)}>{t(lang, "navBracket")}</Link>
         <Link href={withLang("/prediction-engine", lang)}>{t(lang, "navDeploy")}</Link>
-        <Link href={other} className={styles.langToggle}>
-          {lang === "en" ? "中文" : "EN"}
-        </Link>
+        <details className={styles.langMenu}>
+          <summary className={styles.langToggle}>{t(lang, "langLabel")}</summary>
+          <div className={styles.langList}>
+            {LANGS.map((l) => (
+              <Link
+                key={l.code}
+                href={l.code === "zh" ? pathname : `${pathname}?lang=${l.code}`}
+                className={`${styles.langItem} ${l.code === lang ? styles.langItemActive : ""}`}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </details>
       </nav>
     </div>
   );

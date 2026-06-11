@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DISCLAIMER_SHORT } from "../../../lib/legal-copy";
 import { getByFamily, sortedOutcomes, type Forecast } from "../../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../../lib/world-cup/team-meta";
-import { langOf, t, withLang } from "../../../lib/world-cup/i18n";
+import { langOf, t, teamLabel, withLang } from "../../../lib/world-cup/i18n";
 import { GroupMatchRow } from "../../../components/world-cup/group-match-row";
 import { WcHero } from "../../../components/world-cup/wc-hero";
 import styles from "../../../components/world-cup/world-cup.module.css";
@@ -40,10 +40,10 @@ export default async function GroupsPage({ searchParams }: { searchParams: Promi
           return (
             <section key={g} className={styles.groupCard}>
               <div className={styles.groupHead}>
-                <span className={styles.groupName}>{lang === "en" ? `Group ${g}` : `${g} 组`}</span>
+                <span className={styles.groupName}>{lang === "zh" ? `${g} 组` : `${t(lang, "group")} ${g}`}</span>
                 {winner && top && topMeta ? (
                   <Link href={withLang(`/world-cup/forecast/${winner.dir}`, lang)} className={styles.winnerStrip}>
-                    {t(lang, "winnerPick")} {topMeta.flag} {lang === "en" ? topMeta.en : topMeta.cn}{" "}
+                    {t(lang, "winnerPick")} {topMeta.flag} {teamLabel(topMeta, lang)}{" "}
                     {Math.round(top.p * 100)}%
                   </Link>
                 ) : null}
@@ -59,7 +59,7 @@ export default async function GroupsPage({ searchParams }: { searchParams: Promi
       </div>
 
       <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {lang === "en" ? DISCLAIMER_SHORT.en : DISCLAIMER_SHORT.zh}
+        {lang === "zh" ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
       </p>
     </div>
   );

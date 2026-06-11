@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { Forecast } from "../../lib/world-cup/forecast-store";
-import { t, tierLabel, withLang, type Lang } from "../../lib/world-cup/i18n";
+import { contentFor, type Forecast } from "../../lib/world-cup/forecast-store";
+import { t, teamLabel, tierLabel, withLang, type Lang } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
 
 // One group-stage fixture: 队旗 + tri-segment W/D/L bar + pick chip.
@@ -32,7 +32,8 @@ export function GroupMatchRow({
   const pD = byKey.draw ?? 0;
   const pB = byKey.b ?? 0;
   const top = Math.max(pA, pD, pB);
-  const name = (team: TeamView) => (lang === "en" ? team.en : team.cn);
+  const name = (team: TeamView) => teamLabel(team, lang);
+  const content = contentFor(forecast, lang);
   const pick =
     top === pA
       ? `${name(home)}${t(lang, "winSuffix")} ${Math.round(pA * 100)}%`
@@ -71,11 +72,11 @@ export function GroupMatchRow({
       </button>
       {open ? (
         <div className={styles.matchDetail}>
-          <p className={styles.oneLiner}>{lang === "en" ? forecast.one_liner_en : forecast.one_liner_cn}</p>
+          <p className={styles.oneLiner}>{content.oneLiner}</p>
           <ul className={styles.reasonList}>
-            {forecast.key_reasons.map((r) => (
+            {forecast.key_reasons.map((r, i) => (
               <li key={r.source_url + r.source_date} className={styles.reasonItem}>
-                {lang === "en" ? r.en : r.cn}{" "}
+                {content.reasons[i]}{" "}
                 <a href={r.source_url} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>
                   {t(lang, "source")} · {r.source_date}
                 </a>
