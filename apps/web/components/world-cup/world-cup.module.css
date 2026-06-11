@@ -32,16 +32,16 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 0;
+  padding: 11px 0;
 }
 
 .brand {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   font-weight: 800;
-  font-size: 17px;
-  letter-spacing: -0.01em;
+  font-size: 20px;
+  letter-spacing: -0.015em;
   color: #0f1115;
   text-decoration: none;
 }
@@ -1095,13 +1095,13 @@
 }
 
 .brandEd {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: #2563eb;
   background: #eef4ff;
   border-radius: 999px;
-  padding: 2px 9px;
-  align-self: center;
+  padding: 4px 12px;
+  margin-left: 2px;
 }
 
 .headerNav {
@@ -1163,10 +1163,11 @@
 /* ---------- 2026-06-12 v3: connectors, escalation, brand photo ---------- */
 
 .brandLogo {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
   object-fit: cover;
+  box-shadow: 0 1px 4px rgba(15, 17, 21, 0.18);
 }
 
 .ruleNote {
