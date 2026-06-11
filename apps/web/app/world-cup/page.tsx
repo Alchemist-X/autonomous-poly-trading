@@ -1,118 +1,119 @@
+import Link from "next/link";
 import { DISCLAIMER_SHORT } from "../../lib/legal-copy";
-import {
-  getAllForecasts,
-  getByFamily,
-  getGeneratedAt,
-  matchesByDate,
-  sortedOutcomes,
-  type Forecast
-} from "../../lib/world-cup/forecast-store";
-import { ForecastCard } from "../../components/world-cup/forecast-card";
+import { getByFamily, sortedOutcomes } from "../../lib/world-cup/forecast-store";
+import { resolveTeam } from "../../lib/world-cup/team-meta";
+import { WcHero } from "../../components/world-cup/wc-hero";
 import styles from "../../components/world-cup/world-cup.module.css";
 
-// Market-blind public forecast hub. Every number on this page comes from the
-// Elo/Monte-Carlo harness plus bounded evidence adjustments — by policy no
-// market price is read, cited, or displayed anywhere in this product.
+// 冠军 tab — flag-cloud display of champion probabilities + full 48-team
+// ranking. Visual reference: Polymarket's World Cup map view; every number
+// here is our own market-blind model output.
 
-function matchTitle(f: Forecast): string {
-  const fromQuestion = f.question_en.split(": ")[1]?.split(" — ")[0];
-  return fromQuestion ?? f.event_slug;
+// Hand-tuned cloud slots (percent coordinates), ordered by rank: the
+// favourite sits center-stage, the rest spiral outward.
+const CLOUD_SLOTS: ReadonlyArray<readonly [number, number]> = [
+  [50, 36], [27, 28], [71, 30], [38, 58], [62, 56],
+  [18, 50], [83, 52], [30, 78], [55, 79], [74, 74],
+  [12, 71], [88, 73], [20, 13], [44, 14], [66, 12], [86, 16]
+];
+
+function pct(p: number): string {
+  return p >= 0.095 ? `${Math.round(p * 100)}%` : `${(p * 100).toFixed(1)}%`;
 }
 
-function groupOf(f: Forecast): string {
-  return f.question_cn.match(/（([A-L]) 组）/)?.[1] ?? f.question_cn.match(/([A-L]) 组/)?.[1] ?? "";
-}
-
-export default function WorldCupHubPage() {
-  const all = getAllForecasts();
-  const champion = getByFamily("champion")[0] ?? null;
-  const sf = getByFamily("reach_semifinal")[0] ?? null;
-  const qf = getByFamily("reach_quarterfinal")[0] ?? null;
-  const groupWinners = getByFamily("group_winner");
-  const days = matchesByDate();
+export default function ChampionPage() {
+  const champion = getByFamily("champion")[0];
+  const outcomes = champion ? sortedOutcomes(champion) : [];
+  const cloud = outcomes.slice(0, CLOUD_SLOTS.length);
 
   return (
     <div>
-      <section className={styles.hero}>
-        <h1 className={styles.heroTitle}>2026 世界杯 · 盲测概率研究</h1>
-        <p className={styles.heroSub}>
-          独立 AI 超级预测器，对全部 {all.length} 个赛事问题公开预测：每场小组赛、各组头名、八强、四强与最终冠军。
-          预测全程<strong>市场盲测</strong>——不读取、不参考任何博彩或预测市场价格，只用 Elo / Monte-Carlo
-          统计模型加上有来源的证据调整。每条预测都附主要理由与完整推理报告，赛后用 Brier 公开记分，错了照记。
-        </p>
-        <p className={styles.muted}>
-          最近更新：{getGeneratedAt().slice(0, 16).replace("T", " ")} UTC
-        </p>
-        <p className={styles.disclaimer} style={{ marginTop: 12 }}>
-          {DISCLAIMER_SHORT.zh}
-        </p>
-      </section>
+      <WcHero sub="谁会捧起 2026 年 7 月 19 日的大力神杯？48 支球队的夺冠概率，来自 10 万次纯 Elo 蒙特卡洛模拟与逐队证据修正——全程没有看过任何盘口。" />
 
-      {all.length === 0 ? (
-        <div className={styles.panel}>
-          <p className={styles.muted}>
-            预测生成中。运行 <code>pnpm tsx scripts/world-cup/import-predictions.ts</code> 导入最新结果。
-          </p>
-        </div>
-      ) : null}
-
-      {champion || sf || qf ? (
-        <>
-          <h2 className={styles.sectionTitle}>锦标赛级预测</h2>
-          <div className={styles.gridWide}>
-            {champion ? (
-              <ForecastCard forecast={champion} title="谁是 2026 世界杯冠军？" meta="冠军 · 48 队" topN={5} />
-            ) : null}
-            {sf ? (
-              <ForecastCard forecast={sf} title="哪 4 支球队进入四强？" meta="四强名单 · 48 队" topN={6} />
-            ) : null}
-            {qf ? (
-              <ForecastCard forecast={qf} title="哪 8 支球队进入八强？" meta="八强名单 · 48 队" topN={8} />
-            ) : null}
-          </div>
-        </>
-      ) : null}
-
-      {groupWinners.length > 0 ? (
-        <>
-          <h2 className={styles.sectionTitle}>小组头名（{groupWinners.length} 组）</h2>
-          <div className={styles.grid}>
-            {groupWinners.map((g) => {
-              const top = sortedOutcomes(g)[0];
+      {champion ? (
+        <div className={styles.champLayout}>
+          <div className={styles.flagCloud}>
+            {cloud.map((o, i) => {
+              const meta = resolveTeam(o.key);
+              const size = Math.round(30 + Math.sqrt(o.p) * 110);
+              const [x, y] = CLOUD_SLOTS[i] ?? [50, 50];
               return (
-                <ForecastCard
-                  key={g.id}
-                  forecast={g}
-                  title={`${g.question_cn.slice(0, 1)} 组头名：${top?.label_cn ?? ""}？`}
-                  meta={`小组第一 · 4 队`}
-                  topN={4}
-                />
+                <Link
+                  key={o.key}
+                  href={`/world-cup/forecast/${champion.dir}`}
+                  className={styles.cloudTile}
+                  style={{ left: `${x}%`, top: `${y}%` }}
+                  title={`${meta.cn} ${pct(o.p)}`}
+                >
+                  <span className={styles.cloudFlag} style={{ fontSize: size }}>
+                    {meta.flag}
+                  </span>
+                  <span className={styles.cloudPct}>{pct(o.p)}</span>
+                  <span className={styles.cloudName}>{meta.cn}</span>
+                </Link>
+              );
+            })}
+            <span className={styles.cloudNote}>旗帜大小 ∝ 夺冠概率 · 点击查看完整推理</span>
+          </div>
+
+          <div className={styles.rankList}>
+            {outcomes.map((o, i) => {
+              const meta = resolveTeam(o.key);
+              return (
+                <Link key={o.key} href={`/world-cup/forecast/${champion.dir}`} className={styles.rankRow}>
+                  <span className={styles.rankIdx}>{i + 1}</span>
+                  <span className={styles.rankFlag}>{meta.flag}</span>
+                  <span className={styles.rankName}>
+                    <span className={styles.rankNameCn}>{meta.cn}</span>
+                    <span className={styles.rankTrack}>
+                      <span
+                        className={styles.rankFill}
+                        style={{ width: `${Math.max(o.p / (outcomes[0]?.p ?? 1), 0.012) * 100}%` }}
+                      />
+                    </span>
+                  </span>
+                  <span className={styles.rankPct}>{pct(o.p)}</span>
+                </Link>
               );
             })}
           </div>
+        </div>
+      ) : (
+        <div className={styles.panel}>
+          <p className={styles.muted}>预测数据导入中。</p>
+        </div>
+      )}
+
+      {champion ? (
+        <>
+          <h2 className={styles.sectionTitle}>我们的观点</h2>
+          <div className={styles.panel}>
+            <p className={styles.oneLiner}>{champion.one_liner_cn}</p>
+            <ul className={styles.reasonList}>
+              {champion.key_reasons.map((r) => (
+                <li key={r.source_url + r.source_date} className={styles.reasonItem}>
+                  {r.cn}{" "}
+                  <a href={r.source_url} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>
+                    来源 · {r.source_date}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <div className={styles.cardActions}>
+              <Link className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`} href={`/world-cup/forecast/${champion.dir}`}>
+                查看完整推理 →
+              </Link>
+              <span className={styles.muted}>
+                {champion.n_sources} 个来源 · 置信 {champion.confidence_tier}
+              </span>
+            </div>
+          </div>
         </>
       ) : null}
 
-      {days.length > 0 ? (
-        <>
-          <h2 className={styles.sectionTitle}>小组赛逐场预测（{days.reduce((n, d) => n + d.matches.length, 0)} 场）</h2>
-          {days.map((day) => (
-            <section key={day.date}>
-              <h3 className={styles.dayTitle}>{day.date}</h3>
-              <div className={styles.grid}>
-                {day.matches.map((m) => (
-                  <ForecastCard
-                    key={m.id}
-                    forecast={m}
-                    title={matchTitle(m)}
-                    meta={`小组赛 ${groupOf(m) ? `· ${groupOf(m)} 组` : ""}`}
-                  />
-                ))}
-              </div>
-            </section>
-          ))}
-        </>
-      ) : null}
+      <p className={styles.disclaimer} style={{ marginTop: 28 }}>
+        {DISCLAIMER_SHORT.zh}
+      </p>
     </div>
   );
 }

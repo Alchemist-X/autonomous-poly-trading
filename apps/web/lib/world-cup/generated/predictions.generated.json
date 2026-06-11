@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-06-11T14:06:29.691Z",
+ "generatedAt": "2026-06-11T14:51:46.730Z",
  "counts": {
   "champion": 1,
   "group_match": 72,
@@ -510,8 +510,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "澳大利亚胜",
-     "label_en": "Australia win",
+     "label_cn": "澳大利亚",
+     "label_en": "Australia",
      "p": 0.22
     },
     {
@@ -522,8 +522,8 @@
     },
     {
      "key": "b",
-     "label_cn": "土耳其胜",
-     "label_en": "Türkiye win",
+     "label_cn": "土耳其",
+     "label_en": "Türkiye",
      "p": 0.535
     }
    ],
@@ -730,8 +730,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "波黑胜",
-     "label_en": "Bosnia-Herzegovina win",
+     "label_cn": "波黑",
+     "label_en": "Bosnia-Herzegovina",
      "p": 0.538
     },
     {
@@ -742,8 +742,8 @@
     },
     {
      "key": "b",
-     "label_cn": "卡塔尔胜",
-     "label_en": "Qatar win",
+     "label_cn": "卡塔尔",
+     "label_en": "Qatar",
      "p": 0.215
     }
    ],
@@ -840,8 +840,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "巴西胜",
-     "label_en": "Brazil win",
+     "label_cn": "巴西",
+     "label_en": "Brazil",
      "p": 0.578
     },
     {
@@ -852,8 +852,8 @@
     },
     {
      "key": "b",
-     "label_cn": "摩洛哥胜",
-     "label_en": "Morocco win",
+     "label_cn": "摩洛哥",
+     "label_en": "Morocco",
      "p": 0.193
     }
    ],
@@ -950,8 +950,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "加拿大胜",
-     "label_en": "Canada win",
+     "label_cn": "加拿大",
+     "label_en": "Canada",
      "p": 0.77
     },
     {
@@ -962,8 +962,8 @@
     },
     {
      "key": "b",
-     "label_cn": "卡塔尔胜",
-     "label_en": "Qatar win",
+     "label_cn": "卡塔尔",
+     "label_en": "Qatar",
      "p": 0.064
     }
    ],
@@ -1060,7 +1060,7 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "瑞士胜",
+     "label_cn": "瑞士",
      "label_en": "Switzerland",
      "p": 0.65
     },
@@ -1072,7 +1072,7 @@
     },
     {
      "key": "b",
-     "label_cn": "波黑胜",
+     "label_cn": "波黑",
      "label_en": "Bosnia-Herzegovina",
      "p": 0.125
     }
@@ -1115,8 +1115,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "瑞士胜",
-     "label_en": "Switzerland win",
+     "label_cn": "瑞士",
+     "label_en": "Switzerland",
      "p": 0.404
     },
     {
@@ -1127,8 +1127,8 @@
     },
     {
      "key": "b",
-     "label_cn": "加拿大胜",
-     "label_en": "Canada win",
+     "label_cn": "加拿大",
+     "label_en": "Canada",
      "p": 0.332
     }
    ],
@@ -1445,7 +1445,7 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "捷克胜",
+     "label_cn": "捷克",
      "label_en": "Czechia",
      "p": 0.59
     },
@@ -1457,7 +1457,7 @@
     },
     {
      "key": "b",
-     "label_cn": "南非胜",
+     "label_cn": "南非",
      "label_en": "South Africa",
      "p": 0.18
     }
@@ -1830,7 +1830,7 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "西班牙胜",
+     "label_cn": "西班牙",
      "label_en": "Spain",
      "p": 0.84
     },
@@ -1842,7 +1842,7 @@
     },
     {
      "key": "b",
-     "label_cn": "沙特阿拉伯胜",
+     "label_cn": "沙特阿拉伯",
      "label_en": "Saudi Arabia",
      "p": 0.034
     }
@@ -1885,8 +1885,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "法国胜",
-     "label_en": "France win",
+     "label_cn": "法国",
+     "label_en": "France",
      "p": 0.775
     },
     {
@@ -1897,8 +1897,8 @@
     },
     {
      "key": "b",
-     "label_cn": "伊拉克胜",
-     "label_en": "Iraq win",
+     "label_cn": "伊拉克",
+     "label_en": "Iraq",
      "p": 0.065
     }
    ],
@@ -1995,7 +1995,7 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "德国胜",
+     "label_cn": "德国",
      "label_en": "Germany",
      "p": 0.635
     },
@@ -2007,7 +2007,7 @@
     },
     {
      "key": "b",
-     "label_cn": "科特迪瓦胜",
+     "label_cn": "科特迪瓦",
      "label_en": "Côte d'Ivoire",
      "p": 0.15
     }
@@ -2050,8 +2050,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "德国胜",
-     "label_en": "Germany win",
+     "label_cn": "德国",
+     "label_en": "Germany",
      "p": 0.835
     },
     {
@@ -2062,8 +2062,8 @@
     },
     {
      "key": "b",
-     "label_cn": "库拉索胜",
-     "label_en": "Curaçao win",
+     "label_cn": "库拉索",
+     "label_en": "Curaçao",
      "p": 0.04
     }
    ],
@@ -2270,7 +2270,7 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "伊朗胜",
+     "label_cn": "伊朗",
      "label_en": "IR Iran",
      "p": 0.62
     },
@@ -2282,7 +2282,7 @@
     },
     {
      "key": "b",
-     "label_cn": "新西兰胜",
+     "label_cn": "新西兰",
      "label_en": "New Zealand",
      "p": 0.16
     }
@@ -2325,8 +2325,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "伊拉克胜",
-     "label_en": "Iraq win",
+     "label_cn": "伊拉克",
+     "label_en": "Iraq",
      "p": 0.13
     },
     {
@@ -2337,8 +2337,8 @@
     },
     {
      "key": "b",
-     "label_cn": "挪威胜",
-     "label_en": "Norway win",
+     "label_cn": "挪威",
+     "label_en": "Norway",
      "p": 0.66
     }
    ],
@@ -2380,7 +2380,7 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "约旦胜",
+     "label_cn": "约旦",
      "label_en": "Jordan",
      "p": 0.26
     },
@@ -2392,7 +2392,7 @@
     },
     {
      "key": "b",
-     "label_cn": "阿尔及利亚胜",
+     "label_cn": "阿尔及利亚",
      "label_en": "Algeria",
      "p": 0.49
     }
@@ -2930,8 +2930,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "荷兰胜",
-     "label_en": "Netherlands win",
+     "label_cn": "荷兰",
+     "label_en": "Netherlands",
      "p": 0.59
     },
     {
@@ -2942,8 +2942,8 @@
     },
     {
      "key": "b",
-     "label_cn": "瑞典胜",
-     "label_en": "Sweden win",
+     "label_cn": "瑞典",
+     "label_en": "Sweden",
      "p": 0.175
     }
    ],
@@ -2985,8 +2985,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "挪威胜",
-     "label_en": "Norway win",
+     "label_cn": "挪威",
+     "label_en": "Norway",
      "p": 0.235
     },
     {
@@ -2997,8 +2997,8 @@
     },
     {
      "key": "b",
-     "label_cn": "法国胜",
-     "label_en": "France win",
+     "label_cn": "法国",
+     "label_en": "France",
      "p": 0.513
     }
    ],
@@ -3040,8 +3040,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "挪威胜",
-     "label_en": "Norway win",
+     "label_cn": "挪威",
+     "label_en": "Norway",
      "p": 0.41
     },
     {
@@ -3052,8 +3052,8 @@
     },
     {
      "key": "b",
-     "label_cn": "塞内加尔胜",
-     "label_en": "Senegal win",
+     "label_cn": "塞内加尔",
+     "label_en": "Senegal",
      "p": 0.33
     }
    ],
@@ -3315,7 +3315,7 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "巴拉圭胜",
+     "label_cn": "巴拉圭",
      "label_en": "Paraguay",
      "p": 0.41
     },
@@ -3327,7 +3327,7 @@
     },
     {
      "key": "b",
-     "label_cn": "澳大利亚胜",
+     "label_cn": "澳大利亚",
      "label_en": "Australia",
      "p": 0.32
     }
@@ -3535,8 +3535,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "南非胜",
-     "label_en": "South Africa win",
+     "label_cn": "南非",
+     "label_en": "South Africa",
      "p": 0.166
     },
     {
@@ -3547,8 +3547,8 @@
     },
     {
      "key": "b",
-     "label_cn": "韩国胜",
-     "label_en": "Korea Republic win",
+     "label_cn": "韩国",
+     "label_en": "Korea Republic",
      "p": 0.605
     }
    ],
@@ -3590,8 +3590,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "苏格兰胜",
-     "label_en": "Scotland win",
+     "label_cn": "苏格兰",
+     "label_en": "Scotland",
      "p": 0.158
     },
     {
@@ -3602,8 +3602,8 @@
     },
     {
      "key": "b",
-     "label_cn": "巴西胜",
-     "label_en": "Brazil win",
+     "label_cn": "巴西",
+     "label_en": "Brazil",
      "p": 0.609
     }
    ],
@@ -3645,8 +3645,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "苏格兰胜",
-     "label_en": "Scotland win",
+     "label_cn": "苏格兰",
+     "label_en": "Scotland",
      "p": 0.31
     },
     {
@@ -3657,8 +3657,8 @@
     },
     {
      "key": "b",
-     "label_cn": "摩洛哥胜",
-     "label_en": "Morocco win",
+     "label_cn": "摩洛哥",
+     "label_en": "Morocco",
      "p": 0.43
     }
    ],
@@ -3975,8 +3975,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "土耳其胜",
-     "label_en": "Türkiye win",
+     "label_cn": "土耳其",
+     "label_en": "Türkiye",
      "p": 0.45
     },
     {
@@ -3987,8 +3987,8 @@
     },
     {
      "key": "b",
-     "label_cn": "美国胜",
-     "label_en": "United States win",
+     "label_cn": "美国",
+     "label_en": "United States",
      "p": 0.29
     }
    ],
@@ -4195,8 +4195,8 @@
    "outcomes": [
     {
      "key": "a",
-     "label_cn": "美国胜",
-     "label_en": "United States win",
+     "label_cn": "美国",
+     "label_en": "United States",
      "p": 0.377
     },
     {
@@ -4207,8 +4207,8 @@
     },
     {
      "key": "b",
-     "label_cn": "巴拉圭胜",
-     "label_en": "Paraguay win",
+     "label_cn": "巴拉圭",
+     "label_en": "Paraguay",
      "p": 0.364
     }
    ],

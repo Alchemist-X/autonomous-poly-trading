@@ -112,7 +112,13 @@ async function main(): Promise<void> {
       question_en: (raw.question_en as string) ?? "",
       kickoff_utc: (raw.kickoff_utc as string | null) ?? null,
       generated_at: (raw.generated_at as string) ?? generatedAt,
-      outcomes: raw.outcomes as Outcome[],
+      // Some writers emitted "X win"/"X胜" outcome labels; normalize to the
+      // bare team name so flag/team resolution stays uniform.
+      outcomes: (raw.outcomes as Outcome[]).map((o) =>
+        o.key === "a" || o.key === "b"
+          ? { ...o, label_en: o.label_en.replace(/\s+win$/i, ""), label_cn: o.label_cn.replace(/胜$/, "") }
+          : o
+      ),
       one_liner_cn: raw.one_liner_cn as string,
       one_liner_en: (raw.one_liner_en as string) ?? "",
       key_reasons: (raw.key_reasons as KeyReason[]).slice(0, 3),
@@ -136,6 +142,14 @@ async function main(): Promise<void> {
     JSON.stringify({ generatedAt, counts: byFamily, total: entries.length, entries }, null, 1)
   );
   await writeFile(path.join(OUT_DIR, "reports.generated.json"), JSON.stringify({ generatedAt, reports }));
+
+  // Bracket (modal path) rides along when present so the web bracket tab
+  // stays in sync with the archived prediction.
+  const bracketSrc = path.join(REPO_ROOT, "runtime-artifacts/world-cup/bracket-prediction.json");
+  const bracket = await readFile(bracketSrc, "utf8").catch(() => null);
+  if (bracket !== null) {
+    await writeFile(path.join(OUT_DIR, "bracket.generated.json"), bracket);
+  }
 
   console.log(`OK  imported ${entries.length} forecasts ${JSON.stringify(byFamily)}`);
   if (warnings.length > 0) {
