@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Predict Raven 世界杯版 — 盲测 AI 概率研究",
   description:
     "An independent, market-blind AI superforecaster for the 2026 World Cup. Transparent probabilities, sourced reasoning, public Brier scoring. Probability research, not betting advice.",
-  metadataBase: new URL("https://web-one-sand-83.vercel.app"),
+  metadataBase: new URL("https://forecasting-agent.com"),
   icons: {
     icon: "/favicon-raven.png",
     shortcut: "/favicon-raven.png",
