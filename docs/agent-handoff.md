@@ -11,7 +11,7 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-12 by Claude（Predict Raven 世界杯版上线 https://web-one-sand-83.vercel.app ：87 题盲测预测、冠军/小组赛/出线名单三 tab、连线对阵树、渡鸦吉祥物品牌、全站中英切换 ?lang=en；AutoPoly 旧页面已全删；部署注意：vercel build 后须给 config.json 的 catch-all 路由补 check:true 再 deploy --prebuilt）
+> 最后更新：2026-06-12 by Claude（Predict Raven 世界杯版上线 https://forecasting-agent.com（自定义域名，Cloudflare DNS-only 指向 Vercel；旧地址 web-one-sand-83.vercel.app 仍可用） ：87 题盲测预测、冠军/小组赛/出线名单三 tab、连线对阵树、渡鸦吉祥物品牌、全站中英切换 ?lang=en；AutoPoly 旧页面已全删；部署注意：vercel build 后须给 config.json 的 catch-all 路由补 check:true 再 deploy --prebuilt）
 
 ---
 
