@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:j",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-j-winner",
+  "question_cn": "J 组头名（小组赛最终积分榜第一）是哪支球队？",
+  "question_en": "Which team finishes first in Group J?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Argentina", "label_cn": "阿根廷", "label_en": "Argentina", "p": 0.8973 },
+    { "key": "Austria", "label_cn": "奥地利", "label_en": "Austria", "p": 0.0586 },
+    { "key": "Algeria", "label_cn": "阿尔及利亚", "label_en": "Algeria", "p": 0.0358 },
+    { "key": "Jordan", "label_cn": "约旦", "label_en": "Jordan", "p": 0.0083 }
+  ],
+  "one_liner_cn": "阿根廷以世界第二的 Elo 碾压同组三队，梅西伤愈进入名单，而奥地利核心鲍姆加特纳伤退——约九成概率头名出线。",
+  "one_liner_en": "Argentina's world-No.2 Elo towers over the group, Messi is fit and in the squad, and Austria has lost Baumgartner — roughly a nine-in-ten chance to top Group J.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距悬殊：阿根廷 2115（世界第 2），领先组内第二的奥地利（1830）285 分；10 万次纯 Elo 蒙特卡洛模拟中阿根廷 87.9% 拿下小组头名。",
+      "en": "Massive Elo gap: Argentina 2115 (world #2), 285 points clear of Austria (1830), the group's next best; Argentina tops the group in 87.9% of 100k pure-Elo Monte Carlo simulations.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "阿根廷无人员危机：梅西 5 月底腿筋不适后已伤愈复出，热身赛对冰岛进球，正常进入 26 人名单。",
+      "en": "No Argentina availability crisis: Messi recovered from his late-May hamstring issue, scored in the final friendly vs Iceland, and is in the 26-man squad.",
+      "source_url": "https://www.aljazeera.com/sports/2026/6/10/argentina-world-cup-2026-preview-players-to-watch-group-matches-squad",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "最大挑战者被削弱：奥地利核心进攻中场鲍姆加特纳大腿拉伤，确认缺席整届世界杯且不递补（调整 −2pp）。",
+      "en": "Top challenger weakened: Austria's key attacking midfielder Baumgartner is out of the entire tournament with a thigh injury and no replacement was called up (−2pp adjustment).",
+      "source_url": "https://ground.news/article/injury-forces-austrias-baumgartner-to-miss-fifa-world-cup-2026_421ddc",
+      "source_date": "2026-06-10"
+    }
+  ],
+  "confidence_tier": "高",
+  "n_sources": 5,
+  "method_note": "Baseline: 100k-sim pure-Elo Poisson Monte Carlo (seed 20260611, eloratings.net snapshot 2026-06-11, no market input). Bounded evidence adjustment: Austria −2.0pp for Baumgartner ruled out (no replacement), renormalized to sum 1; all deltas within ±4pp. Market-blind: no betting or prediction-market data used.",
+  "report": "report.md"
+}

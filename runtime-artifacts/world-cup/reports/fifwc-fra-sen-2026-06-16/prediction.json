@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-fra-sen-2026-06-16",
+  "family": "group_match",
+  "event_slug": "fifwc-fra-sen-2026-06-16",
+  "question_cn": "2026 世界杯小组赛 I 组：法国 vs 塞内加尔（2026-06-16）90 分钟赛果？",
+  "question_en": "2026 World Cup Group I: France vs Senegal (2026-06-16) — 90-minute result?",
+  "kickoff_utc": "2026-06-16T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "法国", "label_en": "France", "p": 0.57 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.24 },
+    { "key": "b", "label_cn": "塞内加尔", "label_en": "Senegal", "p": 0.19 }
+  ],
+  "one_liner_cn": "法国凭约 200 分 Elo 优势明显占优，但非洲杯亚军塞内加尔状态正盛，逼平加爆冷合计概率超四成。",
+  "one_liner_en": "France's ~200-point Elo edge makes them clear favourites on form, but AFCON runners-up Senegal are in strong shape — draw plus upset tops 40%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差约 200 分（法国 2063 vs 塞内加尔 1860），中性场地无主办国加成，统计基线法国胜率约 59%。",
+      "en": "Elo gap of ~200 points (France 2063 vs Senegal 1860) at a neutral venue with no host bonus puts France's statistical baseline win probability near 59%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "法国大名单近乎全主力，姆巴佩伤愈入选但赛季内反复伤停带来轻微不确定性；卡马文加、科洛·穆阿尼落选影响有限。",
+      "en": "France are near full strength; Mbappe is included after a stop-start, injury-hit season (mild uncertainty), while Camavinga and Kolo Muani are depth omissions.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48771039/france-2026-world-cup-squad-mbappe-camavinga-kolo-muani-dembele",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "塞内加尔为 2026 非洲杯亚军，马内当选赛事最佳球员，阵容经验丰富、状态正盛。",
+      "en": "Senegal are 2026 AFCON runners-up with Sadio Mane named player of the tournament — an experienced squad in strong form.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/30/senegals-world-cup-2026-team-preview-players-to-watch-group-squad-list",
+      "source_date": "2026-05-30"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: eloratings.net Elo (2026-06-11) -> Davidson three-way model (scale=400, drawNu=0.7, no host bonus) -> p_stat 0.588/0.229/0.183 -> bounded evidence adjustment (France -2pp, Draw +1pp, Senegal +1pp, cap +/-8pp) -> renormalized p_final. No betting or prediction-market inputs of any kind.",
+  "report": "report.md"
+}

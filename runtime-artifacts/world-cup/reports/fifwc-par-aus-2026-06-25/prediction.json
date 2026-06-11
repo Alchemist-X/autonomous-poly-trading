@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-par-aus-2026-06-25",
+  "family": "group_match",
+  "event_slug": "fifwc-par-aus-2026-06-25",
+  "question_cn": "2026 世界杯 D 组：巴拉圭 vs 澳大利亚，90 分钟三路赛果？",
+  "question_en": "2026 World Cup Group D: Paraguay vs Australia, 90-minute three-way result?",
+  "kickoff_utc": "2026-06-26T02:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "巴拉圭胜", "label_en": "Paraguay", "p": 0.41 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.27 },
+    { "key": "b", "label_cn": "澳大利亚胜", "label_en": "Australia", "p": 0.32 }
+  ],
+  "one_liner_cn": "Elo 显示巴拉圭小幅占优，但两队各缺一名主力中场、澳大利亚备战充分，41/27/32 的三路分布意味着胜负仍相当开放。",
+  "one_liner_en": "Elo gives Paraguay a modest edge, but with each side missing a key midfielder and Australia exceptionally well prepared, the 41/27/32 split means this match remains wide open.",
+  "key_reasons": [
+    {
+      "cn": "Elo 1834（第 22）对 1777（第 28），巴拉圭仅领先 57 分，属小幅优势而非压倒性差距。",
+      "en": "Elo 1834 (#22) vs 1777 (#28): Paraguay's 57-point lead is a modest, not dominant, edge.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "澳大利亚主力中场 Riley McGree 腿筋伤退，此伤较新、Elo 尚未消化；巴拉圭的 Villasanti（ACL）缺阵则已被近期战绩部分反映。",
+      "en": "Australia loses expected starter Riley McGree (hamstring), a fresh blow not yet in Elo; Paraguay's Villasanti (ACL) absence is already partly absorbed by recent results.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48572979/2026-fifa-world-cup-injuries-tracker-which-stars-miss-latest-info",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "澳大利亚自 4 月起在佛州 Sarasota 长期集训、最早抵美，气候与时差适应优势明显。",
+      "en": "Australia has trained in Sarasota, Florida since April — the first team to begin US-based preparation, a clear acclimatization edge.",
+      "source_url": "https://www.fifaworldcupnews.com/australia-world-cup-2026-squad/",
+      "source_date": "2026-06-01"
+    }
+  ],
+  "confidence_tier": "低",
+  "n_sources": 7,
+  "method_note": "Market-blind: eloratings.net Elo (2026-06-11) + Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) giving 43.2/25.7/31.1; bounded evidence adjustment of 2pp (Paraguay -2, draw +1, Australia +1) for the fresher McGree injury and Australia's preparation edge. No betting/prediction-market data consulted.",
+  "report": "report.md"
+}

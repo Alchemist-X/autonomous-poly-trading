@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-tur-par-2026-06-19",
+  "family": "group_match",
+  "event_slug": "fifwc-tur-par-2026-06-19",
+  "question_cn": "2026 世界杯 D 组小组赛：土耳其 vs 巴拉圭（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group D: Türkiye vs Paraguay — three-way result over 90 minutes?",
+  "kickoff_utc": "2026-06-20T03:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "土耳其", "label_en": "Türkiye", "p": 0.45 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.26 },
+    { "key": "b", "label_cn": "巴拉圭", "label_en": "Paraguay", "p": 0.29 }
+  ],
+  "one_liner_cn": "土耳其凭 Elo 优势与锋线状态略占上风，但巴拉圭防线老练扎实，平局与冷门空间不小。",
+  "one_liner_en": "Türkiye hold a moderate edge on Elo and attacking form, but Paraguay's seasoned defence keeps the draw and upset paths live.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差 77 分（土耳其 1911 第 13 vs 巴拉圭 1834 第 22），中立场地无主场加成，构成温和而非压倒性优势。",
+      "en": "A 77-point Elo gap (Türkiye 1911 #13 vs Paraguay 1834 #22) at a neutral venue with no host bonus — a moderate, not overwhelming, edge.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "土耳其锋线状态出色：热身赛 2-1 胜委内瑞拉，Yıldız 本赛季 14 球、Güler 串联出色。",
+      "en": "Türkiye's attack is in form: 2-1 warm-up win over Venezuela, with Yıldız on 14 goals this season and Güler creating well.",
+      "source_url": "https://www.espn.com/soccer/match/_/gameId/401871361/turkiye-venezuela",
+      "source_date": "2026-06-06"
+    },
+    {
+      "cn": "巴拉圭防守骨架完整：Alfaro 体系依赖 Gómez、Alderete 的老练防线，全队无重大伤停报告。",
+      "en": "Paraguay's defensive spine is intact: Alfaro's setup leans on the experienced Gómez-Alderete axis, with no major injuries reported.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/paraguay-squad-announcement-gustavo-alfaro",
+      "source_date": "2026-06-01"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue) gives 45.4/25.5/29.1; bounded evidence adjustment of ~1pp total (form vs defensive solidity offset, thin pre-tournament evidence) yields 45/26/29. 80% intervals reflect drawNu 0.6-0.8 sensitivity plus evidence thinness. No betting or prediction-market data used.",
+  "report": "report.md"
+}

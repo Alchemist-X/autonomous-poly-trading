@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-mar-hai-2026-06-24",
+  "family": "group_match",
+  "event_slug": "fifwc-mar-hai-2026-06-24",
+  "question_cn": "2026 世界杯小组赛 C 组：摩洛哥 vs 海地（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group C: Morocco vs Haiti (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-24T22:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "摩洛哥", "label_en": "Morocco", "p": 0.63 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.22 },
+    { "key": "b", "label_cn": "海地", "label_en": "Haiti", "p": 0.15 }
+  ],
+  "one_liner_cn": "摩洛哥实力与大赛底蕴全面占优，但主力中卫缺阵、换帅磨合与末轮轮换风险，加上海地状态火热，让冷门概率略高于纯模型值。",
+  "one_liner_en": "Morocco dominate on strength and pedigree, but a key centre-back out, a coaching transition, possible matchday-3 rotation, and Haiti's hot form push the upset tail slightly above the pure model value.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距巨大：摩洛哥 1827（第 24）对海地 1548（第 73），Davidson 模型基线即给摩洛哥 66% 胜率。",
+      "en": "Huge Elo gap: Morocco 1827 (rank 24) vs Haiti 1548 (rank 73); the Davidson baseline alone gives Morocco a 66% win probability.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "摩洛哥主力中卫 Aguerd 与边锋 Ezzalzouli 双双伤退世界杯名单，且新帅 Ouahbi 三月才接任，削弱确定性。",
+      "en": "Morocco lost first-choice CB Aguerd and winger Ezzalzouli to injury withdrawals from the squad, and new coach Ouahbi only took over in March, reducing certainty.",
+      "source_url": "https://www.moroccoworldnews.com/2026/06/317989/aguerd-ruled-out-of-moroccos-2026-world-cup-squad-marwane-saadane-called-up/",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "海地状态火热：6 月 2 日 4-0 大胜新西兰，预选赛小组头名直通，并新增 Isidor、Bellegarde 等英超级别球员。",
+      "en": "Haiti are in hot form: a 4-0 friendly win over New Zealand on June 2, topped their qualifying group, and added Premier League-calibre players like Isidor and Bellegarde.",
+      "source_url": "https://www.espn.com/soccer/match/_/gameId/401871830/new-zealand-haiti",
+      "source_date": "2026-06-02"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gives p_stat 66.0/20.7/13.3; bounded evidence adjustment of -3.0pp Morocco (+1.5pp draw, +1.5pp Haiti) for injuries, coaching transition, matchday-3 rotation risk, and Haiti form/reinforcements. No betting or prediction-market data used.",
+  "report": "report.md"
+}

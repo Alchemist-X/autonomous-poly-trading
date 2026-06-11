@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-kr-cze-2026-06-11",
+  "family": "group_match",
+  "event_slug": "fifwc-kr-cze-2026-06-11",
+  "question_cn": "2026 世界杯小组赛 A 组：韩国 vs 捷克，90 分钟三路赛果？",
+  "question_en": "2026 World Cup Group A: Korea Republic vs Czechia, three-way 90-minute result?",
+  "kickoff_utc": "2026-06-12T02:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "韩国", "label_en": "Korea Republic", "p": 0.41 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.26 },
+    { "key": "b", "label_cn": "捷克", "label_en": "Czechia", "p": 0.33 }
+  ],
+  "one_liner_cn": "韩国凭 18 分 Elo 微弱优势和更稳的晋级路径略占上风，但三路概率接近，平局风险不低。",
+  "one_liner_en": "Korea hold a slight edge from an 18-point Elo gap and a steadier qualification path, but all three outcomes are close and the draw risk is material.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距仅 18 分（韩国 1758 vs 捷克 1740），统计上接近抛硬币，韩国仅微弱领先。",
+      "en": "The Elo gap is only 18 points (Korea 1758 vs Czechia 1740) — statistically near a coin flip with Korea marginally ahead.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "韩国预选赛不败直通且核心健康、孙兴慜状态出色；捷克靠附加赛两轮点球险胜晋级，20 年来首进世界杯。",
+      "en": "Korea qualified unbeaten with a healthy core and an in-form Son Heung-min; Czechia needed two penalty shootouts in the play-offs and are at their first World Cup in 20 years.",
+      "source_url": "https://www.sportsmole.co.uk/football/south-korea/world-cup-2026/preview/south-korea-vs-czech-republic-prediction-team-news-lineups_598881.html",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "捷克 Hlozek 伤愈进入名单，进攻端有补强，限制了向韩国方向的调整幅度。",
+      "en": "Czechia's Adam Hlozek recovered to make the squad, bolstering the attack and capping the size of the shift toward Korea.",
+      "source_url": "https://www.fifa.com/en/articles/czechia-world-cup-squad-announced",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus; p_stat 0.390/0.259/0.351) plus a bounded +2pp Korea / -2pp Czechia evidence adjustment, renormalized. Probabilities derived solely from the statistical model and cited public evidence.",
+  "report": "report.md"
+}

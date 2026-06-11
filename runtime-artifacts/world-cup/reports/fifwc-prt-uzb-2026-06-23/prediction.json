@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-prt-uzb-2026-06-23",
+  "family": "group_match",
+  "event_slug": "fifwc-prt-uzb-2026-06-23",
+  "question_cn": "2026世界杯K组小组赛（2026-06-23，休斯敦）：葡萄牙 vs 乌兹别克斯坦，90分钟三路赛果？",
+  "question_en": "2026 World Cup Group K (2026-06-23, Houston): Portugal vs Uzbekistan, three-way result after 90 minutes?",
+  "kickoff_utc": "2026-06-23T17:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "葡萄牙", "label_en": "Portugal", "p": 0.68 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.195 },
+    { "key": "b", "label_cn": "乌兹别克斯坦", "label_en": "Uzbekistan", "p": 0.125 }
+  ],
+  "one_liner_cn": "葡萄牙实力、状态与大赛经验全面占优，约68%胜率；世界杯首秀的乌兹别克斯坦更可能死守求平而非爆冷取胜。",
+  "one_liner_en": "Portugal hold a clear edge in strength, form, and experience at roughly 68% to win; debutants Uzbekistan are likelier to defend for a draw than to win outright.",
+  "key_reasons": [
+    {
+      "cn": "Elo差距275分（1989对1714），中立场Davidson模型给出葡萄牙约65.7%基准胜率",
+      "en": "A 275-point Elo gap (1989 vs 1714) yields about a 65.7% baseline win probability for Portugal in the neutral-venue Davidson model",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "葡萄牙为欧国联卫冕冠军且状态出色，C罗伤愈于5月19日入选并任队长",
+      "en": "Portugal are reigning Nations League champions in strong form, with Ronaldo recovered and named captain in the May 19 squad",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/cristiano-ronaldo-roberto-martinez-portugal-squad-announcement",
+      "source_date": "2026-05-19"
+    },
+    {
+      "cn": "乌兹别克斯坦世界杯首秀，26人中15人来自国内联赛，核心中卫库萨诺夫赛季出场有限、状态存疑",
+      "en": "World Cup debutants Uzbekistan field 15 of 26 from the domestic league, and key centre-back Khusanov has sharpness doubts after an injury-curtailed season",
+      "source_url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/uzbekistan-at-the-2026-fifa-world-cup-squad-schedule-and-everything-you-need-to-know-2026-06-02",
+      "source_date": "2026-06-02"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) on eloratings.net snapshot -> p_stat 65.7/20.8/13.5; bounded evidence adjustment +2.3pp to Portugal (form, full squad vs debutant inexperience and Khusanov fitness), renormalized. No betting or prediction-market data used.",
+  "report": "report.md"
+}

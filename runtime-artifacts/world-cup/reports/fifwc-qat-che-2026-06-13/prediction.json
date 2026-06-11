@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-qat-che-2026-06-13",
+  "family": "group_match",
+  "event_slug": "fifwc-qat-che-2026-06-13",
+  "question_cn": "2026 世界杯小组赛 B 组：卡塔尔 vs 瑞士（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group B: Qatar vs Switzerland (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-13T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "卡塔尔", "label_en": "Qatar", "p": 0.045 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.135 },
+    { "key": "b", "label_cn": "瑞士", "label_en": "Switzerland", "p": 0.82 }
+  ],
+  "one_liner_cn": "Elo 差距 470 分叠加卡塔尔赛前低迷，瑞士约 82% 大概率取胜，平局仍留约 13.5% 空间。",
+  "one_liner_en": "A 470-point Elo gap plus Qatar's poor pre-tournament form puts Switzerland at ~82% to win, with the draw still around 13.5%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 评分 1891 vs 1421（差 470 分），Davidson 模型给出瑞士约 80% 的基准胜率",
+      "en": "Elo ratings 1891 vs 1421 (470-point gap); the Davidson model yields a ~80% baseline win probability for Switzerland",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "瑞士预选赛 4 胜 2 平不败、6 场仅失 2 球，且无重大伤停，扎卡第 4 次连续出战世界杯",
+      "en": "Switzerland went unbeaten in qualifying (W4 D2, 2 goals conceded in 6) with no notable absentees; Xhaka makes his 4th straight World Cup",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48818354/granit-xhaka-captain-switzerland-world-cup-squad",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "卡塔尔近 4 场正式比赛输 3 场，2025 阿拉伯杯小组出局（0-3 负突尼斯）",
+      "en": "Qatar lost 3 of their last 4 competitive matches and exited the 2025 Arab Cup at the group stage (0-3 to Tunisia)",
+      "source_url": "https://www.squawka.com/us/news/world-cup/match-preview-qatar-vs-switzerland-06-13-26-world-cup-2026/",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gave 5.4/14.5/80.1; bounded evidence adjustment of ~1.9pp toward Switzerland (full-strength squad, solid qualifying defence vs Qatar's form slump), renormalized. No betting or prediction-market data used.",
+  "report": "report.md"
+}

@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:a",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-a-winner",
+  "question_cn": "A 组头名（小组第一出线）是哪支球队？",
+  "question_en": "Which team finishes first in Group A?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Mexico", "label_cn": "墨西哥", "label_en": "Mexico", "p": 0.7689 },
+    { "key": "South Korea", "label_cn": "韩国", "label_en": "South Korea", "p": 0.1249 },
+    { "key": "Czechia", "label_cn": "捷克", "label_en": "Czechia", "p": 0.1029 },
+    { "key": "South Africa", "label_cn": "南非", "label_en": "South Africa", "p": 0.0033 }
+  ],
+  "one_liner_cn": "墨西哥坐拥三场本土高原比赛、Elo 与近期状态全面领先，约 77% 概率拿下 A 组头名；韩国与捷克之间的差距小于一场比赛的偶然性，南非仅剩数学可能。",
+  "one_liner_en": "With all three group games on home altitude soil and a clear lead in Elo and form, Mexico wins Group A about 77% of the time; the South Korea-Czechia gap is smaller than one match's randomness, and South Africa retains only a mathematical chance.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 + 三场本土主场：墨西哥 1875（第18）对韩国 1758 / 捷克 1740 / 南非 1517，且小组赛全部在墨西哥高原进行（模型小组赛 +100 主场修正），10 万次蒙特卡洛给出 78.9% 头名基线。",
+      "en": "Elo gap plus three home games: Mexico 1875 (#18) vs South Korea 1758 / Czechia 1740 / South Africa 1517, with every group game on Mexican altitude soil (+100 host Elo in group play), yielding a 78.9% first-place baseline over 100k Monte Carlo simulations.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "墨西哥状态佐证基线：2026 年 8 场热身不败、仅丢 2 球，末战 5-1 塞尔维亚；仅因纯 Elo 泊松低估平局、2025 年底 6 场不胜而小幅下调 2pp。",
+      "en": "Mexico's form supports the baseline: unbeaten in 8 friendlies in 2026 with 2 goals conceded, closing 5-1 over Serbia; only a 2pp trim for the Elo-Poisson draw underestimate and the winless run that ended 2025.",
+      "source_url": "https://www.sportsmole.co.uk/football/mexico/world-cup-2026/preview/mexico-vs-south-africa-prediction-team-news-lineups_598869.html",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "两支追赶者均满编但证据不足以大调：韩国孙兴慜伤愈领衔第四次世界杯（黄仁范带踝伤）；捷克 Schick 伤愈、Hložek 回归但末轮客战阿兹特克——各 +1pp。",
+      "en": "Both challengers are at full strength but evidence supports only small shifts: Son Heung-min leads a fit Korea spine (Hwang In-beom's ankle a concern); Czechia regains Schick and Hlozek but closes away at the Azteca — +1pp each.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/korea-republic-world-cup-squad-hong-myungbo",
+      "source_date": "2026-05-16"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 11,
+  "method_note": "100k full-tournament pure-Elo Poisson Monte Carlo (seed 20260611, eloratings.net snapshot 2026-06-11, +100 host Elo in group matches, no market input) as statistical baseline; bounded evidence adjustment of at most ±4pp per team (applied: Mexico -2pp, South Korea +1pp, Czechia +1pp, South Africa 0), net zero so the distribution sums to 1. Fully market-blind.",
+  "report": "report.md"
+}

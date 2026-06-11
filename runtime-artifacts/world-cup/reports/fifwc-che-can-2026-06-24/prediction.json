@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-che-can-2026-06-24",
+  "family": "group_match",
+  "event_slug": "fifwc-che-can-2026-06-24",
+  "question_cn": "2026 世界杯 B 组：瑞士 vs 加拿大（2026-06-24，温哥华）90 分钟赛果？",
+  "question_en": "2026 World Cup Group B: Switzerland vs Canada (2026-06-24, Vancouver) — 90-minute result?",
+  "kickoff_utc": "2026-06-24T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "瑞士胜", "label_en": "Switzerland win", "p": 0.404 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.264 },
+    { "key": "b", "label_cn": "加拿大胜", "label_en": "Canada win", "p": 0.332 }
+  ],
+  "one_liner_cn": "瑞士阵容齐整小幅占优，但加拿大坐拥温哥华主场，三路概率接近，势均力敌的小组头名之争。",
+  "one_liner_en": "Switzerland edge it on squad health and form, but Canada's Vancouver home advantage keeps this a near coin-flip for top spot in Group B.",
+  "key_reasons": [
+    {
+      "cn": "加拿大伤病潮：主力中卫 Bombito 据报被移出名单，Flores 伤退由 Nelson 替补，Koné 训练中发烧离场。",
+      "en": "Canada's injury wave: starting CB Bombito reportedly removed from the roster, Flores withdrew injured (Nelson called up), Kone left training with a fever.",
+      "source_url": "https://dailyhive.com/vancouver/canada-injury-updates-fifa-world-cup-opener",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "Davies 自 2025-03 ACL 撕裂后又两度腿筋受伤，出场存疑，但 6/10 已重返合练，距本场尚有约两周窗口。",
+      "en": "Davies, after a March 2025 ACL tear and two hamstring setbacks, is a fitness doubt but returned to group training June 10, with about two weeks before this fixture.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48914937/alphonso-davies-named-canada-world-cup-squad-injury-concerns",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "瑞士 5/20 公布名单无重大伤病，Xhaka（145 次出场）领衔老将轴心，5/31 友谊赛 4-1 胜约旦，备战平稳。",
+      "en": "Switzerland named a healthy 26-man squad May 20, led by Xhaka (145 caps), and warmed up with a 4-1 friendly win over Jordan on May 31.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/switzerland-squad-announcement-murat-yakin",
+      "source_date": "2026-05-20"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 9,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7; +100 host bonus for Canada group match) gives 37.4/25.9/36.7; evidence-bounded adjustment +3.0/+0.5/-3.5pp (cap 8pp) for Canada injuries vs healthy Swiss squad; renormalized. No betting-market inputs of any kind.",
+  "report": "report.md"
+}

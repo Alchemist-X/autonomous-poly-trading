@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-cze-rsa-2026-06-18",
+  "family": "group_match",
+  "event_slug": "fifwc-cze-rsa-2026-06-18",
+  "question_cn": "2026 世界杯小组赛 A 组：捷克 vs 南非（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group A: Czechia vs South Africa (90-minute three-way result)",
+  "kickoff_utc": "2026-06-18T16:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "捷克胜", "label_en": "Czechia", "p": 0.59 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.23 },
+    { "key": "b", "label_cn": "南非胜", "label_en": "South Africa", "p": 0.18 }
+  ],
+  "one_liner_cn": "Elo 差 223 分让捷克明显占优，但切尔尼伤缺与南非的阵容磨合让比赛仍有变数，捷克胜率约六成。",
+  "one_liner_en": "A 223-point Elo gap makes Czechia clear favourites, but Cerny's injury and South Africa's cohesion keep the Czech win probability around 60%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 评分捷克 1740（第 35）对南非 1517（第 80），差距 223 分，统计基线明显倾向捷克。",
+      "en": "Elo ratings: Czechia 1740 (rank 35) vs South Africa 1517 (rank 80), a 223-point gap that tilts the statistical baseline clearly toward Czechia.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "捷克头号创造者切尔尼因伤缺席整届世界杯，进攻创造力受损，是小幅下调捷克胜率的主因。",
+      "en": "Czechia's most influential creator Vaclav Cerny misses the entire tournament through injury, the main reason for a small downgrade of the Czech win probability.",
+      "source_url": "https://www.squawka.com/en/news/world-cup/czech-republic-world-cup-2026-fixtures-squad-analysis/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "南非 26 人名单延续预选赛班底，19 人来自国内联赛、配合成熟，但旅欧球员仅 5 人，上限有限。",
+      "en": "South Africa's 26-man squad keeps the qualifying core: 19 domestic-based players form a cohesive unit, though only five are based in Europe, capping the ceiling.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/28/bafana-bafana-world-cup-squad-south-africa-names-two-uncapped-players",
+      "source_date": "2026-05-28"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gives p_stat 60.8/22.4/16.8; bounded evidence adjustment of -2pp Czechia (+1pp draw, +1pp South Africa) for the Cerny injury and South Africa's squad cohesion, capped at +/-8pp. No market data used anywhere.",
+  "report": "report.md"
+}

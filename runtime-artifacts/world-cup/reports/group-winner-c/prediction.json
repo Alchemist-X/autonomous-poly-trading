@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:c",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-c-winner",
+  "question_cn": "2026 FIFA 世界杯 C 组头名（最终积分榜第 1）会是哪支球队？",
+  "question_en": "Which team will finish first in Group C at the 2026 FIFA World Cup?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Brazil", "label_cn": "巴西", "label_en": "Brazil", "p": 0.70751 },
+    { "key": "Morocco", "label_cn": "摩洛哥", "label_en": "Morocco", "p": 0.16888 },
+    { "key": "Scotland", "label_cn": "苏格兰", "label_en": "Scotland", "p": 0.12066 },
+    { "key": "Haiti", "label_cn": "海地", "label_en": "Haiti", "p": 0.00295 }
+  ],
+  "one_liner_cn": "巴西 Elo 断层领先、约七成概率拿下 C 组头名，但多人伤缺加内马尔存疑，摩洛哥与阵容完整的苏格兰合计仍有约三成机会。",
+  "one_liner_en": "Brazil's big Elo edge makes them roughly 70% to top Group C, but with several injuries and Neymar doubtful, Morocco and a fully fit Scotland together keep about a 30% chance.",
+  "key_reasons": [
+    {
+      "cn": "Elo 断层：巴西 1991（世界第 5）领先摩洛哥 1827、苏格兰 1782，10 万次纯 Elo 蒙特卡洛模拟中 72.8% 拿下小组头名。",
+      "en": "Elo gap: Brazil 1991 (world #5) vs Morocco 1827 and Scotland 1782; Brazil tops the group in 72.8% of 100k pure-Elo Monte Carlo simulations.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "巴西阵容扰动：罗德里戈（ACL）与埃斯特旺伤缺、右后卫 Wesley 赛前伤退，内马尔 5 月底小腿伤使首战存疑——下调 2pp 转给阵容完整的苏格兰。",
+      "en": "Brazil squad disruption: Rodrygo (ACL) and Estevao out, right-back Wesley withdrawn injured pre-tournament, and Neymar's late-May calf injury leaves the opener in doubt — 2pp moved to a fully fit Scotland.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48572979/2026-fifa-world-cup-injuries-tracker-which-stars-miss-latest-info",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "摩洛哥自身减员（阿格尔德、埃扎祖利赛前因伤退出，恩内斯里落选）抵消了巴西削弱带来的相对利好，维持基线不动。",
+      "en": "Morocco's own losses (Aguerd and Ezzalzouli withdrew injured pre-tournament; En-Nesyri left out) offset the relative gain from Brazil's weakening, so Morocco stays at baseline.",
+      "source_url": "https://ghanasoccernet.com/2026-world-cup-morocco-suffer-double-injury-blow-as-nayef-aguerd-and-abde-ezzalzouli-withdraw-from-squad",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Baseline: 100k-sim pure-Elo Poisson Monte Carlo (seed 20260611, eloratings.net snapshot 2026-06-11), no market input. Bounded evidence adjustment within ±4pp/team: Brazil -2pp (injury disruption), Scotland +2pp (intact squad), Morocco and Haiti unchanged (Morocco's own withdrawals offset Brazil's weakening); zero-sum transfer, probabilities sum to 1. Market-blind throughout.",
+  "report": "report.md"
+}

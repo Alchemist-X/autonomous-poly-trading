@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:f",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-f-winner",
+  "question_cn": "F 组头名（小组第一出线）是哪支球队？",
+  "question_en": "Which team finishes first in Group F?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Netherlands", "label_cn": "荷兰", "label_en": "Netherlands", "p": 0.5441 },
+    { "key": "Japan", "label_cn": "日本", "label_en": "Japan", "p": 0.3810 },
+    { "key": "Sweden", "label_cn": "瑞典", "label_en": "Sweden", "p": 0.0591 },
+    { "key": "Tunisia", "label_cn": "突尼斯", "label_en": "Tunisia", "p": 0.0158 }
+  ],
+  "one_liner_cn": "荷兰凭 Elo 第 8 的实力底盘和更厚的阵容深度约 54% 概率拿下 F 组头名，日本因三笘薫整届缺阵攻击力受损（约 38%），6 月 14 日荷日直接对话基本决定组头归属。",
+  "one_liner_en": "Netherlands' Elo-No.8 strength base and deeper squad make them about 54% to top Group F; Japan (~38%) lose punch with Mitoma out for the tournament, and the June 14 head-to-head largely decides first place.",
+  "key_reasons": [
+    {
+      "cn": "Elo 实力分层清晰：荷兰 1948（第 8）、日本 1906（第 14），瑞典 1712、突尼斯 1628 与两强差距 194 分以上，纯 Elo 蒙特卡洛给荷兰 55.9%、日本 39.1% 的基线。",
+      "en": "Clear Elo stratification: Netherlands 1948 (rank 8) and Japan 1906 (rank 14), with Sweden 1712 and Tunisia 1628 at least 194 points behind the favourites; the pure-Elo Monte Carlo baseline is 55.9% Netherlands, 39.1% Japan.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "日本头号边路爆点三笘薫因腘绳肌伤势落选整届世界杯（森保一称'重大打击'），南野拓実 ACL 同样缺席，直接削弱日本三场小组赛的进攻上限。",
+      "en": "Japan's top winger Kaoru Mitoma misses the entire World Cup with a hamstring injury (coach Moriyasu: 'a huge blow') and Takumi Minamino is out with an ACL tear, directly capping Japan's attack across all three group games.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/15/mitoma-fails-to-make-japans-2026-world-cup-squad-due-to-hamstring-injury",
+      "source_date": "2026-05-15"
+    },
+    {
+      "cn": "荷兰自身减员面也不小：西蒙斯、斯豪滕（ACL）缺席，廷贝尔退出名单由海尔特雷达替补，门将费尔布鲁根能否赶上 6 月 14 日揭幕战存疑——这限制了荷兰对日本的优势幅度，并把少量概率外溢给瑞典/突尼斯。",
+      "en": "The Dutch carry their own absences: Xavi Simons and Jerdy Schouten (ACL) are out, Jurrien Timber withdrew with Geertruida called up, and keeper Verbruggen is a doubt for the June 14 opener — narrowing their edge over Japan and leaking a little probability to Sweden/Tunisia.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/netherlands-call-up-geertruida-jurrien-timber",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Baseline: 100k full-tournament pure-Elo Poisson Monte Carlo (seed 20260611, eloratings.net snapshot 2026-06-11, no market input; Elo logistic expectancy splits a 2.6-goal Poisson baseline, FIFA group tiebreakers, no host in Group F). Bounded evidence adjustment within ±4pp/team: NLD −1.5pp, JPN −1.0pp, SWE +2.0pp, TUN +0.5pp; renormalized to sum 1. Source dates marked 2026-06-11 are retrieval dates.",
+  "report": "report.md"
+}

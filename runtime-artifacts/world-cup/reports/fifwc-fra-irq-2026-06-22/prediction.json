@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-fra-irq-2026-06-22",
+  "family": "group_match",
+  "event_slug": "fifwc-fra-irq-2026-06-22",
+  "question_cn": "2026 世界杯小组赛 I 组：法国 vs 伊拉克，90 分钟赛果？",
+  "question_en": "2026 World Cup Group I: France vs Iraq — 90-minute result?",
+  "kickoff_utc": "2026-06-22T21:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "法国胜", "label_en": "France win", "p": 0.775 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.16 },
+    { "key": "b", "label_cn": "伊拉克胜", "label_en": "Iraq win", "p": 0.065 }
+  ],
+  "one_liner_cn": "Elo 差距 456 分、法国近乎全主力，法国大概率取胜；伊拉克的防守组织与极限动员只给平局留出小幅空间。",
+  "one_liner_en": "With a 456-point Elo gap and a near-full-strength squad France are heavy favourites; Iraq's defensive organisation leaves only modest room for a draw.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 456 分（法国 2063 / 世界第 3 vs 伊拉克 1607 / 第 63），Davidson 模型基础胜率法国约 79%。",
+      "en": "456-point Elo gap (France 2063, world #3 vs Iraq 1607, #63); Davidson model baseline gives France about 79%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "姆巴佩伤愈入选并任队长、状态高位；法国仅缺卡马文加、埃基蒂凯等深度球员。",
+      "en": "Mbappe recovered, included as captain and in top form; France only miss depth pieces like Camavinga and Ekitike.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48771039/france-2026-world-cup-squad-mbappe-camavinga-kolo-muani-dembele",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "伊拉克 40 年来首进世界杯，主帅阿诺德有 2022 世界杯执教经验、擅长低位防守，小幅抬升平局概率。",
+      "en": "Iraq's first World Cup in 40 years under Graham Arnold, who coached at Qatar 2022 and favours a low block — a small lift to the draw.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/iraq-preliminary-squad-announcement-graham-arnold",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 79.3/14.9/5.8 with a bounded evidence adjustment of 1.8pp total (cap ±8pp), renormalised. No betting or prediction-market data used.",
+  "report": "report.md"
+}

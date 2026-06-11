@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-cze-mex-2026-06-24",
+  "family": "group_match",
+  "event_slug": "fifwc-cze-mex-2026-06-24",
+  "question_cn": "2026 世界杯小组赛 A 组：捷克 vs 墨西哥（2026-06-24，90 分钟三路赛果）？",
+  "question_en": "2026 FIFA World Cup Group A: Czechia vs Mexico (2026-06-24, 90-minute three-way result)?",
+  "kickoff_utc": "2026-06-25T01:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "捷克", "label_en": "Czechia", "p": 0.145 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.215 },
+    { "key": "b", "label_cn": "墨西哥", "label_en": "Mexico", "p": 0.64 }
+  ],
+  "one_liner_cn": "坐镇阿兹特克、2026 年 8 场不败的墨西哥实力与主场双重占优，捷克爆冷空间有限，墨西哥胜约 64%。",
+  "one_liner_en": "At the Azteca and unbeaten in eight 2026 matches, Mexico hold a double edge in strength and home advantage; Mexico to win at roughly 64%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距明显：墨西哥 1875（#18）对捷克 1740（#35），且东道主小组赛主场再加成。",
+      "en": "Clear Elo gap: Mexico 1875 (#18) vs Czechia 1740 (#35), with a host-nation home bonus on top for the group stage.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "墨西哥 2026 年 8 场不败：逼平比利时、葡萄牙，热身赛 1-0 澳大利亚、5-1 塞尔维亚。",
+      "en": "Mexico unbeaten in eight matches in 2026, including draws with Belgium and Portugal and tune-up wins of 1-0 over Australia and 5-1 over Serbia.",
+      "source_url": "https://www.foxsports.com/stories/soccer/world-cup-match-day-1-mexico-south-africa-south-korea-czechia",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "比赛在墨西哥城阿兹特克体育场（约 8.3 万观众、海拔约 2,240 米），对欧洲客队体能消耗大。",
+      "en": "Played at Estadio Azteca in Mexico City (~83,000 fans, ~2,240 m altitude), physically taxing for European visitors.",
+      "source_url": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021444",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: Elo (eloratings.net) -> Davidson three-way model (scale=400, drawNu=0.7, host +100 for Mexico home group match) gives p_stat 16.0/22.1/61.9; bounded evidence adjustment of ~4pp (Mexico form, Azteca altitude, Hlozek fitness) renormalized to p_final 14.5/21.5/64.0. No betting or prediction-market data used.",
+  "report": "report.md"
+}

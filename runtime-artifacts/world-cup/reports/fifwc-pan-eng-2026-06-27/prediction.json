@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-pan-eng-2026-06-27",
+  "family": "group_match",
+  "event_slug": "fifwc-pan-eng-2026-06-27",
+  "question_cn": "2026 世界杯小组赛 L 组：巴拿马 vs 英格兰（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group L: Panama vs England (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-27T21:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "巴拿马", "label_en": "Panama", "p": 0.12 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.22 },
+    { "key": "b", "label_cn": "英格兰", "label_en": "England", "p": 0.66 }
+  ],
+  "one_liner_cn": "英格兰实力碾压、约三分之二概率取胜，但末轮轮换可能与巴拿马核心带伤令平局空间略升，巴拿马爆冷空间有限。",
+  "one_liner_en": "England's class dominates with roughly a two-thirds win probability; possible matchday-3 rotation and Panama's injured playmaker slightly lift the draw, while Panama's upset ceiling stays low.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 294 分（英格兰 2024 vs 巴拿马 1730），Davidson 模型基准给出英胜约 67%。",
+      "en": "A 294-point Elo gap (England 2024 vs Panama 1730) yields a ~67% England-win baseline in the Davidson model.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "英格兰 26 人名单接近全主力，仅边后卫线有轻微伤病隐患，凯恩领衔。",
+      "en": "England's 26-man squad is near full strength with only minor fullback fitness flags, led by Harry Kane.",
+      "source_url": "https://www.englandfootball.com/articles/2026/May/22/england-mens-world-cup-2026-squad-named-by-thomas-tuchel-20262205",
+      "source_date": "2026-05-22"
+    },
+    {
+      "cn": "末轮英格兰或已出线存在轮换可能；巴拿马核心卡拉斯基利亚带腹股沟伤，压制爆冷上限。",
+      "en": "England may already be qualified by matchday 3 (rotation plausible); Panama playmaker Carrasquilla carries a groin injury, capping the upset ceiling.",
+      "source_url": "https://www.goal.com/en-us/world-cup-teams/group-l/world-cup-2026-guide-panama/O~bltaddd943fc4be8595",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 12.4/20.2/67.4, plus a bounded evidence-based adjustment (~2pp total, cap +/-8pp), renormalized. No betting or prediction-market data used.",
+  "report": "report.md"
+}

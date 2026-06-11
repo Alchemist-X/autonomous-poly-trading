@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-nzl-bel-2026-06-26",
+  "family": "group_match",
+  "event_slug": "fifwc-nzl-bel-2026-06-26",
+  "question_cn": "2026 世界杯小组赛 G 组：新西兰 vs 比利时（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group G: New Zealand vs Belgium (three-way result, 90 minutes)?",
+  "kickoff_utc": "2026-06-27T03:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "新西兰", "label_en": "New Zealand", "p": 0.115 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.205 },
+    { "key": "b", "label_cn": "比利时", "label_en": "Belgium", "p": 0.68 }
+  ],
+  "one_liner_cn": "比利时实力占优、约 68% 概率取胜，但末轮可能轮换且锋线带伤，新西兰拿分概率并非可以忽略。",
+  "one_liner_en": "Belgium are clear favourites on strength at about 68%, but possible matchday-3 rotation and injured forwards mean New Zealand's chance of taking points is not negligible.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 332 分（比利时 1894 vs 新西兰 1562），Davidson 统计模型给比利时约 70.6% 基线胜率。",
+      "en": "A 332-point Elo gap (Belgium 1894 vs New Zealand 1562) gives Belgium a ~70.6% baseline win probability in the Davidson model.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "比利时核心德布劳内与卢卡库均带伤入选，卢卡库本季仅踢约 1 小时正式比赛。",
+      "en": "Belgium's De Bruyne and Lukaku were both selected while injured; Lukaku has played barely an hour of competitive football this season.",
+      "source_url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/de-bruyne-and-lukaku-named-in-belgium-world-cup-squad-despite-injuries-2026-05-15",
+      "source_date": "2026-05-15"
+    },
+    {
+      "cn": "本场为 G 组末轮，比利时若提前出线可能轮换；新西兰头号射手伍德已确认完全伤愈。",
+      "en": "This is Group G's final round and Belgium may rotate if already through; New Zealand's top striker Chris Wood is confirmed fully fit.",
+      "source_url": "https://www.flashscore.com/news/soccer-world-cup-new-zealand-captain-chris-wood-fully-fit-for-2026-world-cup-after-injury-battles/xj5tDLMN/",
+      "source_date": "2026-06-09"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue) baseline 10.4/19.0/70.6, plus bounded evidence adjustment (~2.6pp total, cap 8pp), renormalized. No betting or prediction-market data used.",
+  "report": "report.md"
+}

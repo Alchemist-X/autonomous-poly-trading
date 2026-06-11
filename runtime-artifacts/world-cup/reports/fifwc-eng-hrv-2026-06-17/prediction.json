@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-eng-hrv-2026-06-17",
+  "family": "group_match",
+  "event_slug": "fifwc-eng-hrv-2026-06-17",
+  "question_cn": "2026世界杯小组赛L组：英格兰 vs 克罗地亚，90分钟三路赛果？",
+  "question_en": "2026 World Cup Group L: England vs Croatia, 90-minute three-way result?",
+  "kickoff_utc": "2026-06-17T20:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "英格兰", "label_en": "England", "p": 0.522 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.240 },
+    { "key": "b", "label_cn": "克罗地亚", "label_en": "Croatia", "p": 0.238 }
+  ],
+  "one_liner_cn": "英格兰Elo高出克罗地亚约112分且热身连胜、阵容齐整，克罗地亚核心老化带伤、热身疲软，英格兰约52%胜率，平局与克胜各约24%。",
+  "one_liner_en": "England's ~112-point Elo edge, unbeaten warm-ups and intact squad against an aging, injury-hampered Croatia put England at ~52%, with draw and Croatia win at ~24% each.",
+  "key_reasons": [
+    {
+      "cn": "Elo差距明显：英格兰2024（第4）vs 克罗地亚1912（第12），Davidson基线已给英格兰约49%。",
+      "en": "Clear Elo gap: England 2024 (4th) vs Croatia 1912 (12th); the Davidson baseline already gives England about 49%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "克罗地亚核心老化且带伤：莫德里奇40岁（4月颧骨骨折）、格瓦迪奥尔胫骨骨折刚恢复、科瓦契奇赛季饱受跟腱伤困扰。",
+      "en": "Croatia's core is aging and carrying injuries: Modric, 40, after an April cheekbone fracture; Gvardiol just back from a fractured tibia; Kovacic troubled by Achilles problems most of the season.",
+      "source_url": "https://www.croatiaweek.com/croatia-2026-world-cup-squad-zlatko-dalic/",
+      "source_date": "2026-05-18"
+    },
+    {
+      "cn": "热身赛走势相反：英格兰1-0新西兰、3-0哥斯达黎加；克罗地亚0-2负比利时、2-1险胜斯洛文尼亚。",
+      "en": "Opposite warm-up trajectories: England beat New Zealand 1-0 and Costa Rica 3-0; Croatia lost 0-2 to Belgium and edged Slovenia 2-1.",
+      "source_url": "https://www.espn.com/soccer/match/_/gameId/401856361/belgium-croatia",
+      "source_date": "2026-06-02"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 9,
+  "method_note": "Market-blind: Elo (eloratings.net 2026-06-11) Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) -> p_stat ENG 49.2/draw 25.0/CRO 25.8; bounded evidence adjustment +3.0/-1.0/-2.0pp (England form & squad availability vs Croatia injuries & weak friendlies, capped by Croatia's tournament resilience) -> p_final 52.2/24.0/23.8. No betting or prediction-market data used.",
+  "report": "report.md"
+}

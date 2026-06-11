@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-tur-usa-2026-06-25",
+  "family": "group_match",
+  "event_slug": "fifwc-tur-usa-2026-06-25",
+  "question_cn": "2026 世界杯小组赛 D 组：土耳其 vs 美国（2026-06-25），90 分钟三路赛果？",
+  "question_en": "2026 World Cup Group D: Türkiye vs United States (2026-06-25) — three-way result after 90 minutes?",
+  "kickoff_utc": "2026-06-26T02:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "土耳其胜", "label_en": "Türkiye win", "p": 0.45 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.26 },
+    { "key": "b", "label_cn": "美国胜", "label_en": "United States win", "p": 0.29 }
+  ],
+  "one_liner_cn": "土耳其纸面实力明显占优，但美国东道主主场之利大幅缩窄差距，土耳其胜率约45%，平局加美国胜合计约55%，悬念不小。",
+  "one_liner_en": "Türkiye holds a clear on-paper edge, but US host advantage narrows it substantially — roughly 45% Türkiye, with draw plus US win totaling about 55%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 185 分：土耳其 1911（第13）vs 美国 1726（第39），纸面实力明显占优。",
+      "en": "185-point Elo gap: Türkiye 1911 (rank 13) vs USA 1726 (rank 39) — a clear on-paper edge.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "美国为东道主，小组赛全部本土作战，本场在洛杉矶 SoFi 体育场，模型计入 +100 主场加成。",
+      "en": "The US is a host nation playing all group matches at home; this one is at SoFi Stadium, Los Angeles, modeled with a +100 host bonus.",
+      "source_url": "https://www.sofistadium.com/events/detail/fifa-world-cup-turkiye-vs-usa",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "土耳其两名核心创造者带近期肌肉伤史（Çalhanoğlu 5 月比目鱼肌拉伤、Güler 4 月股二头肌伤），美国则伤缺主力后腰 Cardoso，双向伤情致净调整幅度很小。",
+      "en": "Türkiye's two key creators carry recent muscle injuries (Çalhanoğlu soleus strain in May, Güler hamstring in April), while the US is missing starting DM Cardoso — offsetting injuries keep the net adjustment small.",
+      "source_url": "https://www.dailysabah.com/sports/football/turkiye-fret-over-calhanoglu-guler-fitness-ahead-of-crucial-summer",
+      "source_date": "2026-05"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Davidson three-way Elo model (scale=400, drawNu=0.7) on eloratings.net ratings with +100 host bonus for USA home group match; p_stat 46.3/25.4/28.4 shifted by a bounded evidence-based adjustment of 1.3pp total (Türkiye creator injury history vs offsetting US absences). Market-blind: no betting or prediction-market data consulted.",
+  "report": "report.md"
+}

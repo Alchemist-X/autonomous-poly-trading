@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:h",
+  "family": "group_winner",
+  "event_slug": "fifwc-2026-group-h-winner",
+  "question_cn": "2026 世界杯 H 组头名（FIFA 最终积分榜第 1）会是哪支球队？（西班牙 / 乌拉圭 / 沙特阿拉伯 / 佛得角）",
+  "question_en": "Which team will win Group H (first place in the final FIFA standings) at the 2026 World Cup? (Spain / Uruguay / Saudi Arabia / Cape Verde)",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Spain", "label_cn": "西班牙", "label_en": "Spain", "p": 0.8417 },
+    { "key": "Uruguay", "label_cn": "乌拉圭", "label_en": "Uruguay", "p": 0.1515 },
+    { "key": "Saudi Arabia", "label_cn": "沙特阿拉伯", "label_en": "Saudi Arabia", "p": 0.0033 },
+    { "key": "Cape Verde", "label_cn": "佛得角", "label_en": "Cape Verde", "p": 0.0035 }
+  ],
+  "one_liner_cn": "西班牙以 Elo 世界第一的实力大概率拿下 H 组头名（约 84%），乌拉圭是唯一现实的挑战者；沙特与佛得角夺组头名基本只是数学上的可能。",
+  "one_liner_en": "Spain, the world's No. 1 Elo side, is the heavy model favorite to top Group H (~84%); Uruguay is the only realistic challenger, with Saudi Arabia and Cape Verde left as mathematical possibilities.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距悬殊：西班牙 2157（世界第 1）对乌拉圭 1892（第 16）、沙特 1576、佛得角 1578，10 万次纯 Elo 蒙特卡洛模拟给出西班牙 86.2% 的头名基线。",
+      "en": "Massive Elo gap: Spain 2157 (world No. 1) vs Uruguay 1892 (No. 16), Saudi Arabia 1576 and Cape Verde 1578; the 100k-run pure-Elo Monte Carlo gives Spain an 86.2% baseline to top the group.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "西班牙带伤进入小组赛：亚马尔腿筋伤可能缺席前 1-2 场、费尔明·洛佩斯骨折退出，构成小幅下调（−2pp）的依据，但主帅称首战基本全员可用。",
+      "en": "Spain enter the group stage with knocks: Lamine Yamal's hamstring may cost the first one or two games and Fermin Lopez is out with a fracture, grounds for a small -2pp adjustment, though the coach expects near-full availability from game one.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48870392/spain-world-cup-2026-squad-confirmed-lamine-yamal-stars-no-real-madrid-players",
+      "source_date": "2026-05-25"
+    },
+    {
+      "cn": "乌拉圭是唯一现实挑战者但状态不佳：热身近 4 场不胜（含 1-5 负美国），夺头名几乎必须 6/27 直接击败西班牙，因此上调幅度有限（+1.8pp）。",
+      "en": "Uruguay are the only realistic challenger but in poor form: winless in their last four (including 1-5 vs USA), and topping the group all but requires beating Spain on Jun 27, so the upward adjustment is capped (+1.8pp).",
+      "source_url": "https://www.sportsmole.co.uk/football/spain/world-cup-2026/feature/world-cup-group-h-preview-predictions-key-fixture-star-players_598732.html",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "高",
+  "n_sources": 6,
+  "method_note": "Pure-Elo Poisson Monte Carlo, 100,000 full-tournament simulations (seed 20260611, eloratings.net snapshot 2026-06-11, no market input), group ranking by points/GD/goals/head-to-head/random; plus bounded evidence-based adjustment capped at +/-4pp per team (Spain -2.0pp injury risk, Uruguay +1.8pp, Saudi Arabia/Cape Verde +0.1pp each), renormalized to sum 1.",
+  "report": "report.md"
+}

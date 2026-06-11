@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-jor-arg-2026-06-27",
+  "family": "group_match",
+  "event_slug": "fifwc-jor-arg-2026-06-27",
+  "question_cn": "2026 世界杯小组赛 J 组：约旦 vs 阿根廷（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group J: Jordan vs Argentina (90-minute three-way result)",
+  "kickoff_utc": "2026-06-28T02:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "约旦", "label_en": "Jordan", "p": 0.074 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.176 },
+    { "key": "b", "label_cn": "阿根廷", "label_en": "Argentina", "p": 0.75 }
+  ],
+  "one_liner_cn": "435 分 Elo 差距令卫冕冠军阿根廷占绝对优势，但末轮轮换动机与梅西腿筋隐忧给约旦留下小幅逼平空间。",
+  "one_liner_en": "A 435-point Elo gap makes defending champions Argentina overwhelming favourites, though Matchday-3 rotation incentives and Messi's hamstring concern leave Jordan a modest draw window.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距巨大：阿根廷 2115（世界第 2）对约旦 1680（第 52），Davidson 模型基线给阿根廷 78% 胜率。",
+      "en": "Huge Elo gap: Argentina 2115 (rank 2) vs Jordan 1680 (rank 52); the Davidson baseline gives Argentina 78%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "末轮轮换风险：阿根廷先打阿尔及利亚与奥地利，大概率提前出线，第 3 轮主力轮换概率不低。",
+      "en": "Matchday-3 rotation risk: Argentina face Algeria and Austria first and will likely have qualification settled, making rotation plausible.",
+      "source_url": "https://attstadium.com/events/fifa-world-cup-group-5/",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "梅西 5 月 25 日左腿筋“肌肉过载”，斯卡洛尼称恢复顺利但 38 岁高龄下末轮出场时间存疑。",
+      "en": "Messi suffered a left-hamstring 'muscular overload' on May 25; Scaloni says recovery is on track, but his Matchday-3 minutes at 38 are uncertain.",
+      "source_url": "https://www.cbssports.com/soccer/news/lionel-messi-injury-argentina-world-cup-2026-inter-miami/",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: eloratings.net Elo (fetched 2026-06-11) through a Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) gives p_stat Jordan 6.4% / Draw 15.6% / Argentina 78.0%; bounded evidence adjustment of 6pp total (cap 8pp) for rotation incentive, Messi/fringe injuries, Jordan motivation and indoor venue yields p_final. No betting or prediction-market data consulted.",
+  "report": "report.md"
+}

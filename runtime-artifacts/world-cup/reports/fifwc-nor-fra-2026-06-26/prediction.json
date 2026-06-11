@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-nor-fra-2026-06-26",
+  "family": "group_match",
+  "event_slug": "fifwc-nor-fra-2026-06-26",
+  "question_cn": "2026 世界杯小组赛 I 组：挪威 vs 法国（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group I: Norway vs France (three-way result, 90 minutes)?",
+  "kickoff_utc": "2026-06-26T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "挪威胜", "label_en": "Norway win", "p": 0.235 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.252 },
+    { "key": "b", "label_cn": "法国胜", "label_en": "France win", "p": 0.513 }
+  ],
+  "one_liner_cn": "法国实力占优、胜面约五成，但挪威黄金一代与末轮轮换变数让三路概率不宜过度集中。",
+  "one_liner_en": "France are clearly stronger with roughly a 50% win chance, but Norway's golden generation and final-round rotation variance argue against over-concentration.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差 149 分：法国 2063（第 3）vs 挪威 1914（第 11），统计基线法国胜约 53%。",
+      "en": "149-point Elo gap: France 2063 (#3) vs Norway 1914 (#11), giving a statistical baseline of about 53% for a France win.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "挪威 28 年来首进世界杯，Haaland 预选赛 16 球、国家队 55 球，球队接近历史最强档期。",
+      "en": "Norway's first World Cup in 28 years; Haaland scored 16 qualifying goals (55 international) as the team nears a historic peak.",
+      "source_url": "https://www.olympics.com/en/news/fifa-world-cup-2026-norway-all-players-full-squad-list-key-stats-and-schedule",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "双方核心均带伤病疑问：Ødegaard 赛季至少 5 伤，Mbappé 5 月大腿伤后入选任队长，影响大体对冲。",
+      "en": "Both key men carry injury questions: Ødegaard had at least five injuries this season; Mbappé was named captain after a May thigh injury — largely offsetting.",
+      "source_url": "https://www.cbc.ca/sports/soccer/worldcup/injuries-2026-fifa-world-cup-messi-mbappe-yamal-davies-9.7221543",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: eloratings.net Elo (2026-06-11) -> Davidson three-way (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 22.6/24.3/53.2 -> bounded evidence adjustment +1.0/+1.0/-2.0pp -> p_final. 80% intervals from drawNu 0.6-0.8 and +/-40 Elo sensitivity. No betting or prediction-market data consulted.",
+  "report": "report.md"
+}

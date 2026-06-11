@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-hrv-gha-2026-06-27",
+  "family": "group_match",
+  "event_slug": "fifwc-hrv-gha-2026-06-27",
+  "question_cn": "2026 世界杯小组赛 L 组：克罗地亚 vs 加纳（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group L: Croatia vs Ghana (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-27T21:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "克罗地亚", "label_en": "Croatia", "p": 0.75 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.185 },
+    { "key": "b", "label_cn": "加纳", "label_en": "Ghana", "p": 0.065 }
+  ],
+  "one_liner_cn": "Elo 差距 402 分叠加加纳核心库杜斯伤缺，克罗地亚明显占优；变数在于第三轮可能的轮换与动力下降。",
+  "one_liner_en": "A 402-point Elo gap plus Ghana losing Kudus makes Croatia the clear favourite; matchday-3 rotation is the main wildcard.",
+  "key_reasons": [
+    {
+      "cn": "Elo 积分差 402 分（克罗地亚 1912 / 第 12 vs 加纳 1510 / 第 81），统计模型给出克罗地亚约 76% 基线胜率。",
+      "en": "A 402-point Elo gap (Croatia 1912 / 12th vs Ghana 1510 / 81st) yields a ~76% baseline win probability for Croatia.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "加纳头号球星库杜斯因大腿长期伤势无缘世界杯，主力中卫萨利苏（ACL）与吉库也缺席，攻防核心同时受损。",
+      "en": "Ghana's star Mohammed Kudus is out with a long-term thigh injury, and first-choice centre-backs Salisu (ACL) and Djiku are also missing.",
+      "source_url": "https://www.goal.com/en-us/lists/ghana-squad-world-cup-2026/blt96bf719b2e716a5e",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "本场为 L 组第三轮，克罗地亚若已提前出线存在轮换与动力下降风险；莫德里奇 40 岁、科瓦契奇跟腱伤后状态待察。",
+      "en": "As Group L matchday 3, Croatia may rotate if already qualified; Modric is 40 and Kovacic is returning from Achilles problems.",
+      "source_url": "https://www.uefa.com/european-qualifiers/news/02a6-20d159312e19-b662016c6c47-1000--croatia-at-the-world-cup-2026-squad-fixtures-group-and-hi/",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus): p_stat Croatia 75.8% / Draw 16.7% / Ghana 7.5%; bounded evidence adjustment ~3pp (Ghana injuries vs Croatia rotation risk) -> p_final. Market-blind: no betting or prediction-market inputs.",
+  "report": "report.md"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-can-qat-2026-06-18",
+  "family": "group_match",
+  "event_slug": "fifwc-can-qat-2026-06-18",
+  "question_cn": "2026 世界杯 B 组小组赛：加拿大 vs 卡塔尔（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group B: Canada vs Qatar (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-18T22:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "加拿大胜", "label_en": "Canada win", "p": 0.770 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.166 },
+    { "key": "b", "label_cn": "卡塔尔胜", "label_en": "Qatar win", "p": 0.064 }
+  ],
+  "one_liner_cn": "加拿大坐镇温哥华主场、Elo 优势近 470 分，尽管伤病困扰仍是大概率取胜一方；卡塔尔状态低迷，爆冷空间有限。",
+  "one_liner_en": "Hosting in Vancouver with a near-470-point Elo edge, Canada are heavy favourites despite injury concerns; out-of-form Qatar have limited upset room.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距巨大：加拿大 1788（世界第 25）+100 主场加成 vs 卡塔尔 1421（世界第 96），统计基线给加拿大约 80% 胜率。",
+      "en": "Huge Elo gap: Canada 1788 (world #25) plus a +100 host bonus vs Qatar 1421 (world #96); the statistical baseline gives Canada about 80%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "加拿大伤病疑云：Davies（腿筋）缺席首战、6/18 出场存疑，主力中卫 Bombito 据报离队，David 状态平平——小幅下调加拿大胜率。",
+      "en": "Canadian injury cloud: Davies (hamstring) misses the opener and is doubtful for June 18, starting CB Bombito reportedly off the roster, David below form - a small trim to Canada's win probability.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48914937/alphonso-davies-named-canada-world-cup-squad-injury-concerns",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "卡塔尔在 Lopetegui 治下 2025 夏以来仅 2 胜、世预赛勉强过关，自身状态不足以支撑更大的爆冷调整。",
+      "en": "Qatar have only 2 wins under Lopetegui since summer 2025 and scraped through qualifying - their own form does not support a larger upset adjustment.",
+      "source_url": "https://www.squawka.com/en/news/world-cup/qatar-world-cup-2026-fixtures-squad-analysis/",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, +100 host bonus for Canada group match) -> p_stat 0.800/0.146/0.054; bounded evidence adjustment (Canada -3pp, draw +2pp, Qatar +1pp, within the +/-8pp cap) -> p_final. No betting or prediction-market data used.",
+  "report": "report.md"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-usa-par-2026-06-12",
+  "family": "group_match",
+  "event_slug": "fifwc-usa-par-2026-06-12",
+  "question_cn": "2026 世界杯小组赛 D 组：美国 vs 巴拉圭，90 分钟赛果？",
+  "question_en": "2026 World Cup Group D: United States vs Paraguay — 90-minute result?",
+  "kickoff_utc": "2026-06-13T01:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "美国胜", "label_en": "United States win", "p": 0.377 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.259 },
+    { "key": "b", "label_cn": "巴拉圭胜", "label_en": "Paraguay win", "p": 0.364 }
+  ],
+  "one_liner_cn": "实力极为接近的均势开局：巴拉圭 Elo 更高但核心恩西索伤疑，美国坐拥东道主主场之利，胜负接近五五开、平局风险不低。",
+  "one_liner_en": "A near coin-flip opener: Paraguay carry the higher Elo but creator Enciso is doubtful, while the USA enjoy true host-nation advantage; draw risk is substantial.",
+  "key_reasons": [
+    {
+      "cn": "巴拉圭头号进攻核心恩西索 6 月 5 日热身赛受伤被担架抬下，MRI 排除结构性撕裂但首战出战成疑。",
+      "en": "Paraguay's primary creator Julio Enciso was stretchered off in the June 5 friendly; an MRI ruled out a structural tear but he is highly doubtful for the opener.",
+      "source_url": "https://www.si.com/soccer/usmnt-first-world-cup-opponent-injury-blow-star-player",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "美国主力中卫 Richards 踝部韧带伤后 6 月 8 日才恢复合练，预计无法首发，削弱美国防线。",
+      "en": "USA starting CB Chris Richards only resumed full training June 8 after tearing two ankle ligaments and is unlikely to start, weakening the US back line.",
+      "source_url": "https://www.nbcsports.com/soccer/news/usmnt-lineup-versus-paraguay-who-will-pochettino-choose-for-usa-in-world-cup-opener",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "比赛在加州 SoFi Stadium 进行，美国作为东道主获得真实主场优势，模型 +100 主场分使两队修正后实力几乎持平（Elo 1726+100 vs 1834）。",
+      "en": "Played at SoFi Stadium in California, the USA get genuine host advantage; the model's +100 host bonus leaves adjusted strength almost even (Elo 1726+100 vs 1834).",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48940468/usa-world-cup-2026-schedule-fixtures-results-scores-group-d-how-watch-news-analysis-injuries",
+      "source_date": "2026-06-10"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, +100 host bonus for USA group matches) gives p_stat USA 36.2/draw 25.9/PAR 37.9; bounded evidence adjustment of +1.5pp USA / -1.5pp PAR (Enciso loss outweighs Richards loss). No betting or prediction-market inputs used.",
+  "report": "report.md"
+}

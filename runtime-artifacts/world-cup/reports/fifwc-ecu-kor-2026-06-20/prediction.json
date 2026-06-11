@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-ecu-kor-2026-06-20",
+  "family": "group_match",
+  "event_slug": "fifwc-ecu-kor-2026-06-20",
+  "question_cn": "2026 世界杯小组赛 E 组：厄瓜多尔 vs 库拉索（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group E: Ecuador vs Curaçao (three-way 90-minute result)",
+  "kickoff_utc": "2026-06-21T00:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "厄瓜多尔", "label_en": "Ecuador", "p": 0.84 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.12 },
+    { "key": "b", "label_cn": "库拉索", "label_en": "Curaçao", "p": 0.04 }
+  ],
+  "one_liner_cn": "Elo 差 504 分的悬殊对决：厄瓜多尔全主力且状态火热，库拉索赛前两度换帅，厄瓜多尔约 84% 取胜，悬念在比分而非胜负。",
+  "one_liner_en": "A 504-point Elo mismatch: full-strength, in-form Ecuador against a Curaçao side rattled by two pre-tournament coaching changes — roughly 84% for Ecuador, with the margin the real question.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 504 分（1938 vs 1434，世界第 9 对第 91），Davidson 统计模型基础胜率即 82%。",
+      "en": "A 504-point Elo gap (1938 vs 1434, world No. 9 vs No. 91); the Davidson statistical model alone gives Ecuador 82%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "厄瓜多尔全主力出战（凯塞多、帕乔领衔，无伤病报告），预选赛南美第 2 不败收官，热身 2-1 胜沙特。",
+      "en": "Ecuador is at full strength (Caicedo and Pacho headline, no reported injuries), finished CONMEBOL qualifying 2nd and unbeaten, and beat Saudi Arabia 2-1 in their final friendlies window.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/ecuador-squad-announcement",
+      "source_date": "2026-05-31"
+    },
+    {
+      "cn": "库拉索为史上人口最少参赛国，赛前 4 个月内两度换帅（阿德沃卡特辞职、吕滕辞职、阿德沃卡特回归），备战连续性受损。",
+      "en": "Curaçao, the smallest nation ever at a World Cup, went through two coaching changes in four months (Advocaat resigned, Rutten stepped down, Advocaat returned), disrupting preparation continuity.",
+      "source_url": "https://www.skysports.com/football/news/12098/13545528/world-cup-2026-curacao-caribbean-nations-historic-first-appearance",
+      "source_date": "2026-06-10"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gives p_stat 0.820/0.135/0.045; bounded evidence adjustment of +2.0/-1.5/-0.5 pp (cap ±8pp) for Ecuador's form/full squad vs Curaçao's coaching turmoil yields p_final 0.84/0.12/0.04. 80% intervals reflect drawNu 0.6-0.8 and ±25 Elo sensitivity plus debutant data thinness. No betting-market inputs of any kind.",
+  "report": "report.md"
+}

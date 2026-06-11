@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-prt-cdr-2026-06-17",
+  "family": "group_match",
+  "event_slug": "fifwc-prt-cdr-2026-06-17",
+  "question_cn": "2026 世界杯小组赛 K 组：葡萄牙 vs 刚果民主共和国（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group K: Portugal vs DR Congo (90-minute three-way result)",
+  "kickoff_utc": "2026-06-17T17:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "葡萄牙", "label_en": "Portugal", "p": 0.700 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.198 },
+    { "key": "b", "label_cn": "刚果民主共和国", "label_en": "DR Congo", "p": 0.102 }
+  ],
+  "one_liner_cn": "Elo 差 337 分叠加葡萄牙全主力，实力差异显著；刚果（金）现实路径是防守拖平，爆冷取胜约一成。",
+  "one_liner_en": "A 337-point Elo gap plus a full-strength Portugal squad makes this a heavy mismatch; DR Congo's realistic path is a defensive draw, with roughly a one-in-ten upset chance.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差 337 分：葡萄牙 1989（第 6）对刚果（金）1652（第 55），统计基线即约七成葡胜。",
+      "en": "337-point Elo gap: Portugal 1989 (rank 6) vs DR Congo 1652 (rank 55); the statistical baseline alone gives Portugal about 70%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "葡萄牙全员可用：5-19 公布 26 人名单，C 罗伤愈领衔第 6 次世界杯，热身赛连胜智利、尼日利亚。",
+      "en": "Portugal at full strength: 26-man squad named May 19, Ronaldo recovered to captain a record 6th World Cup, with warm-up wins over Chile and Nigeria.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/cristiano-ronaldo-roberto-martinez-portugal-squad-announcement",
+      "source_date": "2026-05-19"
+    },
+    {
+      "cn": "刚果（金）防守有组织但火力有限：0-0 平丹麦、1-2 负于刚被葡萄牙击败的智利，平局是其最现实的拿分路径。",
+      "en": "DR Congo organized but blunt: 0-0 vs Denmark and a 1-2 loss to the Chile side Portugal just beat; a draw is their most realistic outcome.",
+      "source_url": "https://www.espn.com/soccer/match/_/gameId/401871169/denmark-congo-dr",
+      "source_date": "2026-06-03"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) on eloratings.net snapshot 2026-06-11 gives p_stat 70.97/18.83/10.20; bounded evidence adjustment of 1pp from Portugal win to draw (DR Congo low-block solidity vs Denmark, cautious opener dynamics); 80% intervals reflect drawNu 0.6-0.8 sensitivity plus evidence thinness. No betting or prediction-market data consulted.",
+  "report": "report.md"
+}

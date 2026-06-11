@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-can-bih-2026-06-12",
+  "family": "group_match",
+  "event_slug": "fifwc-can-bih-2026-06-12",
+  "question_cn": "2026 世界杯小组赛 B 组：加拿大 vs 波黑（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group B: Canada vs Bosnia-Herzegovina (three-way result after 90 minutes)?",
+  "kickoff_utc": "2026-06-12T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "加拿大", "label_en": "Canada", "p": 0.63 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.23 },
+    { "key": "b", "label_cn": "波黑", "label_en": "Bosnia-Herzegovina", "p": 0.14 }
+  ],
+  "one_liner_cn": "Elo 差约 193 分加主场之利让加拿大明显占优，但 Davies 缺席揭幕战，胜率下修至六成出头。",
+  "one_liner_en": "A ~193-point Elo gap plus home advantage favors Canada, but with Davies out of the opener the win probability is revised down to the low 60s.",
+  "key_reasons": [
+    {
+      "cn": "加拿大队长 Davies（左腿筋伤）预计缺席揭幕战，Marsch 称力争第 2/3 场复出，主队失去最强攻击点。",
+      "en": "Canada captain Alphonso Davies (left hamstring) is expected to miss the opener; Marsch hopes he returns for group match 2 or 3, costing the hosts their biggest attacking threat.",
+      "source_url": "https://sports.yahoo.com/articles/why-alphonso-davies-missing-2026-213721175.html",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "Elo 实力差显著：加拿大 1788（第 25）对波黑 1595（第 65），且加拿大作为东道主在多伦多主场作战（+100 修正）。",
+      "en": "Large Elo gap: Canada 1788 (rank 25) vs Bosnia 1595 (rank 65), with Canada playing at home in Toronto as a host nation (+100 adjustment).",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "波黑热身赛进攻乏力（0-0 北马其顿、1-1 巴拿马），锋线依赖 40 岁的 Dzeko。",
+      "en": "Bosnia's attack looked blunt in warm-ups (0-0 vs North Macedonia, 1-1 vs Panama), relying on 40-year-old Edin Dzeko up front.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48972712/fifa-world-cup-2026-canada-vs-bosnia-herzegovina-kickoff-how-watch-stats-team-news",
+      "source_date": "2026-06-10"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, +100 host bonus for Canada group match at home) gave 67.3/20.3/12.5; bounded evidence adjustment of -4pp Canada / +2.5pp draw / +1.5pp Bosnia for Davies and Bombito absences vs Bosnia's blunt attack; renormalized to 63/23/14. No betting-market data used.",
+  "report": "report.md"
+}

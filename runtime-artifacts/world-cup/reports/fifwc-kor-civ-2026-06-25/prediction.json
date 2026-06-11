@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-kor-civ-2026-06-25",
+  "family": "group_match",
+  "event_slug": "fifwc-kor-civ-2026-06-25",
+  "question_cn": "2026 世界杯小组赛 E 组：库拉索 vs 科特迪瓦（2026-06-25，90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group E: Curaçao vs Côte d'Ivoire (2026-06-25, three-way 90-minute result)",
+  "kickoff_utc": "2026-06-25T20:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "库拉索", "label_en": "Curaçao", "p": 0.128 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.203 },
+    { "key": "b", "label_cn": "科特迪瓦", "label_en": "Côte d'Ivoire", "p": 0.669 }
+  ],
+  "one_liner_cn": "科特迪瓦 Elo 高出 261 分且刚客场击败法国，明显占优；库拉索作为首次参赛的最弱方，爆冷空间有限但末轮轮换带来不确定性。",
+  "one_liner_en": "Côte d'Ivoire hold a 261-point Elo edge and just beat France away — clearly stronger; debutants Curaçao have limited upset potential, though matchday-3 rotation adds uncertainty.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 261 分（科特迪瓦 1695 vs 库拉索 1434），Davidson 模型基线即给科特迪瓦 64.4% 胜率。",
+      "en": "A 261-point Elo gap (Côte d'Ivoire 1695 vs Curaçao 1434) gives Côte d'Ivoire a 64.4% baseline win probability in the Davidson model.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "科特迪瓦 6 月 4 日在南特 2-1 击败法国，队史首胜法国，状态与信心正盛。",
+      "en": "Côte d'Ivoire beat France 2-1 in Nantes on June 4 — their first-ever win over France — signalling strong form and confidence.",
+      "source_url": "https://www.espn.com/soccer/match/_/gameId/401864934/ivory-coast-france",
+      "source_date": "2026-06-04"
+    },
+    {
+      "cn": "库拉索热身赛 1-4 不敌苏格兰，面对中上强度对手防线失分明显；世界杯首秀经验欠缺。",
+      "en": "Curaçao lost 1-4 to Scotland in their warm-up, leaking goals against mid-tier opposition, and lack World Cup experience as debutants.",
+      "source_url": "https://www.skysports.com/football/scotland-vs-curacao/552902",
+      "source_date": "2026-05-30"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) on eloratings.net ratings fetched 2026-06-11 (p_stat 14.3/21.3/64.4), plus a bounded evidence adjustment of +2.5pp toward Côte d'Ivoire (cap ±8pp) justified by cited form/depth facts; June friendlies already partly priced into Elo, hence the small delta. No betting or prediction-market data consulted.",
+  "report": "report.md"
+}

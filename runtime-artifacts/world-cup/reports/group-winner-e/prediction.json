@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:e",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-e-winner",
+  "question_cn": "E 组头名（小组第一出线）是哪支球队？",
+  "question_en": "Which team finishes first in Group E?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Germany", "label_cn": "德国", "label_en": "Germany", "p": 0.4968 },
+    { "key": "Ecuador", "label_cn": "厄瓜多尔", "label_en": "Ecuador", "p": 0.4614 },
+    { "key": "Ivory Coast", "label_cn": "科特迪瓦", "label_en": "Ivory Coast", "p": 0.0413 },
+    { "key": "Curaçao", "label_cn": "库拉索", "label_en": "Curaçao", "p": 0.0005 }
+  ],
+  "one_liner_cn": "德国与厄瓜多尔基本五五开（Elo 仅差 6 分），但厄瓜多尔进攻乏力在净胜球比拼上吃亏，德国以约 49.7% 对 46.1% 微弱领先。",
+  "one_liner_en": "Germany and Ecuador are essentially a coin flip (6 Elo points apart), but Ecuador's anemic attack is a goal-difference-tiebreak liability, giving Germany a slim 49.7% vs 46.1% edge.",
+  "key_reasons": [
+    {
+      "cn": "Elo 几乎持平：厄瓜多尔 1938（世界第 9）vs 德国 1932（世界第 10），100k 次纯 Elo 蒙特卡洛给出 49.6% 对 46.7% 的接近五五开基线。",
+      "en": "Near-identical Elo: Ecuador 1938 (#9) vs Germany 1932 (#10); the 100k pure-Elo Monte Carlo baseline is a 49.6% vs 46.7% near coin flip.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "厄瓜多尔防守极强但进攻乏力：预选赛 18 场仅进 14 球、8 场平局全部 0-0（失 5 球为南美最少）——小组头名常由净胜球决定，此画像对其不利。",
+      "en": "Ecuador's elite-defense/anemic-attack profile: only 14 goals in 18 qualifiers and all eight draws finished 0-0 (5 conceded, best in CONMEBOL) — a liability when first place hinges on goal difference.",
+      "source_url": "https://www.fantasyfootballscout.co.uk/2026/06/09/fantasy-fifa-world-cup-2026-team-previews-ecuador",
+      "source_date": "2026-06-09"
+    },
+    {
+      "cn": "德国阵容基本齐整：Musiala 已从 2025 年 7 月腿部骨折中恢复，Neuer 小腿伤预计赶上 6-14 揭幕战，仅余轻微节奏/健康问号。",
+      "en": "Germany's squad is essentially intact: Musiala has recovered from his July 2025 broken leg and Neuer is expected fit for the June 14 opener, leaving only mild rhythm/fitness question marks.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/31/germany-world-cup-2026-team-preview-players-to-watch-group-and-squad-list",
+      "source_date": "2026-05-31"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 5,
+  "method_note": "Baseline: 100k-sim pure-Elo Poisson Monte Carlo (seed 20260611, eloratings.net snapshot 2026-06-11, lambda = 2.6 x Elo expectancy, no market input). Bounded evidence adjustment within ±4pp/team: Germany +3.0pp, Ecuador -3.5pp, Ivory Coast +0.5pp for Ecuador's low-scoring style (goal-difference tiebreak liability) partially offset by Germany's mild fitness questions; renormalized to sum 1.",
+  "report": "report.md"
+}

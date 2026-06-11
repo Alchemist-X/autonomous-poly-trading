@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-bel-irn-2026-06-21",
+  "family": "group_match",
+  "event_slug": "fifwc-bel-irn-2026-06-21",
+  "question_cn": "2026 世界杯小组赛 G 组：比利时 vs 伊朗（90 分钟赛果）？",
+  "question_en": "2026 World Cup Group G: Belgium vs IR Iran (90-minute result)?",
+  "kickoff_utc": "2026-06-21T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "比利时", "label_en": "Belgium", "p": 0.518 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.243 },
+    { "key": "b", "label_cn": "伊朗", "label_en": "IR Iran", "p": 0.239 }
+  ],
+  "one_liner_cn": "比利时 Elo 高出 122 分、纸面占优，但双核带伤与伊朗的韧性让这场更像六成把握而非碾压局。",
+  "one_liner_en": "Belgium's 122-point Elo edge makes them clear favourites on paper, but star fitness doubts and Iran's resilience keep this a 60-40 type game rather than a blowout.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差 122 分（比利时 1894/第15 vs 伊朗 1772/第29），中立场统计模型给比利时约 50% 胜率。",
+      "en": "122-point Elo gap (Belgium 1894/15th vs Iran 1772/29th); the neutral-venue statistical model gives Belgium about 50%.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "伊朗将阿兹蒙整队除名，91 场 57 球的二号射手空缺，进攻端实质降级。",
+      "en": "Iran omitted Azmoun entirely, leaving a 57-goals-in-91-caps void and a material attacking downgrade.",
+      "source_url": "https://www.flashscore.com/news/soccer-world-championship-taremi-and-jahanbakhsh-lead-iran-s-world-cup-squad-with-azmoun-overlooked/pGYQ1OUq/",
+      "source_date": "2026-06-01"
+    },
+    {
+      "cn": "德布劳内（眼伤）与卢卡库（髋伤、全季仅 7 场）带伤入选，比利时进攻核心状态存疑。",
+      "en": "De Bruyne (eye injury) and Lukaku (hip, only 7 club matches all season) were named while injured, leaving Belgium's attacking core's fitness in doubt.",
+      "source_url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/de-bruyne-and-lukaku-named-in-belgium-world-cup-squad-despite-injuries-2026-05-15",
+      "source_date": "2026-05-15"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 50.3/24.8/24.9, plus bounded evidence-based adjustment (net +1.5pp Belgium, -1.0pp Iran, -0.5pp draw), renormalized. No betting/prediction-market data used.",
+  "report": "report.md"
+}

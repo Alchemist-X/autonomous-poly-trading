@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-tun-nld-2026-06-25",
+  "family": "group_match",
+  "event_slug": "fifwc-tun-nld-2026-06-25",
+  "question_cn": "2026 世界杯小组赛 F 组：突尼斯 vs 荷兰（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group F: Tunisia vs Netherlands (90-minute three-way result)",
+  "kickoff_utc": "2026-06-25T23:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "突尼斯", "label_en": "Tunisia", "p": 0.09 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.184 },
+    { "key": "b", "label_cn": "荷兰", "label_en": "Netherlands", "p": 0.726 }
+  ],
+  "one_liner_cn": "荷兰 Elo 高出 320 分且突尼斯热身赛 0-5 崩盘，蒂姆贝尔缺阵影响有限，荷兰胜率约 73%。",
+  "one_liner_en": "With a 320-point Elo edge and Tunisia's 0-5 warm-up collapse, Timber's absence barely dents a ~73% Dutch win probability.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差 320 分：荷兰 1948（第 8）对突尼斯 1628（第 58），实力差距悬殊。",
+      "en": "320-point Elo gap: Netherlands 1948 (8th) vs Tunisia 1628 (58th) — a heavily lopsided matchup.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "突尼斯最后一场热身 0-5 惨败比利时，主帅 Lamouchi 公开道歉，且其 2026 年初才接手球队。",
+      "en": "Tunisia lost their final warm-up 0-5 to Belgium, prompting a public apology from coach Lamouchi, who only took over in early 2026.",
+      "source_url": "https://ghanasoccernet.com/tunisia-coach-lamouchi-ashamed-after-heavy-pre-world-cup-friendly-defeat-to-belgium",
+      "source_date": "2026-06-07"
+    },
+    {
+      "cn": "荷兰后卫蒂姆贝尔因腹股沟伤势无缘世界杯，Geertruida 补招，防线深度小幅受损。",
+      "en": "Netherlands defender Jurrien Timber misses the World Cup with a groin injury; Geertruida called up, modestly thinning defensive depth.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/49001511/netherlands-arsenal-defender-jurrien-timber-miss-world-cup-injury",
+      "source_date": "2026-06-08"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, no host bonus) gave 11.0/19.4/69.6; bounded evidence adjustment of 6pp total (cap ±8pp) shifted to 9.0/18.4/72.6. Independent of all betting/prediction-market prices.",
+  "report": "report.md"
+}

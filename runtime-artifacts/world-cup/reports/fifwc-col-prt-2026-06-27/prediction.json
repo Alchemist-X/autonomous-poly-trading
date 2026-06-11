@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-col-prt-2026-06-27",
+  "family": "group_match",
+  "event_slug": "fifwc-col-prt-2026-06-27",
+  "question_cn": "2026 世界杯 K 组小组赛（2026-06-27）：哥伦比亚 vs 葡萄牙，90 分钟三路赛果？",
+  "question_en": "2026 World Cup Group K (2026-06-27): Colombia vs Portugal, three-way result after 90 minutes?",
+  "kickoff_utc": "2026-06-27T23:30:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "哥伦比亚", "label_en": "Colombia", "p": 0.36 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.27 },
+    { "key": "b", "label_cn": "葡萄牙", "label_en": "Portugal", "p": 0.37 }
+  ],
+  "one_liner_cn": "两队 Elo 仅差 7 分、实力几乎完全对等，这场 K 组收官战大概率是争头名之战，三路概率高度接近，葡萄牙仅以毫厘领先。",
+  "one_liner_en": "Only 7 Elo points separate the sides; this likely Group K top-spot decider is a near coin-flip across all three outcomes, with Portugal ahead by a hair.",
+  "key_reasons": [
+    {
+      "cn": "Elo 几乎持平：哥伦比亚 1982（第 7）vs 葡萄牙 1989（第 6），中立场 Davidson 模型给出 36.3/25.9/37.8 的基准三路概率。",
+      "en": "Near-identical Elo: Colombia 1982 (7th) vs Portugal 1989 (6th); the neutral-venue Davidson model yields a 36.3/25.9/37.8 baseline.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "末轮大概率为争头名之战，双方或均已出线，轮换与求稳情形小幅抬升平局概率。",
+      "en": "Likely a final-matchday top-spot decider with both sides possibly already qualified, nudging draw likelihood up via rotation and risk aversion.",
+      "source_url": "https://www.sportsmole.co.uk/football/portugal/world-cup-2026/feature/world-cup-group-k-preview-predictions-key-fixture-star-players_598795.html",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "状态信号略偏哥伦比亚：哥伦比亚 2-0 完胜约旦收官，葡萄牙两场热身均一球小胜且 C罗连续 5 场未进球。",
+      "en": "Form signal slightly favors Colombia: a clean 2-0 over Jordan versus two narrow one-goal Portugal wins and Ronaldo five internationals without scoring.",
+      "source_url": "https://www.vavel.com/en-us/soccer/2026/06/10/1263141-portugal-vs-nigeria-live-score-friendly.html",
+      "source_date": "2026-06-10"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) on eloratings.net ratings, plus a bounded sourced adjustment (~2pp total, cap 8pp), renormalized. No betting or prediction-market data used.",
+  "report": "report.md"
+}

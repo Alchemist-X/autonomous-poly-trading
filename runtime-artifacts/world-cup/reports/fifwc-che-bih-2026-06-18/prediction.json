@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-che-bih-2026-06-18",
+  "family": "group_match",
+  "event_slug": "fifwc-che-bih-2026-06-18",
+  "question_cn": "2026 世界杯小组赛 B 组：瑞士 vs 波黑（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group B: Switzerland vs Bosnia-Herzegovina (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-18T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "瑞士胜", "label_en": "Switzerland", "p": 0.65 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.225 },
+    { "key": "b", "label_cn": "波黑胜", "label_en": "Bosnia-Herzegovina", "p": 0.125 }
+  ],
+  "one_liner_cn": "瑞士 Elo 高出近 300 分、实力明显占优，看好其取胜；但波黑防守顽强且瑞士近期对中游球队连续战平，平局风险不可忽视。",
+  "one_liner_en": "Switzerland's near-300-point Elo edge makes them clear favourites, but Bosnia's stubborn defence and Switzerland's recent draws against mid-tier sides keep the draw risk material.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 296 分（瑞士 1891 vs 波黑 1595），中立场地 Davidson 模型给瑞士约 67.5% 基准胜率。",
+      "en": "A 296-point Elo gap (Switzerland 1891 vs Bosnia 1595) yields a ~67.5% baseline Swiss win probability in the neutral-venue Davidson model.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "波黑近 5 场 1 胜 3 平 1 负、6 月 6 日 1-1 平巴拿马，状态平平但附加赛曾淘汰意大利，防守韧性强。",
+      "en": "Bosnia are 1W-3D-1L in their last five (1-1 vs Panama on Jun 6) — patchy form, but they eliminated Italy in the playoffs with a resilient defensive setup.",
+      "source_url": "https://www.goal.com/en/news/switzerland-bosnia-herzegovina-world-cup-preview/bltb96d9176142a8fe0",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "瑞士近期对中游球队连续战平（3 月 0-0 挪威、6 月 6 日 1-1 澳大利亚），破密集防守效率存疑，故小幅上调平局概率。",
+      "en": "Switzerland recently drew twice against mid-tier sides (0-0 Norway in March, 1-1 Australia on Jun 6), raising doubts about breaking down compact blocks — hence a small upward draw adjustment.",
+      "source_url": "https://www.espn.com/soccer/report/_/gameId/401869743",
+      "source_date": "2026-06-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Elo (eloratings.net 2026-06-11) -> three-way Davidson (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 67.5/20.2/12.3 -> bounded evidence adjustment (CHE -2.5pp, draw +2.3pp, BIH +0.2pp, within ±8pp cap) -> renormalized p_final 65.0/22.5/12.5. No betting or prediction-market data consulted.",
+  "report": "report.md"
+}

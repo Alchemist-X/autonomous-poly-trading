@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-nzl-egy-2026-06-21",
+  "family": "group_match",
+  "event_slug": "fifwc-nzl-egy-2026-06-21",
+  "question_cn": "2026 世界杯小组赛 G 组：新西兰 vs 埃及（2026-06-21，90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group G: New Zealand vs Egypt (2026-06-21, 90-minute three-way result)?",
+  "kickoff_utc": "2026-06-22T01:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "新西兰", "label_en": "New Zealand", "p": 0.225 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.24 },
+    { "key": "b", "label_cn": "埃及", "label_en": "Egypt", "p": 0.535 }
+  ],
+  "one_liner_cn": "埃及凭借萨拉赫领衔的整体实力与约134分的Elo优势占上风（约53.5%），但新西兰阵容齐整、伍德复出，平局加爆冷合计概率接近一半。",
+  "one_liner_en": "Egypt hold the edge (~53.5%) on a ~134-point Elo gap and a Salah-led attack, but with New Zealand at full strength and Wood back fit, draw-plus-upset probability is close to half.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 134 分（埃及 1696 vs 新西兰 1562），Davidson 模型基线给埃及约 51.6% 胜率。",
+      "en": "134-point Elo gap (Egypt 1696 vs New Zealand 1562); the Davidson baseline gives Egypt ~51.6%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "萨拉赫腿筋伤愈后出任队长，与曼城前锋马尔穆什领衔锋线；埃及 6 月 6 日仅 1-2 小负巴西，状态可用。",
+      "en": "Salah, recovered from a hamstring injury, captains the side alongside Man City's Marmoush; Egypt lost only 1-2 to Brazil on June 6, showing serviceable form.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/21/mohamed-salah-to-captain-egypt-as-squad-announced-for-fifa-world-cup-2026",
+      "source_date": "2026-05-21"
+    },
+    {
+      "cn": "新西兰队长伍德 12 月膝伤手术后宣称完全恢复，但 34 岁且术后回归时间短，国际强度下锐度存疑。",
+      "en": "New Zealand captain Chris Wood declares himself fully fit after December knee surgery, but at 34 with a short run-in, his sharpness at international intensity is uncertain.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48764554/chris-wood-headlines-new-zealand-2026-world-cup-squad",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: eloratings.net snapshot (2026-06-11) fed into Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) giving p_stat 23.9/24.6/51.6; bounded evidence adjustment of ~3.8pp total (cap 8pp) toward Egypt for attacking quality and form, renormalized. 80% intervals reflect drawNu 0.6-0.8 sensitivity and thin pre-opener evidence. No betting or prediction-market data consulted.",
+  "report": "report.md"
+}

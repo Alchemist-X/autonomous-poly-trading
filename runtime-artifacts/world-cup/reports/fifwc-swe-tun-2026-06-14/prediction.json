@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-swe-tun-2026-06-14",
+  "family": "group_match",
+  "event_slug": "fifwc-swe-tun-2026-06-14",
+  "question_cn": "2026 世界杯 F 组小组赛：瑞典 vs 突尼斯（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group F: Sweden vs Tunisia (three-way result, 90 minutes)?",
+  "kickoff_utc": "2026-06-15T02:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "瑞典", "label_en": "Sweden", "p": 0.48 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.26 },
+    { "key": "b", "label_cn": "突尼斯", "label_en": "Tunisia", "p": 0.26 }
+  ],
+  "one_liner_cn": "瑞典凭约克雷斯+伊萨克的锋线优势小幅占优，但突尼斯防守极稳且瑞典状态起伏大，三路都不该被排除。",
+  "one_liner_en": "Sweden hold a modest edge via the Gyokeres-Isak forward line, but Tunisia's rock-solid defence and Sweden's volatility keep every outcome live.",
+  "key_reasons": [
+    {
+      "cn": "瑞典锋线档次高于其 Elo 排名：约克雷斯随阿森纳夺 2025-26 英超冠军，附加赛戴帽并绝杀波兰，伊萨克同样在阵。",
+      "en": "Sweden's forwards outclass their Elo rank: Gyokeres won the 2025-26 Premier League with Arsenal, scored a playoff hat-trick and the late winner vs Poland; Isak is also in the squad.",
+      "source_url": "https://theanalyst.com/articles/sweden-world-cup-2026-preview-gyokeres-isak-potter",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "突尼斯预选赛零失球但 1 月临阵换帅，拉穆奇备战时间有限且名单大幅轮换，赢球上限受压。",
+      "en": "Tunisia conceded zero goals in qualifying but changed coach in January; Lamouchi has had limited preparation with a much-changed squad, capping their win ceiling.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/tunisia-squad-named-sabri-lamouchi",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "Elo 差 84 分（1712 vs 1628）+ 中立场地，统计模型给出瑞典 46.2/平 25.4/突尼斯 28.5 的基线。",
+      "en": "An 84-point Elo gap (1712 vs 1628) on neutral ground yields a statistical baseline of Sweden 46.2 / Draw 25.4 / Tunisia 28.5.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 9,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, no host bonus, neutral venue) -> p_stat Sweden 46.2/Draw 25.4/Tunisia 28.5; bounded evidence adjustment (total ~4.9pp of max 8pp) for Sweden's elite forwards vs Tunisia's coaching upheaval and defensive solidity; renormalized to 48/26/26. No market inputs of any kind.",
+  "report": "report.md"
+}

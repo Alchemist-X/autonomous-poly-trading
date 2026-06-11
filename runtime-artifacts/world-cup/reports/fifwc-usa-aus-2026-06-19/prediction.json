@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-usa-aus-2026-06-19",
+  "family": "group_match",
+  "event_slug": "fifwc-usa-aus-2026-06-19",
+  "question_cn": "2026 世界杯小组赛 D 组：美国 vs 澳大利亚（90 分钟赛果）？",
+  "question_en": "2026 World Cup Group D: United States vs Australia (90-minute result)?",
+  "kickoff_utc": "2026-06-19T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "美国", "label_en": "United States", "p": 0.41 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.26 },
+    { "key": "b", "label_cn": "澳大利亚", "label_en": "Australia", "p": 0.33 }
+  ],
+  "one_liner_cn": "美国坐拥西雅图主场以约41%小幅领先，但澳大利亚Elo更高、备战最充分，平局与客队爆冷空间不小。",
+  "one_liner_en": "The USA edge ahead at about 41% on true home advantage in Seattle, but Australia carry the higher Elo and the most thorough preparation — meaningful room for a draw or an away win.",
+  "key_reasons": [
+    {
+      "cn": "真主场优势：比赛在西雅图 Lumen Field 进行，美国作为东道主全部小组赛都在本土，模型按惯例给 +100 Elo 主场加成，这是美国概率领先的主因。",
+      "en": "Genuine home advantage: the match is at Lumen Field, Seattle; as co-hosts the USA play all group matches on home soil, earning the standard +100 Elo host bonus — the main driver of their edge.",
+      "source_url": "https://www.seattle.gov/fifa",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "两队伤情大致抵消但美国略重：美国失去主力后腰 Cardoso、前锋 Agyemang，主力中卫 Richards 伤愈状态存疑；澳大利亚缺 McGree、Yazbek、Miller。",
+      "en": "Injuries roughly offset but tilt slightly against the USA: Cardoso (first-choice DM) and Agyemang are out and starting CB Richards is a fitness doubt; Australia miss McGree, Yazbek and Miller.",
+      "source_url": "https://sports.yahoo.com/soccer/live/2026-world-cup-news-live-tracker-injuries-squads-storylines-and-updates-as-the-tournament-looms-200000653.html",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "评级信号相反：Elo 上澳大利亚 1777（第28）高于美国 1726（第39），但 FIFA 排名美国第16高于澳洲第27——基本面接近，比赛结果不确定性高。",
+      "en": "Rating systems disagree: Elo has Australia (1777, No. 28) above the USA (1726, No. 39), while FIFA ranks the USA 16th vs Australia 27th — fundamentals are close and uncertainty is high.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Davidson three-way Elo model (scale=400, drawNu=0.7) with +100 host bonus for USA home group match; p_stat 42.3/25.7/31.9 then bounded evidence adjustment of -1pp USA / +1pp Australia (injury balance, send-off loss). Market-blind: no odds or prediction-market inputs.",
+  "report": "report.md"
+}

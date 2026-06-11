@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-sen-irq-2026-06-26",
+  "family": "group_match",
+  "event_slug": "fifwc-sen-irq-2026-06-26",
+  "question_cn": "2026 世界杯小组赛 I 组：塞内加尔 vs 伊拉克（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group I: Senegal vs Iraq (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-26T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "塞内加尔", "label_en": "Senegal", "p": 0.65 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.22 },
+    { "key": "b", "label_cn": "伊拉克", "label_en": "Iraq", "p": 0.13 }
+  ],
+  "one_liner_cn": "非洲杯冠军塞内加尔满员出战、Elo 高出 253 分，对小组最弱的伊拉克占据明显优势，但末轮出线形势未知带来轮换变数。",
+  "one_liner_en": "AFCON champions Senegal, at full strength and 253 Elo points ahead, hold a clear edge over the group's weakest side Iraq, though unknown matchday-3 stakes add rotation risk.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差 253 分（塞内加尔 1860 vs 伊拉克 1607），Davidson 模型给出约 64% 的基准胜率。",
+      "en": "A 253-point Elo gap (Senegal 1860 vs Iraq 1607) yields a ~64% baseline win probability in the Davidson model.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "塞内加尔以非洲杯冠军身份满员出战：马内领衔，帕普·萨尔与哈比卜·迪亚拉伤愈复出。",
+      "en": "Senegal arrive as AFCON champions at full strength: Mane headlines the squad, with Pape Sarr and Habib Diarra back from injury.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/30/senegals-world-cup-2026-team-preview-players-to-watch-group-squad-list",
+      "source_date": "2026-05-30"
+    },
+    {
+      "cn": "伊拉克阵容深度有限：26 人名单多效力国内联赛，旅欧主力仅伊克巴尔、哈马迪等少数人。",
+      "en": "Iraq's depth is limited: the 26-man squad is mostly domestic-based, with only a few Europe-based regulars such as Zidane Iqbal and Ali Al-Hamadi.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/iraq-preliminary-squad-announcement-graham-arnold",
+      "source_date": "2026-06-01"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: eloratings.net Elo -> Davidson three-way (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 63.6/21.5/14.8; bounded evidence adjustment (+1.4pp Senegal, +0.5pp draw, -1.9pp Iraq; cap +/-8pp) -> p_final 65/22/13. 80% intervals reflect drawNu 0.6-0.8 and +/-25 Elo sensitivity.",
+  "report": "report.md"
+}

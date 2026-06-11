@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:d",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-d-winner",
+  "question_cn": "D 组头名（小组第一出线）是哪支球队？",
+  "question_en": "Which team finishes first in Group D?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Türkiye", "label_cn": "土耳其", "label_en": "Türkiye", "p": 0.5042 },
+    { "key": "Paraguay", "label_cn": "巴拉圭", "label_en": "Paraguay", "p": 0.2192 },
+    { "key": "USA", "label_cn": "美国", "label_en": "USA", "p": 0.1747 },
+    { "key": "Australia", "label_cn": "澳大利亚", "label_en": "Australia", "p": 0.1019 }
+  ],
+  "one_liner_cn": "Elo 全组最高的土耳其约五成概率拿下 D 组头名；东道主美国虽有主场加成，但 Cardoso、Agyemang 伤缺令其与巴拉圭的第二名之争更胶着。",
+  "one_liner_en": "Türkiye, holding the group's highest Elo, has roughly a 50% chance of topping Group D; hosts USA enjoy home advantage but the injury absences of Cardoso and Agyemang tighten their race with Paraguay for second.",
+  "key_reasons": [
+    {
+      "cn": "土耳其 Elo 1911（世界第 13）为全组最高，比第二高的巴拉圭（1834）高 77 分，比澳大利亚（1777）和美国（1726）优势更大；纯 Elo 蒙特卡洛基线即给出 49.2% 的头名概率。",
+      "en": "Türkiye's Elo of 1911 (world #13) is the group's highest — 77 points above second-ranked Paraguay (1834) and further clear of Australia (1777) and USA (1726); the pure-Elo Monte Carlo baseline alone gives them a 49.2% group-winner probability.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "美国三场小组赛全部在本土（模型已含小组赛 +100 Elo 主场加成），但主力后腰 Johnny Cardoso 与前锋 Patrick Agyemang 因伤无缘世界杯，故对美国基线下调 2 个百分点。",
+      "en": "USA play all three group games at home (the model already includes a +100 Elo host bonus in group play), but starting midfielder Johnny Cardoso and forward Patrick Agyemang miss the tournament through injury, so the USA baseline is shaded down by 2pp.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48882389/usa-2026-world-cup-roster-christian-pulisic-squad-mckennie-adams",
+      "source_date": "2026-06-09"
+    },
+    {
+      "cn": "土耳其 6 月 2 日公布的 26 人名单以 Güler、Yıldız 为核心且无重大伤病消息，阵容完整度支持其维持模型基线。",
+      "en": "Türkiye's 26-man squad announced on June 2, built around Güler and Yıldız, carries no major injury news — full squad availability supports keeping them at the model baseline.",
+      "source_url": "https://www.dailysabah.com/sports/football/turkiye-unveil-26-player-squad-for-historic-2026-world-cup-return",
+      "source_date": "2026-06-02"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 5,
+  "method_note": "Pure-Elo Poisson Monte Carlo, 100,000 full-tournament simulations (seed 20260611), eloratings.net snapshot 2026-06-11, +100 Elo host bonus for USA in group matches only, no market input. Single bounded adjustment: USA -2pp for confirmed injury absences (Cardoso, Agyemang), other teams renormalized proportionally to sum to 1.",
+  "report": "report.md"
+}
