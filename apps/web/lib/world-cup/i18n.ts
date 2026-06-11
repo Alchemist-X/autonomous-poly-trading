@@ -108,7 +108,7 @@ export const STR = {
     en: "ν = 0.7 (draw parameter) · R is the live Elo rating · Δ is the evidence-driven bounded shift (|Δ| ≤ 8pp per match, renormalized)"
   },
   workbench: { zh: "工作台", en: "Workbench" },
-  wbReady: { zh: "已就绪 · 邀请制 Beta", en: "Ready · invite-only beta" },
+  wbReady: { zh: "已就绪", en: "Ready" },
   wbSoon: {
     zh: "完整工作台即将开放——先在下方试试示例运行。",
     en: "The full workbench is coming soon — try the sample run below."

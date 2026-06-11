@@ -56,6 +56,7 @@
 
 .headerNav {
   display: flex;
+  align-items: center;
   gap: 20px;
   font-size: 14px;
   font-weight: 500;
@@ -1275,19 +1276,35 @@
 .langToggle {
   border: 1px solid #d8dce4;
   border-radius: 999px;
-  padding: 4px 13px;
-  font-size: 13px;
+  padding: 5px 14px;
+  font-size: 13.5px;
+  line-height: 1.4;
   background: #fff;
+  display: inline-flex;
+  align-items: center;
 }
 
 /* language dropdown */
 .langMenu {
   position: relative;
-  margin-left: 10px;
+  margin-left: 8px;
   padding-left: 20px;
   border-left: 1px solid #e8eaf0;
   display: flex;
   align-items: center;
+  align-self: center;
+}
+
+.ghLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5b6472 !important;
+  font-weight: 600;
+}
+
+.ghLink:hover {
+  color: #0f1115 !important;
 }
 
 .langMenu summary {

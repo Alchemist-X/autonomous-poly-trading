@@ -130,7 +130,7 @@ export default async function PredictionEnginePage({
       <div className={styles.container}>
         <section className={styles.peHero}>
           <p className={styles.peKicker}>
-            {pe.kicker ?? (lang === "zh" ? "Forecasting Agent · 邀请制 Beta" : "Forecasting Agent · Invite-only beta")}
+            {lang === "zh" ? "Forecasting Agent" : "Forecasting Agent"}
           </p>
           <h1 className={styles.peTitle}>
             {pe.title ?? (lang === "zh" ? "亲手运行一次 forecasting agent。" : "Run the forecasting agent yourself.")}

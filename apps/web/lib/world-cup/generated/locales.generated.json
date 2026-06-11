@@ -52,7 +52,7 @@
    "formulaTitle": "ベースラインの数式",
    "formulaLegend": "ν = 0.7（引き分けパラメータ）· Rは最新のEloレーティング · Δは証拠に基づく上限付き補正（1試合 |Δ| ≤ 8pp、更新後に正規化）",
    "workbench": "ワークベンチ",
-   "wbReady": "稼働可能 · 招待制ベータ",
+   "wbReady": "稼働可能",
    "wbSoon": "フル機能のワークベンチは近日公開——まずは下のサンプル実行をお試しください。"
   },
   "teams": {
@@ -138,7 +138,7 @@
    }
   ],
   "pe": {
-   "kicker": "Forecasting Agent · 招待制ベータ",
+   "kicker": "Forecasting Agent",
    "title": "Forecasting agentを、あなたの手で。",
    "sub": "公開済み87件の予測を支えるのと同じパイプライン：Elo事前分布 + 100,000回のモンテカルロ + 重要証拠によるベイズ更新——市場価格は一切見ません。",
    "ctaSignin": "サインインして実行",
@@ -201,7 +201,7 @@
    "formulaTitle": "Fórmulas de la línea base",
    "formulaLegend": "ν = 0.7 (parámetro de empate) · R es el rating Elo en vivo · Δ es el ajuste acotado por evidencia (|Δ| ≤ 8 pp por partido, renormalizado)",
    "workbench": "Mesa de trabajo",
-   "wbReady": "Lista · beta por invitación",
+   "wbReady": "Lista",
    "wbSoon": "El panel completo llega pronto: prueba la ejecución de ejemplo más abajo."
   },
   "teams": {
@@ -287,7 +287,7 @@
    }
   ],
   "pe": {
-   "kicker": "Forecasting Agent · Beta por invitación",
+   "kicker": "Forecasting Agent",
    "title": "Ejecuta el forecasting agent tú mismo.",
    "sub": "La misma canalización detrás de nuestros 87 pronósticos publicados: prior Elo, 100,000 simulaciones Montecarlo y actualización bayesiana con evidencia clave, sin un solo precio de mercado.",
    "ctaSignin": "Inicia sesión para ejecutar",
