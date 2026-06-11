@@ -10,7 +10,7 @@
    "tabGroups": "グループ",
    "tabKnockout": "決勝トーナメント",
    "heroMeta": "公開予測87件 · 市場価格は不参照 · Brierスコアを公開採点 · 予測時刻",
-   "subChampion": "2026年7月19日、トロフィーを掲げるのはどのチームか。Eloレーティングによる100,000回のモンテカルロ・シミュレーションに、チームごとのエビデンス補正を加えた全48チームの優勝確率です。市場価格は一度も参照せずに算出しています。",
+   "subChampion": "2026年7月19日にトロフィーを掲げるのはどのチームか。48チームの優勝確率は、私たちのforecasting agentが独立に生成します：Eloレーティングを事前分布として100,000回のモンテカルロ大会シミュレーションを実行し、負傷・招集・調子といった重要情報でベイズ更新——市場価格は一切参照しません。",
    "subGroups": "グループステージ全72試合の勝ち・引き分け・負けの確率と、各試合に対するモデルの予想。試合を開くと主な根拠と詳細な分析を確認できます。",
    "subKnockout": "グループ突破から決勝までの全行程。決勝トーナメントの各ノードでは最も可能性の高い結果を採用し、対戦ごとの勝率とともに決勝までラインをつないでいます。",
    "ruleNote": "大会方式：各グループ上位2チームがラウンド32へ進出し、12グループの3位のうち成績上位8チームが加わります。つまり各グループから2〜3チームが勝ち上がります。",
@@ -46,7 +46,14 @@
    "tierMedium": "中",
    "tierLow": "低",
    "langLabel": "言語",
-   "reportFallback": "レポート全文は下記の英語版でご覧いただけます。カードの内容は日本語化されています。"
+   "reportFallback": "レポート全文は下記の英語版でご覧いただけます。カードの内容は日本語化されています。",
+   "sampleTitle": "サンプル実行",
+   "sampleHint": "実際の問いを選ぶと、agentの実際の出力を確認できます",
+   "formulaTitle": "ベースラインの数式",
+   "formulaLegend": "ν = 0.7（引き分けパラメータ）· Rは最新のEloレーティング · Δは証拠に基づく上限付き補正（1試合 |Δ| ≤ 8pp、更新後に正規化）",
+   "workbench": "ワークベンチ",
+   "wbReady": "稼働可能 · 招待制ベータ",
+   "wbSoon": "フル機能のワークベンチは近日公開——まずは下のサンプル実行をお試しください。"
   },
   "teams": {
    "Mexico": "メキシコ",
@@ -102,38 +109,38 @@
    {
     "n": "01",
     "title": "問いを選ぶ",
-    "copy": "ワールドカップの任意の試合でも、グループ突破や優勝に関する問いでも構いません。あとはエンジンが引き受けます——あなたは問いを投げるだけです。",
+    "copy": "任意の試合、グループ首位、優勝確率。問いを投げれば、あとはagentが実行します。",
     "tag": "入力"
    },
    {
     "n": "02",
-    "title": "エビデンス収集",
-    "copy": "日付と出典付きの公開情報のみを使用します。負傷情報、予想スタメン、直近のフォーム、天候、試合の重要度。すべての事実に出典リンクを付け、オッズやブックメーカーのページは見つけ次第破棄します。",
-    "tag": "市場非参照の規律"
+    "title": "階層化された証拠収集",
+    "copy": "優先度順に公開データを収集：直近の代表戦績、クラブでの調子、負傷と先発、環境要因（会場・標高・天候）。すべて日付と出典付き。オッズページは即座に破棄します。",
+    "tag": "データ階層 · 市場非参照"
    },
    {
     "n": "03",
     "title": "統計ベースライン",
-    "copy": "最新のEloレーティングをDavidsonの3値（勝ち・引き分け・負け）モデルに入力し、突破・優勝系の問いには100,000回のモンテカルロ大会シミュレーションを実行します。ここが予測の耐力壁——再現可能で検証可能な土台です。",
+    "copy": "最新EloをDavidsonの3値モデルに入力して勝・分・負を算出。突破・優勝系の問いは公式トーナメント表上で100,000回のモンテカルロ・シミュレーションを実行します。",
     "tag": "Elo · モンテカルロ"
    },
    {
     "n": "04",
-    "title": "上限付き補正",
-    "copy": "ベースラインを動かせるのは出典付きのエビデンスのみで、補正幅は1試合あたり±8ポイントまで。エビデンスがなければ補正もしません——“なんとなく”で数字は動かせません。",
-    "tag": "±8pp上限"
+    "title": "ベイズ更新",
+    "copy": "重要な証拠を事前分布への上限付き補正に変換：1試合あたり最大±8ポイント、証拠がなければ数字は動きません。出力には信頼度（高・中・低）を付与します。",
+    "tag": "±8pp · 信頼度"
    },
    {
     "n": "05",
     "title": "レポートと公開採点",
-    "copy": "全出典リストと手法の付録を備えたバイリンガルのレポートを公開します。各試合の終了後にはBrierスコアを公開で記録し、外した予測もそのまま履歴に残ります。",
+    "copy": "全出典リストと手法付きのレポートを公開し、決着後に各問いのBrierスコアを公開記録します。外れた予測も履歴に残ります。",
     "tag": "追跡可能"
    }
   ],
   "pe": {
-   "kicker": "予測エンジン · 招待制ベータ",
-   "title": "市場価格を見ない予測を、あなたの手で。",
-   "sub": "公開済みのワールドカップ予測87件を支えているのと同じパイプライン。市場価格は使わず、エビデンスと統計だけで予測します。",
+   "kicker": "Forecasting Agent · 招待制ベータ",
+   "title": "Forecasting agentを、あなたの手で。",
+   "sub": "公開済み87件の予測を支えるのと同じパイプライン：Elo事前分布 + 100,000回のモンテカルロ + 重要証拠によるベイズ更新——市場価格は一切見ません。",
    "ctaSignin": "サインインして実行",
    "ctaInvite": "招待コードを入力",
    "ctaRun": "実行を始める ↓",
@@ -152,7 +159,7 @@
    "tabGroups": "Grupos",
    "tabKnockout": "Eliminación directa",
    "heroMeta": "87 pronósticos públicos · sin consultar precios de mercado · puntaje Brier público · hora del pronóstico",
-   "subChampion": "¿Quién levanta el trofeo el 19 de julio de 2026? Probabilidades de título para las 48 selecciones, a partir de 100,000 simulaciones Montecarlo con ratings Elo más ajustes por evidencia para cada selección, construidas sin mirar jamás un solo precio de mercado.",
+   "subChampion": "¿Quién levanta el trofeo el 19 de julio de 2026? Las probabilidades de título de las 48 selecciones las genera nuestro forecasting agent: un prior Elo pasado por 100,000 simulaciones Montecarlo del torneo y actualizado con inferencia bayesiana a partir de información clave —lesiones, convocatorias, forma—, sin consultar jamás un precio de mercado.",
    "subGroups": "Los 72 partidos de la fase de grupos: probabilidades de victoria / empate / derrota y la elección del modelo para cada encuentro. Abre cualquier partido para ver las razones clave y el razonamiento completo.",
    "subKnockout": "El recorrido completo desde la clasificación en grupos hasta la final: cada cruce eliminatorio toma el resultado más probable con su probabilidad de victoria por llave, con líneas que llegan hasta la final.",
    "ruleNote": "Formato: los dos primeros de cada grupo avanzan a los dieciseisavos de final, junto con los 8 mejores terceros de los 12 grupos, así que cada grupo clasifica a 2 o 3 selecciones.",
@@ -188,7 +195,14 @@
    "tierMedium": "media",
    "tierLow": "baja",
    "langLabel": "Idioma",
-   "reportFallback": "El informe completo está disponible en inglés más abajo; el contenido de la tarjeta está traducido."
+   "reportFallback": "El informe completo está disponible en inglés más abajo; el contenido de la tarjeta está traducido.",
+   "sampleTitle": "Ejecución de ejemplo",
+   "sampleHint": "Elige una pregunta real para ver la salida real del agente",
+   "formulaTitle": "Fórmulas de la línea base",
+   "formulaLegend": "ν = 0.7 (parámetro de empate) · R es el rating Elo en vivo · Δ es el ajuste acotado por evidencia (|Δ| ≤ 8 pp por partido, renormalizado)",
+   "workbench": "Mesa de trabajo",
+   "wbReady": "Lista · beta por invitación",
+   "wbSoon": "El panel completo llega pronto: prueba la ejecución de ejemplo más abajo."
   },
   "teams": {
    "Mexico": "México",
@@ -244,38 +258,38 @@
    {
     "n": "01",
     "title": "Elige una pregunta",
-    "copy": "Cualquier partido del Mundial, o cualquier pregunta de clasificación o de título. El motor se encarga del resto: tú solo preguntas.",
+    "copy": "Cualquier partido, ganador de grupo o probabilidad de título. Tú preguntas; el agente hace el resto.",
     "tag": "Entrada"
    },
    {
     "n": "02",
-    "title": "Recolección de evidencia",
-    "copy": "Información pública con fecha y fuente: lesiones, alineaciones, estado de forma, clima, lo que hay en juego. Cada dato lleva un enlace a su fuente; cualquier página de cuotas o apuestas se descarta al instante.",
-    "tag": "Disciplina ciega al mercado"
+    "title": "Evidencia por capas",
+    "copy": "Datos públicos por prioridad: resultados recientes de selección, forma de club, lesiones y alineaciones, entorno (sede, altitud, clima). Todo con fecha y fuente; las páginas de cuotas se descartan al instante.",
+    "tag": "Capas de datos · ciego al mercado"
    },
    {
     "n": "03",
     "title": "Línea base estadística",
-    "copy": "Los ratings Elo en vivo alimentan un modelo Davidson de tres resultados; las preguntas de clasificación corren 100,000 simulaciones Montecarlo del torneo. Este es el muro de carga: reproducible y auditable.",
+    "copy": "El Elo en vivo alimenta un modelo Davidson de tres resultados; clasificación y título corren 100,000 simulaciones Montecarlo sobre el cuadro oficial.",
     "tag": "Elo · Montecarlo"
    },
    {
     "n": "04",
-    "title": "Ajuste acotado",
-    "copy": "Solo la evidencia citada puede mover la línea base, con un tope de ±8 puntos porcentuales por partido. Sin evidencia no hay ajuste: las sensaciones no editan los números.",
-    "tag": "Tope de ±8 pp"
+    "title": "Actualización bayesiana",
+    "copy": "La evidencia clave se convierte en un ajuste acotado del prior: máximo ±8 puntos por partido; sin evidencia, nada se mueve. Cada salida lleva nivel de confianza (alta/media/baja).",
+    "tag": "±8 pp · confianza"
    },
    {
     "n": "05",
     "title": "Informe y puntuación pública",
-    "copy": "Un informe bilingüe con la lista completa de fuentes y un apéndice de métodos. Tras cada partido registramos en público el puntaje Brier: los errores quedan en el historial.",
+    "copy": "Informe con fuentes y métodos completos; cada pregunta se puntúa con Brier en público tras resolverse. Los errores quedan en el historial.",
     "tag": "Trazable"
    }
   ],
   "pe": {
-   "kicker": "Motor de pronósticos · Beta solo por invitación",
-   "title": "Ejecuta tú mismo un pronóstico sin mirar el mercado.",
-   "sub": "El mismo pipeline detrás de nuestros 87 pronósticos del Mundial ya publicados: sin precios de mercado, solo evidencia y estadística.",
+   "kicker": "Forecasting Agent · Beta por invitación",
+   "title": "Ejecuta el forecasting agent tú mismo.",
+   "sub": "La misma canalización detrás de nuestros 87 pronósticos publicados: prior Elo, 100,000 simulaciones Montecarlo y actualización bayesiana con evidencia clave, sin un solo precio de mercado.",
    "ctaSignin": "Inicia sesión para ejecutar",
    "ctaInvite": "Ingresar código de invitación",
    "ctaRun": "Empezar a ejecutar ↓",
