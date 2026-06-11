@@ -74,12 +74,14 @@ function buildTeamGroupMap(groupWinnerMarkets: Market[]): Map<string, string> {
 }
 
 function buildMatchQuestions(markets: Market[], teamGroup: Map<string, string>): Question[] {
-  const matchMarkets = markets.filter(
-    (m) =>
-      m.subtype === "moneyline_1x2" &&
-      m.eventSlug.startsWith("fifwc-") &&
-      (m.eventSlug.match(/(\d{4}-\d{2}-\d{2})/)?.[1] ?? "9999") <= GROUP_STAGE_LAST_DAY
-  );
+  // Strict slug shape `fifwc-<a>-<b>-YYYY-MM-DD` (nothing after the date):
+  // near kickoff Polymarket adds per-match prop events (first-to-score, player-props,
+  // second-half-result, ...) that the categorizer can mislabel as moneyline_1x2.
+  const matchSlug = /^fifwc-[a-z]+-[a-z]+-(\d{4}-\d{2}-\d{2})$/;
+  const matchMarkets = markets.filter((m) => {
+    const slugMatch = m.eventSlug.match(matchSlug);
+    return m.subtype === "moneyline_1x2" && slugMatch !== null && slugMatch[1] <= GROUP_STAGE_LAST_DAY;
+  });
   const byEvent = matchMarkets.reduce((acc, m) => {
     const existing = acc.get(m.eventSlug) ?? [];
     return new Map(acc).set(m.eventSlug, [...existing, m]);
