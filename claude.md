@@ -153,6 +153,12 @@
 - **现有持仓默认 hold**：pulse-direct 的 Position Review 模块不会乱平仓，每个 hold 决策都会带理由；`reduce` / `close` 必须有反向证据。
 - **claude --print 偶尔 0 字节挂 5+ 分钟**——不是失败。Pulse 渲染内部 timeout 是 30 分钟，等它出来。
 
+### 默认 ultracode 编排（2026-06-09，用户要求，仅本项目）
+
+- 本项目**所有实质任务默认进入 ultra**：用 Workflow 工具做多 agent 编排（按 understand→design→implement→review 分阶段，必要时串联多个 workflow），不把 token 成本当约束，目标是最详尽、最正确的结果，并对关键发现做对抗式校验（adversarial verify）。
+- 仅以下情况单线程直接做：纯对话/答疑，或 trivial 机械改动（单文件小改、改常量、跑个命令）。拿不准时倾向于开 workflow。
+- 这是"等效默认 ultra"：FleetView 会话层若已显示 `Ultracode is on` 以它为准；本条是跨界面兜底，确保没有该 flag 的界面里也按 ultra 走。临时关闭：某次 prompt 里明说"这次别开 workflow / 单线程做"即可覆盖。
+
 ### 关键路径速查
 
 | 内容 | 文件 |

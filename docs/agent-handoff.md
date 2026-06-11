@@ -11,7 +11,7 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-10 by Claude（pulse-stage-flow-v2：7 步 typed 管线 P3 全部完成 + 多 agent review 加固 53 项发现落地；剩 P1 接线 + P4 cutover；本轮零下单）
+> 最后更新：2026-06-10 下午 by Claude（3 轮 live pulse 用于分析质量评估；2 笔减仓成交、0 新开仓；修了 2 个 parser 回归，未 push）
 
 ---
 
@@ -130,6 +130,15 @@
 - 移动 `vitest.config.ts` 到 `config/` 后必须 `root: REPO_ROOT` 否则找不到 `@autopoly/*` workspace 包
 - `git mv` 整目录时未追踪文件不会被 git 移动，要手动 `mv`
 - 4/24 跑 v2 smoke 时 no1 钱包 USDC.e 有 $3.96 但 pUSD 为 0 → 验证 SDK 接入正常但下单需要先 wrap
+
+## 🔄 上次会话留下的上下文（2026-06-10 下午 · live 运行 + 两个 parser 修复）
+
+- 用户跑了 3 轮完整 `pulse:live`（LIVE 模式，`PULSE_ENTRY_MAX_PLANS=1`，`PULSE_TIMEOUT_MODE=unbounded`），目标后来明确为**评估分析内容质量**；第 4 轮在渲染中被用户主动中止（归档停在 preflight.json，零订单）。每步 token/时间账本：`runtime-artifacts/pulse-live-cost-ledger/2026-06-10-steps.csv`。
+- **真实成交**：仅 Run 1 的 2 笔 Position Review 减仓（ETH $18.98、Hurricanes $3.29，均 matched，现金 +$22.27）；**0 笔新开仓**。
+- **两个 live 暴露的 parser bug 已修**（commit `62a897e` + `1272087`，**未 push**）：① 渲染器把推荐行加粗 → `extractProbabilities` 不认 → edge 静默归零丢推荐；② 报告判"观望/名义方向"的市场被当真推荐提取（P00 价漂门 4.76%>3% 误打误撞拦住）。都是 P4 typed cutover 要消灭的解析脆弱性的实锤案例。
+- Run 3 验证管线全链路正确：产出 Mbappé 金靴 No 计划后被风控诚实拦截（liquidity_cap $3.85 < Polymarket 最小 $4.30）。**风控行为全部正确，未动任何风控参数**；Run 4 尝试的唯一调整是选择层 `PULSE_MIN_LIQUIDITY_USD=25000`（未跑完，效果未验证）。
+- 下单门探针结论：`polymarket.com/api/geoblock` 的 JSON **双向不可靠**（今天 blocked=true/SG 但真单被接受）。可靠测法 = 不可成交 GTC 探针（已写 `services/executor/src/ops/order-gate-probe.ts`，**未提交**，挂单 0.01 接受即撤，$0 成本）。
+- 分析质量评估（9 个深研样本）：诚实率高（仅 2/9 给可执行推荐，其余明确观望+理由）；弱项 = 官方一手源 0 覆盖（site: 定向查询全空）、深研额度按流动性而非预期 edge 分配、概率仍是散文推理（待 typed 管线）。
 
 ## 🔄 上次会话留下的上下文（2026-06-10 · pulse-stage-flow-v2 typed 管线）
 

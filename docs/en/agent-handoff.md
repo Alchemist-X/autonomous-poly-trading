@@ -11,7 +11,7 @@
 >
 > Chinese version: [`docs/agent-handoff.md`](../agent-handoff.md)
 >
-> Last updated: 2026-06-10 by Claude (pulse-stage-flow-v2: all of P3 for the typed 7-step pipeline done + 53 multi-agent-review findings landed; P1 wiring + P4 cutover remain; zero orders this session)
+> Last updated: 2026-06-10 PM by Claude (3 live pulse runs for analysis-quality review; 2 reduce fills, 0 new entries; 2 parser regressions fixed, unpushed)
 >
 > **Translation pending** — the Chinese version contains Mode A Phase 3a entries (3a.0 builder code / 3a.1 adapter / 3a.2 pulse-dispatcher bridge done as of 2026-05-05) that have not yet been mirrored here. See `docs/agent-handoff.md` for the canonical state.
 
@@ -69,6 +69,15 @@
 - Moving `vitest.config.ts` to `config/` requires `root: REPO_ROOT` in the config, otherwise `@autopoly/*` workspace packages cannot be resolved
 - `git mv` of an entire directory does not move untracked files — those need a manual `mv`
 - During the 4/24 V2 smoke, the no1 wallet had $3.96 USDC.e but $0 pUSD → verifies SDK works but trading requires wrapping first. Rechecked on 2026-05-15: `.env.no1` CLOB `COLLATERAL balance=0`, allowances are all 0, and onchain pUSD probe is 0.
+
+## 🔄 Last Session Context (2026-06-10 PM · live runs + two parser fixes)
+
+- Ran 3 full `pulse:live` rounds (LIVE mode, `PULSE_ENTRY_MAX_PLANS=1`, `PULSE_TIMEOUT_MODE=unbounded`); the user's goal turned out to be **evaluating analysis quality**; run 4 was aborted by the user mid-render (archive stopped at preflight.json, zero orders). Per-step token/time ledger: `runtime-artifacts/pulse-live-cost-ledger/2026-06-10-steps.csv`.
+- **Real fills**: only run 1's two Position-Review reduces (ETH $18.98, Hurricanes $3.29, both matched, +$22.27 cash); **0 new entries**.
+- **Two live-exposed parser bugs fixed** (commits `62a897e` + `1272087`, **NOT pushed**): ① the renderer bolded the recommended row → `extractProbabilities` missed it → edge silently collapsed to 0; ② a market the report judged "watch / nominal direction" was extracted as a real recommendation (the P00 price-drift gate, 4.76% > 3%, accidentally saved it). Both are live evidence for the markdown fragility the P4 typed cutover eliminates.
+- Run 3 proved the pipeline end-to-end correct: produced the Mbappé golden-boot No plan, honestly blocked by risk controls (liquidity_cap $3.85 < Polymarket $4.30 minimum). **All risk controls behaved correctly and none were touched**; run 4's only tweak was selection-level `PULSE_MIN_LIQUIDITY_USD=25000` (never completed, unverified).
+- Order-gate probe finding: the `polymarket.com/api/geoblock` JSON is **unreliable in both directions** (blocked=true/SG today yet a real order was accepted). Reliable test = non-crossing GTC probe (`services/executor/src/ops/order-gate-probe.ts`, **uncommitted**; rests at 0.01, cancelled on accept, $0 cost).
+- Analysis-quality verdict (9 deep-dive samples): high honesty (only 2/9 got executable recommendations, the rest explicitly watch + reasons); weaknesses = zero primary-source coverage (targeted site: queries all empty), deep-dive budget allocated by liquidity not expected edge, probabilities still prose reasoning (pending the typed pipeline).
 
 ## 🔄 Last Session Context (2026-06-10 · pulse-stage-flow-v2 typed pipeline)
 

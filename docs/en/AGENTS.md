@@ -117,6 +117,12 @@ Last updated: 2026-05-08
 - **Existing positions default to hold**: pulse-direct's Position Review module never closes positions blindly; every `hold` decision carries a reason. `reduce` / `close` requires contradicting evidence.
 - **`claude --print` occasionally hangs at 0 bytes for 5+ minutes** — that is not a failure. The Pulse render has a 30-minute internal timeout; let it finish.
 
+### Default ultracode orchestration (2026-06-09, user request, this project only)
+
+- **Every substantive task in this project defaults to ultra**: author/run a Workflow orchestration (understand→design→implement→review, chaining workflows when needed). Token cost is not a constraint; optimize for the most exhaustive, correct result and adversarially verify key findings.
+- Go solo only for conversational/Q&A turns or trivial mechanical edits (single-file tweak, constant change, one command). When unsure, lean toward a workflow.
+- This is the "default-ultra equivalent": if the FleetView session already shows `Ultracode is on`, that wins; this rule is the cross-surface fallback so behavior stays ultra even where that flag is absent. Temporary override: say "no workflow this time / go solo" in a prompt.
+
 ### Key paths
 
 | Topic | File |
