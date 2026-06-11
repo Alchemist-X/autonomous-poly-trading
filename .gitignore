@@ -47,6 +47,7 @@ runtime-artifacts/world-cup/*
 !runtime-artifacts/world-cup/elo-table.json
 !runtime-artifacts/world-cup/mc-results.json
 !runtime-artifacts/world-cup/bracket-prediction.json
+!runtime-artifacts/world-cup/run-ledger/
 !runtime-artifacts/world-cup/reports/
 run-error/
 output/
