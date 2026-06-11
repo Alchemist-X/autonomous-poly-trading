@@ -6,24 +6,30 @@ import styles from "../../components/world-cup/world-cup.module.css";
 
 // Independent metadata for the World Cup product — overrides the root layout's
 // "Trading Agent" branding (compliance R1). Positioning: probability research.
+const OG_DESCRIPTION =
+  "A market-blind forecasting agent's probabilities for all 48 teams — champion, group and knockout odds from an Elo prior, 100k Monte-Carlo simulations and Bayesian updates on key evidence. Publicly Brier-scored. Probability research, not betting advice.";
+
 export const metadata: Metadata = {
-  title: "Predict Raven 世界杯版 — 盲测 AI 概率研究",
+  title: "Predict Raven — 2026 World Cup forecasts",
   icons: {
     icon: "/favicon-raven.png",
     shortcut: "/favicon-raven.png",
     apple: "/brand/raven-icon.png"
   },
-  description:
-    "An independent, market-blind AI superforecaster for the 2026 World Cup: transparent probabilities built without looking at any betting or prediction-market prices, scored publicly with Brier. Probability research, not betting advice.",
+  description: OG_DESCRIPTION,
   openGraph: {
-    title: "Predict Raven World Cup — market-blind AI forecasts, publicly scored",
-    description:
-      "Transparent World Cup probabilities, produced without reading any market prices, with a public Brier scoreboard. Probability research, not betting advice.",
-    type: "website"
+    title: "Predict Raven — 2026 World Cup forecasts",
+    description: OG_DESCRIPTION,
+    siteName: "Predict Raven",
+    url: "https://forecasting-agent.com/world-cup",
+    type: "website",
+    images: [{ url: "/brand/raven-icon.png", width: 256, height: 256, alt: "Predict Raven" }]
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Predict Raven World Cup — market-blind AI forecasts"
+    card: "summary",
+    title: "Predict Raven — 2026 World Cup forecasts",
+    description: OG_DESCRIPTION,
+    images: ["/brand/raven-icon.png"]
   }
 };
 
