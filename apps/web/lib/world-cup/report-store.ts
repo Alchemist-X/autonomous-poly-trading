@@ -1,4 +1,5 @@
 import { promises as fs } from "node:fs";
+import type { Dirent } from "node:fs";
 import path from "node:path";
 import type { WorldCupReport, WorldCupReportSummary } from "./types";
 import { toSummary } from "./types";
@@ -39,7 +40,7 @@ async function readReportFile(filePath: string): Promise<WorldCupReport | null> 
 export async function getAllReports(): Promise<WorldCupReport[]> {
   const dir = await resolveReportsDir();
   if (!dir) return [];
-  let entries: Awaited<ReturnType<typeof fs.readdir>>;
+  let entries: Dirent[];
   try {
     entries = await fs.readdir(dir, { withFileTypes: true });
   } catch (error) {

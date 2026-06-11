@@ -7,13 +7,13 @@ import styles from "../../components/world-cup/world-cup.module.css";
 // Independent metadata for the World Cup product — overrides the root layout's
 // "Trading Agent" branding (compliance R1). Positioning: probability research.
 export const metadata: Metadata = {
-  title: "World Cup Forecast — AI 概率研究 | 公开记分",
+  title: "World Cup Forecast — 盲测 AI 概率研究 | 公开记分",
   description:
-    "An independent AI superforecaster for the 2026 World Cup: transparent probabilities, confidence intervals, and a public Brier scoreboard vs the market. Probability research, not betting advice.",
+    "An independent, market-blind AI superforecaster for the 2026 World Cup: transparent probabilities built without looking at any betting or prediction-market prices, scored publicly with Brier. Probability research, not betting advice.",
   openGraph: {
-    title: "World Cup Forecast — AI superforecaster, publicly scored",
+    title: "World Cup Forecast — market-blind AI superforecaster, publicly scored",
     description:
-      "Transparent World Cup probabilities with confidence intervals and a public Brier scoreboard vs the market. Probability research, not betting advice.",
+      "Transparent World Cup probabilities, produced without reading any market prices, with a public Brier scoreboard. Probability research, not betting advice.",
     type: "website"
   },
   twitter: {
