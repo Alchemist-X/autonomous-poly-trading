@@ -17,6 +17,19 @@ import {
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const OUT_DIR = path.join(REPO_ROOT, "runtime-artifacts/world-cup/polymarket");
 
+// Market-blind policy (2026-06-11, user decision): cached snapshots must never
+// store market prices — the prediction pipeline reads this cache and must stay
+// unspoiled. Structure/slugs/conditionIds are kept; price fields are nulled.
+function stripPrices<T extends { markets: readonly unknown[] }>(snapshot: T): T {
+  const PRICE_FIELDS = ["outcomePrices", "bestBid", "bestAsk", "lastTradePrice", "spread", "oneDayPriceChange"];
+  const markets = (snapshot.markets as Record<string, unknown>[]).map((m) => ({
+    ...m,
+    ...Object.fromEntries(PRICE_FIELDS.map((f) => [f, null]))
+  }));
+  return { ...snapshot, markets, priceFieldsStripped: { fields: PRICE_FIELDS, reason: "market-blind forecasting" } } as unknown as T;
+}
+
+
 async function main(): Promise<void> {
   const apply = process.argv.includes("--apply");
   const cached = await readSnapshot(OUT_DIR);
@@ -29,7 +42,7 @@ async function main(): Promise<void> {
   console.log(`Cache from ${cached.generatedAt} (${cached.counts.total} markets). Re-fetching...`);
   const generatedAt = new Date().toISOString();
   const markets = await fetchAllWorldCupMarkets(WORLD_CUP_TAG_IDS);
-  const fresh = buildSnapshot(markets, WORLD_CUP_TAG_IDS, generatedAt);
+  const fresh = stripPrices(buildSnapshot(markets, WORLD_CUP_TAG_IDS, generatedAt));
   const diff = diffSnapshots(cached, fresh);
 
   const s = diff.summary;
@@ -45,12 +58,11 @@ async function main(): Promise<void> {
   show("NEW", diff.added, (m) => `[${m.category}] ${m.question} — ${m.marketSlug}`);
   show("REMOVED", diff.removed, (m) => `${m.question} (${m.id})`);
   show("STATUS", diff.statusChanged, (m) => `${m.from}→${m.to}: ${m.question}`);
-  show("PRICE", diff.priceChanged, (m) => `Δ${m.maxDelta} [${m.oldPrices.join("/")}]→[${m.newPrices.join("/")}] ${m.question}`);
 
   if (apply) {
     // Carry forward any market that dropped out of the tag (kept inactive) so we
     // never lose its token/condition mappings.
-    const merged = buildSnapshot(unionPreservingDropped(fresh.markets, cached.markets), WORLD_CUP_TAG_IDS, generatedAt);
+    const merged = stripPrices(buildSnapshot(unionPreservingDropped(fresh.markets, cached.markets), WORLD_CUP_TAG_IDS, generatedAt));
     const index = buildIndex(merged, generatedAt);
     await writeCache(OUT_DIR, merged, index);
     const logLine = JSON.stringify({ checkedAt: generatedAt, summary: s }) + "\n";

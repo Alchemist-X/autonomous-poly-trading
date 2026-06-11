@@ -14,6 +14,19 @@ import {
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const OUT_DIR = path.join(REPO_ROOT, "runtime-artifacts/world-cup/polymarket");
 
+// Market-blind policy (2026-06-11, user decision): cached snapshots must never
+// store market prices — the prediction pipeline reads this cache and must stay
+// unspoiled. Structure/slugs/conditionIds are kept; price fields are nulled.
+function stripPrices<T extends { markets: readonly unknown[] }>(snapshot: T): T {
+  const PRICE_FIELDS = ["outcomePrices", "bestBid", "bestAsk", "lastTradePrice", "spread", "oneDayPriceChange"];
+  const markets = (snapshot.markets as Record<string, unknown>[]).map((m) => ({
+    ...m,
+    ...Object.fromEntries(PRICE_FIELDS.map((f) => [f, null]))
+  }));
+  return { ...snapshot, markets, priceFieldsStripped: { fields: PRICE_FIELDS, reason: "market-blind forecasting" } } as unknown as T;
+}
+
+
 async function main(): Promise<void> {
   const generatedAt = new Date().toISOString();
   console.log(`Fetching World Cup markets from Gamma (tags ${WORLD_CUP_TAG_IDS.join(", ")})...`);
@@ -22,7 +35,7 @@ async function main(): Promise<void> {
   });
   process.stdout.write("\n");
 
-  const snapshot = buildSnapshot(markets, WORLD_CUP_TAG_IDS, generatedAt);
+  const snapshot = stripPrices(buildSnapshot(markets, WORLD_CUP_TAG_IDS, generatedAt));
   const index = buildIndex(snapshot, generatedAt);
   const paths = await writeCache(OUT_DIR, snapshot, index);
 

@@ -32,8 +32,6 @@ interface Market {
   subtype: string;
   groupItem: string;
   conditionId: string;
-  outcomePrices: number[];
-  liquidity: number;
   endDate: string;
   url: string;
 }
@@ -42,8 +40,6 @@ interface Leg {
   label: string;
   marketSlug: string;
   conditionId: string;
-  cachedYesPrice: number | null;
-  liquidity: number;
 }
 
 interface Question {
@@ -57,12 +53,12 @@ interface Question {
   legs: Leg[];
 }
 
+// Market-blind policy (2026-06-11, user decision): the prediction pipeline must
+// never see market prices. Legs carry resolution metadata only.
 const toLeg = (m: Market): Leg => ({
   label: m.groupItem || m.question,
   marketSlug: m.marketSlug,
-  conditionId: m.conditionId,
-  cachedYesPrice: m.outcomePrices?.[0] ?? null,
-  liquidity: m.liquidity ?? 0
+  conditionId: m.conditionId
 });
 
 function buildTeamGroupMap(groupWinnerMarkets: Market[]): Map<string, string> {
@@ -131,7 +127,7 @@ function buildGroupWinnerQuestions(groupWinnerMarkets: Market[]): Question[] {
       eventSlug: legsRaw[0].eventSlug,
       kickoffUtcHint: legsRaw[0].endDate ?? null,
       group,
-      legs: [...legsRaw].sort((a, b) => (b.outcomePrices?.[0] ?? 0) - (a.outcomePrices?.[0] ?? 0)).map(toLeg)
+      legs: [...legsRaw].map(toLeg).sort((a, b) => a.label.localeCompare(b.label))
     }));
 }
 
@@ -152,7 +148,7 @@ function buildPerTeamPool(
     eventSlug,
     kickoffUtcHint: legsRaw[0]?.endDate ?? null,
     group: null,
-    legs: [...legsRaw].sort((a, b) => (b.outcomePrices?.[0] ?? 0) - (a.outcomePrices?.[0] ?? 0)).map(toLeg)
+    legs: [...legsRaw].map(toLeg).sort((a, b) => a.label.localeCompare(b.label))
   };
 }
 
@@ -163,13 +159,12 @@ function renderMarkdown(questions: Question[], lang: "cn" | "en", generatedAt: s
   const qf = questions.find((q) => q.family === "reach_quarterfinal");
   const sf = questions.find((q) => q.family === "reach_semifinal");
   const champ = questions.find((q) => q.family === "champion");
-  const pct = (p: number | null): string => (p == null ? "—" : `${(p * 100).toFixed(1)}%`);
 
   const lines: string[] = [];
   lines.push(t("# 2026 世界杯公开预测 — 事件清单与结算定义", "# 2026 World Cup Public Forecasts — Event List & Resolution Definitions"));
   lines.push("");
-  lines.push(t(`> 生成时间：${generatedAt} · 数据源：Polymarket Gamma 缓存快照（价格仅供参照，预测发布时刷新）`,
-    `> Generated: ${generatedAt} · Source: cached Polymarket Gamma snapshot (prices for reference only; refreshed at publish time)`));
+  lines.push(t(`> 生成时间：${generatedAt} · 数据源：Polymarket Gamma 缓存快照（仅事件结构与结算映射；本管线为盲测——分析全程不读取任何市场价格）`,
+    `> Generated: ${generatedAt} · Source: cached Polymarket Gamma snapshot (event structure and resolution mapping only; this pipeline is market-blind — the analysis never reads market prices)`));
   lines.push("");
   lines.push(t(
     `**范围：** ${matches.length} 场小组赛 + ${groups.length} 个小组头名 + 八强名单 + 四强名单 + 冠军，共 ${questions.length} 个问题、${questions.reduce((n, q) => n + q.legs.length, 0)} 条市场腿。`,
@@ -204,20 +199,20 @@ function renderMarkdown(questions: Question[], lang: "cn" | "en", generatedAt: s
 
   lines.push(t(`## 1. 小组赛 ${matches.length} 场`, `## 1. Group-Stage Matches (${matches.length})`));
   lines.push("");
-  lines.push(t("| # | 日期 | 组 | 对阵 | 缓存价 A/平/B | event_slug |", "| # | Date | Grp | Fixture | Cached A/D/B | event_slug |"));
+  lines.push(t("| # | 日期 | 组 | 对阵 | 开球 (UTC) | event_slug |", "| # | Date | Grp | Fixture | Kickoff (UTC) | event_slug |"));
   lines.push("|---|---|---|---|---|---|");
   matches.forEach((q, i) => {
     const date = q.eventSlug.match(/(\d{4}-\d{2}-\d{2})/)?.[1] ?? "";
     const fixture = q.questionEn.split(": ")[1]?.split(" — ")[0] ?? q.eventSlug;
-    const prices = q.legs.map((l) => pct(l.cachedYesPrice)).join(" / ");
-    lines.push(`| ${i + 1} | ${date} | ${q.group ?? "?"} | ${fixture} | ${prices} | \`${q.eventSlug}\` |`);
+    const kick = q.kickoffUtcHint ? q.kickoffUtcHint.slice(11, 16) : "—";
+    lines.push(`| ${i + 1} | ${date} | ${q.group ?? "?"} | ${fixture} | ${kick} | \`${q.eventSlug}\` |`);
   });
   lines.push("");
 
   lines.push(t("## 2. 小组头名（12 组）", "## 2. Group Winners (12 groups)"));
   lines.push("");
   groups.forEach((q) => {
-    const teams = q.legs.map((l) => `${l.label} ${pct(l.cachedYesPrice)}`).join(" · ");
+    const teams = q.legs.map((l) => l.label).join(" · ");
     lines.push(`- **${t(`${q.group} 组`, `Group ${q.group}`)}**: ${teams}`);
   });
   lines.push("");
@@ -226,12 +221,12 @@ function renderMarkdown(questions: Question[], lang: "cn" | "en", generatedAt: s
     if (!q) return;
     lines.push(t(titleCn, titleEn));
     lines.push("");
-    lines.push(t("| # | 球队 | 缓存价 | market_slug |", "| # | Team | Cached | market_slug |"));
-    lines.push("|---|---|---|---|");
-    q.legs.forEach((l, i) => lines.push(`| ${i + 1} | ${l.label} | ${pct(l.cachedYesPrice)} | \`${l.marketSlug}\` |`));
+    lines.push(t("| # | 球队 | market_slug |", "| # | Team | market_slug |"));
+    lines.push("|---|---|---|");
+    q.legs.forEach((l, i) => lines.push(`| ${i + 1} | ${l.label} | \`${l.marketSlug}\` |`));
     lines.push("");
   };
-  poolSection(qf, "## 3. 八强名单（48 队，按缓存价排序）", "## 3. Quarterfinalists (48 teams, sorted by cached price)");
+  poolSection(qf, "## 3. 八强名单（48 队，按字母排序）", "## 3. Quarterfinalists (48 teams, alphabetical)");
   poolSection(sf, "## 4. 四强名单（48 队）", "## 4. Semifinalists (48 teams)");
   poolSection(champ, "## 5. 冠军（48 队）", "## 5. Champion (48 teams)");
 
