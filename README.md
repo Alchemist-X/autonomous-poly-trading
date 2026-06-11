@@ -6,282 +6,295 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT" /></a>
 </p>
 
-# Predict-Raven
+# Predict Raven
 
-> This README is written in Chinese for the maintainer's convenience. Don't worry — every document in this repository has a matching English version. See [docs/en/README.md](docs/en/README.md) for the full English README.
+> English is the primary README. 中文版见 [docs/README.zh-CN.md](docs/README.zh-CN.md).
 
-最后更新：2026-05-15
+Last updated: 2026-06-12
 
 ---
 
-**Predict-Raven** 是一个在Polymarket上实现自主交易的Agent框架，可以通过claude code / codex等常见架构在本地端持久化部署
+**predict-raven** is an open-source **forecasting agent framework**: it lets an AI agent estimate the probability of real-world events, gather and weigh evidence continuously, and act on the result. The same agent core powers two very different applications today:
 
-实盘公开：
-- **持仓和决策记录**：[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
-- **实盘地址 Polymarket profile**：[`https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
+- **Autonomous prediction-market trading** — the first autonomous, continuously-running trading agent on [Polymarket](https://polymarket.com). It estimates fair probabilities, compares them to market-implied odds, and trades the edge under hard, service-layer risk controls.
+- **Market-blind public forecasting** — transparent, Brier-scored probabilities for all 48 teams at the 2026 World Cup, deliberately produced **without ever reading a market price**. Live at **[forecasting-agent.com](https://forecasting-agent.com/world-cup)**.
 
-## 系统设计
+Watch live:
 
-Predict-Raven围绕**Market Pulse**这一核心组件设计：让 AI 自主评估事件发生的概率，动态地从信息源收集证据，将其与市场隐含的赔率对比，综合交易的edge和资金回报效率给出交易指示。
+- **World Cup forecasts (market-blind)**: [forecasting-agent.com](https://forecasting-agent.com/world-cup)
+- **Trading decision log / equity curve**: [autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
+- **On-chain positions / fills (Polymarket profile)**: [`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
-### 为什么让 Agent 来做这件事
+## System Design
 
-1. **在复杂推理能力上超过人类** — Agent 事实上在复杂任务上的推理能力已经接近或者超过人类水平。更多时候，人类的优势主要在于更好的信息源而不是推理，但这一差距可以通过工程能力弥合。核心分析能力已经到位。
-2. **覆盖面广且时效性强** — Agent 能 7×24 小时同时监控数千个市场，发现任何个人无法跟踪的定价偏差。在新闻爆发时，Agent 能做到秒级响应，人类则至少需要 3 分钟以上，像这样的交易机会在无数个市场都有出现。
-3. **预测市场仍处于蓝海** — 政治和科技预测市场中，多数参与者缺乏清晰的定价模型，且普遍畏惧库存管理和逆向选择风险。系统化的 Agent 交易在这些领域面临的竞争极少。哪怕在体育市场，在 moneyline 以外也有很多市场。
+The trading side is built around a single core component, **Market Pulse**: it lets the AI independently estimate the probability of an event, dynamically gathers evidence from information sources, compares that evidence against the market's implied odds, and issues trading instructions that combine edge with capital return efficiency.
 
-### 核心定位
+The same evidence-gathering core also runs in a **market-blind** mode that never reads odds at all — used for the public World Cup forecasting product (see [Market-blind forecasting](#market-blind-forecasting) below).
 
-- Agent 下单、决策思路全部在网页上公开
-- Agent 在云端持续运行，而非本地脚本临时执行，不需要人类介入
-- 已使用 `@polymarket/clob-client-v2`，抵押品默认 pUSD；V2 切换日 2026-04-28 11:00 UTC，cutover runbook 见 [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](docs/internal/plan/2026-04-28-v2-cutover-runbook.md)
+### Why let an Agent do this
 
-## 快速开始
+1. **Superhuman reasoning on complex tasks** — Agents now match or exceed human-level reasoning on complex problems. Most of the time, the human edge is better information sources rather than reasoning, and engineering can close that gap. The core analytical capability is already in place.
+2. **Broad coverage and fast reaction time** — An Agent can monitor thousands of markets 24/7 and spot pricing dislocations no individual could track. When news breaks, the Agent responds in seconds; a human needs at least three minutes. Opportunities like this appear across countless markets.
+3. **Prediction markets are still a blue ocean** — Most participants in political and tech prediction markets lack a clear pricing model and broadly fear inventory management and adverse-selection risk. Systematic Agent trading faces very little competition in these areas. Even in sports, there is plenty beyond moneyline markets.
 
-通过 AI Agent（Claude Code / Codex / OpenClaw）自然语言快速开始
+### Core positioning
 
-> **前置**：你需要先装好 [Claude Code](https://claude.com/claude-code) 或 [Codex CLI](https://github.com/openai/codex) 任一个，`git clone` 本仓库后在仓库目录里启动它，再开始下面 4 步。
+- Every order the Agent places and its decision reasoning are published on the website
+- The Agent runs continuously in the cloud — not as ad-hoc local scripts — with no human in the loop
+- Runs on `@polymarket/clob-client-v2` with pUSD as the default collateral; V2 cutover is 2026-04-28 11:00 UTC, see [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](docs/internal/plan/2026-04-28-v2-cutover-runbook.md) for the runbook
 
-### 1. 准备环境
+## Market-blind forecasting
 
-对 Agent 说：
+The same agent powers a **probability-research** product that is deliberately decoupled from the trading side: it forecasts events **without reading any betting or prediction-market price**, so the output is an independent estimate rather than a re-statement of the market consensus.
+
+The 2026 World Cup deployment is the public showcase — 87 questions (champion, group winners, group matches, knockout qualifiers) for all 48 teams:
+
+- **Statistical prior**: live Elo ratings feed a Davidson three-way model for single matches; tournament questions run 100,000 Monte-Carlo simulations over the official bracket.
+- **Bayesian update**: key evidence (injuries, lineups, form, venue/altitude/weather) is converted into a bounded adjustment on the prior — at most ±8 percentage points per match, and nothing moves without a cited source.
+- **Public scoring**: every forecast is Brier-scored in public after the match settles; wrong calls stay on the record.
+
+Market data is used only for event structure and settlement mapping (slug / conditionId / resolution rules); price fields are stripped at cache-write time. Code lives in `scripts/world-cup/`, `packages/sports-data/`, `packages/sports-model/`, and `apps/web/app/world-cup/`. This is probability research, not betting advice.
+
+## Quick Start
+
+Driven entirely through an AI Agent (Claude Code / Codex / OpenClaw) in natural language. No commands to memorise.
+
+> **Prerequisite**: install either [Claude Code](https://claude.com/claude-code) or [Codex CLI](https://github.com/openai/codex), `git clone` this repo, and start the Agent inside the repo directory before going through the 4 steps below.
+
+### 1. Set up
+
+Say to the Agent:
 
 ```
-帮我装好 predict-raven 需要的依赖
+install the dependencies for predict-raven
 ```
 
-预期：Agent 会跑 `pnpm install` + `pnpm build`，告诉你环境是否就绪。如果你电脑上还没装 Node.js / pnpm，它也会先把这两样装上。这一步不需要 Docker、也不需要真钱包。
+Expected: the Agent runs `pnpm install` + `pnpm build` and tells you whether the environment is ready. If you don't have Node.js / pnpm yet, it'll install those first. No Docker, no real wallet required at this stage.
 
-### 2. 配置资金
+### 2. Configure funds
 
-Predict-Raven 支持多种资金管理方式，包括社交登录（Google、TG）和 OKX Agentic Wallet。
+Predict-Raven supports multiple capital-management modes, including social login (Google, Telegram) and OKX Agentic Wallet.
 
-Private-key 模式下，Polymarket 钱包凭据可以从 polymarket.com → Settings → Export Wallet 拿到。新建 `.env.live-test`（参考 `.env.example` 模板），把这 5 个字段填进去：
+In private-key mode, get your Polymarket wallet credentials from polymarket.com → Settings → Export Wallet. Create a new `.env.live-test` (use `.env.example` as the template) and fill in these 5 fields:
 
 - `WALLET_PROVIDER=private-key`
-- `PRIVATE_KEY` — 钱包私钥
-- `FUNDER_ADDRESS` — Polymarket proxy wallet 地址
-- `SIGNATURE_TYPE` — 签名类型（`0` 或 `1`）
-- `CHAIN_ID` — `137`（Polygon mainnet）
+- `PRIVATE_KEY` — the wallet private key
+- `FUNDER_ADDRESS` — the Polymarket proxy wallet address
+- `SIGNATURE_TYPE` — signature type (`0` or `1`)
+- `CHAIN_ID` — `137` (Polygon mainnet)
 
-OKX Agentic Wallet 模式不需要 `PRIVATE_KEY`，但要先用 `onchainos wallet login/verify` 登录，并设置 `WALLET_PROVIDER=onchainos`、`FUNDER_ADDRESS`（有 collateral/allowance 的 Polymarket deposit/proxy wallet）、`SIGNATURE_TYPE=3`、`CHAIN_ID=137`。
+OKX Agentic Wallet mode does not need `PRIVATE_KEY`, but you must log in with `onchainos wallet login/verify` first and set `WALLET_PROVIDER=onchainos`, `FUNDER_ADDRESS` (the Polymarket deposit/proxy wallet with collateral/allowance), `SIGNATURE_TYPE=3`, and `CHAIN_ID=137`.
 
-填完后对 Agent 说：
-
-```
-我想配置钱包
-```
-
-预期：Agent 会读取你的 `.env.live-test`，确认钱包能连上 Polymarket，并打印钱包地址和当前余额。如果有字段没填，会立刻告诉你缺哪一个。
-
-### 3. 获取推荐，不下单
-
-对 Agent 说：
+Then say:
 
 ```
-帮我推荐一些交易，不用下单
+configure my wallet
 ```
 
-预期：Agent 会列出几个推荐交易，每条带上市场、方向、押注金额，以及它估算的胜率优势（edge）和资金回报效率。完整的推理过程也会落盘成 markdown，方便你回头复盘。这一步**不会真的下单**，所以钱包里没有 USDC 也能完整跑通。
+Expected: the Agent reads your `.env.live-test`, confirms the wallet can talk to Polymarket, and prints the wallet address and current balance. If any field is missing, it tells you exactly which one.
 
-### 4. 实盘交易
+### 3. Recommendations only (also fine if you haven't funded yet)
 
-对 Agent 说：
+Say:
 
 ```
-实盘运行 pulse
+recommend some trades, no actual orders
 ```
 
+Expected: the Agent lists a few suggested trades — each with the market, side, stake size, and its estimated edge and capital return efficiency. The full reasoning is also written to disk as markdown so you can review it later. **No orders are placed in this step**, so you can run it end-to-end even without USDC in the wallet.
 
-预期：Agent 会按上一步的推荐真实下单，完成后告诉你成交了哪几笔、哪些被拒。
+### 4. Real-money live trading
 
-> 想看具体的 pnpm 命令、环境变量、归档目录，见 [docs/diagrams/dev-reference.md](docs/diagrams/dev-reference.md)。
+Say:
 
-## 架构总览
+```
+run the pulse with real money
+```
 
-系统分为四层，数据从上到下流动：
+Expected: the Agent places real orders based on the recommendations from step 3 and tells you which ones filled and which got rejected.
+
+> For concrete pnpm commands, env vars, and archive directories, see [docs/diagrams/dev-reference.md](docs/diagrams/dev-reference.md).
+
+## Architecture Overview
+
+The system has four layers; data flows top to bottom:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Layer 1 · Research / Pulse                                 │
-│  从 Polymarket 抓取市场列表，生成 Pulse 候选池              │
-│  产物 → runtime-artifacts/reports/pulse/...                 │
+│  Fetches Polymarket listings, produces the Pulse pool       │
+│  Output → runtime-artifacts/reports/pulse/...               │
 └───────────────────────────┬─────────────────────────────────┘
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  Layer 2 · Decision / Runtime                               │
-│  orchestrator 将 Pulse + 持仓上下文 → 结构化决策            │
-│  主路径: pulse-direct │ legacy: provider-runtime            │
+│  orchestrator turns Pulse + position context → decisions    │
+│  Primary: pulse-direct │ Legacy: provider-runtime           │
 └───────────────────────────┬─────────────────────────────────┘
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  Layer 3 · Execution / Risk                                 │
-│  服务层硬风控裁剪 → executor 下单 / 同步 / 止损 / flatten   │
-│  FOK 市价单 · 单笔≤15% · 总敞口≤80% · 回撤≥30% halt       │
+│  Service-layer hard risk trimming → executor order / sync   │
+│  FOK market · ≤15% per trade · ≤80% expo · ≥30% halt        │
 └───────────────────────────┬─────────────────────────────────┘
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  Layer 4 · State / Archive / UI                             │
-│  DB / 本地状态 / runtime-artifacts 归档 / apps/web 展示     │
+│  DB / local state / runtime-artifacts archive / apps/web    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## Provider 切换
+## Provider Switching
 
-系统不绑定 AI 框架，Codex / Claude Code / OpenClaw 互相替换只需改一行：
+The system is not tied to a single AI framework. Swapping between Codex / Claude Code / OpenClaw is a one-line change:
 
 ```bash
-AGENT_RUNTIME_PROVIDER=codex        # 可选：codex / claude-code / openclaw
+AGENT_RUNTIME_PROVIDER=codex        # options: codex / claude-code / openclaw
 ```
 
-自定义 Agent 通过 `<PROVIDER>_COMMAND` 配置模板命令，示例和占位符见 [.env.example](.env.example)。
+Custom Agents are plugged in via a template command configured through `<PROVIDER>_COMMAND`. See [.env.example](.env.example) for examples and placeholders.
 
-## 决策引擎
+## Decision Engine
 
-当前有两种决策策略，由 `AGENT_DECISION_STRATEGY` 环境变量控制：
+There are currently two decision strategies, selected via the `AGENT_DECISION_STRATEGY` environment variable:
 
-### pulse-direct（当前默认主路径）
+### pulse-direct (current default)
 
 ```
-Pulse markdown → 正则/表格解析 → PulseEntryPlan
+Pulse markdown → Regex/table parsing → PulseEntryPlan
                                         ↓
-当前持仓 → reviewCurrentPositions → hold/reduce/close
+Current positions → reviewCurrentPositions → hold/reduce/close
                                         ↓
-           monthlyReturn 排序（top 4）→ 20% batch cap
+           monthlyReturn sort (top 4) → 20% batch cap
                                         ↓
                    composePulseDirectDecisions → TradeDecisionSet
 ```
 
-不依赖外部 LLM 进程，直接从 Pulse 结构化章节提取开仓候选，按 `monthlyReturn = edge / monthsToResolution` 排序，取 top 4，单轮总下注不超过 bankroll 的 20%。
+No external LLM process is needed. Entry candidates are extracted directly from Pulse's structured sections, sorted by `monthlyReturn = edge / monthsToResolution`, the top 4 are taken, and total staking in a single round is capped at 20% of bankroll.
 
-### provider-runtime（legacy 对照）
+### provider-runtime (legacy comparison)
 
-通过 spawn 外部进程（Codex / OpenClaw / Claude Code CLI），把 Pulse + 持仓上下文传给 LLM，解析 stdout 得到 `TradeDecisionSet`。仍可用，但不再是默认路径。
+Spawns an external process (Codex / OpenClaw / Claude Code CLI), passes Pulse + position context to the LLM, and parses stdout into a `TradeDecisionSet`. Still functional, but no longer the default path.
 
-## 风控体系
+## Risk Controls
 
-**核心思路：风控不靠提示词，而是服务层硬规则。** 无论上游是哪种 provider、哪种决策策略，只要进入 orchestrator / executor 链路就受统一约束——Agent 的推理错误、异常数据、模型越权都无法绕过。三级防线 + Pulse 前置校验，全部在下单前裁剪；单个持仓越线强制止损；整体回撤越线直接 halt 且只有管理员能恢复（fail-closed）。
+**Core principle: risk controls do not rely on prompt engineering — they are service-layer hard rules.** No matter which provider or decision strategy runs upstream, anything entering the orchestrator / executor pipeline is bound by the same constraints: Agent reasoning errors, bad data, and model overreach cannot bypass them. Three tiers of defence plus Pulse-level preflight checks trim everything before orders go out; individual positions that cross the line are force-stopped; a system-wide drawdown breach halts trading immediately, and only an admin can resume (fail-closed).
 
-### 系统级
+### System level
 
-| 规则 | 阈值 | 效果 |
+| Rule | Threshold | Effect |
 | --- | --- | --- |
-| 组合回撤 halt | 净值相对高水位回撤 ≥ **30%** | 进入 `halted`，禁止新开仓 |
-| 恢复 | 仅管理员 `resume` | fail-closed 设计 |
+| Portfolio drawdown halt | NAV drawdown from HWM ≥ **30%** | Enter `halted`, block all new opens |
+| Recovery | Admin `resume` only | Fail-closed by design |
 
-### 仓位级
+### Position level
 
-| 规则 | 阈值 |
+| Rule | Threshold |
 | --- | --- |
-| 单仓止损 | 浮亏 ≥ **30%** |
-| 止损优先级 | 高于常规策略动作 |
+| Per-position stop-loss | Unrealized loss ≥ **30%** |
+| Stop-loss priority | Higher than regular strategy actions |
 
-### 执行级
+### Execution level
 
-| 规则 | 默认值 |
+| Rule | Default |
 | --- | --- |
-| 下单类型 | **FOK** 市价单 |
-| 单笔上限 | 资金的 **15%** |
-| 最大总敞口 | 资金的 **80%** |
-| 单事件敞口上限 | 资金的 **30%** |
-| 最大并发持仓 | **22** 个 |
-| 最小交易额 | **$5** |
-| 最小有效额度 | 低于此直接丢弃 |
+| Order type | **FOK** market orders |
+| Per-trade cap | **15%** of bankroll |
+| Max total exposure | **80%** of bankroll |
+| Max per-event exposure | **30%** of bankroll |
+| Max concurrent positions | **22** |
+| Minimum trade notional | **$5** |
+| Minimum effective notional | Below threshold → discard |
 
-### Pulse 级
+### Pulse level
 
-- 必须来自真实 `fetch_markets.py` 抓取，不再有 mock fallback
-- Pulse 超龄（>120 分钟）或候选不足（<1 个）视为风险状态，本轮禁止新 `open`
-- `open` 的 `token_id` 必须来自 Pulse candidates
+- Must come from a real `fetch_markets.py` fetch — no mock fallback
+- Stale Pulse (>120 minutes) or too few candidates (<1) is treated as a risk state; no new `open` in that round
+- `open` actions' `token_id` must originate from the Pulse candidate set
 
-完整规则见 [risk-controls.md](docs/risk-controls.md)。
+Full rules: [docs/risk-controls.md](docs/risk-controls.md).
 
-## 环境变量
+## Environment Variables
 
-完整模板：[.env.example](.env.example)
+Full template: [.env.example](.env.example)
 
-分四组理解：
+Organised into four groups:
 
-| 组 | 关键变量 | 说明 |
+| Group | Key Variables | Purpose |
 | --- | --- | --- |
-| **共享** | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE` | 执行模式（paper/live）、基础设施连接 |
-| **Web** | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN` | 管理员鉴权 |
-| **Executor** | `WALLET_PROVIDER` `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` `ONCHAINOS_BIN` | Polymarket 钱包与链配置 |
-| **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*` | Provider 选择、Pulse 抓取、风控参数 |
+| **Shared** | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE` | Execution mode (paper/live), infra connections |
+| **Web** | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN` | Admin authentication |
+| **Executor** | `WALLET_PROVIDER` `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` `ONCHAINOS_BIN` | Polymarket wallet and chain config |
+| **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*` | Provider selection, Pulse fetching, risk parameters |
 
-如果 Polymarket 凭据放在相邻仓库，可以设 `ENV_FILE=../pm-PlaceOrder/.env.aizen`。真实资金测试建议固定使用独立的 `.env.live-test`。
+If your Polymarket credentials live in an adjacent repo, you can set `ENV_FILE=../pm-PlaceOrder/.env.aizen`. For real-money testing, stick to a dedicated `.env.live-test`.
 
-## 资金与账号配置
+## Wallet and Account Setup
 
-Polymarket 下单链路有两种 signer 模式。
+The Polymarket order path supports two signer modes.
 
-Private-key 模式至少需要：
+Private-key mode needs:
 
 - `WALLET_PROVIDER=private-key`
-- `PRIVATE_KEY` — 钱包私钥（建议用 Polymarket 的代理钱包而不是主钱包）
-- `FUNDER_ADDRESS` — Polymarket proxy wallet 地址（有 collateral 的那一个）
-- `SIGNATURE_TYPE` — `0` 或 `1`，取决于钱包类型
-- `CHAIN_ID` — `137`（Polygon mainnet）
+- `PRIVATE_KEY` — wallet private key (prefer a Polymarket proxy wallet over your main wallet)
+- `FUNDER_ADDRESS` — the Polymarket proxy wallet address (the one that holds collateral)
+- `SIGNATURE_TYPE` — `0` or `1`, depending on wallet type
+- `CHAIN_ID` — `137` (Polygon mainnet)
 
-OKX Agentic Wallet / OnchainOS 模式至少需要：
+OKX Agentic Wallet / OnchainOS mode needs:
 
-- `WALLET_PROVIDER=onchainos`（`okx-agentic` 仍作为兼容别名）
-- `ONCHAINOS_BIN` — 默认 `onchainos`
-- `FUNDER_ADDRESS` — Polymarket deposit/proxy wallet 地址（持有 collateral/allowance）
+- `WALLET_PROVIDER=onchainos` (`okx-agentic` remains a compatibility alias)
+- `ONCHAINOS_BIN` — defaults to `onchainos`
+- `FUNDER_ADDRESS` — Polymarket deposit/proxy wallet address with collateral/allowance
 - `SIGNATURE_TYPE=3` — deposit wallet / POLY_1271
 - `CHAIN_ID=137`
 
-建议按用途拆独立文件，都不进 git：
+Keep these in separate per-purpose files, none of which are committed:
 
-- `.env.live-test` — 真金实盘凭据
-- `.env.<wallet-name>`（如 `.env.pizza`）— 按钱包名拆分，避免混用
+- `.env.live-test` — real-money live-trading credentials
+- `.env.<wallet-name>` (e.g. `.env.pizza`) — split by wallet name to avoid mixing them up
 
-Agent 每次 preflight 都会打印当前 `ENV_FILE`、钱包地址、collateral 金额，对不上立刻终止，避免错用钱包。
+Every preflight prints the current `ENV_FILE`, wallet address, and collateral amount. If any of them do not match, it aborts immediately so you never accidentally trade on the wrong wallet.
 
-## 外部依赖仓库
+## External Repository Dependencies
 
-`vendor/manifest.json` 锁定了以下外部仓库的具体 commit：
+`vendor/manifest.json` pins the following external repos to specific commits:
 
-| 仓库 | 用途 |
+| Repository | Purpose |
 | --- | --- |
-| `polymarket-trading-TUI` | 交易终端和 CLOB 接线参考 |
-| `polymarket-market-pulse` | Pulse 研究输入 |
-| `alert-stop-loss-pm` | 止损逻辑参考 |
-| `all-polymarket-skill` | Backtesting、Monitor、Resolution 等 skill 参考 |
-| `pm-PlaceOrder` | 下单参考和本地凭据源 |
+| `polymarket-trading-TUI` | Trading terminal and CLOB wiring reference |
+| `polymarket-market-pulse` | Pulse research input |
+| `alert-stop-loss-pm` | Stop-loss logic reference |
+| `all-polymarket-skill` | Backtesting, monitor, resolution skill references |
+| `pm-PlaceOrder` | Order placement reference and local credential source |
 
-运行 `pnpm vendor:sync` 把它们同步到 `vendor/repos/`。纯 `pnpm build` 不需要 vendor，但跑 pulse / trial / live 链路前必须先 sync。
+Run `pnpm vendor:sync` to sync them into `vendor/repos/`. A plain `pnpm build` does not need vendor, but the pulse / trial / live paths must sync first.
 
-## 运行归档
+## Run Archives
 
-所有运行产物写入 `runtime-artifacts/`（已 `.gitignore`），由 `ARTIFACT_STORAGE_ROOT` 控制根目录。
+All run artifacts are written to `runtime-artifacts/` (already in `.gitignore`), rooted at `ARTIFACT_STORAGE_ROOT`.
 
-| 路径 | 内容 |
+| Path | Contents |
 | --- | --- |
 | `reports/pulse/YYYY/MM/DD/` | Pulse markdown + JSON |
-| `reports/review\|monitor\|rebalance/` | 组合报告 |
-| `reports/runtime-log/` | 决策运行时解释性日志 |
-| `pulse-live/<timestamp>-<runId>/` | Pulse Live 运行产物 |
-| `live-test/<timestamp>-<runId>/` | Stateful 运行产物（失败时含 `error.json`） |
-| `checkpoints/trial-recommend/` | Paper 推荐断点续跑检查点 |
-| `local/paper-state.json` | Paper 默认状态文件 |
+| `reports/review\|monitor\|rebalance/` | Portfolio reports |
+| `reports/runtime-log/` | Decision runtime explanatory logs |
+| `pulse-live/<timestamp>-<runId>/` | Pulse Live run artifacts |
+| `live-test/<timestamp>-<runId>/` | Stateful run artifacts (includes `error.json` on failure) |
+| `checkpoints/trial-recommend/` | Paper recommendation resume checkpoints |
+| `world-cup/` | Market-blind forecast archive, event list, Elo / Monte-Carlo backbone |
+| `local/paper-state.json` | Default paper state file |
 
-失败归档（按 AGENTS 约定）写入 `run-error/`，包含失败阶段、核心上下文、原因摘要和下一步命令。
+Failure archives (per the AGENTS convention) go to `run-error/` with the failing stage, core context, root-cause summary, and next-step command.
 
-## 待办
+## Doc Index
 
-- [ ] **高优 · 2026-04-21 记入** — Pulse 流程人为检查与优化（端到端：prompt / 技能文档、候选与归档质量、`Illustration/pulse-live-flow.md` 等与真实运行对齐）。
+- [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — Agent collaboration conventions (required reading)
+- [docs/risk-controls.md](docs/risk-controls.md) — Full write-up of the hard risk rules
+- [.env.example](.env.example) — Environment variable template
+- [docs/diagrams/onboarding-architecture.md](docs/diagrams/onboarding-architecture.md) — Architecture diagram + module map
+- [docs/diagrams/trading-modes-flowchart.md](docs/diagrams/trading-modes-flowchart.md) — Trading mode flowchart
+- [docs/diagrams/dev-reference.md](docs/diagrams/dev-reference.md) — Command cheatsheet / dependency matrix / deployment shapes
+- [docs/internal/plan/2026-06-09-world-cup-special-plan.md](docs/internal/plan/2026-06-09-world-cup-special-plan.md) — World Cup forecasting product plan
 
-## 文档索引
-
-- [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — Agent 协作约定（必读）
-- [risk-controls.md](docs/risk-controls.md) — 风控硬规则完整说明
-- [.env.example](.env.example) — 环境变量模板
-- [Illustration/onboarding-architecture.md](Illustration/onboarding-architecture.md) — 架构图 + 模块地图
-- [Illustration/trading-modes-flowchart.md](Illustration/trading-modes-flowchart.md) — 下单模式流程图
-- [Illustration/hostinger-vps-deploy-runbook.md](Illustration/hostinger-vps-deploy-runbook.md) — VPS 部署 runbook
-- [Illustration/dev-reference.md](Illustration/dev-reference.md) — 命令速查 / 依赖矩阵 / 部署形态
-- [progress.md](docs/progress.md) — 实现进度与运行数据快照
-- [rough-loop.md](rough-loop.md) — Rough Loop 子系统入口
-
-历史 handoff 和一次性探索稿归档在 [Wasted/README.md](Wasted/README.md)。
+Historical handoff docs and one-off exploration notes are archived under [docs/archive/README.md](docs/archive/README.md).
