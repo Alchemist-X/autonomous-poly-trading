@@ -18,7 +18,8 @@ const CLOUD_SLOTS: ReadonlyArray<readonly [number, number]> = [
 ];
 
 function pct(p: number): string {
-  return p >= 0.095 ? `${Math.round(p * 100)}%` : `${(p * 100).toFixed(1)}%`;
+  if (p < 0.0001) return "<0.01%";
+  return `${(p * 100).toFixed(2)}%`;
 }
 
 export default function ChampionPage() {

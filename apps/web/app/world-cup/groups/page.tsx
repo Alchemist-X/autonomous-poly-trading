@@ -28,7 +28,7 @@ export default function GroupsPage() {
 
   return (
     <div>
-      <WcHero sub="72 场小组赛逐场预测：每一场给出胜 / 平 / 负三路概率与模型判断。点开任意一场看主要理由与完整推理。" />
+      <WcHero wide sub="72 场小组赛逐场预测：每一场给出胜 / 平 / 负三路概率与模型判断。点开任意一场看主要理由与完整推理。" />
 
       <div className={styles.groupGrid}>
         {groups.map(([g, ms]) => {

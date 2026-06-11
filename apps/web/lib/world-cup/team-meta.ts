@@ -67,7 +67,8 @@ const ALIASES: Record<string, string> = {
   "Cabo Verde": "Cape Verde",
   "DR Congo": "Congo DR",
   "Bosnia-Herzegovina": "Bosnia and Herzegovina",
-  "IR Iran": "Iran"
+  "IR Iran": "Iran",
+  Turkiye: "Türkiye"
 };
 
 export function resolveTeam(name: string): TeamMeta {

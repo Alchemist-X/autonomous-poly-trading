@@ -6,9 +6,9 @@ import { WcHero } from "../../../components/world-cup/wc-hero";
 import bracketData from "../../../lib/world-cup/generated/bracket.generated.json";
 import styles from "../../../components/world-cup/world-cup.module.css";
 
-// 出线名单 tab — Polymarket-style horizontal bracket built from the modal
-// path (Elo favourite advances at every node), plus marginal reach-QF/SF
-// probabilities from the 100k-sim Monte Carlo.
+// 出线名单 tab — knockout tree with real connector lines between rounds and
+// escalating card framing toward the final. Feeder ties are ordered adjacently
+// so each connector joins exactly the two ties that produce the next round.
 
 interface Tie {
   match: number;
@@ -37,7 +37,20 @@ interface BracketFile {
 
 const bracket = bracketData as unknown as BracketFile;
 
-function TieCardView({ tie }: { tie: Tie }) {
+// Bracket-adjacent ordering (upper half feeds SF1, lower half feeds SF2).
+const ORDER: Record<"R32" | "R16" | "QF" | "SF", number[]> = {
+  R32: [74, 77, 73, 75, 83, 84, 81, 82, 76, 78, 79, 80, 86, 88, 85, 87],
+  R16: [89, 90, 93, 94, 91, 92, 95, 96],
+  QF: [97, 98, 99, 100],
+  SF: [101, 102]
+};
+
+function orderedTies(round: "R32" | "R16" | "QF" | "SF"): Tie[] {
+  const byMatch = new Map(bracket[round].map((t) => [t.match, t]));
+  return ORDER[round].map((m) => byMatch.get(m)).filter((t): t is Tie => Boolean(t));
+}
+
+function TieCardView({ tie, tier }: { tie: Tie; tier?: string }) {
   const rows = [tie.a, tie.b].map((team) => {
     const meta = resolveTeam(team);
     const isWin = team === tie.winner;
@@ -51,16 +64,31 @@ function TieCardView({ tie }: { tie: Tie }) {
       </div>
     );
   });
-  return <div className={styles.tieCard}>{rows}</div>;
+  return <div className={`${styles.tieCard} ${tier ?? ""}`}>{rows}</div>;
 }
 
-function RoundCol({ title, ties, center }: { title: string; ties: Tie[]; center?: boolean }) {
+function RoundCol({ title, ties, tier }: { title: string; ties: Tie[]; tier?: string }) {
   return (
     <div className={styles.roundCol}>
       <div className={styles.roundTitle}>{title}</div>
-      <div className={`${styles.roundBody} ${center ? styles.roundBodyCenter : ""}`}>
+      <div className={styles.slotCol}>
         {ties.map((t) => (
-          <TieCardView key={t.match} tie={t} />
+          <div key={t.match} className={styles.slot}>
+            <TieCardView tie={t} tier={tier} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Joiner({ count }: { count: number }) {
+  return (
+    <div className={styles.connectorCol} aria-hidden>
+      <div className={styles.connectorHead} />
+      <div className={styles.connectorBody}>
+        {Array.from({ length: count }, (_, i) => (
+          <div key={i} className={styles.connector} />
         ))}
       </div>
     </div>
@@ -104,7 +132,11 @@ export default function BracketPage() {
 
   return (
     <div>
-      <WcHero sub="从 12 个小组的出线名单到决赛的完整对阵推演：小组栏给出每支球队的出线概率，淘汰赛每个节点取最可能的结果并旁标该场胜率。" />
+      <WcHero sub="从小组出线到决赛的完整对阵推演：淘汰赛每个节点取最可能的结果并旁标该场胜率，连线一路通向决赛。" />
+
+      <p className={styles.ruleNote}>
+        规则：每组前两名直接晋级 32 强；12 个小组的第三名中，成绩最好的 8 支同样晋级——所以每个组会有 2 支或 3 支球队出线。
+      </p>
 
       <div className={styles.bracketScroll}>
         <div className={styles.bracketCols}>
@@ -133,18 +165,27 @@ export default function BracketPage() {
               ))}
             </div>
           </div>
-          <RoundCol title="32 强" ties={bracket.R32} />
-          <RoundCol title="16 强" ties={bracket.R16} />
-          <RoundCol title="八强" ties={bracket.QF} />
-          <RoundCol title="四强" ties={bracket.SF} center />
+
+          <RoundCol title="32 强" ties={orderedTies("R32")} />
+          <Joiner count={8} />
+          <RoundCol title="16 强" ties={orderedTies("R16")} tier={styles.tierR16} />
+          <Joiner count={4} />
+          <RoundCol title="八强" ties={orderedTies("QF")} tier={styles.tierQF} />
+          <Joiner count={2} />
+          <RoundCol title="四强" ties={orderedTies("SF")} tier={styles.tierSF} />
+          <Joiner count={1} />
           <div className={styles.roundCol}>
             <div className={styles.roundTitle}>决赛 · 7 月 19 日</div>
-            <div className={`${styles.roundBody} ${styles.roundBodyCenter}`}>
-              {final ? <TieCardView tie={final} /> : null}
-              <div className={styles.champCard}>
-                <div className={styles.champCardFlag}>{champMeta.flag}</div>
-                <div className={styles.champCardName}>预测冠军 · {champMeta.cn}</div>
-                <div className={styles.champCardPct}>决赛胜率 {Math.round((final?.p_winner ?? 0) * 100)}% · MC 夺冠概率 37.8%</div>
+            <div className={styles.slotCol}>
+              <div className={styles.slot}>
+                <div className={styles.finalStack}>
+                  {final ? <TieCardView tie={final} tier={styles.tierFinal} /> : null}
+                  <div className={styles.champCard}>
+                    <div className={styles.champCardFlag}>{champMeta.flag}</div>
+                    <div className={styles.champCardName}>预测冠军 · {champMeta.cn}</div>
+                    <div className={styles.champCardPct}>决赛胜率 {Math.round((final?.p_winner ?? 0) * 100)}%</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

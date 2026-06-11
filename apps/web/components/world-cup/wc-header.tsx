@@ -9,14 +9,13 @@ export function WorldCupHeader() {
         <div className={styles.headerRow}>
           <Link className={styles.brand} href="/world-cup">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/brand/raven-mark.svg" alt="Predict Ravens" className={styles.brandLogo} />
-            Predict Ravens<span className={styles.brandEd}>世界杯版</span>
-            <span className={styles.brandTag}>Market-blind · 公开记分</span>
+            <img src="/brand/raven-icon.png" alt="Predict Raven" className={styles.brandLogo} />
+            Predict Raven<span className={styles.brandEd}>世界杯版</span>
           </Link>
           <nav className={styles.headerNav}>
             <Link href="/world-cup">预测</Link>
             <Link href="/world-cup/bracket">对阵</Link>
-            <Link href="/prediction-engine">自己跑一个</Link>
+            <Link href="/prediction-engine">本地部署</Link>
           </nav>
         </div>
       </div>

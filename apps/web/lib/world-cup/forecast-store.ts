@@ -58,7 +58,8 @@ export function getAllForecasts(): readonly Forecast[] {
 }
 
 export function getGeneratedAt(): string {
-  return data.generatedAt;
+  // Latest forecast generation time (not the import/build time).
+  return data.entries.reduce((m, e) => (e.generated_at > m ? e.generated_at : m), "");
 }
 
 export function getForecastByDir(dir: string): Forecast | null {
