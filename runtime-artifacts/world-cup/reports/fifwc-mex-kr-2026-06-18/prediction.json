@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-mex-kr-2026-06-18",
+  "family": "group_match",
+  "event_slug": "fifwc-mex-kr-2026-06-18",
+  "question_cn": "2026 世界杯小组赛 A 组：墨西哥 vs 韩国（90 分钟赛果）？",
+  "question_en": "2026 World Cup Group A: Mexico vs Korea Republic (90-minute result)?",
+  "kickoff_utc": "2026-06-19T01:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "墨西哥", "label_en": "Mexico", "p": 0.62 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.225 },
+    { "key": "b", "label_cn": "韩国", "label_en": "Korea Republic", "p": 0.155 }
+  ],
+  "one_liner_cn": "主场作战的墨西哥实力与状态俱占优，约六成胜率看好取胜；韩国伤病隐忧下更依赖孙兴慜的个人发挥。",
+  "one_liner_en": "Playing at home with a clear Elo and form edge, Mexico are favored at roughly 62%; injury-hit Korea lean heavily on Son Heung-min.",
+  "key_reasons": [
+    {
+      "cn": "墨西哥 Elo 1875（第 18）对韩国 1758（第 33），且小组赛全程本土作战享主办国主场加成，本场在瓜达拉哈拉 Estadio Akron 进行。",
+      "en": "Mexico's Elo of 1875 (rank 18) tops Korea's 1758 (rank 33), and as co-hosts Mexico play all group matches at home, this one at Estadio Akron in Guadalajara.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "韩国核心球员存在伤病与状态隐忧，中场核心黄仁范带脚踝伤入选名单。",
+      "en": "Korea's core carries injury and form concerns; key midfielder Hwang In-beom made the squad while nursing an ankle injury.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48788433/son-heung-min-south-korea-world-cup-squad-lee-kang-kim-min-jae",
+      "source_date": "2026-05-16"
+    },
+    {
+      "cn": "墨西哥锋线支点劳尔·希门尼斯 2025-26 赛季为富勒姆打进 9 粒联赛进球，携良好状态领衔主场攻击线。",
+      "en": "Mexico's focal point Raul Jimenez arrives in form, with 9 league goals for Fulham in 2025-26 leading the home attack.",
+      "source_url": "https://worldsoccertalk.com/world-cup/mexico-2026-world-cup-preview-squad-breakdown-key-player-and-tactical-analysis/",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: three-way Davidson Elo model (scale=400, drawNu=0.7, +100 host bonus for Mexico group match) gave 60.2/22.6/17.3; bounded evidence adjustment of +2pp Mexico / -2pp Korea (cap ±8pp) for Korean injury/form concerns vs in-form Mexico; renormalized. No betting or prediction-market inputs of any kind.",
+  "report": "report.md"
+}

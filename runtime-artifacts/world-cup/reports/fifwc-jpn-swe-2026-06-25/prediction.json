@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-jpn-swe-2026-06-25",
+  "family": "group_match",
+  "event_slug": "fifwc-jpn-swe-2026-06-25",
+  "question_cn": "2026 世界杯小组赛 F 组：日本 vs 瑞典（90 分钟赛果）？",
+  "question_en": "2026 World Cup Group F: Japan vs Sweden (90-minute result)?",
+  "kickoff_utc": "2026-06-25T23:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "日本", "label_en": "Japan", "p": 0.55 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.24 },
+    { "key": "b", "label_cn": "瑞典", "label_en": "Sweden", "p": 0.21 }
+  ],
+  "one_liner_cn": "Elo 差近 200 分加不败势头使日本明显占优，但三笘/南野缺阵与瑞典 Gyökeres+Isak 锋线让爆冷概率不可忽视。",
+  "one_liner_en": "A near-200-point Elo gap and an unbeaten run make Japan clear favourites, but Mitoma/Minamino absences and Sweden's Gyokeres-Isak front line keep the upset live.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 194 分（日本 1906 vs 瑞典 1712），中立场 Davidson 模型给日本约 58% 基线胜率。",
+      "en": "A 194-point Elo gap (Japan 1906 vs Sweden 1712) yields a ~58% baseline Japan win probability in the neutral-venue Davidson model.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "日本核心攻击手三笘薫（腘绳肌）与南野拓実（ACL）双双缺席世界杯名单，削弱破密集防守能力。",
+      "en": "Japan is missing key attackers Kaoru Mitoma (hamstring) and Takumi Minamino (ACL) from its World Cup squad, weakening its ability to break down low blocks.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/15/mitoma-fails-to-make-japans-2026-world-cup-squad-due-to-hamstring-injury",
+      "source_date": "2026-05-15"
+    },
+    {
+      "cn": "瑞典锋线 Gyökeres（阿森纳英超夺冠队内最佳射手）+ Isak 的天赋高于其 Elo 第 43 位排名所示。",
+      "en": "Sweden's front line of Gyokeres (Arsenal's top scorer in a title-winning season) and Isak carries more talent than its 43rd Elo rank implies.",
+      "source_url": "https://www.freemalaysiatoday.com/category/sports/2026/05/14/isak-and-gyokeres-make-swedens-world-cup-roster",
+      "source_date": "2026-05-14"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue) p_stat 0.579/0.232/0.190, bounded evidence adjustment (-3pp Japan, +1pp draw, +2pp Sweden, within ±8pp cap), renormalized. No betting/prediction-market data consulted.",
+  "report": "report.md"
+}

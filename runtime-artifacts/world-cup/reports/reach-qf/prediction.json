@@ -1,0 +1,325 @@
+{
+  "id": "reach-qf",
+  "family": "reach_quarterfinal",
+  "event_slug": "world-cup-nation-to-reach-quarterfinals",
+  "question_cn": "哪些球队能晋级 2026 世界杯八强（赢下 16 强淘汰赛、进入 1/4 决赛）？48 队各自的晋级概率（合计约 8）。",
+  "question_en": "Which teams reach the 2026 World Cup quarter-finals (win their Round-of-16 tie)? Per-team probabilities for all 48 teams (summing to ~8).",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    {
+      "key": "Spain",
+      "label_cn": "西班牙",
+      "label_en": "Spain",
+      "p": 0.73186
+    },
+    {
+      "key": "Argentina",
+      "label_cn": "阿根廷",
+      "label_en": "Argentina",
+      "p": 0.7019
+    },
+    {
+      "key": "France",
+      "label_cn": "法国",
+      "label_en": "France",
+      "p": 0.65045
+    },
+    {
+      "key": "England",
+      "label_cn": "英格兰",
+      "label_en": "England",
+      "p": 0.55793
+    },
+    {
+      "key": "Portugal",
+      "label_cn": "葡萄牙",
+      "label_en": "Portugal",
+      "p": 0.4362
+    },
+    {
+      "key": "Brazil",
+      "label_cn": "巴西",
+      "label_en": "Brazil",
+      "p": 0.41101
+    },
+    {
+      "key": "Colombia",
+      "label_cn": "哥伦比亚",
+      "label_en": "Colombia",
+      "p": 0.40449
+    },
+    {
+      "key": "Netherlands",
+      "label_cn": "荷兰",
+      "label_en": "Netherlands",
+      "p": 0.38961
+    },
+    {
+      "key": "Belgium",
+      "label_cn": "比利时",
+      "label_en": "Belgium",
+      "p": 0.33937
+    },
+    {
+      "key": "Türkiye",
+      "label_cn": "土耳其",
+      "label_en": "Türkiye",
+      "p": 0.322
+    },
+    {
+      "key": "Switzerland",
+      "label_cn": "瑞士",
+      "label_en": "Switzerland",
+      "p": 0.30703
+    },
+    {
+      "key": "Ecuador",
+      "label_cn": "厄瓜多尔",
+      "label_en": "Ecuador",
+      "p": 0.28777
+    },
+    {
+      "key": "Japan",
+      "label_cn": "日本",
+      "label_en": "Japan",
+      "p": 0.27969
+    },
+    {
+      "key": "Germany",
+      "label_cn": "德国",
+      "label_en": "Germany",
+      "p": 0.27619
+    },
+    {
+      "key": "Norway",
+      "label_cn": "挪威",
+      "label_en": "Norway",
+      "p": 0.24719
+    },
+    {
+      "key": "Mexico",
+      "label_cn": "墨西哥",
+      "label_en": "Mexico",
+      "p": 0.21782
+    },
+    {
+      "key": "Croatia",
+      "label_cn": "克罗地亚",
+      "label_en": "Croatia",
+      "p": 0.20023
+    },
+    {
+      "key": "Uruguay",
+      "label_cn": "乌拉圭",
+      "label_en": "Uruguay",
+      "p": 0.14106
+    },
+    {
+      "key": "Senegal",
+      "label_cn": "塞内加尔",
+      "label_en": "Senegal",
+      "p": 0.14091
+    },
+    {
+      "key": "Canada",
+      "label_cn": "加拿大",
+      "label_en": "Canada",
+      "p": 0.12895
+    },
+    {
+      "key": "Paraguay",
+      "label_cn": "巴拉圭",
+      "label_en": "Paraguay",
+      "p": 0.11819
+    },
+    {
+      "key": "Morocco",
+      "label_cn": "摩洛哥",
+      "label_en": "Morocco",
+      "p": 0.11352
+    },
+    {
+      "key": "IR Iran",
+      "label_cn": "伊朗",
+      "label_en": "Iran",
+      "p": 0.08004
+    },
+    {
+      "key": "Korea Republic",
+      "label_cn": "韩国",
+      "label_en": "South Korea",
+      "p": 0.07932
+    },
+    {
+      "key": "Austria",
+      "label_cn": "奥地利",
+      "label_en": "Austria",
+      "p": 0.06768
+    },
+    {
+      "key": "Czechia",
+      "label_cn": "捷克",
+      "label_en": "Czechia",
+      "p": 0.06395
+    },
+    {
+      "key": "Scotland",
+      "label_cn": "苏格兰",
+      "label_en": "Scotland",
+      "p": 0.05876
+    },
+    {
+      "key": "United States",
+      "label_cn": "美国",
+      "label_en": "United States",
+      "p": 0.0452
+    },
+    {
+      "key": "Australia",
+      "label_cn": "澳大利亚",
+      "label_en": "Australia",
+      "p": 0.04362
+    },
+    {
+      "key": "Algeria",
+      "label_cn": "阿尔及利亚",
+      "label_en": "Algeria",
+      "p": 0.03663
+    },
+    {
+      "key": "Panama",
+      "label_cn": "巴拿马",
+      "label_en": "Panama",
+      "p": 0.024
+    },
+    {
+      "key": "Egypt",
+      "label_cn": "埃及",
+      "label_en": "Egypt",
+      "p": 0.02337
+    },
+    {
+      "key": "Côte d'Ivoire",
+      "label_cn": "科特迪瓦",
+      "label_en": "Côte d'Ivoire",
+      "p": 0.01964
+    },
+    {
+      "key": "Sweden",
+      "label_cn": "瑞典",
+      "label_en": "Sweden",
+      "p": 0.01718
+    },
+    {
+      "key": "Uzbekistan",
+      "label_cn": "乌兹别克斯坦",
+      "label_en": "Uzbekistan",
+      "p": 0.01227
+    },
+    {
+      "key": "Bosnia-Herzegovina",
+      "label_cn": "波黑",
+      "label_en": "Bosnia and Herzegovina",
+      "p": 0.00751
+    },
+    {
+      "key": "Jordan",
+      "label_cn": "约旦",
+      "label_en": "Jordan",
+      "p": 0.00641
+    },
+    {
+      "key": "DR Congo",
+      "label_cn": "刚果（金）",
+      "label_en": "DR Congo",
+      "p": 0.00276
+    },
+    {
+      "key": "Tunisia",
+      "label_cn": "突尼斯",
+      "label_en": "Tunisia",
+      "p": 0.00254
+    },
+    {
+      "key": "Cabo Verde",
+      "label_cn": "佛得角",
+      "label_en": "Cape Verde",
+      "p": 0.00169
+    },
+    {
+      "key": "Saudi Arabia",
+      "label_cn": "沙特阿拉伯",
+      "label_en": "Saudi Arabia",
+      "p": 0.00128
+    },
+    {
+      "key": "New Zealand",
+      "label_cn": "新西兰",
+      "label_en": "New Zealand",
+      "p": 0.00104
+    },
+    {
+      "key": "Iraq",
+      "label_cn": "伊拉克",
+      "label_en": "Iraq",
+      "p": 0.00071
+    },
+    {
+      "key": "South Africa",
+      "label_cn": "南非",
+      "label_en": "South Africa",
+      "p": 0.00056
+    },
+    {
+      "key": "Haiti",
+      "label_cn": "海地",
+      "label_en": "Haiti",
+      "p": 0.00026
+    },
+    {
+      "key": "Qatar",
+      "label_cn": "卡塔尔",
+      "label_en": "Qatar",
+      "p": 0.00012
+    },
+    {
+      "key": "Ghana",
+      "label_cn": "加纳",
+      "label_en": "Ghana",
+      "p": 8e-05
+    },
+    {
+      "key": "Curaçao",
+      "label_cn": "库拉索",
+      "label_en": "Curaçao",
+      "p": 5e-05
+    }
+  ],
+  "one_liner_cn": "最可能的八强是西班牙、阿根廷、法国、英格兰、葡萄牙、巴西、哥伦比亚、荷兰——但没有任何球队超过 75%，48 队扩军让八强名额比以往任何一届都更分散。",
+  "one_liner_en": "The most likely quarter-final eight are Spain, Argentina, France, England, Portugal, Brazil, Colombia and the Netherlands — yet no team clears 75%, as the 48-team format spreads the eight slots thinner than ever.",
+  "key_reasons": [
+    {
+      "cn": "Elo 前八（西班牙 2157 至荷兰 1948）恰好是模型给出的八强前八候选，合计拿走 8 个名额中的约 4.3 个；扩军后强队小组更软、16 强多对阵小组第三，头部转化率被进一步抬高。",
+      "en": "The Elo top eight (Spain 2157 down to Netherlands 1948) are exactly the model’s top eight QF candidates, collectively claiming ~4.3 of the 8 slots; the expanded format gives top seeds softer groups and R32 ties often against third-placed sides.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "豪强之间的伤病不对称是主要调整项：巴西（罗德里戈/米利唐/埃斯特旺缺席、内马尔伤疑）、荷兰（廷贝尔退出）、比利时（德布劳内/卢卡库带伤）下调，全员健康的英格兰上调。",
+      "en": "Injury asymmetry among contenders drives the adjustments: Brazil (Rodrygo/Militão/Estêvão out, Neymar doubtful), Netherlands (Timber withdrawn) and Belgium (De Bruyne/Lukaku arriving injured) are marked down; a fully fit England is marked up.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48572979/2026-fifa-world-cup-injuries-tracker-which-stars-miss-latest-info",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "第 9 至 17 位（比利时到克罗地亚）全部挤在 20%–35% 区间：对这批球队而言，小组头名与否（决定 16 强对手档次）比自身实力差异更能左右八强命运。",
+      "en": "Places 9–17 (Belgium through Croatia) are all packed into the 20%–35% band: for this tier, winning the group (and thus the calibre of the R32 opponent) moves their QF fate more than raw strength differences do.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 9,
+  "method_note": "Pure-Elo Poisson Monte Carlo (100,000 full-tournament sims, seed 20260611, eloratings.net snapshot 2026-06-11, +100 Elo host bonus in group games only, official 2026 bracket with third-place allocation; no market input of any kind), then bounded evidence-based adjustments of at most ±6% relative per team (cap ±20%) for cited injury/fitness news on top-tier squads, renormalized so the 48 probabilities sum to 8.",
+  "report": "report.md"
+}

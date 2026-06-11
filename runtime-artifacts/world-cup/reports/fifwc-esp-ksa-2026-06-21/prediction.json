@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-esp-ksa-2026-06-21",
+  "family": "group_match",
+  "event_slug": "fifwc-esp-ksa-2026-06-21",
+  "question_cn": "2026 世界杯小组赛 H 组：西班牙 vs 沙特阿拉伯（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group H: Spain vs Saudi Arabia (90-minute three-way result)",
+  "kickoff_utc": "2026-06-21T16:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "西班牙胜", "label_en": "Spain", "p": 0.840 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.126 },
+    { "key": "b", "label_cn": "沙特阿拉伯胜", "label_en": "Saudi Arabia", "p": 0.034 }
+  ],
+  "one_liner_cn": "Elo 第 1 对第 69 的 581 分差距让西班牙胜成为压倒性基准，沙特换帅动荡难以撼动，仅因西班牙核心伤愈节奏与沙特防守韧性小幅下调约 2 个百分点。",
+  "one_liner_en": "The 581-point Elo gap between No. 1 Spain and No. 69 Saudi Arabia makes a Spain win the overwhelming baseline; only Spain's returning-player rhythm and Saudi defensive resilience warrant a ~2pp trim.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距巨大：西班牙 2157（世界第 1）对沙特 1576（第 69），Davidson 模型基准即给出西班牙约 86% 胜率。",
+      "en": "Huge Elo gap: Spain 2157 (world No. 1) vs Saudi Arabia 1576 (No. 69); the Davidson baseline already gives Spain about 86%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "西班牙伤情小幅不确定：Fermín López 缺席，Yamal 自 4 月 22 日后未出场、首战或限时；本场为第二轮，可用性应更高。",
+      "en": "Mild Spain injury uncertainty: Fermín López out; Yamal has not played since April 22 and may be minute-limited early — this is matchday 2, so availability should improve.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48572979/2026-fifa-world-cup-injuries-tracker-which-stars-miss-latest-info",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "沙特 4 月 17 日临阵换帅（Donis 仅带队 3 场），但 6 月 9 日 0-0 平塞内加尔显示低位防守仍有韧性。",
+      "en": "Saudi Arabia changed coach on April 17 (Donis has only 3 matches in charge), yet the 0-0 draw with Senegal on June 9 shows a resilient low block.",
+      "source_url": "https://www.fourfourtwo.com/team/saudi-arabia-world-cup-2026-squad",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: eloratings.net Elo -> Davidson three-way (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 85.7/11.3/3.0; bounded evidence adjustment (~2.1pp total, cap +/-8pp) -> p_final 84.0/12.6/3.4; 80% intervals reflect drawNu 0.6-0.8 sensitivity plus thin pre-tournament evidence. No betting/prediction-market data used.",
+  "report": "report.md"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-ecu-ger-2026-06-25",
+  "family": "group_match",
+  "event_slug": "fifwc-ecu-ger-2026-06-25",
+  "question_cn": "2026 世界杯小组赛 E 组：厄瓜多尔 vs 德国（2026-06-25），90 分钟三路赛果？",
+  "question_en": "2026 World Cup Group E: Ecuador vs Germany (2026-06-25), three-way result after 90 minutes?",
+  "kickoff_utc": "2026-06-25T20:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "厄瓜多尔", "label_en": "Ecuador", "p": 0.392 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.269 },
+    { "key": "b", "label_cn": "德国", "label_en": "Germany", "p": 0.339 }
+  ],
+  "one_liner_cn": "Elo 几乎持平（1938 vs 1932），厄瓜多尔状态与防守小幅占优、德国多点带伤，三路接近均势、略倾向厄瓜多尔。",
+  "one_liner_en": "Elo virtually level (1938 vs 1932); Ecuador's form and defense edge a Germany side carrying knocks - near coin-flip, slight tilt to Ecuador.",
+  "key_reasons": [
+    {
+      "cn": "Elo 仅差 6 分：厄瓜多尔 1938（世界第 9）vs 德国 1932（世界第 10），中立场地无东道主加成。",
+      "en": "Only 6 Elo points apart: Ecuador 1938 (world #9) vs Germany 1932 (world #10), neutral venue with no host bonus.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "厄瓜多尔 19 场不败，热身 3-0 危地马拉、2-1 沙特（后者就在本场场地新泽西），预选赛 18 轮仅失 5 球。",
+      "en": "Ecuador unbeaten in 19, warm-up wins 3-0 vs Guatemala and 2-1 vs Saudi Arabia (the latter at this match's New Jersey venue), and only 5 goals conceded in 18 qualifiers.",
+      "source_url": "https://worldsoccertalk.com/news/is-moises-caicedo-playing-today-predicted-lineups-for-ecuador-vs-guatemala-in-pre-world-cup-2026-international-friendly/",
+      "source_date": "2026-06-07"
+    },
+    {
+      "cn": "德国伤情存疑：诺伊尔小腿伤缺席全部热身赛、穆夏拉骨折后仍在找状态、格纳布里反复、卡尔伤退。",
+      "en": "Germany carries fitness doubts: Neuer (calf) missed both friendlies, Musiala still building rhythm after a broken leg, Gnabry had a setback, Karl withdrew injured.",
+      "source_url": "https://www.bundesliga.com/en/bundesliga/news/how-will-germany-line-up-havertz-musiala-wirtz-nagelsmann-world-cup-2026-28807",
+      "source_date": "2026-06-09"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue) gives 37.7/25.9/36.4; bounded evidence adjustment of +1.5/+1.0/-2.5pp (cap 8pp) for Ecuador form+fitness vs Germany injury doubts; renormalized. 80% intervals reflect drawNu 0.6-0.8 sensitivity plus 14-days-out evidence uncertainty.",
+  "report": "report.md"
+}

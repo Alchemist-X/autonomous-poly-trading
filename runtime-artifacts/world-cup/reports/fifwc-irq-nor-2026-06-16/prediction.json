@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-irq-nor-2026-06-16",
+  "family": "group_match",
+  "event_slug": "fifwc-irq-nor-2026-06-16",
+  "question_cn": "2026 世界杯小组赛 I 组：伊拉克 vs 挪威（90 分钟赛果）？",
+  "question_en": "2026 FIFA World Cup Group I: Iraq vs Norway (90-minute result)?",
+  "kickoff_utc": "2026-06-16T22:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "伊拉克胜", "label_en": "Iraq win", "p": 0.13 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.21 },
+    { "key": "b", "label_cn": "挪威胜", "label_en": "Norway win", "p": 0.66 }
+  ],
+  "one_liner_cn": "挪威凭哈兰德火力与 307 分 Elo 差距占约三分之二胜算，但伊拉克刚逼平西班牙，低位防守让平局有现实可能。",
+  "one_liner_en": "Norway are ~two-thirds favourites on Haaland's firepower and a 307-point Elo gap, but Iraq just held Spain and their low block gives the draw real upside.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 307 分（挪威 1914 vs 伊拉克 1607），Davidson 模型基线给挪威约 68.5% 胜算。",
+      "en": "307-point Elo gap (Norway 1914 vs Iraq 1607); the Davidson baseline gives Norway ~68.5%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "哈兰德欧洲区预选赛 16 球、46 场 50 个国家队进球史上最快，挪威攻击力顶级。",
+      "en": "Haaland scored 16 in European qualifying and reached 50 international goals in a record 46 caps — elite firepower.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/26/norway-world-cup-2026-preview-players-to-watch-group-matches-squad-list",
+      "source_date": "2026-05-26"
+    },
+    {
+      "cn": "伊拉克 6 月 4 日 1-1 逼平 Elo 第 1 的西班牙，低位防守体系成色十足，支撑小幅上调平局与冷门概率。",
+      "en": "Iraq held Elo #1 Spain 1-1 on Jun 4, validating their low block and a small upward shift for the draw/upset.",
+      "source_url": "https://www.espn.com/soccer/match/_/gameId/401871471/iraq-spain",
+      "source_date": "2026-06-04"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue) p_stat 11.7/19.8/68.5 + bounded evidence adjustment (+1.3/+1.2/-2.5 pp, cap ±8pp), renormalized. No market inputs of any kind.",
+  "report": "report.md"
+}

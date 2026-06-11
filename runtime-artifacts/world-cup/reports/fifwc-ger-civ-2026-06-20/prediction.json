@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-ger-civ-2026-06-20",
+  "family": "group_match",
+  "event_slug": "fifwc-ger-civ-2026-06-20",
+  "question_cn": "2026 世界杯小组赛 E 组：德国 vs 科特迪瓦（2026-06-20，多伦多）90 分钟三路赛果？",
+  "question_en": "2026 FIFA World Cup Group E: Germany vs Côte d'Ivoire (2026-06-20, Toronto) — 90-minute three-way result?",
+  "kickoff_utc": "2026-06-20T20:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "德国胜", "label_en": "Germany", "p": 0.635 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.215 },
+    { "key": "b", "label_cn": "科特迪瓦胜", "label_en": "Côte d'Ivoire", "p": 0.150 }
+  ],
+  "one_liner_cn": "Elo 差 237 分加上德国五连胜状态，德国约 64% 胜率；科特迪瓦预选不败保留约 15% 爆冷空间，平局约 21%。",
+  "one_liner_en": "A 237-point Elo gap plus Germany's five-match winning streak puts Germany near 64%; unbeaten-in-qualifying Côte d'Ivoire keep about a 15% upset chance, draw around 21%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差 237 分（德国 1932 第 10 vs 科特迪瓦 1695 第 49），Davidson 统计模型即给德国约 62%。",
+      "en": "237-point Elo gap (Germany 1932, No. 10 vs Côte d'Ivoire 1695, No. 49); the Davidson statistical model alone gives Germany about 62%.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "德国近 5 场全胜，主力框架齐整：仅轮换级的 Karl 伤退，诺伊尔小腿伤预计无碍本场。",
+      "en": "Germany on five straight wins with the first-choice core intact: only rotation player Karl withdrew injured, and Neuer's calf strain should clear well before this match.",
+      "source_url": "https://www.sportsmole.co.uk/football/germany/injury-news/news/huge-shock-how-nagelsmann-has-reacted-to-devastating-germany-injury-blow-before-world-cup_598752.html",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "科特迪瓦预选赛 8 胜 2 平不败、净胜 +25，Kessié/Ndicka/Pépé 领衔的阵容具备搅局能力，但 Haller 落选削弱锋线兜底。",
+      "en": "Côte d'Ivoire went 8W 2D unbeaten with +25 goal difference in qualifying; a squad led by Kessié, Ndicka and Pépé can disrupt, though Haller's omission thins the striker fallback.",
+      "source_url": "https://www.olympics.com/en/news/fifa-world-cup-2026-cote-ivoire-all-players-full-squad-list-key-stats-schedule",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) on the eloratings.net snapshot, p_stat 62.1/22.0/15.9, plus a bounded evidence adjustment (+1.5pp to Germany, cap ±8pp) from dated sourced facts; fully independent of any betting or prediction-market data.",
+  "report": "report.md"
+}

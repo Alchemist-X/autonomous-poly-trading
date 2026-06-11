@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-esp-cvi-2026-06-15",
+  "family": "group_match",
+  "event_slug": "fifwc-esp-cvi-2026-06-15",
+  "question_cn": "2026 世界杯小组赛 H 组：西班牙 vs 佛得角，90 分钟三路赛果？",
+  "question_en": "2026 FIFA World Cup Group H: Spain vs Cabo Verde — 90-minute three-way result?",
+  "kickoff_utc": "2026-06-15T16:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "西班牙", "label_en": "Spain", "p": 0.825 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.14 },
+    { "key": "b", "label_cn": "佛得角", "label_en": "Cabo Verde", "p": 0.035 }
+  ],
+  "one_liner_cn": "Elo 世界第一的西班牙实力碾压首次参赛的佛得角，胜率约 82.5%；边锋伤情与热身两连平令平局风险略升至 14%。",
+  "one_liner_en": "World-Elo-No.1 Spain overwhelmingly outclass debutants Cabo Verde at roughly 82.5% to win; winger fitness doubts and two warm-up draws lift draw risk slightly to 14%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 579 分（2157 vs 1578），戴维森三路模型给出西班牙约 86% 的统计胜率基线。",
+      "en": "A 579-point Elo gap (2157 vs 1578) yields a roughly 86% statistical baseline win probability for Spain under the Davidson three-way model.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "Yamal、Nico Williams 缺席末场热身留营恢复，预计 6 月 15 日可用但可能限制时间；Fermín López 跖骨骨折伤缺整届。",
+      "en": "Yamal and Nico Williams skipped the final warm-up to recover and may be on minute restrictions on June 15; Fermín López is out of the tournament with a metatarsal fracture.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48993924/lamine-yamal-nico-williams-left-spain-last-world-cup-warmup",
+      "source_date": "2026-06-09"
+    },
+    {
+      "cn": "佛得角史上首次参赛，26 人名单仅 1 名五大联赛球员，阵容厚度有限；西班牙热身平埃及、伊拉克后 3-1 胜秘鲁。",
+      "en": "Debutants Cabo Verde have just one top-five-league player in their 26-man squad; Spain drew warm-ups vs Egypt and Iraq before beating Peru 3-1.",
+      "source_url": "https://www.aljazeera.com/sports/2026/6/9/spain-cruise-past-peru-in-final-world-cup-2026-warm-up-match",
+      "source_date": "2026-06-09"
+    }
+  ],
+  "confidence_tier": "高",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gives p_stat 85.6/11.3/3.1; bounded evidence adjustment of 3.1pp (cap ±8pp) for Spain winger fitness, Fermín absence and deep-block draw risk; renormalized to 82.5/14.0/3.5. No betting or prediction-market inputs.",
+  "report": "report.md"
+}

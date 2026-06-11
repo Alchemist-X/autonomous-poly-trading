@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-cvi-ksa-2026-06-26",
+  "family": "group_match",
+  "event_slug": "fifwc-cvi-ksa-2026-06-26",
+  "question_cn": "2026 世界杯小组赛 H 组：佛得角 vs 沙特阿拉伯，90 分钟三路赛果？",
+  "question_en": "2026 World Cup Group H: Cabo Verde vs Saudi Arabia, three-way 90-minute result?",
+  "kickoff_utc": "2026-06-27T00:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "佛得角", "label_en": "Cabo Verde", "p": 0.362 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.259 },
+    { "key": "b", "label_cn": "沙特阿拉伯", "label_en": "Saudi Arabia", "p": 0.379 }
+  ],
+  "one_liner_cn": "Elo 仅差 2 分的五五开对决：沙特凭世界杯经验略占上风，佛得角首秀且阵容老化，平局概率亦不容忽视。",
+  "one_liner_en": "A coin-flip with just 2 Elo points between them: Saudi Arabia edges it on World Cup experience over aging debutants Cabo Verde, with the draw far from negligible.",
+  "key_reasons": [
+    {
+      "cn": "两队 Elo 几乎完全持平（佛得角 1578 第 68 / 沙特 1576 第 69），统计模型接近抛硬币。",
+      "en": "Near-identical Elo ratings (Cabo Verde 1578, rank 68 vs Saudi Arabia 1576, rank 69) make the statistical baseline close to a coin flip.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "沙特 4 月 17 日临阵换帅，Donis 仅率队 3 场（1 胜 1 平 1 负），磨合风险限制其经验优势。",
+      "en": "Saudi Arabia sacked Renard on April 17; new coach Donis has only 3 matches in charge (1W 1D 1L), a cohesion risk that caps their experience edge.",
+      "source_url": "https://english.alarabiya.net/amp/sports/2026/05/25/saudi-arabia-s-fifa-world-cup-2026-squad-who-s-in-and-who-s-out",
+      "source_date": "2026-05-25"
+    },
+    {
+      "cn": "佛得角历史首秀且主力脊柱老化（Vozinha 40、Stopira 38、Mendes 36），沙特则保留 2022 击败阿根廷的经验班底，故小幅向沙特修正 1pp。",
+      "en": "Debutants Cabo Verde carry an aging spine (Vozinha 40, Stopira 38, Mendes 36) while Saudi Arabia retains its experienced 2022 core, justifying a small 1pp shift toward Saudi Arabia.",
+      "source_url": "https://www.olympics.com/en/news/fifa-world-cup-2026-cabo-verde-all-players-full-squad-list-key-stats-schedule",
+      "source_date": "2026-05-18"
+    }
+  ],
+  "confidence_tier": "低",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gives p_stat A 37.25% / draw 25.93% / B 36.82%; a bounded 1pp evidence adjustment (Saudi tournament experience vs Cabo Verde debut + aging core, offset by Saudi coaching upheaval) yields p_final. 80% intervals reflect drawNu 0.6-0.8 sensitivity and thin evidence. No market/odds inputs of any kind.",
+  "report": "report.md"
+}

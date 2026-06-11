@@ -38,6 +38,17 @@ vendor/repos
 # --- Runtime artifacts (large + per-run) ---
 runtime-artifacts/*
 !runtime-artifacts/.gitkeep
+# world-cup shareables: price-stripped market structure cache, question list,
+# model backbone, and the public forecast archive (market-blind by policy)
+!runtime-artifacts/world-cup/
+runtime-artifacts/world-cup/*
+!runtime-artifacts/world-cup/polymarket/
+!runtime-artifacts/world-cup/event-list/
+!runtime-artifacts/world-cup/elo-table.json
+!runtime-artifacts/world-cup/mc-results.json
+!runtime-artifacts/world-cup/bracket-prediction.json
+!runtime-artifacts/world-cup/run-ledger/
+!runtime-artifacts/world-cup/reports/
 run-error/
 output/
 .local/

@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-nld-swe-2026-06-20",
+  "family": "group_match",
+  "event_slug": "fifwc-nld-swe-2026-06-20",
+  "question_cn": "2026 世界杯 F 组小组赛：荷兰 vs 瑞典（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group F: Netherlands vs Sweden (three-way 90-minute result)?",
+  "kickoff_utc": "2026-06-20T17:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "荷兰胜", "label_en": "Netherlands win", "p": 0.59 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.235 },
+    { "key": "b", "label_cn": "瑞典胜", "label_en": "Sweden win", "p": 0.175 }
+  ],
+  "one_liner_cn": "荷兰Elo全面占优、约六成胜率，但蒂姆贝尔与西蒙斯伤缺叠加瑞典双前锋火力，冷门窗口并未完全关闭。",
+  "one_liner_en": "The Netherlands hold a clear Elo edge and roughly a 60% win probability, but the Timber and Simons absences plus Sweden's strike pair keep the upset window ajar.",
+  "key_reasons": [
+    {
+      "cn": "Elo差距236分：荷兰1948（第8）对瑞典1712（第43），统计模型给出约62%的荷兰基准胜率。",
+      "en": "A 236-point Elo gap — Netherlands 1948 (8th) vs Sweden 1712 (43rd) — yields a ~62% baseline Dutch win probability.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "荷兰减员明显：蒂姆贝尔因腹股沟伤退出世界杯、西蒙斯ACL报销，首发结构受损。",
+      "en": "Dutch absences bite: Timber withdrawn with a groin injury and Simons out with an ACL rupture, weakening the starting XI.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/netherlands-call-up-geertruida-jurrien-timber",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "瑞典锋线高于其排名水平：居克雷什英超21球并附加赛绝杀波兰，但伊萨克长期伤后体能存疑。",
+      "en": "Sweden's forwards outclass their ranking: Gyokeres scored 21 PL goals and the play-off winner vs Poland, though Isak's fitness remains in doubt.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48754111/alexander-isak-headlines-final-sweden-world-cup-roster",
+      "source_date": "2026-05-14"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Davidson three-way Elo (scale=400, drawNu=0.7) on eloratings.net 2026-06-11 snapshot; neutral venue, no host bonus; evidence-bounded adjustment of -3.0pp Netherlands redistributed to draw/Sweden (cap +/-8pp). Market-blind: no odds or prediction-market data used.",
+  "report": "report.md"
+}

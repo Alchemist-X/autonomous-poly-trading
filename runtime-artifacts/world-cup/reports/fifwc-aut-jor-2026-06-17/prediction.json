@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-aut-jor-2026-06-17",
+  "family": "group_match",
+  "event_slug": "fifwc-aut-jor-2026-06-17",
+  "question_cn": "2026 世界杯小组赛 J 组：奥地利 vs 约旦（2026-06-17）90 分钟赛果？",
+  "question_en": "2026 World Cup Group J: Austria vs Jordan (2026-06-17) — result after 90 minutes?",
+  "kickoff_utc": "2026-06-17T04:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "奥地利", "label_en": "Austria", "p": 0.55 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.24 },
+    { "key": "b", "label_cn": "约旦", "label_en": "Jordan", "p": 0.21 }
+  ],
+  "one_liner_cn": "Elo 差 150 分加上约旦近 5 场不胜丢 11 球，奥地利约 55% 占优；但 Baumgartner 伤退令优势打折，约旦爆冷窗口未关死。",
+  "one_liner_en": "A 150-point Elo gap and Jordan's winless, leaky run give Austria ~55%; Baumgartner's tournament-ending injury trims that edge and keeps Jordan's upset window ajar.",
+  "key_reasons": [
+    {
+      "cn": "奥地利核心中场 Baumgartner 髋部肌腱重伤，缺席整届世界杯，进攻组织受损",
+      "en": "Austria's key midfielder Baumgartner is out of the entire World Cup with a hip tendon injury, denting their creativity",
+      "source_url": "https://roundtable.io/sports/soccer/bundesliga/rb-leipzig/austria-faces-world-cup-realigned-by-baumgartner-injury",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "约旦近 5 场 0 胜并丢 11 球（0-2 哥伦比亚、1-4 瑞士），且主力前锋 Al-Naimat 因 ACL 缺席",
+      "en": "Jordan are winless in five with 11 goals conceded (0-2 Colombia, 1-4 Switzerland) and first-choice striker Al-Naimat is out with an ACL injury",
+      "source_url": "https://www.goal.com/en/news/austria-jordan-world-cup-preview/blt7c1bb3d0f0243ac5",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "Elo 1830 vs 1680（150 分差距），中立场 Davidson 模型给出奥地利 53.3% 的统计基线",
+      "en": "Elo 1830 vs 1680 (a 150-point gap) yields a 53.3% statistical baseline for Austria from the neutral-venue Davidson model",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue) -> p_stat 0.533/0.242/0.225; bounded sourced adjustment (net ~2pp toward Austria, cap +/-8pp) -> p_final 0.55/0.24/0.21. No betting or prediction-market data used.",
+  "report": "report.md"
+}

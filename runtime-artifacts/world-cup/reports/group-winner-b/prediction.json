@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:b",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-b-winner",
+  "question_cn": "B 组头名（小组第一出线）是哪支球队？",
+  "question_en": "Which team finishes first in Group B?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Switzerland", "label_cn": "瑞士", "label_en": "Switzerland", "p": 0.52978 },
+    { "key": "Canada", "label_cn": "加拿大", "label_en": "Canada", "p": 0.43955 },
+    { "key": "Bosnia and Herzegovina", "label_cn": "波黑", "label_en": "Bosnia and Herzegovina", "p": 0.02945 },
+    { "key": "Qatar", "label_cn": "卡塔尔", "label_en": "Qatar", "p": 0.00122 }
+  ],
+  "one_liner_cn": "瑞士与东道主加拿大几乎五五开，但加拿大开赛前伤病扎堆（戴维斯、邦比托、大卫），天平略向阵容完整的瑞士倾斜。",
+  "one_liner_en": "Switzerland and host Canada are near a coin flip, but Canada's pre-tournament injury cluster (Davies, Bombito, David) tilts the scale slightly toward a fully intact Switzerland.",
+  "key_reasons": [
+    {
+      "cn": "Elo 上瑞士（1891，第17）领先加拿大（1788，第25），加上东道主小组赛 +100 Elo 加成后，10 万次模拟中两队头名概率 50.0% vs 48.0%，本质是双雄之争。",
+      "en": "On Elo, Switzerland (1891, No. 17) lead Canada (1788, No. 25); with the +100 host bonus in group games, the 100k-sim baseline is 50.0% vs 48.0% — effectively a two-horse race.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "加拿大开赛前减员严重：队长戴维斯腿筋伤、首战存疑，主力中卫邦比托据报道因伤被移出名单，头号射手大卫整季仅 6 个意甲进球、状态低迷。",
+      "en": "Canada enter depleted: captain Davies (hamstring) is doubtful for the opener, centre-back Bombito has reportedly been removed from the roster through injury, and top striker David scored just 6 Serie A goals all season.",
+      "source_url": "https://www.foxsports.com/stories/soccer/alphonso-davies-named-to-canadas-world-cup-squad-despite-hamstring-injury",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "瑞士核心阵容完整：亚卡任队长、阿坎吉刚随国米夺意甲冠军、科贝尔镇守球门，无关键缺阵，与加拿大的伤情形成不对称。",
+      "en": "Switzerland's core is intact: Xhaka captains, Akanji arrives fresh off a Serie A title, Kobel in goal, no key absences — an asymmetry against Canada's injury situation.",
+      "source_url": "https://tribuna.com/en/news/2026-05-20-xhaka-kobel-akanji-and-jashari-named-in-switzerlands-2026-world-cup-squad/",
+      "source_date": "2026-05-20"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Pure-Elo Poisson Monte Carlo (100,000 full-tournament sims, seed 20260611, eloratings.net snapshot 2026-06-11, +100 Elo host bonus in group games only, no market input), then a bounded evidence-based adjustment of at most ±4pp per team (Canada −4pp injury cluster, Switzerland +3pp intact squad, Bosnia +1pp opener vs depleted Canada, Qatar 0), renormalized to sum 1.",
+  "report": "report.md"
+}

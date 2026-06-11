@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-egy-irn-2026-06-26",
+  "family": "group_match",
+  "event_slug": "fifwc-egy-irn-2026-06-26",
+  "question_cn": "2026 世界杯小组赛 G 组：埃及 vs 伊朗（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group G: Egypt vs IR Iran (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-27T03:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "埃及", "label_en": "Egypt", "p": 0.303 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.265 },
+    { "key": "b", "label_cn": "伊朗", "label_en": "IR Iran", "p": 0.432 }
+  ],
+  "one_liner_cn": "伊朗凭约 76 分 Elo 优势统计占先，但阿兹蒙落选削弱锋线、萨拉赫官宣可复出，埃及胜平合计接近六成，三路皆无明显把握。",
+  "one_liner_en": "Iran's ~76-point Elo edge makes them the statistical front-runner, but Azmoun's omission thins their attack while Salah is officially expected back fit; Egypt's win-or-draw probability is close to 60% and no outcome is clear-cut.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 76 分：伊朗 1772（第 29）vs 埃及 1696（第 48），Davidson 模型基线给伊朗约 45% 胜率。",
+      "en": "76-point Elo gap: Iran 1772 (rank 29) vs Egypt 1696 (rank 48); the Davidson baseline gives Iran ~45% to win.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "阿兹蒙（91 场 57 球）完全落选伊朗 26 人名单，锋线深度受损，仅剩塔雷米领衔的五人锋线。",
+      "en": "Azmoun (57 goals in 91 caps) was fully omitted from Iran's 26-man squad, thinning the attack to a five-man front line led by Taremi.",
+      "source_url": "https://www.flashscore.com/news/soccer-world-championship-taremi-and-jahanbakhsh-lead-iran-s-world-cup-squad-with-azmoun-overlooked/pGYQ1OUq/",
+      "source_date": "2026-06-01"
+    },
+    {
+      "cn": "萨拉赫 4 月底腿筋撕裂，埃及官方称约 4 周治疗后可赶上世界杯；至本场第三轮已有约两个月恢复窗口。",
+      "en": "Salah tore a hamstring in late April; Egyptian officials said ~4 weeks of treatment and confirmed he would be fit for the World Cup, giving him ~2 months of recovery before this matchday-3 fixture.",
+      "source_url": "https://www.aljazeera.com/sports/2026/4/26/injured-salah-has-played-his-last-game-for-liverpool-egypt-team-official",
+      "source_date": "2026-04-26"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: eloratings.net Elo -> Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat = 0.292/0.255/0.453; bounded evidence adjustment (net ~2pp from Iran toward Egypt/draw: Azmoun omission, Salah confirmed fit) -> p_final = 0.303/0.265/0.432. 80% intervals reflect drawNu 0.6-0.8 sensitivity and matchday-3 stakes uncertainty. No market inputs of any kind.",
+  "report": "report.md"
+}

@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:l",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-l-winner",
+  "question_cn": "L 组头名（小组赛最终积分榜第一）是哪支球队？",
+  "question_en": "Which team finishes first in Group L?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "England", "label_cn": "英格兰", "label_en": "England", "p": 0.6946 },
+    { "key": "Croatia", "label_cn": "克罗地亚", "label_en": "Croatia", "p": 0.2685 },
+    { "key": "Panama", "label_cn": "巴拿马", "label_en": "Panama", "p": 0.0358 },
+    { "key": "Ghana", "label_cn": "加纳", "label_en": "Ghana", "p": 0.0011 }
+  ],
+  "one_liner_cn": "英格兰 Elo 领先克罗地亚 112 分且名单齐整，6/17 揭幕战直接对话定走向，约七成概率拿下 L 组头名；莫德里奇术后状态存疑令克罗地亚小幅下调。",
+  "one_liner_en": "England lead Croatia by 112 Elo points with a full-strength squad, and the June 17 head-to-head opener decides the group — roughly a 70% chance to finish first; Modric's post-surgery fitness doubt slightly downgrades Croatia.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距明确：英格兰 2024（世界第 4）领先克罗地亚 1912（#12）112 分，巴拿马 1730、加纳 1510 差距悬殊；10 万次纯 Elo 蒙特卡洛模拟中英格兰 68.4% 拿下小组头名。",
+      "en": "Clear Elo gap: England 2024 (world #4) lead Croatia 1912 (#12) by 112 points, with Panama 1730 and Ghana 1510 far behind; England top the group in 68.4% of 100k pure-Elo Monte Carlo simulations.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "英格兰无人员危机：图赫尔 5/22 公布 26 人名单，凯恩任队长、贝林厄姆在列，无重大伤停。",
+      "en": "No England availability crisis: Tuchel named the 26-man squad on May 22 with Kane as captain and Bellingham included; no major absences.",
+      "source_url": "https://www.englandfootball.com/articles/2026/May/22/england-mens-world-cup-2026-squad-named-by-thomas-tuchel-20262205",
+      "source_date": "2026-05-22"
+    },
+    {
+      "cn": "唯一挑战者带伤疑：克罗地亚 40 岁队长莫德里奇 4 月颧骨骨折手术、缺席俱乐部赛季收官，预计赶上 6/17 对英格兰的首战但状态存疑（调整 −1.5pp）。",
+      "en": "The only challenger carries a fitness doubt: Croatia's 40-year-old captain Modric had cheekbone-fracture surgery in April and missed the end of the club season; he is expected fit for the June 17 opener vs England, but sharpness is uncertain (−1.5pp adjustment).",
+      "source_url": "https://worldsoccertalk.com/amp/news/luka-modric-injury-update-croatia-coach-zlatko-dalic-speaks-ahead-of-2026-world-cup/",
+      "source_date": "2026-06-10"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 5,
+  "method_note": "Baseline: 100k-sim pure-Elo Poisson Monte Carlo (seed 20260611, eloratings.net snapshot 2026-06-11, no market input). Bounded evidence adjustment: Croatia -1.5pp for Modric's post-surgery fitness doubt (in squad, expected fit for the opener), renormalized to sum 1; all deltas within +/-4pp. Market-blind: no betting or prediction-market data used.",
+  "report": "report.md"
+}

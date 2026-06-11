@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:g",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-g-winner",
+  "question_cn": "G 组头名（小组第一出线）是哪支球队？",
+  "question_en": "Which team finishes first in Group G?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Belgium", "label_cn": "比利时", "label_en": "Belgium", "p": 0.6465 },
+    { "key": "Iran", "label_cn": "伊朗", "label_en": "Iran", "p": 0.2379 },
+    { "key": "Egypt", "label_cn": "埃及", "label_en": "Egypt", "p": 0.1039 },
+    { "key": "New Zealand", "label_cn": "新西兰", "label_en": "New Zealand", "p": 0.0117 }
+  ],
+  "one_liner_cn": "比利时凭明显的 Elo 实力差距最有可能拿下 G 组头名（约 65%），但核心球员伤病隐患让伊朗（约 24%）保留掀翻的空间。",
+  "one_liner_en": "Belgium's clear Elo edge makes it the most likely Group G winner (~65%), but fitness doubts over its core leave Iran (~24%) genuine room for an upset.",
+  "key_reasons": [
+    {
+      "cn": "Elo 断层：比利时 1894（世界第 15）领先伊朗 1772、埃及 1696、新西兰 1562，纯 Elo 十万次模拟给出 67.7% 的头名基线。",
+      "en": "Elo gap: Belgium 1894 (world #15) vs Iran 1772, Egypt 1696, New Zealand 1562 — the pure-Elo 100k-sim baseline puts Belgium at 67.7% to top the group.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "比利时核心带伤：卢卡库本赛季因反复肌肉伤势几乎没踢正式比赛，德布劳内赛季末因眼伤缺阵，库尔图瓦刚走出伤病赛季——据此下调比利时 3pp。",
+      "en": "Belgium's core is banged up: Lukaku has played barely an hour of competitive club football this season, De Bruyne was sidelined with an eye injury late in the season, and Courtois is off an injury-disrupted run — basis for the −3pp on Belgium.",
+      "source_url": "https://www.fotmob.com/news/18d3fh2himo601nk0xh84p4fky-de-bruyne-lukaku-named-belgium-world-cup-squad-despite-injuries",
+      "source_date": "2026-05-15"
+    },
+    {
+      "cn": "挑战者阵容完整：伊朗 6/1 按期定名单、备战完整，是 6/21 直接对话的最大受益方（+1.5pp）；埃及由萨拉赫领衔、搭档马尔穆什，锋线质量高于其 Elo 排名（+1.5pp）。",
+      "en": "Challengers intact: Iran named its final squad on schedule (Jun 1) and benefits most from the Jun 21 head-to-head (+1.5pp); Egypt, captained by Salah alongside Marmoush, carries more attacking quality than its Elo rank implies (+1.5pp).",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/21/mohamed-salah-to-captain-egypt-as-squad-announced-for-fifa-world-cup-2026",
+      "source_date": "2026-05-21"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Pure-Elo Poisson Monte Carlo, 100,000 full-tournament simulations (seed 20260611, eloratings.net snapshot 2026-06-11, no market input), plus bounded evidence-based adjustment capped at ±4pp/team: Belgium −3.0pp (core fitness risk), Iran +1.5pp, Egypt +1.5pp; deltas net to zero so the distribution sums to 1. Market-blind throughout.",
+  "report": "report.md"
+}

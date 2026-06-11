@@ -1,0 +1,55 @@
+{
+  "id": "match:fifwc-alg-aut-2026-06-27",
+  "family": "group_match",
+  "event_slug": "fifwc-alg-aut-2026-06-27",
+  "question_cn": "2026 世界杯小组赛 J 组：阿尔及利亚 vs 奥地利（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group J: Algeria vs Austria — 90-minute three-way result?",
+  "kickoff_utc": "2026-06-28T02:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    {
+      "key": "a",
+      "label_cn": "阿尔及利亚",
+      "label_en": "Algeria",
+      "p": 0.325
+    },
+    {
+      "key": "draw",
+      "label_cn": "平局",
+      "label_en": "Draw",
+      "p": 0.262
+    },
+    {
+      "key": "b",
+      "label_cn": "奥地利",
+      "label_en": "Austria",
+      "p": 0.413
+    }
+  ],
+  "one_liner_cn": "奥地利凭 Elo 优势小幅领跑，但 Baumgartner 伤退削弱进攻，刚客胜荷兰的阿尔及利亚状态正佳，三路均无把握。",
+  "one_liner_en": "Austria edge it on Elo, but Baumgartner's injury blunts their attack while Algeria arrive off an away win over the Netherlands — no outcome is near certain.",
+  "key_reasons": [
+    {
+      "cn": "奥地利核心攻击手 Baumgartner（赛季 13 个德甲进球）因伤无缘世界杯，进攻端明显减弱。",
+      "en": "Austria's in-form attacker Baumgartner (13 Bundesliga goals) is ruled out of the World Cup by injury, a clear blow to their attack.",
+      "source_url": "https://www.aninews.in/news/sports/football/austrias-christoph-baumgartner-ruled-of-fifa-world-cup-due-to-injury20260602165204/",
+      "source_date": "2026-06-02"
+    },
+    {
+      "cn": "阿尔及利亚 6 月 3 日客场 1-0 击败荷兰，赛前状态出色；但中场 Boudaoui 伤缺、Bennacer 落选。",
+      "en": "Algeria beat the Netherlands 1-0 away on Jun 3 — strong form — though Boudaoui is injured and Bennacer was omitted.",
+      "source_url": "https://heavy.com/sports/soccer/how-to-watch-algeria-vs-bolivia-live-today-world-cup-warm-up-preview-stats-team-news/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "Elo 差距 58 分（奥地利 1830 vs 阿尔及利亚 1772），中立场地下统计模型给奥地利约 43% 基准胜率。",
+      "en": "A 58-point Elo gap (Austria 1830 vs Algeria 1772) on a neutral venue gives Austria a ~43% baseline win probability in the statistical model.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gave 31.0/25.7/43.3; bounded evidence adjustment of 4pp total (Algeria +1.5, Draw +0.5, Austria -2.0) for Baumgartner's absence vs Algeria's own midfield losses; renormalized. 80% intervals reflect drawNu 0.6-0.8 and ~±40 Elo sensitivity. No betting or prediction-market data used.",
+  "report": "report.md"
+}

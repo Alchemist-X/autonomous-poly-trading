@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-civ-ecu-2026-06-14",
+  "family": "group_match",
+  "event_slug": "fifwc-civ-ecu-2026-06-14",
+  "question_cn": "2026 世界杯小组赛 E 组：科特迪瓦 vs 厄瓜多尔（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group E: Cote d'Ivoire vs Ecuador (three-way result, 90 minutes)?",
+  "kickoff_utc": "2026-06-14T23:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "科特迪瓦", "label_en": "Côte d'Ivoire", "p": 0.165 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.245 },
+    { "key": "b", "label_cn": "厄瓜多尔", "label_en": "Ecuador", "p": 0.59 }
+  ],
+  "one_liner_cn": "Elo 差 243 分使厄瓜多尔明显占优，但科特迪瓦状态火热、两队均防守见长，揭幕战平局概率高于纯模型值。",
+  "one_liner_en": "A 243-point Elo gap makes Ecuador the clear favourite, but Cote d'Ivoire's hot form and two defence-first sides lift the draw above the pure model value.",
+  "key_reasons": [
+    {
+      "cn": "厄瓜多尔 Elo 1938（第 9）远高于科特迪瓦 1695（第 49），世预赛南美区第 2 且 18 轮仅失 5 球。",
+      "en": "Ecuador's Elo of 1938 (rank 9) towers over Cote d'Ivoire's 1695 (rank 49); 2nd in CONMEBOL qualifying with only 5 goals conceded in 18 games.",
+      "source_url": "https://theanalyst.com/articles/ecuador-defensive-steel-world-cup-2026-surprise-package",
+      "source_date": "2026-06-09"
+    },
+    {
+      "cn": "科特迪瓦近期热身赛 2-1 胜法国、4-0 胜韩国、1-0 胜苏格兰，状态火热但已大体反映在 Elo 中。",
+      "en": "Cote d'Ivoire beat France 2-1 (Jun 4), South Korea 4-0 and Scotland 1-0 in warm-ups — hot form, though largely reflected in Elo already.",
+      "source_url": "https://www.goal.com/en-us/news/ivory-coast-ecuador-world-cup-preview/bltb6fef7b1a695267a",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "厄瓜多尔无重大伤停：仅替补前锋 Campana 因伤落选，Caicedo 热身赛轮休属保护性安排。",
+      "en": "No major Ecuador absences: only backup striker Campana missed out injured; Caicedo's friendly rest was precautionary.",
+      "source_url": "https://www.fifaworldcupnews.com/ecuador-world-cup-2026-squad-official/",
+      "source_date": "2026-06-01"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: eloratings.net snapshot (2026-06-11) -> Davidson three-way (scale=400, drawNu=0.7, neutral venue) p_stat 15.5/21.8/62.7 -> bounded evidence adjustment (draw +2.7pp, CIV +1.0pp, ECU -3.7pp; |delta| 7.4pp <= 8pp cap) -> p_final 16.5/24.5/59.0. No market inputs of any kind.",
+  "report": "report.md"
+}

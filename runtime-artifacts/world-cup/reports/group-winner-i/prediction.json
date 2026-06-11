@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:i",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-i-winner",
+  "question_cn": "I 组头名（小组第一出线）是哪支球队？",
+  "question_en": "Which team finishes first in Group I?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "France", "label_cn": "法国", "label_en": "France", "p": 0.7217 },
+    { "key": "Norway", "label_cn": "挪威", "label_en": "Norway", "p": 0.1717 },
+    { "key": "Senegal", "label_cn": "塞内加尔", "label_en": "Senegal", "p": 0.104 },
+    { "key": "Iraq", "label_cn": "伊拉克", "label_en": "Iraq", "p": 0.0026 }
+  ],
+  "one_liner_cn": "法国阵容齐整且 Elo 高出挪威约 150 分，约 72% 概率拿下 I 组头名；挪威有哈兰德但厄德高伤情存疑，塞内加尔是第三选项。",
+  "one_liner_en": "A full-strength France, ~150 Elo points above Norway, win Group I in about 72% of simulations; Norway have an in-form Haaland but Odegaard's fitness is in doubt, with Senegal a distant third option.",
+  "key_reasons": [
+    {
+      "cn": "Elo 断层：法国 2063（世界第 3）对挪威 1914（第 11）、塞内加尔 1860（第 21）、伊拉克 1607（第 63），10 万次纯 Elo 模拟给出法国 70.4% 的头名基线。",
+      "en": "Elo gap: France 2063 (world No. 3) vs Norway 1914 (No. 11), Senegal 1860 (No. 21), Iraq 1607 (No. 63); the 100k pure-Elo simulation gives France a 70.4% group-winner baseline.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "法国满员出战：姆巴佩伤愈入选并出任队长，德尚明确排除萨利巴伤情疑虑，无停赛或伤病危机。",
+      "en": "France at full strength: Mbappe recovered and named captain, Deschamps dismissed Saliba fitness fears; no suspension or injury crisis.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48771039/france-2026-world-cup-squad-mbappe-camavinga-kolo-muani-dembele",
+      "source_date": "2026-05-14"
+    },
+    {
+      "cn": "挪威核心隐患：哈兰德确认出战且状态火热（预选赛 16 球），但厄德高本季至少 5 次伤停、缺席 3 月友谊赛，组织端高度依赖其健康——挪威基线下调 2pp。",
+      "en": "Norway's core risk: Haaland is confirmed fit and in form (16 qualifying goals), but Odegaard suffered at least five injuries this season and missed the March friendlies; creativity hinges on his health — Norway adjusted down 2pp.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/26/norway-world-cup-2026-preview-players-to-watch-group-matches-squad-list",
+      "source_date": "2026-05-26"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Baseline: 100,000 full-tournament pure-Elo Poisson Monte Carlo simulations (seed 20260611, eloratings.net snapshot 2026-06-11, no market input). Bounded evidence adjustment: Norway -2pp for Odegaard fitness uncertainty (cited), redistributed proportionally to the other teams and renormalized to sum 1; all per-team deltas within +/-4pp.",
+  "report": "report.md"
+}

@@ -1,0 +1,55 @@
+{
+  "id": "match:fifwc-bra-mar-2026-06-13",
+  "family": "group_match",
+  "event_slug": "fifwc-bra-mar-2026-06-13",
+  "question_cn": "2026 世界杯小组赛 C 组：巴西 vs 摩洛哥（90 分钟赛果）？",
+  "question_en": "2026 World Cup Group C: Brazil vs Morocco (90-minute result)?",
+  "kickoff_utc": "2026-06-13T22:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    {
+      "key": "a",
+      "label_cn": "巴西胜",
+      "label_en": "Brazil win",
+      "p": 0.578
+    },
+    {
+      "key": "draw",
+      "label_cn": "平局",
+      "label_en": "Draw",
+      "p": 0.229
+    },
+    {
+      "key": "b",
+      "label_cn": "摩洛哥胜",
+      "label_en": "Morocco win",
+      "p": 0.193
+    }
+  ],
+  "one_liner_cn": "巴西实力与状态占优、摩洛哥赛前 48 小时连折两将，巴西约 58% 胜率看好，但平局与冷门不可忽视。",
+  "one_liner_en": "Brazil hold the Elo and form edge while Morocco lost two squad players within 48 hours of kickoff; Brazil favoured at ~58%, with the draw and upset still live.",
+  "key_reasons": [
+    {
+      "cn": "摩洛哥开球前 48 小时内连失主力中卫 Aguerd 与边锋 Ezzalzouli（均伤退换人）",
+      "en": "Morocco lost starting centre-back Aguerd and winger Ezzalzouli to injury within 48 hours of kickoff",
+      "source_url": "https://www.espn.com/soccer/story/_/id/49027277/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "中立场地下 164 分的 Elo 差（巴西 1991 vs 摩洛哥 1827）给出巴西明显统计优势",
+      "en": "A 164-point Elo gap (Brazil 1991 vs Morocco 1827) at a neutral venue gives Brazil a clear statistical edge",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "巴西虽缺 Neymar（小腿伤）及 Militão/Rodrygo，但 4-3-3 主力框架已定且热身两连胜",
+      "en": "Brazil miss Neymar (calf) plus Militao/Rodrygo, but the settled 4-3-3 won both warm-up matches",
+      "source_url": "https://www.espn.com/soccer/story/_/id/49026946/",
+      "source_date": "2026-06-10"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) on eloratings.net ratings; bounded evidence adjustment of +3pp to Brazil (cap ±8pp) for Morocco's late injury withdrawals, partially offset by Brazil's own absences; renormalized. No betting or prediction-market data used.",
+  "report": "report.md"
+}

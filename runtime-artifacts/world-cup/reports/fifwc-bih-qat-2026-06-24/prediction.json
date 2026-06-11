@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-bih-qat-2026-06-24",
+  "family": "group_match",
+  "event_slug": "fifwc-bih-qat-2026-06-24",
+  "question_cn": "2026 世界杯 B 组：波黑 vs 卡塔尔（90 分钟赛果）？",
+  "question_en": "2026 World Cup Group B: Bosnia-Herzegovina vs Qatar (90-minute result)?",
+  "kickoff_utc": "2026-06-24T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "波黑胜", "label_en": "Bosnia-Herzegovina win", "p": 0.538 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.247 },
+    { "key": "b", "label_cn": "卡塔尔胜", "label_en": "Qatar win", "p": 0.215 }
+  ],
+  "one_liner_cn": "Elo 差 174 分让波黑明显占优，但哲科伤情与末轮变数限制把握度，波黑胜率约 54%。",
+  "one_liner_en": "A 174-point Elo gap makes Bosnia-Herzegovina the clear stronger side, but Dzeko's injury doubt and final-matchday variables cap conviction at about a 54% win probability.",
+  "key_reasons": [
+    {
+      "cn": "Elo 实力差明显：波黑 1595（第 65）对卡塔尔 1421（第 96），Davidson 模型基准给波黑约 56% 胜率。",
+      "en": "Clear Elo gap: BIH 1595 (No. 65) vs Qatar 1421 (No. 96); the Davidson baseline gives BIH about a 56% win probability.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "波黑核心哲科肩伤后仅累计出场 64 分钟并缺席最后热身赛，锋线还有 Tabakovic、Sunjic 伤情，下调波黑 2pp。",
+      "en": "BIH talisman Dzeko has only 64 minutes since his shoulder injury and missed the final warm-up, with Tabakovic and Sunjic also doubts — BIH shaded down 2pp.",
+      "source_url": "https://www.sportsmole.co.uk/football/canada/world-cup-2026/predicted-lineups/dzeko-seeking-an-improbable-return-predicted-bosnia-herzegovina-lineup-vs-canada_598905.html",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "卡塔尔在洛佩特吉手下仅 2 胜、自 2025 年 12 月后无正式比赛且热身负爱尔兰，低迷状态已反映在低 Elo 中。",
+      "en": "Qatar have just 2 wins under Lopetegui, no competitive match since December 2025 and a friendly loss to Ireland; this poor form is already reflected in their low Elo.",
+      "source_url": "https://www.fourfourtwo.com/team/qatar-world-cup-2026-squad",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) on eloratings.net 2026-06-11 snapshot gives 55.8/23.7/20.5; bounded sourced adjustment of 2pp (BIH -2, Draw +1, Qatar +1) for BIH striker fitness doubts; no betting or prediction-market inputs used.",
+  "report": "report.md"
+}

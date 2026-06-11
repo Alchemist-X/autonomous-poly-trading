@@ -1,0 +1,41 @@
+{
+  "id": "group-winner:k",
+  "family": "group_winner",
+  "event_slug": "world-cup-group-k-winner",
+  "question_cn": "K 组头名（小组赛最终积分榜第一）是哪支球队？",
+  "question_en": "Which team finishes first in Group K?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "Portugal", "label_cn": "葡萄牙", "label_en": "Portugal", "p": 0.5016 },
+    { "key": "Colombia", "label_cn": "哥伦比亚", "label_en": "Colombia", "p": 0.4710 },
+    { "key": "Uzbekistan", "label_cn": "乌兹别克斯坦", "label_en": "Uzbekistan", "p": 0.0200 },
+    { "key": "Congo DR", "label_cn": "刚果（金）", "label_en": "Congo DR", "p": 0.0074 }
+  ],
+  "one_liner_cn": "葡萄牙与哥伦比亚 Elo 仅差 7 分、头名之争几乎五五开且两队均满员出战，归属大概率取决于迈阿密直接对话；乌兹别克斯坦与刚果（金）争头名机会渺茫。",
+  "one_liner_en": "Portugal and Colombia sit just 7 Elo points apart in a near coin-flip for top spot with both squads fully fit, so first place likely comes down to their head-to-head in Miami; Uzbekistan and DR Congo are long shots.",
+  "key_reasons": [
+    {
+      "cn": "Elo 几乎持平：葡萄牙 1989（世界第 6）对哥伦比亚 1982（世界第 7）仅差 7 分，10 万次纯 Elo 蒙特卡洛模拟给出 50.2% vs 47.1% 的五五开格局；后两队（乌兹别克斯坦 1714、刚果（金）1652）差距均超 260 分。",
+      "en": "Elo virtually level: Portugal 1989 (world #6) vs Colombia 1982 (world #7), a 7-point gap; 100k pure-Elo Monte Carlo simulations yield a 50.2% vs 47.1% coin-flip, with the bottom two (Uzbekistan 1714, Congo DR 1652) more than 260 points adrift.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "葡萄牙无人员危机：C 罗 3 月肌肉伤已痊愈，5 月 19 日入选马丁内斯的世界杯名单，并在 6 月 10 日对尼日利亚的热身赛首发，将出战个人第六届世界杯。",
+      "en": "No Portugal availability crisis: Ronaldo recovered from his March muscle injury, was named in Martinez's World Cup squad on 19 May, and started the 10 June friendly against Nigeria ahead of his sixth World Cup.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/cristiano-ronaldo-roberto-martinez-portugal-squad-announcement",
+      "source_date": "2026-05-19"
+    },
+    {
+      "cn": "哥伦比亚阵容完整：J 罗与迪亚斯（拜仁、队内射手王）领衔 26 人名单，J 罗集训期间的轻微不适已恢复，无实质减员——因此本次不做任何概率调整（0pp）。",
+      "en": "Colombia's squad is intact: James Rodriguez and Luis Diaz (Bayern, top scorer) headline the 26-man roster, and James's minor training-camp knock has cleared — hence zero probability adjustment (0pp) this run.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48873914/james-rodriguez-luis-diaz-colombia-world-cup-squad",
+      "source_date": "2026-06-10"
+    }
+  ],
+  "confidence_tier": "低",
+  "n_sources": 5,
+  "method_note": "Baseline: 100k-sim pure-Elo Poisson Monte Carlo (seed 20260611, eloratings.net snapshot 2026-06-11, no market input). Bounded evidence adjustment: 0pp — two targeted availability searches (Portugal, Colombia) found no material absences, so final probabilities equal the baseline; all deltas within ±4pp. Market-blind: no betting or prediction-market data used.",
+  "report": "report.md"
+}

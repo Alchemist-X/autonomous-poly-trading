@@ -1,0 +1,325 @@
+{
+  "id": "reach-sf",
+  "family": "reach_semifinal",
+  "event_slug": "world-cup-nation-to-reach-semifinals",
+  "question_cn": "哪些球队进入 2026 世界杯四强（赢下 1/4 决赛、晋级半决赛，最后 4 队）？",
+  "question_en": "Which teams reach the semifinals (win their quarterfinal, last 4) at the 2026 World Cup?",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    {
+      "key": "Spain",
+      "label_cn": "西班牙",
+      "label_en": "Spain",
+      "p": 0.6483
+    },
+    {
+      "key": "Argentina",
+      "label_cn": "阿根廷",
+      "label_en": "Argentina",
+      "p": 0.58307
+    },
+    {
+      "key": "France",
+      "label_cn": "法国",
+      "label_en": "France",
+      "p": 0.5153
+    },
+    {
+      "key": "England",
+      "label_cn": "英格兰",
+      "label_en": "England",
+      "p": 0.35953
+    },
+    {
+      "key": "Brazil",
+      "label_cn": "巴西",
+      "label_en": "Brazil",
+      "p": 0.22071
+    },
+    {
+      "key": "Colombia",
+      "label_cn": "哥伦比亚",
+      "label_en": "Colombia",
+      "p": 0.19004
+    },
+    {
+      "key": "Portugal",
+      "label_cn": "葡萄牙",
+      "label_en": "Portugal",
+      "p": 0.17933
+    },
+    {
+      "key": "Netherlands",
+      "label_cn": "荷兰",
+      "label_en": "Netherlands",
+      "p": 0.16434
+    },
+    {
+      "key": "Ecuador",
+      "label_cn": "厄瓜多尔",
+      "label_en": "Ecuador",
+      "p": 0.15094
+    },
+    {
+      "key": "Germany",
+      "label_cn": "德国",
+      "label_en": "Germany",
+      "p": 0.1341
+    },
+    {
+      "key": "Norway",
+      "label_cn": "挪威",
+      "label_en": "Norway",
+      "p": 0.1036
+    },
+    {
+      "key": "Japan",
+      "label_cn": "日本",
+      "label_en": "Japan",
+      "p": 0.09463
+    },
+    {
+      "key": "Croatia",
+      "label_cn": "克罗地亚",
+      "label_en": "Croatia",
+      "p": 0.08746
+    },
+    {
+      "key": "Switzerland",
+      "label_cn": "瑞士",
+      "label_en": "Switzerland",
+      "p": 0.0863
+    },
+    {
+      "key": "Türkiye",
+      "label_cn": "土耳其",
+      "label_en": "Türkiye",
+      "p": 0.08299
+    },
+    {
+      "key": "Mexico",
+      "label_cn": "墨西哥",
+      "label_en": "Mexico",
+      "p": 0.07121
+    },
+    {
+      "key": "Belgium",
+      "label_cn": "比利时",
+      "label_en": "Belgium",
+      "p": 0.07056
+    },
+    {
+      "key": "Uruguay",
+      "label_cn": "乌拉圭",
+      "label_en": "Uruguay",
+      "p": 0.06028
+    },
+    {
+      "key": "Senegal",
+      "label_cn": "塞内加尔",
+      "label_en": "Senegal",
+      "p": 0.04392
+    },
+    {
+      "key": "Morocco",
+      "label_cn": "摩洛哥",
+      "label_en": "Morocco",
+      "p": 0.02718
+    },
+    {
+      "key": "Paraguay",
+      "label_cn": "巴拉圭",
+      "label_en": "Paraguay",
+      "p": 0.02321
+    },
+    {
+      "key": "Canada",
+      "label_cn": "加拿大",
+      "label_en": "Canada",
+      "p": 0.01922
+    },
+    {
+      "key": "Austria",
+      "label_cn": "奥地利",
+      "label_en": "Austria",
+      "p": 0.01656
+    },
+    {
+      "key": "Scotland",
+      "label_cn": "苏格兰",
+      "label_en": "Scotland",
+      "p": 0.01264
+    },
+    {
+      "key": "IR Iran",
+      "label_cn": "伊朗",
+      "label_en": "Iran",
+      "p": 0.01022
+    },
+    {
+      "key": "Korea Republic",
+      "label_cn": "韩国",
+      "label_en": "South Korea",
+      "p": 0.00998
+    },
+    {
+      "key": "Czechia",
+      "label_cn": "捷克",
+      "label_en": "Czechia",
+      "p": 0.00694
+    },
+    {
+      "key": "Australia",
+      "label_cn": "澳大利亚",
+      "label_en": "Australia",
+      "p": 0.00658
+    },
+    {
+      "key": "Algeria",
+      "label_cn": "阿尔及利亚",
+      "label_en": "Algeria",
+      "p": 0.00517
+    },
+    {
+      "key": "United States",
+      "label_cn": "美国",
+      "label_en": "United States",
+      "p": 0.00418
+    },
+    {
+      "key": "Panama",
+      "label_cn": "巴拿马",
+      "label_en": "Panama",
+      "p": 0.00286
+    },
+    {
+      "key": "Sweden",
+      "label_cn": "瑞典",
+      "label_en": "Sweden",
+      "p": 0.00215
+    },
+    {
+      "key": "Egypt",
+      "label_cn": "埃及",
+      "label_en": "Egypt",
+      "p": 0.00182
+    },
+    {
+      "key": "Côte d'Ivoire",
+      "label_cn": "科特迪瓦",
+      "label_en": "Ivory Coast",
+      "p": 0.0018
+    },
+    {
+      "key": "Uzbekistan",
+      "label_cn": "乌兹别克斯坦",
+      "label_en": "Uzbekistan",
+      "p": 0.00152
+    },
+    {
+      "key": "Jordan",
+      "label_cn": "约旦",
+      "label_en": "Jordan",
+      "p": 0.00037
+    },
+    {
+      "key": "Bosnia-Herzegovina",
+      "label_cn": "波黑",
+      "label_en": "Bosnia-Herzegovina",
+      "p": 0.00031
+    },
+    {
+      "key": "DR Congo",
+      "label_cn": "刚果（金）",
+      "label_en": "DR Congo",
+      "p": 0.00027
+    },
+    {
+      "key": "Tunisia",
+      "label_cn": "突尼斯",
+      "label_en": "Tunisia",
+      "p": 0.00015
+    },
+    {
+      "key": "Cabo Verde",
+      "label_cn": "佛得角",
+      "label_en": "Cape Verde",
+      "p": 0.00011
+    },
+    {
+      "key": "Saudi Arabia",
+      "label_cn": "沙特阿拉伯",
+      "label_en": "Saudi Arabia",
+      "p": 6e-05
+    },
+    {
+      "key": "New Zealand",
+      "label_cn": "新西兰",
+      "label_en": "New Zealand",
+      "p": 3e-05
+    },
+    {
+      "key": "Iraq",
+      "label_cn": "伊拉克",
+      "label_en": "Iraq",
+      "p": 3e-05
+    },
+    {
+      "key": "South Africa",
+      "label_cn": "南非",
+      "label_en": "South Africa",
+      "p": 1e-05
+    },
+    {
+      "key": "Haiti",
+      "label_cn": "海地",
+      "label_en": "Haiti",
+      "p": 1e-05
+    },
+    {
+      "key": "Ghana",
+      "label_cn": "加纳",
+      "label_en": "Ghana",
+      "p": 1e-05
+    },
+    {
+      "key": "Qatar",
+      "label_cn": "卡塔尔",
+      "label_en": "Qatar",
+      "p": 0.0
+    },
+    {
+      "key": "Curaçao",
+      "label_cn": "库拉索",
+      "label_en": "Curaçao",
+      "p": 0.0
+    }
+  ],
+  "one_liner_cn": "最可能的四强是西班牙、阿根廷、法国、英格兰——三支 Elo 2000+ 球队加上签位最顺的英格兰；巴西虽然 Elo 第 5，但伤病减员叠加与英格兰、墨西哥同处一个 1/4 区，四强概率被压到约 22%。",
+  "one_liner_en": "The most likely final four are Spain, Argentina, France and England — the three Elo 2000+ sides plus the team with the cleanest squad; Brazil, despite ranking 5th on Elo, are squeezed to about 22% by injuries and by sharing a quarter with England and Mexico.",
+  "key_reasons": [
+    {
+      "cn": "Elo 断层主导：西班牙（2157）、阿根廷（2115）、法国（2063）是仅有的三支 Elo 2000+ 球队，10 万次纯 Elo 蒙特卡洛模拟给出 66%/57%/50% 的四强基线，远超第 4 名英格兰（34%）之后的所有球队。",
+      "en": "The Elo gap dominates: Spain (2157), Argentina (2115) and France (2063) are the only Elo 2000+ sides, and the 100k-run pure-Elo Monte Carlo gives them 66%/57%/50% semifinal baselines, far ahead of everyone behind 4th-placed England (34%).",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "签表结构决定中游命运：按官方淘汰赛对阵，英格兰、巴西、墨西哥的预计路径同处一个 1/4 区（最多一队进四强）；法国、荷兰与 E 组头名（德国/厄瓜多尔）同区；K 组出线者（葡萄牙/哥伦比亚）无论头名还是第二，1/4 决赛前后大概率撞上阿根廷或西班牙。",
+      "en": "Bracket structure decides the mid-tier: on the official knockout tree, England, Brazil and Mexico project into the same quarter (at most one can reach the last 4); France, the Netherlands and the Group E winner (Germany/Ecuador) share another; and whoever emerges from Group K (Portugal/Colombia) is likely to run into Argentina or Spain around the quarterfinal.",
+      "source_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_knockout_stage",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "伤病不对称是主要调整项：巴西（罗德里戈 ACL、内马尔小腿伤疑）、葡萄牙（C 罗 3 个月大腿伤刚复出）、荷兰、日本、比利时等带伤减员被下调（最大 −10% 相对）；英格兰训练营全员健康、哥伦比亚满编且主要对手带伤，获小幅上调。",
+      "en": "Injury asymmetry drives the adjustments: Brazil (Rodrygo ACL, Neymar calf doubt), Portugal (Ronaldo just back from a three-month thigh injury), the Netherlands, Japan and Belgium were marked down (max -10% relative), while England, with a clean bill of health in camp, and a fully fit Colombia were nudged up.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48572979/2026-fifa-world-cup-injuries-tracker-which-stars-miss-latest-info",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 18,
+  "method_note": "100,000-run pure-Elo Poisson Monte Carlo over the full official 2026 bracket (seed 20260611, eloratings.net snapshot 2026-06-11, no market input) + bounded evidence-based adjustments (largest used ±10% relative, cap ±20%), renormalized so the 48 probabilities sum to 4. Market-blind by policy.",
+  "report": "report.md"
+}

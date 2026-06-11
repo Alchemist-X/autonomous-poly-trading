@@ -11,9 +11,43 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-07 by Codex（今日 Pulse 只读推荐完成并生成 PDF；ETH close 与 Satoshi $1 live-check 均被 CLOB 地区限制 403 拒绝，0 成交）
+> 最后更新：2026-06-12 by Claude（Predict Raven 世界杯版上线 https://forecasting-agent.com（自定义域名，Cloudflare DNS-only 指向 Vercel；旧地址 web-one-sand-83.vercel.app 仍可用） ：87 题盲测预测、冠军/小组赛/出线名单三 tab、连线对阵树、渡鸦吉祥物品牌、全站中英切换 ?lang=en；AutoPoly 旧页面已全删；部署注意：vercel build 后须给 config.json 的 catch-all 路由补 check:true 再 deploy --prebuilt）
 
 ---
+
+## 🏆 世界杯盲测预测冲刺（2026-06-11 · 本分支当前主线，进行中）
+
+**目标**：揭幕战开球（2026-06-11 19:00 UTC = 港时 6/12 凌晨 3:00）前发布全部 **87 个问题**的公开预测（72 场小组赛 + 12 个小组头名 + 八强/四强/冠军三个池子），并把 `/world-cup` 网页上线 Vercel。
+
+**铁律（用户 2026-06-11 拍板，永久）**：**市场盲测** —— 预测管线任何环节不得读取/引用/展示任何市场价格或隐含概率（Polymarket / FanDuel / DraftKings / Kalshi 等全在列），市场数据只许用于事件结构与结算映射。规则在 CLAUDE.md「项目执行要点」；缓存写入层已用 `stripPrices` 强制剥离（`scripts/world-cup/cache-markets.ts` / `check-updates.ts`）。**预测 = 纯 Elo / Monte Carlo + 有界证据调整（单场 ±8pp，带来源）**。
+
+**已完成（都已 commit）**：
+- 事件清单 87 题含结算定义（无价格）：`pnpm tsx scripts/world-cup/build-event-list.ts` → `runtime-artifacts/world-cup/event-list/`
+- 100k 次纯 Elo Monte Carlo（官方 FIFA 2026 对阵树 + 最佳第三分配）：`runtime-artifacts/world-cup/mc-results.json`。盲测冠军榜：西班牙 37.8% > 阿根廷 24.4% > 法国 12.8% > 英格兰 6.6%
+- Elo 查表（48 队 + 别名）：`runtime-artifacts/world-cup/elo-table.json`
+- `/world-cup` 网页：卡片（事件+概率条）→ 点开 2-3 条带来源理由 → `/world-cup/forecast/<id>` 完整报告页（CN/EN）。空状态视觉 QA 通过（0 pageerror）
+- 导入命令：`pnpm tsx scripts/world-cup/import-predictions.ts`（扫 `runtime-artifacts/world-cup/reports/*/prediction.json` 统一 schema → `apps/web/lib/world-cup/generated/*.json`，**导入后要 commit 这两个生成文件**，Vercel 构建依赖它们）
+
+**进行中（跑在 Aincrad 的 Mac 本地 FleetView 会话里，协作者无法直接接管这个进程）**：
+- Workflow `wf_8db95ecb-dc7`（~160 agents）：71 场比赛（预测+对抗校验流水线）、12 组 + 3 池报告、揭幕战 sample 盲测净化、市场盲测专项校验。约 20:46 起跑，ETA ~22:15 HKT
+- 监控：`ls runtime-artifacts/world-cup/reports | wc -l`（完成时 ≈ 87 个目录，每个含 report.md / report.en.md / prediction.json）
+- ⚠️ `runtime-artifacts/` 是 gitignored：**预测产物只在这台机器上**，直到导入 + commit generated JSON
+
+**✅ 冲刺已完成（2026-06-11 22:45 HKT，开球前 4 小时）**：
+- 87/87 题市场盲测预测全部发布并 commit（`runtime-artifacts/world-cup/reports/`），确定性校验 87/87 通过
+- **线上**：https://web-one-sand-83.vercel.app/world-cup （Vercel 项目 `web`，prebuilt 部署；已修平台路由 bug：catch-all rewrite 缺 `check:true` 导致动态参数路由 404——`vercel build` 产物 `config.json` 需打该补丁，build 脚本化时要带上）
+- 成本账本：`runtime-artifacts/world-cup/run-ledger/`（全部 claude-fable-5；生产 150 万 output tokens；单场中位 264s/14.2k out）
+- 对阵图：`bracket-prediction.json`（模态路径：决赛西班牙 56% 胜阿根廷）
+- 残余 TODO（已于 22:10-23:10 完成 AutoPoly 全站清除：交易面板页面/API/组件/数据文件 60+ 个文件删除，根路由重定向 /world-cup，R1 品牌元数据替换，线上已验证 14 个旧路由 404）；自定义域名未配；OG 卡未做；每晚 Elo 更新后重跑 MC 的自动化未建
+
+**原计划步骤（已全部执行）**：
+1. 等 workflow 完成（自动通知；或看目录数）
+2. `pnpm tsx scripts/world-cup/import-predictions.ts` → 检查 WARN（被跳过的题要补）→ commit `apps/web/lib/world-cup/generated/`
+3. 视觉 QA（CLAUDE.md §9 强制）：`cd apps/web && pnpm exec next dev -p 3199`；`node scripts/visual-qa.mjs --base http://localhost:3199 --paths /world-cup --out runtime-artifacts/screenshots/<ts>-wc-live`；用 Read 真读 PNG；任何 pageerror = fail
+4. 逐预测 token/耗时/模型统计（用户明确要求）：解析 workflow 转录 `~/.claude/projects/-Users-Aincrad-dev-proj-predict-raven/6367ed0b-*/subagents/workflows/wf_8db95ecb-dc7/agent-*.jsonl`（每条 assistant 消息含 model + usage tokens；首末时间戳差 = 耗时；从 prompt 里抓 slug 归属）+ MC 在 `wf_58799d69-b6b` → 产出 `runtime-artifacts/world-cup/run-ledger/{ledger.csv,summary.md}`
+5. Vercel 上线：先 `pnpm --filter @autopoly/web build` 本地过；查 `apps/web/.vercel/` 是否已 link；上线后**必须真实验收**（打开线上 URL + 截图 + 对照本地）
+6. 清理待办：旧 `/world-cup/[matchId]` 与 leaderboard 路由是市场时代 UI（数据已删、现 404），后续删除或重写
+
 
 ## 🔴 P0 — 现在/今天
 
@@ -90,6 +124,8 @@
 - [ ] **申请 Polymarket Verified tier**（优化项，不阻塞 MVP）：mail builder@polymarket.com 附 API key `019df336-1894-76e8-bd11-8582cde25c3a` + Pizza dashboard URL 当业绩证明。批下来后才能拿 Weekly Rewards Pool 的 USDC 分成（约 0.5-1% routed volume）。Unverified 也能正常下单 + 走 builder code，只是不进奖励池
 
 - [ ] **Vercel 项目改名** `autopoly-pizza-spectator` → `predict-raven`：Vercel dashboard → Project Settings → Name。改完 README 顶部 spectator URL 也要更新成 `predict-raven.vercel.app`
+- [x] **Prediction Engine demo preview + hosted access v1**：2026-06-07 已新增 `/prediction-engine` 自然语言事件概率 demo、`/api/prediction-engine/run` API、Pulse `stage_flow` 机器可读流程字段，以及中英文说明 `docs/diagrams/prediction-engine-stage-flow.{md,en.md}`。API 支持三种模式：本地测试用 `PREDICTION_ENGINE_LOCAL_API_URL` / `PREDICTION_ENGINE_BACKEND_MODE=local` 调本机 host 服务；线上 Vercel 用 `PREDICTION_ENGINE_API_URL` 或 `PREDICTION_ENGINE_API_BASE_URL` 调 VPS；未配置才 fallback demo。前端已加入 Manus-like Run Console，显示 `service`、当前步骤、步骤成果和 artifact label。已接 Auth.js + OIDC 登录骨架、邀请码激活、每日/月度/并发 quota gate、`prediction:invite` 创建脚本和 DB migration `0004_prediction_access.sql`。Vercel preview：`https://web-l6lenq4qs-alchemist-xs-projects.vercel.app`（deployment `dpl_EwPL9EqqVHipQy8mJWpaDdRgeTEw`，Ready）。当前 preview 域名被 Vercel 登录保护拦截，未 promote production；公开验收前需要关闭 preview protection、提供 bypass，或明确切 production。
+- [x] **raven-cloud / raven-web private repos 已创建并写入首版代码**：2026-06-07 用 GitHub 账号 `Alchemist-X` 新建两个 private repo 并推送 `main`。`https://github.com/Alchemist-X/raven-cloud`（本地 `/Users/Aincrad/dev-proj/raven-cloud`，latest `10ee63e`）已包含 Fastify API、demo/pulse-command/http-proxy runner、邀请码、quota、CI 和中英文 README；`https://github.com/Alchemist-X/raven-web`（本地 `/Users/Aincrad/dev-proj/raven-web`，latest `1e0fc28`）已包含 Next.js App Router、OIDC/Auth.js、邀请码页、cloud API proxy、Manus-like Run Console、CI 和中英文 README。两边 visibility=PRIVATE；GitHub Actions 最新 CI 均通过。当前仍是首版独立骨架，尚未从 predict-raven monorepo 搬迁真实 Pulse 生产代码。
 - [x] **promote prophets-profit 复刻页到 production**：2026-05-10 已切正式 `https://autopoly-pizza-spectator.vercel.app`。当前页面保留 prophets-profit 外观，但数据来自 Pizza Polymarket 公开钱包接口 + bundled Pulse position review 摘要，不再使用源站 Kalshi 静态快照。
 - [x] **Pizza snapshot 三套非 production 风格预览**：2026-05-10 已完成，仅部署到 Vercel preview，未 promote production。预览地址：`https://autopoly-pizza-spectator-eixznt54x-alchemist-xs-projects.vercel.app/previews/pizza-ledger-folio`、`/previews/pizza-ledger-terminal`、`/previews/pizza-ledger-exchange`。最终 preview deploy `dpl_D3VdKtc1YZ6YTxXSn2qRg7DGgC1P`，运行时 env 显式指向 Pizza 钱包 `0x6664...614e` + `INITIAL_BANKROLL_USD=500`；中间 preview `dpl_BLwwnqngFevVbmHFSPBQo2LyTyxz` 因 Vercel preview env 指到错误钱包只显示 0 fills，不作为评审入口。
 - [ ] **自动刷新 `pulse-position-review.json`**：当前 `apps/web/public/pulse-position-review.json` 是从 2026-05-08 position-only Pulse 归档手动抽取的公开摘要；下次跑 `pnpm pulse:positions` 后应加脚本自动导出并随部署更新，否则 rationale 可能落后于实时持仓。
@@ -133,6 +169,13 @@
 
 ## 🔄 上次会话留下的上下文（2026-06-07）
 
+- 用户要求：按图片流程改造 Pulse 主流程，记录未实现缺口和新增 LLM/外部比对成本；抽象成类似 Manus 的前端预测引擎 demo；部署到 Vercel。
+- 已实现：`services/orchestrator/src/pulse/stage-flow.ts` 定义 7 阶段流程、实现状态、缺口、外部请求/LLM/token/耗时估算；`full-pulse.ts` 将 `stage_flow` 写入 research context 并要求 LLM 按阶段输出。
+- 前端：`apps/web/app/prediction-engine/page.tsx` + `apps/web/components/prediction-engine-demo.tsx` + `apps/web/app/api/prediction-engine/run/route.ts`。API route 支持 local/VPS/demo 三档：本地开发可配 `PREDICTION_ENGINE_LOCAL_API_URL` 或 `PREDICTION_ENGINE_LOCAL_API_BASE_URL`；Vercel 线上应配 `PREDICTION_ENGINE_API_URL` 或 `PREDICTION_ENGINE_API_BASE_URL` 调 VPS；未配置才走 read-only demo。`PredictionEngineRun` 已包含 `service` 和 `progress`，前端 Run Console 会显示服务来源、当前步骤、步骤成果和 artifact label；demo 模式不跑真实 Pulse、不联网抓证据、不下单。
+- 文档：新增 `docs/diagrams/prediction-engine-stage-flow.md` 和英文版；`docs/diagrams/pulse-live-flow.{md,en.md}` 已更新跳转。默认 4 候选下，本次 `stage_flow` 预计只新增约 2k-4k input tokens、0 外部请求、0 额外 LLM 调用；严格对齐图片流程预计 +22 到 +46 外部请求、+0 到 +1 LLM 调用、+8.5k 到 +36.2k input tokens、+6.2k 到 +12.8k output tokens、+4 到 +14 分钟。
+- 验证：`stage-flow.test.ts` + `full-pulse.test.ts` 4 tests pass；`pnpm --filter @autopoly/web typecheck` pass；`pnpm --filter @autopoly/web build` pass；此前 `pnpm typecheck` 全 9 workspace pass。浏览器本地验收桌面和 390px 移动端均无横向溢出、console error 0；临时 local mock 服务 `127.0.0.1:8787` 通过 `127.0.0.1:3008` 页面确认显示 `Local host`、后端 endpoint、Run Console 和本地步骤成果。Vercel preview Ready：`https://web-l6lenq4qs-alchemist-xs-projects.vercel.app`，但浏览器访问被 Vercel login/SSO protection 重定向，未完成公开页面验收。预测引擎 demo 工作没有运行 `pulse:live` / `daily:pulse`，没有真钱下单。
+- 用户随后要求先做 social login 和限量。已新增 `next-auth@5.0.0-beta.31`、`apps/web/auth.ts`、`/api/auth/[...nextauth]`、`/sign-in`、`/invite`、`/api/invite/accept`、`apps/web/lib/prediction-access.ts`。DB 新增 `app_users` / `invite_codes` / `prediction_usage_events`，migration `packages/db/src/migrations/0004_prediction_access.sql`；root 新增 `pnpm prediction:invite` 生成邀请码。默认未配置 auth 时 demo 仍开放；生产启用需配置 OIDC env + `DATABASE_URL` + `PREDICTION_AUTH_REQUIRED=true` 并先跑 migration。验证：`pnpm typecheck` 全 9 workspace pass；`pnpm --filter @autopoly/web build` pass；本地 `/sign-in` 200 且配置缺失提示正常，`/api/prediction-engine/run` 在 auth disabled 下仍返回 demo。
+- 用户随后要求先建未来拆分用的两个 private repo，并把对应代码写进去。已创建并推送首版：`raven-cloud` latest `10ee63e`，`raven-web` latest `1e0fc28`。`raven-cloud` 提供 `/healthz`、`/v1/prediction-runs`、`/v1/me/limits`、`/v1/invites/accept`、`/v1/admin/invites`，默认 demo runner 不跑真实 Pulse、不抓实时证据、不下单；`pulse_command` 模式默认拒绝 `pulse:live` / `daily:pulse` / `--trade` / `AUTOPOLY_EXECUTION_MODE=live`。`raven-web` 提供 App Router 控制台、Auth.js OIDC 登录、邀请码页、quota 展示和 cloud proxy。本地验证：cloud `pnpm typecheck` / `pnpm test` / `pnpm build` pass，web `pnpm typecheck` / `pnpm build` pass；启动 `127.0.0.1:8788` + `localhost:3009` 后 Playwright 桌面和 390px 移动端跑通预测，console error 0，移动端无横向溢出；GitHub Actions 最新 CI 两边均 pass。
 - 用户要求“今天推荐两个市场，完成下单，并生成 PDF 报告”。按保守实盘口径使用 `.env.pizza`、`AUTOPOLY_EXECUTION_MODE=live`、`AGENT_DECISION_STRATEGY=pulse-direct`、`PULSE_ENTRY_MAX_PLANS=2`、`PULSE_ENTRY_FIXED_NOTIONAL_USD=5`。
 - 只读推荐成功：`pnpm exec tsx scripts/pulse-live.ts --recommend-only --json`，runId `118013ab-cef5-4565-95a9-676078767be8`，归档 `runtime-artifacts/pulse-live/2026-06-07T025017Z-118013ab-cef5-4565-95a9-676078767be8/`。PDF：`decision-report.pdf`。Pulse：`runtime-artifacts/reports/pulse/2026/06/07/pulse-20260607T025023Z-claude-code-full-118013ab-cef5-4565-95a9-676078767be8.{md,json}`。
 - 推荐出的两个新开仓市场：`will-new-people-nl-gain-the-most-seats-in-the-next-russian-parliamentary-election`（No 侧，AI 估 Yes 25% / No 75%，edge 约 11.65pp，低置信度，$5）和 `will-satoshi-move-any-bitcoin-in-2026`（No 侧，AI 估 No 97%，edge 约 5.05pp，$5）。

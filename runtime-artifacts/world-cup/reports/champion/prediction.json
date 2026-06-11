@@ -1,0 +1,325 @@
+{
+  "id": "champion",
+  "family": "champion",
+  "event_slug": "world-cup-winner",
+  "question_cn": "哪支球队赢得 2026 世界杯冠军？（以 2026-07-19 决赛结果为准，含加时与点球）",
+  "question_en": "Which team wins the 2026 FIFA World Cup? (Decided by the 2026-07-19 final, including extra time and penalties)",
+  "kickoff_utc": null,
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    {
+      "key": "Spain",
+      "label_cn": "西班牙",
+      "label_en": "Spain",
+      "p": 0.369537
+    },
+    {
+      "key": "Argentina",
+      "label_cn": "阿根廷",
+      "label_en": "Argentina",
+      "p": 0.24345
+    },
+    {
+      "key": "France",
+      "label_cn": "法国",
+      "label_en": "France",
+      "p": 0.137065
+    },
+    {
+      "key": "England",
+      "label_cn": "英格兰",
+      "label_en": "England",
+      "p": 0.070739
+    },
+    {
+      "key": "Portugal",
+      "label_cn": "葡萄牙",
+      "label_en": "Portugal",
+      "p": 0.035532
+    },
+    {
+      "key": "Colombia",
+      "label_cn": "哥伦比亚",
+      "label_en": "Colombia",
+      "p": 0.032105
+    },
+    {
+      "key": "Brazil",
+      "label_cn": "巴西",
+      "label_en": "Brazil",
+      "p": 0.028663
+    },
+    {
+      "key": "Netherlands",
+      "label_cn": "荷兰",
+      "label_en": "Netherlands",
+      "p": 0.014098
+    },
+    {
+      "key": "Ecuador",
+      "label_cn": "厄瓜多尔",
+      "label_en": "Ecuador",
+      "p": 0.01163
+    },
+    {
+      "key": "Germany",
+      "label_cn": "德国",
+      "label_en": "Germany",
+      "p": 0.00935
+    },
+    {
+      "key": "Turkiye",
+      "label_cn": "土耳其",
+      "label_en": "Turkiye",
+      "p": 0.007326
+    },
+    {
+      "key": "Norway",
+      "label_cn": "挪威",
+      "label_en": "Norway",
+      "p": 0.006858
+    },
+    {
+      "key": "Croatia",
+      "label_cn": "克罗地亚",
+      "label_en": "Croatia",
+      "p": 0.006288
+    },
+    {
+      "key": "Belgium",
+      "label_cn": "比利时",
+      "label_en": "Belgium",
+      "p": 0.00582
+    },
+    {
+      "key": "Japan",
+      "label_cn": "日本",
+      "label_en": "Japan",
+      "p": 0.005556
+    },
+    {
+      "key": "Switzerland",
+      "label_cn": "瑞士",
+      "label_en": "Switzerland",
+      "p": 0.00465
+    },
+    {
+      "key": "Uruguay",
+      "label_cn": "乌拉圭",
+      "label_en": "Uruguay",
+      "p": 0.003928
+    },
+    {
+      "key": "Mexico",
+      "label_cn": "墨西哥",
+      "label_en": "Mexico",
+      "p": 0.002656
+    },
+    {
+      "key": "Senegal",
+      "label_cn": "塞内加尔",
+      "label_en": "Senegal",
+      "p": 0.001709
+    },
+    {
+      "key": "Paraguay",
+      "label_cn": "巴拉圭",
+      "label_en": "Paraguay",
+      "p": 0.000763
+    },
+    {
+      "key": "Morocco",
+      "label_cn": "摩洛哥",
+      "label_en": "Morocco",
+      "p": 0.000682
+    },
+    {
+      "key": "Austria",
+      "label_cn": "奥地利",
+      "label_en": "Austria",
+      "p": 0.000529
+    },
+    {
+      "key": "Canada",
+      "label_cn": "加拿大",
+      "label_en": "Canada",
+      "p": 0.000366
+    },
+    {
+      "key": "Scotland",
+      "label_cn": "苏格兰",
+      "label_en": "Scotland",
+      "p": 0.000132
+    },
+    {
+      "key": "Iran",
+      "label_cn": "伊朗",
+      "label_en": "Iran",
+      "p": 0.000132
+    },
+    {
+      "key": "South Korea",
+      "label_cn": "韩国",
+      "label_en": "South Korea",
+      "p": 8.1e-05
+    },
+    {
+      "key": "Czechia",
+      "label_cn": "捷克",
+      "label_en": "Czechia",
+      "p": 8.1e-05
+    },
+    {
+      "key": "Australia",
+      "label_cn": "澳大利亚",
+      "label_en": "Australia",
+      "p": 8.1e-05
+    },
+    {
+      "key": "Algeria",
+      "label_cn": "阿尔及利亚",
+      "label_en": "Algeria",
+      "p": 7.1e-05
+    },
+    {
+      "key": "Panama",
+      "label_cn": "巴拿马",
+      "label_en": "Panama",
+      "p": 5.1e-05
+    },
+    {
+      "key": "USA",
+      "label_cn": "美国",
+      "label_en": "USA",
+      "p": 4.1e-05
+    },
+    {
+      "key": "Sweden",
+      "label_cn": "瑞典",
+      "label_en": "Sweden",
+      "p": 1e-05
+    },
+    {
+      "key": "Egypt",
+      "label_cn": "埃及",
+      "label_en": "Egypt",
+      "p": 1e-05
+    },
+    {
+      "key": "Jordan",
+      "label_cn": "约旦",
+      "label_en": "Jordan",
+      "p": 1e-05
+    },
+    {
+      "key": "South Africa",
+      "label_cn": "南非",
+      "label_en": "South Africa",
+      "p": 0.0
+    },
+    {
+      "key": "Bosnia-Herzegovina",
+      "label_cn": "波黑",
+      "label_en": "Bosnia-Herzegovina",
+      "p": 0.0
+    },
+    {
+      "key": "Qatar",
+      "label_cn": "卡塔尔",
+      "label_en": "Qatar",
+      "p": 0.0
+    },
+    {
+      "key": "Haiti",
+      "label_cn": "海地",
+      "label_en": "Haiti",
+      "p": 0.0
+    },
+    {
+      "key": "Ivory Coast",
+      "label_cn": "科特迪瓦",
+      "label_en": "Ivory Coast",
+      "p": 0.0
+    },
+    {
+      "key": "Curaçao",
+      "label_cn": "库拉索",
+      "label_en": "Curaçao",
+      "p": 0.0
+    },
+    {
+      "key": "Tunisia",
+      "label_cn": "突尼斯",
+      "label_en": "Tunisia",
+      "p": 0.0
+    },
+    {
+      "key": "New Zealand",
+      "label_cn": "新西兰",
+      "label_en": "New Zealand",
+      "p": 0.0
+    },
+    {
+      "key": "Saudi Arabia",
+      "label_cn": "沙特阿拉伯",
+      "label_en": "Saudi Arabia",
+      "p": 0.0
+    },
+    {
+      "key": "Cape Verde",
+      "label_cn": "佛得角",
+      "label_en": "Cape Verde",
+      "p": 0.0
+    },
+    {
+      "key": "Iraq",
+      "label_cn": "伊拉克",
+      "label_en": "Iraq",
+      "p": 0.0
+    },
+    {
+      "key": "Uzbekistan",
+      "label_cn": "乌兹别克斯坦",
+      "label_en": "Uzbekistan",
+      "p": 0.0
+    },
+    {
+      "key": "Congo DR",
+      "label_cn": "刚果（金）",
+      "label_en": "Congo DR",
+      "p": 0.0
+    },
+    {
+      "key": "Ghana",
+      "label_cn": "加纳",
+      "label_en": "Ghana",
+      "p": 0.0
+    }
+  ],
+  "one_liner_cn": "西班牙以约37%居首，阿根廷约24%、法国约14%紧随——Elo前四档断层使西阿法英四队合计约82%；巴西、荷兰因多名主力伤缺被有界下调。",
+  "one_liner_en": "Spain leads at ~37% with Argentina ~24% and France ~14% — the top-four Elo tier (Spain/Argentina/France/England) combines for ~82%, while Brazil and the Netherlands take bounded downgrades for multiple key injuries.",
+  "key_reasons": [
+    {
+      "cn": "Elo 断层：西班牙 2157、阿根廷 2115、法国 2063、英格兰 2024 与第五名拉开 30+ 分差距，10 万次蒙特卡洛中四队合计夺冠概率约 82%。",
+      "en": "Elo stratification: Spain 2157, Argentina 2115, France 2063 and England 2024 sit 30+ points clear of fifth place; the four combine for ~82% of titles across 100k Monte Carlo runs.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "伤病不对称：巴西（内马尔存疑，罗德里戈/米利唐/埃斯特旺缺席）、荷兰（廷贝尔/西蒙斯/德利赫特/斯豪滕缺席）、德国（特尔施特根/格纳布里缺席）遭遇减员潮，而法国、英格兰、哥伦比亚主力齐整——据此做有界上下调。",
+      "en": "Injury asymmetry: Brazil (Neymar doubtful; Rodrygo/Militao/Estevao out), the Netherlands (Timber/Simons/De Ligt/Schouten out) and Germany (Ter Stegen/Gnabry out) are depleted while France, England and Colombia are near full strength — driving the bounded adjustments.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48572979/2026-fifa-world-cup-injuries-tracker-which-stars-miss-latest-info",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "新赛制放大强弱差：48 队 104 场、新增 32 强轮，夺冠需连赢 5 轮淘汰赛，Elo 优势逐轮复利，头部球队的边际概率被进一步推高。",
+      "en": "The new format amplifies strength gaps: with 48 teams, 104 matches and an added round of 32, the champion must win five straight knockout rounds, compounding the Elo edge of the top tier.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 10,
+  "method_note": "100k-sim pure-Elo Poisson Monte Carlo (eloratings.net snapshot 2026-06-11, official FIFA 2026 bracket, hosts +100 Elo in group stage only; seed 20260611) + evidence-bounded per-team adjustment (max ±20% relative, max applied ±15%), renormalized to sum 1. Market-blind: no betting or prediction-market inputs of any kind.",
+  "report": "report.md"
+}

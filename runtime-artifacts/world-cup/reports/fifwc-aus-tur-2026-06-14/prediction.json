@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-aus-tur-2026-06-14",
+  "family": "group_match",
+  "event_slug": "fifwc-aus-tur-2026-06-14",
+  "question_cn": "2026 世界杯小组赛 D 组：澳大利亚 vs 土耳其，90 分钟赛果？",
+  "question_en": "2026 World Cup Group D: Australia vs Türkiye — 90-minute result?",
+  "kickoff_utc": "2026-06-14T04:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "澳大利亚胜", "label_en": "Australia win", "p": 0.22 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.245 },
+    { "key": "b", "label_cn": "土耳其胜", "label_en": "Türkiye win", "p": 0.535 }
+  ],
+  "one_liner_cn": "土耳其 Elo 高出 134 分、主力齐整且近 8 场 7 胜 1 平，明显占优；澳大利亚锋线减员、主力中卫长伤初愈，土耳其胜约 53.5%。",
+  "one_liner_en": "Türkiye hold a 134-point Elo edge with a full-strength, in-form squad (7W1D in last 8), while Australia are down a forward and a key defender is fresh off a long injury — Türkiye win around 53.5%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 134 分（土耳其 1911 vs 澳大利亚 1777），Davidson 三路模型在中立场地给土耳其约 51.6% 基础胜率。",
+      "en": "A 134-point Elo gap (Türkiye 1911 vs Australia 1777) gives Türkiye ~51.6% baseline win probability in the Davidson three-way model at a neutral venue.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "土耳其 26 人名单主力齐整（Çalhanoğlu、Güler、Yıldız、Aktürkoğlu 均入选），且近 8 场 7 胜 1 平状态出色。",
+      "en": "Türkiye's 26-man squad is at full strength (Çalhanoğlu, Güler, Yıldız, Aktürkoğlu all named) and arrives in strong form with 7W1D in their last 8.",
+      "source_url": "https://www.turkiyetoday.com/sports/turkiye-names-26-man-squad-for-2026-fifa-world-cup-after-final-cuts-3221129",
+      "source_date": "2026-06-02"
+    },
+    {
+      "cn": "澳大利亚前锋 D'Agostino 备战营伤退，主力中卫 Souttar 跟腱重伤缺阵近 500 天后刚复出，状态存疑。",
+      "en": "Australia lost striker D'Agostino to injury in pre-camp, and first-choice centre-back Souttar has only just returned after nearly 500 days out with an Achilles injury.",
+      "source_url": "https://socceroos.com.au/news/commbank-socceroos-squad-update-0",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: eloratings.net Elo -> Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) baseline 23.9/24.6/51.6, then bounded evidence adjustment (~2pp toward Türkiye, cap ±8pp) and renormalization. 80% intervals reflect drawNu 0.6-0.8 sensitivity plus evidence thinness. No betting/prediction-market data consulted.",
+  "report": "report.md"
+}

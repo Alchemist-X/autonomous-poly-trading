@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-06-11T11:52:00.615Z",
+  "counts": {
+    "total": 9227,
+    "active": 8581,
+    "closed": 0,
+    "byCategory": {
+      "champion": 55,
+      "special": 319,
+      "group_ko": 810,
+      "match": 7636,
+      "award": 407
+    },
+    "bySubtype": {
+      "tournament_winner": 54,
+      "other": 319,
+      "group_winner": 48,
+      "moneyline_1x2": 2840,
+      "golden_boot": 45,
+      "advance_to_ko": 144,
+      "nation_of_top_goalscorer": 48,
+      "unbeaten_novelty": 1,
+      "reach_final": 48,
+      "most_assists": 48,
+      "most_goal_contributions": 50,
+      "most_clean_sheets": 48,
+      "halftime_result": 274,
+      "exact_score": 1547,
+      "spread_handicap": 376,
+      "total_goals": 2364,
+      "both_teams_to_score": 235,
+      "reach_quarterfinals": 96,
+      "reach_semifinals": 96,
+      "bronze_boot": 20,
+      "bronze_ball": 20,
+      "silver_ball": 20,
+      "golden_ball": 20,
+      "confederation_furthest": 50,
+      "fair_play": 48,
+      "silver_boot": 20,
+      "golden_glove": 20,
+      "group_last": 41,
+      "group_second": 48,
+      "confederation_worst": 47,
+      "stage_of_elimination": 192
+    }
+  },
+  "source": {
+    "gammaTagIds": [
+      102232,
+      102539
+    ],
+    "endpoint": "https://gamma-api.polymarket.com/markets?tag_id="
+  }
+}

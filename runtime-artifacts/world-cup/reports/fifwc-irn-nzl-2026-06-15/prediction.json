@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-irn-nzl-2026-06-15",
+  "family": "group_match",
+  "event_slug": "fifwc-irn-nzl-2026-06-15",
+  "question_cn": "2026 世界杯小组赛 G 组：伊朗 vs 新西兰，90 分钟三路赛果？",
+  "question_en": "2026 World Cup Group G: IR Iran vs New Zealand, three-way 90-minute result?",
+  "kickoff_utc": "2026-06-16T01:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "伊朗胜", "label_en": "IR Iran", "p": 0.62 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.22 },
+    { "key": "b", "label_cn": "新西兰胜", "label_en": "New Zealand", "p": 0.16 }
+  ],
+  "one_liner_cn": "伊朗实力、经验与阵容稳定性全面占优，约六成胜率；新西兰高度依赖刚伤愈的 Chris Wood，爆冷空间有限但平局风险不可忽视。",
+  "one_liner_en": "Iran are clearly superior in quality, experience and squad continuity (~60% win probability); New Zealand lean heavily on a just-recovered Chris Wood — upset room is limited, but the draw risk is real.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 210 分（伊朗 1772 vs 新西兰 1562），Davidson 统计基线即给伊朗约 59% 胜率。",
+      "en": "A 210-point Elo gap (Iran 1772 vs New Zealand 1562) puts the Davidson statistical baseline at ~59% for Iran.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "新西兰头号射手 Chris Wood 整季受伤病困扰，4 月才复出，热身赛对英格兰 78 分钟已是 2024 年 11 月以来最多，状态存疑。",
+      "en": "New Zealand's top scorer Chris Wood had an injury-disrupted season, only returning in April; 78 minutes vs England in the final warm-up was his most since November 2024.",
+      "source_url": "https://www.rnz.co.nz/news/sport/597710/will-chris-wood-be-unleashed-at-the-football-world-cup",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "伊朗 6 月 1 日最终名单核心齐整（Taremi 领衔、连续第三届世界杯），但 Azmoun 被排除，锋线深度略减。",
+      "en": "Iran's June 1 final squad keeps a settled core (Taremi leading, third straight World Cup) but omits Azmoun, slightly trimming attacking depth.",
+      "source_url": "https://www.flashscore.com/news/soccer-world-championship-taremi-and-jahanbakhsh-lead-iran-s-world-cup-squad-with-azmoun-overlooked/pGYQ1OUq/",
+      "source_date": "2026-06-01"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, no host bonus — neutral venue) gives p_stat 59.5/22.8/17.8; bounded evidence adjustment (~5pp total, cap ±8pp, net +2.5pp Iran) yields p_final 62/22/16. 80% intervals reflect drawNu 0.6–0.8 sensitivity plus evidence thinness. No betting/odds/market data consulted.",
+  "report": "report.md"
+}

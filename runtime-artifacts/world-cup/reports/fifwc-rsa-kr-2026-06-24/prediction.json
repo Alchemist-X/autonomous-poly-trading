@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-rsa-kr-2026-06-24",
+  "family": "group_match",
+  "event_slug": "fifwc-rsa-kr-2026-06-24",
+  "question_cn": "2026 世界杯小组赛 A 组：南非 vs 韩国（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group A: South Africa vs Korea Republic (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-25T01:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "南非胜", "label_en": "South Africa win", "p": 0.166 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.229 },
+    { "key": "b", "label_cn": "韩国胜", "label_en": "Korea Republic win", "p": 0.605 }
+  ],
+  "one_liner_cn": "Elo 差距 241 分使韩国约六成占优，但第三轮轮换不确定性让南非爆冷加逼平合计仍近四成。",
+  "one_liner_en": "A 241-point Elo gap gives Korea Republic roughly a 60% edge, though matchday-3 rotation uncertainty keeps South Africa's combined upset-or-draw chance near 40%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 241 分（韩国 1758 / 第 33 vs 南非 1517 / 第 80），是基准概率的主导因素。",
+      "en": "241-point Elo gap (Korea 1758 / rank 33 vs South Africa 1517 / rank 80) dominates the baseline probabilities.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "韩国中场黄仁范带踝伤隐患入选，中卫曹侑珉伤退由赵渭济顶替，阵容深度小幅受损。",
+      "en": "Korea midfielder Hwang In-beom was selected despite an ankle concern and centre-back Cho Yu-min withdrew injured (replaced by Cho Wi-je), slightly denting squad depth.",
+      "source_url": "https://www.olympics.com/en/news/fifa-world-cup-2026-republic-of-korea-all-players-full-squad-list-key-stats-schedule",
+      "source_date": "2026-06-02"
+    },
+    {
+      "cn": "南非除已恢复合练的 Modiba 外无重大伤情，且双方三场小组赛都在墨西哥，环境适应度对等。",
+      "en": "South Africa has no major absences (Modiba back in full training), and both sides play all group games in Mexico, so acclimatization is symmetric.",
+      "source_url": "https://www.thesouthafrican.com/sport/soccer/soccer-world-cup/bafana-bafana-world-cup-daily-experienced-star-returns-from-injury/",
+      "source_date": "2026-06-10"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, no host bonus — neither team is a host) gives p_stat 0.156/0.219/0.625; bounded evidence adjustment of 2pp total (Korea −2pp toward SA win and draw) then renormalized. 80% intervals reflect drawNu 0.6–0.8 sensitivity plus thin evidence and unknown matchday-3 stakes.",
+  "report": "report.md"
+}

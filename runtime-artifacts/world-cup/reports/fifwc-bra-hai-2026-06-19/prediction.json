@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-bra-hai-2026-06-19",
+  "family": "group_match",
+  "event_slug": "fifwc-bra-hai-2026-06-19",
+  "question_cn": "2026 世界杯小组赛 C 组：巴西 vs 海地（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group C: Brazil vs Haiti (three-way 90-minute result)",
+  "kickoff_utc": "2026-06-20T00:30:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "巴西", "label_en": "Brazil", "p": 0.765 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.169 },
+    { "key": "b", "label_cn": "海地", "label_en": "Haiti", "p": 0.066 }
+  ],
+  "one_liner_cn": "巴西与海地 Elo 差距高达 443 分，即便内马尔伤情存疑，巴西仍以约 76% 概率强势领跑，海地爆冷空间很小。",
+  "one_liner_en": "With a 443-point Elo gap over Haiti, Brazil are strong favourites at roughly 76% even with Neymar's fitness in doubt; an upset has little room.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 443 分（巴西 1991 vs 海地 1548），Davidson 三路模型给出巴西约 78.5% 基础胜率。",
+      "en": "A 443-point Elo gap (Brazil 1991 vs Haiti 1548) yields a ~78.5% base win probability for Brazil in the Davidson three-way model.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "内马尔二级小腿拉伤、出战成疑，但巴西阵容深度（维尼修斯、拉菲尼亚等）足以覆盖，仅构成小幅不确定性。",
+      "en": "Neymar's grade-two calf strain leaves him doubtful, but Brazil's depth (Vinicius Jr, Raphinha, etc.) covers it, adding only modest uncertainty.",
+      "source_url": "https://www.fourfourtwo.com/team/brazil-world-cup-2026-squad",
+      "source_date": "2026-06-07"
+    },
+    {
+      "cn": "海地新增英超即战力（伊西多尔 3 月改披海地战袍、贝勒加德入选），且预期对巴西摆低位防守，Elo 可能略微低估其防守韧性。",
+      "en": "Haiti added Premier League talent (Isidor switched allegiance in March; Bellegarde in squad) and is expected to defend deep vs Brazil, so Elo may slightly understate their resilience.",
+      "source_url": "https://www.fourfourtwo.com/team/haiti-world-cup-2026-squad",
+      "source_date": "2026-06-02"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: eloratings.net Elo -> Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) -> bounded evidence adjustment (-2pp Brazil, +1.5pp draw, +0.5pp Haiti; cap +/-8pp) -> renormalized. No betting/prediction-market data used.",
+  "report": "report.md"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-ger-kor-2026-06-14",
+  "family": "group_match",
+  "event_slug": "fifwc-ger-kor-2026-06-14",
+  "question_cn": "2026 世界杯小组赛 E 组：德国 vs 库拉索（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group E: Germany vs Curaçao (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-14T17:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "德国胜", "label_en": "Germany win", "p": 0.835 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.125 },
+    { "key": "b", "label_cn": "库拉索胜", "label_en": "Curaçao win", "p": 0.04 }
+  ],
+  "one_liner_cn": "Elo 差距近 500 分叠加德国热身赛连胜、库拉索临阵帅位动荡且 1-4 惨败苏格兰，德国胜面约 84%，冷门空间很小。",
+  "one_liner_en": "A near-500-point Elo gap, Germany's winning warm-up run, and Curaçao's coaching turmoil plus a 1-4 loss to Scotland put Germany around 84%, leaving little room for an upset.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距约 498 分（德国 1932 / 库拉索 1434），Davidson 统计基线即给德国 81.7%。",
+      "en": "An Elo gap of about 498 points (Germany 1932 / Curaçao 1434); the Davidson statistical baseline alone gives Germany 81.7%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "德国热身赛 4-0 芬兰、2-1 美国，主力框架与状态稳定。",
+      "en": "Germany won warm-ups 4-0 vs Finland and 2-1 vs USA, with a settled core and steady form.",
+      "source_url": "https://www.espn.com/soccer/report/_/gameId/758381",
+      "source_date": "2026-05-31"
+    },
+    {
+      "cn": "库拉索临阵帅位动荡（Advocaat 辞职→Rutten 离任→Advocaat 回归），回归首战 1-4 负苏格兰。",
+      "en": "Curaçao's late coaching turmoil (Advocaat resigned, Rutten quit a month out, Advocaat recalled), with a 1-4 loss to Scotland in his first game back.",
+      "source_url": "https://www.skysports.com/football/news/12098/13545528/world-cup-2026-curacao-caribbean-nations-historic-first-appearance",
+      "source_date": "2026-06-08"
+    }
+  ],
+  "confidence_tier": "高",
+  "n_sources": 8,
+  "method_note": "Davidson 三路 Elo 模型（scale=400, drawNu=0.7, 中立场地无主办国加成）得 p_stat 81.7/13.6/4.6，按有界证据调整 ±3.5pp（≤8pp）并归一化得 p_final；市场盲测，未参考任何赔率或预测市场价格。",
+  "report": "report.md"
+}

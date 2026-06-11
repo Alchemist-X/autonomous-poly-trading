@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-jor-alg-2026-06-22",
+  "family": "group_match",
+  "event_slug": "fifwc-jor-alg-2026-06-22",
+  "question_cn": "2026 世界杯小组赛 J 组：约旦 vs 阿尔及利亚（2026-06-22，90 分钟赛果）",
+  "question_en": "2026 World Cup Group J: Jordan vs Algeria (2026-06-22, 90-minute result)",
+  "kickoff_utc": "2026-06-23T03:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "约旦胜", "label_en": "Jordan", "p": 0.26 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.25 },
+    { "key": "b", "label_cn": "阿尔及利亚胜", "label_en": "Algeria", "p": 0.49 }
+  ],
+  "one_liner_cn": "阿尔及利亚 Elo 高出 92 分且阵容齐整，约旦热身连败加锋线伤员，阿胜概率约 49%，但非压倒性优势。",
+  "one_liner_en": "Algeria's 92-point Elo edge and intact squad against Jordan's warm-up slump put Algeria near 49% — a clear but not overwhelming favourite.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 92 分（阿尔及利亚 1772 / 第 29 vs 约旦 1680 / 第 52），统计模型给出阿队约 47% 基准胜率。",
+      "en": "92-point Elo gap (Algeria 1772 / rank 29 vs Jordan 1680 / rank 52) yields a ~47% baseline Algeria win probability.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "约旦热身赛 1-4 负瑞士、0-2 负哥伦比亚，前锋 Sabra 踝伤退队，由 20 岁后卫 Taha 顶替。",
+      "en": "Jordan lost warm-ups 1-4 to Switzerland and 0-2 to Colombia; forward Sabra withdrew with an ankle injury, replaced by 20-year-old defender Taha.",
+      "source_url": "https://www.aljazeera.com/sports/2026/6/6/jordan-world-cup-2026-preview-players-to-watch-group-matches-and-squad",
+      "source_date": "2026-06-06"
+    },
+    {
+      "cn": "阿尔及利亚名单齐整：Mahrez 领衔（113 场 38 球），Amoura 预选赛 8 场 10 球，攻击力有据可查。",
+      "en": "Algeria's squad is intact: Mahrez leads (113 caps, 38 goals) and Amoura scored 10 in 8 qualifiers — documented attacking strength.",
+      "source_url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/vladimir-petkovi-s-official-algeria-squad-for-the-2026-fifa-world-cup-2026-05-31",
+      "source_date": "2026-05-31"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, no host bonus; p_stat 27.7/25.3/47.0) plus bounded evidence adjustment (total ~4pp <= 8pp cap), renormalized. Independent of all betting/prediction-market data.",
+  "report": "report.md"
+}

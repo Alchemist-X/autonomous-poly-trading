@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-ury-esp-2026-06-26",
+  "family": "group_match",
+  "event_slug": "fifwc-ury-esp-2026-06-26",
+  "question_cn": "2026 世界杯小组赛 H 组：乌拉圭 vs 西班牙（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group H: Uruguay vs Spain (three-way result, 90 minutes)?",
+  "kickoff_utc": "2026-06-27T00:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "乌拉圭", "label_en": "Uruguay", "p": 0.151 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.231 },
+    { "key": "b", "label_cn": "西班牙", "label_en": "Spain", "p": 0.618 }
+  ],
+  "one_liner_cn": "西班牙 Elo 世界第一、实力优势明显，但小组末轮双方大概率已出线且西班牙有伤情隐患，平局概率略高于纯模型值。",
+  "one_liner_en": "Spain are the world's top Elo side and clear stronger team, but with both likely already qualified in the final group match and Spain carrying fitness doubts, the draw deserves slightly more weight than the raw model gives.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距巨大：西班牙 2157（世界第 1）对乌拉圭 1892（第 16），中立场统计基线西班牙胜率约 65%。",
+      "en": "Huge Elo gap: Spain 2157 (world No. 1) vs Uruguay 1892 (No. 16); neutral-venue statistical baseline gives Spain about 65%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "末轮赛程结构：双方前两轮对手均为佛得角与沙特，末轮相遇时大概率已双双出线，轮换与保平倾向抬高平局概率。",
+      "en": "Schedule structure: both face Cape Verde and Saudi Arabia first, so both are likely already through by Matchday 3, with rotation and risk-aversion inflating the draw.",
+      "source_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_Group_H",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "西班牙伤情不确定性：Merino 2 月右脚应力性骨折手术能否赶上存疑，Yamal 赛季末腿筋问题、整季多次受伤。",
+      "en": "Spain fitness uncertainty: Merino's February right-foot stress-fracture surgery leaves his readiness in doubt; Yamal ended an injury-hit season with a hamstring problem.",
+      "source_url": "https://www.aljazeera.com/sports/2026/6/6/spains-world-cup-2026-team-preview-players-to-watch-group-matches-squad",
+      "source_date": "2026-06-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind. Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus): Uruguay 14.1% / Draw 21.1% / Spain 64.8%. Bounded evidence adjustment of +1/+2/-3pp (total 6pp, within the 8pp cap) for likely dead-rubber rotation dynamics and Spain's fitness doubts, renormalized. 80% intervals reflect drawNu 0.6-0.8 sensitivity and 15-day lineup/group-state uncertainty.",
+  "report": "report.md"
+}

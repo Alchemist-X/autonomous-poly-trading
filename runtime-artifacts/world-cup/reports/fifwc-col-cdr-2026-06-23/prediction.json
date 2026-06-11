@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-col-cdr-2026-06-23",
+  "family": "group_match",
+  "event_slug": "fifwc-col-cdr-2026-06-23",
+  "question_cn": "2026 世界杯小组赛 K 组：哥伦比亚 vs 刚果民主共和国（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group K: Colombia vs DR Congo (three-way result after 90 minutes)",
+  "kickoff_utc": "2026-06-24T02:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "哥伦比亚", "label_en": "Colombia", "p": 0.72 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.18 },
+    { "key": "b", "label_cn": "刚果民主共和国", "label_en": "DR Congo", "p": 0.10 }
+  ],
+  "one_liner_cn": "Elo 差 330 分、状态火热且阵容齐整的哥伦比亚是明确强方，世界杯首秀的刚果（金）爆冷需要超常发挥。",
+  "one_liner_en": "With a 330-point Elo gap, hot form and a fully fit squad, Colombia are the clear stronger side; an upset by debutants DR Congo would require an exceptional performance.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 330 分（哥伦比亚 1982 第 7 vs 刚果（金）1652 第 55），统计基准强烈倾向哥伦比亚。",
+      "en": "A 330-point Elo gap (Colombia 1982, rank 7 vs DR Congo 1652, rank 55) makes the statistical baseline strongly favour Colombia.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "哥伦比亚 26 人名单核心齐整、无伤病减员，曾 28 场不败并打进 2024 美洲杯决赛。",
+      "en": "Colombia's 26-man squad is at full strength with no injury absences, after a 28-match unbeaten run and the 2024 Copa America final.",
+      "source_url": "https://www.squawka.com/en/news/world-cup/colombia-world-cup-2026-fixtures-squad-analysis/",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "刚果（金）1974 年后首次参赛、全队均为世界杯首秀，主力前锋 Wissa 上赛季伤病缠身状态起伏。",
+      "en": "DR Congo are at their first finals since 1974 with an all-debutant squad, and lead striker Wissa is coming off an injury-hit, inconsistent season.",
+      "source_url": "https://www.fourfourtwo.com/team/dr-congo-world-cup-2026-squad",
+      "source_date": "2026-05-18"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gave 0.704/0.191/0.105; a bounded +2pp/-1pp/-1pp evidence adjustment (full-strength Colombia vs all-debutant DR Congo with striker form concerns) yields 0.72/0.18/0.10. No betting or prediction-market data used.",
+  "report": "report.md"
+}

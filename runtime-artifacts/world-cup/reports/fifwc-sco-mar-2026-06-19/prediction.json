@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-sco-mar-2026-06-19",
+  "family": "group_match",
+  "event_slug": "fifwc-sco-mar-2026-06-19",
+  "question_cn": "2026 世界杯小组赛 C 组：苏格兰 vs 摩洛哥（2026-06-19）90 分钟赛果？",
+  "question_en": "2026 World Cup Group C: Scotland vs Morocco (2026-06-19) — 90-minute result?",
+  "kickoff_utc": "2026-06-19T22:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "苏格兰胜", "label_en": "Scotland win", "p": 0.31 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.26 },
+    { "key": "b", "label_cn": "摩洛哥胜", "label_en": "Morocco win", "p": 0.43 }
+  ],
+  "one_liner_cn": "摩洛哥凭更高 Elo 与大赛经验略占上风（约43%），苏格兰阵容齐整不容小觑（约31%），平局概率可观（26%）。",
+  "one_liner_en": "Morocco hold a clear but not overwhelming edge (~43%) on Elo and tournament pedigree; a fully assembled Scotland sit near 31% with the draw live at 26%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 45 分（摩洛哥 1827 vs 苏格兰 1782），中立场地下统计模型给摩洛哥明显但不压倒的优势。",
+      "en": "A 45-point Elo gap (Morocco 1827 vs Scotland 1782) on a neutral venue gives Morocco a clear but moderate statistical edge.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "苏格兰中场核心 Billy Gilmour 5 月 30 日热身赛伤退，球衣号显示由 Tyler Fletcher 顶替，中场控制力受损。",
+      "en": "Scotland's midfield anchor Billy Gilmour went off injured in the May 30 friendly; squad numbers suggest Tyler Fletcher replaces him, weakening midfield control.",
+      "source_url": "https://www.skysports.com/football/news/12017/13550179/world-cup-2026-scotland-squad-numbers-revealed-with-angus-gunn-handed-no-1-jersey-ahead-of-craig-gordon",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "摩洛哥主力前锋 En-Nesyri 落选、新帅 Ouahbi 首次执教成年队世界杯，不确定性限制了向摩洛哥方向的更大上调。",
+      "en": "Morocco left out first-choice striker En-Nesyri and new coach Ouahbi is at his first senior World Cup — uncertainty that capped a larger shift toward Morocco.",
+      "source_url": "https://www.espn.com/espn/story/_/id/48883710/achraf-hakimi-brahim-diaz-headline-morocco-squad-fifa-world-cup-youssef-en-nesyri-out",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) -> p_stat SCO 32.3% / Draw 25.8% / MAR 41.9%; bounded evidence adjustment (~1.3pp of max 8pp) -> p_final 31/26/43. 80% intervals from drawNu 0.6-0.8 sensitivity plus evidence thinness. No market inputs of any kind.",
+  "report": "report.md"
+}

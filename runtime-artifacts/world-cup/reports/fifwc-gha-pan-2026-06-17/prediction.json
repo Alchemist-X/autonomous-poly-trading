@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-gha-pan-2026-06-17",
+  "family": "group_match",
+  "event_slug": "fifwc-gha-pan-2026-06-17",
+  "question_cn": "2026 世界杯小组赛 L 组：加纳 vs 巴拿马（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group L: Ghana vs Panama (three-way 90-minute result)",
+  "kickoff_utc": "2026-06-17T23:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "加纳", "label_en": "Ghana", "p": 0.155 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.23 },
+    { "key": "b", "label_cn": "巴拿马", "label_en": "Panama", "p": 0.615 }
+  ],
+  "one_liner_cn": "Elo 差距与阵容信息同向：加纳缺 Kudus/Salisu、Partey 存疑且临阵换帅，巴拿马约六成胜率，平局是主要对冲赛果。",
+  "one_liner_en": "Elo gap and squad news point the same way: with Kudus/Salisu out, Partey doubtful and a coach hired in April, Panama wins about six times in ten, the draw being the main hedge.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距明显：巴拿马 1730（第 38）vs 加纳 1510（第 81），中立场 Davidson 基线已给巴拿马约 60% 胜率。",
+      "en": "Clear Elo gap: Panama 1730 (rank 38) vs Ghana 1510 (rank 81); the neutral-venue Davidson baseline already gives Panama about 60%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "加纳 Kudus（股四头肌）与 Salisu（ACL）伤缺世界杯，Partey 受腹股沟问题困扰出战存疑。",
+      "en": "Ghana's Kudus (quadriceps) and Salisu (ACL) miss the World Cup, and Partey is doubtful with a groin issue.",
+      "source_url": "https://www.espn.com/espn/story/_/id/48878999/antoine-semenyo-thomas-partey-headline-ghana-provisional-fifa-world-cup-squad-injured-mohammed-kudus-out",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "加纳备战混乱：开赛前约 72 天解雇 Addo，Queiroz 四月接手；3 月友谊赛 1-5 负奥地利、1-2 负德国。",
+      "en": "Chaotic Ghana preparation: Addo sacked about 72 days out, Queiroz appointed in April; March friendlies lost 1-5 to Austria and 1-2 to Germany.",
+      "source_url": "https://www.si.com/soccer/ghana-2026-world-cup-preview",
+      "source_date": "2026-05-14"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Elo (eloratings.net, 2026-06-11) -> Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat = 17.1/22.5/60.5; bounded news adjustment of ~1.5pp toward Panama (Ghana squad losses and coaching upheaval, partially offset by Panama's Carrasquilla concern; recent form already in Elo), renormalized. No betting or prediction-market data used.",
+  "report": "report.md"
+}

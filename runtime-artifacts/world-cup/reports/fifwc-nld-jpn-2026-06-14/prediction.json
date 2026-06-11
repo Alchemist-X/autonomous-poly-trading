@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-nld-jpn-2026-06-14",
+  "family": "group_match",
+  "event_slug": "fifwc-nld-jpn-2026-06-14",
+  "question_cn": "2026 世界杯小组赛 F 组：荷兰 vs 日本（6 月 14 日），90 分钟赛果？",
+  "question_en": "2026 World Cup Group F: Netherlands vs Japan (June 14) — 90-minute result?",
+  "kickoff_utc": "2026-06-14T20:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "荷兰", "label_en": "Netherlands", "p": 0.386 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.268 },
+    { "key": "b", "label_cn": "日本", "label_en": "Japan", "p": 0.346 }
+  ],
+  "one_liner_cn": "荷兰纸面略优但后防门将伤情叠加，状态火热的日本足以把首战拖入接近五五开的胶着局面。",
+  "one_liner_en": "The Netherlands edge it on paper, but with defensive and keeper injuries an in-form Japan can drag the opener close to a coin flip.",
+  "key_reasons": [
+    {
+      "cn": "荷兰后卫 Timber 因伤退出世界杯，主力门将 Verbruggen 缺席 6 月 10 日训练、出战成疑",
+      "en": "Netherlands defender Timber ruled out of the World Cup; first-choice keeper Verbruggen missed June 10 training and is a doubt",
+      "source_url": "https://www.espn.com/soccer/story/_/id/49022242/netherlands-bart-verbruggen-injury-2026-world-cup-japan",
+      "source_date": "2026-06-10"
+    },
+    {
+      "cn": "日本核心边锋三笘薰因腿筋伤势落选最终名单，但队长远藤航伤愈复出、中场骨架完整",
+      "en": "Japan lose key winger Mitoma (hamstring) from the final squad, but captain Endo is back fit and the midfield spine is intact",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/15/mitoma-fails-to-make-japans-2026-world-cup-squad-due-to-hamstring-injury",
+      "source_date": "2026-05-15"
+    },
+    {
+      "cn": "Elo 仅差 42 分（荷兰 1948 vs 日本 1906），中立闭顶场馆，统计基线本就接近均势",
+      "en": "Only a 42-point Elo gap (NED 1948 vs JPN 1906) at a neutral climate-controlled venue — the statistical baseline is already near-even",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gives p_stat NED 41.6%/draw 25.8%/JPN 32.6%; bounded evidence adjustment of 3pp (NED -3, draw +1, JPN +2) for Dutch defensive/keeper injuries vs Japan's better availability; renormalized. No market prices used anywhere.",
+  "report": "report.md"
+}

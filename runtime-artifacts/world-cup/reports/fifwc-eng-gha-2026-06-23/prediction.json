@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-eng-gha-2026-06-23",
+  "family": "group_match",
+  "event_slug": "fifwc-eng-gha-2026-06-23",
+  "question_cn": "2026 世界杯小组赛 L 组：英格兰 vs 加纳，90 分钟赛果？",
+  "question_en": "2026 World Cup Group L: England vs Ghana, 90-minute result?",
+  "kickoff_utc": "2026-06-23T20:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "英格兰", "label_en": "England", "p": 0.85 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.115 },
+    { "key": "b", "label_cn": "加纳", "label_en": "Ghana", "p": 0.035 }
+  ],
+  "one_liner_cn": "英格兰实力碾压且阵容齐整，加纳缺少库杜斯又状态低迷，英格兰胜面约 85%。",
+  "one_liner_en": "England are overwhelmingly stronger with a full-strength squad while Ghana are missing Kudus and in poor form; England's win probability is about 85%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距巨大：英格兰 2024 分（世界第 4）对加纳 1510 分（第 81），Davidson 统计基线已给英格兰约 82.6% 胜率。",
+      "en": "Massive Elo gap: England 2024 (4th in the world) vs Ghana 1510 (81st); the Davidson statistical baseline already gives England about 82.6%.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "加纳头号球星库杜斯伤缺整届世界杯，主力中卫吉库同样缺席，且热身赛 1 平 3 负状态低迷。",
+      "en": "Ghana's star Mohammed Kudus is ruled out of the entire tournament and first-choice centre-back Alexander Djiku is also absent, on top of a 1-draw-3-loss warm-up run.",
+      "source_url": "https://www.olympics.com/en/news/fifa-world-cup-2026-ghana-all-players-full-squad-list-key-stats-schedule",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "英格兰预选赛 8 战全胜、22 球 0 失球，6 月 6 日热身 1-0 胜新西兰，无重大伤停。",
+      "en": "England won all 8 qualifiers with 22 goals and zero conceded, beat New Zealand 1-0 in the June 6 friendly, and have no major absences.",
+      "source_url": "https://footballgroundguide.com/news/when-are-england-playing-at-the-2026-world-cup-full-match-schedule-and-uk-kick-off-times-confirmed.html",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "高",
+  "n_sources": 8,
+  "method_note": "Market-blind: Elo (eloratings.net 2026-06-11) -> Davidson three-way model (scale=400, drawNu=0.7, no host bonus, neutral venue Boston) p_stat = 0.8255/0.1316/0.0428; bounded evidence adjustment (England +2.45pp, draw -1.66pp, Ghana -0.78pp; cap +/-8pp) for Kudus and Djiku absences vs England's clean squad and perfect qualifying; renormalized to p_final. No betting or prediction-market data used.",
+  "report": "report.md"
+}

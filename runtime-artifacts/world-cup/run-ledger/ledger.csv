@@ -1,0 +1,121 @@
+run,label,model,duration_s,api_calls,input_fresh,cache_creation,cache_read,output,total_new_tokens,killed
+"sample-v1(market-era,superseded)",sample:verify-facts,claude-fable-5,453,57,39152,490813,3039934,22048,552013,False
+"sample-v1(market-era,superseded)",sample:finalize,claude-fable-5,306,53,48406,445667,3669033,21599,515672,False
+"sample-v1(market-era,superseded)",sample:synthesis,claude-fable-5,742,23,31060,284119,1657950,64413,379592,False
+"sample-v1(market-era,superseded)",sample:evidence-rsa,claude-fable-5,219,29,39457,213765,922384,12132,265354,False
+"sample-v1(market-era,superseded)",sample:market(v1),claude-fable-5,141,28,27680,129592,905499,8071,165343,False
+"sample-v1(market-era,superseded)",sample:model,claude-fable-5,179,29,32767,231980,830614,11316,276063,False
+"sample-v1(market-era,superseded)",sample:verify-compliance,claude-fable-5,197,19,39695,221036,757010,10186,270917,False
+"sample-v1(market-era,superseded)",sample:evidence-context,claude-fable-5,190,27,20730,169959,873545,10937,201626,False
+"sample-v1(market-era,superseded)",sample:evidence-mex,claude-fable-5,203,25,30333,183361,760561,9928,223622,False
+"sample-v1(market-era,superseded)",sample:verify-numbers,claude-fable-5,196,17,43081,287654,549496,7506,338241,False
+v1(killed; elo-table reused),elo:table,claude-fable-5,93,16,32741,147913,415334,6323,186977,True
+v2(killed; MC reused),mc:tournament,claude-fable-5,296,26,22423,161836,967443,21792,206051,False
+v2(killed; MC reused),sample:retrofit,claude-fable-5,503,28,31070,286916,1852485,26694,344680,True
+v3a(killed by interrupt),group:A,claude-fable-5,214,22,31058,203728,722573,5599,240385,True
+v3a(killed by interrupt),group:H,claude-fable-5,214,19,22409,149060,595868,14578,186047,True
+v3a(killed by interrupt),group:G,claude-fable-5,214,29,31072,202601,1063508,10870,244543,True
+v3a(killed by interrupt),group:B,claude-fable-5,214,24,29367,156160,786061,9092,194619,True
+v3a(killed by interrupt),group:I,claude-fable-5,214,26,31066,190013,935511,12338,233417,True
+v3a(killed by interrupt),group:E,claude-fable-5,214,25,32759,242541,961593,9098,284398,True
+v3a(killed by interrupt),group:D,claude-fable-5,214,23,31060,184521,789535,10530,226111,True
+v3a(killed by interrupt),group:J,claude-fable-5,214,27,32763,244700,1048202,10413,287876,True
+v3a(killed by interrupt),group:F,claude-fable-5,214,22,29363,147021,670099,9922,186306,True
+v3a(killed by interrupt),group:C,claude-fable-5,214,24,32757,214143,812522,11426,258326,True
+v3b(production),predict:fifwc-tun-nld-2026-06-25,claude-fable-5,282,26,32761,182701,909213,17740,233202,False
+v3b(production),predict:fifwc-esp-cvi-2026-06-15,claude-fable-5,289,27,32763,183675,943091,16010,232448,False
+v3b(production),predict:fifwc-egy-irn-2026-06-26,claude-fable-5,243,24,29367,138591,817853,13043,181001,False
+v3b(production),predict:fifwc-ecu-ger-2026-06-25,claude-fable-5,263,25,32759,189452,820157,8330,230541,False
+v3b(production),verify:fifwc-civ-ecu-2026-06-14,claude-fable-5,202,26,32761,226926,849483,9952,269639,True
+v3b(production),predict:fifwc-aut-jor-2026-06-17,claude-fable-5,231,23,29365,132577,744857,8596,170538,False
+v3b(production),predict:fifwc-ger-civ-2026-06-20,claude-fable-5,302,23,31060,147262,762134,15619,193941,False
+v3b(production),predict:fifwc-nor-sen-2026-06-22,claude-fable-5,279,27,32763,182176,931761,14607,229546,False
+v3b(production),predict:fifwc-che-can-2026-06-24,claude-fable-5,308,26,31066,233432,843360,13746,278244,False
+v3b(production),predict:fifwc-bra-mar-2026-06-13,claude-fable-5,260,25,32759,238462,762762,4713,275934,False
+v3b(production),predict:fifwc-tun-jpn-2026-06-21,claude-fable-5,288,24,32757,180455,767510,16787,229999,False
+v3b(production),predict:fifwc-nzl-bel-2026-06-26,claude-fable-5,225,23,29365,131232,751372,11252,171849,False
+v3b(production),predict:fifwc-fra-sen-2026-06-16,claude-fable-5,245,24,27672,86790,862108,14916,129378,False
+v3b(production),predict:fifwc-col-prt-2026-06-27,claude-fable-5,251,26,27676,108154,933808,14570,150400,False
+v3b(production),predict:fifwc-eng-hrv-2026-06-17,claude-fable-5,264,25,30701,108627,901064,12061,151389,False
+v3b(production),predict:fifwc-prt-uzb-2026-06-23,claude-fable-5,302,21,29361,138202,719270,11046,178609,False
+v3b(production),predict:fifwc-mar-hai-2026-06-24,claude-fable-5,282,24,27672,108683,870054,11471,147826,False
+v3b(production),group:D,claude-fable-5,262,30,31074,172572,1047412,15861,219507,False
+v3b(production),verify:fifwc-bra-mar-2026-06-13,claude-fable-5,154,15,34434,235866,288958,6588,276888,True
+v3b(production),sample:retrofit,claude-fable-5,663,59,20794,293515,4408247,50797,365106,False
+v3b(production),verify:fifwc-hai-sco-2026-06-13,claude-fable-5,105,15,34434,105279,395129,5206,144919,True
+v3b(production),verify:fifwc-qat-che-2026-06-13,claude-fable-5,202,26,29371,265972,845349,11189,306532,True
+v3b(production),predict:fifwc-can-qat-2026-06-18,claude-fable-5,297,26,29371,134235,945301,13556,177162,False
+v3b(production),group:L,claude-fable-5,313,32,31078,147790,1190859,17436,196304,False
+v3b(production),group:B,claude-fable-5,288,29,31072,188211,1061918,15161,234444,False
+v3b(production),predict:fifwc-qat-che-2026-06-13,claude-fable-5,258,25,33134,162447,817942,14171,209752,False
+v3b(production),predict:fifwc-prt-cdr-2026-06-17,claude-fable-5,258,26,27676,103177,944473,14960,145813,False
+v3b(production),predict:fifwc-bel-egy-2026-06-15,claude-fable-5,261,24,29367,153680,794761,16104,199151,False
+v3b(production),verify:fifwc-usa-par-2026-06-12,claude-fable-5,128,22,29363,162793,684332,7134,199290,False
+v3b(production),pool:champion,claude-fable-5,621,51,27726,255271,2603276,20748,303745,False
+v3b(production),predict:fifwc-sen-irq-2026-06-26,claude-fable-5,271,26,31066,158664,900254,14977,204707,False
+v3b(production),predict:fifwc-esp-ksa-2026-06-21,claude-fable-5,284,24,29367,138875,794285,15398,183640,False
+v3b(production),predict:fifwc-arg-aut-2026-06-22,claude-fable-5,264,22,34448,206828,623560,13151,254427,False
+v3b(production),verify:fifwc-kr-cze-2026-06-11,claude-fable-5,232,33,32775,281678,1150717,13426,327879,True
+v3b(production),predict:fifwc-nld-swe-2026-06-20,claude-fable-5,298,25,29369,138161,887578,15618,183148,False
+v3b(production),predict:fifwc-arg-alg-2026-06-16,claude-fable-5,246,23,31060,158100,755113,15482,204642,False
+v3b(production),predict:fifwc-swe-tun-2026-06-14,claude-fable-5,249,23,32755,191346,724280,11756,235857,False
+v3b(production),pool:reach-sf,claude-fable-5,818,59,40891,307215,3721958,43007,391113,False
+v3b(production),predict:fifwc-bel-irn-2026-06-21,claude-fable-5,283,26,29371,127378,909393,15512,172261,False
+v3b(production),predict:fifwc-nor-fra-2026-06-26,claude-fable-5,250,22,27668,107859,766274,14365,149892,False
+v3b(production),group:A,claude-fable-5,429,36,32781,247440,1617092,28059,308280,False
+v3b(production),verify:fifwc-can-bih-2026-06-12,claude-fable-5,235,16,29351,182724,394584,31472,243547,True
+v3b(production),predict:fifwc-col-cdr-2026-06-23,claude-fable-5,284,23,27670,111293,795710,10339,149302,False
+v3b(production),verify:fifwc-nld-jpn-2026-06-14,claude-fable-5,16,6,31026,65736,91407,554,97316,True
+v3b(production),group:F,claude-fable-5,340,33,20742,160595,1397336,15825,197162,False
+v3b(production),predict:fifwc-jor-alg-2026-06-22,claude-fable-5,273,22,20720,113044,748600,13902,147666,False
+v3b(production),predict:fifwc-kr-cze-2026-06-11,claude-fable-5,251,23,34810,216540,702612,15088,266438,False
+v3b(production),predict:fifwc-ecu-kor-2026-06-20,claude-fable-5,308,26,29371,149945,895289,16600,195916,False
+v3b(production),group:J,claude-fable-5,310,41,31096,199058,1648190,18571,248725,False
+v3b(production),predict:fifwc-bih-qat-2026-06-24,claude-fable-5,254,26,32761,190500,861950,9315,232576,False
+v3b(production),predict:fifwc-pan-eng-2026-06-27,claude-fable-5,248,25,33245,132765,855307,13661,179671,False
+v3b(production),predict:fifwc-alg-aut-2026-06-27,claude-fable-5,252,22,27668,119701,776662,14627,161996,False
+v3b(production),predict:fifwc-eng-gha-2026-06-23,claude-fable-5,261,25,29369,130730,845427,14545,174644,False
+v3b(production),predict:fifwc-kor-civ-2026-06-25,claude-fable-5,268,26,31066,218454,862321,12150,261670,False
+v3b(production),predict:fifwc-nld-jpn-2026-06-14,claude-fable-5,289,25,32759,224203,823660,13081,270043,False
+v3b(production),group:H,claude-fable-5,298,29,29377,161919,1077819,18068,209364,False
+v3b(production),predict:fifwc-par-aus-2026-06-25,claude-fable-5,249,21,31056,160744,680654,11811,203611,False
+v3b(production),predict:fifwc-nzl-egy-2026-06-21,claude-fable-5,292,24,27672,111310,840811,14492,153474,False
+v3b(production),predict:fifwc-bra-hai-2026-06-19,claude-fable-5,265,24,27672,123485,854134,17466,168623,False
+v3b(production),predict:fifwc-tur-usa-2026-06-25,claude-fable-5,294,28,31070,160088,1001395,15024,206182,False
+v3b(production),predict:fifwc-aus-tur-2026-06-14,claude-fable-5,237,19,29357,167880,583380,12472,209709,False
+v3b(production),group:C,claude-fable-5,397,33,29385,184734,1392870,24408,238527,False
+v3b(production),predict:fifwc-rsa-kr-2026-06-24,claude-fable-5,250,23,31060,154703,732028,11259,197022,False
+v3b(production),predict:fifwc-hai-sco-2026-06-13,claude-fable-5,272,25,29369,154081,830648,12476,195926,False
+v3b(production),predict:fifwc-ger-kor-2026-06-14,claude-fable-5,256,25,32759,256292,769813,14681,303732,False
+v3b(production),group:E,claude-fable-5,450,40,31094,195455,1686906,19465,246014,False
+v3b(production),predict:fifwc-uzb-col-2026-06-17,claude-fable-5,242,22,30342,114482,746957,14077,158901,False
+v3b(production),predict:fifwc-civ-ecu-2026-06-14,claude-fable-5,258,25,29369,182937,829183,13664,225970,False
+v3b(production),predict:fifwc-sco-mar-2026-06-19,claude-fable-5,306,23,22417,139478,855742,17057,178952,False
+v3b(production),predict:fifwc-che-bih-2026-06-18,claude-fable-5,258,22,31058,160159,738021,14216,205433,False
+v3b(production),group:G,claude-fable-5,331,36,32781,193791,1358385,19531,246103,False
+v3b(production),predict:fifwc-usa-par-2026-06-12,claude-fable-5,263,24,29367,183315,802880,14795,227477,False
+v3b(production),predict:fifwc-ury-esp-2026-06-26,claude-fable-5,267,23,31060,156745,800717,13079,200884,False
+v3b(production),predict:fifwc-tur-par-2026-06-19,claude-fable-5,302,22,31058,150221,741433,13941,195220,False
+v3b(production),predict:fifwc-mex-kr-2026-06-18,claude-fable-5,225,22,31058,169192,732767,13212,213462,False
+v3b(production),predict:fifwc-cze-rsa-2026-06-18,claude-fable-5,262,22,19025,100021,766863,11765,130811,False
+v3b(production),predict:fifwc-sco-bra-2026-06-24,claude-fable-5,273,25,31064,167718,843011,15384,214166,False
+v3b(production),pool:reach-qf,claude-fable-5,651,49,32102,392766,2814159,38043,462911,False
+v3b(production),predict:fifwc-ury-cvi-2026-06-21,claude-fable-5,304,28,32765,184365,975946,13597,230727,False
+v3b(production),predict:fifwc-pan-hrv-2026-06-23,claude-fable-5,304,30,32769,237137,1010940,16491,286397,False
+v3b(production),predict:fifwc-cdr-uzb-2026-06-27,claude-fable-5,317,33,32775,168555,1184308,17884,219214,False
+v3b(production),predict:fifwc-ksa-ury-2026-06-15,claude-fable-5,267,27,29373,127197,948534,11667,168237,False
+v3b(production),predict:fifwc-usa-aus-2026-06-19,claude-fable-5,269,25,32759,188716,826384,16194,237669,False
+v3b(production),predict:fifwc-jor-arg-2026-06-27,claude-fable-5,243,23,29365,128299,743535,14217,171881,True
+v3b(production),predict:fifwc-hrv-gha-2026-06-27,claude-fable-5,255,23,27670,105179,792160,15244,148093,False
+v3b(production),predict:fifwc-jpn-swe-2026-06-25,claude-fable-5,264,23,31060,154181,798495,14063,199304,False
+v3b(production),verify:fifwc-aus-tur-2026-06-14,claude-fable-5,220,29,31072,301201,945760,13861,346134,False
+v3b(production),predict:fifwc-cze-mex-2026-06-24,claude-fable-5,241,21,31056,150172,690688,13333,194561,False
+v3b(production),predict:fifwc-fra-irq-2026-06-22,claude-fable-5,295,25,29369,128439,840224,12412,170220,False
+v3b(production),predict:fifwc-gha-pan-2026-06-17,claude-fable-5,329,28,31070,156846,988520,14568,202484,False
+v3b(production),verify:fifwc-ger-kor-2026-06-14,claude-fable-5,218,35,31084,195839,1341730,8986,235909,True
+v3b(production),predict:fifwc-can-bih-2026-06-12,claude-fable-5,242,20,31054,208021,571682,11057,250132,False
+v3b(production),group:K,claude-fable-5,296,33,32775,162059,1204465,16824,211658,False
+v3b(production),group:I,claude-fable-5,322,35,27694,152377,1392315,19411,199482,False
+v3b(production),predict:fifwc-irn-nzl-2026-06-15,claude-fable-5,255,25,32759,185612,848472,14189,232560,False
+v3b(production),predict:fifwc-irq-nor-2026-06-16,claude-fable-5,247,25,32759,188025,815392,14353,235137,False
+v3b(production),predict:fifwc-cvi-ksa-2026-06-26,claude-fable-5,261,23,29365,132290,778316,14412,176067,False

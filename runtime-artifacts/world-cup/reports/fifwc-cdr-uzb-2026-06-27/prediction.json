@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-cdr-uzb-2026-06-27",
+  "family": "group_match",
+  "event_slug": "fifwc-cdr-uzb-2026-06-27",
+  "question_cn": "2026 世界杯小组赛 K 组：刚果民主共和国 vs 乌兹别克斯坦（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group K: DR Congo vs Uzbekistan (three-way result after 90 minutes)",
+  "kickoff_utc": "2026-06-27T23:30:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "刚果民主共和国", "label_en": "DR Congo", "p": 0.31 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.26 },
+    { "key": "b", "label_cn": "乌兹别克斯坦", "label_en": "Uzbekistan", "p": 0.43 }
+  ],
+  "one_liner_cn": "Elo 高 62 分、热身状态更稳的乌兹别克斯坦小幅占优，但坐拥英超班底的刚果（金）完全有能力翻盘，三个方向都真实存在。",
+  "one_liner_en": "Uzbekistan, 62 Elo points stronger and in steadier warm-up form, hold a modest edge, but DR Congo's Premier League core keeps all three outcomes genuinely live.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差 62 分（乌兹别克斯坦 1714 第 42 vs 刚果（金）1652 第 55），统计基准温和偏向乌兹别克斯坦（约 44% 对 31%）。",
+      "en": "A 62-point Elo gap (Uzbekistan 1714, rank 42 vs DR Congo 1652, rank 55) makes the statistical baseline mildly favour Uzbekistan (~44% vs 31%).",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "乌兹别克斯坦在 Cannavaro 带领下热身连胜科威特、埃及，临赛仅 0-1 小负荷兰，曼城中卫 Khusanov 领衔防线。",
+      "en": "Under Cannavaro, Uzbekistan beat Kuwait and Egypt in warm-ups and lost only 0-1 to the Netherlands on the eve of the tournament, with Man City's Khusanov anchoring the defence.",
+      "source_url": "https://www.olympics.com/en/news/fifa-world-cup-2026-uzbekistan-all-players-full-squad-list-key-stats-schedule",
+      "source_date": "2026-06-02"
+    },
+    {
+      "cn": "刚果（金）拥有 Wan-Bissaka、Wissa 等英超球员、阵容估值约 1.43 亿欧元，但最后热身 1-2 负智利且因埃博拉疫情顾虑空场进行，备战受扰。",
+      "en": "DR Congo field Premier League players like Wan-Bissaka and Wissa with a ~EUR 143m squad, but lost their final warm-up 1-2 to Chile, played behind closed doors over Ebola-related health concerns.",
+      "source_url": "https://www.espn.com/soccer/match/_/gameId/401871171/chile-congo-dr",
+      "source_date": "2026-06-09"
+    }
+  ],
+  "confidence_tier": "低",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gave 0.306/0.256/0.438; a bounded +0.4pp/+0.4pp/-0.8pp evidence adjustment (DR Congo's higher-valued European core vs Uzbekistan's better warm-up form and DR Congo's disrupted preparation, largely offsetting) yields 0.31/0.26/0.43. No betting or prediction-market data used.",
+  "report": "report.md"
+}

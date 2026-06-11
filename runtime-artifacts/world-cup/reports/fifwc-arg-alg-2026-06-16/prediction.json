@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-arg-alg-2026-06-16",
+  "family": "group_match",
+  "event_slug": "fifwc-arg-alg-2026-06-16",
+  "question_cn": "2026 世界杯小组赛 J 组：阿根廷 vs 阿尔及利亚（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group J: Argentina vs Algeria (three-way 90-minute result)?",
+  "kickoff_utc": "2026-06-17T01:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "阿根廷", "label_en": "Argentina", "p": 0.695 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.195 },
+    { "key": "b", "label_cn": "阿尔及利亚", "label_en": "Algeria", "p": 0.11 }
+  ],
+  "one_liner_cn": "阿根廷 Elo 高出 343 分且近 5 战全胜，模型给约七成胜率；因多名主力带伤及阿尔及利亚刚 1-0 胜荷兰，小幅下调至 69.5%。",
+  "one_liner_en": "Argentina's 343-point Elo edge and five straight wins put them near 70%; nudged down to 69.5% for squad knocks and Algeria's recent 1-0 win over the Netherlands.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 343 分（阿根廷 2115 vs 阿尔及利亚 1772），Davidson 统计模型基线即给阿根廷约 71% 胜率。",
+      "en": "A 343-point Elo gap (Argentina 2115 vs Algeria 1772) gives Argentina about a 71% baseline win probability in the Davidson model.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "阿根廷近 5 场全胜（进 15 失 1）、梅西近 6 场首发 6 球，但 Balerdi 退队、两右后卫与 Paredes 带伤、门将手指骨折，伤情构成小幅减分。",
+      "en": "Argentina won their last five (15:1 goals) with Messi scoring in six straight starts, but Balerdi is out and several starters carry knocks — a small downgrade.",
+      "source_url": "https://athlonsports.com/other-sports/argentina-injury-update-latest-messi-martinez-other-stars-ahead-of-world-cup",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "阿尔及利亚 6 月 3 日热身 1-0 击败荷兰，显示对强队的防守组织力；但中场核心 Bennacer 落选名单。",
+      "en": "Algeria beat the Netherlands 1-0 on June 3, showing defensive organization against elite sides, though midfielder Bennacer was left out of the squad.",
+      "source_url": "https://www.goal.com/en-us/news/argentina-algeria-world-cup-preview/blt877acb33aa4b3693",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "高",
+  "n_sources": 6,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gave 71.45/18.63/9.92; bounded evidence adjustment of ~2pp off Argentina for squad injuries and Algeria's Netherlands result, renormalized. Independent of all betting/prediction-market data.",
+  "report": "report.md"
+}

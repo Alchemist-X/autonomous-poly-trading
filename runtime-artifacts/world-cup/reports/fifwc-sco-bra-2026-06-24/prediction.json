@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-sco-bra-2026-06-24",
+  "family": "group_match",
+  "event_slug": "fifwc-sco-bra-2026-06-24",
+  "question_cn": "2026 世界杯小组赛 C 组：苏格兰 vs 巴西（2026-06-24，90 分钟赛果）",
+  "question_en": "2026 World Cup Group C: Scotland vs Brazil (2026-06-24, 90-minute result)",
+  "kickoff_utc": "2026-06-24T22:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "苏格兰胜", "label_en": "Scotland win", "p": 0.158 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.233 },
+    { "key": "b", "label_cn": "巴西胜", "label_en": "Brazil win", "p": 0.609 }
+  ],
+  "one_liner_cn": "Elo 差距 209 分叠加苏格兰中场核心吉尔莫尔伤退、巴西阵容深度完整且内马尔预计小组赛内复出，巴西约六成胜率。",
+  "one_liner_en": "A 209-point Elo gap, Scotland losing midfield hub Billy Gilmour, and Brazil's deep squad with Neymar expected back during the group stage give Brazil roughly a 60% win probability.",
+  "key_reasons": [
+    {
+      "cn": "Elo 实力差巨大：巴西 1991（第 5）对苏格兰 1782（第 26），Davidson 统计模型给巴西 59.4% 基准胜率。",
+      "en": "Large Elo gap: Brazil 1991 (#5) vs Scotland 1782 (#26); the Davidson model gives Brazil a 59.4% baseline win probability.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "苏格兰中场核心吉尔莫尔膝伤退出世界杯，由弗莱彻递补；前锋亚当斯大腿伤势成疑。",
+      "en": "Scotland's midfield hub Billy Gilmour is out of the World Cup with a knee injury (Tyler Fletcher called up); striker Che Adams is a thigh-injury doubt.",
+      "source_url": "https://www.scottishfa.co.uk/en/news/fifa-world-cup-2026-squad-update",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "内马尔 2 级肌肉拉伤预计缺席 2-3 周，但安切洛蒂预期其小组赛内复出；巴西其余主力齐整、阵容深度极强。",
+      "en": "Neymar's grade 2 muscle strain sidelines him 2-3 weeks, but Ancelotti expects him back during the group stage; the rest of Brazil's squad is intact and very deep.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup",
+      "source_date": "2026-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: Elo (eloratings.net 2026-06-11) -> Davidson three-way (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 0.178/0.228/0.594; bounded evidence adjustment (Scotland -2.0pp injuries, Brazil +1.5pp depth/Neymar return, draw +0.5pp rotation scenario; |delta| ~4pp of max 8pp) -> p_final 0.158/0.233/0.609. No betting/prediction-market data consulted.",
+  "report": "report.md"
+}

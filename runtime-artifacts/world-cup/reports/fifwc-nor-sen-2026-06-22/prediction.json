@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-nor-sen-2026-06-22",
+  "family": "group_match",
+  "event_slug": "fifwc-nor-sen-2026-06-22",
+  "question_cn": "2026 世界杯小组赛 I 组：挪威 vs 塞内加尔（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group I: Norway vs Senegal (90-minute three-way result)",
+  "kickoff_utc": "2026-06-23T00:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "挪威胜", "label_en": "Norway win", "p": 0.41 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.26 },
+    { "key": "b", "label_cn": "塞内加尔胜", "label_en": "Senegal win", "p": 0.33 }
+  ],
+  "one_liner_cn": "挪威凭 Elo 差距与哈兰德的火力小幅占优，但卫冕非洲杯冠军塞内加尔大赛经验明显更足，三路概率相当接近，挪威仅轻微领先。",
+  "one_liner_en": "Norway hold a slight edge on Elo and Haaland's firepower, but reigning AFCON champions Senegal bring far more tournament experience — a close three-way race with Norway only narrowly ahead.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差 54 分（挪威 1914 第 11 位 vs 塞内加尔 1860 第 21 位），中立场下挪威为统计层面小热门。",
+      "en": "A 54-point Elo gap (Norway 1914, #11 vs Senegal 1860, #21) makes Norway the statistical slight favourite on neutral ground.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "塞内加尔是 2026 年 1 月非洲杯冠军，Mané 获赛事最佳球员，全队大赛淘汰赛经验充足。",
+      "en": "Senegal won AFCON in January 2026 with Mané named player of the tournament — a deeply tournament-tested squad.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/30/senegals-world-cup-2026-team-preview-players-to-watch-group-squad-list",
+      "source_date": "2026-05-30"
+    },
+    {
+      "cn": "挪威 28 年来首进世界杯，哈兰德预选赛 16 球领衔且健康在列，但全队几乎无世界杯经验。",
+      "en": "Norway return to the World Cup after 28 years; Haaland (16 qualifying goals) is fit and included, but the squad has almost no World Cup experience.",
+      "source_url": "https://www.olympics.com/en/news/fifa-world-cup-2026-norway-all-players-full-squad-list-key-stats-and-schedule",
+      "source_date": "2026-05-21"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Elo (eloratings.net 2026-06-11) Davidson three-way model (scale=400, drawNu=0.7, no host bonus — neutral venue) gives p_stat Norway 42.9% / Draw 25.7% / Senegal 31.4%; bounded evidence adjustment of ~2pp (within the ±8pp cap) toward Senegal for AFCON-champion tournament pedigree vs Norway's lack of World Cup experience; no injury absences reported on either side. No betting/prediction-market data consulted.",
+  "report": "report.md"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-ksa-ury-2026-06-15",
+  "family": "group_match",
+  "event_slug": "fifwc-ksa-ury-2026-06-15",
+  "question_cn": "2026 世界杯小组赛 H 组：沙特阿拉伯 vs 乌拉圭（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group H: Saudi Arabia vs Uruguay (three-way result, 90 minutes)",
+  "kickoff_utc": "2026-06-15T22:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "沙特阿拉伯", "label_en": "Saudi Arabia", "p": 0.10 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.20 },
+    { "key": "b", "label_cn": "乌拉圭", "label_en": "Uruguay", "p": 0.70 }
+  ],
+  "one_liner_cn": "乌拉圭实力差距明显且阵容稳定齐整，沙特临阵换帅、热身赛多败，乌拉圭胜率约七成。",
+  "one_liner_en": "Uruguay hold a clear strength edge with a settled squad while Saudi Arabia changed coaches weeks before the tournament; Uruguay win at roughly 70%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 316 分（乌拉圭 1892 vs 沙特 1576），统计模型给乌拉圭约 69% 基线胜率。",
+      "en": "A 316-point Elo gap (Uruguay 1892 vs Saudi Arabia 1576) gives Uruguay a ~69% baseline win probability in the statistical model.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "沙特 4 月底临阵换帅（Renard 下课、Donis 接任），距开赛不足两月，且近 5 场热身 2 胜 3 负。",
+      "en": "Saudi Arabia replaced Renard with Donis in late April, under two months before kickoff, and went W2 L3 in their last five friendlies.",
+      "source_url": "https://english.alarabiya.net/sports/2026/04/28/who-is-new-saudi-arabia-coach-georgios-donis",
+      "source_date": "2026-04-28"
+    },
+    {
+      "cn": "乌拉圭阵容齐整：Valverde 伤愈、Núñez 领衔锋线，近 5 场 4 场不败。",
+      "en": "Uruguay are settled: Valverde recovered, Nunez leads the line, and the side is unbeaten in four of their last five.",
+      "source_url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/marcelo-bielsa-s-official-uruguay-squad-for-the-2026-fifa-world-cup-2026-05-31",
+      "source_date": "2026-05-31"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gave 11.2/19.5/69.3; bounded evidence-based adjustment of ~2pp (cap 8pp) for Saudi coaching turmoil vs Uruguay stability, renormalized to 10/20/70. No betting or prediction-market data used.",
+  "report": "report.md"
+}

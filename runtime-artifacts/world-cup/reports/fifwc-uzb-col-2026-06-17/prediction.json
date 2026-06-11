@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-uzb-col-2026-06-17",
+  "family": "group_match",
+  "event_slug": "fifwc-uzb-col-2026-06-17",
+  "question_cn": "2026世界杯小组赛K组：乌兹别克斯坦 vs 哥伦比亚（2026-06-17）90分钟赛果？",
+  "question_en": "2026 World Cup Group K: Uzbekistan vs Colombia (2026-06-17) — 90-minute result?",
+  "kickoff_utc": "2026-06-18T02:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "乌兹别克斯坦", "label_en": "Uzbekistan", "p": 0.125 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.22 },
+    { "key": "b", "label_cn": "哥伦比亚", "label_en": "Colombia", "p": 0.655 }
+  ],
+  "one_liner_cn": "哥伦比亚实力、状态与阵容完整度全面占优，约65%概率取胜；乌兹别克斯坦首秀且队长舒穆罗多夫伤情存疑，防守拖平是其最现实出路。",
+  "one_liner_en": "Colombia hold a comprehensive edge in strength, form and availability (~65% to win); debutants Uzbekistan, with captain Shomurodov an injury doubt, are most likely chasing a defensive draw.",
+  "key_reasons": [
+    {
+      "cn": "Elo差距268分（哥伦比亚1982 vs 乌兹别克斯坦1714），Davidson模型给出哥伦比亚约65%基准胜率",
+      "en": "268-point Elo gap (Colombia 1982 vs Uzbekistan 1714); the Davidson model gives Colombia ~65% baseline win probability",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "乌兹别克斯坦队长、国家队史射手王Shomurodov在6月8日友谊赛对荷兰第24分钟伤退，首战出场存疑",
+      "en": "Uzbekistan captain and all-time top scorer Shomurodov went off injured in the 24th minute vs the Netherlands on Jun 8; doubtful for the opener",
+      "source_url": "https://www.espn.com/soccer/match/_/gameId/401871814/uzbekistan-netherlands",
+      "source_date": "2026-06-08"
+    },
+    {
+      "cn": "哥伦比亚26人名单无伤病报告，J罗与迪亚斯领衔，6月8日2-0完胜约旦，状态上佳",
+      "en": "Colombia's 26-man squad has no reported injuries; James and Diaz lead the side after a 2-0 win over Jordan on Jun 8",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/colombia-squad-announced",
+      "source_date": "2026-06-08"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: Davidson three-way Elo model (scale=400, drawNu=0.7, neutral venue, no host bonus) gave 13.9/21.1/65.0; bounded evidence adjustment of ~2.8pp total (cap 8pp) for Shomurodov injury doubt, Colombia availability/form, and Uzbekistan's defensive 5-4-1 raising draw likelihood; renormalized to 12.5/22.0/65.5. No betting or prediction-market inputs used.",
+  "report": "report.md"
+}

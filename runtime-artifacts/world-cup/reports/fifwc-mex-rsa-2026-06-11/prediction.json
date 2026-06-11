@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-mex-rsa-2026-06-11",
+  "family": "group_match",
+  "event_slug": "fifwc-mex-rsa-2026-06-11",
+  "question_cn": "2026 FIFA 世界杯揭幕战（A 组）：墨西哥 vs 南非，墨西哥城阿兹特克体育场——90 分钟（含伤停补时）赛果：墨西哥胜 / 平局 / 南非胜",
+  "question_en": "2026 FIFA World Cup opening match (Group A): Mexico vs South Africa, Estadio Azteca, Mexico City — 90-minute (regulation incl. stoppage time) result: Mexico win / Draw / South Africa win",
+  "kickoff_utc": "2026-06-11T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "墨西哥", "label_en": "Mexico", "p": 0.7343 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.1988 },
+    { "key": "b", "label_cn": "南非", "label_en": "South Africa", "p": 0.0669 }
+  ],
+  "one_liner_cn": "墨西哥是明确的强势一方——主场、海拔、状态、实力差全部占优，我们给约 73% 胜率；但世界杯揭幕战历来保守、南非擅长低位防守拿平局，平局（约 20%）是最值得认真对待的非主流结局，南非取胜则是小概率尾部事件（约 7%）。",
+  "one_liner_en": "Mexico are the clear stronger side — home crowd, altitude, form, and the underlying strength gap all point one way, so we put their win probability at ~73%; but World Cup openers are historically cagey and South Africa's low-block defending makes the draw (~20%) the alternative outcome most worth taking seriously, while a South Africa win is a thin tail event (~7%).",
+  "key_reasons": [
+    {
+      "cn": "东道主揭幕战历史基率极强（16 胜 6 平 1 负，唯一输球是 2022 卡塔尔），叠加阿兹特克约 2,240 米海拔、约 8 万主场球迷，以及墨西哥 2026 年 8 场不败对南非全年不胜的状态差。",
+      "en": "Hosts are 16W-6D-1L in World Cup openers (the only defeat: Qatar 2022), and Mexico add ~2,240m altitude at the Azteca, ~80,000 home fans, and an unbeaten-in-8 2026 form edge over a winless South Africa.",
+      "source_url": "https://www.sofascore.com/news/every-world-cup-hosts-opening-match-what-history-says",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "揭幕战平局基率约 26%（23 场东道主揭幕战 6 平，远高于 Elo 模型的 14.9%），且南非已在帕丘卡（约 2,440 米，比墨西哥城更高）高原驻训约 9-10 天，海拔优势必须打折。",
+      "en": "Host openers end drawn ~26% of the time (6 of 23, well above the Elo model's 14.9%), and South Africa spent ~9-10 days at altitude in Pachuca (~2,440m, higher than Mexico City), so the altitude edge must be discounted.",
+      "source_url": "https://www.tsn.ca/soccer/fifa-world-cup/article/mexico-citys-altitude-poses-a-key-challenge-for-teams-at-the-2026-world-cup/",
+      "source_date": "2026-06-06"
+    },
+    {
+      "cn": "南非 2026 年至今不胜（0 胜 3 平 2 负、全年仅进 3 球），爆冷路径缺乏任何正面战绩证据，因此南非取胜只是小尾部概率。",
+      "en": "South Africa are winless in 2026 (0W-3D-2L, only 3 goals all year), leaving the upset path with no positive results evidence — a thin tail outcome.",
+      "source_url": "https://www.afrik-foot.com/en-za/bafanas-winless-run-continues",
+      "source_date": "2026-06-07"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 42,
+  "method_note": "Market-blind: Davidson-Elo statistical baseline (Elo 1875 vs 1517, home advantage +100, drawNu 0.70 → 0.7943/0.1488/0.0569) + evidence-bounded LLM adjustment (−6/+5/+1pp, cap ±8pp per outcome), fully independent of any betting or prediction market. 市场盲：Davidson-Elo 统计基线 + 有界证据调整（每项 ≤ ±8pp），完全独立于任何盘口与预测市场。",
+  "report": "report.md"
+}

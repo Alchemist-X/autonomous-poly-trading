@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-ury-cvi-2026-06-21",
+  "family": "group_match",
+  "event_slug": "fifwc-ury-cvi-2026-06-21",
+  "question_cn": "2026 世界杯小组赛 H 组：乌拉圭 vs 佛得角（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group H: Uruguay vs Cabo Verde (three-way result, 90 minutes)?",
+  "kickoff_utc": "2026-06-21T22:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "乌拉圭", "label_en": "Uruguay", "p": 0.68 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.2 },
+    { "key": "b", "label_cn": "佛得角", "label_en": "Cabo Verde", "p": 0.12 }
+  ],
+  "one_liner_cn": "乌拉圭实力与阵容厚度全面占优，常规时间取胜约68%，但佛得角是组织性强的世界杯新军，平局加冷门仍有约三分之一概率。",
+  "one_liner_en": "Uruguay dominate on strength and depth (~68% to win in 90 minutes), but well-organized debutants Cabo Verde leave draw-plus-upset at roughly one-third probability.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距达 314 分（乌拉圭 1892 vs 佛得角 1578），Davidson 三路模型给出乌拉圭约 69% 的基准胜率。",
+      "en": "A 314-point Elo gap (Uruguay 1892 vs Cabo Verde 1578) yields a ~69% baseline win probability for Uruguay in the Davidson three-way model.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "乌拉圭主力齐整：Valverde、Araújo、Ugarte 领衔 26 人名单，仅 Bentancur 因重伤存在出战疑问。",
+      "en": "Uruguay are near full strength: Valverde, Araujo and Ugarte headline the 26-man squad; only Bentancur is a fitness doubt after a serious injury.",
+      "source_url": "https://www.fantasyfootballscout.co.uk/2026/06/09/fantasy-fifa-world-cup-2026-team-previews-uruguay",
+      "source_date": "2026-06-09"
+    },
+    {
+      "cn": "佛得角史上首次参加世界杯，大赛经验空白，但球队组织性强、士气高昂，迈阿密湿热气候对其并非劣势。",
+      "en": "Cabo Verde are first-time World Cup participants with no tournament pedigree but strong organization and morale; Miami's heat is no disadvantage for them.",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/articles/cabo-verde-squad-announcement-world-cup-bubista",
+      "source_date": "2026-06-06"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 7,
+  "method_note": "Market-blind: Elo (eloratings.net 2026-06-11) -> Davidson three-way (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 69.1/19.6/11.3; bounded evidence adjustment -1.1pp off Uruguay (Bentancur doubt, organized debutant opponent, heat-neutral venue), renormalized to 68/20/12. 80% intervals reflect drawNu 0.6-0.8 sensitivity and thin evidence. No betting/prediction-market data used.",
+  "report": "report.md"
+}

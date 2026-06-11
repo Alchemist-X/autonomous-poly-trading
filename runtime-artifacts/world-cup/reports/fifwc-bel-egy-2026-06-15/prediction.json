@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-bel-egy-2026-06-15",
+  "family": "group_match",
+  "event_slug": "fifwc-bel-egy-2026-06-15",
+  "question_cn": "2026 世界杯小组赛 G 组：比利时 vs 埃及（90 分钟三路赛果）",
+  "question_en": "2026 World Cup Group G: Belgium vs Egypt (90-minute three-way result)",
+  "kickoff_utc": "2026-06-15T19:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "比利时", "label_en": "Belgium", "p": 0.57 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.25 },
+    { "key": "b", "label_cn": "埃及", "label_en": "Egypt", "p": 0.18 }
+  ],
+  "one_liner_cn": "比利时实力与状态占优，但埃及全主力且防守纪律严明，平局风险不低，比利时胜率约 57%。",
+  "one_liner_en": "Belgium are stronger and in better form, but a full-strength, well-drilled Egypt keeps draw risk meaningful; Belgium win at about 57%.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 198 分（1894 vs 1696），中性场地下 Davidson 模型给比利时约 58% 基础胜率。",
+      "en": "A 198-point Elo gap (1894 vs 1696) gives Belgium roughly a 58% base win probability on neutral ground under the Davidson model.",
+      "source_url": "https://www.eloratings.net/",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "比利时近五场 4 胜 1 平（5-0 突尼斯、2-0 克罗地亚），德布劳内健康并预计首发，状态明显占优。",
+      "en": "Belgium are W4 D1 in their last five (5-0 Tunisia, 2-0 Croatia) and De Bruyne is fit and expected to start, a clear form edge.",
+      "source_url": "https://www.goal.com/en/news/belgium-egypt-world-cup-preview/blt8b8db9e1f93f0387",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "埃及全主力出战（萨拉赫任队长、马尔穆什在列）且打法务实密集，利于拖平；比利时卢卡库缺乏比赛状态。",
+      "en": "Egypt are at full strength (Salah captains, Marmoush included) with a compact pragmatic setup that favours the draw, while Belgium's Lukaku lacks match fitness.",
+      "source_url": "https://www.aljazeera.com/sports/2026/5/21/mohamed-salah-to-captain-egypt-as-squad-announced-for-fifa-world-cup-2026",
+      "source_date": "2026-05-21"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 6,
+  "method_note": "Market-blind: Elo (eloratings.net) Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) -> p_stat BEL 58.3 / Draw 23.1 / EGY 18.6; bounded evidence-based adjustment of ~3.9pp (cap 8pp) toward the draw for Egypt's full-strength defensive block and Belgium's forward-line fitness doubts -> p_final 57/25/18. 80% intervals reflect drawNu 0.6-0.8 sensitivity and evidence thinness. No market or odds inputs of any kind.",
+  "report": "report.md"
+}

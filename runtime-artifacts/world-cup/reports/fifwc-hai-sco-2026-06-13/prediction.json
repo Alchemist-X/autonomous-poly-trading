@@ -1,0 +1,40 @@
+{
+  "id": "match:fifwc-hai-sco-2026-06-13",
+  "family": "group_match",
+  "event_slug": "fifwc-hai-sco-2026-06-13",
+  "question_cn": "2026 世界杯小组赛 C 组：海地 vs 苏格兰（90 分钟三路赛果）？",
+  "question_en": "2026 World Cup Group C: Haiti vs Scotland (90-minute three-way result)?",
+  "kickoff_utc": "2026-06-14T01:00:00Z",
+  "generated_at": "2026-06-11T13:15:00Z",
+  "outcomes": [
+    { "key": "a", "label_cn": "海地", "label_en": "Haiti", "p": 0.185 },
+    { "key": "draw", "label_cn": "平局", "label_en": "Draw", "p": 0.235 },
+    { "key": "b", "label_cn": "苏格兰", "label_en": "Scotland", "p": 0.58 }
+  ],
+  "one_liner_cn": "苏格兰凭 234 分 Elo 差距明显占优，但 Gilmour 伤退与海地归化补强让胜率略低于纯模型值。",
+  "one_liner_en": "Scotland are clear favourites on a 234-point Elo gap, but Gilmour's absence and Haiti's diaspora reinforcements trim them slightly below the raw model.",
+  "key_reasons": [
+    {
+      "cn": "Elo 差距 234 分（苏格兰 1782 vs 海地 1548），统计模型给苏格兰约 62% 基准胜率。",
+      "en": "A 234-point Elo gap (Scotland 1782 vs Haiti 1548) gives Scotland a ~62% baseline win probability in the statistical model.",
+      "source_url": "https://www.eloratings.net/World.tsv",
+      "source_date": "2026-06-11"
+    },
+    {
+      "cn": "苏格兰中场核心 Gilmour 伤退整届赛事（5-30 受伤），前锋 Adams 大腿伤势存疑，削弱中前场。",
+      "en": "Scotland midfielder Billy Gilmour is out of the tournament (injured May 30) and forward Che Adams is a fitness doubt, weakening midfield and attack.",
+      "source_url": "https://www.espn.com/soccer/story/_/id/48814281/",
+      "source_date": "2026-06"
+    },
+    {
+      "cn": "海地获 Isidor（桑德兰）、Bellegarde（狼队）等旅欧新援补强，Elo 对其反映滞后；热身 4-0 胜新西兰。",
+      "en": "Haiti added European-based recruits Isidor (Sunderland) and Bellegarde (Wolves) that Elo has not yet absorbed, and beat New Zealand 4-0 in warm-ups.",
+      "source_url": "https://haitiantimes.com/2026/05/16/haiti-team-roster-2026-fifa-world-cup/",
+      "source_date": "2026-05-16"
+    }
+  ],
+  "confidence_tier": "中",
+  "n_sources": 8,
+  "method_note": "Market-blind: eloratings.net Elo -> Davidson three-way model (scale=400, drawNu=0.7, neutral venue, no host bonus) p_stat 0.161/0.221/0.618; bounded evidence adjustment (Scotland -4.0pp, Haiti +2.5pp, Draw +1.5pp; sums to zero) -> p_final 0.185/0.235/0.580. 80% intervals reflect drawNu 0.6-0.8 sensitivity and evidence thinness. No market inputs of any kind.",
+  "report": "report.md"
+}
