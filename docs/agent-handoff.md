@@ -11,7 +11,7 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-11 by Claude（世界杯盲测冲刺：87 题清单 + MC + 网页骨架完成；全量预测 workflow 进行中 ETA 22:15；待导入→QA→统计→Vercel 上线）
+> 最后更新：2026-06-11 22:45 by Claude（世界杯盲测 87 题全部发布并上线 Vercel；成本账本+对阵图归档；详见上方冲刺节）
 
 ---
 
@@ -33,7 +33,14 @@
 - 监控：`ls runtime-artifacts/world-cup/reports | wc -l`（完成时 ≈ 87 个目录，每个含 report.md / report.en.md / prediction.json）
 - ⚠️ `runtime-artifacts/` 是 gitignored：**预测产物只在这台机器上**，直到导入 + commit generated JSON
 
-**接下来按顺序做**：
+**✅ 冲刺已完成（2026-06-11 22:45 HKT，开球前 4 小时）**：
+- 87/87 题市场盲测预测全部发布并 commit（`runtime-artifacts/world-cup/reports/`），确定性校验 87/87 通过
+- **线上**：https://web-one-sand-83.vercel.app/world-cup （Vercel 项目 `web`，prebuilt 部署；已修平台路由 bug：catch-all rewrite 缺 `check:true` 导致动态参数路由 404——`vercel build` 产物 `config.json` 需打该补丁，build 脚本化时要带上）
+- 成本账本：`runtime-artifacts/world-cup/run-ledger/`（全部 claude-fable-5；生产 150 万 output tokens；单场中位 264s/14.2k out）
+- 对阵图：`bracket-prediction.json`（模态路径：决赛西班牙 56% 胜阿根廷）
+- 残余 TODO：旧 `/world-cup/[matchId]` + leaderboard 市场时代路由待删；自定义域名未配；OG 卡未做；每晚 Elo 更新后重跑 MC 的自动化未建
+
+**原计划步骤（已全部执行）**：
 1. 等 workflow 完成（自动通知；或看目录数）
 2. `pnpm tsx scripts/world-cup/import-predictions.ts` → 检查 WARN（被跳过的题要补）→ commit `apps/web/lib/world-cup/generated/`
 3. 视觉 QA（CLAUDE.md §9 强制）：`cd apps/web && pnpm exec next dev -p 3199`；`node scripts/visual-qa.mjs --base http://localhost:3199 --paths /world-cup --out runtime-artifacts/screenshots/<ts>-wc-live`；用 Read 真读 PNG；任何 pageerror = fail
