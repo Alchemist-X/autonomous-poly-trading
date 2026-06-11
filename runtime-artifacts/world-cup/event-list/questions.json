@@ -1,0 +1,3011 @@
+{
+  "generatedAt": "2026-06-11T12:29:01.335Z",
+  "source": "/Users/Aincrad/dev-proj/predict-raven/runtime-artifacts/world-cup/polymarket/snapshot.json",
+  "counts": {
+    "group_match": 72,
+    "group_winner": 12,
+    "reach_quarterfinal": 1,
+    "reach_semifinal": 1,
+    "champion": 1
+  },
+  "totalLegs": 408,
+  "questions": [
+    {
+      "id": "match:fifwc-mex-rsa-2026-06-11",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-11（A 组）：Mexico vs South Africa 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-11 (Group A): Mexico vs South Africa — 90-minute result?",
+      "eventSlug": "fifwc-mex-rsa-2026-06-11",
+      "kickoffUtcHint": "2026-06-11T19:00:00Z",
+      "group": "A",
+      "legs": [
+        {
+          "label": "Mexico",
+          "marketSlug": "fifwc-mex-rsa-2026-06-11-mex",
+          "conditionId": "0x4cd77d456c83e7d8c569a8fb8f6396c3f40154f657e6d970733e2b1b6a7110ff"
+        },
+        {
+          "label": "Draw (Mexico vs. South Africa)",
+          "marketSlug": "fifwc-mex-rsa-2026-06-11-draw",
+          "conditionId": "0x0a4b9beb6128863db2b107f185521597a426356f1d9a23c7001401edfd32014b"
+        },
+        {
+          "label": "South Africa",
+          "marketSlug": "fifwc-mex-rsa-2026-06-11-rsa",
+          "conditionId": "0x17dfc75726fa95d4054d91e80295c8b3e494569617e67a7e620e27562b7952b0"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-kr-cze-2026-06-11",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-11（A 组）：Korea Republic vs Czechia 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-11 (Group A): Korea Republic vs Czechia — 90-minute result?",
+      "eventSlug": "fifwc-kr-cze-2026-06-11",
+      "kickoffUtcHint": "2026-06-12T02:00:00Z",
+      "group": "A",
+      "legs": [
+        {
+          "label": "Korea Republic",
+          "marketSlug": "fifwc-kr-cze-2026-06-11-kr",
+          "conditionId": "0x7061e7ce4d7744677b6c3a7d1db0f82eb90c342104167386619d75777a6083c1"
+        },
+        {
+          "label": "Draw (Korea Republic vs. Czechia)",
+          "marketSlug": "fifwc-kr-cze-2026-06-11-draw",
+          "conditionId": "0xb3e5963c18d0fbe9285a35e65aa260b304a3cded6aaddab9507122caa33caf44"
+        },
+        {
+          "label": "Czechia",
+          "marketSlug": "fifwc-kr-cze-2026-06-11-cze",
+          "conditionId": "0x293ed83ff451fbfd454eb09985f6707c5c33a30cf79ba98bf45ccf2fa553438f"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-can-bih-2026-06-12",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-12（B 组）：Canada vs Bosnia-Herzegovina 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-12 (Group B): Canada vs Bosnia-Herzegovina — 90-minute result?",
+      "eventSlug": "fifwc-can-bih-2026-06-12",
+      "kickoffUtcHint": "2026-06-12T19:00:00Z",
+      "group": "B",
+      "legs": [
+        {
+          "label": "Canada",
+          "marketSlug": "fifwc-can-bih-2026-06-12-can",
+          "conditionId": "0x802adc7238db42d431521f625b2a367954d04ebf8836109257dd4a3b961c6108"
+        },
+        {
+          "label": "Draw (Canada vs. Bosnia-Herzegovina)",
+          "marketSlug": "fifwc-can-bih-2026-06-12-draw",
+          "conditionId": "0xeda55c7409e9f0f436377ea300db42db6c576277846df770abd1391828dde639"
+        },
+        {
+          "label": "Bosnia-Herzegovina",
+          "marketSlug": "fifwc-can-bih-2026-06-12-bih",
+          "conditionId": "0x3bb3f35e86949207b257f1f3288a8ceaf071638cbd10a3c9a8273b4f542d4ee0"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-usa-par-2026-06-12",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-12（D 组）：United States vs Paraguay 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-12 (Group D): United States vs Paraguay — 90-minute result?",
+      "eventSlug": "fifwc-usa-par-2026-06-12",
+      "kickoffUtcHint": "2026-06-13T01:00:00Z",
+      "group": "D",
+      "legs": [
+        {
+          "label": "United States",
+          "marketSlug": "fifwc-usa-par-2026-06-12-usa",
+          "conditionId": "0x26c10c27cde58e2d6214d65ab562d8142d34723b3b6ec3f40836d24f6d22dfc9"
+        },
+        {
+          "label": "Draw (United States vs. Paraguay)",
+          "marketSlug": "fifwc-usa-par-2026-06-12-draw",
+          "conditionId": "0x3774cdf17e49143a4f6e10812df8b06113731493842fccc52dea045a1744ae61"
+        },
+        {
+          "label": "Paraguay",
+          "marketSlug": "fifwc-usa-par-2026-06-12-par",
+          "conditionId": "0x86f102a31cf4b12dbcf31ae8c62c526c0b538d5b7eb1af5947d0b0378522f926"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-qat-che-2026-06-13",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-13（B 组）：Qatar vs Switzerland 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-13 (Group B): Qatar vs Switzerland — 90-minute result?",
+      "eventSlug": "fifwc-qat-che-2026-06-13",
+      "kickoffUtcHint": "2026-06-13T19:00:00Z",
+      "group": "B",
+      "legs": [
+        {
+          "label": "Qatar",
+          "marketSlug": "fifwc-qat-che-2026-06-13-qat",
+          "conditionId": "0x415cb64cfa04f2cde4ec39c5a81050cc9fb539b9b6972e72cce16b46e0e33a5b"
+        },
+        {
+          "label": "Draw (Qatar vs. Switzerland)",
+          "marketSlug": "fifwc-qat-che-2026-06-13-draw",
+          "conditionId": "0x639c60e4a74ea30a30b637625813d3fabed195d88072a488f8b7ac6441b930ae"
+        },
+        {
+          "label": "Switzerland",
+          "marketSlug": "fifwc-qat-che-2026-06-13-che",
+          "conditionId": "0x6b864f35765706986a861d22fcc207872062186ddcb5fbc20275e991b20ff6ab"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-bra-mar-2026-06-13",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-13（C 组）：Brazil vs Morocco 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-13 (Group C): Brazil vs Morocco — 90-minute result?",
+      "eventSlug": "fifwc-bra-mar-2026-06-13",
+      "kickoffUtcHint": "2026-06-13T22:00:00Z",
+      "group": "C",
+      "legs": [
+        {
+          "label": "Brazil",
+          "marketSlug": "fifwc-bra-mar-2026-06-13-bra",
+          "conditionId": "0xa75053ffa630e41fdc08a0885fe0614716ecb13061ac460914bfe498038d5364"
+        },
+        {
+          "label": "Draw (Brazil vs. Morocco)",
+          "marketSlug": "fifwc-bra-mar-2026-06-13-draw",
+          "conditionId": "0xb20f96ba6ccf4555d4e3adcc97a561512ef27af67183b52d32283066d4a81853"
+        },
+        {
+          "label": "Morocco",
+          "marketSlug": "fifwc-bra-mar-2026-06-13-mar",
+          "conditionId": "0xa4781f5d97b6fe28ca7a69353b89e3401a9483a4c7bfc2f493c6cca138bd9c82"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-hai-sco-2026-06-13",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-13（C 组）：Haiti vs Scotland 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-13 (Group C): Haiti vs Scotland — 90-minute result?",
+      "eventSlug": "fifwc-hai-sco-2026-06-13",
+      "kickoffUtcHint": "2026-06-14T01:00:00Z",
+      "group": "C",
+      "legs": [
+        {
+          "label": "Haiti",
+          "marketSlug": "fifwc-hai-sco-2026-06-13-hai",
+          "conditionId": "0x05a303645ac39405969df3786b6e33c74ec3be9e1779adba11e619a10d1feab0"
+        },
+        {
+          "label": "Draw (Haiti vs. Scotland)",
+          "marketSlug": "fifwc-hai-sco-2026-06-13-draw",
+          "conditionId": "0x2b759e69e6b2f509efebfe969cd26ddf30b84242506ddb5ac1e9a8b36cac22a2"
+        },
+        {
+          "label": "Scotland",
+          "marketSlug": "fifwc-hai-sco-2026-06-13-sco",
+          "conditionId": "0x1f2bb0bfc3c7b3c9ab678ce9e89cf68bd6daa83385c4834f669cb00c540276f2"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-aus-tur-2026-06-14",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-14（D 组）：Australia vs Türkiye 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-14 (Group D): Australia vs Türkiye — 90-minute result?",
+      "eventSlug": "fifwc-aus-tur-2026-06-14",
+      "kickoffUtcHint": "2026-06-14T04:00:00Z",
+      "group": "D",
+      "legs": [
+        {
+          "label": "Australia",
+          "marketSlug": "fifwc-aus-tur-2026-06-14-aus",
+          "conditionId": "0xaaee502e7f2378521ba15c183e2762cecab013dd42f7600f7b35e99e0882f08c"
+        },
+        {
+          "label": "Draw (Australia vs. Türkiye)",
+          "marketSlug": "fifwc-aus-tur-2026-06-14-draw",
+          "conditionId": "0x12c17c04d2e404bd85a8c65c04cd7e8799a6295c7f74414feec5e867fa40cc5a"
+        },
+        {
+          "label": "Türkiye",
+          "marketSlug": "fifwc-aus-tur-2026-06-14-tur",
+          "conditionId": "0x48880e3355f031da13b5ed1142d209396bdec61acf6c0945234ff6e5edab9ebf"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-ger-kor-2026-06-14",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-14（E 组）：Germany vs Curaçao 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-14 (Group E): Germany vs Curaçao — 90-minute result?",
+      "eventSlug": "fifwc-ger-kor-2026-06-14",
+      "kickoffUtcHint": "2026-06-14T17:00:00Z",
+      "group": "E",
+      "legs": [
+        {
+          "label": "Germany",
+          "marketSlug": "fifwc-ger-kor-2026-06-14-ger",
+          "conditionId": "0x00cf3efc18a950cf442049aa0770903f0ab8606212499e0e4196bf74c102c456"
+        },
+        {
+          "label": "Draw (Germany vs. Curaçao)",
+          "marketSlug": "fifwc-ger-kor-2026-06-14-draw",
+          "conditionId": "0x18f73aca12019d3fc2a03e7af28f6ebcec12634413819605d7cfa3db20073f26"
+        },
+        {
+          "label": "Curaçao",
+          "marketSlug": "fifwc-ger-kor-2026-06-14-kor",
+          "conditionId": "0x0fe5bb2f2da60b0bcb4855dc0cc3101dd1028f6639479bdeefecacb0102869a8"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-nld-jpn-2026-06-14",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-14（F 组）：Netherlands vs Japan 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-14 (Group F): Netherlands vs Japan — 90-minute result?",
+      "eventSlug": "fifwc-nld-jpn-2026-06-14",
+      "kickoffUtcHint": "2026-06-14T20:00:00Z",
+      "group": "F",
+      "legs": [
+        {
+          "label": "Netherlands",
+          "marketSlug": "fifwc-nld-jpn-2026-06-14-nld",
+          "conditionId": "0x2153377bdb8920a0d3227e9a2a68ddb9a001025918b695fe55f66677836e62c6"
+        },
+        {
+          "label": "Draw (Netherlands vs. Japan)",
+          "marketSlug": "fifwc-nld-jpn-2026-06-14-draw",
+          "conditionId": "0x6bb8b2483eccb8fcae84cd42fd7d8e5e394689e0a06f95b189a77b4819cf0173"
+        },
+        {
+          "label": "Japan",
+          "marketSlug": "fifwc-nld-jpn-2026-06-14-jpn",
+          "conditionId": "0x51fc7cfdaee135d6d0bed053e5fcd3652954414d9b9f4eef5dce2e9ea717f161"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-civ-ecu-2026-06-14",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-14（E 组）：Côte d'Ivoire vs Ecuador 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-14 (Group E): Côte d'Ivoire vs Ecuador — 90-minute result?",
+      "eventSlug": "fifwc-civ-ecu-2026-06-14",
+      "kickoffUtcHint": "2026-06-14T23:00:00Z",
+      "group": "E",
+      "legs": [
+        {
+          "label": "Côte d'Ivoire",
+          "marketSlug": "fifwc-civ-ecu-2026-06-14-civ",
+          "conditionId": "0x8f92746709a4fc82f4d454e162046ac3590e3a5a7564540806a6c5f8a87e6738"
+        },
+        {
+          "label": "Draw (Côte d'Ivoire vs. Ecuador)",
+          "marketSlug": "fifwc-civ-ecu-2026-06-14-draw",
+          "conditionId": "0xa6c938b3402538af5faa626dc882bd7995db132df1c4ea669db7841df3557678"
+        },
+        {
+          "label": "Ecuador",
+          "marketSlug": "fifwc-civ-ecu-2026-06-14-ecu",
+          "conditionId": "0x3150ba668d15e1c248c71bcff71c67f1adf87063db7047f27f15ebbc9a1a6a0d"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-swe-tun-2026-06-14",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-14（F 组）：Sweden vs Tunisia 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-14 (Group F): Sweden vs Tunisia — 90-minute result?",
+      "eventSlug": "fifwc-swe-tun-2026-06-14",
+      "kickoffUtcHint": "2026-06-15T02:00:00Z",
+      "group": "F",
+      "legs": [
+        {
+          "label": "Sweden",
+          "marketSlug": "fifwc-swe-tun-2026-06-14-swe",
+          "conditionId": "0xc6f7e4a015ec643eb49c749da19553a2257add76278a252805a12dfa85103269"
+        },
+        {
+          "label": "Draw (Sweden vs. Tunisia)",
+          "marketSlug": "fifwc-swe-tun-2026-06-14-draw",
+          "conditionId": "0x11e4780f48d73417a4863618e288e78c8848e2ef4f744dca4cabdff154af5e3c"
+        },
+        {
+          "label": "Tunisia",
+          "marketSlug": "fifwc-swe-tun-2026-06-14-tun",
+          "conditionId": "0xb5e6e5829c986107aebc5b4b18429b007a813f2b5ca860993020f27ef9f0e080"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-esp-cvi-2026-06-15",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-15（H 组）：Spain vs Cabo Verde 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-15 (Group H): Spain vs Cabo Verde — 90-minute result?",
+      "eventSlug": "fifwc-esp-cvi-2026-06-15",
+      "kickoffUtcHint": "2026-06-15T16:00:00Z",
+      "group": "H",
+      "legs": [
+        {
+          "label": "Spain",
+          "marketSlug": "fifwc-esp-cvi-2026-06-15-esp",
+          "conditionId": "0xa5501b4dc0c99c382b1c2871ad9141c7f58509a0f962f70a38bb6566ec570049"
+        },
+        {
+          "label": "Draw (Spain vs. Cabo Verde)",
+          "marketSlug": "fifwc-esp-cvi-2026-06-15-draw",
+          "conditionId": "0xc34b198e91f197098da3f782c066328e199a6342e6798753de2bfa9ae568ae93"
+        },
+        {
+          "label": "Cabo Verde",
+          "marketSlug": "fifwc-esp-cvi-2026-06-15-cvi",
+          "conditionId": "0xf29e8ca118bc47e9d5d162191382c8700213730e6f5959d69b006c64e16685a8"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-bel-egy-2026-06-15",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-15（G 组）：Belgium vs Egypt 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-15 (Group G): Belgium vs Egypt — 90-minute result?",
+      "eventSlug": "fifwc-bel-egy-2026-06-15",
+      "kickoffUtcHint": "2026-06-15T19:00:00Z",
+      "group": "G",
+      "legs": [
+        {
+          "label": "Belgium",
+          "marketSlug": "fifwc-bel-egy-2026-06-15-bel",
+          "conditionId": "0x3ceb5b631318be5000758200590efe2b308a581d6787c3e7bc050bfd8f627627"
+        },
+        {
+          "label": "Draw (Belgium vs. Egypt)",
+          "marketSlug": "fifwc-bel-egy-2026-06-15-draw",
+          "conditionId": "0x36f93dcdb75e18f9dd7f4bd4f976dd901562e6f779a86c8ac847f154e37e69d2"
+        },
+        {
+          "label": "Egypt",
+          "marketSlug": "fifwc-bel-egy-2026-06-15-egy",
+          "conditionId": "0x3f9bec31cf8e8550470626fbd15382e20a18e46af27358cad575a5ef5bf660de"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-ksa-ury-2026-06-15",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-15（H 组）：Saudi Arabia vs Uruguay 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-15 (Group H): Saudi Arabia vs Uruguay — 90-minute result?",
+      "eventSlug": "fifwc-ksa-ury-2026-06-15",
+      "kickoffUtcHint": "2026-06-15T22:00:00Z",
+      "group": "H",
+      "legs": [
+        {
+          "label": "Saudi Arabia",
+          "marketSlug": "fifwc-ksa-ury-2026-06-15-ksa",
+          "conditionId": "0xaec9b992e0d877c321c7789af5d6fb64ad5e339714fb1000e1e97bf14159ea1a"
+        },
+        {
+          "label": "Draw (Saudi Arabia vs. Uruguay)",
+          "marketSlug": "fifwc-ksa-ury-2026-06-15-draw",
+          "conditionId": "0x344327632a0ab1c28b40003f14bfe75cb7d5bd65c58b4e34199cfc17a77104fe"
+        },
+        {
+          "label": "Uruguay",
+          "marketSlug": "fifwc-ksa-ury-2026-06-15-ury",
+          "conditionId": "0xbc54d73527785bdc7b443cfdf3b0d59558c5ac2bbffca23425ecfbd161b07317"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-irn-nzl-2026-06-15",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-15（G 组）：IR Iran vs New Zealand 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-15 (Group G): IR Iran vs New Zealand — 90-minute result?",
+      "eventSlug": "fifwc-irn-nzl-2026-06-15",
+      "kickoffUtcHint": "2026-06-16T01:00:00Z",
+      "group": "G",
+      "legs": [
+        {
+          "label": "IR Iran",
+          "marketSlug": "fifwc-irn-nzl-2026-06-15-irn",
+          "conditionId": "0xe70fd51f42e61fc309d8e57019a7b76c8dc7bd19b473351d56ff1e125ae0d9d4"
+        },
+        {
+          "label": "Draw (IR Iran vs. New Zealand)",
+          "marketSlug": "fifwc-irn-nzl-2026-06-15-draw",
+          "conditionId": "0xcd05a73f2ddf6c07340b4f1c6c853c4754b2f4428045fec1b295c192e399e563"
+        },
+        {
+          "label": "New Zealand",
+          "marketSlug": "fifwc-irn-nzl-2026-06-15-nzl",
+          "conditionId": "0x4d32282db59ec449edbc191b4b487b7f8218c07d6f94b0c01e2e7ddf6964c26d"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-fra-sen-2026-06-16",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-16（I 组）：France vs Senegal 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-16 (Group I): France vs Senegal — 90-minute result?",
+      "eventSlug": "fifwc-fra-sen-2026-06-16",
+      "kickoffUtcHint": "2026-06-16T19:00:00Z",
+      "group": "I",
+      "legs": [
+        {
+          "label": "France",
+          "marketSlug": "fifwc-fra-sen-2026-06-16-fra",
+          "conditionId": "0x04b6d6630d49e6513355ff045c96439c929335cb0d18da7792dea6c2fc717ead"
+        },
+        {
+          "label": "Draw (France vs. Senegal)",
+          "marketSlug": "fifwc-fra-sen-2026-06-16-draw",
+          "conditionId": "0xbd175757f12ecc85b7aae7f1f35c8637e350227dd2967abd6e1373e245c51f49"
+        },
+        {
+          "label": "Senegal",
+          "marketSlug": "fifwc-fra-sen-2026-06-16-sen",
+          "conditionId": "0xc5c075c77d2b8a98606097f5e42c3e907a66debf4a4058131dc0160235fa8fed"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-irq-nor-2026-06-16",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-16（I 组）：Iraq vs Norway 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-16 (Group I): Iraq vs Norway — 90-minute result?",
+      "eventSlug": "fifwc-irq-nor-2026-06-16",
+      "kickoffUtcHint": "2026-06-16T22:00:00Z",
+      "group": "I",
+      "legs": [
+        {
+          "label": "Iraq",
+          "marketSlug": "fifwc-irq-nor-2026-06-16-irq",
+          "conditionId": "0xd986b03674d1e1bf54b9cf25448c667452975dc068ac12e36a0b23cf96cd1795"
+        },
+        {
+          "label": "Draw (Iraq vs. Norway)",
+          "marketSlug": "fifwc-irq-nor-2026-06-16-draw",
+          "conditionId": "0x947996d016c91c138f34eb5ebf0a67a27af1254fb93e603e48889c2f178ddd0a"
+        },
+        {
+          "label": "Norway",
+          "marketSlug": "fifwc-irq-nor-2026-06-16-nor",
+          "conditionId": "0xcee0d9074a1f8766b4f66d806608a4097d027c94f85de367410fbbb166a29424"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-arg-alg-2026-06-16",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-16（J 组）：Argentina vs Algeria 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-16 (Group J): Argentina vs Algeria — 90-minute result?",
+      "eventSlug": "fifwc-arg-alg-2026-06-16",
+      "kickoffUtcHint": "2026-06-17T01:00:00Z",
+      "group": "J",
+      "legs": [
+        {
+          "label": "Argentina",
+          "marketSlug": "fifwc-arg-alg-2026-06-16-arg",
+          "conditionId": "0x2a7a6ab8f4984f1ae82eacd7fb408832a50e63162ac6b98fff1fe094b8e9d3b5"
+        },
+        {
+          "label": "Draw (Argentina vs. Algeria)",
+          "marketSlug": "fifwc-arg-alg-2026-06-16-draw",
+          "conditionId": "0x353bfdea6f2cae034f1cef73064086e6c904d60d58f96c69644789b510ba862f"
+        },
+        {
+          "label": "Algeria",
+          "marketSlug": "fifwc-arg-alg-2026-06-16-alg",
+          "conditionId": "0xc4dd64ba5844f4a50df03fc7dc37af5decf637aacb8527fd42ccb1fbc6068f5e"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-aut-jor-2026-06-17",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-17（J 组）：Austria vs Jordan 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-17 (Group J): Austria vs Jordan — 90-minute result?",
+      "eventSlug": "fifwc-aut-jor-2026-06-17",
+      "kickoffUtcHint": "2026-06-17T04:00:00Z",
+      "group": "J",
+      "legs": [
+        {
+          "label": "Austria",
+          "marketSlug": "fifwc-aut-jor-2026-06-17-aut",
+          "conditionId": "0x15869f0d05e99ad5789f647685b2eedbbe4201f8910a2bdb70e5716bd3674e8f"
+        },
+        {
+          "label": "Draw (Austria vs. Jordan)",
+          "marketSlug": "fifwc-aut-jor-2026-06-17-draw",
+          "conditionId": "0x2d17b7b5c8701296c4348f016076a948f25cb83e23c8b863bfa1e22ed493ae53"
+        },
+        {
+          "label": "Jordan",
+          "marketSlug": "fifwc-aut-jor-2026-06-17-jor",
+          "conditionId": "0x5256dfc89708ca138d1dc892c81991f2798694e077d86843707aeb2b615b1e15"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-prt-cdr-2026-06-17",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-17（K 组）：Portugal vs DR Congo 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-17 (Group K): Portugal vs DR Congo — 90-minute result?",
+      "eventSlug": "fifwc-prt-cdr-2026-06-17",
+      "kickoffUtcHint": "2026-06-17T17:00:00Z",
+      "group": "K",
+      "legs": [
+        {
+          "label": "Portugal",
+          "marketSlug": "fifwc-prt-cdr-2026-06-17-prt",
+          "conditionId": "0xcaaa1338d38b5c614196c9a926dd84babc3984442f2ec9b937a16284a199ec3a"
+        },
+        {
+          "label": "Draw (Portugal vs. DR Congo)",
+          "marketSlug": "fifwc-prt-cdr-2026-06-17-draw",
+          "conditionId": "0xff1afdef47475128b85467bd1a3a4a3182da0c27409d81c2dc6c7d55b5467dad"
+        },
+        {
+          "label": "DR Congo",
+          "marketSlug": "fifwc-prt-cdr-2026-06-17-cdr",
+          "conditionId": "0x26af99aaa2182c11f3f02ea8e9ee5527dd2d0f9680c73ffbd7bd0237cc64d5f2"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-eng-hrv-2026-06-17",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-17（L 组）：England vs Croatia 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-17 (Group L): England vs Croatia — 90-minute result?",
+      "eventSlug": "fifwc-eng-hrv-2026-06-17",
+      "kickoffUtcHint": "2026-06-17T20:00:00Z",
+      "group": "L",
+      "legs": [
+        {
+          "label": "England",
+          "marketSlug": "fifwc-eng-hrv-2026-06-17-eng",
+          "conditionId": "0xb361c29b5481164886627cb175ed76792df30902e66ec329c0a3853f807fe8e9"
+        },
+        {
+          "label": "Draw (England vs. Croatia)",
+          "marketSlug": "fifwc-eng-hrv-2026-06-17-draw",
+          "conditionId": "0x7c200c3facd45c4307c4d52d47a7d0d86fe219ff25eba92ff88a674d974c4ec3"
+        },
+        {
+          "label": "Croatia",
+          "marketSlug": "fifwc-eng-hrv-2026-06-17-hrv",
+          "conditionId": "0x90b9d20ece132c342654f98e0826e972134b10f58d4789c2662bdc00eee44b13"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-gha-pan-2026-06-17",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-17（L 组）：Ghana vs Panama 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-17 (Group L): Ghana vs Panama — 90-minute result?",
+      "eventSlug": "fifwc-gha-pan-2026-06-17",
+      "kickoffUtcHint": "2026-06-17T23:00:00Z",
+      "group": "L",
+      "legs": [
+        {
+          "label": "Ghana",
+          "marketSlug": "fifwc-gha-pan-2026-06-17-gha",
+          "conditionId": "0x0256ef63427ed0d9eefa1422eee948165a2a215b0741a339025fb08b2cf6e15d"
+        },
+        {
+          "label": "Draw (Ghana vs. Panama)",
+          "marketSlug": "fifwc-gha-pan-2026-06-17-draw",
+          "conditionId": "0xc17c0b2fbaaf76f218153cc4d4c6c0dca65c9138317e2cbd1903c63ab70dc1ef"
+        },
+        {
+          "label": "Panama",
+          "marketSlug": "fifwc-gha-pan-2026-06-17-pan",
+          "conditionId": "0xeb0de200851ebb80eb722c8b02e2226fe76e91e86a7cfe7e38042632e42d5ae9"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-uzb-col-2026-06-17",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-17（K 组）：Uzbekistan vs Colombia 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-17 (Group K): Uzbekistan vs Colombia — 90-minute result?",
+      "eventSlug": "fifwc-uzb-col-2026-06-17",
+      "kickoffUtcHint": "2026-06-18T02:00:00Z",
+      "group": "K",
+      "legs": [
+        {
+          "label": "Uzbekistan",
+          "marketSlug": "fifwc-uzb-col-2026-06-17-uzb",
+          "conditionId": "0x0ef9d17aff09c873dc47a93cfb13c42ab6274b4493e022fed1f228193714540d"
+        },
+        {
+          "label": "Draw (Uzbekistan vs. Colombia)",
+          "marketSlug": "fifwc-uzb-col-2026-06-17-draw",
+          "conditionId": "0x3e0e84f19abf090dae4490caf1d7f74d5cbaa5d49fa0d64bee52a42b0f71c7e4"
+        },
+        {
+          "label": "Colombia",
+          "marketSlug": "fifwc-uzb-col-2026-06-17-col",
+          "conditionId": "0x2f00e48e914ba6606867a6347e90c48cc1fd4da66cc196a191786637f40848e9"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-cze-rsa-2026-06-18",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-18（A 组）：Czechia vs South Africa 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-18 (Group A): Czechia vs South Africa — 90-minute result?",
+      "eventSlug": "fifwc-cze-rsa-2026-06-18",
+      "kickoffUtcHint": "2026-06-18T16:00:00Z",
+      "group": "A",
+      "legs": [
+        {
+          "label": "Czechia",
+          "marketSlug": "fifwc-cze-rsa-2026-06-18-cze",
+          "conditionId": "0x825bc4151fd9c139c4f0400c1a6f5d60cf67b2d04f12d69fd9fb5de67b13e4bc"
+        },
+        {
+          "label": "Draw (Czechia vs. South Africa)",
+          "marketSlug": "fifwc-cze-rsa-2026-06-18-draw",
+          "conditionId": "0x0fac1fde9bf271efa6a8bcd382db88003f661f051ee7644c85ff96a6a4b2e57a"
+        },
+        {
+          "label": "South Africa",
+          "marketSlug": "fifwc-cze-rsa-2026-06-18-rsa",
+          "conditionId": "0x845d6997f4b60fbcf81e8cac4510bb18988efe56e0318d77e476124c9ce80ce8"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-che-bih-2026-06-18",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-18（B 组）：Switzerland vs Bosnia-Herzegovina 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-18 (Group B): Switzerland vs Bosnia-Herzegovina — 90-minute result?",
+      "eventSlug": "fifwc-che-bih-2026-06-18",
+      "kickoffUtcHint": "2026-06-18T19:00:00Z",
+      "group": "B",
+      "legs": [
+        {
+          "label": "Switzerland",
+          "marketSlug": "fifwc-che-bih-2026-06-18-che",
+          "conditionId": "0x870bb248c96c52dcf35390a66542471c5bba2896942d6bc97ade41a418646ba8"
+        },
+        {
+          "label": "Draw (Switzerland vs. Bosnia-Herzegovina)",
+          "marketSlug": "fifwc-che-bih-2026-06-18-draw",
+          "conditionId": "0x04f0f21d77609ef19ef1c36749a8f522e471802384f484b80de4f789b1a90bb4"
+        },
+        {
+          "label": "Bosnia-Herzegovina",
+          "marketSlug": "fifwc-che-bih-2026-06-18-bih",
+          "conditionId": "0x271f673391000932a03311e9a6ce6152eb4e1a60bda85a9ce7c14e87dadcdfd4"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-can-qat-2026-06-18",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-18（B 组）：Canada vs Qatar 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-18 (Group B): Canada vs Qatar — 90-minute result?",
+      "eventSlug": "fifwc-can-qat-2026-06-18",
+      "kickoffUtcHint": "2026-06-18T22:00:00Z",
+      "group": "B",
+      "legs": [
+        {
+          "label": "Canada",
+          "marketSlug": "fifwc-can-qat-2026-06-18-can",
+          "conditionId": "0xc90f95af1a5d4e392fe9cc484f1b1a0983687865e7b85910ae89300c2076e4a1"
+        },
+        {
+          "label": "Draw (Canada vs. Qatar)",
+          "marketSlug": "fifwc-can-qat-2026-06-18-draw",
+          "conditionId": "0x4691465cd4ac73b2fc650d87ba8a4b9cb41dac7d7c74b746b9fefe93803acf9b"
+        },
+        {
+          "label": "Qatar",
+          "marketSlug": "fifwc-can-qat-2026-06-18-qat",
+          "conditionId": "0xbbf3d45e340d1b69feb4f8b1078ecd4e79012299766980def72c58e6dc811117"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-mex-kr-2026-06-18",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-18（A 组）：Mexico vs Korea Republic 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-18 (Group A): Mexico vs Korea Republic — 90-minute result?",
+      "eventSlug": "fifwc-mex-kr-2026-06-18",
+      "kickoffUtcHint": "2026-06-19T01:00:00Z",
+      "group": "A",
+      "legs": [
+        {
+          "label": "Mexico",
+          "marketSlug": "fifwc-mex-kr-2026-06-18-mex",
+          "conditionId": "0x6f05c7bc5ad978f8f9916f05d30a7f752e02b81508c56d82ed7c9245bca163b0"
+        },
+        {
+          "label": "Draw (Mexico vs. Korea Republic)",
+          "marketSlug": "fifwc-mex-kr-2026-06-18-draw",
+          "conditionId": "0x95e8c492f878a1c6b04e47caceee107037a26e4a8b040041b28a3be8eb0f6942"
+        },
+        {
+          "label": "Korea Republic",
+          "marketSlug": "fifwc-mex-kr-2026-06-18-kr",
+          "conditionId": "0xa6ae199ce172475dd0e29d7584810a15a1d4608398d2f42d7ca39bfac45ed52b"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-usa-aus-2026-06-19",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-19（D 组）：United States vs Australia 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-19 (Group D): United States vs Australia — 90-minute result?",
+      "eventSlug": "fifwc-usa-aus-2026-06-19",
+      "kickoffUtcHint": "2026-06-19T19:00:00Z",
+      "group": "D",
+      "legs": [
+        {
+          "label": "United States",
+          "marketSlug": "fifwc-usa-aus-2026-06-19-usa",
+          "conditionId": "0x7ebb07134794576c154f06fbaa1cc61a5292d58e280ce98207977771c0326c27"
+        },
+        {
+          "label": "Draw (United States vs. Australia)",
+          "marketSlug": "fifwc-usa-aus-2026-06-19-draw",
+          "conditionId": "0xffa05800960fb8b1532c0f3f99f51b4996c9b447b0b195635e644e071e4b63e7"
+        },
+        {
+          "label": "Australia",
+          "marketSlug": "fifwc-usa-aus-2026-06-19-aus",
+          "conditionId": "0xb1fca83dd9b3046c8db3ae0de2c8d56ee5d17d3aad54b7bbfa5c65000f6df350"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-sco-mar-2026-06-19",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-19（C 组）：Scotland vs Morocco 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-19 (Group C): Scotland vs Morocco — 90-minute result?",
+      "eventSlug": "fifwc-sco-mar-2026-06-19",
+      "kickoffUtcHint": "2026-06-19T22:00:00Z",
+      "group": "C",
+      "legs": [
+        {
+          "label": "Scotland",
+          "marketSlug": "fifwc-sco-mar-2026-06-19-sco",
+          "conditionId": "0x5fac5a47f11802e8a7b82d76e05461bd4551fe199041fb45c5e6228c56532d4a"
+        },
+        {
+          "label": "Draw (Scotland vs. Morocco)",
+          "marketSlug": "fifwc-sco-mar-2026-06-19-draw",
+          "conditionId": "0x577cffeb67b4b292a9f8e29b967e5de1c409333fabb752cf5057768c5e900422"
+        },
+        {
+          "label": "Morocco",
+          "marketSlug": "fifwc-sco-mar-2026-06-19-mar",
+          "conditionId": "0xbc28e92d1fa999e842caf926cff56a580fb477f26d8c44c99aa29beb78062241"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-bra-hai-2026-06-19",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-19（C 组）：Brazil vs Haiti 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-19 (Group C): Brazil vs Haiti — 90-minute result?",
+      "eventSlug": "fifwc-bra-hai-2026-06-19",
+      "kickoffUtcHint": "2026-06-20T00:30:00Z",
+      "group": "C",
+      "legs": [
+        {
+          "label": "Brazil",
+          "marketSlug": "fifwc-bra-hai-2026-06-19-bra",
+          "conditionId": "0xc90381f6021b8dc8d07dd3d783d3927f34706f8ce1ed097b21cc92f31b5be076"
+        },
+        {
+          "label": "Draw (Brazil vs. Haiti)",
+          "marketSlug": "fifwc-bra-hai-2026-06-19-draw",
+          "conditionId": "0xd414a4bdb4c86f835fb31e432ab3ea15e374fe7f39b6b0a224c7a521378967ea"
+        },
+        {
+          "label": "Haiti",
+          "marketSlug": "fifwc-bra-hai-2026-06-19-hai",
+          "conditionId": "0xc7a9f8cf846f6eba833fc69da7340af7c150e6cf72fc9501507a4431bbcde19e"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-tur-par-2026-06-19",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-19（D 组）：Türkiye vs Paraguay 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-19 (Group D): Türkiye vs Paraguay — 90-minute result?",
+      "eventSlug": "fifwc-tur-par-2026-06-19",
+      "kickoffUtcHint": "2026-06-20T03:00:00Z",
+      "group": "D",
+      "legs": [
+        {
+          "label": "Türkiye",
+          "marketSlug": "fifwc-tur-par-2026-06-19-tur",
+          "conditionId": "0x7bed81b0bd1cbe7cae0ad49fcf2d9e068d1ea2da49a36e638712daa55712a184"
+        },
+        {
+          "label": "Draw (Türkiye vs. Paraguay)",
+          "marketSlug": "fifwc-tur-par-2026-06-19-draw",
+          "conditionId": "0xb1a0254ee2dfe4fc6bb05e521cd068d463245f3763cac6ed3c464d6499a8cc07"
+        },
+        {
+          "label": "Paraguay",
+          "marketSlug": "fifwc-tur-par-2026-06-19-par",
+          "conditionId": "0x4a2085d9d7302a081b64016124cf1981a5bcb1118392c9d645f1abb57ea14d65"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-nld-swe-2026-06-20",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-20（F 组）：Netherlands vs Sweden 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-20 (Group F): Netherlands vs Sweden — 90-minute result?",
+      "eventSlug": "fifwc-nld-swe-2026-06-20",
+      "kickoffUtcHint": "2026-06-20T17:00:00Z",
+      "group": "F",
+      "legs": [
+        {
+          "label": "Netherlands",
+          "marketSlug": "fifwc-nld-swe-2026-06-20-nld",
+          "conditionId": "0xde92d563a6d742a4750c8c83a9c490ee5b02bd5d972a1765ab41c0f9095ef6c0"
+        },
+        {
+          "label": "Draw (Netherlands vs. Sweden)",
+          "marketSlug": "fifwc-nld-swe-2026-06-20-draw",
+          "conditionId": "0x28c19c840bd010dc279a8f14a417a9389c18801b271b407d7634425e8305de0b"
+        },
+        {
+          "label": "Sweden",
+          "marketSlug": "fifwc-nld-swe-2026-06-20-swe",
+          "conditionId": "0xfd2cd91be3b1215099cea2512b3c98c3e2da290064dfc0ca815d4e315fb6fdf9"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-ger-civ-2026-06-20",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-20（E 组）：Germany vs Côte d'Ivoire 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-20 (Group E): Germany vs Côte d'Ivoire — 90-minute result?",
+      "eventSlug": "fifwc-ger-civ-2026-06-20",
+      "kickoffUtcHint": "2026-06-20T20:00:00Z",
+      "group": "E",
+      "legs": [
+        {
+          "label": "Germany",
+          "marketSlug": "fifwc-ger-civ-2026-06-20-ger",
+          "conditionId": "0x232342e2a9200b203703a816f9d99d1c6a872333567af16f43d67a255e1a6aa8"
+        },
+        {
+          "label": "Draw (Germany vs. Côte d'Ivoire)",
+          "marketSlug": "fifwc-ger-civ-2026-06-20-draw",
+          "conditionId": "0x2b4abd4c4f6336b33cdaf7aa65430ef1f4afe7122d1678b1f3d022b4357cdbf5"
+        },
+        {
+          "label": "Côte d'Ivoire",
+          "marketSlug": "fifwc-ger-civ-2026-06-20-civ",
+          "conditionId": "0xd9a23115df9698780e32b300739bcacadc9395e826d1b4c4608d404175d7ccea"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-ecu-kor-2026-06-20",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-20（E 组）：Ecuador vs Curaçao 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-20 (Group E): Ecuador vs Curaçao — 90-minute result?",
+      "eventSlug": "fifwc-ecu-kor-2026-06-20",
+      "kickoffUtcHint": "2026-06-21T00:00:00Z",
+      "group": "E",
+      "legs": [
+        {
+          "label": "Ecuador",
+          "marketSlug": "fifwc-ecu-kor-2026-06-20-ecu",
+          "conditionId": "0xa90ce8b69a218dced329076162df3b79f99596d1dc71d93bd30a64a2c8b6ba3e"
+        },
+        {
+          "label": "Draw (Ecuador vs. Curaçao)",
+          "marketSlug": "fifwc-ecu-kor-2026-06-20-draw",
+          "conditionId": "0xa6cd933c6cc3487b1a8505ecfad35d38428cbc9e3df01cc81fa10219b8724d25"
+        },
+        {
+          "label": "Curaçao",
+          "marketSlug": "fifwc-ecu-kor-2026-06-20-kor",
+          "conditionId": "0x9e030ad2c9ecc0037a1056f1641d913bddd5c7b26c100267fb8b22a4fb64936e"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-tun-jpn-2026-06-21",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-21（F 组）：Tunisia vs Japan 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-21 (Group F): Tunisia vs Japan — 90-minute result?",
+      "eventSlug": "fifwc-tun-jpn-2026-06-21",
+      "kickoffUtcHint": "2026-06-21T04:00:00Z",
+      "group": "F",
+      "legs": [
+        {
+          "label": "Tunisia",
+          "marketSlug": "fifwc-tun-jpn-2026-06-21-tun",
+          "conditionId": "0x4c848328019296227bc205bb575cde555ed13f6fe5159e3f72636b4afd79dccd"
+        },
+        {
+          "label": "Draw (Tunisia vs. Japan)",
+          "marketSlug": "fifwc-tun-jpn-2026-06-21-draw",
+          "conditionId": "0x264e6793ab225b8fd861f13934ee8a826a864116e1dd727b38a65e2f7cd3f67c"
+        },
+        {
+          "label": "Japan",
+          "marketSlug": "fifwc-tun-jpn-2026-06-21-jpn",
+          "conditionId": "0x051e0ea5b3c394114eacf8ce5e944ca63cbb6ccdef1d086cadc5dd129a3804e6"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-esp-ksa-2026-06-21",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-21（H 组）：Spain vs Saudi Arabia 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-21 (Group H): Spain vs Saudi Arabia — 90-minute result?",
+      "eventSlug": "fifwc-esp-ksa-2026-06-21",
+      "kickoffUtcHint": "2026-06-21T16:00:00Z",
+      "group": "H",
+      "legs": [
+        {
+          "label": "Spain",
+          "marketSlug": "fifwc-esp-ksa-2026-06-21-esp",
+          "conditionId": "0x2fcf3968f5feff8c544b1be614f1c7aed22f5051949478bc0b39f9e966cab02a"
+        },
+        {
+          "label": "Draw (Spain vs. Saudi Arabia)",
+          "marketSlug": "fifwc-esp-ksa-2026-06-21-draw",
+          "conditionId": "0x55aa84891f31cedeaef953dfabbb56214ed9549f2ca3ddfe10d395bc58def557"
+        },
+        {
+          "label": "Saudi Arabia",
+          "marketSlug": "fifwc-esp-ksa-2026-06-21-ksa",
+          "conditionId": "0x3abd1b7cf1488504d51a36c1e3f944597dfe6e0545a6fd34ef3d4a3746f90e59"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-bel-irn-2026-06-21",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-21（G 组）：Belgium vs IR Iran 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-21 (Group G): Belgium vs IR Iran — 90-minute result?",
+      "eventSlug": "fifwc-bel-irn-2026-06-21",
+      "kickoffUtcHint": "2026-06-21T19:00:00Z",
+      "group": "G",
+      "legs": [
+        {
+          "label": "Belgium",
+          "marketSlug": "fifwc-bel-irn-2026-06-21-bel",
+          "conditionId": "0xebb200cb08bbe89c2523a345947d083a992e27cc479cf1b5568407751e026d2c"
+        },
+        {
+          "label": "Draw (Belgium vs. IR Iran)",
+          "marketSlug": "fifwc-bel-irn-2026-06-21-draw",
+          "conditionId": "0x11e878643f63c75e36d58024033ae710c19e696f652fa05ba705ab019402a633"
+        },
+        {
+          "label": "IR Iran",
+          "marketSlug": "fifwc-bel-irn-2026-06-21-irn",
+          "conditionId": "0xc4a229b06046a4a30d9b5cd73fc6364f6b7cdc48efc33bfc6b24a2806aa93f30"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-ury-cvi-2026-06-21",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-21（H 组）：Uruguay vs Cabo Verde 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-21 (Group H): Uruguay vs Cabo Verde — 90-minute result?",
+      "eventSlug": "fifwc-ury-cvi-2026-06-21",
+      "kickoffUtcHint": "2026-06-21T22:00:00Z",
+      "group": "H",
+      "legs": [
+        {
+          "label": "Uruguay",
+          "marketSlug": "fifwc-ury-cvi-2026-06-21-ury",
+          "conditionId": "0x08d56195e88cedb87eeff396bd35e8b67d031e586169b3bc937b3095b3cdfe43"
+        },
+        {
+          "label": "Draw (Uruguay vs. Cabo Verde)",
+          "marketSlug": "fifwc-ury-cvi-2026-06-21-draw",
+          "conditionId": "0x2d8a8c670430061537dd6cb60c0fee0d0e0a4a3430fd00fcb390301f53e7b4d9"
+        },
+        {
+          "label": "Cabo Verde",
+          "marketSlug": "fifwc-ury-cvi-2026-06-21-cvi",
+          "conditionId": "0x21454470816337a6dadbea2140070a57ec40146b8e65bba2fbf8e4216ea6f0a1"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-nzl-egy-2026-06-21",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-21（G 组）：New Zealand vs Egypt 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-21 (Group G): New Zealand vs Egypt — 90-minute result?",
+      "eventSlug": "fifwc-nzl-egy-2026-06-21",
+      "kickoffUtcHint": "2026-06-22T01:00:00Z",
+      "group": "G",
+      "legs": [
+        {
+          "label": "New Zealand",
+          "marketSlug": "fifwc-nzl-egy-2026-06-21-nzl",
+          "conditionId": "0x3a3de929cb6fb7a4eff6aeae1b515895de1e358ed9a2adc24eb04862251d132d"
+        },
+        {
+          "label": "Draw (New Zealand vs. Egypt)",
+          "marketSlug": "fifwc-nzl-egy-2026-06-21-draw",
+          "conditionId": "0x0f8de21a80996a54ced1327cbf4e0702d417e1f49ec6ebe267bc5664c7f36d90"
+        },
+        {
+          "label": "Egypt",
+          "marketSlug": "fifwc-nzl-egy-2026-06-21-egy",
+          "conditionId": "0x16c981b47490212bbb7d70edcccc419a84ff5771bc85c1b7abae37128975953e"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-arg-aut-2026-06-22",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-22（J 组）：Argentina vs Austria 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-22 (Group J): Argentina vs Austria — 90-minute result?",
+      "eventSlug": "fifwc-arg-aut-2026-06-22",
+      "kickoffUtcHint": "2026-06-22T17:00:00Z",
+      "group": "J",
+      "legs": [
+        {
+          "label": "Argentina",
+          "marketSlug": "fifwc-arg-aut-2026-06-22-arg",
+          "conditionId": "0x5bdcf0fd010eba1a55a0f3de9be6612fc72038279a734e994ce2e34664a3cfe4"
+        },
+        {
+          "label": "Draw (Argentina vs. Austria)",
+          "marketSlug": "fifwc-arg-aut-2026-06-22-draw",
+          "conditionId": "0xac111edf9fdf6fab06525d9a0216c16a2e54483c0df7ac58f1a83e9fa53b0c72"
+        },
+        {
+          "label": "Austria",
+          "marketSlug": "fifwc-arg-aut-2026-06-22-aut",
+          "conditionId": "0x73b3d2eee243a7f5438e12b72e2f33da013b0f3963302ee62bbc9198df121515"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-fra-irq-2026-06-22",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-22（I 组）：France vs Iraq 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-22 (Group I): France vs Iraq — 90-minute result?",
+      "eventSlug": "fifwc-fra-irq-2026-06-22",
+      "kickoffUtcHint": "2026-06-22T21:00:00Z",
+      "group": "I",
+      "legs": [
+        {
+          "label": "France",
+          "marketSlug": "fifwc-fra-irq-2026-06-22-fra",
+          "conditionId": "0xe2c2cba80ca7e745aef3ff3c3a359db4d862f2b0ea40a9821bb137bb9e31b40f"
+        },
+        {
+          "label": "Draw (France vs. Iraq)",
+          "marketSlug": "fifwc-fra-irq-2026-06-22-draw",
+          "conditionId": "0x1a319ce803f4e711b25af81a1d8bfb59c5cc6e5ef09ac046fc65e652c98e714e"
+        },
+        {
+          "label": "Iraq",
+          "marketSlug": "fifwc-fra-irq-2026-06-22-irq",
+          "conditionId": "0x4882b26f86a381553f8b5742e99c615a2ef95599c64feacba3fb826d18e745aa"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-nor-sen-2026-06-22",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-22（I 组）：Norway vs Senegal 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-22 (Group I): Norway vs Senegal — 90-minute result?",
+      "eventSlug": "fifwc-nor-sen-2026-06-22",
+      "kickoffUtcHint": "2026-06-23T00:00:00Z",
+      "group": "I",
+      "legs": [
+        {
+          "label": "Norway",
+          "marketSlug": "fifwc-nor-sen-2026-06-22-nor",
+          "conditionId": "0x9814196ae917e1c962ce23612be50554586828a996b06c800d502a137001bc25"
+        },
+        {
+          "label": "Draw (Norway vs. Senegal)",
+          "marketSlug": "fifwc-nor-sen-2026-06-22-draw",
+          "conditionId": "0x7e88fd883e66a95417ac88e33876c14479a06e7aaae4c23494233622e2ee0467"
+        },
+        {
+          "label": "Senegal",
+          "marketSlug": "fifwc-nor-sen-2026-06-22-sen",
+          "conditionId": "0x6a6255f95ea0e78d9e8d016908e386989e3e92ef5127b56c7234bd5eafbb3dc5"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-jor-alg-2026-06-22",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-22（J 组）：Jordan vs Algeria 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-22 (Group J): Jordan vs Algeria — 90-minute result?",
+      "eventSlug": "fifwc-jor-alg-2026-06-22",
+      "kickoffUtcHint": "2026-06-23T03:00:00Z",
+      "group": "J",
+      "legs": [
+        {
+          "label": "Jordan",
+          "marketSlug": "fifwc-jor-alg-2026-06-22-jor",
+          "conditionId": "0xaffbeeaef4c956c9e55932d3384eb7ad02640d6a421f3e749f208cb9047cf982"
+        },
+        {
+          "label": "Draw (Jordan vs. Algeria)",
+          "marketSlug": "fifwc-jor-alg-2026-06-22-draw",
+          "conditionId": "0x26954c84bed166fa0da034c310e3bd62e7afa32d299314c352bc32eb08e5a210"
+        },
+        {
+          "label": "Algeria",
+          "marketSlug": "fifwc-jor-alg-2026-06-22-alg",
+          "conditionId": "0x0d2071920da35396162280a1af346e1f799ed45e019ed43fae0c88dc1ac4b4d6"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-prt-uzb-2026-06-23",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-23（K 组）：Portugal vs Uzbekistan 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-23 (Group K): Portugal vs Uzbekistan — 90-minute result?",
+      "eventSlug": "fifwc-prt-uzb-2026-06-23",
+      "kickoffUtcHint": "2026-06-23T17:00:00Z",
+      "group": "K",
+      "legs": [
+        {
+          "label": "Portugal",
+          "marketSlug": "fifwc-prt-uzb-2026-06-23-prt",
+          "conditionId": "0x7fb8010a0cdc4ac4f7e93fb7a532731fbb81f951dd451f2402648eaa3cf285e1"
+        },
+        {
+          "label": "Draw (Portugal vs. Uzbekistan)",
+          "marketSlug": "fifwc-prt-uzb-2026-06-23-draw",
+          "conditionId": "0x3dac1c6e41591af519fee14c8b7e47022825b19e04e643b115ca407c6a722617"
+        },
+        {
+          "label": "Uzbekistan",
+          "marketSlug": "fifwc-prt-uzb-2026-06-23-uzb",
+          "conditionId": "0x887f26cf6ab07f7aebdf203280c1f1cddbe1cd494f420316b94a2647238f48d1"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-eng-gha-2026-06-23",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-23（L 组）：England vs Ghana 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-23 (Group L): England vs Ghana — 90-minute result?",
+      "eventSlug": "fifwc-eng-gha-2026-06-23",
+      "kickoffUtcHint": "2026-06-23T20:00:00Z",
+      "group": "L",
+      "legs": [
+        {
+          "label": "England",
+          "marketSlug": "fifwc-eng-gha-2026-06-23-eng",
+          "conditionId": "0xff1ec56e0e47033727e33deab740896fbf1c6bb8a2b0068efdba3d900c7ba7a2"
+        },
+        {
+          "label": "Draw (England vs. Ghana)",
+          "marketSlug": "fifwc-eng-gha-2026-06-23-draw",
+          "conditionId": "0x17d821a9197f8de3acbb8a0140e70cea9461e95871c58ae7aa9c608d53ad00d0"
+        },
+        {
+          "label": "Ghana",
+          "marketSlug": "fifwc-eng-gha-2026-06-23-gha",
+          "conditionId": "0x66b7ad48448f8846395b8df8edb5f20f99bed8e79928b1b9d2cf3a19d70dbdf8"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-pan-hrv-2026-06-23",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-23（L 组）：Panama vs Croatia 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-23 (Group L): Panama vs Croatia — 90-minute result?",
+      "eventSlug": "fifwc-pan-hrv-2026-06-23",
+      "kickoffUtcHint": "2026-06-23T23:00:00Z",
+      "group": "L",
+      "legs": [
+        {
+          "label": "Panama",
+          "marketSlug": "fifwc-pan-hrv-2026-06-23-pan",
+          "conditionId": "0xd0c0909f0cb7e0fd1e5d8c9c9eae86fec21ff6aa53f812d58c285e88c64a32e5"
+        },
+        {
+          "label": "Draw (Panama vs. Croatia)",
+          "marketSlug": "fifwc-pan-hrv-2026-06-23-draw",
+          "conditionId": "0x2575e6ffba4b0221654217dc5cd283c969816a2f2ed4729b39276438e8609077"
+        },
+        {
+          "label": "Croatia",
+          "marketSlug": "fifwc-pan-hrv-2026-06-23-hrv",
+          "conditionId": "0x652a7e27819c8aa682f1013295dd637c000133862850d96143e48a1815b94d38"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-col-cdr-2026-06-23",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-23（K 组）：Colombia vs DR Congo 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-23 (Group K): Colombia vs DR Congo — 90-minute result?",
+      "eventSlug": "fifwc-col-cdr-2026-06-23",
+      "kickoffUtcHint": "2026-06-24T02:00:00Z",
+      "group": "K",
+      "legs": [
+        {
+          "label": "Colombia",
+          "marketSlug": "fifwc-col-cdr-2026-06-23-col",
+          "conditionId": "0xe120b5ac48c5e2abdfcb3e34be55567e2ae81caaa87a243e964814ca65e6667e"
+        },
+        {
+          "label": "Draw (Colombia vs. DR Congo)",
+          "marketSlug": "fifwc-col-cdr-2026-06-23-draw",
+          "conditionId": "0x06215a799ed95eb008eea3d8de97448c2030f8ec790547e6ce1bd9e974f9b70d"
+        },
+        {
+          "label": "DR Congo",
+          "marketSlug": "fifwc-col-cdr-2026-06-23-cdr",
+          "conditionId": "0x8148ac62977e95dd3cb5d2cda5dd0b1071721f3ffb101941b3499fa4e074fae2"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-bih-qat-2026-06-24",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-24（B 组）：Bosnia-Herzegovina vs Qatar 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-24 (Group B): Bosnia-Herzegovina vs Qatar — 90-minute result?",
+      "eventSlug": "fifwc-bih-qat-2026-06-24",
+      "kickoffUtcHint": "2026-06-24T19:00:00Z",
+      "group": "B",
+      "legs": [
+        {
+          "label": "Bosnia-Herzegovina",
+          "marketSlug": "fifwc-bih-qat-2026-06-24-bih",
+          "conditionId": "0xf224cac9c315d3693bbcbd8406460b8052ecc40df364f7e2bc6079c072cfe219"
+        },
+        {
+          "label": "Draw (Bosnia-Herzegovina vs. Qatar)",
+          "marketSlug": "fifwc-bih-qat-2026-06-24-draw",
+          "conditionId": "0x44a0f6adbea52acf0a97b90870a637a0bf577dc09b9b376ea56a0fbe86f68e12"
+        },
+        {
+          "label": "Qatar",
+          "marketSlug": "fifwc-bih-qat-2026-06-24-qat",
+          "conditionId": "0x339c300a9cfe452223d315d03c35473063ee904bbf3821741ed2e3ddfc27426d"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-che-can-2026-06-24",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-24（B 组）：Switzerland vs Canada 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-24 (Group B): Switzerland vs Canada — 90-minute result?",
+      "eventSlug": "fifwc-che-can-2026-06-24",
+      "kickoffUtcHint": "2026-06-24T19:00:00Z",
+      "group": "B",
+      "legs": [
+        {
+          "label": "Switzerland",
+          "marketSlug": "fifwc-che-can-2026-06-24-che",
+          "conditionId": "0xe1953a0f479de0ff3efabb7dff6116ff6cb9d7fe2d7ee6526c5d68da9cf09767"
+        },
+        {
+          "label": "Draw (Switzerland vs. Canada)",
+          "marketSlug": "fifwc-che-can-2026-06-24-draw",
+          "conditionId": "0x10b4a49cc233715e3b2154533c654fcbdcac6c03b3b415611c5c014872e80b3b"
+        },
+        {
+          "label": "Canada",
+          "marketSlug": "fifwc-che-can-2026-06-24-can",
+          "conditionId": "0xfec117e3f24c0ee72f753bb35c743d6248212998c001b400609858caeb3fcc00"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-mar-hai-2026-06-24",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-24（C 组）：Morocco vs Haiti 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-24 (Group C): Morocco vs Haiti — 90-minute result?",
+      "eventSlug": "fifwc-mar-hai-2026-06-24",
+      "kickoffUtcHint": "2026-06-24T22:00:00Z",
+      "group": "C",
+      "legs": [
+        {
+          "label": "Morocco",
+          "marketSlug": "fifwc-mar-hai-2026-06-24-mar",
+          "conditionId": "0x649bd3dc845f647aa8c9a739ad8de245b853224961afd01127de0071c13f84b3"
+        },
+        {
+          "label": "Draw (Morocco vs. Haiti)",
+          "marketSlug": "fifwc-mar-hai-2026-06-24-draw",
+          "conditionId": "0x6fcd127dbe2c45255d6b201b1b250c69dbf940de0fe80b4e40e23822c963443d"
+        },
+        {
+          "label": "Haiti",
+          "marketSlug": "fifwc-mar-hai-2026-06-24-hai",
+          "conditionId": "0x060f4b969fc1f6b09682c1e7d9ae218273fe3f197977d1db22ccea01f42d895b"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-sco-bra-2026-06-24",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-24（C 组）：Scotland vs Brazil 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-24 (Group C): Scotland vs Brazil — 90-minute result?",
+      "eventSlug": "fifwc-sco-bra-2026-06-24",
+      "kickoffUtcHint": "2026-06-24T22:00:00Z",
+      "group": "C",
+      "legs": [
+        {
+          "label": "Scotland",
+          "marketSlug": "fifwc-sco-bra-2026-06-24-sco",
+          "conditionId": "0x15ae32bb6f46f35220af9e623242dbcafffc965770a298316699a6ac2bb11b56"
+        },
+        {
+          "label": "Draw (Scotland vs. Brazil)",
+          "marketSlug": "fifwc-sco-bra-2026-06-24-draw",
+          "conditionId": "0xa46926b0bdef66209285cddc3a0fa99e371cccd7459a39693ae7ab76f38d80e7"
+        },
+        {
+          "label": "Brazil",
+          "marketSlug": "fifwc-sco-bra-2026-06-24-bra",
+          "conditionId": "0xd14544ac7360f37de17eb6a442694de21a8c5ea01714323be6409b002c4d7d7d"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-cze-mex-2026-06-24",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-24（A 组）：Czechia vs Mexico 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-24 (Group A): Czechia vs Mexico — 90-minute result?",
+      "eventSlug": "fifwc-cze-mex-2026-06-24",
+      "kickoffUtcHint": "2026-06-25T01:00:00Z",
+      "group": "A",
+      "legs": [
+        {
+          "label": "Czechia",
+          "marketSlug": "fifwc-cze-mex-2026-06-24-cze",
+          "conditionId": "0xb7297ad99cd8e4957c64aca2fbf143efeb7045e95826cf4aa6b327ebfe1f1ec3"
+        },
+        {
+          "label": "Draw (Czechia vs. Mexico)",
+          "marketSlug": "fifwc-cze-mex-2026-06-24-draw",
+          "conditionId": "0x9de91738929365f104420a4246815a47ea2017b17e30370fa4572ceb84d898b9"
+        },
+        {
+          "label": "Mexico",
+          "marketSlug": "fifwc-cze-mex-2026-06-24-mex",
+          "conditionId": "0x1f5cd4d1a23c11229b2781303dd39fb60ec6ee369dd173cedef8a7f7a1a27298"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-rsa-kr-2026-06-24",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-24（A 组）：South Africa vs Korea Republic 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-24 (Group A): South Africa vs Korea Republic — 90-minute result?",
+      "eventSlug": "fifwc-rsa-kr-2026-06-24",
+      "kickoffUtcHint": "2026-06-25T01:00:00Z",
+      "group": "A",
+      "legs": [
+        {
+          "label": "South Africa",
+          "marketSlug": "fifwc-rsa-kr-2026-06-24-rsa",
+          "conditionId": "0xe9b6af2b81a59d36a47915db6f54b6af0e3dd19883382aacc41fe82e43cc2313"
+        },
+        {
+          "label": "Draw (South Africa vs. Korea Republic)",
+          "marketSlug": "fifwc-rsa-kr-2026-06-24-draw",
+          "conditionId": "0x16c51ebf6cea99ba2d958910e743690b40c46c2a426eab1709cd934d8364a96c"
+        },
+        {
+          "label": "Korea Republic",
+          "marketSlug": "fifwc-rsa-kr-2026-06-24-kr",
+          "conditionId": "0x374d4c9c12e766653de985450899cf2181edf47189894bc9c870216b5c6b1d83"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-ecu-ger-2026-06-25",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-25（E 组）：Ecuador vs Germany 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-25 (Group E): Ecuador vs Germany — 90-minute result?",
+      "eventSlug": "fifwc-ecu-ger-2026-06-25",
+      "kickoffUtcHint": "2026-06-25T20:00:00Z",
+      "group": "E",
+      "legs": [
+        {
+          "label": "Ecuador",
+          "marketSlug": "fifwc-ecu-ger-2026-06-25-ecu",
+          "conditionId": "0x44e25f753ae47dbdf2705d35e0a45db24d3a1b2996b82a1350ade2c7e92c4f93"
+        },
+        {
+          "label": "Draw (Ecuador vs. Germany)",
+          "marketSlug": "fifwc-ecu-ger-2026-06-25-draw",
+          "conditionId": "0x6257ac3bdd0b512bd6470c21d5dc99ed12ef42b5fd9ad6078fad24d351ebda5c"
+        },
+        {
+          "label": "Germany",
+          "marketSlug": "fifwc-ecu-ger-2026-06-25-ger",
+          "conditionId": "0xe690620297dfea974d20df84b4cf90460e46a26ec864353482717b90509a3c0b"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-kor-civ-2026-06-25",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-25（E 组）：Curaçao vs Côte d'Ivoire 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-25 (Group E): Curaçao vs Côte d'Ivoire — 90-minute result?",
+      "eventSlug": "fifwc-kor-civ-2026-06-25",
+      "kickoffUtcHint": "2026-06-25T20:00:00Z",
+      "group": "E",
+      "legs": [
+        {
+          "label": "Curaçao",
+          "marketSlug": "fifwc-kor-civ-2026-06-25-kor",
+          "conditionId": "0x5f4340be34f9f45e76f28390111c349b343b6072a0953101fb78ec98e1ad3e90"
+        },
+        {
+          "label": "Draw (Curaçao vs. Côte d'Ivoire)",
+          "marketSlug": "fifwc-kor-civ-2026-06-25-draw",
+          "conditionId": "0x9a07caaff2c446ef13f2ef28c15e788cbf52be21aec37178aa26927952fb32f4"
+        },
+        {
+          "label": "Côte d'Ivoire",
+          "marketSlug": "fifwc-kor-civ-2026-06-25-civ",
+          "conditionId": "0x8ca66a3012273cbadf1339f2b3c53cbeaf977d61a2f3f97495fd056afc0691f8"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-jpn-swe-2026-06-25",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-25（F 组）：Japan vs Sweden 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-25 (Group F): Japan vs Sweden — 90-minute result?",
+      "eventSlug": "fifwc-jpn-swe-2026-06-25",
+      "kickoffUtcHint": "2026-06-25T23:00:00Z",
+      "group": "F",
+      "legs": [
+        {
+          "label": "Japan",
+          "marketSlug": "fifwc-jpn-swe-2026-06-25-jpn",
+          "conditionId": "0xe1bd581c13be7103749ca1a64d21230ed6693a162fc057d81e3d1e9237fc81f8"
+        },
+        {
+          "label": "Draw (Japan vs. Sweden)",
+          "marketSlug": "fifwc-jpn-swe-2026-06-25-draw",
+          "conditionId": "0x9e9014ddc6e6386e9bbd6bb8e6bd0049094ebaa3fa2eabf51055b2439c08a075"
+        },
+        {
+          "label": "Sweden",
+          "marketSlug": "fifwc-jpn-swe-2026-06-25-swe",
+          "conditionId": "0x8f0238f109028445232328dce2ff342cb92207a4e9e0e0dda195f1644655b2ab"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-tun-nld-2026-06-25",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-25（F 组）：Tunisia vs Netherlands 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-25 (Group F): Tunisia vs Netherlands — 90-minute result?",
+      "eventSlug": "fifwc-tun-nld-2026-06-25",
+      "kickoffUtcHint": "2026-06-25T23:00:00Z",
+      "group": "F",
+      "legs": [
+        {
+          "label": "Tunisia",
+          "marketSlug": "fifwc-tun-nld-2026-06-25-tun",
+          "conditionId": "0xbb8523862374b3edc90cb813b125bd30e8e27030be53fcf40d1f76152339f8d0"
+        },
+        {
+          "label": "Draw (Tunisia vs. Netherlands)",
+          "marketSlug": "fifwc-tun-nld-2026-06-25-draw",
+          "conditionId": "0x964314cfa3bbe2b74e99f1973135a7678ba86ad048116b1a9846a9fa8cde646f"
+        },
+        {
+          "label": "Netherlands",
+          "marketSlug": "fifwc-tun-nld-2026-06-25-nld",
+          "conditionId": "0xa3150402afe114c762bcd2e5581dc4d0fe93560718640d8d490e0497350de5ad"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-par-aus-2026-06-25",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-25（D 组）：Paraguay vs Australia 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-25 (Group D): Paraguay vs Australia — 90-minute result?",
+      "eventSlug": "fifwc-par-aus-2026-06-25",
+      "kickoffUtcHint": "2026-06-26T02:00:00Z",
+      "group": "D",
+      "legs": [
+        {
+          "label": "Paraguay",
+          "marketSlug": "fifwc-par-aus-2026-06-25-par",
+          "conditionId": "0x75d91cd268cec8d688b8a7e543b149700bf45d9f62e9fffa479b18f19a60a63e"
+        },
+        {
+          "label": "Draw (Paraguay vs. Australia)",
+          "marketSlug": "fifwc-par-aus-2026-06-25-draw",
+          "conditionId": "0x73cdf481e0d213e3ad3b2c096ad9dfea604b6587900419d0a214aac966c68988"
+        },
+        {
+          "label": "Australia",
+          "marketSlug": "fifwc-par-aus-2026-06-25-aus",
+          "conditionId": "0x65d30f3d41bbab278c2108ab0883d7ae1a9fac97a2086542a975d885a9c72dba"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-tur-usa-2026-06-25",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-25（D 组）：Türkiye vs United States 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-25 (Group D): Türkiye vs United States — 90-minute result?",
+      "eventSlug": "fifwc-tur-usa-2026-06-25",
+      "kickoffUtcHint": "2026-06-26T02:00:00Z",
+      "group": "D",
+      "legs": [
+        {
+          "label": "Türkiye",
+          "marketSlug": "fifwc-tur-usa-2026-06-25-tur",
+          "conditionId": "0x81cef42df3d25aecf0bf7e96c344202e86f447f2f3ba2e4b8eb59f4680efeb22"
+        },
+        {
+          "label": "Draw (Türkiye vs. United States)",
+          "marketSlug": "fifwc-tur-usa-2026-06-25-draw",
+          "conditionId": "0xdc34b1a1507fb269c41fb4750880a7774d396f00b76e95c5746c9fe454e6085c"
+        },
+        {
+          "label": "United States",
+          "marketSlug": "fifwc-tur-usa-2026-06-25-usa",
+          "conditionId": "0x32552863fe8014da2613037970661f0d49f415c86a88cb3d65af7a43395bc4ad"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-nor-fra-2026-06-26",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-26（I 组）：Norway vs France 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-26 (Group I): Norway vs France — 90-minute result?",
+      "eventSlug": "fifwc-nor-fra-2026-06-26",
+      "kickoffUtcHint": "2026-06-26T19:00:00Z",
+      "group": "I",
+      "legs": [
+        {
+          "label": "Norway",
+          "marketSlug": "fifwc-nor-fra-2026-06-26-nor",
+          "conditionId": "0x057885f5f49261eb41504e24899a88e53cb364ddf95e3c0df5608200feaddff8"
+        },
+        {
+          "label": "Draw (Norway vs. France)",
+          "marketSlug": "fifwc-nor-fra-2026-06-26-draw",
+          "conditionId": "0x0061b1d4b49c44a05365d60389167968baf42f2b1ab99c3d8b80a8554980d9e8"
+        },
+        {
+          "label": "France",
+          "marketSlug": "fifwc-nor-fra-2026-06-26-fra",
+          "conditionId": "0x09620e07d807241bb41e5cf07d42dfd3e08943ee39e5c93ae3890e3b6164822e"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-sen-irq-2026-06-26",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-26（I 组）：Senegal vs Iraq 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-26 (Group I): Senegal vs Iraq — 90-minute result?",
+      "eventSlug": "fifwc-sen-irq-2026-06-26",
+      "kickoffUtcHint": "2026-06-26T19:00:00Z",
+      "group": "I",
+      "legs": [
+        {
+          "label": "Senegal",
+          "marketSlug": "fifwc-sen-irq-2026-06-26-sen",
+          "conditionId": "0x0a164e67541bdcd46143a1d6dd768ccd30eca67f68c510ff824bd67e06ef4738"
+        },
+        {
+          "label": "Draw (Senegal vs. Iraq)",
+          "marketSlug": "fifwc-sen-irq-2026-06-26-draw",
+          "conditionId": "0x86160e86690150e60f37bb1fdd7e3b5902b4927b87c4d9c321ed8043d9afcd7c"
+        },
+        {
+          "label": "Iraq",
+          "marketSlug": "fifwc-sen-irq-2026-06-26-irq",
+          "conditionId": "0x09736de43a09191400c25861f599a6c3e8044e0123822d8e30e74e105d9b5e60"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-cvi-ksa-2026-06-26",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-26（H 组）：Cabo Verde vs Saudi Arabia 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-26 (Group H): Cabo Verde vs Saudi Arabia — 90-minute result?",
+      "eventSlug": "fifwc-cvi-ksa-2026-06-26",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "H",
+      "legs": [
+        {
+          "label": "Cabo Verde",
+          "marketSlug": "fifwc-cvi-ksa-2026-06-26-cvi",
+          "conditionId": "0xe949e3949780dfce68fc24136bb3f79e5e1ad94d0001079ee26f6b474d77d355"
+        },
+        {
+          "label": "Draw (Cabo Verde vs. Saudi Arabia)",
+          "marketSlug": "fifwc-cvi-ksa-2026-06-26-draw",
+          "conditionId": "0x187651dbb617ad61b8c3342a4a61996273a6a206ff36405c37c5cf029c2f96bb"
+        },
+        {
+          "label": "Saudi Arabia",
+          "marketSlug": "fifwc-cvi-ksa-2026-06-26-ksa",
+          "conditionId": "0xff3744285965810d599d4ac7037760134c349eab25c289c14ba2523320debda7"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-ury-esp-2026-06-26",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-26（H 组）：Uruguay vs Spain 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-26 (Group H): Uruguay vs Spain — 90-minute result?",
+      "eventSlug": "fifwc-ury-esp-2026-06-26",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "H",
+      "legs": [
+        {
+          "label": "Uruguay",
+          "marketSlug": "fifwc-ury-esp-2026-06-26-ury",
+          "conditionId": "0x61b80a4a7a325eba229ccfa35aaef9cf5879a4ad38bee2fef49a0359d823d9ca"
+        },
+        {
+          "label": "Draw (Uruguay vs. Spain)",
+          "marketSlug": "fifwc-ury-esp-2026-06-26-draw",
+          "conditionId": "0xd0fa27da024261ba5edb5e9eda33651a224fb5a2137d3c9e73b216109b12dd79"
+        },
+        {
+          "label": "Spain",
+          "marketSlug": "fifwc-ury-esp-2026-06-26-esp",
+          "conditionId": "0xe322faca2a534900680db54e3a4349a61427d347b6f906d2eeb01f81ae1b082c"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-egy-irn-2026-06-26",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-26（G 组）：Egypt vs IR Iran 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-26 (Group G): Egypt vs IR Iran — 90-minute result?",
+      "eventSlug": "fifwc-egy-irn-2026-06-26",
+      "kickoffUtcHint": "2026-06-27T03:00:00Z",
+      "group": "G",
+      "legs": [
+        {
+          "label": "Egypt",
+          "marketSlug": "fifwc-egy-irn-2026-06-26-egy",
+          "conditionId": "0x9623b379f3e25ffa6206f8bc7aedeecd67580944645151350e06cb3efd95c090"
+        },
+        {
+          "label": "Draw (Egypt vs. IR Iran)",
+          "marketSlug": "fifwc-egy-irn-2026-06-26-draw",
+          "conditionId": "0x2afe86f96be81a0d89ed776bedbd52d1c75bc47b49e6f0f791ddd009f52faf23"
+        },
+        {
+          "label": "IR Iran",
+          "marketSlug": "fifwc-egy-irn-2026-06-26-irn",
+          "conditionId": "0x3984132d5d0c5be60bc0ad1dff63e44197b5f39a6135329490a0a75c0a372f06"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-nzl-bel-2026-06-26",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-26（G 组）：New Zealand vs Belgium 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-26 (Group G): New Zealand vs Belgium — 90-minute result?",
+      "eventSlug": "fifwc-nzl-bel-2026-06-26",
+      "kickoffUtcHint": "2026-06-27T03:00:00Z",
+      "group": "G",
+      "legs": [
+        {
+          "label": "New Zealand",
+          "marketSlug": "fifwc-nzl-bel-2026-06-26-nzl",
+          "conditionId": "0x6c3c1eb9055cf4ff809b8d4f26a8ef56e11e17c184da687353927de474615746"
+        },
+        {
+          "label": "Draw (New Zealand vs. Belgium)",
+          "marketSlug": "fifwc-nzl-bel-2026-06-26-draw",
+          "conditionId": "0xf6fe0dfcb5be2f8e961972059e42700713164673bc7463a28d029602b5e3df18"
+        },
+        {
+          "label": "Belgium",
+          "marketSlug": "fifwc-nzl-bel-2026-06-26-bel",
+          "conditionId": "0xd01a16e5adf6934d12c7a0e9875332356f74289ae6652a57aacb853e252fbbf4"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-hrv-gha-2026-06-27",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-27（L 组）：Croatia vs Ghana 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-27 (Group L): Croatia vs Ghana — 90-minute result?",
+      "eventSlug": "fifwc-hrv-gha-2026-06-27",
+      "kickoffUtcHint": "2026-06-27T21:00:00Z",
+      "group": "L",
+      "legs": [
+        {
+          "label": "Croatia",
+          "marketSlug": "fifwc-hrv-gha-2026-06-27-hrv",
+          "conditionId": "0x2cc359648ba6695498c169ceaa44c5444e0479102c453289c47ed9489e7f3e93"
+        },
+        {
+          "label": "Draw (Croatia vs. Ghana)",
+          "marketSlug": "fifwc-hrv-gha-2026-06-27-draw",
+          "conditionId": "0x4b38300fb27196d5ca73ae2cca3d601e107cf305e00358d64b2cdeb712eb5c5d"
+        },
+        {
+          "label": "Ghana",
+          "marketSlug": "fifwc-hrv-gha-2026-06-27-gha",
+          "conditionId": "0x137ae42a26fde276b0fced88f502e88a67da8e6acbc2ff8760b7e24d99234192"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-pan-eng-2026-06-27",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-27（L 组）：Panama vs England 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-27 (Group L): Panama vs England — 90-minute result?",
+      "eventSlug": "fifwc-pan-eng-2026-06-27",
+      "kickoffUtcHint": "2026-06-27T21:00:00Z",
+      "group": "L",
+      "legs": [
+        {
+          "label": "Panama",
+          "marketSlug": "fifwc-pan-eng-2026-06-27-pan",
+          "conditionId": "0xb53a439c60d979f1c19108b263d97419e0a6ea99eb71ce08cfc0e459622e71cc"
+        },
+        {
+          "label": "Draw (Panama vs. England)",
+          "marketSlug": "fifwc-pan-eng-2026-06-27-draw",
+          "conditionId": "0x099d12093a6214e2dea67296c11dad775d0b3038c413731112a1c52ebd362adc"
+        },
+        {
+          "label": "England",
+          "marketSlug": "fifwc-pan-eng-2026-06-27-eng",
+          "conditionId": "0x7a582647d279d70223a8cfce98451ef6ecbe2e574f24b7dda17be7f65b387c20"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-cdr-uzb-2026-06-27",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-27（K 组）：DR Congo vs Uzbekistan 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-27 (Group K): DR Congo vs Uzbekistan — 90-minute result?",
+      "eventSlug": "fifwc-cdr-uzb-2026-06-27",
+      "kickoffUtcHint": "2026-06-27T23:30:00Z",
+      "group": "K",
+      "legs": [
+        {
+          "label": "DR Congo",
+          "marketSlug": "fifwc-cdr-uzb-2026-06-27-cdr",
+          "conditionId": "0x26c84897f375ef75367a1fea2bcf3a1601950962c9424f8635b966cc5d9ff4ba"
+        },
+        {
+          "label": "Draw (DR Congo vs. Uzbekistan)",
+          "marketSlug": "fifwc-cdr-uzb-2026-06-27-draw",
+          "conditionId": "0x57dac5b6332f3d53233950105e7768575e511d90338f3f7be5ce993f424675a7"
+        },
+        {
+          "label": "Uzbekistan",
+          "marketSlug": "fifwc-cdr-uzb-2026-06-27-uzb",
+          "conditionId": "0x86fc22f4d262b93a4ea5f28a6c750cde3130dd86f2662fb6641c06b2861eab47"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-col-prt-2026-06-27",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-27（K 组）：Colombia vs Portugal 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-27 (Group K): Colombia vs Portugal — 90-minute result?",
+      "eventSlug": "fifwc-col-prt-2026-06-27",
+      "kickoffUtcHint": "2026-06-27T23:30:00Z",
+      "group": "K",
+      "legs": [
+        {
+          "label": "Colombia",
+          "marketSlug": "fifwc-col-prt-2026-06-27-col",
+          "conditionId": "0xfbcdae24669153e811b86329a4adb56689b590845b02fd0c16e7b1826c863034"
+        },
+        {
+          "label": "Draw (Colombia vs. Portugal)",
+          "marketSlug": "fifwc-col-prt-2026-06-27-draw",
+          "conditionId": "0x8765cc2b3c75089a9c5de8d12d52274857a2e573a9726bc023faa2a046340fac"
+        },
+        {
+          "label": "Portugal",
+          "marketSlug": "fifwc-col-prt-2026-06-27-prt",
+          "conditionId": "0x597e0e209cef883bb95c6905f07d8066c3ef35652087d3611c43b93f0ed237c2"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-alg-aut-2026-06-27",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-27（J 组）：Algeria vs Austria 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-27 (Group J): Algeria vs Austria — 90-minute result?",
+      "eventSlug": "fifwc-alg-aut-2026-06-27",
+      "kickoffUtcHint": "2026-06-28T02:00:00Z",
+      "group": "J",
+      "legs": [
+        {
+          "label": "Algeria",
+          "marketSlug": "fifwc-alg-aut-2026-06-27-alg",
+          "conditionId": "0x7806f3a191784bfedb4bb3d99db890d05a834e413a50ecbf6893f7926089e45b"
+        },
+        {
+          "label": "Draw (Algeria vs. Austria)",
+          "marketSlug": "fifwc-alg-aut-2026-06-27-draw",
+          "conditionId": "0xd6a5a44e8105c4808ba09d19bce444b22b883330fd6e23e5661988b3583a9d4c"
+        },
+        {
+          "label": "Austria",
+          "marketSlug": "fifwc-alg-aut-2026-06-27-aut",
+          "conditionId": "0xca1f4760e175d71d1c7677dbc56a1856dc2cee6a4d8de8275a16dbca716afd24"
+        }
+      ]
+    },
+    {
+      "id": "match:fifwc-jor-arg-2026-06-27",
+      "family": "group_match",
+      "questionCn": "小组赛 2026-06-27（J 组）：Jordan vs Argentina 的 90 分钟赛果？",
+      "questionEn": "Group stage 2026-06-27 (Group J): Jordan vs Argentina — 90-minute result?",
+      "eventSlug": "fifwc-jor-arg-2026-06-27",
+      "kickoffUtcHint": "2026-06-28T02:00:00Z",
+      "group": "J",
+      "legs": [
+        {
+          "label": "Jordan",
+          "marketSlug": "fifwc-jor-arg-2026-06-27-jor",
+          "conditionId": "0x26b822b926feab4068f42bf2d0750fb8a65e09462c8edf1159275c2a116081ea"
+        },
+        {
+          "label": "Draw (Jordan vs. Argentina)",
+          "marketSlug": "fifwc-jor-arg-2026-06-27-draw",
+          "conditionId": "0x7815af57ea657fd0442932a788988b7f6c219a46903e4bce678981b801daf8a4"
+        },
+        {
+          "label": "Argentina",
+          "marketSlug": "fifwc-jor-arg-2026-06-27-arg",
+          "conditionId": "0xb465c0d920be7fa9413909befc3989247de10a1d4feca2621bb36f9a62191a12"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:a",
+      "family": "group_winner",
+      "questionCn": "A 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group A?",
+      "eventSlug": "world-cup-group-a-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "A",
+      "legs": [
+        {
+          "label": "Czechia",
+          "marketSlug": "will-czechia-win-group-a-in-the-2026-fifa-world-cup",
+          "conditionId": "0xd294f77d08d734816c146c5fdf30326a4a61abba79a1e8b7abd49c33725ef2d1"
+        },
+        {
+          "label": "Mexico",
+          "marketSlug": "will-mexico-win-group-a-in-the-2026-fifa-world-cup",
+          "conditionId": "0x6539e18b791b6107030843e6347040fb5e17211c9ba63b79db8bc0f162627821"
+        },
+        {
+          "label": "South Africa",
+          "marketSlug": "will-south-africa-win-group-a-in-the-2026-fifa-world-cup",
+          "conditionId": "0xc68a09ebb3f9aba4a0824a05bd451e827579b459fa3d72d381936ed027556a7a"
+        },
+        {
+          "label": "South Korea",
+          "marketSlug": "will-south-korea-win-group-a-in-the-2026-fifa-world-cup",
+          "conditionId": "0xb366117d881a5adac00775548d46fe437db5ac77ce1fc8af63a4cd6957c9a70d"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:b",
+      "family": "group_winner",
+      "questionCn": "B 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group B?",
+      "eventSlug": "world-cup-group-b-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "B",
+      "legs": [
+        {
+          "label": "Bosnia and Herzegovina",
+          "marketSlug": "will-the-winner-of-bosnia-and-herzegovinaitalynorthern-irelandwales-win-group-a-in-the-2026-fifa-world-cup",
+          "conditionId": "0xfc4f6cd761f0f4042cc22b530664140a750a5fd77672987a5c2e2a23d3a293cb"
+        },
+        {
+          "label": "Canada",
+          "marketSlug": "will-canada-win-group-a-in-the-2026-fifa-world-cup",
+          "conditionId": "0xec3db24e9dd340f3e1aa8f68d730c666845c8e85f90f2a49df03290b18c66f74"
+        },
+        {
+          "label": "Qatar",
+          "marketSlug": "will-qatar-win-group-a-in-the-2026-fifa-world-cup",
+          "conditionId": "0x2df38216c0a37f8441bb3b132c654783479625c179594a254a8634e77c189f04"
+        },
+        {
+          "label": "Switzerland",
+          "marketSlug": "will-switzerland-win-group-a-in-the-2026-fifa-world-cup",
+          "conditionId": "0xbfac0154700ea285426e145725716c4ebb35f3ff1e00a3beeab0e94756b5995e"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:c",
+      "family": "group_winner",
+      "questionCn": "C 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group C?",
+      "eventSlug": "world-cup-group-c-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "C",
+      "legs": [
+        {
+          "label": "Brazil",
+          "marketSlug": "will-brazil-win-group-c-in-the-2026-fifa-world-cup",
+          "conditionId": "0x33ec07ceef529f87a3a070e06d5f9b6df9d3e4e6713faec26d9510786f7cd6be"
+        },
+        {
+          "label": "Haiti",
+          "marketSlug": "will-haiti-win-group-c-in-the-2026-fifa-world-cup",
+          "conditionId": "0x136dc2e22f0945bf14a2cddbdea0ad922b6b39a7d33784e1201fc37695606f29"
+        },
+        {
+          "label": "Morocco",
+          "marketSlug": "will-morocco-win-group-c-in-the-2026-fifa-world-cup",
+          "conditionId": "0xcd82ced289c1009bb08ea7d74cdc4c56d7e3feaf4eebafa429e04d8d08ba8eb6"
+        },
+        {
+          "label": "Scotland",
+          "marketSlug": "will-scotland-win-group-c-in-the-2026-fifa-world-cup",
+          "conditionId": "0x810354c62431246e10c094cb357e8209994a467145fc9801d2f1965c8ac5f3ce"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:d",
+      "family": "group_winner",
+      "questionCn": "D 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group D?",
+      "eventSlug": "world-cup-group-d-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "D",
+      "legs": [
+        {
+          "label": "Australia",
+          "marketSlug": "will-australia-win-group-d-in-the-2026-fifa-world-cup",
+          "conditionId": "0x802b8daacb36b5ea95011670cd004bffe3df70bc9a774da929fbd99074411e91"
+        },
+        {
+          "label": "Paraguay",
+          "marketSlug": "will-paraguay-win-group-d-in-the-2026-fifa-world-cup",
+          "conditionId": "0x73b5c4c8e2cc6e60d97fe6747c19efd3c4d63b6983590bb82d8852d5f1fc46cc"
+        },
+        {
+          "label": "Türkiye",
+          "marketSlug": "will-the-winner-of-kosovoromaniaslovakiatrkiye-playoff-win-group-d-in-the-2026-fifa-world-cup",
+          "conditionId": "0x89575358da49d30f52b7d372b92c0dbaaaeb6d1537be96ebbc700d66d78249e5"
+        },
+        {
+          "label": "USA",
+          "marketSlug": "will-usa-win-group-d-in-the-2026-fifa-world-cup",
+          "conditionId": "0xcbc96c93a1e80ffb7b5efeb2bd6c6a587ec16957eec8d2e823988cc51d6dac30"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:e",
+      "family": "group_winner",
+      "questionCn": "E 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group E?",
+      "eventSlug": "world-cup-group-e-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "E",
+      "legs": [
+        {
+          "label": "Curaçao",
+          "marketSlug": "will-curaao-win-group-e-in-the-2026-fifa-world-cup",
+          "conditionId": "0x8adc5c917d97705182fae774e197254a67438d12609ab19eaba341245a654a2e"
+        },
+        {
+          "label": "Ecuador",
+          "marketSlug": "will-ecuador-win-group-e-in-the-2026-fifa-world-cup",
+          "conditionId": "0xe4fe66449f041a76388f0e525f40c4b1543b37577810cfe2747d7ca9ef19bb07"
+        },
+        {
+          "label": "Germany",
+          "marketSlug": "will-germany-win-group-e-in-the-2026-fifa-world-cup",
+          "conditionId": "0x9c964b8dceb1b3fdf8ef5a53f24bd93a6d7464ef300ab11c336a7b791cdb6f3d"
+        },
+        {
+          "label": "Ivory Coast",
+          "marketSlug": "will-ivory-coast-win-group-e-in-the-2026-fifa-world-cup",
+          "conditionId": "0xa681d4cd61508a023cd9f194a0435421ad25db02d0db8a4aeb56ea97b1854716"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:f",
+      "family": "group_winner",
+      "questionCn": "F 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group F?",
+      "eventSlug": "world-cup-group-f-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "F",
+      "legs": [
+        {
+          "label": "Japan",
+          "marketSlug": "will-japan-win-group-f-in-the-2026-fifa-world-cup",
+          "conditionId": "0xde6e8331eaaf0b212f688a04f6c4ff5f895ab633a467cb3e9f3da48fce7c6801"
+        },
+        {
+          "label": "Netherlands",
+          "marketSlug": "will-netherlands-win-group-f-in-the-2026-fifa-world-cup",
+          "conditionId": "0x9ad73ff7534b1051e2dad167a0b1617ae20f64f20770ae8bf89a59a7a7290669"
+        },
+        {
+          "label": "Sweden",
+          "marketSlug": "will-sweden-win-group-f-in-the-2026-fifa-world-cup",
+          "conditionId": "0x8bd82f13e633448c85e5c79428afcbf2b15bdb1e3c9f6ddbea62cb164f6fb23e"
+        },
+        {
+          "label": "Tunisia",
+          "marketSlug": "will-tunisia-win-group-f-in-the-2026-fifa-world-cup",
+          "conditionId": "0xeb021bae39c99ec2915555e9463bc6b9f14606da6257adab38ee9eb47b3ee17b"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:g",
+      "family": "group_winner",
+      "questionCn": "G 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group G?",
+      "eventSlug": "world-cup-group-g-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "G",
+      "legs": [
+        {
+          "label": "Belgium",
+          "marketSlug": "will-belgium-win-group-g-in-the-2026-fifa-world-cup",
+          "conditionId": "0x1e285f49c483634426c54834f840f6bfe780e0039eb0ad31357b936600b7c2d2"
+        },
+        {
+          "label": "Egypt",
+          "marketSlug": "will-egypt-win-group-g-in-the-2026-fifa-world-cup",
+          "conditionId": "0xd5f291e4d2dfc44a42ee0eb1d83f2e42a90ce943a71f643cadf4e98c5a6ec3eb"
+        },
+        {
+          "label": "Iran",
+          "marketSlug": "will-iran-win-group-g-in-the-2026-fifa-world-cup",
+          "conditionId": "0x5bf2c54fb4ca9d63427816cd88ab8f7b5ede5b2b9166c366a940f1a0d6d0a290"
+        },
+        {
+          "label": "New Zealand",
+          "marketSlug": "will-new-zealand-win-group-g-in-the-2026-fifa-world-cup",
+          "conditionId": "0x6d4e4bf288d8caa229a72a48b985722df1b803e11a9d0d7e9a3fa8275ecccb34"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:h",
+      "family": "group_winner",
+      "questionCn": "H 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group H?",
+      "eventSlug": "world-cup-group-h-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "H",
+      "legs": [
+        {
+          "label": "Cape Verde",
+          "marketSlug": "will-cape-verde-win-group-h-in-the-2026-fifa-world-cup",
+          "conditionId": "0x511e4f617cbdf200aed1dce58c174f4714ae5c0603d62a7d4502ac172ac0a565"
+        },
+        {
+          "label": "Saudi Arabia",
+          "marketSlug": "will-saudi-arabia-win-group-h-in-the-2026-fifa-world-cup",
+          "conditionId": "0x8f9555e6c4da9369ac9bc23c250bb697aab93593cc06776febe0fad48add06ec"
+        },
+        {
+          "label": "Spain",
+          "marketSlug": "will-spain-win-group-h-in-the-2026-fifa-world-cup",
+          "conditionId": "0x766aa2fb8fafc6f063de001e1d441d0e64d84f164093feb087226b47ffc32af1"
+        },
+        {
+          "label": "Uruguay",
+          "marketSlug": "will-uruguay-win-group-h-in-the-2026-fifa-world-cup",
+          "conditionId": "0xd136f80c161a40baa5890a7792a2a5bf264de0d5ef2711a23e4564b429969ff8"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:i",
+      "family": "group_winner",
+      "questionCn": "I 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group I?",
+      "eventSlug": "world-cup-group-i-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "I",
+      "legs": [
+        {
+          "label": "France",
+          "marketSlug": "will-france-win-group-i-in-the-2026-fifa-world-cup",
+          "conditionId": "0x4ae4a0aecfc6479374c5a9a355f0f0cba2c0680dff010b48a2c8b380423efd05"
+        },
+        {
+          "label": "Iraq",
+          "marketSlug": "will-the-winner-of-boliviairaqsuriname-playoff-win-group-i-in-the-2026-fifa-world-cup",
+          "conditionId": "0x95631f2ff3207bc553eae1632c54eccdecdc38554e0b3f6894e73b7f22f83028"
+        },
+        {
+          "label": "Norway",
+          "marketSlug": "will-norway-win-group-i-in-the-2026-fifa-world-cup",
+          "conditionId": "0x9da323e862ca9e583ae67a5130c8c79960cf173e7d76165cefd4ecd7f9333b90"
+        },
+        {
+          "label": "Senegal",
+          "marketSlug": "will-senegal-win-group-i-in-the-2026-fifa-world-cup",
+          "conditionId": "0x0174a32ce50b11c793acc6a643e1d583c99fa52016a319eab4052f9a59f4eb18"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:j",
+      "family": "group_winner",
+      "questionCn": "J 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group J?",
+      "eventSlug": "world-cup-group-j-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "J",
+      "legs": [
+        {
+          "label": "Algeria",
+          "marketSlug": "will-algeria-win-group-j-in-the-2026-fifa-world-cup",
+          "conditionId": "0xa7b34c55da0fcd45908bbc802c5fbd5f650e9b4dbb8639bfcd32baee8c62e243"
+        },
+        {
+          "label": "Argentina",
+          "marketSlug": "will-argentina-win-group-j-in-the-2026-fifa-world-cup",
+          "conditionId": "0x174018cba2df7afe76f434e8ca93e55c76f2eb13015a5caf941ce6d270ba6264"
+        },
+        {
+          "label": "Austria",
+          "marketSlug": "will-austria-win-group-j-in-the-2026-fifa-world-cup",
+          "conditionId": "0xf8e8b9cd02f6658ad6011530ece2650290aa528c8e27c8e6ea16e742d4e764f7"
+        },
+        {
+          "label": "Jordan",
+          "marketSlug": "will-jordan-win-group-j-in-the-2026-fifa-world-cup",
+          "conditionId": "0xbb9b4e331b792321469b9e49273203c997b7ee028d38d88a9fb2c730d35682a9"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:k",
+      "family": "group_winner",
+      "questionCn": "K 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group K?",
+      "eventSlug": "world-cup-group-k-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "K",
+      "legs": [
+        {
+          "label": "Colombia",
+          "marketSlug": "will-colombia-win-group-k-in-the-2026-fifa-world-cup",
+          "conditionId": "0x881c23cb7b27ca775bfc550550ee94e6dc980a1b4dff7ca7f6f5f24e95bff060"
+        },
+        {
+          "label": "Congo DR",
+          "marketSlug": "will-the-democratic-republic-of-congo-win-group-k-in-the-2026-fifa-world-cup",
+          "conditionId": "0xeb188213dda8c13a4783822755d725a5ac3fa80f5c38879762e395cac46873df"
+        },
+        {
+          "label": "Portugal",
+          "marketSlug": "will-portugal-win-group-k-in-the-2026-fifa-world-cup",
+          "conditionId": "0x4795571ed1c6992ca07b6d34853d07d07ef4977b892660b4205cd2f3752c4826"
+        },
+        {
+          "label": "Uzbekistan",
+          "marketSlug": "will-uzbekistan-win-group-k-in-the-2026-fifa-world-cup",
+          "conditionId": "0xd48dffff4da2d0b4cb315e82899b1d2c900e53de4a9503878a2efcbf20827a53"
+        }
+      ]
+    },
+    {
+      "id": "group-winner:l",
+      "family": "group_winner",
+      "questionCn": "L 组头名（小组第一出线）是哪支球队？",
+      "questionEn": "Which team finishes first in Group L?",
+      "eventSlug": "world-cup-group-l-winner",
+      "kickoffUtcHint": "2026-06-27T00:00:00Z",
+      "group": "L",
+      "legs": [
+        {
+          "label": "Croatia",
+          "marketSlug": "will-croatia-win-group-l-in-the-2026-fifa-world-cup",
+          "conditionId": "0xc85d79fbcab7ab6a283a2c17fb8595de79de2b2ac10afbd7a6602ddbe0626ad4"
+        },
+        {
+          "label": "England",
+          "marketSlug": "will-england-win-group-l-in-the-2026-fifa-world-cup",
+          "conditionId": "0xd3d833727b8191e8611862f431d5fc0286f3fbd8ac70a9b618d8377526e9bdf5"
+        },
+        {
+          "label": "Ghana",
+          "marketSlug": "will-ghana-win-group-l-in-the-2026-fifa-world-cup",
+          "conditionId": "0x79c8ff02f4fab8be39ef267ae8ed16a03210765e686f221fe3a6811ed0b979e8"
+        },
+        {
+          "label": "Panama",
+          "marketSlug": "will-panama-win-group-l-in-the-2026-fifa-world-cup",
+          "conditionId": "0xab04b157643c85023622ad9db79bbaa4d472e6e23456b19653a2c29b973641ac"
+        }
+      ]
+    },
+    {
+      "id": "reach-qf",
+      "family": "reach_quarterfinal",
+      "questionCn": "哪些球队进入八强（1/4 决赛，最后 8 队）？",
+      "questionEn": "Which teams reach the quarterfinals (last 8)?",
+      "eventSlug": "world-cup-nation-to-reach-quarterfinals",
+      "kickoffUtcHint": null,
+      "group": null,
+      "legs": [
+        {
+          "label": "Algeria",
+          "marketSlug": "will-algeria-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134505",
+          "conditionId": "0x0b0d30bdef8f907d6eef46cbd75096edb743bc252ab00767f8bcdf3dc436a67e"
+        },
+        {
+          "label": "Argentina",
+          "marketSlug": "will-argentina-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134503",
+          "conditionId": "0x5ddf2373c4c9d01a305666b767d768c7e85fc329df2fd6f489ea57318c8f9a20"
+        },
+        {
+          "label": "Australia",
+          "marketSlug": "will-australia-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134480",
+          "conditionId": "0xe7b2973b488f570a172fcc0482f58a60c6f4196e834289451e35c52e05ca9c0e"
+        },
+        {
+          "label": "Austria",
+          "marketSlug": "will-austria-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134504",
+          "conditionId": "0xaa51d0886f841b3b642bac2821de6766e070af99f3d01f8fcdd9ef60fef70a85"
+        },
+        {
+          "label": "Belgium",
+          "marketSlug": "will-belgium-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134491",
+          "conditionId": "0x66dfece624b1a37854515001d5514ee2263fb5ae4c8120ec264d47c677a22c1a"
+        },
+        {
+          "label": "Bosnia and Herzegovina",
+          "marketSlug": "will-bosnia-and-herzegovina-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134474",
+          "conditionId": "0x4da6854a52d120eebe1da2e63e9d270a5618b75c9079ca4aaf3983d7e92741c7"
+        },
+        {
+          "label": "Brazil",
+          "marketSlug": "will-brazil-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134475",
+          "conditionId": "0xa6ea855bd19f78e136d6d2ebf8ca20dbeabcd123b464cbda065a0d6cf35c200f"
+        },
+        {
+          "label": "Canada",
+          "marketSlug": "will-canada-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134471",
+          "conditionId": "0xc62338cbfd5ee359c69a883a2b2be023cb0200e03922f14826c896f387ecdb13"
+        },
+        {
+          "label": "Cape Verde",
+          "marketSlug": "will-cape-verde-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134498",
+          "conditionId": "0x336014fb92d5021f06f6791b68bcf0cbb5baa4bd8d2969dc5d9aa4ed99daa752"
+        },
+        {
+          "label": "Colombia",
+          "marketSlug": "will-colombia-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134508",
+          "conditionId": "0x6a4a49fcde320d469cde6c3a6dc0012421e75b76ee4e74ad45aa5602884cdb35"
+        },
+        {
+          "label": "Croatia",
+          "marketSlug": "will-croatia-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134512",
+          "conditionId": "0xc1d7947564e4239a56cbaf66a2b4ab3f108ad6058124457b55e54311afd4dd1c"
+        },
+        {
+          "label": "Curacao",
+          "marketSlug": "will-curacao-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134486",
+          "conditionId": "0xf08877a795b4c5714254e9502853984413e4c656f5c6bf5c234bbd1104747317"
+        },
+        {
+          "label": "Czechia",
+          "marketSlug": "will-czechia-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134470",
+          "conditionId": "0xb094bb3ecc1c90723a7f3874ddfb92dad2468eb233d76f6d4d8cb59d1c9bf778"
+        },
+        {
+          "label": "DR Congo",
+          "marketSlug": "will-dr-congo-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134510",
+          "conditionId": "0x6be985c6cf3a5ccdcc1313afc4129f852f19a12b7dd088042fa75ea52a163362"
+        },
+        {
+          "label": "Ecuador",
+          "marketSlug": "will-ecuador-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134484",
+          "conditionId": "0x99d39e3d880686e881b6a6739f4d99336fd54a080d318e8dfd2b980205a33f1e"
+        },
+        {
+          "label": "Egypt",
+          "marketSlug": "will-egypt-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134493",
+          "conditionId": "0x7ff6b337b70db5cd1e0c4c3ccfef0ab5ed9490a0b4df539aa81f9005437c9e84"
+        },
+        {
+          "label": "England",
+          "marketSlug": "will-england-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134511",
+          "conditionId": "0x4da81003b84738e6edd6b2c378ca06960df9907f978a8f8fe91d37de6aa2e594"
+        },
+        {
+          "label": "France",
+          "marketSlug": "will-france-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134499",
+          "conditionId": "0xcb7bdb8560707e1770870ccb8124e13e9eb1b0c3a244ce05fd4c625d53b51dd0"
+        },
+        {
+          "label": "Germany",
+          "marketSlug": "will-germany-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134483",
+          "conditionId": "0xcb8855196032bd6a56feccfed4fc50d670605a06275ef11fb6ec7d144f16d91d"
+        },
+        {
+          "label": "Ghana",
+          "marketSlug": "will-ghana-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134514",
+          "conditionId": "0xe2294293da5393093b89963998282fe0fbd7c055b8a8303b8a86d6bcc2527736"
+        },
+        {
+          "label": "Haiti",
+          "marketSlug": "will-haiti-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134478",
+          "conditionId": "0x2a8124fae0e3b06d9f7ebeb5f2ba9b85585cabd5e7296f9b454c3437d9851346"
+        },
+        {
+          "label": "Iran",
+          "marketSlug": "will-iran-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134492",
+          "conditionId": "0x9af5dc4b67e470c887f00bde345c6cfacd8aec1cf74a22fc489206bf385bb6d2"
+        },
+        {
+          "label": "Iraq",
+          "marketSlug": "will-iraq-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134502",
+          "conditionId": "0xa071c22c28b890ec02e71cb96e2301fd402c49685845579c92e13fddd2c8cfc3"
+        },
+        {
+          "label": "Ivory Coast",
+          "marketSlug": "will-ivory-coast-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134485",
+          "conditionId": "0x1fcb797f9fe61b87a8e52b545ac5a73076a92a3c3d3237c7086b671931618b8d"
+        },
+        {
+          "label": "Japan",
+          "marketSlug": "will-japan-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134488",
+          "conditionId": "0x0092c9ccb9e89ad262bcc89a544430676c59b9bdeb8649e0baa665941115c2f2"
+        },
+        {
+          "label": "Jordan",
+          "marketSlug": "will-jordan-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134506",
+          "conditionId": "0x03e377a07a510446d6205345c7d3976a4f968daa37454026b8826127e91c4462"
+        },
+        {
+          "label": "Mexico",
+          "marketSlug": "will-mexico-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134467",
+          "conditionId": "0x24fbf1a27674aca45df1dbc42d0116e08a837ea2202a11d034159f2dc4a925f8"
+        },
+        {
+          "label": "Morocco",
+          "marketSlug": "will-morocco-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134476",
+          "conditionId": "0x564c3ecfa3ea67af4523ac69ffc0403289dc622adde4f43006953940968546e6"
+        },
+        {
+          "label": "Netherlands",
+          "marketSlug": "will-netherlands-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134487",
+          "conditionId": "0x2169e499a337606050ae62e37b027115200088545c9af4c3743f4c4adc67349f"
+        },
+        {
+          "label": "New Zealand",
+          "marketSlug": "will-new-zealand-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134494",
+          "conditionId": "0xec956b7cadf5a02042ee6ef5d078fb2cd8ed835f1c9aefe27121dc8b62459888"
+        },
+        {
+          "label": "Norway",
+          "marketSlug": "will-norway-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134501",
+          "conditionId": "0x04fb8f9cca46cad94b3b5314533aa593fb396d40b7c45be8888de918c9cac367"
+        },
+        {
+          "label": "Panama",
+          "marketSlug": "will-panama-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134513",
+          "conditionId": "0xd04bf3b5ef8085e3b242dfdddbf904ed72a111babf7c80e4a41982864837b31f"
+        },
+        {
+          "label": "Paraguay",
+          "marketSlug": "will-paraguay-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134481",
+          "conditionId": "0x9dc7b4115acf0ec0340c301b6cbe1153db45b551a0e931726f16ac38c1c5dd4d"
+        },
+        {
+          "label": "Portugal",
+          "marketSlug": "will-portugal-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134507",
+          "conditionId": "0x14dc2b28157393f32a3a9a1827024b258156eefd4be567b8f3dc97d437e98af2"
+        },
+        {
+          "label": "Qatar",
+          "marketSlug": "will-qatar-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134473",
+          "conditionId": "0x200f338cbb7990c7fcd630434c9e01ce83446189f6a7bc78a498d8b6084c6f5c"
+        },
+        {
+          "label": "Saudi Arabia",
+          "marketSlug": "will-saudi-arabia-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134497",
+          "conditionId": "0x97758b01728d3a927a059e72c476e9c8340175a622a2f2c76fc739efa8930c4f"
+        },
+        {
+          "label": "Scotland",
+          "marketSlug": "will-scotland-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134477",
+          "conditionId": "0xd22c1d3d417974679bbf4c63afb5ac0b09d04755290f135cf3464c3d207ae5a2"
+        },
+        {
+          "label": "Senegal",
+          "marketSlug": "will-senegal-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134500",
+          "conditionId": "0xe86a46a4e8a62a0f2b9197bfecd513f78646e10bbb7a2f8fa7d7c8dfee97ebb3"
+        },
+        {
+          "label": "South Africa",
+          "marketSlug": "will-south-africa-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134469",
+          "conditionId": "0x8f90144f06f9d8173099e61c7c40c723284dd7feb53e942dc6fc389f6f64760a"
+        },
+        {
+          "label": "South Korea",
+          "marketSlug": "will-south-korea-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134468",
+          "conditionId": "0x52bb9d663ed19f092bc9fc404d876851722eaf3473a6baa3c1109df3e6e0b5e4"
+        },
+        {
+          "label": "Spain",
+          "marketSlug": "will-spain-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134495",
+          "conditionId": "0xa5a27af7d9fc19ed7ce2cda48da07584ed1411c3dc0625eeb0f883fc61cfba11"
+        },
+        {
+          "label": "Sweden",
+          "marketSlug": "will-sweden-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134490",
+          "conditionId": "0x9b1056f757f074b7b6eae903300362e9eac2d88d6dd3cff8363e955ea390c97f"
+        },
+        {
+          "label": "Switzerland",
+          "marketSlug": "will-switzerland-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134472",
+          "conditionId": "0x8933e09235665bf7c142cc368fa20679ad762f7d3b067d6ead9c070e204d2365"
+        },
+        {
+          "label": "Tunisia",
+          "marketSlug": "will-tunisia-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134489",
+          "conditionId": "0x1bae6abcdf0dffbc8a32a9b61de3520205d9e4c5db53330180ee0908a2a05857"
+        },
+        {
+          "label": "Turkiye",
+          "marketSlug": "will-turkiye-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134482",
+          "conditionId": "0x158a4956f42fc85abce18b32c3366e15bdbe58157f70430ef60fd82cfa5be320"
+        },
+        {
+          "label": "Uruguay",
+          "marketSlug": "will-uruguay-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134496",
+          "conditionId": "0xab6a26b06b743637bac095e84db5203cc72f06ee829348ba060612f87e8ba990"
+        },
+        {
+          "label": "USA",
+          "marketSlug": "will-usa-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134479",
+          "conditionId": "0x86e4a803eafa8e369020eee21467513175d46718c0e62cfcb85682992eb47ce1"
+        },
+        {
+          "label": "Uzbekistan",
+          "marketSlug": "will-uzbekistan-reach-the-quarterfinals-at-the-2026-fifa-world-cup-20260602145134509",
+          "conditionId": "0x8a5da40bc1eb5e184f6085eba0ffbdbd1b12c1408106d1422a10ef7b6aea9275"
+        }
+      ]
+    },
+    {
+      "id": "reach-sf",
+      "family": "reach_semifinal",
+      "questionCn": "哪些球队进入四强（半决赛，最后 4 队）？",
+      "questionEn": "Which teams reach the semifinals (last 4)?",
+      "eventSlug": "world-cup-nation-to-reach-semifinals",
+      "kickoffUtcHint": "2026-07-13T00:00:00Z",
+      "group": null,
+      "legs": [
+        {
+          "label": "Algeria",
+          "marketSlug": "will-algeria-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149747",
+          "conditionId": "0x8781de140a1edcb56013d52b3cd18608b186ad58651dd955fae9dcc17441dba5"
+        },
+        {
+          "label": "Argentina",
+          "marketSlug": "will-argentina-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149745",
+          "conditionId": "0x3910cb53f972d00c049ad674c1b183b375bd56786eb4c085ea217f84defdd1ca"
+        },
+        {
+          "label": "Australia",
+          "marketSlug": "will-australia-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149722",
+          "conditionId": "0x9419e0b3f959e36d41601cdfeb5f240f27e93c098b2e2c8806fd7e43636f9aa8"
+        },
+        {
+          "label": "Austria",
+          "marketSlug": "will-austria-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149746",
+          "conditionId": "0xfe99e26b1f6bb563e3dd26cbd07cc7aa3c9bf041a3352a7e4ff46c7dc3fc7487"
+        },
+        {
+          "label": "Belgium",
+          "marketSlug": "will-belgium-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149733",
+          "conditionId": "0x132e56458383524be72123fe3ce54a392603bcc7cf0363fb5fb3734af9aa904d"
+        },
+        {
+          "label": "Bosnia and Herzegovina",
+          "marketSlug": "will-bosnia-and-herzegovina-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149716",
+          "conditionId": "0x688a921dfec9d5195159519c47f94bb671186e054dfa3a2fac59885bb099b075"
+        },
+        {
+          "label": "Brazil",
+          "marketSlug": "will-brazil-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149717",
+          "conditionId": "0x4ed00094d1318fc9942169d062c2460146fbe6398bc83dccce8507da3371f43d"
+        },
+        {
+          "label": "Canada",
+          "marketSlug": "will-canada-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149713",
+          "conditionId": "0x2514dd7ad6a2fda9c0ae9b89a3be7531a32988c855ab6ae2dae91cd54bea305f"
+        },
+        {
+          "label": "Cape Verde",
+          "marketSlug": "will-cape-verde-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149740",
+          "conditionId": "0x2961aaa65d7e4e6951e4a834163fbb37c279445920bfa52e94fb1e2211e26ac1"
+        },
+        {
+          "label": "Colombia",
+          "marketSlug": "will-colombia-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149750",
+          "conditionId": "0x3a1cc6bb4a77c72eee9bc161a065b481eb0ad467c82516bd05c2436de90a65ba"
+        },
+        {
+          "label": "Croatia",
+          "marketSlug": "will-croatia-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149754",
+          "conditionId": "0xac299e0b88711d64f86dab24c946fb944b512b2a957d043757399052a371d453"
+        },
+        {
+          "label": "Curacao",
+          "marketSlug": "will-curacao-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149728",
+          "conditionId": "0xd3984b3d1032dd39bbebc813af2760f7f38ee83651890274a2de4a688bd4cfc5"
+        },
+        {
+          "label": "Czechia",
+          "marketSlug": "will-czechia-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149712",
+          "conditionId": "0x282aec69bd5a91d604d738a23fd3296a0eb63af436baff4676f5b765de8a832c"
+        },
+        {
+          "label": "DR Congo",
+          "marketSlug": "will-dr-congo-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149752",
+          "conditionId": "0xffe5705798a47ee5257f2ad9aa2691c4b942fc448d30cc27736932375dd34b40"
+        },
+        {
+          "label": "Ecuador",
+          "marketSlug": "will-ecuador-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149726",
+          "conditionId": "0xcc7ee0ca91e4a90184e0575dd7325b9f3bce4ec096f3b1107573f43d8d61ab4e"
+        },
+        {
+          "label": "Egypt",
+          "marketSlug": "will-egypt-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149735",
+          "conditionId": "0x3c057979cac577c7a19ba3950ae5e29fea5a2bdb7528c0eec4785e126b0052c5"
+        },
+        {
+          "label": "England",
+          "marketSlug": "will-england-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149753",
+          "conditionId": "0x48daa8fead8f966f2b988ad1d0ec28835314e91de64700afc81d034614c93bdd"
+        },
+        {
+          "label": "France",
+          "marketSlug": "will-france-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149741",
+          "conditionId": "0x508af22a38ad600b6b7526970e26be280e4183731954b575320050735d991fa8"
+        },
+        {
+          "label": "Germany",
+          "marketSlug": "will-germany-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149725",
+          "conditionId": "0x6d477a590a416e457871f79832653bd18737f9b845658b062fdfd023528ac31b"
+        },
+        {
+          "label": "Ghana",
+          "marketSlug": "will-ghana-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149756",
+          "conditionId": "0x1de86830f6cc4a8987148fcea396cfb25c30fd60c0b15f9fdea6714072bd415c"
+        },
+        {
+          "label": "Haiti",
+          "marketSlug": "will-haiti-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149720",
+          "conditionId": "0x81dbf9116d32714a61b5a6cf3c0342396d0ec7b55d5269df0a5556ac248ad5cc"
+        },
+        {
+          "label": "Iran",
+          "marketSlug": "will-iran-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149734",
+          "conditionId": "0x49bfcaa837134066c663ed4addfce14498199064d0da7881978c89ec02421e64"
+        },
+        {
+          "label": "Iraq",
+          "marketSlug": "will-iraq-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149744",
+          "conditionId": "0xce97aa0a63bfb55d1428dff7eedee368f09ef0d7cf400c924602e15bfc6e3dea"
+        },
+        {
+          "label": "Ivory Coast",
+          "marketSlug": "will-ivory-coast-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149727",
+          "conditionId": "0x7305173735e23375186e0f4034853dd5062e7bca25fc834867e458dc47d205e7"
+        },
+        {
+          "label": "Japan",
+          "marketSlug": "will-japan-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149730",
+          "conditionId": "0x9c08e712e683859016b91deb6e65a65d0a5ccd8f2f4d281519473158a0672d71"
+        },
+        {
+          "label": "Jordan",
+          "marketSlug": "will-jordan-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149748",
+          "conditionId": "0xe9403cfaaa3f1e9a84729bdfc56b3b86efbb3c0b5d74ceda0d40fffb9232dfdd"
+        },
+        {
+          "label": "Mexico",
+          "marketSlug": "will-mexico-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149709",
+          "conditionId": "0xc753ab17f90223970b0678b605211f53a552703f31be724400bcb1564079600c"
+        },
+        {
+          "label": "Morocco",
+          "marketSlug": "will-morocco-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149718",
+          "conditionId": "0x205a5782f18007c8f8767c94374ef8b08b6af6dc863b57465ab49ad0f2d0e31f"
+        },
+        {
+          "label": "Netherlands",
+          "marketSlug": "will-netherlands-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149729",
+          "conditionId": "0xe4d36164bee21a407f0a2151b96502f9220d175b7ab486122c4ae476c0e0fc41"
+        },
+        {
+          "label": "New Zealand",
+          "marketSlug": "will-new-zealand-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149736",
+          "conditionId": "0x25ed9e8b0063eae7d0bfb6a36af27a6541dbff080087e7de1ca8af6379ef1031"
+        },
+        {
+          "label": "Norway",
+          "marketSlug": "will-norway-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149743",
+          "conditionId": "0x71e04e0601abd15b82c3e5b3c5ce6f368398400ab6d4f2d5ddf2bf547967e23b"
+        },
+        {
+          "label": "Panama",
+          "marketSlug": "will-panama-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149755",
+          "conditionId": "0xf4eb8356a4577cbd306a7b06f823d027413e2d4a7fa2dc61f6e23679584e2ccd"
+        },
+        {
+          "label": "Paraguay",
+          "marketSlug": "will-paraguay-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149723",
+          "conditionId": "0xd8fa61f0552cf7af5e9f2a2ac9adf1a2f168b85322d243022b9d2c4cf7db90d6"
+        },
+        {
+          "label": "Portugal",
+          "marketSlug": "will-portugal-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149749",
+          "conditionId": "0x20d5d064a9efbf09afda77290fca0811be699cc13c4465db6319f749d10d9d71"
+        },
+        {
+          "label": "Qatar",
+          "marketSlug": "will-qatar-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149715",
+          "conditionId": "0x30af13ecfcd721254712310539b2210b3de275fd6bb85c958e34bb09a355f938"
+        },
+        {
+          "label": "Saudi Arabia",
+          "marketSlug": "will-saudi-arabia-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149739",
+          "conditionId": "0xf749282609241b29826393da05d62220971e7cd3a6b50b46ed529e851953a193"
+        },
+        {
+          "label": "Scotland",
+          "marketSlug": "will-scotland-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149719",
+          "conditionId": "0x6d7f1e4cc053110bf62657014bce68df3da7a94a10f0976e38378adea7c9bb1e"
+        },
+        {
+          "label": "Senegal",
+          "marketSlug": "will-senegal-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149742",
+          "conditionId": "0xc4c5d60bde7f6ccd2af47e808fafb3c4080be8c7d68767d55d298a03b039b328"
+        },
+        {
+          "label": "South Africa",
+          "marketSlug": "will-south-africa-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149711",
+          "conditionId": "0x11192c97fc1c950e5b8b27674608cca67b3d5b94dc80c8ab7f534720b504a1a8"
+        },
+        {
+          "label": "South Korea",
+          "marketSlug": "will-south-korea-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149710",
+          "conditionId": "0xcd982f93bb3c9a1374d65092073433882123fce423725a01687910a86437ef43"
+        },
+        {
+          "label": "Spain",
+          "marketSlug": "will-spain-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149737",
+          "conditionId": "0x15ff2abf58c8da317ae5017c524d1a63c0b187d242a43133b3c1865123652931"
+        },
+        {
+          "label": "Sweden",
+          "marketSlug": "will-sweden-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149732",
+          "conditionId": "0x4a6399f99f2c8a899c8cb359940a93719f850159e76670f4615952346f670b5f"
+        },
+        {
+          "label": "Switzerland",
+          "marketSlug": "will-switzerland-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149714",
+          "conditionId": "0xbbef377f4578940004038597f75a8e75db8dd1acf789fa6e3eb492eced9c7048"
+        },
+        {
+          "label": "Tunisia",
+          "marketSlug": "will-tunisia-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149731",
+          "conditionId": "0xa9d5b280f763e6ab84ba1e30122e871ce1afb82ce407c75f5bfda8a96e13b7d9"
+        },
+        {
+          "label": "Turkiye",
+          "marketSlug": "will-turkiye-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149724",
+          "conditionId": "0x84479d7244fd8efab1c8c8c78b0d5e228b5a649a1225dbcdb5dee9e5ed73508c"
+        },
+        {
+          "label": "Uruguay",
+          "marketSlug": "will-uruguay-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149738",
+          "conditionId": "0x60dda03b6a9ff0b1bdfbbc6b4052d0e4858fc138fc7e3ff46104052ead6e7d70"
+        },
+        {
+          "label": "USA",
+          "marketSlug": "will-usa-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149721",
+          "conditionId": "0x8359d31da8c8d730a96e0828c18938dfaa3957a8e3f75346e2c9ef8e459fa302"
+        },
+        {
+          "label": "Uzbekistan",
+          "marketSlug": "will-uzbekistan-reach-the-semifinals-at-the-2026-fifa-world-cup-20260602145149751",
+          "conditionId": "0xe9eed172bf6ab24433053fdca5b338cdb7b25830473a1cdcbe0b5ecbab51c76c"
+        }
+      ]
+    },
+    {
+      "id": "champion",
+      "family": "champion",
+      "questionCn": "哪支球队赢得 2026 世界杯冠军？",
+      "questionEn": "Which team wins the 2026 FIFA World Cup?",
+      "eventSlug": "world-cup-winner",
+      "kickoffUtcHint": "2026-07-20T00:00:00Z",
+      "group": null,
+      "legs": [
+        {
+          "label": "Algeria",
+          "marketSlug": "will-algeria-win-the-2026-fifa-world-cup",
+          "conditionId": "0x5a59d269c2b5108cd2f64c624e46ee2c8b5cfd88b882582565f927918315b6aa"
+        },
+        {
+          "label": "Argentina",
+          "marketSlug": "will-argentina-win-the-2026-fifa-world-cup-245",
+          "conditionId": "0x0c4cd2055d6ea89354ffddc55d6dbcef9355748112ea952fc925f3db6a5c457f"
+        },
+        {
+          "label": "Australia",
+          "marketSlug": "will-australia-win-the-2026-fifa-world-cup-816",
+          "conditionId": "0x098e2be3df8ab529940c567819f8ef007cf007820e9d627642a5bbfaa42af372"
+        },
+        {
+          "label": "Austria",
+          "marketSlug": "will-austria-win-the-2026-fifa-world-cup",
+          "conditionId": "0xfe230d510eaf545198c0d62bb17871e5fe8989f1b19aa54c0c062b858360987c"
+        },
+        {
+          "label": "Belgium",
+          "marketSlug": "will-belgium-win-the-2026-fifa-world-cup-358",
+          "conditionId": "0x32cfa52198e85e070d1b17d1b53c5c3a6aaae7736cdc33fa6aa04d353f0c2811"
+        },
+        {
+          "label": "Bosnia-Herzegovina",
+          "marketSlug": "will-bosnia-herzegovina-win-the-2026-fifa-world-cup",
+          "conditionId": "0xbce6698c9a61376c0709a2a724a9cf0dd0236d8dea882533073b6bb062efbee0"
+        },
+        {
+          "label": "Brazil",
+          "marketSlug": "will-brazil-win-the-2026-fifa-world-cup-183",
+          "conditionId": "0x30d55d8124ee1e12dabe89201badc45669b81dff69e4ce44d961f32878ec178a"
+        },
+        {
+          "label": "Canada",
+          "marketSlug": "will-canada-win-the-2026-fifa-world-cup-755",
+          "conditionId": "0x67443cb1ffb2bf180f7df5b6ca7adff63f7e8e933c7e41405ba118f3e9f8befb"
+        },
+        {
+          "label": "Cape Verde",
+          "marketSlug": "will-cape-verde-win-the-2026-fifa-world-cup",
+          "conditionId": "0x3bc69cb672591e4fcd2ef856b64b219a906e15d4601b50066ac81a446574dfaf"
+        },
+        {
+          "label": "Colombia",
+          "marketSlug": "will-colombia-win-the-2026-fifa-world-cup-734",
+          "conditionId": "0xe99cc59f32b10d23acf196d1a0e8264ea30fca198428acadd3464b06ff60e771"
+        },
+        {
+          "label": "Congo DR",
+          "marketSlug": "will-congo-dr-win-the-2026-fifa-world-cup",
+          "conditionId": "0xcd836ec4d94b8a4ddc5713d80fe9db245d2fb4796eaf12337974da1b4e96100d"
+        },
+        {
+          "label": "Croatia",
+          "marketSlug": "will-croatia-win-the-2026-fifa-world-cup",
+          "conditionId": "0xe5bd80313b8859e3f5761568ac9498866ea9d4419e4d1b6a877a9a9bd2754cb4"
+        },
+        {
+          "label": "Curaçao",
+          "marketSlug": "will-curaao-win-the-2026-fifa-world-cup",
+          "conditionId": "0xdb4b2f370c3d0e996fbb32213c87aa5402936e3d4882432b6738e2f5661b79a6"
+        },
+        {
+          "label": "Czechia",
+          "marketSlug": "will-czechia-win-the-2026-fifa-world-cup",
+          "conditionId": "0x5e614739363bbfc399469102c600e4e8260032d41e59e0bc12ebc0e71231642d"
+        },
+        {
+          "label": "Ecuador",
+          "marketSlug": "will-ecuador-win-the-2026-fifa-world-cup-986",
+          "conditionId": "0xbaf7780f9059e34b84301fd411f8dc573b4d56adfe6e0cda33daf304b1438da4"
+        },
+        {
+          "label": "Egypt",
+          "marketSlug": "will-egypt-win-the-2026-fifa-world-cup",
+          "conditionId": "0x7412d284c8f63791fec807f9b1f61c6fe61163621775a3dc8686cd2575272abe"
+        },
+        {
+          "label": "England",
+          "marketSlug": "will-england-win-the-2026-fifa-world-cup-937",
+          "conditionId": "0x375409bc5eeeff961e82b479caeccc20f33d15738e5bce1186d628aa3d9dfb1f"
+        },
+        {
+          "label": "France",
+          "marketSlug": "will-france-win-the-2026-fifa-world-cup-924",
+          "conditionId": "0x9b6fef249040fd17e9c107955b37ac2c3e923509b6b0ff01cc463a331ddeb894"
+        },
+        {
+          "label": "Germany",
+          "marketSlug": "will-germany-win-the-2026-fifa-world-cup-467",
+          "conditionId": "0x1595b4818eeb1ea1e0bec5de6f057218e557feee9b405a0e930d290384fa1d16"
+        },
+        {
+          "label": "Ghana",
+          "marketSlug": "will-ghana-win-the-2026-fifa-world-cup",
+          "conditionId": "0x881a3ffa618b6ae0ab95a5637e310afb1afc2d99c921bfe3235b15eccfce0344"
+        },
+        {
+          "label": "Haiti",
+          "marketSlug": "will-haiti-win-the-2026-fifa-world-cup",
+          "conditionId": "0x506f80bcf76bc75e6b31a250e2d754f347c4c231665326931d58bdb339ba1913"
+        },
+        {
+          "label": "Iran",
+          "marketSlug": "will-iran-win-the-2026-fifa-world-cup-788",
+          "conditionId": "0x84edef36bded182da6a395ac6c785dba8f3e09b6c5ad041385b2042536cbef25"
+        },
+        {
+          "label": "Iraq",
+          "marketSlug": "will-iraq-win-the-2026-fifa-world-cup",
+          "conditionId": "0x51e8c8df709aa78f64d2d9324d9d2556270f81e3966ade308099e5338bb4e4c9"
+        },
+        {
+          "label": "Ivory Coast",
+          "marketSlug": "will-ivory-coast-win-the-2026-fifa-world-cup",
+          "conditionId": "0x289568d555ec620ed6fa33c936c5f42649d3a2e30748a1daf7079f42453fbea4"
+        },
+        {
+          "label": "Japan",
+          "marketSlug": "will-japan-win-the-2026-fifa-world-cup-112",
+          "conditionId": "0x0189df05ed7bf84d799213b01a79571e305c03b2ac5359cfbb3a323448ba20fa"
+        },
+        {
+          "label": "Jordan",
+          "marketSlug": "will-jordan-win-the-2026-fifa-world-cup-233",
+          "conditionId": "0x33a87d02fa01e958929385c74b8627d32cc4474e9ebd312d268865c5207147fa"
+        },
+        {
+          "label": "Mexico",
+          "marketSlug": "will-mexico-win-the-2026-fifa-world-cup-529",
+          "conditionId": "0x5ccfe1b69a582d2985db08a8481a0d74c314b1fce9b4711ae2efb2c6467fe6aa"
+        },
+        {
+          "label": "Morocco",
+          "marketSlug": "will-morocco-win-the-2026-fifa-world-cup-464",
+          "conditionId": "0x37a6de1b21803e5f3fb1965116218215d79963af4f7e51659696366267a63a03"
+        },
+        {
+          "label": "Netherlands",
+          "marketSlug": "will-netherlands-win-the-2026-fifa-world-cup-739",
+          "conditionId": "0x9be56371f6a29d12769b2f196847ee825b9585ebb8bfa042136be031b081eba1"
+        },
+        {
+          "label": "New Zealand",
+          "marketSlug": "will-new-zealand-win-the-2026-fifa-world-cup-635",
+          "conditionId": "0x9e5f9d8c384f8fe368b195fa9a780be58643dff7360588a4e577012df8af00a7"
+        },
+        {
+          "label": "Norway",
+          "marketSlug": "will-norway-win-the-2026-fifa-world-cup-893",
+          "conditionId": "0x7b52405ad0e0d31bfe970940b67d77f24ecedeab8a2361c11148c02a006e325c"
+        },
+        {
+          "label": "Panama",
+          "marketSlug": "will-team-z-win-the-2026-fifa-world-cup-316",
+          "conditionId": "0x9779c09fd4dd0a1c82dd82618269c2aa5669d91305293b396d1e0b8a166b566e"
+        },
+        {
+          "label": "Paraguay",
+          "marketSlug": "will-paraguay-win-the-2026-fifa-world-cup-967",
+          "conditionId": "0x675bba4df50fd123f7fbfbafa67e9b75f4092d85ce0f9148ce78fc945964c856"
+        },
+        {
+          "label": "Portugal",
+          "marketSlug": "will-portugal-win-the-2026-fifa-world-cup-912",
+          "conditionId": "0x4f3421fb2daf5cca7430ed8d8132463963081572d75434393a1808fdb8829fe8"
+        },
+        {
+          "label": "Qatar",
+          "marketSlug": "will-qatar-win-the-2026-fifa-world-cup",
+          "conditionId": "0x4fe305a2ae995a52ff278895344895fe587b4fec3d5f04347b4dbf5e99bce99c"
+        },
+        {
+          "label": "Saudi Arabia",
+          "marketSlug": "will-saudi-arabia-win-the-2026-fifa-world-cup",
+          "conditionId": "0x3fb8a8de2ac275882d72b2c4f22d41776fcf033f9e413a77a84dd395c0d5257c"
+        },
+        {
+          "label": "Scotland",
+          "marketSlug": "will-scotland-win-the-2026-fifa-world-cup",
+          "conditionId": "0xf950740bc71136155d6525cc0528a582c81f88812bff227803190c32ca25f54d"
+        },
+        {
+          "label": "Senegal",
+          "marketSlug": "will-senegal-win-the-2026-fifa-world-cup",
+          "conditionId": "0x6972edb1b3f8cd8192651a665fc424dff846efe1c4a2376f628d4b20c704144c"
+        },
+        {
+          "label": "South Africa",
+          "marketSlug": "will-south-africa-win-the-2026-fifa-world-cup",
+          "conditionId": "0x233ce0c3969a5cd5079287f16fcd283be7c1db82263e08697f85dbe1b4d2113c"
+        },
+        {
+          "label": "South Korea",
+          "marketSlug": "will-south-korea-win-the-2026-fifa-world-cup-485",
+          "conditionId": "0x65307f30dce84ac35e41813035d3c04933da830dc4efbbb2fcdc4b282700ef3b"
+        },
+        {
+          "label": "Spain",
+          "marketSlug": "will-spain-win-the-2026-fifa-world-cup-963",
+          "conditionId": "0x7976b8dbacf9077eb1453a62bcefd6ab2df199acd28aad276ff0d920d6992892"
+        },
+        {
+          "label": "Sweden",
+          "marketSlug": "will-sweden-win-the-2026-fifa-world-cup",
+          "conditionId": "0xd0dbdc94b28c5cffeef64ed6b13e5f0f2324fb177e5ffaa634b48c88fe18d5e7"
+        },
+        {
+          "label": "Switzerland",
+          "marketSlug": "will-switzerland-win-the-2026-fifa-world-cup",
+          "conditionId": "0x3a26ca6425e2d98f14935670bc22cdb0744defc6f6d83c65f8c413a921c5c70c"
+        },
+        {
+          "label": "Tunisia",
+          "marketSlug": "will-tunisia-win-the-2026-fifa-world-cup-165",
+          "conditionId": "0xff0cfa9506cfa95759e4c7591654195bd26e3011f9882b51439135e04f2b69f1"
+        },
+        {
+          "label": "Turkiye",
+          "marketSlug": "will-turkiye-win-the-2026-fifa-world-cup",
+          "conditionId": "0x106ccc4508432a065a67394837d4c2c529a8d77ed69fa3ba90b81eedf5236598"
+        },
+        {
+          "label": "Uruguay",
+          "marketSlug": "will-uruguay-win-the-2026-fifa-world-cup-932",
+          "conditionId": "0x7876851632c295043c66536150a304cb785abdf712ba8489d298c6e6926be106"
+        },
+        {
+          "label": "USA",
+          "marketSlug": "will-usa-win-the-2026-fifa-world-cup-467",
+          "conditionId": "0xcdb1f0400949238a63d3e88243d2ada08cd9c2a71985ced9f0cfd5e66354cf90"
+        },
+        {
+          "label": "Uzbekistan",
+          "marketSlug": "will-uzbekistan-win-the-2026-fifa-world-cup-773",
+          "conditionId": "0x965ebc5d79eb1ec02cad67245a44b9e45b33359018f013fb6cf81d5bbf7bcc8d"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "fetched_at": "2026-06-11T12:24:51Z",
+  "source": "https://www.eloratings.net/World.tsv",
+  "teams": {
+    "Mexico": {
+      "elo": 1875,
+      "rank": 18
+    },
+    "South Korea": {
+      "elo": 1758,
+      "rank": 33
+    },
+    "Czechia": {
+      "elo": 1740,
+      "rank": 35
+    },
+    "South Africa": {
+      "elo": 1517,
+      "rank": 80
+    },
+    "Switzerland": {
+      "elo": 1891,
+      "rank": 17
+    },
+    "Canada": {
+      "elo": 1788,
+      "rank": 25
+    },
+    "Bosnia and Herzegovina": {
+      "elo": 1595,
+      "rank": 65
+    },
+    "Qatar": {
+      "elo": 1421,
+      "rank": 96
+    },
+    "Brazil": {
+      "elo": 1991,
+      "rank": 5
+    },
+    "Morocco": {
+      "elo": 1827,
+      "rank": 24
+    },
+    "Scotland": {
+      "elo": 1782,
+      "rank": 26
+    },
+    "Haiti": {
+      "elo": 1548,
+      "rank": 73
+    },
+    "USA": {
+      "elo": 1726,
+      "rank": 39
+    },
+    "Türkiye": {
+      "elo": 1911,
+      "rank": 13
+    },
+    "Paraguay": {
+      "elo": 1834,
+      "rank": 22
+    },
+    "Australia": {
+      "elo": 1777,
+      "rank": 28
+    },
+    "Germany": {
+      "elo": 1932,
+      "rank": 10
+    },
+    "Ecuador": {
+      "elo": 1938,
+      "rank": 9
+    },
+    "Ivory Coast": {
+      "elo": 1695,
+      "rank": 49
+    },
+    "Curaçao": {
+      "elo": 1434,
+      "rank": 91
+    },
+    "Netherlands": {
+      "elo": 1948,
+      "rank": 8
+    },
+    "Japan": {
+      "elo": 1906,
+      "rank": 14
+    },
+    "Sweden": {
+      "elo": 1712,
+      "rank": 43
+    },
+    "Tunisia": {
+      "elo": 1628,
+      "rank": 58
+    },
+    "Belgium": {
+      "elo": 1894,
+      "rank": 15
+    },
+    "Egypt": {
+      "elo": 1696,
+      "rank": 48
+    },
+    "Iran": {
+      "elo": 1772,
+      "rank": 29
+    },
+    "New Zealand": {
+      "elo": 1562,
+      "rank": 72
+    },
+    "Spain": {
+      "elo": 2157,
+      "rank": 1
+    },
+    "Uruguay": {
+      "elo": 1892,
+      "rank": 16
+    },
+    "Saudi Arabia": {
+      "elo": 1576,
+      "rank": 69
+    },
+    "Cape Verde": {
+      "elo": 1578,
+      "rank": 68
+    },
+    "France": {
+      "elo": 2063,
+      "rank": 3
+    },
+    "Norway": {
+      "elo": 1914,
+      "rank": 11
+    },
+    "Senegal": {
+      "elo": 1860,
+      "rank": 21
+    },
+    "Iraq": {
+      "elo": 1607,
+      "rank": 63
+    },
+    "Argentina": {
+      "elo": 2115,
+      "rank": 2
+    },
+    "Austria": {
+      "elo": 1830,
+      "rank": 23
+    },
+    "Algeria": {
+      "elo": 1772,
+      "rank": 29
+    },
+    "Jordan": {
+      "elo": 1680,
+      "rank": 52
+    },
+    "Portugal": {
+      "elo": 1989,
+      "rank": 6
+    },
+    "Colombia": {
+      "elo": 1982,
+      "rank": 7
+    },
+    "Congo DR": {
+      "elo": 1652,
+      "rank": 55
+    },
+    "Uzbekistan": {
+      "elo": 1714,
+      "rank": 42
+    },
+    "England": {
+      "elo": 2024,
+      "rank": 4
+    },
+    "Croatia": {
+      "elo": 1912,
+      "rank": 12
+    },
+    "Ghana": {
+      "elo": 1510,
+      "rank": 81
+    },
+    "Panama": {
+      "elo": 1730,
+      "rank": 38
+    },
+    "Korea Republic": {
+      "elo": 1758,
+      "rank": 33
+    },
+    "Côte d'Ivoire": {
+      "elo": 1695,
+      "rank": 49
+    },
+    "United States": {
+      "elo": 1726,
+      "rank": 39
+    },
+    "Cabo Verde": {
+      "elo": 1578,
+      "rank": 68
+    },
+    "DR Congo": {
+      "elo": 1652,
+      "rank": 55
+    },
+    "Bosnia-Herzegovina": {
+      "elo": 1595,
+      "rank": 65
+    },
+    "IR Iran": {
+      "elo": 1772,
+      "rank": 29
+    }
+  }
+}
