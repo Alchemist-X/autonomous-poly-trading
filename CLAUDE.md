@@ -4,7 +4,7 @@
 
 英文版见 [`docs/en/CLAUDE.md`](docs/en/CLAUDE.md)。
 
-最后更新：2026-05-08
+最后更新：2026-06-12
 
 ## 0. 适用范围
 
@@ -72,11 +72,9 @@
 
 ## 6. 执行安全与状态一致性
 
-- 任何高风险执行都应有 `preflight` / `dry-run` / `plan-only` / `preview` 检查阶段；检查阶段不是终点，是正式执行前的必经步骤。
 - 每次关键执行打印当前 `execution mode`（`inspect / dry-run / live / migration / release`）+ 决策来源（人工/脚本/AI）。
-- 高风险路径默认 `fail-fast`；禁止在关键校验失败后静默降级或悄悄 fallback。
+- 禁止在关键校验失败后静默降级或悄悄 fallback。
 - 当内部限额、外部阈值、权限缺失或环境条件会让操作注定失败时，必须明确预警，并同时给出内部限制与外部要求。
-- 完整分析、验证或依赖未就绪时，不要执行不可逆动作。
 - 单一状态源；涉及环境/账户/钱包/数据集/工作目录或状态文件时，必须打印当前实际使用的值。
 - 检测到环境混用、账号混用、多状态文件混用风险，必须告警并给出修复建议。
 - 必须使用 fallback 时明确标注，不得伪装成实时真值。
@@ -102,41 +100,14 @@
 - 如果首页或目标视图已经是完整风格页，必须同时检查 layout/shell 是否还包着 legacy 外壳。
 - 没做过线上或真实环境验收前，不要对用户说"已经和本地一致"。
 
-## 9. 前端 / 设计任务的视觉验收（强制）
+## 9. 前端 / 设计任务的视觉验收
 
-> 适用：landing 改色 / 加 / 删组件 / 改文案 / 加 SVG / 改 layout / 任何"用户看得到"的工作。**`pnpm typecheck` + `pnpm build` 全绿不算完成**——build 绿和 hydration 成功是两件事，body 看着空白往往是 client JS 抛错把 React tree 卸了。
+前端或任何"用户看得到"的改动，收尾前走一遍：**截图 → 读图 → 自评**。
 
-### 9.1 强制流程：截图 → 读图 → 自评
-
-每个前端 / 设计任务收尾前必须：
-
-1. **截图**：用 Playwright headless chromium，至少抓"被改的页面 + 受影响的相邻页面"。脚本 `scripts/visual-qa.mjs`（见 §9.2）。截图存 `runtime-artifacts/screenshots/<YYYY-MM-DD-HHmm>-<task-slug>/`
-2. **读图**：用 Read tool 把生成的 PNG 真读进来（这是关键——只看路径不算），对照 `docs/internal/plan/2026-05-04-design-elements-inventory.md` §1 的 4 条规则（不做 gamification / 默认展示真数据 / Marketing 和 app 两套规则 / 解释机制）+ 当前任务 spec 自评：
-   - 视觉没破：layout 没崩、文字没溢出、对比度 ≥ WCAG AA、颜色 token 应用正确（不是默认浅色）
-   - 功能完整：CTA 可见可点、表单 label 在、loading state 不空白、空状态有合理文案 / icon
-   - 跨视口：至少 desktop 1440×900 + mobile 375×812
-3. **抓 console errors / pageerrors**：脚本捕获后写进同一目录的 `diag.json`。**任何 `pageerror` 都算 fail**——优先级高于视觉问题，先修
-4. **自评结果写进 commit message 或会话 report**：哪几张图、读了什么、判断 pass/fail、阻塞或 follow-up
-
-### 9.2 视觉 QA 脚本 `scripts/visual-qa.mjs`
-
-如果不存在第一次做前端任务时创建。最少功能：传入 url 列表 + 输出目录，逐个 goto + 截图 + 抓 console + 抓 pageerror + 写 diag.json。模板见首次创建时的 commit。
-
-### 9.3 Sub-agent 也要遵守
-
-如果你 spawn worktree agent 做前端工作，brief 里**必须**包含：
-- "完成所有 commit 后跑 `node scripts/visual-qa.mjs`"
-- "把截图路径 + 自评结果写进返回报告"
-- "console error / pageerror 出现就视为任务未完成，必须修"
-
-不要把视觉验收推回主会话——agent 自己看自己的产出，发现问题立刻修，比"主会话事后发现 → 重新派活"快。
-
-### 9.4 典型陷阱（避免重复踩）
-
-- `next build` 绿但 `pnpm dev` 页面空白 → 100% 是 hydration error 或 Privy/Provider 抛错。看 `pageerror`
-- 颜色 token 改了但页面还是旧色 → 浏览器缓存。Playwright 默认无缓存，是诊断工具，不是 caching 假设
-- Body 渲染了但视觉乱 → 通常是 next/font 的 `--font-*` CSS 变量没挂上 `<html>` 或 `<body>`，回头查 `app/layout.tsx`
-- 组件抽完页面布局崩了 → 多半是 `<Hero>` / `<Section>` 等 wrapper 把原本 `<section>` 标签嵌套两层，inspect DOM 看是不是出现了 `<section><section>`
+- 截图：用无头浏览器抓被改页面和受影响的相邻页面（仓库有现成的 `scripts/visual-qa.mjs`：传 url 列表 + 输出目录即可，工具本身不强制），建议桌面 + 移动两个视口
+- 读图：用 Read 工具把 PNG 真读进来看，不要只看文件路径
+- 自评：布局没崩、文字没溢出、交互可用；**出现 console error / pageerror 视为未完成，先修**
+- sub-agent 做前端工作时同样适用，截图路径和自评结论写进返回报告
 
 ---
 

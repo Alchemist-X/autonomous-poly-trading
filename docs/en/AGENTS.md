@@ -4,7 +4,7 @@
 
 Chinese version: see [`/CLAUDE.md`](../../CLAUDE.md).
 
-Last updated: 2026-05-08
+Last updated: 2026-06-12
 
 ## 0. Scope
 
@@ -72,11 +72,9 @@ Last updated: 2026-05-08
 
 ## 6. Execution Safety and State Consistency
 
-- High-risk executions must include a `preflight` / `dry-run` / `plan-only` / `preview` stage; that stage is not the destination, it is a required step before live execution.
 - Every critical execution prints the current `execution mode` (`inspect / dry-run / live / migration / release`) plus the decision source (human / script / AI).
-- High-risk paths default to `fail-fast`; silent degradation or quiet fallback after a critical check fails is not allowed.
+- Silent degradation or quiet fallback after a critical check fails is not allowed.
 - When internal limits, external thresholds, missing permissions, or environment conditions guarantee failure, warn explicitly and surface both the internal and external constraints.
-- Do not perform irreversible operations when full analysis, verification, or dependencies are not yet ready.
 - Single state source; whenever environment / account / wallet / dataset / working directory / state file is involved, print the value actually in use.
 - If environment / account / multi-state-file mixing is detected, warn and suggest a fix.
 - Fallback configuration must be clearly labelled as fallback, never disguised as live truth.
@@ -101,6 +99,15 @@ Last updated: 2026-05-08
   - verify the target API, key data path, or core user flow is healthy
 - If the homepage or the target view is already a full styled page, also confirm the layout / shell is not still wrapping a legacy frame, so the new and old pages do not stack.
 - Do not tell the user "this matches local" before doing real online verification.
+
+## 9. Visual Acceptance for Frontend / Design Work
+
+For any user-visible change, close out with: **screenshot → read the image → self-review**.
+
+- Screenshot: capture the changed page and affected neighbours with a headless browser (`scripts/visual-qa.mjs` exists — pass a url list + an output dir; the tool itself is not mandatory). Desktop + mobile viewports recommended.
+- Read: actually load the PNGs with the Read tool — do not judge by file paths.
+- Self-review: layout intact, no text overflow, interactions work; **any console error / pageerror means the task is not done — fix first**.
+- Sub-agents doing frontend work follow the same loop and include screenshot paths + self-review in their reports.
 
 ---
 
