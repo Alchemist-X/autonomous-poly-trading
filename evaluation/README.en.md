@@ -78,7 +78,7 @@ These are not normal deductions. They cap the final score. If multiple gates tri
 
 ## Calibration / Backtesting Data
 
-After 2026-05-07, `pulse-live` / `pulse:recommend` runs additionally save:
+After 2026-05-07, `pulse-live` / `forecast:recommend` runs additionally save:
 
 - Per-run position mark snapshot: `runtime-artifacts/pulse-live/<ts>-<runId>/position-mark-snapshot.json`
 - Per-run calibration records: `runtime-artifacts/pulse-live/<ts>-<runId>/calibration-ledger.jsonl`

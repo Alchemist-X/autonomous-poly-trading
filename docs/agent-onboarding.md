@@ -12,7 +12,7 @@
 
 ## ⚠️ 0. 这是一个真钱实盘项目
 
-每次 `pnpm daily:pulse` / `pnpm pulse:live` 都会在 Polymarket 下**真实订单，不可逆**。
+每次 `pnpm daily:forecast` / `pnpm forecast:live` 都会在 Polymarket 下**真实订单，不可逆**。
 
 **用户没明确说"实盘"或"recommend-only"时，先问、再动。** 不要默认理解为"试试看"。
 
@@ -46,14 +46,14 @@ pnpm build
 pnpm test    # 应该 317/317 全过
 ```
 
-挂了先查原因。**不要在 build 没过的情况下跑 pulse:live。**
+挂了先查原因。**不要在 build 没过的情况下跑 forecast:live。**
 
 ## 4. 用户让你「跑 pulse」该怎么解读
 
 | 用户说 | 你做 |
 | --- | --- |
-| "跑 pulse 看看推荐" / "不要下单" / "recommend only" | `ENV_FILE=.env.pizza pnpm pulse:live -- --recommend-only` |
-| "跑 pulse" / "实盘" / "正式下单" / "live" | `ENV_FILE=.env.pizza pnpm daily:pulse` |
+| "跑 pulse 看看推荐" / "不要下单" / "recommend only" | `ENV_FILE=.env.pizza pnpm forecast:live -- --recommend-only` |
+| "跑 pulse" / "实盘" / "正式下单" / "live" | `ENV_FILE=.env.pizza pnpm daily:forecast` |
 | "用 no1 钱包" | 把 `.env.pizza` 替换成 `.env.no1` |
 | "看一下当前持仓 / 净值" | 读 `runtime-artifacts/pulse-live/` 下最近一次 run 的 `execution-summary.json`，或访问 spectator 网页 |
 
@@ -69,7 +69,7 @@ pnpm test    # 应该 317/317 全过
 
 | 坑 | 怎么避免 |
 | --- | --- |
-| 直接 `pulse:live` 不加 `--recommend-only` 想"看一下" | 这会**真扣钱**。除非用户明说要 live 才省略 `--recommend-only` |
+| 直接 `forecast:live` 不加 `--recommend-only` 想"看一下" | 这会**真扣钱**。除非用户明说要 live 才省略 `--recommend-only` |
 | 想把 `rough-loop.md` 挪到 `docs/` 显得整洁 | 不行，`services/rough-loop/src/lib/{loop,prompt,doctor}.ts` 硬编码了根路径 |
 | `claude --print` 子进程 0 字节挂 5 分钟 | **不是失败**，等它，Pulse 渲染内部 timeout 是 30 分钟 |
 | 看到 `[WARN] Fee mismatch ...` | 不是错误，是本地静态 fee 表跟链上不一致的告警，不阻断下单 |

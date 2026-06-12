@@ -4,7 +4,7 @@
 
 ## One-liner
 
-`pnpm pulse:live` = fetch markets → random-sample 20 → AI deep-research 4 → write recommendation report → code extracts trade plans → risk guards → live execution.
+`pnpm forecast:live` = fetch markets → random-sample 20 → AI deep-research 4 → write recommendation report → code extracts trade plans → risk guards → live execution.
 
 As of 2026-06-07, Pulse research context also writes a `stage_flow` field that turns “definition → query → evidence → weighting → structured model → Bayesian update → market comparison” into a machine-readable process constraint. See [`prediction-engine-stage-flow.en.md`](prediction-engine-stage-flow.en.md) for detailed gaps and token/time estimates.
 
@@ -96,14 +96,14 @@ Under pulse-direct strategy, **LLM is called exactly once** (step 6):
 
 ```bash
 # Live trading (default)
-ENV_FILE=.env.pizza pnpm pulse:live
+ENV_FILE=.env.pizza pnpm forecast:live
 
 # Recommend only (no execution)
-ENV_FILE=.env.pizza pnpm pulse:recommend
+ENV_FILE=.env.pizza pnpm forecast:recommend
 
 # Filter by category
-ENV_FILE=.env.pizza pnpm pulse:live -- --category politics
+ENV_FILE=.env.pizza pnpm forecast:live -- --category politics
 
 # Reuse existing pulse snapshot
-ENV_FILE=.env.pizza pnpm pulse:live -- --pulse-json <path-to-snapshot.json>
+ENV_FILE=.env.pizza pnpm forecast:live -- --pulse-json <path-to-snapshot.json>
 ```

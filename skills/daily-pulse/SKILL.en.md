@@ -7,7 +7,7 @@ description: "Run the daily pulse main flow in the autonomous-poly-trading repos
 
 In this repository, the unified entrypoint for the daily pulse recommendation flow is:
 
-`pnpm daily:pulse`
+`pnpm daily:forecast`
 
 ## When to use
 
@@ -19,9 +19,9 @@ In this repository, the unified entrypoint for the daily pulse recommendation fl
 ## Default behavior
 
 - Default command:
-  - `pnpm daily:pulse`
+  - `pnpm daily:forecast`
 - Primary defaults:
-  - Uses `pulse:live` internally
+  - Uses `forecast:live` internally
   - Does not add `--recommend-only`
   - Defaults `ENV_FILE` to `.env.pizza`
   - Defaults `AGENT_DECISION_STRATEGY` to `pulse-direct`
@@ -30,25 +30,25 @@ In this repository, the unified entrypoint for the daily pulse recommendation fl
 
 Only when the user explicitly asks for preview-only behavior, use:
 
-- `pnpm daily:pulse -- --recommend-only`
+- `pnpm daily:forecast -- --recommend-only`
 
 ## Common variants
 
 - JSON output:
-  - `pnpm daily:pulse -- --json`
+  - `pnpm daily:forecast -- --json`
 - Reuse existing pulse artifacts and skip pulse regeneration:
-  - `pnpm daily:pulse -- --pulse-json <path> --pulse-markdown <path>`
+  - `pnpm daily:forecast -- --pulse-json <path> --pulse-markdown <path>`
 - Explicit preview-only downgrade:
-  - `pnpm daily:pulse -- --recommend-only --json`
+  - `pnpm daily:forecast -- --recommend-only --json`
 - Force the legacy provider review path:
-  - `AGENT_DECISION_STRATEGY=provider-runtime pnpm daily:pulse`
+  - `AGENT_DECISION_STRATEGY=provider-runtime pnpm daily:forecast`
 
 ## Pre-run checks
 
 - If `ENV_FILE` is not specified, `.env.pizza` is the default
 - Interpret the main route as real-money execution
 - Only add preview-only mode when the user explicitly asks for it:
-  - `pnpm daily:pulse -- --recommend-only --json`
+  - `pnpm daily:forecast -- --recommend-only --json`
 
 ## What to report back
 

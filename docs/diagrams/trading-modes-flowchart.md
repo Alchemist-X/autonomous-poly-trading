@@ -10,7 +10,7 @@ flowchart TD
   E --> F[Paper execution + 本地状态更新]
 
   B -->|live| G{入口命令}
-  G -->|pnpm pulse:live| H[Preflight]
+  G -->|pnpm forecast:live| H[Preflight]
   G -->|pnpm live:test| I[Preflight + DB/Redis/Queue Worker]
 
   H --> J[生成或复用 Pulse]
@@ -50,7 +50,7 @@ flowchart LR
 
 ## 名词对齐
 
-- `Pulse Live`：`pnpm pulse:live`（默认实盘）
+- `Pulse Live`：`pnpm forecast:live`（默认实盘）
 - `Pre-Flight`：live 流程中的前置检查阶段（不是独立下单模式）
 - `House Direct`：`AGENT_DECISION_STRATEGY=pulse-direct`
 - `GTC`：Good Till Cancelled 限价单（默认关闭，`ENABLE_GTC_ORDERS=true` 启用）

@@ -74,22 +74,22 @@ AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
 AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
 
 # Pulse Live
-ENV_FILE=.env.live-test pnpm pulse:live
-ENV_FILE=.env.live-test pnpm pulse:live -- --recommend-only
-ENV_FILE=.env.live-test pnpm pulse:live -- --json
+ENV_FILE=.env.live-test pnpm forecast:live
+ENV_FILE=.env.live-test pnpm forecast:live -- --recommend-only
+ENV_FILE=.env.live-test pnpm forecast:live -- --json
 
 # Live Stateful
 ENV_FILE=.env.live-test pnpm live:test
 
-# Daily Pulse（pulse:live 的便捷入口，默认配好 .env.pizza + live + pulse-direct）
-pnpm daily:pulse
+# Daily Pulse（forecast:live 的便捷入口，默认配好 .env.pizza + live + pulse-direct）
+pnpm daily:forecast
 ```
 
 ### 执行流程分阶段
 
 所有 live 路径都必须经过 Preflight，不是独立模式而是必经阶段。
 
-**pulse:live**：
+**forecast:live**：
 
 ```
 Preflight → 拉远端持仓/Collateral → Pulse 生成 → 决策运行时 → 风控 + Token Cap → 直接下单 → Summary 归档
@@ -104,7 +104,7 @@ Preflight(+DB/Redis/Queue) → Pulse 生成 → Agent Cycle(决策+持久化) �
 **paper**：
 
 ```
-加载组合上下文 → Pulse 生成 → 决策运行时 → 共享 buildExecutionPlan（与 pulse:live 相同的风控 + 交易所门槛规则）→ awaiting-approval → trial:approve → Paper State 更新
+加载组合上下文 → Pulse 生成 → 决策运行时 → 共享 buildExecutionPlan（与 forecast:live 相同的风控 + 交易所门槛规则）→ awaiting-approval → trial:approve → Paper State 更新
 ```
 
 ### Executor Ops

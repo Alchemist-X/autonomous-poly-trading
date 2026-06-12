@@ -272,7 +272,7 @@ export async function runManagedPulseBridge(args: CliArgs = parseArgs()): Promis
   if (!recommendationPath) {
     throw new Error(
       `No pulse recommendation found under ${path.join(args.artifactRoot, "pulse-live")}. ` +
-        `Run \`pnpm pulse:recommend\` (or pulse:live) first to produce one.`
+        `Run \`pnpm forecast:recommend\` (or forecast:live) first to produce one.`
     );
   }
   log("INFO", `runBatchId=${runBatchId} loading pulse recommendation from ${recommendationPath}`);

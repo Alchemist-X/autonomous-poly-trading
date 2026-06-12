@@ -78,7 +78,7 @@
 
 ## Calibration / Backtesting 数据
 
-2026-05-07 之后的 `pulse-live` / `pulse:recommend` run 会额外保存：
+2026-05-07 之后的 `pulse-live` / `forecast:recommend` run 会额外保存：
 
 - 单轮逐仓 mark 快照：`runtime-artifacts/pulse-live/<ts>-<runId>/position-mark-snapshot.json`
 - 单轮校准记录：`runtime-artifacts/pulse-live/<ts>-<runId>/calibration-ledger.jsonl`

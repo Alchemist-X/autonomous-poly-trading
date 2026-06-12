@@ -10,7 +10,7 @@ import {
 
 function createBaseInput(archiveDir: string): LiveRunSummaryInput {
   return {
-    mode: "pulse:live",
+    mode: "forecast:live",
     executionMode: "live",
     strategy: "pulse-direct",
     envFilePath: ".env.pizza",

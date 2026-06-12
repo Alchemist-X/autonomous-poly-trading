@@ -2,7 +2,7 @@ import path from "node:path";
 import { appendFile, mkdir, writeFile } from "node:fs/promises";
 import type { PublicPosition, TradeDecision } from "@autopoly/contracts";
 
-type ExecutionMode = "pulse:live" | "recommend-only" | "failed";
+type ExecutionMode = "forecast:live" | "recommend-only" | "failed";
 
 type OrderStatus = "filled" | "failed" | "blocked" | "not_sent" | "recommend_only";
 

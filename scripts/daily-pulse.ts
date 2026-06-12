@@ -56,22 +56,22 @@ export function shouldStayOpenAfterRun(
 function printHelp() {
   console.log(
     [
-      "daily:pulse",
+      "daily:forecast",
       "",
       "Default route: pulse-live daily pulse in live execute mode.",
       "",
       "Examples:",
-      "  pnpm daily:pulse",
-      "  pnpm daily:pulse -- --json",
-      "  pnpm daily:pulse -- --pulse-json <path> --pulse-markdown <path>",
-      "  pnpm daily:pulse -- --recommend-only --json",
-      "  pnpm daily:pulse -- --no-stay-open",
+      "  pnpm daily:forecast",
+      "  pnpm daily:forecast -- --json",
+      "  pnpm daily:forecast -- --pulse-json <path> --pulse-markdown <path>",
+      "  pnpm daily:forecast -- --recommend-only --json",
+      "  pnpm daily:forecast -- --no-stay-open",
       "",
       "Behavior:",
       "  - Defaults ENV_FILE to .env.pizza if unset.",
       "  - Defaults AUTOPOLY_EXECUTION_MODE to live if unset.",
       "  - Defaults AGENT_DECISION_STRATEGY to pulse-direct if unset.",
-      "  - Uses pulse:live under the hood.",
+      "  - Uses forecast:live under the hood.",
       "  - Executes real-money flow unless --recommend-only is explicitly provided.",
       "  - Stays open in interactive terminals after each run unless --no-stay-open is provided."
     ].join("\n")
@@ -82,7 +82,7 @@ async function runDailyPulseChild(args: DailyPulseArgs) {
   const command = buildDailyPulseCommand(args);
   const modeLabel = args.recommendOnly ? "recommend-only" : "execute";
   process.stderr.write(
-    `[daily:pulse] mode=${modeLabel} env=${command.env.ENV_FILE} execution_mode=${command.env.AUTOPOLY_EXECUTION_MODE} strategy=${command.env.AGENT_DECISION_STRATEGY}\n`
+    `[daily:forecast] mode=${modeLabel} env=${command.env.ENV_FILE} execution_mode=${command.env.AUTOPOLY_EXECUTION_MODE} strategy=${command.env.AGENT_DECISION_STRATEGY}\n`
   );
 
   return await new Promise<number>((resolve, reject) => {
@@ -104,7 +104,7 @@ async function promptNextAction(lastExitCode: number) {
     input: process.stdin,
     output: process.stdout
   });
-  printer.section("daily:pulse Console");
+  printer.section("daily:forecast Console");
   printer.note(lastExitCode === 0 ? "success" : "error", "last run", lastExitCode === 0 ? "completed" : `failed with exit code ${lastExitCode}`);
   printer.list([
     "Press Enter or type `rerun` to run daily pulse again.",
@@ -114,7 +114,7 @@ async function promptNextAction(lastExitCode: number) {
 
   try {
     while (true) {
-      const answer = (await rl.question("daily:pulse> ")).trim().toLowerCase();
+      const answer = (await rl.question("daily:forecast> ")).trim().toLowerCase();
       if (answer === "" || answer === "rerun" || answer === "run") {
         return "rerun";
       }
@@ -146,7 +146,7 @@ async function main() {
     lastExitCode = await runDailyPulseChild(currentArgs);
     if (!stayOpen) {
       if (lastExitCode !== 0) {
-        throw new Error(`daily:pulse exited with code ${lastExitCode}`);
+        throw new Error(`daily:forecast exited with code ${lastExitCode}`);
       }
       return;
     }
@@ -168,6 +168,6 @@ async function main() {
 
 void main().catch((error) => {
   const message = error instanceof Error ? error.message : String(error);
-  console.error(`[daily:pulse] ${message}`);
+  console.error(`[daily:forecast] ${message}`);
   process.exit(1);
 });

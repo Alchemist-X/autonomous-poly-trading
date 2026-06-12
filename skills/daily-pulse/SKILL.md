@@ -7,7 +7,7 @@ description: "在 autonomous-poly-trading 仓库中运行 daily pulse 主流程�
 
 在这个仓库里，`daily pulse` 的推荐入口统一走：
 
-`pnpm daily:pulse`
+`pnpm daily:forecast`
 
 ## 什么时候使用
 
@@ -19,9 +19,9 @@ description: "在 autonomous-poly-trading 仓库中运行 daily pulse 主流程�
 ## 默认行为
 
 - 默认命令：
-  - `pnpm daily:pulse`
+  - `pnpm daily:forecast`
 - 默认是主执行模式：
-  - 内部会走 `pulse:live`
+  - 内部会走 `forecast:live`
   - 默认不加 `--recommend-only`
   - 默认把 `ENV_FILE` 设为 `.env.pizza`
   - 默认把 `AGENT_DECISION_STRATEGY` 设为 `pulse-direct`
@@ -30,25 +30,25 @@ description: "在 autonomous-poly-trading 仓库中运行 daily pulse 主流程�
 
 只有当用户明确要求预览、只看建议、或避免真实下单时，才使用：
 
-- `pnpm daily:pulse -- --recommend-only`
+- `pnpm daily:forecast -- --recommend-only`
 
 ## 常用变体
 
 - 输出 JSON：
-  - `pnpm daily:pulse -- --json`
+  - `pnpm daily:forecast -- --json`
 - 复用已有 pulse artifact，跳过重新生成 pulse：
-  - `pnpm daily:pulse -- --pulse-json <path> --pulse-markdown <path>`
+  - `pnpm daily:forecast -- --pulse-json <path> --pulse-markdown <path>`
 - 显式降级为只看建议：
-  - `pnpm daily:pulse -- --recommend-only --json`
+  - `pnpm daily:forecast -- --recommend-only --json`
 - 明确切回 legacy provider 复审：
-  - `AGENT_DECISION_STRATEGY=provider-runtime pnpm daily:pulse`
+  - `AGENT_DECISION_STRATEGY=provider-runtime pnpm daily:forecast`
 
 ## 运行前检查
 
 - 如果没有明确指定 env，默认就是 `.env.pizza`
 - 主要执行语义按真钱主链路理解
 - 只有当用户明确要求预览、review-only、或避免下单时，才加：
-  - `pnpm daily:pulse -- --recommend-only --json`
+  - `pnpm daily:forecast -- --recommend-only --json`
 
 ## 结果应汇报什么
 

@@ -113,14 +113,14 @@ For any user-visible change, close out with: **screenshot → read the image →
 
 ## Project Execution Notes (predict-raven specific)
 
-> ⚠️ **This is a real-money live trading project.** Every `pulse:live` run places real, irreversible orders on Polymarket.
+> ⚠️ **This is a real-money live trading project.** Every `forecast:live` run places real, irreversible orders on Polymarket.
 
 ### 30-second must-read
 
-- **Live by default**: `pnpm daily:pulse` / `pnpm pulse:live` places real orders. To inspect without trading, explicitly pass `--recommend-only` or say so in the prompt.
+- **Live by default**: `pnpm daily:forecast` / `pnpm forecast:live` places real orders. To inspect without trading, explicitly pass `--recommend-only` or say so in the prompt.
 - **Default wallet**: `.env.pizza`. Preflight prints the current wallet address + collateral and aborts on mismatch; switch ad-hoc with `ENV_FILE=.env.<name>`. Deployment/wallet details: [`docs/diagrams/dev-reference.en.md`](../diagrams/dev-reference.en.md).
 - **Risk caps are env-tunable defaults, not a constitution**: per-trade ≤ 15% / total exposure ≤ 80% / per-event ≤ 30% / max 22 positions / min $5. When a more aggressive or conservative profile would serve better, **proactively propose retuning to the user** (see `.env.example` for the knobs); any change requires user confirmation and lands in env — the agent never edits parameters unilaterally and never bypasses the executor-layer trimming.
-- **Probabilities that orders rely on must come from the forecasting pipeline** (commands keep the `pulse:*` naming) with archives (`recommendation.json` / report markdown / evidence artifacts). Quick conversational estimates are allowed but must be labelled "not a trading basis". Position reviews: `ENV_FILE=.env.pizza pnpm pulse:positions -- --json`; new opportunities: `pnpm pulse:recommend`.
+- **Probabilities that orders rely on must come from the forecasting pipeline** (commands are `forecast:*`; the old `pulse:*` names remain as compatibility aliases) with archives (`recommendation.json` / report markdown / evidence artifacts). Quick conversational estimates are allowed but must be labelled "not a trading basis". Position reviews: `ENV_FILE=.env.pizza pnpm forecast:positions -- --json`; new opportunities: `pnpm forecast:recommend`.
 - **Position exit rule: sell when net edge is negative.** If the review's fee-adjusted edge is < 0, reduce/close — no extra "contradicting evidence" needed; stop-loss keeps top priority.
 - **World Cup forecasting product = market-blind (user decision 2026-06-11, permanent)**: no stage of the public prediction pipeline may read, cite, or display market prices / implied probabilities; market data is for event structure and settlement mapping only (see `stripPrices` in `scripts/world-cup/`).
 - **Forecasting time / token costs are measured, not folklore**: see [`docs/diagrams/forecasting-cost-profile.en.md`](../diagrams/forecasting-cost-profile.en.md) (a live run ≈ 12–15 min, rendering is ~95% of it, a silent 0-byte stretch under 5 min is normal). Append fresh numbers after every session.

@@ -74,22 +74,22 @@ AUTOPOLY_EXECUTION_MODE=paper pnpm trial:recommend
 AUTOPOLY_EXECUTION_MODE=paper pnpm trial:approve -- --latest
 
 # Pulse Live
-ENV_FILE=.env.live-test pnpm pulse:live
-ENV_FILE=.env.live-test pnpm pulse:live -- --recommend-only
-ENV_FILE=.env.live-test pnpm pulse:live -- --json
+ENV_FILE=.env.live-test pnpm forecast:live
+ENV_FILE=.env.live-test pnpm forecast:live -- --recommend-only
+ENV_FILE=.env.live-test pnpm forecast:live -- --json
 
 # Live Stateful
 ENV_FILE=.env.live-test pnpm live:test
 
-# Daily Pulse (convenience entry for pulse:live; defaults to .env.pizza + live + pulse-direct)
-pnpm daily:pulse
+# Daily Pulse (convenience entry for forecast:live; defaults to .env.pizza + live + pulse-direct)
+pnpm daily:forecast
 ```
 
 ### Execution Flow Stages
 
 Every live path must go through Preflight. It is not a standalone mode — it is a mandatory stage.
 
-**pulse:live**:
+**forecast:live**:
 
 ```
 Preflight → Fetch remote positions/collateral → Pulse generation → Decision runtime → Risk + token cap → Direct execution → Summary archive
@@ -104,7 +104,7 @@ Preflight(+DB/Redis/Queue) → Pulse generation → Agent Cycle (decisions + per
 **paper**:
 
 ```
-Load portfolio context → Pulse generation → Decision runtime → shared buildExecutionPlan (same risk + exchange-threshold rules as pulse:live) → awaiting-approval → trial:approve → Paper state update
+Load portfolio context → Pulse generation → Decision runtime → shared buildExecutionPlan (same risk + exchange-threshold rules as forecast:live) → awaiting-approval → trial:approve → Paper state update
 ```
 
 ### Executor Ops

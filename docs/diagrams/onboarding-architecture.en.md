@@ -6,8 +6,8 @@ If you only keep one sentence in mind, use this:
 
 New contributors should start with the green path:
 
-- `pnpm daily:pulse`
-- `pnpm pulse:live`
+- `pnpm daily:forecast`
+- `pnpm forecast:live`
 - `AGENT_DECISION_STRATEGY=pulse-direct`
 
 The mode-branch companion diagram still lives in [Order Mode Flowchart](./trading-modes-flowchart.en.md).
@@ -16,9 +16,9 @@ The mode-branch companion diagram still lives in [Order Mode Flowchart](./tradin
 
 ```mermaid
 flowchart LR
-  human[Human / Scheduler / CLI] --> daily[pnpm daily:pulse]
+  human[Human / Scheduler / CLI] --> daily[pnpm daily:forecast]
   human --> paper[pnpm trial:recommend / trial:approve]
-  human --> pulseLive[pnpm pulse:live]
+  human --> pulseLive[pnpm forecast:live]
   human --> stateful[pnpm live:test]
 
   daily --> pulseLive
@@ -88,7 +88,7 @@ How to read the diagram:
 - The difference is the landing point: decisions are written to `AUTOPOLY_LOCAL_STATE_FILE`, which defaults to `runtime-artifacts/local/paper-state.json`.
 - The actual paper fills and portfolio mutation happen in [`services/orchestrator/src/ops/trial-approve.ts`](../services/orchestrator/src/ops/trial-approve.ts).
 
-### 2. `pulse:live`
+### 2. `forecast:live`
 
 - The entry is [`scripts/pulse-live.ts`](../scripts/pulse-live.ts).
 - It runs live preflight, fetches remote positions and collateral, and then generates or reuses Pulse.
@@ -99,14 +99,14 @@ How to read the diagram:
 ### 3. `live:test`
 
 - The entry is [`scripts/live-test.ts`](../scripts/live-test.ts).
-- It does the same high-level work as pulse:live, but also checks DB, Redis, and queue-worker readiness.
+- It does the same high-level work as forecast:live, but also checks DB, Redis, and queue-worker readiness.
 - Orchestrator persists the run to DB and hands executable trades to [`services/executor/src/workers/queue-worker.ts`](../services/executor/src/workers/queue-worker.ts) through BullMQ.
 - It is closer to the production shape, but also more infra-sensitive.
 
 One more clarification:
 
 - [`scripts/daily-pulse.ts`](../scripts/daily-pulse.ts) is not a fourth mode.
-- It is only a convenience wrapper around `pulse:live`, with defaults for `.env.pizza`, `AUTOPOLY_EXECUTION_MODE=live`, and `pulse-direct`.
+- It is only a convenience wrapper around `forecast:live`, with defaults for `.env.pizza`, `AUTOPOLY_EXECUTION_MODE=live`, and `pulse-direct`.
 
 ## Module Map
 
@@ -129,7 +129,7 @@ This is the easiest boundary for new contributors to confuse:
 | Scenario | Real source of truth | What that means |
 | --- | --- | --- |
 | `paper` | `AUTOPOLY_LOCAL_STATE_FILE`, defaulting to `runtime-artifacts/local/paper-state.json` | recommendation lands in local state first, and `trial:approve` performs the actual paper mutation |
-| `pulse:live` | remote wallet / Polymarket | local files are mainly archives, not an internal portfolio ledger |
+| `forecast:live` | remote wallet / Polymarket | local files are mainly archives, not an internal portfolio ledger |
 | `live:test` | Postgres + Redis + queue worker | the system maintains runs, decisions, positions, execution events, snapshots, and system status internally |
 | `runtime-artifacts/` | usually not a source of truth | it mostly stores checkpoints, reports, summaries, and errors for traceability |
 
@@ -157,7 +157,7 @@ One more note:
 
 ## Seven Things New Contributors Commonly Mix Up
 
-- `daily:pulse` is not a separate engine; it wraps `pulse:live`.
+- `daily:forecast` is not a separate engine; it wraps `forecast:live`.
 - `Preflight` is a stage, not a mode.
 - `pulse-direct` is the current default main path; `provider-runtime` still exists but is now mainly legacy/comparison.
 - `apps/web` reads data and triggers admin actions; it does not sit in the main trading hot path, and its data source is not always the DB.

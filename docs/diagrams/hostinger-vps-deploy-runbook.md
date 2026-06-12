@@ -130,8 +130,8 @@ docker compose -f deploy/hostinger/docker-compose.yml logs -f orchestrator execu
 如果你要运行真实闭环，仍然建议先按下面顺序验证：
 
 1. `paper`
-2. `pulse:live --recommend-only`
-3. `pulse:live`
+2. `forecast:live --recommend-only`
+3. `forecast:live`
 4. `live:test`
 
 ## 当前已知限制

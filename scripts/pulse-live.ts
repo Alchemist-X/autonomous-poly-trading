@@ -548,7 +548,7 @@ async function runPreflight(input: {
       ok: Boolean(input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath),
       summary: (input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath)
         ? `Using env file ${(input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath)}.`
-        : "ENV_FILE is required for pulse:live runs."
+        : "ENV_FILE is required for forecast:live runs."
     },
     {
       key: "credentials",
@@ -815,7 +815,7 @@ function printRecommendationSummary(input: {
   runtimeLogPath: string | null;
 }) {
   const printer = createTerminalPrinter();
-  printer.section("Pulse Live Recommendation", "route pulse:live");
+  printer.section("Pulse Live Recommendation", "route forecast:live");
   printer.table([
     ["Run ID", input.runId],
     ["Env File", input.envFilePath ?? "-"],
@@ -944,7 +944,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
     await writeJsonArtifact(preflightPath, buildArchivedPreflightReport(preflight.report));
     if (useHumanOutput) {
       const printer = createTerminalPrinter();
-      printer.section("Pulse Live Preflight", "route pulse:live");
+      printer.section("Pulse Live Preflight", "route forecast:live");
       printer.table([
         ...buildPulseLiveRunIdentityRows({
           executionMode: preflight.report.executionMode,
@@ -1289,7 +1289,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
         globalCalibrationLedgerPath
       ];
       await writeRunSummaryArtifacts({
-        mode: "pulse:live",
+        mode: "forecast:live",
         executionMode: "live",
         strategy: orchestratorConfig.decisionStrategy,
         envFilePath: preflight.report.envFilePath,
@@ -1384,7 +1384,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
       archiveDir,
       runId,
       generatedAtUtc: coreResult.decisionSet.generated_at_utc,
-      executionMode: "pulse:live",
+      executionMode: "forecast:live",
       decisionStrategy: orchestratorConfig.decisionStrategy,
       decisions: decisionsForSummary,
       skipped: skippedForSummary,
@@ -1433,7 +1433,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
     }
 
     await writeRunSummaryArtifacts({
-      mode: "pulse:live",
+      mode: "forecast:live",
       executionMode: "live",
       strategy: orchestratorConfig.decisionStrategy,
       envFilePath: preflight.report.envFilePath,
@@ -1538,7 +1538,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
       context: errorContext
     });
     await writeRunSummaryArtifacts({
-      mode: "pulse:live",
+      mode: "forecast:live",
       executionMode: "live",
       strategy: orchestratorConfig.decisionStrategy,
       envFilePath: preflightReport?.envFilePath ?? null,

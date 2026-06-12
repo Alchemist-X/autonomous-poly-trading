@@ -96,7 +96,7 @@ export function resolveEquitySnapshotAppendPolicy(input: {
 }
 
 /**
- * Append an equity snapshot after a pulse:live run.
+ * Append an equity snapshot after a forecast:live run.
  *
  * This writes to apps/web/public/equity-history.json so Vercel serves it as a static file.
  * The caller should commit + push this file to deploy the updated history.

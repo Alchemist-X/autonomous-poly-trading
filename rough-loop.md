@@ -54,10 +54,10 @@ P1
 暂无任务。
 
 ## Done（已完成）
-### RL-003 | 确保 pulse:live 明确输出 execution mode 与 decision strategy / Ensure pulse:live prints execution mode and decision strategy
+### RL-003 | 确保 forecast:live 明确输出 execution mode 与 decision strategy / Ensure forecast:live prints execution mode and decision strategy
 
 #### Title（标题）
-确保 pulse:live 明确输出 execution mode 与 decision strategy / Ensure pulse:live prints execution mode and decision strategy
+确保 forecast:live 明确输出 execution mode 与 decision strategy / Ensure forecast:live prints execution mode and decision strategy
 
 #### Status（状态）
 done
@@ -76,7 +76,7 @@ P1
 - README.en.md
 
 #### Definition of Done（完成定义）
-- `pulse:live` 的人类可读输出始终明确展示当前 `execution mode` 与 `decision strategy` / Ensure the human-readable `pulse:live` output always shows the current `execution mode` and `decision strategy`
+- `forecast:live` 的人类可读输出始终明确展示当前 `execution mode` 与 `decision strategy` / Ensure the human-readable `forecast:live` output always shows the current `execution mode` and `decision strategy`
 - 用测试覆盖这个输出契约，防止未来回退 / Cover this output contract with tests to prevent regressions
 - 只有在命令行行为真的变化时才更新 `README.md` 和 `README.en.md` / Update `README.md` and `README.en.md` only if the CLI behavior really changes
 

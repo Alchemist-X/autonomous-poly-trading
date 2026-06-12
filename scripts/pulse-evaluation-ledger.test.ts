@@ -143,7 +143,7 @@ describe("pulse evaluation ledger", () => {
       runId: "run-1",
       generatedAtUtc: "2026-05-07T00:00:00.000Z",
       archiveDir: "/tmp/archive",
-      executionMode: "pulse:live",
+      executionMode: "forecast:live",
       decisionStrategy: "pulse-direct",
       decisions: [createDecision()],
       executedOrders: [

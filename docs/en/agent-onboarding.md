@@ -12,7 +12,7 @@
 
 ## ⚠️ 0. This is a real-money live trading project
 
-Every `pnpm daily:pulse` / `pnpm pulse:live` run places **real, irreversible orders** on Polymarket.
+Every `pnpm daily:forecast` / `pnpm forecast:live` run places **real, irreversible orders** on Polymarket.
 
 **If the user has not explicitly said "live" or "recommend-only," ask first, then act.** Do not default to "let me just try it."
 
@@ -46,14 +46,14 @@ pnpm build
 pnpm test    # should be 317/317 passing
 ```
 
-If anything fails, find out why first. **Do not run pulse:live without a passing build.**
+If anything fails, find out why first. **Do not run forecast:live without a passing build.**
 
 ## 4. How to interpret "run pulse"
 
 | User says | You do |
 | --- | --- |
-| "give me recommendations" / "no orders" / "recommend only" | `ENV_FILE=.env.pizza pnpm pulse:live -- --recommend-only` |
-| "run pulse" / "live" / "real money" / "实盘" | `ENV_FILE=.env.pizza pnpm daily:pulse` |
+| "give me recommendations" / "no orders" / "recommend only" | `ENV_FILE=.env.pizza pnpm forecast:live -- --recommend-only` |
+| "run pulse" / "live" / "real money" / "实盘" | `ENV_FILE=.env.pizza pnpm daily:forecast` |
 | "use the no1 wallet" | swap `.env.pizza` for `.env.no1` |
 | "show current positions / equity" | read the latest `execution-summary.json` under `runtime-artifacts/pulse-live/`, or visit the spectator site |
 
@@ -69,7 +69,7 @@ Win or lose:
 
 | Landmine | How to avoid |
 | --- | --- |
-| Running `pulse:live` without `--recommend-only` "just to see" | This **places real orders**. Unless the user explicitly said live, keep `--recommend-only` |
+| Running `forecast:live` without `--recommend-only` "just to see" | This **places real orders**. Unless the user explicitly said live, keep `--recommend-only` |
 | Moving `rough-loop.md` into `docs/` for tidiness | Don't — `services/rough-loop/src/lib/{loop,prompt,doctor}.ts` hardcode the root path |
 | `claude --print` subprocess hanging at 0 bytes for 5+ min | **Not a failure** — Pulse render has a 30-minute internal timeout, let it finish |
 | Seeing `[WARN] Fee mismatch ...` | Not an error, just a static-table vs on-chain divergence warning, does not block orders |

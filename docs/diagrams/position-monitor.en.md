@@ -10,7 +10,7 @@ Continuously polls Polymarket remote positions. When any position's **unrealized
 
 - **Model-free**: Pure price monitoring, no AI model or strategy involved
 - **No infrastructure**: No DB, Redis, or BullMQ — only needs wallet credentials in `.env`
-- **Standalone process**: Runs independently from pulse:live
+- **Standalone process**: Runs independently from forecast:live
 - **Disabled by default**: Must be started manually
 
 ## How to run

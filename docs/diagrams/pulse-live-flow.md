@@ -4,7 +4,7 @@
 
 ## 一句话概括
 
-`pnpm pulse:live` = 抓市场 → 随机选 20 个 → AI 深度研究 4 个 → 写推荐报告 → 代码提取交易计划 → 风控裁剪 → 实盘下单。
+`pnpm forecast:live` = 抓市场 → 随机选 20 个 → AI 深度研究 4 个 → 写推荐报告 → 代码提取交易计划 → 风控裁剪 → 实盘下单。
 
 2026-06-07 起，Pulse research context 会额外写入 `stage_flow` 字段，把“理清定义 → query → 证据 → 权重 → 结构化模型 → 贝叶斯更新 → 市场比较”固定成机器可读流程约束。详细缺口和新增 token/耗时估算见 [`prediction-engine-stage-flow.md`](prediction-engine-stage-flow.md)。
 
@@ -136,14 +136,14 @@
 
 ```bash
 # 实盘（默认）
-ENV_FILE=.env.pizza pnpm pulse:live
+ENV_FILE=.env.pizza pnpm forecast:live
 
 # 只看推荐不下单
-ENV_FILE=.env.pizza pnpm pulse:recommend
+ENV_FILE=.env.pizza pnpm forecast:recommend
 
 # 指定分类
-ENV_FILE=.env.pizza pnpm pulse:live -- --category politics
+ENV_FILE=.env.pizza pnpm forecast:live -- --category politics
 
 # 复用已有 pulse 快照
-ENV_FILE=.env.pizza pnpm pulse:live -- --pulse-json runtime-artifacts/reports/pulse/.../pulse-xxx.json
+ENV_FILE=.env.pizza pnpm forecast:live -- --pulse-json runtime-artifacts/reports/pulse/.../pulse-xxx.json
 ```

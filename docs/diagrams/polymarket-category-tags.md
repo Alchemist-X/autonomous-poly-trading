@@ -19,12 +19,12 @@
 
 ```bash
 # 只看某个分类的市场
-pnpm pulse:recommend -- --category <slug>
+pnpm forecast:recommend -- --category <slug>
 
 # 示例
-pnpm pulse:recommend -- --category politics
-pnpm pulse:recommend -- --category tech
-pnpm pulse:recommend -- --category sports
+pnpm forecast:recommend -- --category politics
+pnpm forecast:recommend -- --category tech
+pnpm forecast:recommend -- --category sports
 ```
 
 ---

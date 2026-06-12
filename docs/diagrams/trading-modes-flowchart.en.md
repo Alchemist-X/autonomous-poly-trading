@@ -10,7 +10,7 @@ flowchart TD
   E --> F[Paper execution + local state update]
 
   B -->|live| G{Entry command}
-  G -->|pnpm pulse:live| H[Preflight]
+  G -->|pnpm forecast:live| H[Preflight]
   G -->|pnpm live:test| I[Preflight + DB/Redis/Queue Worker]
 
   H --> J[Generate or reuse Pulse]
@@ -50,7 +50,7 @@ flowchart LR
 
 ## Glossary
 
-- `Pulse Live`: `pnpm pulse:live` (default live trading)
+- `Pulse Live`: `pnpm forecast:live` (default live trading)
 - `Pre-Flight`: Pre-trade validation stage (not a standalone mode)
 - `House Direct`: `AGENT_DECISION_STRATEGY=pulse-direct`
 - `GTC`: Good Till Cancelled limit orders (disabled by default, `ENABLE_GTC_ORDERS=true`)

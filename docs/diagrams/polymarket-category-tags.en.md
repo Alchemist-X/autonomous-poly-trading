@@ -19,12 +19,12 @@ The tags themselves are official Polymarket data. The "which tag becomes the pri
 
 ```bash
 # Filter to a specific category
-pnpm pulse:recommend -- --category <slug>
+pnpm forecast:recommend -- --category <slug>
 
 # Examples
-pnpm pulse:recommend -- --category politics
-pnpm pulse:recommend -- --category tech
-pnpm pulse:recommend -- --category sports
+pnpm forecast:recommend -- --category politics
+pnpm forecast:recommend -- --category tech
+pnpm forecast:recommend -- --category sports
 ```
 
 ---
