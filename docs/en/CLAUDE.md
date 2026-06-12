@@ -117,13 +117,13 @@ For any user-visible change, close out with: **screenshot → read the image →
 
 ### 30-second must-read
 
-- **Live by default**: `pnpm daily:pulse` / `pnpm pulse:live` places real orders. To inspect without trading, you must explicitly pass `--recommend-only` or say "no orders" in the prompt.
-- **Default wallet**: `.env.pizza` (active account) — **this is the default, not hardcoded**. When deploying to a new machine or pairing a new agent with a different primary wallet, replace `.env.pizza` with your own env file and update the corresponding line in `skills/daily-pulse/agents/openai.yaml` (`use .env.pizza when no env is specified`). For ad-hoc wallet switches use `ENV_FILE=.env.<name>`. Preflight prints the current wallet address + collateral, abort immediately if it does not match expectation.
-- **Hard risk caps** (enforced at the executor service layer, no override): per-trade ≤ 15% bankroll / total exposure ≤ 80% / per-event ≤ 30% / max 22 positions / min $5 trade.
-- **Event-probability assessments must use Pulse (2026-05-08)**: any assessment involving event likelihood, fair probability, edge, win rate, or whether an event will happen must first run a read-only Pulse flow and cite the archive paths (`recommendation.json`, Pulse markdown, relevant evidence artifact). For existing-position reviews, use the position-only flow `ENV_FILE=.env.pizza pnpm pulse:positions -- --json` (or `pnpm pulse:live -- --recommend-only --positions-only`) so the run only refreshes evidence and probabilities for current holdings and does not scan/recommend new markets; only use `ENV_FILE=.env.pizza pnpm pulse:recommend` when the user explicitly asks for new opportunities. If there is no Pulse artifact, do not provide probability/edge numbers; explicitly mark it as "not evaluated".
-- **World Cup forecasting product = market-blind (user decision 2026-06-11, permanent)**: no stage of the public World Cup prediction pipeline (event list, analysis, reports, website) may read, cite, or display any market price / implied probability (Polymarket, FanDuel, DraftKings, Kalshi, etc.). Market data may only be used for event structure and resolution mapping (slug / conditionId / settlement rules). Cache writes strip price fields (`stripPrices` in `scripts/world-cup/cache-markets.ts` / `check-updates.ts`). Forecasts come only from statistical models (Elo / Monte Carlo) plus bounded evidence adjustments.
-- **Existing positions default to hold**: pulse-direct's Position Review module never closes positions blindly; every `hold` decision carries a reason. `reduce` / `close` requires contradicting evidence.
-- **`claude --print` occasionally hangs at 0 bytes for 5+ minutes** — that is not a failure. The Pulse render has a 30-minute internal timeout; let it finish.
+- **Live by default**: `pnpm daily:pulse` / `pnpm pulse:live` places real orders. To inspect without trading, explicitly pass `--recommend-only` or say so in the prompt.
+- **Default wallet**: `.env.pizza`. Preflight prints the current wallet address + collateral and aborts on mismatch; switch ad-hoc with `ENV_FILE=.env.<name>`. Deployment/wallet details: [`docs/diagrams/dev-reference.en.md`](../diagrams/dev-reference.en.md).
+- **Risk caps are env-tunable defaults, not a constitution**: per-trade ≤ 15% / total exposure ≤ 80% / per-event ≤ 30% / max 22 positions / min $5. When a more aggressive or conservative profile would serve better, **proactively propose retuning to the user** (see `.env.example` for the knobs); any change requires user confirmation and lands in env — the agent never edits parameters unilaterally and never bypasses the executor-layer trimming.
+- **Probabilities that orders rely on must come from the forecasting pipeline** (commands keep the `pulse:*` naming) with archives (`recommendation.json` / report markdown / evidence artifacts). Quick conversational estimates are allowed but must be labelled "not a trading basis". Position reviews: `ENV_FILE=.env.pizza pnpm pulse:positions -- --json`; new opportunities: `pnpm pulse:recommend`.
+- **Position exit rule: sell when net edge is negative.** If the review's fee-adjusted edge is < 0, reduce/close — no extra "contradicting evidence" needed; stop-loss keeps top priority.
+- **World Cup forecasting product = market-blind (user decision 2026-06-11, permanent)**: no stage of the public prediction pipeline may read, cite, or display market prices / implied probabilities; market data is for event structure and settlement mapping only (see `stripPrices` in `scripts/world-cup/`).
+- **Forecasting time / token costs are measured, not folklore**: see [`docs/diagrams/forecasting-cost-profile.en.md`](../diagrams/forecasting-cost-profile.en.md) (a live run ≈ 12–15 min, rendering is ~95% of it, a silent 0-byte stretch under 5 min is normal). Append fresh numbers after every session.
 
 ### Key paths
 
@@ -132,11 +132,11 @@ For any user-visible change, close out with: **screenshot → read the image →
 | **Read every time you take over** — current state + TODOs (updated at wrap-up) | [`docs/en/agent-handoff.md`](agent-handoff.md) |
 | **First contact only** (read once) | [`docs/en/agent-onboarding.md`](agent-onboarding.md) |
 | Full risk-control rules | [`docs/risk-controls.en.md`](../risk-controls.en.md) |
-| V2 cutover runbook (2026-04-28 11:00 UTC) | [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](../internal/plan/2026-04-28-v2-cutover-runbook.md) |
+| Forecasting cost profile | [`docs/diagrams/forecasting-cost-profile.en.md`](../diagrams/forecasting-cost-profile.en.md) |
 | Command cheatsheet / deployment / dependency matrix | [`docs/diagrams/dev-reference.en.md`](../diagrams/dev-reference.en.md) |
 | Wallet & account setup (4 fields) | README "Wallet and Account Setup" section |
 | Live run summary archive | `runtime-artifacts/pulse-live/<ts>-<runId>/run-summary.md` |
-| Pulse AI reasoning report | `runtime-artifacts/reports/pulse/YYYY/MM/DD/pulse-*.md` |
+| Forecasting AI reasoning report | `runtime-artifacts/reports/pulse/YYYY/MM/DD/pulse-*.md` |
 
 ### Wrap-up rituals
 

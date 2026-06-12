@@ -117,13 +117,13 @@
 
 ### 30 秒必读
 
-- **默认实盘下单**：`pnpm daily:pulse` / `pnpm pulse:live` 直接打真单。需要"只看不下单"必须显式加 `--recommend-only` 或在 prompt 里明说"不要下单"。
-- **默认钱包**：`.env.pizza`（活跃账户）—— **这是默认值，不是写死**。新部署或新 agent 接手到不同主钱包时，可以把 `.env.pizza` 替换成自己的 env 文件，并同步更新 `skills/daily-pulse/agents/openai.yaml` 里那行 `use .env.pizza when no env is specified`。临时切换钱包用 `ENV_FILE=.env.<name>`。preflight 会打印当前钱包地址 + collateral 余额，对不上立刻 abort。
-- **风控硬上限**（无法绕过，executor 服务层强制裁剪）：单笔 ≤ 15% bankroll / 总敞口 ≤ 80% / 单事件 ≤ 30% / 最多 22 仓 / 最小 $5。
-- **事件概率评估必须走 Pulse（2026-05-08）**：任何涉及事件可能性、fair probability、edge、胜率或是否发生的评估，都必须先跑 Pulse 只读流程并引用归档路径（`recommendation.json`、Pulse markdown、相关 evidence artifact）。评估已有持仓时必须用持仓专用流程 `ENV_FILE=.env.pizza pnpm pulse:positions -- --json`（或 `pnpm pulse:live -- --recommend-only --positions-only`），只针对当前持仓重新收集资料和分析概率，不扫描/推荐新市场；只有用户明确要求找新机会时才用 `ENV_FILE=.env.pizza pnpm pulse:recommend`。没有 Pulse 产物时不得给概率/edge 数字，只能明确标注"未评估"。
-- **世界杯预测产品 = 市场盲测（2026-06-11 用户决定，永久生效）**：世界杯公开预测管线（事件清单、分析、报告、网页）的任何环节**不得读取、引用或展示任何市场价格/隐含概率**（Polymarket、FanDuel、DraftKings、Kalshi 等一律在列）。市场数据只允许用事件结构与结算映射（slug / conditionId / 结算规则）。缓存写入时已强制剥离价格字段（`scripts/world-cup/cache-markets.ts` / `check-updates.ts` 的 `stripPrices`）。预测只能来自统计模型（Elo / Monte Carlo）+ 有界证据调整。
-- **现有持仓默认 hold**：pulse-direct 的 Position Review 模块不会乱平仓，每个 hold 决策都会带理由；`reduce` / `close` 必须有反向证据。
-- **claude --print 偶尔 0 字节挂 5+ 分钟**——不是失败。Pulse 渲染内部 timeout 是 30 分钟，等它出来。
+- **默认实盘下单**：`pnpm daily:pulse` / `pnpm pulse:live` 直接打真单。只看不下单必须显式加 `--recommend-only` 或在 prompt 里明说。
+- **默认钱包**：`.env.pizza`。preflight 会打印当前钱包地址 + collateral 余额，对不上立刻 abort；临时切换用 `ENV_FILE=.env.<name>`，部署与换钱包细节见 [`docs/diagrams/dev-reference.md`](docs/diagrams/dev-reference.md)。
+- **风控上限是 env 可调的默认值，不是宪法**：单笔 ≤ 15% / 总敞口 ≤ 80% / 单事件 ≤ 30% / 最多 22 仓 / 最小 $5。需要更激进或更保守时**主动向用户提出调参**（相关 env 见 `.env.example`）；任何调整必须经用户确认后写入 env——agent 不得擅自改参数，也不得绕过执行层裁剪。
+- **下单依据的概率必须出自 forecasting 流程**（命令沿用 `pulse:*` 命名）并带归档（`recommendation.json` / 报告 markdown / evidence artifact）。对话中的快速估计允许，但必须标注"非交易依据"。持仓复审：`ENV_FILE=.env.pizza pnpm pulse:positions -- --json`；找新机会：`pnpm pulse:recommend`。
+- **持仓退出标准：净 edge 为负就卖出**。复审算出的扣费后 edge < 0 即 reduce/close，不需要额外"反向证据"；stop-loss 优先级最高。
+- **世界杯预测产品 = 市场盲测（2026-06-11 用户决定，永久生效）**：公开预测管线任何环节不得读取、引用或展示市场价格/隐含概率；市场数据只用于事件结构与结算映射（实现见 `scripts/world-cup/` 的 `stripPrices`）。
+- **forecasting 流程的时间 / token 开销以实测为准**：见 [`docs/diagrams/forecasting-cost-profile.md`](docs/diagrams/forecasting-cost-profile.md)（一轮 live run ≈ 12–15 分钟，渲染占 95%，静默 0 字节 5 分钟内属正常）。每个 session 结束把新数据追加进去。
 
 ### 关键路径速查
 
@@ -132,11 +132,11 @@
 | **每次接手必看** — 当前状态 + 待办（wrap-up 时更新） | [`docs/agent-handoff.md`](docs/agent-handoff.md) |
 | **第一次接手才看**（仅一次） | [`docs/agent-onboarding.md`](docs/agent-onboarding.md) |
 | 风控完整规则 | [`docs/risk-controls.md`](docs/risk-controls.md) |
-| V2 cutover runbook（2026-04-28 11:00 UTC 切换日） | [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](docs/internal/plan/2026-04-28-v2-cutover-runbook.md) |
+| forecasting 流程开销画像 | [`docs/diagrams/forecasting-cost-profile.md`](docs/diagrams/forecasting-cost-profile.md) |
 | 命令速查 / 部署形态 / 依赖矩阵 | [`docs/diagrams/dev-reference.md`](docs/diagrams/dev-reference.md) |
-| 资金与账号配置（4 字段） | README "资金与账号配置" 节 |
+| 资金与账号配置（4 字段） | README "Wallet and Account Setup" 节 |
 | 实盘运行总结归档 | `runtime-artifacts/pulse-live/<ts>-<runId>/run-summary.md` |
-| Pulse AI 推理报告 | `runtime-artifacts/reports/pulse/YYYY/MM/DD/pulse-*.md` |
+| Forecasting AI 推理报告 | `runtime-artifacts/reports/pulse/YYYY/MM/DD/pulse-*.md` |
 
 ### Wrap-up 时必做
 
@@ -144,4 +144,4 @@
 - 用户说"记一下" / "save this" / "update handoff" 时立刻更新，不要等 wrap-up
 - handoff 文档保持精简：actionable 而不是流水账；细节进 git log 或 `docs/internal/review/`
 
-> **当前 P0 / P1 / P2 待办均已迁到 [`docs/agent-handoff.md`](docs/agent-handoff.md)**——这个本节不再维护任务列表，避免双源不一致。
+> **当前 P0 / P1 / P2 待办均已迁到 [`docs/agent-handoff.md`](docs/agent-handoff.md)**——本节不再维护任务列表，避免双源不一致。
