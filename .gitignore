@@ -49,6 +49,8 @@ runtime-artifacts/world-cup/*
 !runtime-artifacts/world-cup/bracket-prediction.json
 !runtime-artifacts/world-cup/run-ledger/
 !runtime-artifacts/world-cup/reports/
+!runtime-artifacts/world-cup/code-archive/
+__pycache__/
 run-error/
 output/
 .local/

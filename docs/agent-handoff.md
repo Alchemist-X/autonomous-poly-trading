@@ -11,7 +11,7 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-12 by Claude（Predict Raven 世界杯版上线 https://forecasting-agent.com（自定义域名，Cloudflare DNS-only 指向 Vercel；旧地址 web-one-sand-83.vercel.app 仍可用） ：87 题盲测预测、冠军/小组赛/出线名单三 tab、连线对阵树、渡鸦吉祥物品牌、全站中英切换 ?lang=en；AutoPoly 旧页面已全删；部署注意：vercel build 后须给 config.json 的 catch-all 路由补 check:true 再 deploy --prebuilt）
+> 最后更新：2026-06-12 by Claude（**最新**：pulse:* 命令已全局更名 forecast:*（旧名留作别名）；MC 淘汰赛点球规则被协作者质疑且已证实偏高——见下方"MC 淘汰赛模型核查"节，**待用户拍板是否重发数字**。此前：Predict Raven 世界杯版上线 https://forecasting-agent.com（自定义域名，Cloudflare DNS-only 指向 Vercel；旧地址 web-one-sand-83.vercel.app 仍可用） ：87 题盲测预测、冠军/小组赛/出线名单三 tab、连线对阵树、渡鸦吉祥物品牌、全站中英切换 ?lang=en；AutoPoly 旧页面已全删；部署注意：vercel build 后须给 config.json 的 catch-all 路由补 check:true 再 deploy --prebuilt）
 
 ---
 
@@ -39,6 +39,14 @@
 - 成本账本：`runtime-artifacts/world-cup/run-ledger/`（全部 claude-fable-5；生产 150 万 output tokens；单场中位 264s/14.2k out）
 - 对阵图：`bracket-prediction.json`（模态路径：决赛西班牙 56% 胜阿根廷）
 - 残余 TODO（已于 22:10-23:10 完成 AutoPoly 全站清除：交易面板页面/API/组件/数据文件 60+ 个文件删除，根路由重定向 /world-cup，R1 品牌元数据替换，线上已验证 14 个旧路由 404）；自定义域名未配；OG 卡未做；每晚 Elo 更新后重跑 MC 的自动化未建
+
+**🔬 MC 淘汰赛模型核查（2026-06-12，协作者质疑 → 已证实，待用户拍板是否修正重发）**：
+- **问题确认存在**：淘汰赛 90 分钟 Poisson 出平局后，点球/加时用 **Elo 期望 eA 当 Bernoulli 胜率**（`scripts/world-cup/mc-sim.py` 的 `ko_win_prob`：`win + ea*draw`）→ 强队优势被双重计入（进球模型一次、点球再一次；真实点球大战接近五五开）。叠加 λ 切分（λA=2.6·eA）本身比 Elo 期望分更"果断"，eA=0.70 的强队单轮过关概率被抬到 0.777（**+7.7pp/轮**），五轮淘汰赛复利。
+- **量化**（同 seed=20260611、100k 对照重跑）：西班牙冠军 **37.83%（已发布）→ 30.53%（点球=50/50）→ 27.29%（纯 Elo Bernoulli）**；阿根廷 24.41 → 21.27 → 19.44。协作者"怎么算都 <35%"由此完全解释。
+- **影响范围**：champion / reach-qf / reach-sf 三个池子 + 对阵图（`bracket-prediction.json`）+ 网站冠军页数字；**12 个组头名和 72 场单场预测不受影响**（前者只依赖小组赛，后者走 Davidson 三路模型）。
+- **澄清"平方平均"**：协作者的 Claude 提到的 √ 是单场模型里 Davidson 平局项 ν·√(pA·pB)（几何平均，标准做法，没问题）；MC 点球规则用的是裸 eA，两处是不同公式，别混淆。问题只在后者。
+- **MC 代码已补提交**：规范版 `scripts/world-cup/mc-sim.py`（路径已改仓库相对，**同 seed 逐位复现已发布 `mc-results.json`**，跑一次仅 ~5s）；当时的一次性生成脚本（reach-qf/sf 构建、champion 生成、确定性校验器等 9 个）原样归档在 `runtime-artifacts/world-cup/code-archive/`（注意：内含绝对路径，是出处留档不是可复用工具）。
+- [ ] **待用户决定**：是否改用 点球=50/50（或加时再给小幅 Elo 倾斜）重跑 MC 并重发 champion/reach-qf/reach-sf + 对阵图 + 网页数字。已发布报告的 局限② 其实自己写了"可能高估头号种子"。
 
 **原计划步骤（已全部执行）**：
 1. 等 workflow 完成（自动通知；或看目录数）
