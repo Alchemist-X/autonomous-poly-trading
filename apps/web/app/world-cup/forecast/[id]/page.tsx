@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllForecasts, getForecastByDir } from "../../../../lib/world-cup/forecast-store";
+import { langOf, withLang } from "../../../../lib/world-cup/i18n";
 import { mdToHtml } from "../../../../lib/world-cup/markdown";
 import reportsData from "../../../../lib/world-cup/generated/reports.generated.json";
 import styles from "../../../../components/world-cup/world-cup.module.css";
@@ -24,19 +25,20 @@ export default async function ForecastReportPage({
   searchParams: Promise<{ lang?: string }>;
 }) {
   const { id } = await params;
-  const { lang } = await searchParams;
+  const lang = langOf((await searchParams).lang);
   const forecast = getForecastByDir(id);
   if (!forecast) notFound();
 
   const reports = (reportsData as unknown as ReportsFile).reports[forecast.id];
   if (!reports) notFound();
-  const useEn = lang === "en" && reports.mdEn.length > 0;
+  // ja/es have no translated full report; they fall back to the English archive.
+  const useEn = lang !== "zh" && reports.mdEn.length > 0;
   const html = mdToHtml(useEn ? reports.mdEn : reports.mdCn);
 
   return (
     <div>
       <p className={styles.muted} style={{ marginTop: 24 }}>
-        <Link href={useEn ? "/world-cup?lang=en" : "/world-cup"} style={{ color: "#8a93a6" }}>
+        <Link href={withLang("/world-cup", lang)} style={{ color: "#8a93a6" }}>
           {useEn ? "← All forecasts" : "← 全部预测"}
         </Link>
         {" · "}

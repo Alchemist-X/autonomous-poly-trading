@@ -129,9 +129,7 @@ export default async function PredictionEnginePage({
       <WorldCupHeader />
       <div className={styles.container}>
         <section className={styles.peHero}>
-          <p className={styles.peKicker}>
-            {lang === "zh" ? "Forecasting Agent" : "Forecasting Agent"}
-          </p>
+          <p className={styles.peKicker}>Forecasting Agent</p>
           <h1 className={styles.peTitle}>
             {pe.title ?? (lang === "zh" ? "亲手运行一次 forecasting agent。" : "Run the forecasting agent yourself.")}
           </h1>

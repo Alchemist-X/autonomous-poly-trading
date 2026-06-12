@@ -57,9 +57,9 @@
 .headerNav {
   display: flex;
   align-items: center;
-  gap: 20px;
-  font-size: 14px;
-  font-weight: 500;
+  gap: 24px;
+  font-size: 15.5px;
+  font-weight: 600;
 }
 
 .headerNav a {
@@ -121,9 +121,9 @@
 }
 
 .tabLink {
-  padding: 9px 20px;
+  padding: 11px 26px;
   border-radius: 9px;
-  font-size: 14.5px;
+  font-size: 16px;
   font-weight: 600;
   color: #5b6472;
   text-decoration: none;
@@ -833,7 +833,7 @@
 /* ---------- prediction-engine intro (Apple-style) ---------- */
 
 .peHero {
-  padding: 84px 0 40px;
+  padding: 52px 0 30px;
   text-align: center;
 }
 
@@ -864,19 +864,19 @@
 .peSteps {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  margin: 48px 0 64px;
+  gap: 12px;
+  margin: 34px 0 18px;
 }
 
 .peStep {
   display: grid;
-  grid-template-columns: 96px 1fr;
-  gap: 26px;
+  grid-template-columns: 64px 1fr;
+  gap: 18px;
   align-items: start;
   background: #fff;
   border: 1px solid #e8eaf0;
-  border-radius: 24px;
-  padding: 34px 38px;
+  border-radius: 18px;
+  padding: 22px 26px;
 }
 
 @media (max-width: 640px) {
@@ -887,7 +887,7 @@
 }
 
 .peStepNum {
-  font-size: 44px;
+  font-size: 32px;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #d8dce4;
@@ -895,15 +895,15 @@
 }
 
 .peStepTitle {
-  font-size: 21px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.015em;
-  margin: 0 0 8px;
+  margin: 2px 0 6px;
 }
 
 .peStepCopy {
-  font-size: 15px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.65;
   color: #5b6472;
   margin: 0;
   max-width: 660px;
@@ -911,8 +911,8 @@
 
 .peStepTag {
   display: inline-block;
-  margin-top: 12px;
-  font-size: 12px;
+  margin-top: 9px;
+  font-size: 11.5px;
   font-weight: 600;
   color: #8a93a6;
   background: #f3f5f9;
@@ -1090,9 +1090,12 @@
 /* ---------- 2026-06-12 polish: brand, bigger nav/tabs, bracket layout ---------- */
 
 .brandLogo {
-  width: 26px;
-  height: 26px;
+  width: 42px;
+  height: 42px;
   align-self: center;
+  border-radius: 11px;
+  object-fit: cover;
+  box-shadow: 0 1px 4px rgba(15, 17, 21, 0.18);
 }
 
 .brandEd {
@@ -1103,17 +1106,6 @@
   border-radius: 999px;
   padding: 4px 12px;
   margin-left: 2px;
-}
-
-.headerNav {
-  font-size: 15.5px;
-  font-weight: 600;
-  gap: 24px;
-}
-
-.tabLink {
-  padding: 11px 26px;
-  font-size: 16px;
 }
 
 .roundColGroups {
@@ -1162,14 +1154,6 @@
 }
 
 /* ---------- 2026-06-12 v3: connectors, escalation, brand photo ---------- */
-
-.brandLogo {
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  object-fit: cover;
-  box-shadow: 0 1px 4px rgba(15, 17, 21, 0.18);
-}
 
 .ruleNote {
   font-size: 13.5px;
@@ -1285,6 +1269,7 @@
 }
 
 /* language dropdown */
+
 .langMenu {
   position: relative;
   margin-left: 8px;
@@ -1349,41 +1334,6 @@
 }
 
 /* ---------- PE page v2: compact steps, formula, workbench, sample run ---------- */
-
-.peHero {
-  padding: 52px 0 30px;
-}
-
-.peSteps {
-  gap: 12px;
-  margin: 34px 0 18px;
-}
-
-.peStep {
-  grid-template-columns: 64px 1fr;
-  gap: 18px;
-  padding: 22px 26px;
-  border-radius: 18px;
-}
-
-.peStepNum {
-  font-size: 32px;
-}
-
-.peStepTitle {
-  font-size: 18px;
-  margin: 2px 0 6px;
-}
-
-.peStepCopy {
-  font-size: 14px;
-  line-height: 1.65;
-}
-
-.peStepTag {
-  margin-top: 9px;
-  font-size: 11.5px;
-}
 
 .formulaCard {
   background: #fff;
