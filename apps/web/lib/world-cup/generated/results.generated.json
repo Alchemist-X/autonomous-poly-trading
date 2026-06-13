@@ -1,0 +1,732 @@
+{
+ "generatedAt": "2026-06-13T15:18:48.984Z",
+ "source": "polymarket-settlement",
+ "note": "Market-blind: settled winner + final score only — no prices or implied probabilities.",
+ "counts": {
+  "resolved": 4,
+  "pending": 68,
+  "total": 72
+ },
+ "results": {
+  "fifwc-alg-aut-2026-06-27": {
+   "event_slug": "fifwc-alg-aut-2026-06-27",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-arg-alg-2026-06-16": {
+   "event_slug": "fifwc-arg-alg-2026-06-16",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-arg-aut-2026-06-22": {
+   "event_slug": "fifwc-arg-aut-2026-06-22",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-aus-tur-2026-06-14": {
+   "event_slug": "fifwc-aus-tur-2026-06-14",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-aut-jor-2026-06-17": {
+   "event_slug": "fifwc-aut-jor-2026-06-17",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-bel-egy-2026-06-15": {
+   "event_slug": "fifwc-bel-egy-2026-06-15",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-bel-irn-2026-06-21": {
+   "event_slug": "fifwc-bel-irn-2026-06-21",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-bih-qat-2026-06-24": {
+   "event_slug": "fifwc-bih-qat-2026-06-24",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-bra-hai-2026-06-19": {
+   "event_slug": "fifwc-bra-hai-2026-06-19",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-bra-mar-2026-06-13": {
+   "event_slug": "fifwc-bra-mar-2026-06-13",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-can-bih-2026-06-12": {
+   "event_slug": "fifwc-can-bih-2026-06-12",
+   "status": "resolved",
+   "winner": "draw",
+   "homeGoals": 1,
+   "awayGoals": 1,
+   "score": "1-1",
+   "settledAt": "2026-06-12T21:52:33Z",
+   "source": "exact_score"
+  },
+  "fifwc-can-qat-2026-06-18": {
+   "event_slug": "fifwc-can-qat-2026-06-18",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-cdr-uzb-2026-06-27": {
+   "event_slug": "fifwc-cdr-uzb-2026-06-27",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-che-bih-2026-06-18": {
+   "event_slug": "fifwc-che-bih-2026-06-18",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-che-can-2026-06-24": {
+   "event_slug": "fifwc-che-can-2026-06-24",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-civ-ecu-2026-06-14": {
+   "event_slug": "fifwc-civ-ecu-2026-06-14",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-col-cdr-2026-06-23": {
+   "event_slug": "fifwc-col-cdr-2026-06-23",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-col-prt-2026-06-27": {
+   "event_slug": "fifwc-col-prt-2026-06-27",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-cvi-ksa-2026-06-26": {
+   "event_slug": "fifwc-cvi-ksa-2026-06-26",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-cze-mex-2026-06-24": {
+   "event_slug": "fifwc-cze-mex-2026-06-24",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-cze-rsa-2026-06-18": {
+   "event_slug": "fifwc-cze-rsa-2026-06-18",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-ecu-ger-2026-06-25": {
+   "event_slug": "fifwc-ecu-ger-2026-06-25",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-ecu-kor-2026-06-20": {
+   "event_slug": "fifwc-ecu-kor-2026-06-20",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-egy-irn-2026-06-26": {
+   "event_slug": "fifwc-egy-irn-2026-06-26",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-eng-gha-2026-06-23": {
+   "event_slug": "fifwc-eng-gha-2026-06-23",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-eng-hrv-2026-06-17": {
+   "event_slug": "fifwc-eng-hrv-2026-06-17",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-esp-cvi-2026-06-15": {
+   "event_slug": "fifwc-esp-cvi-2026-06-15",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-esp-ksa-2026-06-21": {
+   "event_slug": "fifwc-esp-ksa-2026-06-21",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-fra-irq-2026-06-22": {
+   "event_slug": "fifwc-fra-irq-2026-06-22",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-fra-sen-2026-06-16": {
+   "event_slug": "fifwc-fra-sen-2026-06-16",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-ger-civ-2026-06-20": {
+   "event_slug": "fifwc-ger-civ-2026-06-20",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-ger-kor-2026-06-14": {
+   "event_slug": "fifwc-ger-kor-2026-06-14",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-gha-pan-2026-06-17": {
+   "event_slug": "fifwc-gha-pan-2026-06-17",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-hai-sco-2026-06-13": {
+   "event_slug": "fifwc-hai-sco-2026-06-13",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-hrv-gha-2026-06-27": {
+   "event_slug": "fifwc-hrv-gha-2026-06-27",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-irn-nzl-2026-06-15": {
+   "event_slug": "fifwc-irn-nzl-2026-06-15",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-irq-nor-2026-06-16": {
+   "event_slug": "fifwc-irq-nor-2026-06-16",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-jor-alg-2026-06-22": {
+   "event_slug": "fifwc-jor-alg-2026-06-22",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-jor-arg-2026-06-27": {
+   "event_slug": "fifwc-jor-arg-2026-06-27",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-jpn-swe-2026-06-25": {
+   "event_slug": "fifwc-jpn-swe-2026-06-25",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-kor-civ-2026-06-25": {
+   "event_slug": "fifwc-kor-civ-2026-06-25",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-kr-cze-2026-06-11": {
+   "event_slug": "fifwc-kr-cze-2026-06-11",
+   "status": "resolved",
+   "winner": "a",
+   "homeGoals": 2,
+   "awayGoals": 1,
+   "score": "2-1",
+   "settledAt": "2026-06-12T04:43:03Z",
+   "source": "exact_score"
+  },
+  "fifwc-ksa-ury-2026-06-15": {
+   "event_slug": "fifwc-ksa-ury-2026-06-15",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-mar-hai-2026-06-24": {
+   "event_slug": "fifwc-mar-hai-2026-06-24",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-mex-kr-2026-06-18": {
+   "event_slug": "fifwc-mex-kr-2026-06-18",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-mex-rsa-2026-06-11": {
+   "event_slug": "fifwc-mex-rsa-2026-06-11",
+   "status": "resolved",
+   "winner": "a",
+   "homeGoals": 2,
+   "awayGoals": 0,
+   "score": "2-0",
+   "settledAt": "2026-06-11T21:54:57Z",
+   "source": "exact_score"
+  },
+  "fifwc-nld-jpn-2026-06-14": {
+   "event_slug": "fifwc-nld-jpn-2026-06-14",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-nld-swe-2026-06-20": {
+   "event_slug": "fifwc-nld-swe-2026-06-20",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-nor-fra-2026-06-26": {
+   "event_slug": "fifwc-nor-fra-2026-06-26",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-nor-sen-2026-06-22": {
+   "event_slug": "fifwc-nor-sen-2026-06-22",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-nzl-bel-2026-06-26": {
+   "event_slug": "fifwc-nzl-bel-2026-06-26",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-nzl-egy-2026-06-21": {
+   "event_slug": "fifwc-nzl-egy-2026-06-21",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-pan-eng-2026-06-27": {
+   "event_slug": "fifwc-pan-eng-2026-06-27",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-pan-hrv-2026-06-23": {
+   "event_slug": "fifwc-pan-hrv-2026-06-23",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-par-aus-2026-06-25": {
+   "event_slug": "fifwc-par-aus-2026-06-25",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-prt-cdr-2026-06-17": {
+   "event_slug": "fifwc-prt-cdr-2026-06-17",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-prt-uzb-2026-06-23": {
+   "event_slug": "fifwc-prt-uzb-2026-06-23",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-qat-che-2026-06-13": {
+   "event_slug": "fifwc-qat-che-2026-06-13",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-rsa-kr-2026-06-24": {
+   "event_slug": "fifwc-rsa-kr-2026-06-24",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-sco-bra-2026-06-24": {
+   "event_slug": "fifwc-sco-bra-2026-06-24",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-sco-mar-2026-06-19": {
+   "event_slug": "fifwc-sco-mar-2026-06-19",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-sen-irq-2026-06-26": {
+   "event_slug": "fifwc-sen-irq-2026-06-26",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-swe-tun-2026-06-14": {
+   "event_slug": "fifwc-swe-tun-2026-06-14",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-tun-jpn-2026-06-21": {
+   "event_slug": "fifwc-tun-jpn-2026-06-21",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-tun-nld-2026-06-25": {
+   "event_slug": "fifwc-tun-nld-2026-06-25",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-tur-par-2026-06-19": {
+   "event_slug": "fifwc-tur-par-2026-06-19",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-tur-usa-2026-06-25": {
+   "event_slug": "fifwc-tur-usa-2026-06-25",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-ury-cvi-2026-06-21": {
+   "event_slug": "fifwc-ury-cvi-2026-06-21",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-ury-esp-2026-06-26": {
+   "event_slug": "fifwc-ury-esp-2026-06-26",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-usa-aus-2026-06-19": {
+   "event_slug": "fifwc-usa-aus-2026-06-19",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  },
+  "fifwc-usa-par-2026-06-12": {
+   "event_slug": "fifwc-usa-par-2026-06-12",
+   "status": "resolved",
+   "winner": "a",
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": "2026-06-13T05:49:27Z",
+   "source": "moneyline"
+  },
+  "fifwc-uzb-col-2026-06-17": {
+   "event_slug": "fifwc-uzb-col-2026-06-17",
+   "status": "pending",
+   "winner": null,
+   "homeGoals": null,
+   "awayGoals": null,
+   "score": null,
+   "settledAt": null,
+   "source": null
+  }
+ }
+}

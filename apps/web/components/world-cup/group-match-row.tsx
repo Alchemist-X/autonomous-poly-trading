@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { contentFor, type Forecast } from "../../lib/world-cup/forecast-store";
+import { contentFor, type Forecast, type MatchResult } from "../../lib/world-cup/forecast-store";
 import { t, teamLabel, tierLabel, withLang, type Lang } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
 
@@ -19,12 +19,14 @@ export function GroupMatchRow({
   forecast,
   home,
   away,
-  lang
+  lang,
+  result
 }: {
   forecast: Forecast;
   home: TeamView;
   away: TeamView;
   lang: Lang;
+  result?: MatchResult | null;
 }) {
   const [open, setOpen] = useState(false);
   const byKey = Object.fromEntries(forecast.outcomes.map((o) => [o.key, o.p]));
@@ -32,15 +34,21 @@ export function GroupMatchRow({
   const pD = byKey.draw ?? 0;
   const pB = byKey.b ?? 0;
   const top = Math.max(pA, pD, pB);
+  const pickKey = top === pA ? "a" : top === pB ? "b" : "draw";
   const name = (team: TeamView) => teamLabel(team, lang);
   const content = contentFor(forecast, lang);
   const pick =
-    top === pA
+    pickKey === "a"
       ? `${name(home)}${t(lang, "winSuffix")} ${Math.round(pA * 100)}%`
-      : top === pB
+      : pickKey === "b"
         ? `${name(away)}${t(lang, "winSuffix")} ${Math.round(pB * 100)}%`
         : `${t(lang, "draw")} ${Math.round(pD * 100)}%`;
   const date = forecast.event_slug.match(/(\d{2}-\d{2})$/)?.[1]?.replace("-", "/") ?? "";
+
+  // Settled fixture: show the final score and a green ✅ when reality matched
+  // the model's best pick (market-blind settlement mapping — no prices).
+  const settled = result?.status === "resolved";
+  const hit = settled && result?.winner === pickKey;
 
   return (
     <div className={styles.matchRow}>
@@ -50,7 +58,16 @@ export function GroupMatchRow({
           {name(home)}
         </span>
         <span className={styles.matchMid}>
-          <span className={styles.matchDate}>6/{date.split("/")[1] ?? date}</span>
+          {settled ? (
+            <span className={styles.scoreRow}>
+              <span className={styles.scoreBadge}>
+                {result?.score ? result.score.replace("-", " – ") : "—"}
+              </span>
+              <span className={styles.finalTag}>{t(lang, "finalTag")}</span>
+            </span>
+          ) : (
+            <span className={styles.matchDate}>6/{date.split("/")[1] ?? date}</span>
+          )}
           <span className={styles.triBar} aria-hidden>
             <span className={`${styles.triW} ${top !== pA ? styles.triDim : ""}`} style={{ width: `${pA * 100}%` }} />
             <span className={`${styles.triD} ${top !== pD ? styles.triDim : ""}`} style={{ width: `${pD * 100}%` }} />
@@ -63,7 +80,14 @@ export function GroupMatchRow({
             </span>
             <span>{Math.round(pB * 100)}</span>
           </span>
-          <span className={styles.pickChip}>{pick}</span>
+          <span className={`${styles.pickChip} ${settled ? (hit ? styles.pickHit : styles.pickMiss) : ""}`}>
+            {pick}
+            {settled ? (
+              <span className={styles.pickMark} title={t(lang, hit ? "pickHit" : "pickMiss")} aria-label={t(lang, hit ? "pickHit" : "pickMiss")}>
+                {hit ? " ✅" : " ✕"}
+              </span>
+            ) : null}
+          </span>
         </span>
         <span className={`${styles.teamSide} ${styles.teamSideAway}`}>
           {name(away)}

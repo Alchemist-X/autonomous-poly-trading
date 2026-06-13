@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { DISCLAIMER_SHORT } from "../../../lib/legal-copy";
-import { getByFamily, sortedOutcomes, type Forecast } from "../../../lib/world-cup/forecast-store";
+import { getByFamily, getResult, sortedOutcomes, type Forecast } from "../../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../../lib/world-cup/team-meta";
 import { langOf, t, teamLabel, withLang } from "../../../lib/world-cup/i18n";
 import { GroupMatchRow } from "../../../components/world-cup/group-match-row";
@@ -51,7 +51,14 @@ export default async function GroupsPage({ searchParams }: { searchParams: Promi
               {[...ms]
                 .sort((a, b) => (a.kickoff_utc ?? "").localeCompare(b.kickoff_utc ?? ""))
                 .map((m) => (
-                  <GroupMatchRow key={m.id} forecast={m} home={teamOf(m, "a")} away={teamOf(m, "b")} lang={lang} />
+                  <GroupMatchRow
+                    key={m.id}
+                    forecast={m}
+                    home={teamOf(m, "a")}
+                    away={teamOf(m, "b")}
+                    lang={lang}
+                    result={getResult(m.event_slug)}
+                  />
                 ))}
             </section>
           );

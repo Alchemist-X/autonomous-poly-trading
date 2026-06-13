@@ -116,7 +116,10 @@ export const STR = {
   reportFallback: {
     zh: "完整报告以中文/英文存档。",
     en: "Full report available in English below; card content is localized."
-  }
+  },
+  finalTag: { zh: "完场", en: "FT" },
+  pickHit: { zh: "预测命中", en: "Pick hit" },
+  pickMiss: { zh: "预测未中", en: "Pick missed" }
 } as const;
 
 export type StrKey = keyof typeof STR;
