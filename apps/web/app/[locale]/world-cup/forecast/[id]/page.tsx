@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllForecasts, getForecastByDir } from "../../../../../lib/world-cup/forecast-store";
-import { LOCALES, localeOf, withLocale } from "../../../../../lib/world-cup/i18n";
+import { LOCALES, localeOf, t, withLocale } from "../../../../../lib/world-cup/i18n";
 import { mdToHtml } from "../../../../../lib/world-cup/markdown";
 import reportsData from "../../../../../lib/world-cup/generated/reports.generated.json";
 import styles from "../../../../../components/world-cup/world-cup.module.css";
@@ -41,14 +41,14 @@ export default async function ForecastReportPage({
     <div>
       <p className={styles.muted} style={{ marginTop: 24 }}>
         <Link href={withLocale("/world-cup", locale)} style={{ color: "#8a93a6" }}>
-          {useEn ? "← All forecasts" : "← 全部预测"}
+          {t(locale, "backToForecasts")}
         </Link>
         {" · "}
         <Link href={withLocale(`/world-cup/forecast/${forecast.dir}`, otherLocale)} style={{ color: "#8a93a6" }}>
           {useEn ? "中文版" : "English"}
         </Link>
         {" · "}
-        {useEn ? "forecast time" : "预测时间"} {forecast.generated_at.slice(0, 16).replace("T", " ")} UTC
+        {t(locale, "forecastTime")} {forecast.generated_at.slice(0, 16).replace("T", " ")} UTC
       </p>
       <article className={styles.reportProse} dangerouslySetInnerHTML={{ __html: html }} />
     </div>
