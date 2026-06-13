@@ -1,0 +1,85 @@
+# deploy/world-cup-results.cron.example
+#
+# Daily refresh + publish of the World Cup group-stage results
+# (forecasting-agent.com/world-cup/groups): re-read Polymarket settlement,
+# rebuild the static site, deploy to production. Runs `scripts/world-cup/daily-results.sh`.
+#
+# What it does each run:
+#   1. pnpm wc:results  → settled winner + final score into
+#      apps/web/lib/world-cup/generated/results.generated.json  (market-blind:
+#      settlement mapping only, no prices). Credential-free.
+#   2. scripts/world-cup/deploy-web.sh → vercel build + deploy to production,
+#      but ONLY if a Vercel credential is available (otherwise a loud WARN; the
+#      local data is still refreshed). No silent degradation (repo §6).
+#
+# Cadence: 1×/day. Picked 10:00 local so the prior day's matches have kicked off
+# and settled on Polymarket before we publish. A match that finishes late shows
+# up on the next morning's run.
+#
+# ## ACTIVE scheduler (this machine): Claude Code /schedule routine
+#
+#   Task id: world-cup-daily-results  (daily ~10:00 local)
+#   Stored:  ~/.claude/scheduled-tasks/world-cup-daily-results/SKILL.md
+#   It runs `bash scripts/world-cup/daily-results.sh` and reports the result.
+#   Manage it from the app's "Scheduled" sidebar (list / Run now / pause / edit).
+#   Note: it fires only while the app is open; if closed at 10:00 it runs on the
+#   next launch. First run prompts once for Bash permission — click "Run now" to
+#   pre-approve so future runs don't pause.
+#
+# The launchd / crontab recipes below are EQUIVALENT ALTERNATIVES for a headless
+# host (server, always-on box) that should run the job without the desktop app.
+# Use ONE scheduler only — don't enable both or the site deploys twice a day.
+#
+# ## Prerequisites
+#
+#   - Toolchain on PATH: node, pnpm, vercel (Homebrew → /opt/homebrew/bin).
+#   - Vercel auth for unattended deploy. Either is fine:
+#       * `vercel login` once (token persists in
+#         ~/Library/Application Support/com.vercel.cli/auth.json), OR
+#       * export VERCEL_TOKEN=... in the job's environment (more robust — survives
+#         `vercel logout`). If you use a token, add it to a gitignored env file
+#         and `source` it at the top of daily-results.sh.
+#
+# ## Dry-run once before scheduling
+#
+#     cd /Users/Aincrad/dev-proj/predict-raven
+#     bash scripts/world-cup/daily-results.sh
+#
+#   Verify: exit code 0, results.generated.json counts updated, the live
+#   /world-cup/groups page reflects the latest settled matches.
+#
+# ============================================================================
+# OPTION A — launchd  (recommended on macOS; this is what's installed)
+# ============================================================================
+#
+# Agent file (already written):
+#   ~/Library/LaunchAgents/com.predict-raven.wc-results.plist
+#
+# Install / load:
+#   launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.predict-raven.wc-results.plist
+#
+# Fire one run now (test):
+#   launchctl kickstart -k gui/$(id -u)/com.predict-raven.wc-results
+#
+# Status / logs:
+#   launchctl print gui/$(id -u)/com.predict-raven.wc-results | grep -E 'state|last exit'
+#   tail -f runtime-artifacts/world-cup/results-cron.log
+#
+# Change the time: edit StartCalendarInterval (Hour/Minute) in the plist, then
+#   launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.predict-raven.wc-results.plist
+#   launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.predict-raven.wc-results.plist
+#
+# Disable (stop scheduling, keep the file):
+#   launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.predict-raven.wc-results.plist
+#
+# ============================================================================
+# OPTION B — crontab  (portable; Linux / non-launchd hosts)
+# ============================================================================
+#
+# Append to `crontab -e`. Substitute REPO_ROOT. `env -i` keeps HOME (for vercel
+# auth) and a sane PATH; the script pins PATH again itself.
+#
+# REPO_ROOT=/Users/Aincrad/dev-proj/predict-raven    # ← edit this
+# 0 10 * * * cd "$REPO_ROOT" && /usr/bin/env -i HOME="$HOME" PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin bash scripts/world-cup/daily-results.sh >> "$REPO_ROOT/runtime-artifacts/world-cup/results-cron.log" 2>&1
+#
+# Disable: comment out the line above (prefix with `#`).
