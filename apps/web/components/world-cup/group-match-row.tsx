@@ -37,12 +37,15 @@ export function GroupMatchRow({
   const pickKey = top === pA ? "a" : top === pB ? "b" : "draw";
   const name = (team: TeamView) => teamLabel(team, locale);
   const content = contentFor(forecast, locale);
-  const pick =
+  // Split into a shrinkable name part and a fixed percent so the chip can
+  // ellipsize long team names on phones without ever clipping the number.
+  const pickName =
     pickKey === "a"
-      ? `${name(home)}${t(locale, "winSuffix")} ${Math.round(pA * 100)}%`
+      ? `${name(home)}${t(locale, "winSuffix")}`
       : pickKey === "b"
-        ? `${name(away)}${t(locale, "winSuffix")} ${Math.round(pB * 100)}%`
-        : `${t(locale, "draw")} ${Math.round(pD * 100)}%`;
+        ? `${name(away)}${t(locale, "winSuffix")}`
+        : t(locale, "draw");
+  const pickPct = pickKey === "a" ? pA : pickKey === "b" ? pB : pD;
   const date = forecast.event_slug.match(/(\d{2}-\d{2})$/)?.[1]?.replace("-", "/") ?? "";
 
   // Settled fixture: show the final score and a green ✅ when reality matched
@@ -55,7 +58,7 @@ export function GroupMatchRow({
       <button type="button" className={styles.matchTop} onClick={() => setOpen((v) => !v)} aria-expanded={open}>
         <span className={styles.teamSide}>
           <span className={styles.teamFlag}>{home.flag}</span>
-          {name(home)}
+          <span className={styles.teamName}>{name(home)}</span>
         </span>
         <span className={styles.matchMid}>
           {settled ? (
@@ -81,16 +84,17 @@ export function GroupMatchRow({
             <span>{Math.round(pB * 100)}</span>
           </span>
           <span className={`${styles.pickChip} ${settled ? (hit ? styles.pickHit : styles.pickMiss) : ""}`}>
-            {pick}
+            <span className={styles.pickName}>{pickName}</span>
+            <span className={styles.pickPct}>{Math.round(pickPct * 100)}%</span>
             {settled ? (
               <span className={styles.pickMark} title={t(locale, hit ? "pickHit" : "pickMiss")} aria-label={t(locale, hit ? "pickHit" : "pickMiss")}>
-                {hit ? " ✅" : " ✕"}
+                {hit ? "✅" : "✕"}
               </span>
             ) : null}
           </span>
         </span>
         <span className={`${styles.teamSide} ${styles.teamSideAway}`}>
-          {name(away)}
+          <span className={styles.teamName}>{name(away)}</span>
           <span className={styles.teamFlag}>{away.flag}</span>
         </span>
       </button>
