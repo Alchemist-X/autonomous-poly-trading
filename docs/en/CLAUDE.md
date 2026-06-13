@@ -76,6 +76,7 @@ Last updated: 2026-06-12
 - Silent degradation or quiet fallback after a critical check fails is not allowed.
 - When internal limits, external thresholds, missing permissions, or environment conditions guarantee failure, warn explicitly and surface both the internal and external constraints.
 - Single state source; whenever environment / account / wallet / dataset / working directory / state file is involved, print the value actually in use.
+- **Concurrent sessions / agents on the same repo must each use a separate git worktree** (learned the hard way on 2026-06-14): never run `git checkout` / `stash` / `reset` from multiple Claude sessions in the same working directory — they clobber each other's working tree and drop uncommitted changes. Before starting, confirm you own the working directory exclusively, or `git worktree add ../<name> -b <branch>` into an isolated directory first.
 - If environment / account / multi-state-file mixing is detected, warn and suggest a fix.
 - Fallback configuration must be clearly labelled as fallback, never disguised as live truth.
 - For user-visible critical changes, do not declare success based on exit code alone; verify real behaviour matches expectations.

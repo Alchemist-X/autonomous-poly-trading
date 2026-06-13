@@ -1,4 +1,4 @@
-import { t, type Lang } from "../../lib/world-cup/i18n";
+import { t, type Locale } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
 
 // Typeset baseline formulas (Davidson three-way Elo + bounded Bayesian
@@ -29,11 +29,11 @@ const Root = (
   </span>
 );
 
-export function FormulaCard({ lang }: { lang: Lang }) {
+export function FormulaCard({ locale }: { locale: Locale }) {
   return (
     <section className={styles.formulaCard}>
       <h2 className={styles.panelTitle} style={{ marginBottom: 14 }}>
-        {t(lang, "formulaTitle")}
+        {t(locale, "formulaTitle")}
       </h2>
       <div className={styles.formulaRow}>
         <span className={styles.formulaPiece}>
@@ -49,7 +49,7 @@ export function FormulaCard({ lang }: { lang: Lang }) {
           p<sub>final</sub> = norm(p<sub>stat</sub> + Δ<sub>evidence</sub>)
         </span>
       </div>
-      <p className={styles.formulaLegend}>{t(lang, "formulaLegend")}</p>
+      <p className={styles.formulaLegend}>{t(locale, "formulaLegend")}</p>
     </section>
   );
 }

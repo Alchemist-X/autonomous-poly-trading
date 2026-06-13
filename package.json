@@ -31,6 +31,8 @@
     "prediction:invite": "pnpm --filter @autopoly/db build && tsx scripts/prediction-invite.ts",
     "managed:forecast": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && tsx scripts/managed-pulse.ts",
     "poly:cache-order-limits": "tsx scripts/cache-polymarket-order-limits.ts",
+    "wc:results": "tsx scripts/world-cup/update-results.ts",
+    "wc:gen-tw": "tsx scripts/world-cup/gen-traditional.ts",
     "db:generate": "pnpm --filter @autopoly/db drizzle-kit generate",
     "db:migrate": "pnpm --filter @autopoly/db drizzle-kit migrate",
     "db:seed": "pnpm --filter @autopoly/db seed",
@@ -53,6 +55,7 @@
   "devDependencies": {
     "@types/node": "25.5.0",
     "concurrently": "9.2.1",
+    "opencc-js": "^1.3.1",
     "playwright": "1.56.1",
     "tsx": "4.20.6",
     "typescript": "5.9.3",

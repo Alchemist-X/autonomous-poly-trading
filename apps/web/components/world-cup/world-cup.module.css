@@ -503,6 +503,48 @@
   font-size: 11.5px;
   font-weight: 700;
   color: #1d4ed8;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* settled-result display (group match rows) */
+
+.scoreRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scoreBadge {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f1115;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.finalTag {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a93a6;
+  background: #eef0f4;
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+
+.pickHit {
+  color: #15803d;
+}
+
+.pickMiss {
+  color: #94a0b0;
+}
+
+.pickMark {
+  font-size: 11px;
 }
 
 .matchDetail {
@@ -1547,4 +1589,171 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
   color: #5b6472;
+}
+
+/* ============================================================
+   2026-06-13 responsive pass — phone / tablet breakpoints.
+   Fixes: header forcing page-wide horizontal scroll, group
+   match rows wrapping CJK names per-character, champion flag
+   cloud overlap, report tables overflowing, touch targets.
+   ============================================================ */
+
+/* ---------- tablet ---------- */
+@media (max-width: 820px) {
+  .container {
+    padding: 0 18px;
+  }
+  .hero {
+    padding: 34px 0 8px;
+  }
+  .sampleOutcome {
+    grid-template-columns: minmax(96px, 150px) 1fr 56px;
+  }
+}
+
+/* ---------- phone: header (the page-wide overflow source) ---------- */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 16px;
+  }
+  /* brand on row 1, full-width nav on row 2 — no horizontal overflow */
+  .headerRow {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    padding: 10px 0;
+  }
+  .brand {
+    font-size: 17px;
+    gap: 9px;
+    white-space: nowrap;
+  }
+  .brandLogo {
+    width: 32px;
+    height: 32px;
+  }
+  .brandEd {
+    font-size: 11.5px;
+    padding: 3px 8px;
+  }
+  .headerNav {
+    flex: 1 1 100%;
+    gap: 16px;
+    font-size: 14px;
+    justify-content: space-between;
+  }
+  .ghLabel {
+    display: none; /* keep the GitHub icon, drop the long text */
+  }
+  .langMenu {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+  }
+  .headerNav a,
+  .langToggle {
+    padding-top: 4px;
+    padding-bottom: 4px; /* roomier touch targets */
+  }
+  .hero {
+    padding: 26px 0 6px;
+  }
+  .heroSub {
+    font-size: 15px;
+  }
+}
+
+/* ---------- phone: group match rows ---------- */
+@media (max-width: 560px) {
+  .groupCard {
+    padding: 16px 14px 6px;
+  }
+  .matchTop {
+    gap: 7px;
+  }
+  .matchMid {
+    min-width: 112px;
+  }
+  .triBar,
+  .triLabels {
+    width: 112px;
+  }
+  .teamSide {
+    font-size: 13px;
+    gap: 5px;
+    line-height: 1.25;
+  }
+  .teamFlag {
+    font-size: 17px;
+  }
+  .triLabels {
+    font-size: 10px;
+  }
+  .pickChip {
+    font-size: 11px;
+  }
+  .scoreBadge {
+    font-size: 12.5px;
+  }
+  .groupName {
+    font-size: 16px;
+  }
+  .winnerStrip {
+    font-size: 11.5px;
+    padding: 4px 9px;
+  }
+}
+
+/* ---------- phone: champion flag cloud → clean rank list ---------- */
+@media (max-width: 560px) {
+  .flagCloud {
+    display: none; /* absolute-positioned cloud overlaps below ~560px */
+  }
+  .rankList {
+    max-height: none; /* no nested scroll — let the page scroll */
+    border-radius: 16px;
+  }
+  .rankRow {
+    grid-template-columns: 24px 26px 1fr 48px;
+    gap: 8px;
+  }
+}
+
+/* ---------- phone: report detail (markdown) ---------- */
+@media (max-width: 640px) {
+  .reportProse {
+    font-size: 14.5px;
+  }
+  .reportProse h1 {
+    font-size: 25px;
+  }
+  .reportProse h2 {
+    font-size: 18px;
+  }
+  /* let wide tables scroll inside their own box instead of the page */
+  .reportProse table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* bracket bleed margins must track the reduced container padding */
+  .bracketScroll {
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* ---------- narrow phones ---------- */
+@media (max-width: 380px) {
+  .brandEd {
+    display: none; /* keep the wordmark, drop the edition pill */
+  }
+  .headerNav {
+    gap: 13px;
+    font-size: 13.5px;
+  }
+  .tabLink {
+    padding: 10px 18px;
+    font-size: 15px;
+  }
 }

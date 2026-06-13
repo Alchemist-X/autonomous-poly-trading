@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { langOf, t, withLang, type StrKey } from "../../lib/world-cup/i18n";
+import { usePathname } from "next/navigation";
+import { localeFromPath, stripLocale, t, withLocale, type StrKey } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
 
 const TABS: ReadonlyArray<{ href: string; key: StrKey }> = [
@@ -13,17 +13,17 @@ const TABS: ReadonlyArray<{ href: string; key: StrKey }> = [
 
 export function TabNav() {
   const pathname = usePathname();
-  const params = useSearchParams();
-  const lang = langOf(params.get("lang") ?? undefined);
+  const locale = localeFromPath(pathname);
+  const current = stripLocale(pathname);
   return (
     <nav className={styles.tabNav} aria-label="forecast sections">
       {TABS.map((tab) => (
         <Link
           key={tab.href}
-          href={withLang(tab.href, lang)}
-          className={`${styles.tabLink} ${pathname === tab.href ? styles.tabActive : ""}`}
+          href={withLocale(tab.href, locale)}
+          className={`${styles.tabLink} ${current === tab.href ? styles.tabActive : ""}`}
         >
-          {t(lang, tab.key)}
+          {t(locale, tab.key)}
         </Link>
       ))}
     </nav>
