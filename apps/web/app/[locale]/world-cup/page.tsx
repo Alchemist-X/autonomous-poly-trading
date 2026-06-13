@@ -1,10 +1,14 @@
 import Link from "next/link";
-import { DISCLAIMER_SHORT } from "../../lib/legal-copy";
-import { contentFor, getByFamily, sortedOutcomes } from "../../lib/world-cup/forecast-store";
-import { resolveTeam } from "../../lib/world-cup/team-meta";
-import { langOf, t, teamLabel, tierLabel, withLang } from "../../lib/world-cup/i18n";
-import { WcHero } from "../../components/world-cup/wc-hero";
-import styles from "../../components/world-cup/world-cup.module.css";
+import { DISCLAIMER_SHORT } from "../../../lib/legal-copy";
+import { contentFor, getByFamily, sortedOutcomes } from "../../../lib/world-cup/forecast-store";
+import { resolveTeam } from "../../../lib/world-cup/team-meta";
+import { isZh, LOCALES, localeOf, t, teamLabel, tierLabel, withLocale } from "../../../lib/world-cup/i18n";
+import { WcHero } from "../../../components/world-cup/wc-hero";
+import styles from "../../../components/world-cup/world-cup.module.css";
+
+export function generateStaticParams(): Array<{ locale: string }> {
+  return LOCALES.map((l) => ({ locale: l.code }));
+}
 
 // 冠军 tab — flag-cloud display of champion probabilities + full 48-team
 // ranking. Every number is our own market-blind model output.
@@ -20,18 +24,18 @@ function pct(p: number): string {
   return `${(p * 100).toFixed(2)}%`;
 }
 
-export default async function ChampionPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
-  const lang = langOf((await searchParams).lang);
+export default async function ChampionPage({ params }: { params: Promise<{ locale: string }> }) {
+  const locale = localeOf((await params).locale);
   const champion = getByFamily("champion")[0];
   const outcomes = champion ? sortedOutcomes(champion) : [];
   const cloud = outcomes.slice(0, CLOUD_SLOTS.length);
-  const detailHref = champion ? withLang(`/world-cup/forecast/${champion.dir}`, lang) : "#";
-  const teamName = (key: string) => teamLabel(resolveTeam(key), lang);
-  const content = champion ? contentFor(champion, lang) : null;
+  const detailHref = champion ? withLocale(`/world-cup/forecast/${champion.dir}`, locale) : "#";
+  const teamName = (key: string) => teamLabel(resolveTeam(key), locale);
+  const content = champion ? contentFor(champion, locale) : null;
 
   return (
     <div>
-      <WcHero lang={lang} subKey="subChampion" />
+      <WcHero locale={locale} subKey="subChampion" />
 
       {champion ? (
         <div className={styles.champLayout}>
@@ -56,7 +60,7 @@ export default async function ChampionPage({ searchParams }: { searchParams: Pro
                 </Link>
               );
             })}
-            <span className={styles.cloudNote}>{t(lang, "cloudNote")}</span>
+            <span className={styles.cloudNote}>{t(locale, "cloudNote")}</span>
           </div>
 
           <div className={styles.rankList}>
@@ -83,13 +87,13 @@ export default async function ChampionPage({ searchParams }: { searchParams: Pro
         </div>
       ) : (
         <div className={styles.panel}>
-          <p className={styles.muted}>{t(lang, "importing")}</p>
+          <p className={styles.muted}>{t(locale, "importing")}</p>
         </div>
       )}
 
       {champion ? (
         <>
-          <h2 className={styles.sectionTitle}>{t(lang, "ourTake")}</h2>
+          <h2 className={styles.sectionTitle}>{t(locale, "ourTake")}</h2>
           <div className={styles.panel}>
             <p className={styles.oneLiner}>{content?.oneLiner}</p>
             <ul className={styles.reasonList}>
@@ -97,17 +101,17 @@ export default async function ChampionPage({ searchParams }: { searchParams: Pro
                 <li key={r.source_url + r.source_date} className={styles.reasonItem}>
                   {content?.reasons[i]}{" "}
                   <a href={r.source_url} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>
-                    {t(lang, "source")} · {r.source_date}
+                    {t(locale, "source")} · {r.source_date}
                   </a>
                 </li>
               ))}
             </ul>
             <div className={styles.cardActions}>
               <Link className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`} href={detailHref}>
-                {t(lang, "fullReasoning")}
+                {t(locale, "fullReasoning")}
               </Link>
               <span className={styles.muted}>
-                {champion.n_sources} {t(lang, "sources")} · {t(lang, "confidence")} {tierLabel(lang, champion.confidence_tier)}
+                {champion.n_sources} {t(locale, "sources")} · {t(locale, "confidence")} {tierLabel(locale, champion.confidence_tier)}
               </span>
             </div>
           </div>
@@ -115,7 +119,7 @@ export default async function ChampionPage({ searchParams }: { searchParams: Pro
       ) : null}
 
       <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {lang === "zh" ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
+        {isZh(locale) ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
       </p>
     </div>
   );

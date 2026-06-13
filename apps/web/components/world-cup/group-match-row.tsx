@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { contentFor, type Forecast, type MatchResult } from "../../lib/world-cup/forecast-store";
-import { t, teamLabel, tierLabel, withLang, type Lang } from "../../lib/world-cup/i18n";
+import { t, teamLabel, tierLabel, withLocale, type Locale } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
 
 // One group-stage fixture: 队旗 + tri-segment W/D/L bar + pick chip.
@@ -19,13 +19,13 @@ export function GroupMatchRow({
   forecast,
   home,
   away,
-  lang,
+  locale,
   result
 }: {
   forecast: Forecast;
   home: TeamView;
   away: TeamView;
-  lang: Lang;
+  locale: Locale;
   result?: MatchResult | null;
 }) {
   const [open, setOpen] = useState(false);
@@ -35,14 +35,14 @@ export function GroupMatchRow({
   const pB = byKey.b ?? 0;
   const top = Math.max(pA, pD, pB);
   const pickKey = top === pA ? "a" : top === pB ? "b" : "draw";
-  const name = (team: TeamView) => teamLabel(team, lang);
-  const content = contentFor(forecast, lang);
+  const name = (team: TeamView) => teamLabel(team, locale);
+  const content = contentFor(forecast, locale);
   const pick =
     pickKey === "a"
-      ? `${name(home)}${t(lang, "winSuffix")} ${Math.round(pA * 100)}%`
+      ? `${name(home)}${t(locale, "winSuffix")} ${Math.round(pA * 100)}%`
       : pickKey === "b"
-        ? `${name(away)}${t(lang, "winSuffix")} ${Math.round(pB * 100)}%`
-        : `${t(lang, "draw")} ${Math.round(pD * 100)}%`;
+        ? `${name(away)}${t(locale, "winSuffix")} ${Math.round(pB * 100)}%`
+        : `${t(locale, "draw")} ${Math.round(pD * 100)}%`;
   const date = forecast.event_slug.match(/(\d{2}-\d{2})$/)?.[1]?.replace("-", "/") ?? "";
 
   // Settled fixture: show the final score and a green ✅ when reality matched
@@ -63,7 +63,7 @@ export function GroupMatchRow({
               <span className={styles.scoreBadge}>
                 {result?.score ? result.score.replace("-", " – ") : "—"}
               </span>
-              <span className={styles.finalTag}>{t(lang, "finalTag")}</span>
+              <span className={styles.finalTag}>{t(locale, "finalTag")}</span>
             </span>
           ) : (
             <span className={styles.matchDate}>6/{date.split("/")[1] ?? date}</span>
@@ -76,14 +76,14 @@ export function GroupMatchRow({
           <span className={styles.triLabels}>
             <span>{Math.round(pA * 100)}</span>
             <span>
-              {t(lang, "drawShort")} {Math.round(pD * 100)}
+              {t(locale, "drawShort")} {Math.round(pD * 100)}
             </span>
             <span>{Math.round(pB * 100)}</span>
           </span>
           <span className={`${styles.pickChip} ${settled ? (hit ? styles.pickHit : styles.pickMiss) : ""}`}>
             {pick}
             {settled ? (
-              <span className={styles.pickMark} title={t(lang, hit ? "pickHit" : "pickMiss")} aria-label={t(lang, hit ? "pickHit" : "pickMiss")}>
+              <span className={styles.pickMark} title={t(locale, hit ? "pickHit" : "pickMiss")} aria-label={t(locale, hit ? "pickHit" : "pickMiss")}>
                 {hit ? " ✅" : " ✕"}
               </span>
             ) : null}
@@ -102,7 +102,7 @@ export function GroupMatchRow({
               <li key={r.source_url + r.source_date} className={styles.reasonItem}>
                 {content.reasons[i]}{" "}
                 <a href={r.source_url} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>
-                  {t(lang, "source")} · {r.source_date}
+                  {t(locale, "source")} · {r.source_date}
                 </a>
               </li>
             ))}
@@ -110,13 +110,13 @@ export function GroupMatchRow({
           <div className={styles.cardActions}>
             <Link
               className={`${styles.btn} ${styles.btnGhost} ${styles.btnSm}`}
-              href={withLang(`/world-cup/forecast/${forecast.dir}`, lang)}
+              href={withLocale(`/world-cup/forecast/${forecast.dir}`, locale)}
             >
-              {t(lang, "fullReport")}
+              {t(locale, "fullReport")}
             </Link>
             <span className={styles.muted}>
-              {forecast.n_sources} {t(lang, "sources")} · {t(lang, "confidence")}{" "}
-              {tierLabel(lang, forecast.confidence_tier)}
+              {forecast.n_sources} {t(locale, "sources")} · {t(locale, "confidence")}{" "}
+              {tierLabel(locale, forecast.confidence_tier)}
             </span>
           </div>
         </div>

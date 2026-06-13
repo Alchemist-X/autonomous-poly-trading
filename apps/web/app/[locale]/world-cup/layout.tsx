@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { WorldCupHeader } from "../../components/world-cup/wc-header";
-import { LegalFooter } from "../../components/world-cup/legal-footer";
-import styles from "../../components/world-cup/world-cup.module.css";
+import { WorldCupHeader } from "../../../components/world-cup/wc-header";
+import { LegalFooter } from "../../../components/world-cup/legal-footer";
+import styles from "../../../components/world-cup/world-cup.module.css";
 
 // Independent metadata for the World Cup product — overrides the root layout's
 // "Trading Agent" branding (compliance R1). Positioning: probability research.

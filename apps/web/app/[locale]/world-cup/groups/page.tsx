@@ -1,11 +1,15 @@
 import Link from "next/link";
-import { DISCLAIMER_SHORT } from "../../../lib/legal-copy";
-import { getByFamily, getResult, sortedOutcomes, type Forecast } from "../../../lib/world-cup/forecast-store";
-import { resolveTeam } from "../../../lib/world-cup/team-meta";
-import { langOf, t, teamLabel, withLang } from "../../../lib/world-cup/i18n";
-import { GroupMatchRow } from "../../../components/world-cup/group-match-row";
-import { WcHero } from "../../../components/world-cup/wc-hero";
-import styles from "../../../components/world-cup/world-cup.module.css";
+import { DISCLAIMER_SHORT } from "../../../../lib/legal-copy";
+import { getByFamily, getResult, sortedOutcomes, type Forecast } from "../../../../lib/world-cup/forecast-store";
+import { resolveTeam } from "../../../../lib/world-cup/team-meta";
+import { isZh, LOCALES, localeOf, t, teamLabel, withLocale } from "../../../../lib/world-cup/i18n";
+import { GroupMatchRow } from "../../../../components/world-cup/group-match-row";
+import { WcHero } from "../../../../components/world-cup/wc-hero";
+import styles from "../../../../components/world-cup/world-cup.module.css";
+
+export function generateStaticParams(): Array<{ locale: string }> {
+  return LOCALES.map((l) => ({ locale: l.code }));
+}
 
 // 小组赛 tab — 12 group cards; every fixture as a tri-segment 胜/平/负 bar
 // with the model's pick, expandable into sourced reasons.
@@ -16,8 +20,8 @@ function teamOf(f: Forecast, key: "a" | "b") {
   return { flag: meta.flag, cn: meta.cn, en: meta.en, group: meta.group };
 }
 
-export default async function GroupsPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
-  const lang = langOf((await searchParams).lang);
+export default async function GroupsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const locale = localeOf((await params).locale);
   const matches = getByFamily("group_match");
   const winners = new Map(getByFamily("group_winner").map((g) => [g.id.slice(-1).toUpperCase(), g]));
 
@@ -30,7 +34,7 @@ export default async function GroupsPage({ searchParams }: { searchParams: Promi
 
   return (
     <div>
-      <WcHero lang={lang} wide subKey="subGroups" />
+      <WcHero locale={locale} wide subKey="subGroups" />
 
       <div className={styles.groupGrid}>
         {groups.map(([g, ms]) => {
@@ -40,10 +44,10 @@ export default async function GroupsPage({ searchParams }: { searchParams: Promi
           return (
             <section key={g} className={styles.groupCard}>
               <div className={styles.groupHead}>
-                <span className={styles.groupName}>{lang === "zh" ? `${g} 组` : `${t(lang, "group")} ${g}`}</span>
+                <span className={styles.groupName}>{isZh(locale) ? `${g} ${t(locale, "group")}` : `${t(locale, "group")} ${g}`}</span>
                 {winner && top && topMeta ? (
-                  <Link href={withLang(`/world-cup/forecast/${winner.dir}`, lang)} className={styles.winnerStrip}>
-                    {t(lang, "winnerPick")} {topMeta.flag} {teamLabel(topMeta, lang)}{" "}
+                  <Link href={withLocale(`/world-cup/forecast/${winner.dir}`, locale)} className={styles.winnerStrip}>
+                    {t(locale, "winnerPick")} {topMeta.flag} {teamLabel(topMeta, locale)}{" "}
                     {Math.round(top.p * 100)}%
                   </Link>
                 ) : null}
@@ -56,7 +60,7 @@ export default async function GroupsPage({ searchParams }: { searchParams: Promi
                     forecast={m}
                     home={teamOf(m, "a")}
                     away={teamOf(m, "b")}
-                    lang={lang}
+                    locale={locale}
                     result={getResult(m.event_slug)}
                   />
                 ))}
@@ -66,7 +70,7 @@ export default async function GroupsPage({ searchParams }: { searchParams: Promi
       </div>
 
       <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {lang === "zh" ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
+        {isZh(locale) ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
       </p>
     </div>
   );
