@@ -1,5 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+// Make mobile browsers use the device width as the layout viewport. Without this
+// Next.js 16 falls back to a ~980px desktop viewport and zooms the page out, so
+// none of the responsive @media breakpoints fire on real phones.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover"
+};
 
 // Site-wide branding: market-blind World Cup probability research.
 // The legacy AutoPoly trading-dashboard shell and metadata were removed
