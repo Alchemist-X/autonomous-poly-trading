@@ -11,7 +11,7 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-12 by Claude（**最新**：pulse:* 命令已全局更名 forecast:*（旧名留作别名）；MC 淘汰赛点球规则被协作者质疑且已证实偏高——见下方"MC 淘汰赛模型核查"节，**待用户拍板是否重发数字**。此前：Predict Raven 世界杯版上线 https://forecasting-agent.com（自定义域名，Cloudflare DNS-only 指向 Vercel；旧地址 web-one-sand-83.vercel.app 仍可用） ：87 题盲测预测、冠军/小组赛/出线名单三 tab、连线对阵树、渡鸦吉祥物品牌、全站中英切换 ?lang=en；AutoPoly 旧页面已全删；部署注意：vercel build 后须给 config.json 的 catch-all 路由补 check:true 再 deploy --prebuilt）
+> 最后更新：2026-06-14 by Claude（分支 `feat/world-cup-results-mobile-i18n`，4 个独立 commit `023fb64`→`13bff46`，本地 build+typecheck 通过）。本轮四块：①小组赛**赛果接入+绿勾**——`scripts/world-cup/update-results.ts`(`pnpm wc:results`)从 Polymarket **结算**(只取胜负+比分，市场盲)写 `results.generated.json`，赛果==Best Pick 显示 ✅、否则 ✕，groups 页加"Best Pick 命中率 X/Y"横幅；目前 4 场已结算 3 命中。②**每日自动更新**——`scripts/world-cup/daily-results.sh`(刷新+部署)由 Claude **/schedule** 例行任务 `world-cup-daily-results`(每天~10:00 本地)调用；launchd 已弃用删除，headless 用 `deploy/world-cup-results.cron.example`。③**移动端响应式**——根因是缺 device-width viewport(`app/layout.tsx` 已补)，导致真机断点全不生效；另修比赛行溢出/对阵树/旗云重叠/公式卡/触控目标等(320/375/桌面已验)。④**i18n 收尾**——页脚+预测报告 chrome 外置 t()，修了 zh-TW 误显简体的 bug(繁体走繁体)。⚠️ **本会话部署到线上失败**(vercel upload 在本沙箱反复 abort，build 本身成功)——线上仍是旧版；用户机器上跑 `bash scripts/world-cup/deploy-web.sh` 或等 /schedule 例行任务即可发布。此前(2026-06-12)：pulse:*→forecast:* 改名；MC 淘汰赛点球规则偏高待用户拍板(见下"MC 淘汰赛模型核查")；世界杯版已上线 https://forecasting-agent.com，catch-all 路由部署需补 check:true）
 
 ---
 
