@@ -157,10 +157,19 @@ export async function fetchResult(event_slug: string, fetchImpl: typeof fetch = 
   return PENDING(event_slug);
 }
 
-/** Resolve many fixtures with a small concurrency pool, preserving input order. */
+/**
+ * Resolve many fixtures with a small concurrency pool, preserving input order.
+ * A per-fixture fetch error is isolated (that fixture becomes `pending` and is
+ * reported via onError) so one flaky request never aborts a daily run.
+ */
 export async function fetchResults(
   slugs: readonly string[],
-  opts?: { concurrency?: number; onProgress?: (done: number, total: number, slug: string) => void; fetchImpl?: typeof fetch }
+  opts?: {
+    concurrency?: number;
+    onProgress?: (done: number, total: number, slug: string) => void;
+    onError?: (slug: string, err: unknown) => void;
+    fetchImpl?: typeof fetch;
+  }
 ): Promise<readonly MatchResult[]> {
   const concurrency = opts?.concurrency ?? 6;
   const fetchImpl = opts?.fetchImpl ?? fetch;
@@ -171,7 +180,12 @@ export async function fetchResults(
     while (cursor < slugs.length) {
       const i = cursor;
       cursor += 1;
-      out[i] = await fetchResult(slugs[i], fetchImpl);
+      try {
+        out[i] = await fetchResult(slugs[i], fetchImpl);
+      } catch (err) {
+        out[i] = PENDING(slugs[i]);
+        opts?.onError?.(slugs[i], err);
+      }
       done += 1;
       opts?.onProgress?.(done, slugs.length, slugs[i]);
     }

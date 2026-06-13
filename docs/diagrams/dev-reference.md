@@ -137,6 +137,20 @@ pnpm rough-loop:start
 pnpm vendor:sync        # 同步外部仓库到 vendor/repos/
 ```
 
+### 世界杯赛果（World Cup 站）
+
+```bash
+pnpm wc:results              # 拉取 Polymarket 结算，刷新小组赛赛果数据（只读、市场盲测）
+pnpm wc:results -- --all     # 不按开球时间过滤，强制探测全部 72 场
+```
+
+- 写入 `apps/web/lib/world-cup/generated/results.generated.json`（World Cup 页面静态导入）。
+- **市场盲测**：只存结算事实（胜负方 + 比分），绝不存价格/隐含概率；`outcomePrices` 仅作为 1/0 结算位读取。详见 `scripts/world-cup/lib/settlement.ts`。
+- 每次运行向 `runtime-artifacts/world-cup/results-log.jsonl` 追加一行；失败归档到 `run-error/<ts>-update-results/`。脚本只刷新数据，**不提交、不部署**——发布需手动 deploy。
+- **每日定时任务**（本机 `/schedule`，非 GitHub Actions）：`taskId = wc-results-daily`，每天 09:17（本地时区）跑一次 `pnpm wc:results`。
+  - 查看 / 修改：`mcp__scheduled-tasks__list_scheduled_tasks`、`update_scheduled_task`，或直接编辑 `/Users/Aincrad/.claude/scheduled-tasks/wc-results-daily/SKILL.md`。
+  - 该任务只在 Claude 应用打开时触发；应用关闭时错过的任务会在下次启动补跑。
+
 ## 依赖矩阵
 
 | 依赖 | 是否必需 | 用途 |

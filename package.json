@@ -31,6 +31,7 @@
     "prediction:invite": "pnpm --filter @autopoly/db build && tsx scripts/prediction-invite.ts",
     "managed:forecast": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && tsx scripts/managed-pulse.ts",
     "poly:cache-order-limits": "tsx scripts/cache-polymarket-order-limits.ts",
+    "wc:results": "tsx scripts/world-cup/update-results.ts",
     "db:generate": "pnpm --filter @autopoly/db drizzle-kit generate",
     "db:migrate": "pnpm --filter @autopoly/db drizzle-kit migrate",
     "db:seed": "pnpm --filter @autopoly/db seed",
