@@ -2,6 +2,7 @@ import "dotenv/config";
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveModelAlias, type ModelFamily } from "@autopoly/norns";
 import { loadEnvFile } from "./lib/env-file.js";
 
 function readNumber(name: string, fallback: number): number {
@@ -124,13 +125,17 @@ export interface OrchestratorConfig {
 
 function readSkillProviderConfig(input: {
   prefix: string;
+  // Provider model family, so a Norns tier name (urd/verdandi/skuld) set in
+  // `${prefix}_MODEL` resolves to the right model line. Raw model ids and the
+  // empty default pass through unchanged, so existing configs are untouched.
+  modelFamily: ModelFamily;
   defaultSkillRootDir: string;
   defaultSkillLocale: SkillLocale;
   defaultSkills: string;
 }): SkillProviderConfig {
   return {
     command: readString(`${input.prefix}_COMMAND`, ""),
-    model: readString(`${input.prefix}_MODEL`, ""),
+    model: resolveModelAlias(readString(`${input.prefix}_MODEL`, ""), input.modelFamily),
     skillRootDir: path.resolve(readString(`${input.prefix}_SKILL_ROOT_DIR`, input.defaultSkillRootDir)),
     skillLocale: readEnum(`${input.prefix}_SKILL_LOCALE`, input.defaultSkillLocale, skillLocales),
     skills: readString(`${input.prefix}_SKILLS`, input.defaultSkills)
@@ -202,18 +207,21 @@ export function loadConfig(): OrchestratorConfig {
     providers: {
       codex: readSkillProviderConfig({
         prefix: "CODEX",
+        modelFamily: "openai",
         defaultSkillRootDir,
         defaultSkillLocale: "zh",
         defaultSkills
       }),
       "claude-code": readSkillProviderConfig({
         prefix: "CLAUDE_CODE",
+        modelFamily: "anthropic",
         defaultSkillRootDir,
         defaultSkillLocale: "zh",
         defaultSkills
       }),
       openclaw: readSkillProviderConfig({
         prefix: "OPENCLAW",
+        modelFamily: "anthropic",
         defaultSkillRootDir,
         defaultSkillLocale: "zh",
         defaultSkills

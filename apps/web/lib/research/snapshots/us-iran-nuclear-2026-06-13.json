@@ -1,0 +1,638 @@
+{
+  "_meta": {
+    "title": "US–Iran nuclear deal by 2026-06-30 — deep-research snapshot",
+    "asOf": "2026-06-13",
+    "producedBy": "predict-raven Deep Research workflow (wf_26ee373b-583): 6 web-search angles + 3 adversarial verifiers + synthesis",
+    "question": null,
+    "resolution": null,
+    "totalFindings": 34,
+    "researchAngles": 6
+  },
+  "researchNotes": "- us-official: Searched US-government primary sources (White House, State Dept, plus reporting that directly quotes named US officials) over the last ~8 weeks on US-Iran nuclear talks. Direct fetch of the State Dept Rubio page failed (site returned a \"Technical Difficulties\" error), so I corroborated its content/date via a second search citing the same state.gov URL — flagged below. Overall read for \"qualifying nuclear deal by 2026-06-30\": a draft MOU may be SIGNED imminently (node A plausibly clears), but US officials and latest reporting consistently say the substantive nuclear terms (enrichment suspension, ~440kg 60% HEU stockpile removal, full verification) are explicitly DEFERRED to a 60-day post-signing negotiation window, with the stockpile staying in Iran during that window — so node B (sufficient qualifying terms) and node C (settle-able by 6/30) are the weak links. Rubio's maximalist \"give up enrichment entirely / 60% HEU has no civilian use\" stance further lowers odds of a fully-qualifying deal by the deadline. All sources are 2026; no breakdown/collapse found, but no settled nuclear terms either.\n- iran-official: Searched Iranian state/affiliated media (Press TV, IRNA, Mehr) and reporting on their statements re: the May–June 2026 US-Iran MOU ('Islamabad Declaration'). Clear, consistent Iranian-source read: Tehran is willing to sign a framework, but it deliberately strips nuclear specifics OUT of the MOU — 'no new commitments,' enrichment as a red line, 60-day phase-two window for nuclear/enrichment/stockpile/verification that starts only after MOU implementation. This strongly OPPOSES nodes B (sufficient qualifying nuclear terms) and C (settle-able by 2026-06-30), even if A (a framework) gets accepted. Strongest direct Iranian sources: Press TV/Baghaei (2026-05-23) and IRNA-via-MEMO (2026-06-12). The Mehr/Araghchi enrichment-red-line piece is from May 2025 and flagged STALE. RFE/RL explicitly warns Iranian state-media draft accounts are often inaccurate during talks. Several 2026 items are reported secondhand rather than as direct Iranian-government quotes — flagged via lower reliability.\n- iaea-intl: Searched IAEA Board / Grossi reports, E3/EU snapback, and the active US-Iran negotiation track (last ~8 weeks). Strong, current 2026 evidence and the read is clearly bearish on a qualifying nuclear deal by 2026-06-30. The only framework in play as of June 12-13 2026 is the non-binding 'Islamabad Declaration' MOU — a war-ending/Strait-of-Hormuz instrument that explicitly defers ALL nuclear terms (enrichment limits, verification mechanism, the ~440kg 60% HEU stockpile) to a 60-day negotiation window that only begins after signing, and it was still unsigned pending Iran's Supreme Leader approval. Independently, the IAEA has had ~97 days of zero inspector access, lost continuity of knowledge, and cannot verify the 440.9 kg HEU stockpile (ISIS + Grossi June reports; Board resolution June 10 2026). So even an optimistic MOU signing this week fails node B (no qualifying nuclear terms) and node C (not settle-able as a verified nuclear deal by June 30). The snapback finding is 2025-dated baseline context — flagged as such. WebFetch was blocked (403/451/402) on Axios, Time, CNN, and the IAEA chronology page; those items rest on search-result snippets, which I cross-checked against the accessible ISIS and TechTimes pages.\n- western-news: Searched Reuters/AP/Bloomberg/CNN/Axios/Time/CNBC + UK House of Commons Library for last-6-weeks status of a US-Iran nuclear deal. Findings are convergent and current (May-June 2026): an MOU/Islamabad Declaration to end the war and reopen the Strait of Hormuz is ~95% done and a signing was floated for as early as Sunday, BUT it is explicitly NOT a nuclear deal — it defers uranium disposition, enrichment limits, and any verification/inspection regime to a 60-day follow-on window (which runs past 2026-06-30), and Iran's 440kg 60%-enriched stockpile stays in Tehran. Reports that Iran agreed to surrender uranium were publicly denied by Iranian officials. Net read is strongly OPPOSE for a qualifying nuclear deal by 2026-06-30: the imminent deal lacks Node B (sufficient nuclear terms) and Node C settle-ability on nuclear by the deadline. Several Western primary sources (Reuters, Time, Axios, CNBC, i24 article body) were paywalled/403/451, so some excerpts rely on search-result summaries. One Yahoo/Reuters result that surfaced ('US expects Iran to reduce stocks by June 30') was a 2015 article — EXCLUDED as stale, not reported.\n\n\n- regional-analysis: Searched regional press (Al Jazeera) and think-tank/analyst commentary (Carnegie; experts cited at Chatham House, NATO Defense College, Arms Control Association) plus the June 12-13 framework reporting. Consistent analyst read for the YES (qualifying nuclear deal by 2026-06-30) view: a framework/MOU — the \"Islamabad Declaration,\" final text agreed ~June 12 — is moving toward public acceptance (supports Node A), but it explicitly DEFERS the qualifying nuclear substance (enrichment limits, verification regime, ~440kg 60%-enriched stockpile disposition) into a 60-day follow-on window, so it does NOT contain sufficient qualifying nuclear terms (Node B oppose) and the nuclear file is not publicly confirmed/settle-able by June 30 (Node C oppose). Core blockers analysts flag: enrichment-duration gap (US ~20yr vs Iran ~5yr), no named verification/IAEA inspection mechanism, untouched stockpile, and pending Trump final approval. Net: analyst commentary leans against a deal that would qualify under a strict nuclear-terms reading by the deadline. Sources are current (Apr-Jun 2026); the Carnegie piece is early May and slightly older but still 2026.\n- prediction-market: Searched Polymarket, Kalshi, and related coverage for \"US-Iran nuclear deal by [2026 date]\". Found a direct deadline match: Polymarket \"US-Iran nuclear deal by June 30\" at ~67% YES ($8.8M vol, fetched 2026-06-14). Caveat: that market's resolution is broad — ANY publicly announced US-Iran nuclear agreement, NOT explicitly requiring enrichment limits/verification/stockpile terms (node B), so it likely overstates a fully-qualifying deal. Polymarket \"before 2027\" sits ~82%, implying real probability the deal slips past June 30 into H2. Kalshi's directly comparable market read only ~23% before July in early June (could not fetch live figure — HTTP 429 — so this is ~2 weeks stale and pre-dates the June 11-12 \"negotiations substantially complete\" momentum). The two venues diverge sharply (67% vs ~23%), partly because the June 12 draft was framed as a peace/ceasefire deal while the nuclear-specific framework was only \"nearing.\" Overall read for a fully-qualifying nuclear deal by 2026-06-30: market signal is genuinely mixed and venue-dependent, roughly 25-65%, with the stricter B-criterion pushing toward the lower half.",
+  "research": [
+    {
+      "angle": "us-official",
+      "note": "Searched US-government primary sources (White House, State Dept, plus reporting that directly quotes named US officials) over the last ~8 weeks on US-Iran nuclear talks. Direct fetch of the State Dept Rubio page failed (site returned a \"Technical Difficulties\" error), so I corroborated its content/date via a second search citing the same state.gov URL — flagged below. Overall read for \"qualifying nuclear deal by 2026-06-30\": a draft MOU may be SIGNED imminently (node A plausibly clears), but US officials and latest reporting consistently say the substantive nuclear terms (enrichment suspension, ~440kg 60% HEU stockpile removal, full verification) are explicitly DEFERRED to a 60-day post-signing negotiation window, with the stockpile staying in Iran during that window — so node B (sufficient qualifying terms) and node C (settle-able by 6/30) are the weak links. Rubio's maximalist \"give up enrichment entirely / 60% HEU has no civilian use\" stance further lowers odds of a fully-qualifying deal by the deadline. All sources are 2026; no breakdown/collapse found, but no settled nuclear terms either.",
+      "findings": [
+        {
+          "title": "President Trump: \"Most importantly, we have a deal that Iran will never have a nuclear weapon\"",
+          "sourceType": "官方声明 (White House primary source)",
+          "publisher": "White House (whitehouse.gov)",
+          "date": "2026-06-11",
+          "url": "https://www.whitehouse.gov/videos/most-importantly-we-have-a-deal-that-iran-will-never-have-a-nuclear-weapon-president-trump-%F0%9F%87%BA%F0%9F%87%B8/",
+          "stance": "support",
+          "node": "A",
+          "reliability": 0.85,
+          "excerpt": "White House page quotes President Trump asserting the US has 'a deal that Iran will never have a nuclear weapon.' It is a top-level political claim of an agreement (supports node A: both sides moving toward acceptance) but contains no specific qualifying nuclear terms, enrichment limits, stockpile arrangements, or signing date in the page content itself."
+        },
+        {
+          "title": "Senior administration official on the potential Iran war agreement (US gov readout via ABC News)",
+          "sourceType": "当事方声明转述 (named senior US administration official, quoted)",
+          "publisher": "ABC News (quoting senior administration official)",
+          "date": "2026-06-12",
+          "url": "https://abcnews.com/Politics/us-potential-iran-war-agreement/story?id=133825956",
+          "stance": "mixed",
+          "node": "B",
+          "reliability": 0.6,
+          "excerpt": "A senior administration official says the deal 'leads to the dismantling of the Iranian nuclear program,' with the US 'getting the enriched nuclear material' to be destroyed/removed, plus an 'inspection regime' that is 'long-term enforceable.' BUT the official also says parties expect to sign 'over the next few days' followed by a 60-day technical negotiation period for remaining details, and expressed only 80-85% confidence — i.e., qualifying nuclear specifics (node B) are framed as goals deferred to post-signing talks rather than terms settled at signing."
+        },
+        {
+          "title": "Secretary of State Marco Rubio Remarks to Press",
+          "sourceType": "官方声明 (State Department primary source; content confirmed via secondary search, page fetch errored)",
+          "publisher": "U.S. Department of State (Secretary Rubio)",
+          "date": "2026-05-08",
+          "url": "https://www.state.gov/releases/office-of-the-spokesperson/2026/05/secretary-of-state-marco-rubio-remarks-to-press-9",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.7,
+          "excerpt": "Rubio states Iran's 60% highly enriched uranium has 'no civilian use whatsoever — none, zero,' and that Iran must give up enrichment entirely (it can import enriched material like other civilian-program countries). This maximalist US precondition raises the bar for what counts as a qualifying deal and lowers odds Iran accepts sufficient terms by the deadline. NOTE: direct fetch of this state.gov page returned a 'Technical Difficulties' error; date (May 8, 2026) and quote corroborated via a separate search citing the same state.gov URL — treat as confirmed-but-not-directly-fetched."
+        },
+        {
+          "title": "U.S. expects Iran to reduce enriched uranium stocks by June 30 (US official)",
+          "sourceType": "当事方声明转述 (US official, quoted)",
+          "publisher": "Reuters via Yahoo News (quoting U.S. official)",
+          "date": "2026-05-24",
+          "url": "https://news.yahoo.com/u-expects-iran-reduce-enriched-uranium-stocks-june-171445135.html",
+          "stance": "mixed",
+          "node": "C",
+          "reliability": 0.55,
+          "excerpt": "A U.S. official confirmed a 60-day window and said that if Iran does not give up its stockpile there will be no sanctions relief, with Iran holding ~440.9 kg of 60% HEU. The framing ties enrichment/stockpile resolution to a 60-day post-signing period rather than settlement by June 30 itself, making a fully qualifying, settle-able deal by the 2026-06-30 deadline uncertain (relevant to node C / settle-ability)."
+        },
+        {
+          "title": "Framework would leave Iran's ~440kg 60% uranium stockpile in Tehran during 60-day talks",
+          "sourceType": "主流媒体 (latest reporting on draft text terms)",
+          "publisher": "Tech Times / PBS NewsHour (reporting on agreed draft text)",
+          "date": "2026-06-13",
+          "url": "https://www.techtimes.com/articles/318319/20260613/iran-peace-deal-text-agreed-440kg-enriched-uranium-stays-tehran-during-60-day-talks.htm",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.5,
+          "excerpt": "Latest reporting on the agreed draft text indicates the current framework would NOT require Iran to surrender, destroy, or cap its ~440kg stockpile of 60% HEU, with that material remaining in Iran throughout the 60-day negotiation period. If accurate, the framework lacks sufficient qualifying nuclear terms (stockpile removal/enrichment cap) at the moment of signing — directly lowering the probability of a qualifying deal by 2026-06-30 (node B)."
+        }
+      ]
+    },
+    {
+      "angle": "iran-official",
+      "note": "Searched Iranian state/affiliated media (Press TV, IRNA, Mehr) and reporting on their statements re: the May–June 2026 US-Iran MOU ('Islamabad Declaration'). Clear, consistent Iranian-source read: Tehran is willing to sign a framework, but it deliberately strips nuclear specifics OUT of the MOU — 'no new commitments,' enrichment as a red line, 60-day phase-two window for nuclear/enrichment/stockpile/verification that starts only after MOU implementation. This strongly OPPOSES nodes B (sufficient qualifying nuclear terms) and C (settle-able by 2026-06-30), even if A (a framework) gets accepted. Strongest direct Iranian sources: Press TV/Baghaei (2026-05-23) and IRNA-via-MEMO (2026-06-12). The Mehr/Araghchi enrichment-red-line piece is from May 2025 and flagged STALE. RFE/RL explicitly warns Iranian state-media draft accounts are often inaccurate during talks. Several 2026 items are reported secondhand rather than as direct Iranian-government quotes — flagged via lower reliability.",
+      "findings": [
+        {
+          "title": "Iran, US moving closer to 'finalizing memorandum of understanding' to end imposed war: Baghaei",
+          "sourceType": "官方声明/当事方媒体 (Iranian state media, Foreign Ministry spokesman)",
+          "publisher": "Press TV (Iran state media)",
+          "date": "2026-05-23",
+          "url": "https://www.presstv.ir/Detail/2026/05/23/769157/Iran-US-Baghaei-understanding-nuclear",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.8,
+          "excerpt": "FM spokesman Baghaei said the 14-point MOU focuses on three objectives — ending the war, halting US naval operations, releasing blocked assets — and explicitly that 'At this stage, we are not discussing the details of the nuclear issue,' deferring nuclear/enrichment matters to later talks. This means the framework itself carries no qualifying nuclear terms (enrichment limits, verification, stockpile)."
+        },
+        {
+          "title": "Iranian media reveals details of 7-point draft memorandum with US (IRNA)",
+          "sourceType": "当事方媒体 (Iranian state news agency IRNA, reported)",
+          "publisher": "Middle East Monitor (citing IRNA)",
+          "date": "2026-06-12",
+          "url": "https://www.middleeastmonitor.com/20260612-iranian-media-reveals-details-of-7-point-draft-memorandum-with-us/",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.65,
+          "excerpt": "IRNA's draft outline says Iran assumes 'no new nuclear obligations under the memorandum and that its peaceful nuclear program would remain unchanged'; enrichment rights and retention of enriched material would only be discussed in a final agreement, not in the current MOU, and the MOU contains no uranium-stockpile commitments. Nuclear talks begin only after signing."
+        },
+        {
+          "title": "Iranian State Media (Mehr) Claims Draft US Deal Includes Nuclear Ban",
+          "sourceType": "当事方媒体 (Iranian state media Mehr, reported by RFE/RL)",
+          "publisher": "RFE/RL via GlobalSecurity.org",
+          "date": "2026-06-12",
+          "url": "https://www.globalsecurity.org/wmd/library/news/iran/2026/06/iran-260612-rferl08.htm",
+          "stance": "mixed",
+          "node": "B",
+          "reliability": 0.6,
+          "excerpt": "Mehr reported the draft includes 'Iran's commitment not to develop nuclear weapons' plus '60 days of negotiations to reach a final agreement on Iran's nuclear program,' with the standoff over enriched uranium addressed later. RFE/RL cautions Iranian state-media accounts during talks are often used to float positions and have proven inaccurate; the text still required final Iranian approval."
+        },
+        {
+          "title": "Iran's Araghchi says nuclear talks conditional on interim deal implementation",
+          "sourceType": "第三方分析 (reporting Araghchi's June 12 statement; not original Iranian source)",
+          "publisher": "Crypto Briefing",
+          "date": "2026-06-13",
+          "url": "https://cryptobriefing.com/iran-nuclear-talks-interim-deal-crypto/",
+          "stance": "oppose",
+          "node": "C",
+          "reliability": 0.45,
+          "excerpt": "Araghchi (June 12) reportedly insisted there would be no nuclear negotiations until the interim MOU is 'implemented. Not signed. Not discussed further. Implemented,' with the 60-day nuclear phase starting only afterward — pushing any qualifying nuclear deal well past the 2026-06-30 deadline. Secondhand reporting, not a direct Iranian-source quote."
+        },
+        {
+          "title": "Iran denies agreeing to hand over uranium as 'Islamabad Declaration' nears final negotiations",
+          "sourceType": "主流媒体 (reporting Iranian denial via Reuters)",
+          "publisher": "The Jerusalem Post",
+          "date": "2026-05-24",
+          "url": "https://www.jpost.com/middle-east/iran-news/article-897072",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.5,
+          "excerpt": "Iran denied agreeing to give up any enriched uranium in a US ceasefire deal, stating it 'had not yet accepted any action on the nuclear issue.' Indicates the framework lacks the stockpile/enrichment concessions that would qualify as sufficient nuclear terms; no IRNA direct quote, attribution is to Reuters/Iranian sources."
+        },
+        {
+          "title": "FM Araghchi: zero enrichment can never be accepted; deal possible only if it accepts enrichment inside Iran",
+          "sourceType": "当事方媒体/官方声明 (Iranian state media Mehr, FM statement)",
+          "publisher": "Mehr News Agency",
+          "date": "2025-05-23",
+          "url": "https://en.mehrnews.com/news/232163/No-deal-if-US-seeks-zero-uranium-enrichment-FM-Araghchi",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.55,
+          "excerpt": "Araghchi: 'We will not give up our rights, and our nuclear program, including enrichment, must continue,' and there would be no deal if the US insists on zero enrichment. STALE (May 2025) — establishes Iran's longstanding red line but predates the 2026 MOU process; the persistent enrichment red line works against a US-acceptable qualifying deal."
+        }
+      ]
+    },
+    {
+      "angle": "iaea-intl",
+      "note": "Searched IAEA Board / Grossi reports, E3/EU snapback, and the active US-Iran negotiation track (last ~8 weeks). Strong, current 2026 evidence and the read is clearly bearish on a qualifying nuclear deal by 2026-06-30. The only framework in play as of June 12-13 2026 is the non-binding 'Islamabad Declaration' MOU — a war-ending/Strait-of-Hormuz instrument that explicitly defers ALL nuclear terms (enrichment limits, verification mechanism, the ~440kg 60% HEU stockpile) to a 60-day negotiation window that only begins after signing, and it was still unsigned pending Iran's Supreme Leader approval. Independently, the IAEA has had ~97 days of zero inspector access, lost continuity of knowledge, and cannot verify the 440.9 kg HEU stockpile (ISIS + Grossi June reports; Board resolution June 10 2026). So even an optimistic MOU signing this week fails node B (no qualifying nuclear terms) and node C (not settle-able as a verified nuclear deal by June 30). The snapback finding is 2025-dated baseline context — flagged as such. WebFetch was blocked (403/451/402) on Axios, Time, CNN, and the IAEA chronology page; those items rest on search-result snippets, which I cross-checked against the accessible ISIS and TechTimes pages.",
+      "findings": [
+        {
+          "title": "Iran Peace Deal Text Agreed: 440kg Enriched Uranium Stays in Tehran During 60-Day Talks",
+          "sourceType": "主流媒体",
+          "publisher": "TechTimes",
+          "date": "2026-06-13",
+          "url": "https://www.techtimes.com/articles/318319/20260613/iran-peace-deal-text-agreed-440kg-enriched-uranium-stays-tehran-during-60-day-talks.htm",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.6,
+          "excerpt": "The only deal in play (the 'Islamabad Declaration' MOU) is a non-binding instrument that defers all nuclear negotiations; it does not cap or remove the ~440kg 60%-enriched stockpile, contains no named verification mechanism, and pushes enrichment/inspection/stockpile talks to a 60-day window that starts only after signing. As of June 13 it was still unsigned pending Iran's Supreme Leader approval."
+        },
+        {
+          "title": "Iran's Araghchi says nuclear talks conditional on interim deal implementation",
+          "sourceType": "当事方媒体",
+          "publisher": "Crypto Briefing (citing Araghchi)",
+          "date": "2026-06-12",
+          "url": "https://cryptobriefing.com/iran-nuclear-talks-interim-deal-crypto/",
+          "stance": "oppose",
+          "node": "C",
+          "reliability": 0.55,
+          "excerpt": "Iranian FM Araghchi (June 12) drew a hard line: no nuclear negotiations, including on enrichment, until the MOU on the Strait of Hormuz and US naval blockade is actually implemented. The 14-article MOU remains unsigned, and nuclear talks would only begin 60 days after it takes effect."
+        },
+        {
+          "title": "Live - Iran says it will sign MoU with US remotely if finalized",
+          "sourceType": "当事方媒体",
+          "publisher": "Iran International",
+          "date": "2026-06-06",
+          "url": "https://www.iranintl.com/en/liveblog/202606062776",
+          "stance": "mixed",
+          "node": "A",
+          "reliability": 0.55,
+          "excerpt": "Iran indicated it would sign the MOU remotely if the final stage of negotiations completes, signaling momentum toward a framework. But this MOU is a war-ending/Strait-of-Hormuz framework, not a nuclear agreement, and was not yet signed as of early-to-mid June."
+        },
+        {
+          "title": "Analysis of IAEA Iran Verification and Monitoring and NPT Safeguards Reports — June 2026",
+          "sourceType": "第三方分析",
+          "publisher": "Institute for Science and International Security (ISIS)",
+          "date": "2026-06-04",
+          "url": "https://isis-online.org/isis-reports/analysis-of-iaea-iran-verification-and-monitoring-and-npt-safeguards-reports-june-2026",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.85,
+          "excerpt": "IAEA stopped NPT-safeguards verification in Iran as of Feb 28 2026; Iran terminated the Cairo Agreement Nov 20 2025; the agency has had no access to the 8 affected facilities and cannot verify suspension of enrichment/reprocessing nor the ~440.9 kg of 60%-enriched uranium. Concludes near-term verification agreements are 'problematic without restored access.'"
+        },
+        {
+          "title": "IAEA Director General's Introductory Statement / June 2026 Board reporting (97 days no access, 440.9 kg HEU unverifiable; Board resolution urging cooperation adopted June 10)",
+          "sourceType": "国际机构",
+          "publisher": "IAEA (Grossi report, June 4/8; Board of Governors)",
+          "date": "2026-06-10",
+          "url": "https://www.iaea.org/newscenter/statements/iaea-director-generals-introductory-statement-to-the-board-of-governors-2-6-march-2026",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.8,
+          "excerpt": "Per Grossi's June 4 report and June 8 statement, the IAEA reported ~97 days of zero inspector access and an unverifiable 440.9 kg 60%-enriched stockpile, with lost continuity of knowledge; the Board adopted a resolution June 10 urging Iran to cooperate. Verification infrastructure for a qualifying deal is currently absent."
+        },
+        {
+          "title": "The E3 triggers snapback sanctions against Iran 2025",
+          "sourceType": "官方声明",
+          "publisher": "UK House of Commons Library",
+          "date": "2025-09-29",
+          "url": "https://commonslibrary.parliament.uk/research-briefings/cbp-10330/",
+          "stance": "oppose",
+          "node": "A",
+          "reliability": 0.85,
+          "excerpt": "E3 invoked snapback Aug 28 2025; all lifted UN nuclear sanctions and EU autonomous sanctions were reimposed Sept 27/29 2025 over Iran's 'significant non-performance.' Reimposition did not bring Iran back to substantive talks. Note: 2025-dated baseline context, but directly shapes the diplomatic posture going into the 2026 deadline."
+        }
+      ]
+    },
+    {
+      "angle": "western-news",
+      "note": "Searched Reuters/AP/Bloomberg/CNN/Axios/Time/CNBC + UK House of Commons Library for last-6-weeks status of a US-Iran nuclear deal. Findings are convergent and current (May-June 2026): an MOU/Islamabad Declaration to end the war and reopen the Strait of Hormuz is ~95% done and a signing was floated for as early as Sunday, BUT it is explicitly NOT a nuclear deal — it defers uranium disposition, enrichment limits, and any verification/inspection regime to a 60-day follow-on window (which runs past 2026-06-30), and Iran's 440kg 60%-enriched stockpile stays in Tehran. Reports that Iran agreed to surrender uranium were publicly denied by Iranian officials. Net read is strongly OPPOSE for a qualifying nuclear deal by 2026-06-30: the imminent deal lacks Node B (sufficient nuclear terms) and Node C settle-ability on nuclear by the deadline. Several Western primary sources (Reuters, Time, Axios, CNBC, i24 article body) were paywalled/403/451, so some excerpts rely on search-result summaries. One Yahoo/Reuters result that surfaced ('US expects Iran to reduce stocks by June 30') was a 2015 article — EXCLUDED as stale, not reported.",
+      "findings": [
+        {
+          "title": "Iran Peace Deal Text Agreed: 440kg Enriched Uranium Stays in Tehran During 60-Day Talks",
+          "sourceType": "主流媒体",
+          "publisher": "Tech Times",
+          "date": "2026-06-13",
+          "url": "https://www.techtimes.com/articles/318319/20260613/iran-peace-deal-text-agreed-440kg-enriched-uranium-stays-tehran-during-60-day-talks.htm",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.55,
+          "excerpt": "The MOU text is agreed but unsigned (awaiting Iran's Supreme Leader). It explicitly does NOT include enrichment limits, uranium disposition, or a named verification/inspection mechanism; Iran's 440kg of 60% uranium stays in Tehran. Uranium disposition, sanctions sequencing, the inspection regime and missile limits are pushed into a 60-day follow-on negotiation that runs past June 30."
+        },
+        {
+          "title": "US and Iran say an agreement is close, but questions remain (live blog)",
+          "sourceType": "主流媒体",
+          "publisher": "CNN",
+          "date": "2026-06-12",
+          "url": "https://www.cnn.com/2026/06/12/world/live-news/iran-war-trump-israel",
+          "stance": "mixed",
+          "node": "A",
+          "reliability": 0.7,
+          "excerpt": "US and Iranian negotiators (with Pakistani mediation) reached agreement on the final text of a draft peace/MOU; Trump signaled imminent signing possibly in Europe within days. Iran commits 'indefinitely to never procure or develop nuclear weapons,' but technical details of removing the highly enriched uranium stockpile are unresolved and deferred to a next round of technical talks; the MOU names no verification or inspection protocol."
+        },
+        {
+          "title": "Trump says agreement with Iran has 'been largely negotiated' and Strait of Hormuz will be opened",
+          "sourceType": "当事方媒体",
+          "publisher": "CNBC (Trump statement)",
+          "date": "2026-05-23",
+          "url": "https://www.cnbc.com/2026/05/23/us-iran-war-talks.html",
+          "stance": "mixed",
+          "node": "A",
+          "reliability": 0.6,
+          "excerpt": "Trump said the agreement reopening the Strait of Hormuz is 'largely negotiated' and will be announced soon. The framing is a war-ending / Strait-of-Hormuz deal with a moratorium on enrichment and sanctions relief as a first MOU phase, with broader talks to follow in 30-60 days; the disposition of near-weapons-grade uranium remained an open sticking point."
+        },
+        {
+          "title": "US, Iran closing in on one-page memo to end war, officials say",
+          "sourceType": "主流媒体",
+          "publisher": "Axios",
+          "date": "2026-05-06",
+          "url": "https://www.axios.com/2026/05/06/iran-us-deal-one-page-memo",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.6,
+          "excerpt": "Reported the deal as a short one-page memo/MOU as a first phase, with broader nuclear talks to follow in 30-60 days. The preliminary agreement centers on the Strait of Hormuz and sanctions relief; the nuclear issue (handing over the highly enriched uranium stockpile) was not part of the preliminary agreement. Article body was paywalled; summary from search result."
+        },
+        {
+          "title": "Proposed US deal includes Iran committing to giving up its enriched uranium - report (live blog)",
+          "sourceType": "当事方媒体",
+          "publisher": "i24NEWS",
+          "date": "2026-06-12",
+          "url": "https://www.i24news.tv/en/news/israel/defense/artc-proposed-us-deal-includes-iran-committing-to-giving-up-its-enriched-uranium-report-live-blog",
+          "stance": "mixed",
+          "node": "B",
+          "reliability": 0.45,
+          "excerpt": "US officials said roughly 95% of the agreement is finalized, with final approval awaiting Iran's Supreme Leader ('another five to six days'). A report claimed Iran would commit to disposing of its highly enriched uranium, but a senior Iranian source told Reuters Tehran has NOT agreed to hand over its stockpile; the document does not specify enrichment limits or detailed verification beyond uranium removal."
+        },
+        {
+          "title": "US-Iran ceasefire and nuclear talks in 2026 (research briefing)",
+          "sourceType": "国际机构",
+          "publisher": "UK House of Commons Library",
+          "date": "2026-06-12",
+          "url": "https://commonslibrary.parliament.uk/research-briefings/cbp-10637/",
+          "stance": "oppose",
+          "node": "C",
+          "reliability": 0.75,
+          "excerpt": "Briefing on the 2026 ceasefire and nuclear talks. The Islamabad Declaration would reopen the Strait of Hormuz within 30 days but leaves Iran's 440kg stockpile untouched for 60-day follow-on talks and does not require Iran to hand over, remove, destroy or cap the stockpile before signing. IAEA cannot verify how much enriched uranium remains and has not been allowed to inspect bombed facilities — i.e. nuclear terms are not settle-able by June 30."
+        }
+      ]
+    },
+    {
+      "angle": "regional-analysis",
+      "note": "Searched regional press (Al Jazeera) and think-tank/analyst commentary (Carnegie; experts cited at Chatham House, NATO Defense College, Arms Control Association) plus the June 12-13 framework reporting. Consistent analyst read for the YES (qualifying nuclear deal by 2026-06-30) view: a framework/MOU — the \"Islamabad Declaration,\" final text agreed ~June 12 — is moving toward public acceptance (supports Node A), but it explicitly DEFERS the qualifying nuclear substance (enrichment limits, verification regime, ~440kg 60%-enriched stockpile disposition) into a 60-day follow-on window, so it does NOT contain sufficient qualifying nuclear terms (Node B oppose) and the nuclear file is not publicly confirmed/settle-able by June 30 (Node C oppose). Core blockers analysts flag: enrichment-duration gap (US ~20yr vs Iran ~5yr), no named verification/IAEA inspection mechanism, untouched stockpile, and pending Trump final approval. Net: analyst commentary leans against a deal that would qualify under a strict nuclear-terms reading by the deadline. Sources are current (Apr-Jun 2026); the Carnegie piece is early May and slightly older but still 2026.",
+      "findings": [
+        {
+          "title": "Are Iran, US really close to a breakthrough 'deal'?",
+          "sourceType": "主流媒体（区域）",
+          "publisher": "Al Jazeera",
+          "date": "2026-06-12",
+          "url": "https://www.aljazeera.com/features/2026/6/12/are-iran-us-really-close-to-a-breakthrough-deal",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.85,
+          "excerpt": "Analysts (Chatham House's Aniseh Tabrizi, NATO Defense College's Richard Weitz) say this is not a final nuclear settlement: Iran's proposal removes enrichment and missiles from the initial agreement and pushes nuclear details into a 60-day window. Tabrizi calls finalizing the nuclear 'nitty-gritties' very challenging vs the easier Strait of Hormuz reopening."
+        },
+        {
+          "title": "US-Iran 60-day proposal: What we know",
+          "sourceType": "主流媒体（区域）",
+          "publisher": "Al Jazeera",
+          "date": "2026-05-29",
+          "url": "https://www.aljazeera.com/news/2026/5/29/us-iran-60-day-proposal-what-we-know",
+          "stance": "oppose",
+          "node": "C",
+          "reliability": 0.85,
+          "excerpt": "The preliminary MOU explicitly defers enrichment and stockpile disposition: 'the first issue to be discussed in peace talks will be Iran's uranium enrichment programme.' Framework still needed Trump's final approval and Iran's Tasnim said the MOU text was not yet finalized, with neither government officially confirming it as of late May."
+        },
+        {
+          "title": "Iran Peace Deal Text Agreed: 440kg Enriched Uranium Stays in Tehran During 60-Day Talks",
+          "sourceType": "主流媒体",
+          "publisher": "TechTimes",
+          "date": "2026-06-13",
+          "url": "https://www.techtimes.com/articles/318319/20260613/iran-peace-deal-text-agreed-440kg-enriched-uranium-stays-tehran-during-60-day-talks.htm",
+          "stance": "mixed",
+          "node": "B",
+          "reliability": 0.6,
+          "excerpt": "The Islamabad Declaration's final text is agreed (a framework exists) but 'would establish a path toward nuclear talks, not conclude them': no requirement to surrender/cap the ~440kg of 60% uranium before signing, and the MOU names no verification mechanism or inspection protocol. Trump conceded it only 'conceptually' addresses nuclear material."
+        },
+        {
+          "title": "Two Wars Later, Iran's Nuclear Question Is Still on the Table",
+          "sourceType": "智库/第三方分析",
+          "publisher": "Carnegie Endowment for International Peace",
+          "date": "2026-05-01",
+          "url": "https://carnegieendowment.org/emissary/2026/05/iran-nuclear-program-progress-deal",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.85,
+          "excerpt": "Carnegie analysts describe negotiations as 'at an impasse': unresolved enrichment-rights dispute (Iran's claimed right to enrich vs Trump's demand to give it up entirely), Iran denying IAEA access to struck sites (verification gap), and large enriched-uranium reserves. Suggests a minimalist 'containment' understanding rather than a comprehensive deal is the realistic path."
+        },
+        {
+          "title": "Why are the US, Iran arguing over duration of uranium enrichment ban?",
+          "sourceType": "主流媒体（区域）",
+          "publisher": "Al Jazeera",
+          "date": "2026-04-14",
+          "url": "https://www.aljazeera.com/news/2026/4/14/why-are-the-us-iran-arguing-over-duration-of-uranium-enrichment-ban",
+          "stance": "oppose",
+          "node": "B",
+          "reliability": 0.8,
+          "excerpt": "Earlier Islamabad ceasefire talks collapsed over the nuclear file, with Washington pushing a 20-year enrichment suspension and Iran proposing only five years — illustrating a core qualifying-terms gap (enrichment duration/limits) that remained unbridged going into the June framework."
+        },
+        {
+          "title": "UN watchdog demands Iran provide information on nuclear stockpile",
+          "sourceType": "国际机构相关报道",
+          "publisher": "Al Jazeera",
+          "date": "2026-06-11",
+          "url": "https://www.aljazeera.com/news/2026/6/11/un-watchdog-demands-iran-provide-information-on-nuclear-stockpile",
+          "stance": "oppose",
+          "node": "C",
+          "reliability": 0.8,
+          "excerpt": "On the eve of the framework, the IAEA was still demanding basic information on Iran's stockpile, underscoring that verification/monitoring of the 60%-enriched material is unresolved — a structural barrier to any agreement being publicly confirmed and settle-able on the nuclear file by June 30."
+        }
+      ]
+    },
+    {
+      "angle": "prediction-market",
+      "note": "Searched Polymarket, Kalshi, and related coverage for \"US-Iran nuclear deal by [2026 date]\". Found a direct deadline match: Polymarket \"US-Iran nuclear deal by June 30\" at ~67% YES ($8.8M vol, fetched 2026-06-14). Caveat: that market's resolution is broad — ANY publicly announced US-Iran nuclear agreement, NOT explicitly requiring enrichment limits/verification/stockpile terms (node B), so it likely overstates a fully-qualifying deal. Polymarket \"before 2027\" sits ~82%, implying real probability the deal slips past June 30 into H2. Kalshi's directly comparable market read only ~23% before July in early June (could not fetch live figure — HTTP 429 — so this is ~2 weeks stale and pre-dates the June 11-12 \"negotiations substantially complete\" momentum). The two venues diverge sharply (67% vs ~23%), partly because the June 12 draft was framed as a peace/ceasefire deal while the nuclear-specific framework was only \"nearing.\" Overall read for a fully-qualifying nuclear deal by 2026-06-30: market signal is genuinely mixed and venue-dependent, roughly 25-65%, with the stricter B-criterion pushing toward the lower half.",
+      "findings": [
+        {
+          "title": "US-Iran nuclear deal by June 30? (Polymarket)",
+          "sourceType": "预测市场",
+          "publisher": "Polymarket",
+          "date": "2026-06-14",
+          "url": "https://polymarket.com/event/us-iran-nuclear-deal-by-june-30",
+          "stance": "support",
+          "node": "C",
+          "reliability": 0.8,
+          "excerpt": "Direct deadline match: YES at ~67% on $8.8M volume. Resolves YES if an official, publicly announced mutual US-Iran agreement over Iranian nuclear research and/or weapon development is reached by June 30, 2026, 11:59 PM ET. Counts on public announcement regardless of implementation. NOTE: criteria is broad (any nuclear agreement) and does not explicitly require enrichment limits/verification/stockpile terms (node B), so it likely overstates the probability of a fully qualifying deal."
+        },
+        {
+          "title": "US-Iran nuclear deal before 2027? (Polymarket)",
+          "sourceType": "预测市场",
+          "publisher": "Polymarket",
+          "date": "2026-06-14",
+          "url": "https://polymarket.com/event/us-iran-nuclear-deal-before-2027",
+          "stance": "oppose",
+          "node": "C",
+          "reliability": 0.75,
+          "excerpt": "Resolves YES on a publicly announced US-Iran nuclear agreement by Dec 31, 2026; trades ~82% ($2.2M volume). The ~15pt gap vs the June-30 market (~67%) implies traders price meaningful probability that a deal slips past the June 30 deadline into H2 2026 — i.e. raises odds of a deal eventually, but lowers odds of one specifically by 2026-06-30."
+        },
+        {
+          "title": "Traders' hopes fade for U.S.-Iran nuclear deal this year despite ceasefire report",
+          "publisher": "CNBC",
+          "sourceType": "主流媒体",
+          "date": "2026-05-28",
+          "url": "https://www.cnbc.com/2026/05/28/hope-fades-for-us-iran-nuclear-deal-after-ceasefire-report.html",
+          "stance": "mixed",
+          "node": "A",
+          "reliability": 0.7,
+          "excerpt": "Reports Kalshi odds of a nuclear deal moved on an Axios ceasefire report but remained below mid-April levels, when odds of a deal by June exceeded 70%. Notes negotiators were near a peace/ceasefire framework while the nuclear-specific framework lagged — relevant to distinguishing node A (any framework) from node B (qualifying nuclear terms)."
+        },
+        {
+          "title": "New US-Iran nuclear deal this year? (Kalshi market index)",
+          "publisher": "Kalshi",
+          "sourceType": "预测市场",
+          "date": "2026-06-14",
+          "url": "https://kalshi.com/markets/kxusairanagreement",
+          "stance": "oppose",
+          "node": "C",
+          "reliability": 0.65,
+          "excerpt": "Kalshi's KXUSAIRANAGREEMENT market (resolves YES if the US announces/signs/accepts a new Iran-US nuclear deal). Search snapshots from early June 2026 indicated only ~23% chance of a deal before July, with ~53% before November, ~44% before October, ~30% before September — materially lower than Polymarket's June-30 reading. Exact live June-30 figure could not be fetched (HTTP 429); treat the ~23% as roughly 2 weeks stale."
+        },
+        {
+          "title": "Traders see a 53% chance of a U.S.-Iran nuclear deal before November",
+          "publisher": "Kalshi News",
+          "sourceType": "预测市场",
+          "date": "2026-05-07",
+          "url": "https://news.kalshi.com/p/us-iran-nuclear-deal-odds-strait-of-hormuz-kalshi",
+          "stance": "oppose",
+          "node": "C",
+          "reliability": 0.6,
+          "excerpt": "Kalshi blog cites ~53% before November, ~47% by September, ~51%/58% by 2027 in early/mid May 2026. The near-term (by-summer) component implied by these is well under 50%, and this source predates the June 11-12 momentum, so it is somewhat stale but anchors the lower end of the range for a deal specifically by 2026-06-30."
+        }
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "lens": "Recency & authenticity: re-search to confirm the strongest SUPPORT findings are real and from 2026 (not recycled 2025), and flag anything not reconfirmable.",
+      "assessment": "I reconfirmed the two SUPPORT-stance findings and the broader \"deal nearing\" framing against live searches on 2026-06-14, plus checked for any actual signing.\n\nWHAT HOLDS UP (real, genuinely 2026, not recycled):\n1. Polymarket \"US-Iran nuclear deal by June 30\" market is REAL and CURRENT. Direct WebFetch of the page on 2026-06-14 returned 67% YES on ~$8.81M volume, matching the evidence. Resolution criteria reconfirmed verbatim: resolves YES on \"a publicly announced mutual agreement... over Iranian nuclear research and/or nuclear weapon development... by June 30, 2026, 11:59 PM ET\" — multilateral deals count. This is a BROAD criterion: it does NOT require enrichment limits, verification, or stockpile terms (Node B). So the 67% measures Node A/C-lite, not a fully-qualifying deal. The evidence JSON's caveat on this is accurate and well-stated.\n2. White House Trump video (2026-06-11, \"we have a deal that Iran will never have a nuclear weapon\") is AUTHENTIC and current. Title and date reconfirmed on whitehouse.gov via search; corroborated by Times of Israel, PBS, Fox, CNBC. It is a political assertion with no qualifying nuclear specifics — correctly classified as Node A support only.\n3. The convergent OPPOSE thesis holds up strongly and is fresh: the only instrument in play (the \"Islamabad Declaration\" MOU, Pakistan-mediated, Geneva signing prospective) defers ALL nuclear substance — enrichment limits, verification/inspection regime, and the ~440kg 60% HEU stockpile — to a 60-day post-signing window that runs past June 30. Reconfirmed via CNN (6/12), TechTimes (6/13), Al Jazeera (6/12), UK Commons Library, and Wikipedia's live \"2025-2026 Iran-United States negotiations\" page.\n\nWHAT IS WEAK / SHIFTED:\n- As of 2026-06-14 the MOU remains UNSIGNED. Pakistan PM Sharif (June 13) said finalization \"likely in the next 24 hours\"; Geneva signing is still prospective (tied to G7 travel). So even Node A is not yet locked — it is imminent-but-pending, awaiting Iran's Supreme Leader.\n- Trump's claim that \"Khamenei has approved it\" (Times of Israel, 6/12) is a Trump assertion that Tehran publicly calls \"speculation\" and has NOT confirmed. It does NOT strengthen Node B/C and should not be treated as a SUPPORT data point.\n- Polymarket live percentage is volatile across read methods: the authoritative direct page fetch = 67%, but search-summary snapshots returned 27% and 45% (search engines frequently hallucinate live market odds). I trust the 67% page fetch, but note possible intraday drift. Either way it prices Node A/C-broad, not Node B.",
+      "staleOrSuspectClaims": [
+        "Mehr/Araghchi 'zero enrichment can never be accepted' (en.mehrnews.com, 2025-05-23) is correctly flagged STALE in the evidence — it is May 2025, predates the entire 2026 MOU process; usable only as longstanding-red-line context, not current posture.",
+        "E3 snapback finding (UK Commons Library, 2025-09-29) is 2025 baseline context, correctly flagged; shapes posture but is not 2026 movement.",
+        "IAEA Grossi finding cites URL '...introductory-statement-to-the-board-of-governors-2-6-march-2026' but is dated/attributed to a June 10 2026 Board event — the URL slug points to a MARCH 2026 statement, a URL/date mismatch. The substantive June claims (~97 days no access, 440.9kg HEU unverifiable, June 10 Board resolution) are corroborated by ISIS (6/4) and Al Jazeera (6/11), so the facts hold, but the specific IAEA URL likely does not back the June-10 attribution. Flag the citation, not the fact.",
+        "Original evidence reported the Polymarket June-30 market at ~67% as of 2026-06-14; my re-search confirms 67% via direct page fetch but search snapshots showed 27%/45%. Treat the live number as 45-67% with intraday volatility, not a precise 67%.",
+        "Trump's 'Khamenei has approved it' (Times of Israel, 2026-06-12) is uncorroborated by Tehran and called 'speculation' by Iran — not a reliable SUPPORT signal; do not upweight Node B/C on it.",
+        "Kalshi ~23% figure was acknowledged in the evidence as ~2 weeks stale (HTTP 429, pre-June-11 momentum) — confirmed I could not refresh it either; treat as a stale lower-bound anchor.",
+        "Several Western-source excerpts (Reuters, Time, Axios, CNBC, i24 body) rest on search-result summaries due to paywall/403 — the evidence flags this honestly; the convergent thesis is nonetheless corroborated across multiple independently-fetchable sources (CNN, TechTimes, Al Jazeera, Wikipedia)."
+      ],
+      "impliedProbabilityComment": "The question demands a QUALIFYING nuclear deal (Node A + B + C) settle-able by 2026-06-30 — only 16 days out. The evidence is convergent and the SUPPORT findings, while authentic, support only the weak version: a framework/MOU (Node A) that Trump calls \"conceptual\" and that explicitly DEFERS every qualifying nuclear term (enrichment caps, verification, ~440kg HEU disposition) to a 60-day window running PAST June 30. Node B is essentially unmet by the instrument's own design, and Node C (publicly confirmed, settle-able qualifying nuclear terms by the deadline) is structurally blocked — the IAEA has had ~97 days of no access and cannot verify the stockpile, so a verified nuclear deal by 6/30 is not physically possible. The Polymarket 67% measures the BROAD \"any announced nuclear agreement\" criterion (closer to Node A), not Node B; a strict-B reading sits well below that, consistent with Kalshi's lower historical readings. The MOU is also still unsigned as of 6/14, with signing \"imminent but pending\" Iran's Supreme Leader. Base-rate-wise, comprehensive nuclear deals with verification take months-to-years to finalize, never 16 days from an unsigned ceasefire memo. So a YES on a strictly-qualifying deal by the hard deadline is unlikely; the dominant scenario is a war-ending MOU signed near the deadline with nuclear specifics pushed into July+.",
+      "suggestedProbabilityRange": [
+        0.08,
+        0.22
+      ]
+    },
+    {
+      "lens": "Adversarial / refute — arguing the NO case (no qualifying nuclear deal by 2026-06-30)",
+      "assessment": "The evidence package holds up well on re-verification and the NO case is strong on the merits. I independently re-confirmed the load-bearing facts: (1) As of June 13-14 2026, the only instrument in play is the non-binding \"Islamabad Declaration\" MOU — a war-ending / Strait-of-Hormuz framework whose text was agreed ~June 12 but was NOT yet signed (still pending Iran's leadership approval; Tehran was publicly pushing back on Pakistan's \"within 24 hours\" claim). Confirmed via TechTimes, CNN live blog, NBC News, Times of Israel, and Wikipedia. (2) The framework explicitly DEFERS all qualifying nuclear substance — enrichment limits, the ~440kg of 60% HEU stockpile, and any named verification/inspection mechanism — to a 60-day negotiation window that begins only AFTER signing. FM Araghchi confirmed nuclear terms \"would be finalized in the 60 days after the initial agreement is signed.\" That window runs well past 2026-06-30. (3) Verification infrastructure is structurally absent: ISIS (June 4) and the IAEA Board (resolution June 10) report ~97 days of zero inspector access and an unverifiable 440.9kg HEU stockpile (high-reliability, internally consistent).\n\nNode analysis from the YES perspective: Node A (a framework both sides publicly accept) is plausibly clearing or close — momentum is real and a signing is genuinely imminent. But Node B (sufficient qualifying nuclear terms: enrichment limits + verification + stockpile) FAILS at signing by construction — the parties deliberately stripped nuclear specifics out of the MOU. Node C (publicly confirmed and settle-able by 2026-06-30) is highly unlikely on the nuclear file: even an optimistic signing this week leaves the qualifying terms inside a 60-day post-signing window. The base rate for negotiating AND verifying a full nuclear deal (enrichment caps, monitoring regime, stockpile disposition) inside a ~16-day window — with no IAEA access, an unverifiable stockpile, an unresolved US 20yr-vs-Iran 5yr enrichment-duration gap, Rubio's maximalist zero-enrichment precondition, and a newly installed Iranian leadership — is very low.\n\nKey correction to the package: the prediction-market section is internally muddled but I re-anchored it. The live Polymarket \"US-Iran nuclear deal by June 30\" market reads 67% YES (~$8.8M vol) on direct fetch — confirmed. BUT that market's resolution is BROAD: it resolves YES on \"an official agreement over Iranian nuclear research and/or nuclear weapon development... publicly announced mutual agreement,\" and explicitly counts multilateral agreements and reporting consensus. Critically, an MOU that merely commits Iran \"not to develop nuclear weapons\" and sets up nuclear talks could plausibly resolve that market YES, while FAILING the question's stricter Node-B test (enrichment limits + verification + stockpile). So the 67% reading materially overstates P(qualifying deal). The strict Node-B reading is much lower.",
+      "staleOrSuspectClaims": [
+        "Prediction-market section is internally inconsistent and partly stale: it cites Polymarket at ~67% YES but also surfaces a ~27%/73%-NO figure (a stale/incorrect search snippet) and a Kalshi ~23% (flagged ~2 weeks stale, HTTP 429). I directly re-fetched Polymarket and confirmed 67% YES — but that market's BROAD resolution criteria (any publicly announced nuclear agreement, including multilateral/reporting-consensus) does not require Node-B qualifying terms, so it overstates the strict question. Treat 67% as a loose ceiling, not the answer.",
+        "Kalshi ~23% figure is ~2 weeks stale (pre-June-11/12 momentum) and the live number could not be fetched (HTTP 429) — directional only.",
+        "ABC News (June 12-13) 'senior administration official' claim that the deal 'leads to the dismantling of the Iranian nuclear program' / 'would begin the process of destroying or removing' HEU is an aspirational/intent framing, NOT a settled term at signing — the same reporting confirms Araghchi placing nuclear finalization in the 60-day post-signing window. Do not read it as Node B clearing. Official's own confidence was only 80-85%.",
+        "Rubio State Dept page (2026-05-08) could not be directly fetched (site 'Technical Difficulties'); content corroborated only via secondary search — and it is the oldest 2026 US-official source, predating the June framework, so its maximalist stance may be softer in current text.",
+        "Araghchi zero-enrichment red-line quote dated 2025-05-23 (Mehr) is STALE by ~13 months — establishes a longstanding red line but predates the entire 2026 MOU process; do not treat as current.",
+        "E3 snapback finding (UK Commons Library, 2025-09-29) is 2025 baseline context, not current evidence.",
+        "Several Western primary sources (Reuters, Time, Axios, CNBC, i24, Times of Israel) were paywalled/403, so some excerpts rest on search-result snippets rather than direct reads; the i24 'Iran committing to give up uranium' item (reliability 0.45) is contradicted by Iran's own public denials.",
+        "TechTimes (the single most-cited source across multiple angles, reliability 0.5-0.6) is a lower-tier outlet doing most of the load-bearing work on the 'stockpile stays in Tehran' claim — though it is corroborated by CNN, NBC, House of Commons Library, and Al Jazeera, so the conclusion itself is robust even if the specific source is weak."
+      ],
+      "impliedProbabilityComment": "For the STRICT question — both sides accept a framework AND it contains sufficient qualifying nuclear terms (enrichment limits + verification + stockpile) AND it is publicly confirmed/settle-able by 2026-06-30 — the probability is low. The deal that is actually imminent is, by deliberate design, NOT a nuclear deal: nuclear substance is parked in a 60-day post-signing window that runs to roughly late August, and the qualifying terms (enrichment caps, a named verification regime, stockpile disposition) are precisely the items deferred. Verification is currently impossible (IAEA locked out ~97 days, stockpile unverifiable). The base rate for concluding AND making settle-able a full nuclear agreement in a ~16-day window, off a standing impasse on enrichment duration and zero-enrichment, with a new Iranian leadership, is very low — call it well under 20% on its own. The 67% Polymarket reading does NOT contradict this: that market resolves on ANY publicly announced nuclear agreement (and the imminent MOU contains a 'never develop nuclear weapons' line plus a path to nuclear talks), so it is measuring a looser event than Node B. Net: the imminent signing likely clears a loose 'nuclear-adjacent agreement' bar but not the strict qualifying-terms bar by the deadline.",
+      "suggestedProbabilityRange": [
+        0.08,
+        0.22
+      ]
+    },
+    {
+      "lens": "Market & calibration",
+      "assessment": "The evidence base is unusually current (bulk of it 2026-06-11 to 2026-06-14) and internally consistent across five independent angles, which is reassuring. I re-verified the two most calibration-critical claims by direct fetch.\n\nWHAT HOLDS UP:\n1. Polymarket 67% YES on ~$8.8M volume is CONFIRMED exactly via direct fetch of the market page (2026-06-14). The prediction-market sub-agent's number was accurate. A WebSearch summary suggested \"79%\" but that was an unreliable scrape — the actual page reads 67%. So the headline market signal is genuine and well-funded.\n2. The Polymarket resolution criteria is BROAD: resolves YES on \"an official agreement over Iranian nuclear research and/or nuclear weapon development\" announced by 6/30, multilateral OK, announcement-based (not implementation). The prediction-market angle correctly flagged this overstates a strict node-B deal.\n3. Deal-status convergence holds: as of 2026-06-13/14 the Islamabad Declaration MOU is AGREED-IN-TEXT but UNSIGNED. Trump says signing Sunday 6/15; Iran's Baghaei publicly contradicted him (\"will not happen tomorrow\") and said the nuclear issue \"will not be addressed\" in this MOU. This is a real, sourced US-Iran framing gap, not spin.\n4. Nuclear substance (enrichment caps, named verification/IAEA regime, ~440.9kg 60% HEU disposition) is DEFERRED to a 60-day post-signing window that runs past 6/30. ISIS (0.85) and IAEA Board reporting (~97 days no access, stockpile unverifiable) make the verification infrastructure for a strict qualifying deal demonstrably absent.\n\nTHE LOAD-BEARING CALIBRATION TENSION (the sub-agents under-weighted this): My fresh search found the MOU text itself reportedly DOES carry a nuclear clause — Iran committing to \"never acquire/develop a nuclear weapon indefinitely\" plus, per US officials, \"a commitment to get rid of their highly enriched material.\" CNN (2026-06-12) similarly reported Iran commits \"indefinitely to never procure or develop nuclear weapons.\" If the MOU signs by 6/30 with that clause, it plausibly satisfies the BROAD market criterion (node C / any nuclear agreement) even while clearly FAILING the strict task framing (node B: enrichment limits + verification + stockpile). So the question splits sharply on definition.\n\nWEAK/STALE: Kalshi ~23%-before-July rests on early-June snapshots (HTTP 429, ~2 weeks stale, pre-dates the 6/11-12 momentum) — do not treat the 67% vs 23% gap as a live disagreement; it is partly a timing artifact plus a criteria mismatch. The Mehr/Araghchi zero-enrichment red-line piece is May 2025 (stale baseline). The E3 snapback finding is Sept 2025 (baseline context). i24 (0.45) and Crypto Briefing (0.45) are thin secondary sources. TechTimes (appears 4x across angles at 0.5-0.6) is doing heavy lifting for the \"440kg stays / no verification mechanism\" claim and is a single mid-tier outlet — though CBS, NBC, CNN and the UK Commons Library independently corroborate the deferral structure, so the core finding survives even discounting TechTimes.",
+      "staleOrSuspectClaims": [
+        "Kalshi ~23% chance before July: HTTP 429 prevented a live fetch; figure is ~2 weeks stale and pre-dates the 2026-06-11/12 'final text agreed' momentum — should not be read as a current live counter-signal to Polymarket's 67%.",
+        "WebSearch surfaced a '79%' Polymarket figure that I could NOT confirm on direct fetch (actual page = 67%); the 79% appears to be an unreliable search-summary artifact and should be disregarded.",
+        "Mehr/Araghchi 'zero enrichment never accepted' (2025-05-23) is from May 2025 — stale; establishes a longstanding red line but predates the 2026 MOU process.",
+        "E3 snapback (UK Commons Library, 2025-09-29) is 2025 baseline context, not a 2026 development.",
+        "TechTimes (2026-06-13) is cited in four of five angles (the 'no verification mechanism / 440kg stays' claim leans on it); it is a single mid-tier outlet — corroborated by CBS/CNN/NBC/Commons Library on the deferral structure, but the specific 'names no verification mechanism' wording is not independently strong.",
+        "The MOU's own nuclear clause (Iran 'commits indefinitely to never develop/acquire a nuclear weapon') is reported by CNN and secondary outlets but the exact signed text is not public as of 2026-06-14 — and Iran's FM publicly disputes that nuclear is addressed at all, so even the no-weapons clause is contested."
+      ],
+      "impliedProbabilityComment": "Two answers depending on definition. Under the STRICT task framing (node B requires enrichment limits + verification + stockpile disposition settled and confirmable by 6/30), the evidence is overwhelmingly bearish: every credible source says those terms are explicitly punted to a 60-day post-signing window, the MOU itself is still unsigned with a public Trump-vs-Iran contradiction, and the IAEA cannot verify anything (97 days no access). A fully-qualifying, settle-able deal in 16 days is unlikely — I'd put it around 0.08-0.18. Under the BROAD reading that the dominant $8.8M market actually pays on (any announced US-Iran nuclear agreement, and the MOU reportedly carries a 'never develop a nuclear weapon' clause), 67% is defensible-to-slightly-rich: signing is plausibly imminent (Trump says Sunday 6/15) but Iran is openly dragging, Khamenei's hardening rhetoric and Supreme-Leader sign-off are unresolved, and a 16-day hard deadline on a deal one party publicly says 'won't happen tomorrow' argues for a haircut below 67% to roughly 0.50-0.62. Base-rate caution on hard near-term diplomatic deadlines (slippage is the modal outcome) pulls toward the lower end of whichever band applies. Because the task explicitly defines YES as a qualifying deal with sufficient nuclear nuance (B+C), I weight toward the strict reading but widen the band upward to account for the real chance the question resolves on the looser market standard.",
+      "suggestedProbabilityRange": [
+        0.12,
+        0.4
+      ]
+    }
+  ],
+  "forecast": {
+    "asOf": "2026-06-13",
+    "summary": "截至 2026-06-13，唯一在桌面上的工具是 Pakistan 斡旋的\"Islamabad Declaration\"谅解备忘录（MOU），它本质是结束战争 + 重开霍尔木兹海峡的框架，刻意把所有核实质内容（浓缩上限、核查机制、约 440kg 60% 高浓铀的处置）推迟到签署后才启动的 60 天谈判窗口（跑到 8 月底，远超 6/30）。该 MOU 截至 6/14 仍未签署，等待伊朗最高领袖批准，且伊朗外交部公开反驳了 Trump 的时间表。即便框架本周签署，节点 B（充分的合格核条款）按设计就不满足，节点 C（6/30 前可公开确认并结算）在 IAEA 已约 97 天零准入、无法核查库存的情况下结构性不可能。因此严格意义上的合格核协议在硬截止日前达成的概率很低。",
+    "yesProbability": 0.1,
+    "confidenceInterval": [
+      0.05,
+      0.2
+    ],
+    "baseline": 0.12,
+    "marketProbability": 0.67,
+    "marketSource": "Polymarket \"US-Iran nuclear deal by June 30\"（~67% YES，~$8.8M 成交量，2026-06-14 直取页面确认；但其结算标准宽泛，只要公开宣布任何核协议即可 YES，不要求浓缩上限/核查/库存条款，因此高估了严格合格协议的概率）",
+    "edge": -0.57,
+    "verdict": "判 NO（严格意义上的合格核协议在 2026-06-30 前达成的概率约 10%）。核心驱动：实际临近签署的 MOU 按设计就不是核协议——浓缩上限、核查机制、约 440kg 高浓铀处置全部被推迟到签署后 60 天窗口（跑到 8 月底），而 IAEA 约 97 天零准入使任何\"可结算的核协议\"在 16 天内物理上不可能。Polymarket 的 67% 衡量的是宽泛口径（任何公开宣布的核协议），并非本题的严格 B 节点。",
+    "model": [
+      {
+        "id": "A",
+        "label": "A: 双方公开接受框架/MOU",
+        "probability": 0.72,
+        "rationale": "Islamabad Declaration MOU 文本已于约 6/12 达成，Trump 宣称有协议、签署被吹风为临近。但截至 6/14 仍未签署，等待伊朗最高领袖批准，且 Baghaei 公开反驳 Trump 的时间表（'不会明天发生'）。在 16 天窗口与公开口径分歧下，框架获双方公开接受概率高但不确定。"
+      },
+      {
+        "id": "B",
+        "label": "B: 框架含充分合格核条款（浓缩上限/核查/库存）",
+        "probability": 0.15,
+        "rationale": "结构性致命点。CNN、Al Jazeera、ISIS、Carnegie、UK Commons Library 及伊美双方官员一致确认 MOU 刻意把核实质剥离出去：约 440kg 60% 高浓铀留在德黑兰、无指定核查机制、浓缩时长争议（美 20 年 vs 伊 5 年）未解，全部推迟到签署后 60 天窗口。该工具按设计就不构成合格核协议。"
+      },
+      {
+        "id": "C",
+        "label": "C: 6/30 前可公开确认并可结算",
+        "probability": 0.45,
+        "rationale": "即便假设存在合格框架，IAEA 已约 97 天零准入、无法核查 440.9kg 库存（ISIS 6/4、6/10 理事会决议），核查在窗口内物理上不可能，且 60 天时钟跑到约 8 月底。可结算性在核档案上高度受限。"
+      }
+    ],
+    "updates": [
+      {
+        "label": "基线",
+        "from": 0.12,
+        "to": 0.12,
+        "explanation": "起点：16 天硬窗口内达成并可结算一份带核查的完整核协议历史上罕见，基率偏低。"
+      },
+      {
+        "label": "官方信号/框架动能",
+        "from": 0.12,
+        "to": 0.18,
+        "explanation": "White House Trump 视频（6/11）+ 高级行政官员称协议'导向拆解伊朗核计划'、CNN 报道伊朗承诺'永不发展核武器'、Polymarket 宽口径市场 ~67%——这些把节点 A 推高并提供少量上行（若题目按宽松标准结算）。"
+      },
+      {
+        "label": "反向证据（核条款被推迟）",
+        "from": 0.18,
+        "to": 0.08,
+        "explanation": "决定性反向证据：MOU 按设计把浓缩上限/核查/约 440kg 高浓铀处置推到签署后 60 天窗口（Al Jazeera、ISIS、UK Commons Library、伊美官员一致）；IAEA 约 97 天零准入使核查不可能；MOU 6/14 仍未签且伊朗公开拖延。节点 B 基本不满足、C 结构性受阻。"
+      },
+      {
+        "label": "模型校准",
+        "from": 0.08,
+        "to": 0.1,
+        "explanation": "条件模型 P(A)·P(B|A)·P(C|A,B)≈0.72·0.15·0.45≈0.05；考虑题目有一定概率按更宽松的市场标准结算（Polymarket 67% 的宽口径）以及签署确实临近，向上微调至 0.10，与三条验证视角 0.08–0.22 严格区间一致。"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "techtimes-2026-06-13",
+        "sourceType": "主流媒体",
+        "title": "Iran Peace Deal Text Agreed: 440kg Enriched Uranium Stays in Tehran During 60-Day Talks",
+        "date": "2026-06-13",
+        "stance": "oppose",
+        "weightPct": -14,
+        "reliability": 0.55,
+        "node": "B",
+        "excerpt": "在桌面上的唯一协议（Islamabad Declaration MOU）是非约束性工具，不要求交出/封顶约 440kg 60% 高浓铀，未指定核查机制，把浓缩/核查/库存谈判推到签署后才开始的 60 天窗口；截至 6/13 仍未签署，等待伊朗最高领袖批准。多角度引用但属中等级别媒体，已下调权重。",
+        "url": "https://www.techtimes.com/articles/318319/20260613/iran-peace-deal-text-agreed-440kg-enriched-uranium-stays-tehran-during-60-day-talks.htm"
+      },
+      {
+        "id": "cnn-liveblog-2026-06-12",
+        "sourceType": "主流媒体",
+        "title": "US and Iran say an agreement is close, but questions remain (live blog)",
+        "date": "2026-06-12",
+        "stance": "mixed",
+        "weightPct": 3,
+        "reliability": 0.7,
+        "node": "A",
+        "excerpt": "美伊（巴基斯坦斡旋）就草案 MOU 最终文本达成一致，Trump 暗示数日内可能在欧洲签署；伊朗承诺'永不获取或发展核武器'，但清除高浓铀库存的技术细节未决、推迟到下一轮技术谈判，MOU 未命名任何核查或检查协议。支持节点 A、但核实质明确被推迟。",
+        "url": "https://www.cnn.com/2026/06/12/world/live-news/iran-war-trump-israel"
+      },
+      {
+        "id": "isis-2026-06-04",
+        "sourceType": "第三方分析（智库）",
+        "title": "Analysis of IAEA Iran Verification and Monitoring and NPT Safeguards Reports — June 2026",
+        "date": "2026-06-04",
+        "stance": "oppose",
+        "weightPct": -10,
+        "reliability": 0.85,
+        "node": "C",
+        "excerpt": "IAEA 自 2026-02-28 起停止对伊核保障核查；伊朗 2025-11-20 终止开罗协议；机构对 8 处设施无准入，无法核查浓缩/再处理暂停，也无法核查约 440.9kg 60% 高浓铀。结论：在恢复准入前近期核查安排'存在问题'。节点 C 结构性受阻。",
+        "url": "https://isis-online.org/isis-reports/analysis-of-iaea-iran-verification-and-monitoring-and-npt-safeguards-reports-june-2026"
+      },
+      {
+        "id": "presstv-baghaei-2026-05-23",
+        "sourceType": "官方/当事方媒体（伊朗国家媒体，外交部发言人）",
+        "title": "Iran, US moving closer to 'finalizing memorandum of understanding': Baghaei",
+        "date": "2026-05-23",
+        "stance": "oppose",
+        "weightPct": -9,
+        "reliability": 0.8,
+        "node": "B",
+        "excerpt": "外交部发言人 Baghaei 称 14 点 MOU 聚焦三大目标——结束战争、停止美海军行动、释放被冻结资产，并明确'现阶段我们不讨论核问题细节'，把核/浓缩事项推迟到后续谈判。即框架本身不含合格核条款。",
+        "url": "https://www.presstv.ir/Detail/2026/05/23/769157/Iran-US-Baghaei-understanding-nuclear"
+      },
+      {
+        "id": "aljazeera-2026-06-12",
+        "sourceType": "主流媒体（区域）",
+        "title": "Are Iran, US really close to a breakthrough 'deal'?",
+        "date": "2026-06-12",
+        "stance": "oppose",
+        "weightPct": -8,
+        "reliability": 0.85,
+        "node": "B",
+        "excerpt": "分析人士（Chatham House 的 Tabrizi、NATO Defense College 的 Weitz）称这不是最终核解决方案：伊朗方案把浓缩与导弹移出初始协议、把核细节推入 60 天窗口；Tabrizi 称敲定核'细节'相比重开霍尔木兹海峡极具挑战性。",
+        "url": "https://www.aljazeera.com/features/2026/6/12/are-iran-us-really-close-to-a-breakthrough-deal"
+      },
+      {
+        "id": "polymarket-by-june30-2026-06-14",
+        "sourceType": "预测市场",
+        "title": "US-Iran nuclear deal by June 30? (Polymarket)",
+        "date": "2026-06-14",
+        "stance": "support",
+        "weightPct": 6,
+        "reliability": 0.8,
+        "node": "C",
+        "excerpt": "直接截止日匹配：~67% YES，~$8.8M 成交量（6/14 直取页面确认）。结算口径宽泛——只要 6/30 前公开宣布关于伊朗核研究和/或核武器开发的官方相互协议即可 YES，多边协议也算，不要求浓缩上限/核查/库存条款（节点 B）。因此衡量的是接近节点 A/C 的宽松事件，高估严格合格协议。",
+        "url": "https://polymarket.com/event/us-iran-nuclear-deal-by-june-30"
+      },
+      {
+        "id": "ukcommons-cbp10637-2026-06-12",
+        "sourceType": "国际机构/官方研究",
+        "title": "US-Iran ceasefire and nuclear talks in 2026 (research briefing)",
+        "date": "2026-06-12",
+        "stance": "oppose",
+        "weightPct": -7,
+        "reliability": 0.75,
+        "node": "C",
+        "excerpt": "Islamabad Declaration 将在 30 天内重开霍尔木兹海峡，但把伊朗 440kg 库存留待 60 天后续谈判，不要求在签署前交出、移除、销毁或封顶库存；IAEA 无法核查剩余高浓铀且未获准检查被炸设施——即核条款在 6/30 前不可结算。",
+        "url": "https://commonslibrary.parliament.uk/research-briefings/cbp-10637/"
+      },
+      {
+        "id": "kalshi-index-2026-06-14",
+        "sourceType": "预测市场",
+        "title": "New US-Iran nuclear deal this year? (Kalshi market index)",
+        "date": "2026-06-14",
+        "stance": "oppose",
+        "weightPct": -2,
+        "reliability": 0.5,
+        "node": "C",
+        "excerpt": "Kalshi KXUSAIRANAGREEMENT 市场早 6 月快照显示 7 月前仅约 23%、11 月前约 53%，显著低于 Polymarket 6/30 读数。实时 6/30 数字因 HTTP 429 无法刷新，约 2 周前数据、且早于 6/11-12 动能，按陈旧下行锚点处理、已下调权重。",
+        "url": "https://kalshi.com/markets/kxusairanagreement"
+      }
+    ]
+  }
+}

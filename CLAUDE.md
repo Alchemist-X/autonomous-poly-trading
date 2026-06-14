@@ -110,6 +110,12 @@
 - 自评：布局没崩、文字没溢出、交互可用；**出现 console error / pageerror 视为未完成，先修**
 - sub-agent 做前端工作时同样适用，截图路径和自评结论写进返回报告
 
+**改 `apps/web` 任何用户可见页面时（强制三件套）：**
+
+- **i18n**：所有面向用户的文案走 i18n（`apps/web/lib/world-cup/messages/` 下 `en` / `zh-CN` / `zh-TW` 三语都补齐，新文案进 message resource、不要硬编码；`zh-TW` 为生成文件，必要时同步更新生成器）。
+- **移动端**：桌面 + 移动两个视口都要适配并截图自评（布局不崩、文字不溢出、交互可用）。
+- **自动发布**：合入 `main` 即触发 Vercel 自动部署（forecasting-agent.com）。因此合并前必须本地 `pnpm --filter @autopoly/web exec next build` 通过 + 桌面/移动截图自评，避免把坏构建推上生产。
+
 ---
 
 ## 项目执行要点（predict-raven 专属）

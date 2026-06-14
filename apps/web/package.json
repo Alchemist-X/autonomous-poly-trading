@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "pnpm --dir ../.. --filter @autopoly/contracts build && pnpm --dir ../.. --filter @autopoly/db build",
+    "prebuild": "pnpm --dir ../.. --filter @autopoly/contracts build && pnpm --dir ../.. --filter @autopoly/db build && pnpm --dir ../.. --filter @autopoly/norns build",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -12,6 +12,7 @@
   "dependencies": {
     "@autopoly/contracts": "workspace:*",
     "@autopoly/db": "workspace:*",
+    "@autopoly/norns": "workspace:*",
     "next": "16.1.6",
     "next-auth": "5.0.0-beta.31",
     "react": "19.2.0",

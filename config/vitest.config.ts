@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       "@autopoly/contracts": path.resolve(REPO_ROOT, "packages/contracts/src/index.ts"),
       "@autopoly/db": path.resolve(REPO_ROOT, "packages/db/src/index.ts"),
+      "@autopoly/norns": path.resolve(REPO_ROOT, "packages/norns/src/index.ts"),
       "@autopoly/terminal-ui": path.resolve(REPO_ROOT, "packages/terminal-ui/src/index.ts"),
       "@autopoly/sports-model": path.resolve(REPO_ROOT, "packages/sports-model/src/index.ts")
     }
@@ -18,7 +19,10 @@ export default defineConfig({
     include: [
       "scripts/**/*.test.ts",
       "packages/**/*.test.ts",
-      "services/**/*.test.ts"
+      "services/**/*.test.ts",
+      // Pure-logic web tests only (.ts, never .tsx) so React components are not
+      // pulled into the node test environment.
+      "apps/web/**/*.test.ts"
     ]
   }
 });
