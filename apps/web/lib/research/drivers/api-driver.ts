@@ -18,6 +18,7 @@ import {
   type NornTier
 } from "@autopoly/norns";
 import { buildPredictionDemoRun } from "../../prediction-engine-demo";
+import { normalizeConsoleLocale, pick, type ConsoleLocale } from "../locale";
 import { replayRun, type EmitFn } from "../replay";
 import { DriverNotConfiguredError, type ResearchDriver, type ResearchRequest } from "./types";
 
@@ -76,13 +77,22 @@ function resolveApiConfig(tier: NornTier): ApiConfig {
   return { provider, apiKey, model, live: readBool("RESEARCH_API_LIVE"), maxTokens, tier };
 }
 
-function buildResearchPrompt(eventText: string): string {
+function buildResearchPrompt(eventText: string, locale: ConsoleLocale): string {
+  if (locale === "zh") {
+    return [
+      "你是一个事件概率研究助手。针对下面的问题，按 Forecasting Engine 流程逐步分析：",
+      `问题：${eventText}`,
+      "",
+      "请输出简洁的分步推理（理清定义 → 条件拆解 → 证据 → 权重 → 条件概率模型 → 贝叶斯更新 → 结论），",
+      "每步 1-2 句中文，便于在流式 UI 中逐行展示。先不要下任何交易结论。"
+    ].join("\n");
+  }
   return [
-    "你是一个事件概率研究助手。针对下面的问题，按 Deep Research 流程逐步分析：",
-    `问题：${eventText}`,
+    "You are an event-probability research assistant. Analyze the question below step by step, following the Forecasting Engine pipeline:",
+    `Question: ${eventText}`,
     "",
-    "请输出简洁的分步推理（理清定义 → 条件拆解 → 证据 → 权重 → 条件概率模型 → 贝叶斯更新 → 结论），",
-    "每步 1-2 句中文，便于在流式 UI 中逐行展示。先不要下任何交易结论。"
+    "Output concise step-by-step reasoning (frame the definition → decompose conditions → evidence → weighting → conditional-probability model → Bayesian update → conclusion),",
+    "1-2 sentences per step in English, suitable for line-by-line display in a streaming UI. Do not draw any trading conclusion yet."
   ].join("\n");
 }
 
@@ -194,34 +204,56 @@ export const apiDriver: ResearchDriver = {
   id: "api",
   async run(request: ResearchRequest, emit: EmitFn, signal?: AbortSignal): Promise<void> {
     const tier = normalizeTier(request.tier);
+    const locale = normalizeConsoleLocale(request.locale);
     const config = resolveApiConfig(tier); // throws DriverNotConfiguredError → route falls back to mock
 
     // INTEGRATION POINT: structured backbone is scaffolded by the deterministic
     // generator. Replace this with a schema-validated extraction of the model's
     // own evidence / conditional model / conclusion to make the numbers live.
-    const run = buildPredictionDemoRun({
-      eventText: request.eventText,
-      marketPrice: request.marketPrice ?? null
-    });
+    const run = buildPredictionDemoRun(
+      {
+        eventText: request.eventText,
+        marketPrice: request.marketPrice ?? null
+      },
+      new Date(),
+      locale
+    );
 
     let narration: string[] = [];
     if (config.live) {
       try {
-        const text = await streamModelText(config, buildResearchPrompt(request.eventText), signal);
+        const text = await streamModelText(config, buildResearchPrompt(request.eventText, locale), signal);
         narration = splitNarration(text);
-        await emit({ type: "run.notice", level: "info", message: `已接入 ${config.provider}/${config.model} 实时推理。` });
+        await emit({
+          type: "run.notice",
+          level: "info",
+          message: pick(
+            locale,
+            `Connected to ${config.provider}/${config.model} live reasoning.`,
+            `已接入 ${config.provider}/${config.model} 实时推理。`
+          )
+        });
       } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error);
         await emit({
           type: "run.notice",
           level: "warn",
-          message: `${config.provider} 实时调用失败，本次回退到 demo 推理：${error instanceof Error ? error.message : String(error)}`
+          message: pick(
+            locale,
+            `${config.provider} live call failed; falling back to demo reasoning this run: ${detail}`,
+            `${config.provider} 实时调用失败，本次回退到 demo 推理：${detail}`
+          )
         });
       }
     } else {
       await emit({
         type: "run.notice",
         level: "info",
-        message: `API 链路已配置 (${config.provider})，但 RESEARCH_API_LIVE 未开启——本次使用 demo 结构回放。`
+        message: pick(
+          locale,
+          `API chain is configured (${config.provider}), but RESEARCH_API_LIVE is off — using a demo structural replay this run.`,
+          `API 链路已配置 (${config.provider})，但 RESEARCH_API_LIVE 未开启——本次使用 demo 结构回放。`
+        )
       });
     }
 
@@ -233,8 +265,16 @@ export const apiDriver: ResearchDriver = {
         source: "local" as const,
         endpointLabel: `${config.provider}:${config.model}`,
         note: config.live
-          ? "Chain B：直接 API 驱动；实时推理叠加在 demo 结构骨架上（数值待 schema 抽取打通）。"
-          : "Chain B：直接 API 驱动骨架；live 未开启，使用 demo 结构回放。"
+          ? pick(
+              locale,
+              "Chain B: direct-API driver; live reasoning overlaid on the demo structural scaffold (numbers pending schema extraction).",
+              "Chain B：直接 API 驱动；实时推理叠加在 demo 结构骨架上（数值待 schema 抽取打通）。"
+            )
+          : pick(
+              locale,
+              "Chain B: direct-API driver skeleton; live is off, using a demo structural replay.",
+              "Chain B：直接 API 驱动骨架；live 未开启，使用 demo 结构回放。"
+            )
       }
     };
 
@@ -242,6 +282,7 @@ export const apiDriver: ResearchDriver = {
     await replayRun(annotated, emit, {
       driver: "api",
       tier,
+      locale,
       signal,
       extraProgress: (stageId) => (stageId === "evidence" ? narration : [])
     });

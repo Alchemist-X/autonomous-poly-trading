@@ -20,6 +20,7 @@
 import { normalizeTier } from "@autopoly/norns";
 import { buildPredictionDemoRun, type PredictionEngineRun } from "../../prediction-engine-demo";
 import { parseResearchEvent } from "../events";
+import { normalizeConsoleLocale, pick } from "../locale";
 import { replayRun, type EmitFn } from "../replay";
 import { DriverNotConfiguredError, type ResearchDriver, type ResearchRequest } from "./types";
 
@@ -94,6 +95,7 @@ export const vpsAgentDriver: ResearchDriver = {
   async run(request: ResearchRequest, emit: EmitFn, signal?: AbortSignal): Promise<void> {
     const config = resolveVpsConfig(); // throws DriverNotConfiguredError → route falls back to mock
     const tier = normalizeTier(request.tier);
+    const locale = normalizeConsoleLocale(request.locale);
 
     const controller = new AbortController();
     const onAbort = () => controller.abort();
@@ -110,7 +112,7 @@ export const vpsAgentDriver: ResearchDriver = {
       const response = await fetch(config.url, {
         method: "POST",
         headers,
-        body: JSON.stringify({ eventText: request.eventText, marketPrice: request.marketPrice ?? null, tier }),
+        body: JSON.stringify({ eventText: request.eventText, marketPrice: request.marketPrice ?? null, tier, locale }),
         signal: controller.signal
       });
 
@@ -126,27 +128,41 @@ export const vpsAgentDriver: ResearchDriver = {
 
       const json = (await response.json()) as unknown;
       if (isPredictionRun(json)) {
-        await replayRun(json, emit, { driver: "vps", tier, signal });
+        await replayRun(json, emit, { driver: "vps", tier, locale, signal });
         return;
       }
       throw new Error("VPS endpoint returned an unrecognised payload shape.");
     } catch (error) {
       // Configured-but-failing VPS: keep the UI alive with a demo replay and a
       // loud warning rather than a dead stream.
+      const detail = error instanceof Error ? error.message : String(error);
       await emit({
         type: "run.notice",
         level: "warn",
-        message: `VPS agent 链路调用失败，本次回退到 demo：${error instanceof Error ? error.message : String(error)}`
+        message: pick(
+          locale,
+          `VPS agent chain call failed; falling back to demo this run: ${detail}`,
+          `VPS agent 链路调用失败，本次回退到 demo：${detail}`
+        )
       });
-      const run = buildPredictionDemoRun({ eventText: request.eventText, marketPrice: request.marketPrice ?? null });
+      const run = buildPredictionDemoRun(
+        { eventText: request.eventText, marketPrice: request.marketPrice ?? null },
+        new Date(),
+        locale
+      );
       await replayRun(
         {
           ...run,
           mode: "vps_proxy",
-          service: { ...run.service, source: "vps", endpointLabel: config.url, note: "Chain A 回退 demo（VPS 不可用）。" }
+          service: {
+            ...run.service,
+            source: "vps",
+            endpointLabel: config.url,
+            note: pick(locale, "Chain A fell back to demo (VPS unavailable).", "Chain A 回退 demo（VPS 不可用）。")
+          }
         },
         emit,
-        { driver: "vps", tier, signal }
+        { driver: "vps", tier, locale, signal }
       );
     } finally {
       clearTimeout(timer);

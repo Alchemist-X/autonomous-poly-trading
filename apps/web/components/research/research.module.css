@@ -47,6 +47,42 @@
   text-transform: uppercase;
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.langToggle {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #d9dde6;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.langBtn {
+  border: none;
+  background: transparent;
+  color: #5b6472;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.langBtn:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.langBtnActive {
+  background: #0f1115;
+  color: #fff;
+}
+
 .driverPill {
   font-size: 11px;
   font-weight: 700;
@@ -623,10 +659,25 @@
   margin-bottom: 6px;
 }
 
+.snapshotLine {
+  margin: 4px 0 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #8a93a6;
+  font-variant-numeric: tabular-nums;
+}
+
 .ciText {
   font-size: 14px;
   color: #5b6472;
   font-variant-numeric: tabular-nums;
+}
+
+.ciNote {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #aab1be;
 }
 
 .verdict {

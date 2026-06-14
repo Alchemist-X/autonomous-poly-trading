@@ -7,6 +7,7 @@
 
 import { getTierSpec, normalizeTier } from "@autopoly/norns";
 import { buildPredictionDemoRun } from "../../prediction-engine-demo";
+import { normalizeConsoleLocale, pick } from "../locale";
 import { replayRun, type EmitFn } from "../replay";
 import type { ResearchDriver, ResearchRequest } from "./types";
 
@@ -23,11 +24,16 @@ export const mockDriver: ResearchDriver = {
   id: "mock",
   async run(request: ResearchRequest, emit: EmitFn, signal?: AbortSignal): Promise<void> {
     const tier = normalizeTier(request.tier);
+    const locale = normalizeConsoleLocale(request.locale);
     const spec = getTierSpec(tier);
-    const run = buildPredictionDemoRun({
-      eventText: request.eventText,
-      marketPrice: request.marketPrice ?? null
-    });
+    const run = buildPredictionDemoRun(
+      {
+        eventText: request.eventText,
+        marketPrice: request.marketPrice ?? null
+      },
+      new Date(),
+      locale
+    );
     // The replayed run still carries demo metadata; mark its origin clearly. The
     // mock makes no model call, but the chosen Norns tier is surfaced so the
     // capability layer is visible even in deterministic demo mode.
@@ -37,9 +43,13 @@ export const mockDriver: ResearchDriver = {
         ...run.service,
         source: "demo" as const,
         endpointLabel: `in-process mock driver · ${spec.label}`,
-        note: `确定性只读 demo（${spec.label}）：复用 prediction-engine 生成器，按 Deep Research 状态机流式回放。`
+        note: pick(
+          locale,
+          `Deterministic read-only demo (${spec.label}): reuses the prediction-engine generator, replayed through the Forecasting Engine state machine.`,
+          `确定性只读 demo（${spec.label}）：复用 prediction-engine 生成器，按 Forecasting Engine 状态机流式回放。`
+        )
       }
     };
-    await replayRun(annotated, emit, { driver: "mock", tier, speed: readSpeed(), signal });
+    await replayRun(annotated, emit, { driver: "mock", tier, locale, speed: readSpeed(), signal });
   }
 };

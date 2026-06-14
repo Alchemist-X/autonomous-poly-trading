@@ -8,6 +8,7 @@
 import { useCallback, useReducer, useRef } from "react";
 import type { NornTier } from "@autopoly/norns";
 import { parseResearchEvent } from "./events";
+import { pick, type ConsoleLocale } from "./locale";
 import {
   initialResearchState,
   researchReducer,
@@ -19,6 +20,7 @@ export interface StartResearchInput {
   eventText: string;
   marketPrice?: number | null;
   tier?: NornTier;
+  locale?: ConsoleLocale;
 }
 
 const RESET = { type: "__reset__" } as const;
@@ -72,7 +74,9 @@ export function useResearchStream(): UseResearchStream {
           const detail = await response.json().catch(() => ({}));
           dispatch({
             type: "run.error",
-            message: (detail as { error?: string }).error ?? `请求失败（${response.status}）`
+            message:
+              (detail as { error?: string }).error ??
+              pick(input.locale ?? "en", `Request failed (${response.status})`, `请求失败（${response.status}）`)
           });
           return;
         }
