@@ -31,7 +31,7 @@ export function StateMachineLegend({
   return (
     <div className={styles.machine}>
       <div className={styles.machineTop}>
-        <span className={styles.machineLabel}>Deep Research 状态机</span>
+        <span className={styles.machineLabel}>Forecasting Engine 状态机</span>
         <span className={`${styles.phasePill} ${PHASE_CLASS[phase]}`}>{PHASE_LABEL[phase]}</span>
       </div>
       <div className={styles.machineTrack}>
