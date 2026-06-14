@@ -72,7 +72,7 @@ export function ResearchConsole() {
   return (
     <>
       <section className={styles.hero}>
-        <p className={styles.heroKicker}>Deep Research</p>
+        <p className={styles.heroKicker}>Forecasting Engine</p>
         <h1 className={styles.heroTitle}>把一个未来事件,变成可审计的概率。</h1>
         <p className={styles.heroSub}>
           用自然语言提出一个可被验证的二元问题。研究 agent 会分七步公开它的推理:理清定义 ·

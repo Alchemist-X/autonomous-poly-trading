@@ -5,7 +5,7 @@ import { LegalFooter } from "../../components/world-cup/legal-footer";
 import styles from "../../components/research/research.module.css";
 
 export const metadata: Metadata = {
-  title: "Deep Research — Predict Raven",
+  title: "Forecasting Engine — Predict Raven",
   description:
     "Ask any verifiable future event in natural language and watch an AI superforecaster reason in the open: layered evidence, a conditional-probability model, Bayesian updates, and a calibrated probability with an 80% confidence interval."
 };
@@ -21,7 +21,7 @@ export default function ResearchPage() {
         <div className={styles.headerRow}>
           <Link href="/research" className={styles.brand}>
             Predict Raven
-            <span className={styles.brandTag}>Deep Research</span>
+            <span className={styles.brandTag}>Forecasting Engine</span>
           </Link>
           <Link href="/world-cup" className={styles.brandTag} style={{ textDecoration: "none" }}>
             世界杯预测 →
