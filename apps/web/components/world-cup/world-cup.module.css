@@ -553,14 +553,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   width: fit-content;
-  margin: 0 auto 18px;
-  padding: 8px 16px;
+  max-width: 100%;
+  margin: 0 0 18px auto; /* right-aligned to the content edge */
+  padding: 10px 20px;
   background: #fff;
   border: 1px solid #e8eaf0;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #3a4252;
   box-shadow: 0 1px 2px rgba(15, 17, 21, 0.04);
@@ -569,6 +570,7 @@
 .accuracyBar strong {
   color: #15803d;
   font-weight: 800;
+  font-size: 18px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1902,6 +1904,15 @@
   /* Fixed center track = tri-bar width, so the chip/score can never grow it. */
   .matchTop {
     grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr);
+  }
+  /* Keep the (enlarged) accuracy badge on one line on small phones. */
+  .accuracyBar {
+    font-size: 13.5px;
+    padding: 8px 14px;
+    gap: 8px;
+  }
+  .accuracyBar strong {
+    font-size: 15px;
   }
   .tabNav {
     max-width: 100%;
