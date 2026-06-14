@@ -5,13 +5,15 @@
 // picture of where the machine in `state-machine.ts` currently sits.
 
 import styles from "./research.module.css";
+import { c, type ConsoleStringKey } from "../../lib/research/i18n";
+import type { ConsoleLocale } from "../../lib/research/locale";
 import type { ResearchPhase, ResearchStageState } from "../../lib/research/state-machine";
 
-const PHASE_LABEL: Record<ResearchPhase, string> = {
-  idle: "待命 IDLE",
-  running: "运行中 RUNNING",
-  complete: "已完成 COMPLETE",
-  error: "出错 ERROR"
+const PHASE_KEY: Record<ResearchPhase, ConsoleStringKey> = {
+  idle: "phaseIdle",
+  running: "phaseRunning",
+  complete: "phaseComplete",
+  error: "phaseError"
 };
 
 const PHASE_CLASS: Record<ResearchPhase, string | undefined> = {
@@ -23,16 +25,18 @@ const PHASE_CLASS: Record<ResearchPhase, string | undefined> = {
 
 export function StateMachineLegend({
   phase,
-  stages
+  stages,
+  locale
 }: {
   phase: ResearchPhase;
   stages: ResearchStageState[];
+  locale: ConsoleLocale;
 }) {
   return (
     <div className={styles.machine}>
       <div className={styles.machineTop}>
-        <span className={styles.machineLabel}>Forecasting Engine 状态机</span>
-        <span className={`${styles.phasePill} ${PHASE_CLASS[phase]}`}>{PHASE_LABEL[phase]}</span>
+        <span className={styles.machineLabel}>{c(locale, "machineLabel")}</span>
+        <span className={`${styles.phasePill} ${PHASE_CLASS[phase]}`}>{c(locale, PHASE_KEY[phase])}</span>
       </div>
       <div className={styles.machineTrack}>
         {stages.map((stage, index) => {

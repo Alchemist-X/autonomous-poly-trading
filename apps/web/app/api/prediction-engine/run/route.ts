@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { buildPredictionDemoRun } from "../../../../lib/prediction-engine-demo";
+import { isConsoleLocale, type ConsoleLocale } from "../../../../lib/research/locale";
 import {
   completePredictionUsageEvent,
   consumePredictionRunQuota
@@ -227,9 +228,13 @@ export async function POST(request: Request) {
   const record = body && typeof body === "object" && !Array.isArray(body)
     ? body as Record<string, unknown>
     : {};
+  // This endpoint predates the locale work and historically emitted Chinese, so
+  // it defaults to Chinese unless the caller explicitly requests another locale.
+  const locale: ConsoleLocale = isConsoleLocale(record.locale) ? record.locale : "zh";
   const payload = {
     eventText: readEventText(record.eventText),
-    marketPrice: readMarketPrice(record.marketPrice)
+    marketPrice: readMarketPrice(record.marketPrice),
+    locale
   };
   const quota = await consumePredictionRunQuota(payload.eventText);
   if (!quota.allowed) {
@@ -263,7 +268,7 @@ export async function POST(request: Request) {
     return response;
   }
 
-  const run = buildPredictionDemoRun(payload);
+  const run = buildPredictionDemoRun(payload, new Date(), payload.locale);
   await completePredictionUsageEvent({
     usageEventId: quota.usageEventId,
     status: "complete",

@@ -2,11 +2,15 @@
 
 // Final visualisation, revealed when the run completes. Strong visual emphasis
 // on the headline probability + 80% confidence interval; supporting charts for
-// the conditional model, prior→posterior path, and the evidence ledger.
+// the conditional model, prior→posterior path, and the evidence ledger. All
+// chrome is localized via the console locale; the streamed content arrives
+// already in the requested language.
 
 import { Fragment } from "react";
 import styles from "./research.module.css";
 import { pct, pp, signedPoints } from "../../lib/research/format";
+import { c, stanceLabel } from "../../lib/research/i18n";
+import type { ConsoleLocale } from "../../lib/research/locale";
 import type { ResearchState } from "../../lib/research/state-machine";
 import type { PredictionEvidence } from "../../lib/prediction-engine-demo";
 
@@ -17,25 +21,42 @@ const STANCE_CLASS: Record<PredictionEvidence["stance"], string | undefined> = {
   neutral: styles.stanceNeutral
 };
 
-const STANCE_LABEL: Record<PredictionEvidence["stance"], string> = {
-  support: "支持",
-  oppose: "反对",
-  mixed: "中性",
-  neutral: "边界"
-};
-
 function clampPct(value: number): number {
   return Math.min(100, Math.max(0, value * 100));
+}
+
+// Whole days between two YYYY-MM-DD dates (null if either is unparseable).
+function daysBetween(from: string, to: string): number | null {
+  const a = Date.parse(from);
+  const b = Date.parse(to);
+  if (Number.isNaN(a) || Number.isNaN(b)) {
+    return null;
+  }
+  return Math.round((b - a) / 86_400_000);
+}
+
+// "Research snapshot <date> · <N days> to the <deadline> deadline" (localized).
+function snapshotLine(locale: ConsoleLocale, asOf: string, deadline?: string, days?: number | null): string {
+  const prefix = c(locale, "snapshotPrefix") + asOf;
+  if (!deadline) {
+    return prefix;
+  }
+  if (locale === "zh") {
+    return `${prefix} · 距 ${deadline} 截止${days != null ? `约 ${days} 天` : ""}`;
+  }
+  return `${prefix} · ${days != null ? `${days} days to ` : ""}the ${deadline} deadline`;
 }
 
 function ConfidenceBar({
   yes,
   interval,
-  market
+  market,
+  locale
 }: {
   yes: number;
   interval: [number, number];
   market: number | null;
+  locale: ConsoleLocale;
 }) {
   const lo = clampPct(interval[0]);
   const hi = clampPct(interval[1]);
@@ -53,41 +74,53 @@ function ConfidenceBar({
         <span>100%</span>
       </div>
       <p className={styles.ciText}>
-        80% 置信区间：{pct(interval[0])} – {pct(interval[1])}
-        {market != null ? <> · 市场隐含 <span style={{ color: "#c0392b" }}>{pct(market)}</span></> : null}
+        {c(locale, "ciLabel")}
+        {pct(interval[0])} – {pct(interval[1])}
+        {market != null ? (
+          <>
+            {" · "}
+            {c(locale, "ciMarket")} <span style={{ color: "#c0392b" }}>{pct(market)}</span>
+          </>
+        ) : null}
       </p>
+      <p className={styles.ciNote}>{c(locale, "ciNote")}</p>
     </div>
   );
 }
 
-function ConclusionCard({ state }: { state: ResearchState }) {
+function ConclusionCard({ state, locale }: { state: ResearchState; locale: ConsoleLocale }) {
   const conclusion = state.conclusion;
   if (!conclusion) {
     return null;
   }
   const edge = conclusion.edge;
+  const asOf = state.finalRun?.asOf;
+  const deadline = state.finalRun?.deadline;
+  const daysToDeadline = asOf && deadline ? daysBetween(asOf, deadline) : null;
   return (
     <section className={styles.conclusionCard}>
       <div className={styles.conclusionTop}>
         <div>
-          <div className={styles.bigProbLabel}>Yes 概率</div>
+          <div className={styles.bigProbLabel}>{c(locale, "bigProbLabel")}</div>
           <div className={styles.bigProb}>{pct(conclusion.yesProbability)}</div>
         </div>
       </div>
+      {asOf ? <p className={styles.snapshotLine}>{snapshotLine(locale, asOf, deadline, daysToDeadline)}</p> : null}
       <ConfidenceBar
         yes={conclusion.yesProbability}
         interval={conclusion.confidenceInterval}
         market={conclusion.marketProbability}
+        locale={locale}
       />
       <p className={styles.verdict}>{conclusion.verdict}</p>
       {conclusion.marketProbability != null ? (
         <div className={styles.edgeRow}>
           <div className={styles.metric}>
-            <div className={styles.metricLabel}>市场隐含</div>
+            <div className={styles.metricLabel}>{c(locale, "marketImplied")}</div>
             <div className={styles.metricValue}>{pct(conclusion.marketProbability)}</div>
           </div>
           <div className={styles.metric}>
-            <div className={styles.metricLabel}>Edge</div>
+            <div className={styles.metricLabel}>{c(locale, "edgeLabel")}</div>
             <div
               className={`${styles.metricValue} ${
                 edge != null && edge > 0 ? styles.metricPos : edge != null && edge < 0 ? styles.metricNeg : ""
@@ -98,16 +131,12 @@ function ConclusionCard({ state }: { state: ResearchState }) {
           </div>
         </div>
       ) : null}
-      {conclusion.marketProbability != null ? (
-        <p className={styles.edgeCaveat}>
-          edge = 模型 − 市场。若市场的结算口径比本题更宽松（如"任何公开核协议即算"），两者并非同一判定标准，该 edge 仅供参考、不可直接当成可交易信号。
-        </p>
-      ) : null}
+      {conclusion.marketProbability != null ? <p className={styles.edgeCaveat}>{c(locale, "edgeCaveat")}</p> : null}
     </section>
   );
 }
 
-function ConditionalTree({ state }: { state: ResearchState }) {
+function ConditionalTree({ state, locale }: { state: ResearchState; locale: ConsoleLocale }) {
   if (state.model.length === 0) {
     return null;
   }
@@ -116,7 +145,7 @@ function ConditionalTree({ state }: { state: ResearchState }) {
   const calibrated = finalProb != null && Math.abs(finalProb - product) >= 0.01;
   return (
     <section className={styles.card}>
-      <h3 className={styles.cardTitle}>条件概率模型 · P(A) × P(B|A) × P(C|A,B)</h3>
+      <h3 className={styles.cardTitle}>{c(locale, "treeTitle")}</h3>
       <div className={styles.tree}>
         {state.model.map((node, index) => (
           <Fragment key={node.id}>
@@ -130,16 +159,23 @@ function ConditionalTree({ state }: { state: ResearchState }) {
         ))}
         <div className={styles.treeOp}>=</div>
         <div className={styles.treeResult}>
-          <div className={styles.treeNodeLabel} style={{ color: "#9ec0ff" }}>条件乘积</div>
+          <div className={styles.treeNodeLabel} style={{ color: "#9ec0ff" }}>
+            {c(locale, "treeProduct")}
+          </div>
           <div className={styles.treeResultProb}>{pct(product, 0)}</div>
           {calibrated ? (
-            <div className={styles.treeResultNote}>校准后 → {pct(finalProb!, 0)}</div>
+            <div className={styles.treeResultNote}>
+              {c(locale, "treeCalibratedPrefix")}
+              {pct(finalProb!, 0)}
+            </div>
           ) : null}
         </div>
       </div>
       {calibrated ? (
         <p className={styles.treeNote}>
-          条件乘积是结构化下界；最终 Yes 概率经校准为 {pct(finalProb!, 0)}（见下方贝叶斯路径的"模型校准"步）。
+          {c(locale, "treeNotePre")}
+          {pct(finalProb!, 0)}
+          {c(locale, "treeNotePost")}
         </p>
       ) : null}
     </section>
@@ -147,7 +183,7 @@ function ConditionalTree({ state }: { state: ResearchState }) {
 }
 
 // Prior → posterior path as a small SVG step chart.
-function UpdateWaterfall({ state }: { state: ResearchState }) {
+function UpdateWaterfall({ state, locale }: { state: ResearchState; locale: ConsoleLocale }) {
   if (state.updates.length === 0) {
     return null;
   }
@@ -168,7 +204,7 @@ function UpdateWaterfall({ state }: { state: ResearchState }) {
 
   return (
     <section className={styles.card}>
-      <h3 className={styles.cardTitle}>贝叶斯更新路径 · 先验 → 后验</h3>
+      <h3 className={styles.cardTitle}>{c(locale, "waterfallTitle")}</h3>
       <svg viewBox={`0 0 ${width} ${height}`} width="100%" role="img" aria-label="prior to posterior update path">
         {[0, domainMax / 2, domainMax].map((tickVal) => {
           const y = yOf(tickVal);
@@ -198,7 +234,7 @@ function UpdateWaterfall({ state }: { state: ResearchState }) {
   );
 }
 
-function EvidenceLedger({ state }: { state: ResearchState }) {
+function EvidenceLedger({ state, locale }: { state: ResearchState; locale: ConsoleLocale }) {
   if (state.evidence.length === 0) {
     return null;
   }
@@ -206,22 +242,26 @@ function EvidenceLedger({ state }: { state: ResearchState }) {
   const rows = [...state.evidence].sort((a, b) => Math.abs(b.weightPct) - Math.abs(a.weightPct));
   return (
     <section className={styles.card}>
-      <h3 className={styles.cardTitle}>证据账本 · {state.evidence.length} 条</h3>
+      <h3 className={styles.cardTitle}>
+        {c(locale, "ledgerTitlePre")}
+        {state.evidence.length}
+        {c(locale, "ledgerTitlePost")}
+      </h3>
       <table className={styles.ledger}>
         <thead>
           <tr>
-            <th>立场</th>
-            <th>证据</th>
-            <th className={styles.num}>影响</th>
-            <th className={styles.num}>可信度</th>
-            <th>节点</th>
+            <th>{c(locale, "ledgerColStance")}</th>
+            <th>{c(locale, "ledgerColEvidence")}</th>
+            <th className={styles.num}>{c(locale, "ledgerColImpact")}</th>
+            <th className={styles.num}>{c(locale, "ledgerColReliability")}</th>
+            <th>{c(locale, "ledgerColNode")}</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((item) => (
             <tr key={item.id}>
               <td>
-                <span className={`${styles.stance} ${STANCE_CLASS[item.stance]}`}>{STANCE_LABEL[item.stance]}</span>
+                <span className={`${styles.stance} ${STANCE_CLASS[item.stance]}`}>{stanceLabel(locale, item.stance)}</span>
               </td>
               <td>
                 <div className={styles.ledgerTitle}>{item.title}</div>
@@ -238,21 +278,19 @@ function EvidenceLedger({ state }: { state: ResearchState }) {
           ))}
         </tbody>
       </table>
-      <p className={styles.ledgerCaption}>
-        "影响"为每条证据对其所属节点（A / B / C）的有向强度（百分点量级），用于排序与定性，并非对最终概率的可加贡献——最终概率以上方条件概率模型与贝叶斯路径为准。
-      </p>
+      <p className={styles.ledgerCaption}>{c(locale, "ledgerCaption")}</p>
     </section>
   );
 }
 
-function Limitations({ state }: { state: ResearchState }) {
+function Limitations({ state, locale }: { state: ResearchState; locale: ConsoleLocale }) {
   const limitations = state.finalRun?.limitations ?? [];
   if (limitations.length === 0) {
     return null;
   }
   return (
     <section className={styles.card}>
-      <h3 className={styles.cardTitle}>边界与免责</h3>
+      <h3 className={styles.cardTitle}>{c(locale, "limitationsTitle")}</h3>
       <ul className={styles.limitList}>
         {limitations.map((limit) => (
           <li key={limit.slice(0, 30)}>{limit}</li>
@@ -262,17 +300,17 @@ function Limitations({ state }: { state: ResearchState }) {
   );
 }
 
-export function ResultCharts({ state }: { state: ResearchState }) {
+export function ResultCharts({ state, locale }: { state: ResearchState; locale: ConsoleLocale }) {
   if (state.phase !== "complete") {
     return null;
   }
   return (
     <div className={styles.result}>
-      <ConclusionCard state={state} />
-      <ConditionalTree state={state} />
-      <UpdateWaterfall state={state} />
-      <EvidenceLedger state={state} />
-      <Limitations state={state} />
+      <ConclusionCard state={state} locale={locale} />
+      <ConditionalTree state={state} locale={locale} />
+      <UpdateWaterfall state={state} locale={locale} />
+      <EvidenceLedger state={state} locale={locale} />
+      <Limitations state={state} locale={locale} />
     </div>
   );
 }

@@ -6,6 +6,7 @@
 import type { NornTier } from "@autopoly/norns";
 import type { ResearchEvent } from "../events";
 import type { EmitFn } from "../replay";
+import type { ConsoleLocale } from "../locale";
 
 export interface ResearchRequest {
   eventText: string;
@@ -16,6 +17,9 @@ export interface ResearchRequest {
   // Norns capability tier (urd / verdandi / skuld). The route normalises this
   // from the request body before handing it to a driver; defaults to verdandi.
   tier?: NornTier;
+  // Output locale for all human-readable prose. The route normalises this from
+  // the request body; defaults to English to match the public-site apex.
+  locale?: ConsoleLocale;
 }
 
 export interface ResearchDriver {

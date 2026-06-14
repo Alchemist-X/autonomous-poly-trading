@@ -6,6 +6,8 @@
 
 import styles from "./research.module.css";
 import { formatDuration, signedPoints } from "../../lib/research/format";
+import { stanceLabel } from "../../lib/research/i18n";
+import type { ConsoleLocale } from "../../lib/research/locale";
 import type { ResearchState, ResearchStageState } from "../../lib/research/state-machine";
 import type {
   PredictionEvidence,
@@ -20,19 +22,12 @@ const STANCE_CLASS: Record<PredictionEvidence["stance"], string | undefined> = {
   neutral: styles.stanceNeutral
 };
 
-const STANCE_LABEL: Record<PredictionEvidence["stance"], string> = {
-  support: "支持",
-  oppose: "反对",
-  mixed: "中性",
-  neutral: "边界"
-};
-
-function EvidenceRows({ items }: { items: PredictionEvidence[] }) {
+function EvidenceRows({ items, locale }: { items: PredictionEvidence[]; locale: ConsoleLocale }) {
   return (
     <div className={styles.liveList}>
       {items.map((item) => (
         <div key={item.id} className={styles.liveRow}>
-          <span className={`${styles.stance} ${STANCE_CLASS[item.stance]}`}>{STANCE_LABEL[item.stance]}</span>
+          <span className={`${styles.stance} ${STANCE_CLASS[item.stance]}`}>{stanceLabel(locale, item.stance)}</span>
           <span className={styles.liveTitle}>{item.title}</span>
           <span className={`${styles.liveWeight} ${item.weightPct >= 0 ? styles.weightPos : styles.weightNeg}`}>
             {signedPoints(item.weightPct)}
@@ -73,9 +68,9 @@ function UpdateRows({ items }: { items: PredictionUpdate[] }) {
 }
 
 // Which streamed artifacts belong in a given stage's live panel.
-function liveArtifacts(stageId: string, state: ResearchState) {
+function liveArtifacts(stageId: string, state: ResearchState, locale: ConsoleLocale) {
   if (stageId === "evidence" || stageId === "weighting") {
-    return state.evidence.length > 0 ? <EvidenceRows items={state.evidence} /> : null;
+    return state.evidence.length > 0 ? <EvidenceRows items={state.evidence} locale={locale} /> : null;
   }
   if (stageId === "model") {
     return state.model.length > 0 ? <ModelRows items={state.model} /> : null;
@@ -86,7 +81,7 @@ function liveArtifacts(stageId: string, state: ResearchState) {
   return null;
 }
 
-function StageCard({ stage, state }: { stage: ResearchStageState; state: ResearchState }) {
+function StageCard({ stage, state, locale }: { stage: ResearchStageState; state: ResearchState; locale: ConsoleLocale }) {
   const isActive = stage.status === "active";
   const isComplete = stage.status === "complete";
   const cardClass = `${styles.stage} ${
@@ -116,7 +111,7 @@ function StageCard({ stage, state }: { stage: ResearchStageState; state: Researc
               </span>
             ))}
           </div>
-          {liveArtifacts(stage.id, state)}
+          {liveArtifacts(stage.id, state, locale)}
         </div>
       ) : null}
 
@@ -133,14 +128,14 @@ function StageCard({ stage, state }: { stage: ResearchStageState; state: Researc
   );
 }
 
-export function StageTimeline({ state }: { state: ResearchState }) {
+export function StageTimeline({ state, locale }: { state: ResearchState; locale: ConsoleLocale }) {
   if (state.stages.length === 0) {
     return null;
   }
   return (
     <div className={styles.timeline}>
       {state.stages.map((stage) => (
-        <StageCard key={stage.id} stage={stage} state={state} />
+        <StageCard key={stage.id} stage={stage} state={state} locale={locale} />
       ))}
     </div>
   );

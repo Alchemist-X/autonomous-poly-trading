@@ -7,6 +7,7 @@
 
 import type { NornTier } from "@autopoly/norns";
 import type { PredictionEngineRun, PredictionStage } from "../prediction-engine-demo";
+import { pick, type ConsoleLocale } from "./locale";
 import type { ResearchDriverId, ResearchEvent, ResearchStageMeta } from "./events";
 
 export type EmitFn = (event: ResearchEvent) => void | Promise<void>;
@@ -15,6 +16,9 @@ export interface ReplayOptions {
   driver: ResearchDriverId;
   // Norns capability tier this run was dispatched at, surfaced in run.accepted.
   tier?: NornTier;
+  // Locale for the synthetic per-stage narration (the fallback lines emitted
+  // when a run has no real progressByStage). Defaults to English.
+  locale?: ConsoleLocale;
   // Wall-clock pacing multiplier. Higher = slower / more readable. Default 0.9
   // gives a deliberate ~12-14s walk-through so a viewer can read each step;
   // RESEARCH_MOCK_SPEED can dial it anywhere in [0.1, 3].
@@ -54,35 +58,71 @@ function toStageMeta(stage: PredictionStage): ResearchStageMeta {
 // Per-stage progress narration synthesised from the run. These read like a
 // research agent thinking aloud and give the active-stage panel something to
 // stream even in deterministic demo mode.
-function progressLinesFor(run: PredictionEngineRun, stage: PredictionStage): string[] {
+function progressLinesFor(run: PredictionEngineRun, stage: PredictionStage, locale: ConsoleLocale): string[] {
+  const supportCount = run.evidence.filter((e) => e.stance === "support").length;
+  const opposeCount = run.evidence.filter((e) => e.stance === "oppose").length;
   switch (stage.id) {
     case "definition":
       return [
-        `锁定事件主体与截止时间：${run.eventText}`,
-        "区分单方表态 / 继续谈判 / 临时框架 / 可结算协议四种状态。",
-        "标注需要人工复核的官方结算口径。"
+        pick(locale, `Lock the event's parties and deadline: ${run.eventText}`, `锁定事件主体与截止时间：${run.eventText}`),
+        pick(
+          locale,
+          "Separate four states: one-sided statement / ongoing talks / interim framework / settleable agreement.",
+          "区分单方表态 / 继续谈判 / 临时框架 / 可结算协议四种状态。"
+        ),
+        pick(locale, "Flag the official resolution criterion that needs human review.", "标注需要人工复核的官方结算口径。")
       ];
     case "query-design":
       return [
-        "把事件拆成 2-5 个必要条件节点 (A / B / C)。",
-        "为每个条件生成官方、主流媒体、当事方、本地与第三方 query。"
+        pick(locale, "Break the event into 2–5 necessary condition nodes (A / B / C).", "把事件拆成 2-5 个必要条件节点 (A / B / C)。"),
+        pick(
+          locale,
+          "Generate official, mainstream-media, party-side, local, and third-party queries for each condition.",
+          "为每个条件生成官方、主流媒体、当事方、本地与第三方 query。"
+        )
       ];
     case "evidence":
-      return [`按来源类型收集证据，共 ${run.evidence.length} 条待权重化。`];
+      return [
+        pick(
+          locale,
+          `Collect evidence by source type — ${run.evidence.length} items to be weighted.`,
+          `按来源类型收集证据，共 ${run.evidence.length} 条待权重化。`
+        )
+      ];
     case "weighting":
       return [
-        "按一手性、时效、交叉印证、战略性放话风险给每条证据打分。",
-        `支持 ${run.evidence.filter((e) => e.stance === "support").length} 条 · 反对 ${run.evidence.filter((e) => e.stance === "oppose").length} 条。`
+        pick(
+          locale,
+          "Score each item by primary-source quality, recency, cross-corroboration, and strategic-signalling risk.",
+          "按一手性、时效、交叉印证、战略性放话风险给每条证据打分。"
+        ),
+        pick(locale, `${supportCount} supporting · ${opposeCount} opposing.`, `支持 ${supportCount} 条 · 反对 ${opposeCount} 条。`)
       ];
     case "model":
-      return [`构建条件概率模型 ${run.model.map((n) => n.id).join(" × ")}，乘法结构校验中。`];
+      return [
+        pick(
+          locale,
+          `Build the conditional-probability model ${run.model.map((n) => n.id).join(" × ")}; verifying the multiplicative structure.`,
+          `构建条件概率模型 ${run.model.map((n) => n.id).join(" × ")}，乘法结构校验中。`
+        )
+      ];
     case "bayes":
-      return ["从基线出发，逐条把证据折算成对先验的有界更新。"];
+      return [
+        pick(locale, "From the baseline, fold each item into a bounded update of the prior.", "从基线出发，逐条把证据折算成对先验的有界更新。")
+      ];
     case "market":
       return [
         run.conclusion.marketProbability == null
-          ? "未提供市场价格，仅输出独立概率与置信区间。"
-          : `对比市场隐含概率 ${(run.conclusion.marketProbability * 100).toFixed(1)}%，计算 edge。`
+          ? pick(
+              locale,
+              "No market price provided; output the standalone probability and interval only.",
+              "未提供市场价格，仅输出独立概率与置信区间。"
+            )
+          : pick(
+              locale,
+              `Compare with the market-implied ${(run.conclusion.marketProbability * 100).toFixed(1)}%; compute the edge.`,
+              `对比市场隐含概率 ${(run.conclusion.marketProbability * 100).toFixed(1)}%，计算 edge。`
+            )
       ];
     default:
       return [stage.detail];
@@ -108,6 +148,7 @@ function emitArtifactsForStage(run: PredictionEngineRun, stageId: string): Resea
 export async function replayRun(run: PredictionEngineRun, emit: EmitFn, options: ReplayOptions): Promise<void> {
   const speed = Math.min(Math.max(options.speed ?? 0.9, 0.1), 3);
   const { signal } = options;
+  const locale: ConsoleLocale = options.locale ?? "en";
 
   await emit({
     type: "run.accepted",
@@ -130,7 +171,7 @@ export async function replayRun(run: PredictionEngineRun, emit: EmitFn, options:
     const lines =
       realLines && realLines.length > 0
         ? realLines
-        : [...progressLinesFor(run, stage), ...(options.extraProgress?.(stage.id) ?? [])];
+        : [...progressLinesFor(run, stage, locale), ...(options.extraProgress?.(stage.id) ?? [])];
     for (const text of lines) {
       await emit({ type: "stage.progress", stageId: stage.id, text });
       await sleep(stage.durationMs * speed * 0.5, signal);

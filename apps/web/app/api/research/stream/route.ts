@@ -11,6 +11,7 @@ import { normalizeTier, type NornTier } from "@autopoly/norns";
 import { encodeResearchEvent, type ResearchEvent } from "../../../../lib/research/events";
 import { getDriver, resolveRequestedDriverId } from "../../../../lib/research/drivers";
 import { DriverNotConfiguredError } from "../../../../lib/research/drivers/types";
+import { normalizeConsoleLocale, pick, type ConsoleLocale } from "../../../../lib/research/locale";
 import {
   completePredictionUsageEvent,
   consumePredictionRunQuota
@@ -34,14 +35,16 @@ function readMarketPrice(value: unknown): number | null {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  let payload: { eventText: string; marketPrice: number | null; tier: NornTier };
+  let payload: { eventText: string; marketPrice: number | null; tier: NornTier; locale: ConsoleLocale };
   try {
     const body = (await request.json()) as Record<string, unknown>;
     payload = {
       eventText: readEventText(body?.eventText),
       marketPrice: readMarketPrice(body?.marketPrice),
       // Per-request tier (from the UI) wins; else the server default; else verdandi.
-      tier: normalizeTier(body?.tier ?? process.env.RESEARCH_DEFAULT_TIER)
+      tier: normalizeTier(body?.tier ?? process.env.RESEARCH_DEFAULT_TIER),
+      // Output locale (from the UI); defaults to English.
+      locale: normalizeConsoleLocale(body?.locale)
     };
   } catch {
     return Response.json({ error: "Invalid JSON body." }, { status: 400 });
@@ -89,10 +92,15 @@ export async function POST(request: Request): Promise<Response> {
             await driver.run(payload, emit, abortController.signal);
           } catch (error) {
             if (error instanceof DriverNotConfiguredError) {
+              const missing = error.missing.join(", ") || error.message;
               emit({
                 type: "run.notice",
                 level: "warn",
-                message: `已请求 ${requestedId} 链路但未完成配置（${error.missing.join(", ") || error.message}），本次使用 mock。`
+                message: pick(
+                  payload.locale,
+                  `Requested the ${requestedId} chain but it isn't fully configured (${missing}); using mock this run.`,
+                  `已请求 ${requestedId} 链路但未完成配置（${missing}），本次使用 mock。`
+                )
               });
               driver = getDriver("mock");
               await driver.run(payload, emit, abortController.signal);
@@ -138,6 +146,7 @@ export async function POST(request: Request): Promise<Response> {
       connection: "keep-alive",
       "x-research-driver": requestedId,
       "x-research-tier": payload.tier,
+      "x-research-locale": payload.locale,
       "x-accel-buffering": "no"
     }
   });
