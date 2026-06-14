@@ -656,6 +656,15 @@
 .metricPos { color: #15803d; }
 .metricNeg { color: #c0392b; }
 
+.edgeCaveat {
+  margin: 12px 0 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #8a93a6;
+  border-left: 2px solid #e3e6ee;
+  padding-left: 10px;
+}
+
 .card {
   background: #fff;
   border: 1px solid #e8eaf0;
@@ -758,6 +767,8 @@
 }
 
 .treeResultProb { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin: 4px 0; }
+.treeResultNote { font-size: 12px; font-weight: 700; color: #9ec0ff; }
+.treeNote { margin: 12px 0 0; font-size: 12.5px; line-height: 1.55; color: #8a93a6; }
 
 /* evidence ledger table */
 
@@ -779,6 +790,7 @@
 .ledgerTitle { font-weight: 600; color: #0f1115; }
 .ledgerSource { font-size: 12px; color: #8a93a6; }
 .num { font-variant-numeric: tabular-nums; text-align: right; }
+.ledgerCaption { margin: 12px 0 0; font-size: 12px; line-height: 1.55; color: #8a93a6; }
 
 /* limitations / archive */
 
