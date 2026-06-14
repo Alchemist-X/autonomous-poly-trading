@@ -154,6 +154,25 @@ AGENT_RUNTIME_PROVIDER=codex        # options: codex / claude-code / openclaw
 
 Custom Agents are plugged in via a template command configured through `<PROVIDER>_COMMAND`. See [.env.example](.env.example) for examples and placeholders.
 
+## Capability Tiers — Norns (Urd / Verdandi / Skuld)
+
+Model capability is named in three tiers after the Norse Norns, so "which model" is one memorable choice instead of a raw model id scattered across env vars:
+
+| Tier | Norn | Use | Anthropic | OpenAI |
+| --- | --- | --- | --- | --- |
+| **Urd** | past / origin | light & fast — prescreen, high-frequency calls | `claude-haiku-4-5-20251001` | `gpt-4o-mini` |
+| **Verdandi** | present | balanced default | `claude-sonnet-4-6` | `gpt-4o` |
+| **Skuld** | future | flagship — deepest reasoning, highest quality | `claude-opus-4-8` | `gpt-4o` |
+
+This is a thin **alias / mapping layer** (`@autopoly/norns`), not a rewrite. Anywhere a model id is read, a tier name may be used instead and is resolved to a concrete model for that provider family. **Raw model ids and empty defaults pass through unchanged**, so every existing config keeps working — behaviour changes only when a tier name is explicitly used. Each tier also carries soft depth knobs (token budget, evidence/pass counts) that drivers can scale by.
+
+Where it applies:
+
+- **Deep Research console** (`apps/web` `/research`): the UI tier selector picks per run; `RESEARCH_DEFAULT_TIER` is the server default; `RESEARCH_API_MODEL` accepts a tier name *or* a raw id; the token budget defaults to the tier's.
+- **Existing engine / provider-runtime**: `CODEX_MODEL` / `CLAUDE_CODE_MODEL` / `OPENCLAW_MODEL` accept a tier name (e.g. `CLAUDE_CODE_MODEL=skuld`), resolved per provider family (codex → openai, claude-code / openclaw → anthropic).
+
+The tier table is the single source of truth in [`packages/norns/src/index.ts`](packages/norns/src/index.ts); all model ids are env-overridable.
+
 ## Decision Engine
 
 There are currently two decision strategies, selected via the `AGENT_DECISION_STRATEGY` environment variable:

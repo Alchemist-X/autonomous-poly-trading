@@ -4,6 +4,7 @@ import { WorldCupHeader } from "../../../components/world-cup/wc-header";
 import { LegalFooter } from "../../../components/world-cup/legal-footer";
 import { FormulaCard } from "../../../components/world-cup/formula-card";
 import { SampleRun, type SampleView } from "../../../components/world-cup/sample-run";
+import { BetaAccess } from "../../../components/world-cup/beta-access";
 import { getPredictionAccessState } from "../../../lib/prediction-access";
 import { contentFor, getAllForecasts, sortedOutcomes } from "../../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../../lib/world-cup/team-meta";
@@ -83,7 +84,21 @@ export default async function PredictionEnginePage({ params }: { params: Promise
       <div className={styles.container}>
         <section className={styles.peHero}>
           <p className={styles.peKicker}>{t(locale, "peKicker")}</p>
-          <h1 className={styles.peTitle}>{t(locale, "peTitle")}</h1>
+          <div className={styles.peTitleRow}>
+            <h1 className={styles.peTitle}>{t(locale, "peTitle")}</h1>
+            <BetaAccess
+              target="/research"
+              labels={{
+                button: t(locale, "betaButton"),
+                title: t(locale, "betaTitle"),
+                desc: t(locale, "betaDesc"),
+                placeholder: t(locale, "betaPlaceholder"),
+                enter: t(locale, "betaEnter"),
+                cancel: t(locale, "betaCancel"),
+                wrong: t(locale, "betaWrong")
+              }}
+            />
+          </div>
           <p className={styles.peSub}>{t(locale, "peSub")}</p>
           {cta ? (
             <div className={styles.ctaRow} style={{ justifyContent: "center" }}>

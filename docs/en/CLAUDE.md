@@ -110,6 +110,12 @@ For any user-visible change, close out with: **screenshot → read the image →
 - Self-review: layout intact, no text overflow, interactions work; **any console error / pageerror means the task is not done — fix first**.
 - Sub-agents doing frontend work follow the same loop and include screenshot paths + self-review in their reports.
 
+**Whenever you change any user-visible page in `apps/web` (mandatory trio):**
+
+- **i18n**: all user-facing copy goes through i18n (fill in `en` / `zh-CN` / `zh-TW` under `apps/web/lib/world-cup/messages/`; put new strings in the message resources, never hardcode; `zh-TW` is generated — update the generator when needed).
+- **Mobile**: adapt and self-review on both desktop and mobile viewports (layout intact, no overflow, interactions work).
+- **Auto-publish**: merging to `main` triggers an automatic Vercel deploy (forecasting-agent.com). So before merging, a local `pnpm --filter @autopoly/web exec next build` must pass plus a desktop/mobile screenshot self-review — never ship a broken build to production.
+
 ---
 
 ## Project Execution Notes (predict-raven specific)
