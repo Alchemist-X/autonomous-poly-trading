@@ -47,25 +47,34 @@ export function negotiateLocale(acceptLanguage: string | null | undefined): Loca
   return DEFAULT_LOCALE;
 }
 
-// ---- path helpers (locale is the first path segment) ----
+// ---- path helpers ----
+//
+// Public URLs carry the locale as an OPTIONAL TRAILING segment: English is the
+// clean default (/world-cup/groups) and the other locales append a suffix
+// (/world-cup/groups/zh-CN). Internally Next still serves the /[locale]/… routes
+// — next.config rewrites map the trailing-locale URLs onto them — so the parse
+// helpers accept the locale at EITHER the first or the last path segment.
 
 export function withLocale(href: string, locale: Locale): string {
-  const clean = href === "/" ? "" : href.startsWith("/") ? href : `/${href}`;
-  return `/${locale}${clean}`;
+  if (locale === DEFAULT_LOCALE) return href; // English keeps the clean URL
+  const base = href === "/" ? "" : href.replace(/\/+$/, "");
+  return `${base}/${locale}`;
 }
 
 export function localeFromPath(pathname: string): Locale {
-  return localeOf(pathname.split("/")[1]);
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts.length === 0) return DEFAULT_LOCALE;
+  if (isLocale(parts[0])) return parts[0]; // internal /zh-CN/…
+  const last = parts[parts.length - 1];
+  if (isLocale(last)) return last; // public /…/zh-CN
+  return DEFAULT_LOCALE;
 }
 
 export function stripLocale(pathname: string): string {
-  const parts = pathname.split("/");
-  if (isLocale(parts[1])) {
-    parts.splice(1, 1);
-    const rest = parts.join("/");
-    return rest === "" ? "/" : rest;
-  }
-  return pathname;
+  const parts = pathname.split("/").filter(Boolean);
+  if (isLocale(parts[0])) parts.shift();
+  else if (parts.length > 0 && isLocale(parts[parts.length - 1])) parts.pop();
+  return `/${parts.join("/")}`;
 }
 
 // ---- messages ----
