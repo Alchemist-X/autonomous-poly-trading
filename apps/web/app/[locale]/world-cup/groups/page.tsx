@@ -39,17 +39,17 @@ export default async function GroupsPage({ params }: { params: Promise<{ locale:
   const settled = settledMatches.length;
   const hits = settledMatches.filter(({ m, r }) => r.winner === bestPickKey(m)).length;
   const accuracyPct = settled > 0 ? Math.round((hits / settled) * 100) : 0;
+  const accuracyBadge =
+    settled > 0 ? (
+      <div className={styles.accuracyBar}>
+        <span aria-hidden>✅</span>
+        {t(locale, "accuracyLabel")} · <strong>{hits}/{settled}</strong> · {accuracyPct}%
+      </div>
+    ) : null;
 
   return (
     <div>
-      <WcHero locale={locale} wide subKey="subGroups" />
-
-      {settled > 0 ? (
-        <div className={styles.accuracyBar}>
-          <span aria-hidden>✅</span>
-          {t(locale, "accuracyLabel")} · <strong>{hits}/{settled}</strong> · {accuracyPct}%
-        </div>
-      ) : null}
+      <WcHero locale={locale} wide subKey="subGroups" aside={accuracyBadge} />
 
       <div className={styles.groupGrid}>
         {groups.map(([g, ms]) => {
