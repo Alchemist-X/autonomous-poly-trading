@@ -98,6 +98,11 @@ function ConclusionCard({ state }: { state: ResearchState }) {
           </div>
         </div>
       ) : null}
+      {conclusion.marketProbability != null ? (
+        <p className={styles.edgeCaveat}>
+          edge = 模型 − 市场。若市场的结算口径比本题更宽松（如"任何公开核协议即算"），两者并非同一判定标准，该 edge 仅供参考、不可直接当成可交易信号。
+        </p>
+      ) : null}
     </section>
   );
 }
@@ -107,9 +112,11 @@ function ConditionalTree({ state }: { state: ResearchState }) {
     return null;
   }
   const product = state.model.reduce((acc, node) => acc * node.probability, 1);
+  const finalProb = state.conclusion?.yesProbability ?? null;
+  const calibrated = finalProb != null && Math.abs(finalProb - product) >= 0.01;
   return (
     <section className={styles.card}>
-      <h3 className={styles.cardTitle}>条件概率模型 · P(Yes) = 各节点乘积</h3>
+      <h3 className={styles.cardTitle}>条件概率模型 · P(A) × P(B|A) × P(C|A,B)</h3>
       <div className={styles.tree}>
         {state.model.map((node, index) => (
           <Fragment key={node.id}>
@@ -123,12 +130,18 @@ function ConditionalTree({ state }: { state: ResearchState }) {
         ))}
         <div className={styles.treeOp}>=</div>
         <div className={styles.treeResult}>
-          <div className={styles.treeNodeLabel} style={{ color: "#9ec0ff" }}>
-            模型基线
-          </div>
+          <div className={styles.treeNodeLabel} style={{ color: "#9ec0ff" }}>条件乘积</div>
           <div className={styles.treeResultProb}>{pct(product, 0)}</div>
+          {calibrated ? (
+            <div className={styles.treeResultNote}>校准后 → {pct(finalProb!, 0)}</div>
+          ) : null}
         </div>
       </div>
+      {calibrated ? (
+        <p className={styles.treeNote}>
+          条件乘积是结构化下界；最终 Yes 概率经校准为 {pct(finalProb!, 0)}（见下方贝叶斯路径的"模型校准"步）。
+        </p>
+      ) : null}
     </section>
   );
 }
@@ -142,10 +155,14 @@ function UpdateWaterfall({ state }: { state: ResearchState }) {
   const height = 180;
   const padX = 48;
   const padY = 28;
+  // Scale the y-axis to the data (anchored at 0) so small probability moves are
+  // legible instead of squished at the bottom of a fixed 0–100% axis.
+  const maxTo = Math.max(...state.updates.map((u) => u.to));
+  const domainMax = Math.min(1, Math.max(0.1, Math.ceil(maxTo / 0.75 / 0.05) * 0.05));
+  const yOf = (value: number) => height - padY - (value / domainMax) * (height - padY * 2);
   const points = state.updates.map((update, index) => {
     const x = padX + (index / Math.max(state.updates.length - 1, 1)) * (width - padX * 2);
-    const y = height - padY - update.to * (height - padY * 2);
-    return { x, y, update };
+    return { x, y: yOf(update.to), update };
   });
   const path = points.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
 
@@ -153,13 +170,13 @@ function UpdateWaterfall({ state }: { state: ResearchState }) {
     <section className={styles.card}>
       <h3 className={styles.cardTitle}>贝叶斯更新路径 · 先验 → 后验</h3>
       <svg viewBox={`0 0 ${width} ${height}`} width="100%" role="img" aria-label="prior to posterior update path">
-        {[0, 0.5, 1].map((tick) => {
-          const y = height - padY - tick * (height - padY * 2);
+        {[0, domainMax / 2, domainMax].map((tickVal) => {
+          const y = yOf(tickVal);
           return (
-            <g key={tick}>
+            <g key={tickVal}>
               <line x1={padX} y1={y} x2={width - padX} y2={y} stroke="#eef1f6" strokeWidth={1} />
               <text x={8} y={y + 4} fontSize={11} fill="#aab1be">
-                {(tick * 100).toFixed(0)}%
+                {(tickVal * 100).toFixed(0)}%
               </text>
             </g>
           );
@@ -185,6 +202,8 @@ function EvidenceLedger({ state }: { state: ResearchState }) {
   if (state.evidence.length === 0) {
     return null;
   }
+  // Most impactful first, so the load-bearing evidence is scannable up top.
+  const rows = [...state.evidence].sort((a, b) => Math.abs(b.weightPct) - Math.abs(a.weightPct));
   return (
     <section className={styles.card}>
       <h3 className={styles.cardTitle}>证据账本 · {state.evidence.length} 条</h3>
@@ -193,13 +212,13 @@ function EvidenceLedger({ state }: { state: ResearchState }) {
           <tr>
             <th>立场</th>
             <th>证据</th>
-            <th className={styles.num}>权重</th>
+            <th className={styles.num}>影响</th>
             <th className={styles.num}>可信度</th>
             <th>节点</th>
           </tr>
         </thead>
         <tbody>
-          {state.evidence.map((item) => (
+          {rows.map((item) => (
             <tr key={item.id}>
               <td>
                 <span className={`${styles.stance} ${STANCE_CLASS[item.stance]}`}>{STANCE_LABEL[item.stance]}</span>
@@ -219,6 +238,9 @@ function EvidenceLedger({ state }: { state: ResearchState }) {
           ))}
         </tbody>
       </table>
+      <p className={styles.ledgerCaption}>
+        "影响"为每条证据对其所属节点（A / B / C）的有向强度（百分点量级），用于排序与定性，并非对最终概率的可加贡献——最终概率以上方条件概率模型与贝叶斯路径为准。
+      </p>
     </section>
   );
 }
