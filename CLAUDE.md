@@ -114,7 +114,7 @@
 
 - **i18n**：所有面向用户的文案走 i18n（`apps/web/lib/world-cup/messages/` 下 `en` / `zh-CN` / `zh-TW` 三语都补齐，新文案进 message resource、不要硬编码；`zh-TW` 为生成文件，必要时同步更新生成器）。
 - **移动端**：桌面 + 移动两个视口都要适配并截图自评（布局不崩、文字不溢出、交互可用）。
-- **自动发布**：合入 `main` 即触发 Vercel 自动部署（forecasting-agent.com）。因此合并前必须本地 `pnpm --filter @autopoly/web exec next build` 通过 + 桌面/移动截图自评，避免把坏构建推上生产。
+- **自动发布**：合入 `main` 会触发 GitHub→Vercel 自动部署（当前自动部署到 `autopoly-pizza-spectator` 项目，后续会并入 `forecasting-agent.com`；`forecasting-agent.com` = 独立的 `web` 项目，暂为手动部署）。无论走哪条路径，合并前都必须本地 `pnpm --filter @autopoly/web exec next build` 通过 + 桌面/移动截图自评，避免把坏构建推上生产。
 
 ---
 
