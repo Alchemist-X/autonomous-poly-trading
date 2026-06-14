@@ -12,6 +12,36 @@
       "dest": "/apps/web"
     },
     {
+      "src": "^/world-cup/(zh-CN|zh-TW)/?$",
+      "dest": "/$1/world-cup",
+      "continue": true
+    },
+    {
+      "src": "^/world-cup/(.+?)/(zh-CN|zh-TW)/?$",
+      "dest": "/$2/world-cup/$1",
+      "continue": true
+    },
+    {
+      "src": "^/world-cup/?$",
+      "dest": "/en/world-cup",
+      "continue": true
+    },
+    {
+      "src": "^/world-cup/(.+?)/?$",
+      "dest": "/en/world-cup/$1",
+      "continue": true
+    },
+    {
+      "src": "^/prediction-engine/(zh-CN|zh-TW)/?$",
+      "dest": "/$1/prediction-engine",
+      "continue": true
+    },
+    {
+      "src": "^/prediction-engine/?$",
+      "dest": "/en/prediction-engine",
+      "continue": true
+    },
+    {
       "src": "^/(?!apps/web/)(.+)$",
       "dest": "/apps/web/$1"
     }
