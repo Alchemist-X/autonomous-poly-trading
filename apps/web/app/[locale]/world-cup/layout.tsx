@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { WorldCupHeader } from "../../../components/world-cup/wc-header";
 import { LegalFooter } from "../../../components/world-cup/legal-footer";
+import { localeOf } from "../../../lib/world-cup/i18n";
 import styles from "../../../components/world-cup/world-cup.module.css";
 
 // Independent metadata for the World Cup product — overrides the root layout's
@@ -33,12 +34,19 @@ export const metadata: Metadata = {
   }
 };
 
-export default function WorldCupLayout({ children }: { children: ReactNode }) {
+export default async function WorldCupLayout({
+  children,
+  params
+}: {
+  children: ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const locale = localeOf((await params).locale);
   return (
     <div className={styles.shell}>
       <WorldCupHeader />
       <div className={styles.container}>{children}</div>
-      <LegalFooter />
+      <LegalFooter locale={locale} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { DISCLAIMER_SHORT } from "../../../../lib/legal-copy";
-import { getByFamily, getResult, sortedOutcomes, type Forecast } from "../../../../lib/world-cup/forecast-store";
+import { bestPickKey, getByFamily, getResult, sortedOutcomes, type Forecast } from "../../../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../../../lib/world-cup/team-meta";
 import { isZh, LOCALES, localeOf, t, teamLabel, withLocale } from "../../../../lib/world-cup/i18n";
 import { GroupMatchRow } from "../../../../components/world-cup/group-match-row";
@@ -32,9 +32,24 @@ export default async function GroupsPage({ params }: { params: Promise<{ locale:
   }
   const groups = [...byGroup.entries()].sort(([a], [b]) => a.localeCompare(b));
 
+  // Aggregate Best-Pick accuracy across fixtures that have settled so far.
+  const settledMatches = matches
+    .map((m) => ({ m, r: getResult(m.event_slug) }))
+    .filter((x): x is { m: Forecast; r: NonNullable<ReturnType<typeof getResult>> } => x.r !== null);
+  const settled = settledMatches.length;
+  const hits = settledMatches.filter(({ m, r }) => r.winner === bestPickKey(m)).length;
+  const accuracyPct = settled > 0 ? Math.round((hits / settled) * 100) : 0;
+
   return (
     <div>
       <WcHero locale={locale} wide subKey="subGroups" />
+
+      {settled > 0 ? (
+        <div className={styles.accuracyBar}>
+          <span aria-hidden>✅</span>
+          {t(locale, "accuracyLabel")} · <strong>{hits}/{settled}</strong> · {accuracyPct}%
+        </div>
+      ) : null}
 
       <div className={styles.groupGrid}>
         {groups.map(([g, ms]) => {

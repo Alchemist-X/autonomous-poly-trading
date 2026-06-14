@@ -547,6 +547,31 @@
   font-size: 11px;
 }
 
+/* aggregate Best-Pick accuracy banner (groups tab) */
+
+.accuracyBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 0 auto 18px;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid #e8eaf0;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3a4252;
+  box-shadow: 0 1px 2px rgba(15, 17, 21, 0.04);
+}
+
+.accuracyBar strong {
+  color: #15803d;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
 .matchDetail {
   padding: 10px 4px 6px;
 }
@@ -1755,5 +1780,170 @@
   .tabLink {
     padding: 10px 18px;
     font-size: 15px;
+  }
+}
+
+/* ============================================================================
+   Mobile responsive pass v2 (2026-06-14)
+   The real fix is in app/layout.tsx (device-width viewport export) — without it
+   none of the @media blocks above fire on real phones. These rules are appended
+   last so they win over earlier same-specificity declarations.
+   ============================================================================ */
+
+/* Page-wide horizontal-overflow backstop. `clip` (not `hidden`) so the bracket's
+   intentional negative-margin scroll box keeps working. */
+.shell {
+  overflow-x: clip;
+}
+
+/* Match row: allow the three columns to shrink + ellipsize instead of letting a
+   long pick chip / team name blow out the row (the #1 audit finding). */
+.matchTop {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+.teamName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.teamFlag {
+  flex: none;
+}
+.pickChip {
+  max-width: 100%;
+  min-width: 0;
+}
+.pickName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pickPct,
+.pickMark {
+  flex: none;
+}
+.scoreRow {
+  max-width: 100%;
+}
+
+/* Group header: pill wraps under the name instead of colliding with it. */
+.groupHead {
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+.groupName {
+  flex: none;
+}
+.winnerStrip {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Champion: the absolute-positioned flag cloud overlaps once the layout is a
+   single column (≤900px) — show the rank-list fallback and drop its nested
+   scroll so it scrolls with the page. */
+@media (max-width: 900px) {
+  .flagCloud {
+    display: none;
+  }
+  .rankList {
+    max-height: none;
+  }
+}
+
+/* Phones (≤640px): bracket usability + header touch targets + report tables. */
+@media (max-width: 640px) {
+  /* Drop the elbow connectors (they misalign at phone card heights) and slim the
+     columns so a second column peeks — a clear "scroll me" affordance. */
+  .connectorCol {
+    display: none;
+  }
+  .bracketCols {
+    gap: 12px;
+  }
+  .roundCol {
+    width: 200px;
+  }
+  .roundColGroups {
+    width: 280px;
+  }
+  .groupsGrid {
+    grid-template-columns: 1fr;
+  }
+  .champCardFlag {
+    font-size: 32px;
+  }
+  /* Real 44px touch targets on the always-visible nav. */
+  .headerNav a,
+  .langToggle,
+  .ghLink {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  /* Wide markdown tables scroll inside their box instead of squishing. */
+  .reportProse table {
+    width: auto;
+    min-width: 100%;
+  }
+  .reportProse code {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+/* Phones (≤560px): pin the row center, tabs, formula card + PE hero. */
+@media (max-width: 560px) {
+  /* Fixed center track = tri-bar width, so the chip/score can never grow it. */
+  .matchTop {
+    grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr);
+  }
+  .tabNav {
+    max-width: 100%;
+  }
+  .tabLink {
+    padding: 10px 16px;
+    font-size: 15px;
+  }
+  /* Prediction-engine formula: shrink the math and let it scroll, not overflow. */
+  .formulaCard {
+    padding: 18px 16px;
+    overflow-x: auto;
+  }
+  .formulaRow {
+    font-size: 14px;
+    gap: 10px 16px;
+  }
+  .peHero {
+    padding: 28px 0 18px;
+  }
+  .peTitle {
+    font-size: clamp(30px, 7vw, 72px);
+  }
+  .peSub {
+    font-size: 16px;
+  }
+  .wbCard,
+  .sampleCard {
+    padding: 16px;
+  }
+  /* Champion rank name stays one line. */
+  .rankNameCn {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* Narrow phones (≤380px): drop the decorative FT label (score already shown). */
+@media (max-width: 380px) {
+  .finalTag {
+    display: none;
   }
 }

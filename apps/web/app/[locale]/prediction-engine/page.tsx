@@ -147,7 +147,7 @@ export default async function PredictionEnginePage({ params }: { params: Promise
           <div style={{ height: 48 }} />
         )}
       </div>
-      <LegalFooter />
+      <LegalFooter locale={locale} />
     </div>
   );
 }
