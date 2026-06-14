@@ -32,5 +32,14 @@ print(f"   patched {n} route(s)")
 PY
 
 echo "[4/4] deploying to production ..."
-vercel deploy --prebuilt --prod
+# --archive=tgz sends one compressed stream instead of many parallel file
+# uploads — far more reliable on flaky/limited networks.
+DEPLOY_URL="$(vercel deploy --prebuilt --prod --archive=tgz)"
+echo "   deployed: $DEPLOY_URL"
+
+# A prior `vercel rollback` pins production so that subsequent `--prod` deploys
+# create Ready deployments but do NOT auto-alias. Promote explicitly so every
+# deploy (including the daily scheduled run) actually goes live.
+echo "   promoting to production alias ..."
+vercel promote "$DEPLOY_URL" --yes
 echo "OK -> https://forecasting-agent.com"
