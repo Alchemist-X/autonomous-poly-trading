@@ -2,9 +2,20 @@
 
 > 英文版：[dev-reference.en.md](dev-reference.en.md)（待同步翻译）
 >
-> 最后更新：2026-04-23
+> 最后更新：2026-06-15
 
 本仓库主 README 只保留面向 Agent 的自然语言工作流。需要直接用 pnpm 手动操作、或者排查依赖/部署形态时，翻这份。
+
+## 命名说明（pulse / forecast / autopoly / raven）
+
+仓库里有几组"看着不一样、其实指同一个东西"的名字，先在这里说清，免得每个新接手的人重新踩坑：
+
+- **`forecast:*` = 面向用户的命令名；`pulse` = 引擎内部代号。两者是同一套预测引擎。** CLI 用 `forecast:live` / `forecast:recommend` / `forecast:positions`；而 `services/orchestrator/src/pulse/`、`scripts/pulse-*.ts`、归档路径 `runtime-artifacts/pulse/…` 和 `runtime-artifacts/reports/pulse/…` 仍叫 `pulse`。`pulse:*` 命令保留为 `forecast:*` 的**兼容别名**（见 `package.json`）。
+  - **为什么不全量改名（有意保留）：** 全量重命名要动 12 个 `src/pulse/` 文件 + 13 个 `pulse-*` 脚本 + 12 处写 `runtime-artifacts/pulse` 的归档路径——改归档路径会让已有归档"失联"、并改变实盘运行的写入位置，**风险高、收益低**。所以内部一律读作"引擎代号 = pulse，对外命令名 = forecast"，不再追求字面统一。
+- **三层产品 / 包命名（历史累积，各自内部自洽）：**
+  - `predict-raven` = 仓库名（GitHub repo / 本地目录）。
+  - `@autopoly/*` = npm workspace scope（历史遗留；所有子包都用这个 scope，不影响功能）。
+  - `raven` = 产品代号（`apps/raven-managed`、`raven-agent-loop` 等）。
 
 ## Monorepo 结构
 

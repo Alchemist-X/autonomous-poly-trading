@@ -2,9 +2,20 @@
 
 > Chinese version: [dev-reference.md](dev-reference.md) — authoritative source
 >
-> Last updated: 2026-04-23
+> Last updated: 2026-06-15
 
 The main README only keeps the Agent-facing natural-language workflow. When you need to run pnpm directly, or want to debug dependencies / deployment shapes, look here.
+
+## Naming (pulse / forecast / autopoly / raven)
+
+A few names look different but mean the same thing. Spelled out here so each new maintainer doesn't have to rediscover it:
+
+- **`forecast:*` = the user-facing command names; `pulse` = the engine's internal codename. They are the same forecasting engine.** The CLI uses `forecast:live` / `forecast:recommend` / `forecast:positions`, while `services/orchestrator/src/pulse/`, `scripts/pulse-*.ts`, and the archive paths `runtime-artifacts/pulse/…` and `runtime-artifacts/reports/pulse/…` still say `pulse`. The `pulse:*` commands are kept as **compatibility aliases** for `forecast:*` (see `package.json`).
+  - **Why it isn't fully renamed (kept on purpose):** a full rename would touch 12 files under `src/pulse/` + 13 `pulse-*` scripts + 12 sites that write `runtime-artifacts/pulse` archive paths — and changing the archive paths would orphan existing archives and move where live runs write. **High risk, low reward.** So read it as "engine codename = pulse, user-facing command = forecast" and don't chase literal uniformity.
+- **Three-layer product / package naming (accreted history, each internally consistent):**
+  - `predict-raven` = the repository (GitHub repo / local dir).
+  - `@autopoly/*` = the npm workspace scope (legacy; every package uses it, no functional impact).
+  - `raven` = the product codename (`apps/raven-managed`, `raven-agent-loop`, etc.).
 
 ## Monorepo Structure
 
