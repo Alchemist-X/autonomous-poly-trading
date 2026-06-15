@@ -1,0 +1,19 @@
+# Build output / deps
+node_modules
+**/dist
+**/.next
+**/coverage
+*.tsbuildinfo
+
+# Vendored + generated content (not ours to format)
+vendor
+runtime-artifacts
+**/*.generated.json
+**/messages/zh-TW.generated.json
+apps/web/lib/world-cup/generated
+
+# Lockfile + data
+pnpm-lock.yaml
+
+# Python (handled separately; Prettier doesn't own it)
+packages/market-intelligence

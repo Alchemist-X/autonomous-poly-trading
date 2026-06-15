@@ -42,6 +42,9 @@ importers:
       playwright:
         specifier: 1.56.1
         version: 1.56.1
+      prettier:
+        specifier: ^3.8.1
+        version: 3.8.1
       tsx:
         specifier: 4.20.6
         version: 4.20.6
@@ -3594,6 +3597,11 @@ packages:
 
   preact@10.29.1:
     resolution: {integrity: sha512-gQCLc/vWroE8lIpleXtdJhTFDogTdZG9AjMUpVkDf2iTCNwYNWA+u16dL41TqUDJO4gm2IgrcMv3uTpjd4Pwmg==}
+
+  prettier@3.8.1:
+    resolution: {integrity: sha512-UOnG6LftzbdaHZcKoPFtOcCKztrQ57WkHDeRD9t/PTQtmT0NHSeWWepj6pS0z/N7+08BHFDQVUrfmfMRcZwbMg==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   process-warning@1.0.0:
     resolution: {integrity: sha512-du4wfLyj4yCZq1VupnVSZmRsPJsNuxoDQFdCFHLaYiEbFBD7QE0a+I4D7hOxrVnh78QE/YipFAj9lXHiXocV+Q==}
@@ -9326,6 +9334,8 @@ snapshots:
   preact@10.24.3: {}
 
   preact@10.29.1: {}
+
+  prettier@3.8.1: {}
 
   process-warning@1.0.0: {}
 
