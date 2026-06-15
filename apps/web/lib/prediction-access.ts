@@ -2,6 +2,13 @@ import { createHash, randomUUID } from "node:crypto";
 import { appUsers, getDb, hasDatabaseUrl, inviteCodes, predictionUsageEvents } from "@autopoly/db";
 import { and, eq, gte, sql } from "drizzle-orm";
 import { auth, isOidcConfigured } from "../auth";
+import {
+  emailDomain,
+  isAdminEmail,
+  normalizeEmail,
+  readBooleanEnv,
+  shouldAutoActivate
+} from "./prediction-access-rules.js";
 
 export type PredictionAccessMode =
   | "disabled"
@@ -47,14 +54,6 @@ interface ConsumeQuotaResult {
   error?: string;
 }
 
-function readBooleanEnv(name: string, fallback: boolean): boolean {
-  const value = process.env[name]?.trim().toLowerCase();
-  if (!value) {
-    return fallback;
-  }
-  return ["1", "true", "yes", "on"].includes(value);
-}
-
 function readLimitEnv(name: string, fallback: number): number | null {
   const raw = process.env[name]?.trim();
   if (!raw) {
@@ -93,35 +92,6 @@ export function isPredictionAccessConfigured(): boolean {
 
 export function isPredictionAuthRequired(): boolean {
   return readBooleanEnv("PREDICTION_AUTH_REQUIRED", false);
-}
-
-function normalizeEmail(value: string | null | undefined): string | null {
-  const normalized = value?.trim().toLowerCase();
-  return normalized || null;
-}
-
-function emailDomain(value: string | null): string | null {
-  const atIndex = value?.lastIndexOf("@") ?? -1;
-  return atIndex >= 0 ? value!.slice(atIndex + 1).toLowerCase() : null;
-}
-
-function readCsvEnv(name: string): string[] {
-  return (process.env[name] ?? "")
-    .split(",")
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
-}
-
-function shouldAutoActivate(email: string | null): boolean {
-  if (!readBooleanEnv("PREDICTION_INVITE_REQUIRED", true)) {
-    return true;
-  }
-  const domain = emailDomain(email);
-  return Boolean(domain && readCsvEnv("PREDICTION_AUTO_ACTIVATE_EMAIL_DOMAINS").includes(domain));
-}
-
-function isAdminEmail(email: string | null): boolean {
-  return Boolean(email && readCsvEnv("PREDICTION_ADMIN_EMAILS").includes(email));
 }
 
 function hashInviteCode(value: string): string {
