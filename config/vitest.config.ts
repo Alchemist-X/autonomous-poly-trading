@@ -7,6 +7,8 @@ export default defineConfig({
   root: REPO_ROOT,
   resolve: {
     alias: {
+      // Subpath alias must precede the bare package alias (Vite prefix-matches).
+      "@autopoly/contracts/env": path.resolve(REPO_ROOT, "packages/contracts/src/env.ts"),
       "@autopoly/contracts": path.resolve(REPO_ROOT, "packages/contracts/src/index.ts"),
       "@autopoly/db": path.resolve(REPO_ROOT, "packages/db/src/index.ts"),
       "@autopoly/norns": path.resolve(REPO_ROOT, "packages/norns/src/index.ts"),

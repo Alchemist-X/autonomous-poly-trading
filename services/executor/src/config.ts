@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { loadEnvFile } from "./lib/env-file.js";
+import { loadEnvFile } from "@autopoly/contracts/env";
 
 function readNumber(name: string, fallback: number): number {
   const raw = process.env[name];
