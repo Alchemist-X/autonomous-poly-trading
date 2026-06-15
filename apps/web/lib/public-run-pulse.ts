@@ -542,3 +542,13 @@ export async function getPublicRunDetailWithPulse(runId: string): Promise<Public
     }
   };
 }
+
+// Exported for unit testing — pure, privacy/mapping-relevant transforms.
+export {
+  toDisplayPath,
+  extractPulseExcerpt,
+  isExecutedTrade,
+  extractDecisionSide,
+  extractDecisionEventSlug,
+  extractDecisionSources
+};
