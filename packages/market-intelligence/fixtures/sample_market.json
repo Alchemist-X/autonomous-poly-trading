@@ -1,0 +1,20 @@
+{
+  "question": "Will the US and China sign a comprehensive trade deal in 2026?",
+  "liquidity": 18000.0,
+  "volume": 42000.0,
+  "outcomes": ["Yes", "No"],
+  "outcome_prices": [0.42, 0.58],
+  "clob_token_ids": ["1001", "1002"],
+  "end_date": null,
+  "best_bid": 0.41,
+  "best_ask": 0.43,
+  "spread": 0.02,
+  "primary_type": "Politics",
+  "tags": ["International Politics"],
+  "raw": {
+    "slug": "us-china-trade-deal-2026",
+    "groupItemTitle": "us-china-trade-deal-2026",
+    "volume24hr": 5000.0,
+    "url": "https://polymarket.com/event/us-china-trade-deal-2026"
+  }
+}
