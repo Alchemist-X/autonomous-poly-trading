@@ -3,7 +3,7 @@ import "dotenv/config";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveModelAlias, type ModelFamily } from "@autopoly/norns";
-import { loadEnvFile } from "./lib/env-file.js";
+import { loadEnvFile } from "@autopoly/contracts/env";
 
 function readNumber(name: string, fallback: number): number {
   const raw = process.env[name];

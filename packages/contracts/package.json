@@ -9,6 +9,11 @@
       "types": "./src/index.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./env": {
+      "types": "./src/env.ts",
+      "import": "./dist/env.js",
+      "default": "./dist/env.js"
     }
   },
   "scripts": {
@@ -16,6 +21,10 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "dotenv": "17.2.3",
     "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "25.5.0"
   }
 }
