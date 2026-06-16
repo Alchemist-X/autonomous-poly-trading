@@ -22,6 +22,7 @@ import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchResults, type MatchResult } from "./lib/settlement.js";
+import { fetchEspnScore } from "./lib/espn-results.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const GEN_DIR = path.join(REPO_ROOT, "apps/web/lib/world-cup/generated");
@@ -41,6 +42,7 @@ interface Forecast {
   readonly family: string;
   readonly event_slug: string;
   readonly kickoff_utc: string | null;
+  readonly outcomes?: readonly { readonly key: string; readonly label_en: string }[];
 }
 
 function pending(event_slug: string): MatchResult {
@@ -97,6 +99,43 @@ async function main(): Promise<void> {
   const results: Record<string, MatchResult> = {};
   for (const m of matches) results[m.event_slug] = pending(m.event_slug);
   for (const r of settled) results[r.event_slug] = r;
+
+  // ESPN backfill: Polymarket settles some fixtures winner-only (its exact-score
+  // market hit the "Any Other Score" bucket), leaving score === null. Recover the
+  // numeric score from ESPN's results feed (results-only — no odds/prices read,
+  // so market-blind holds), adopting it ONLY when ESPN's winner agrees with
+  // Polymarket's settled winner. A failed lookup leaves the fixture winner-only.
+  const winnerOnly = matches.filter((m) => {
+    const r = results[m.event_slug];
+    return r.status === "resolved" && r.score == null && r.winner != null;
+  });
+  let backfilled = 0;
+  for (const m of winnerOnly) {
+    const a = m.outcomes?.find((o) => o.key === "a")?.label_en;
+    const b = m.outcomes?.find((o) => o.key === "b")?.label_en;
+    const date = m.event_slug.match(/(\d{4}-\d{2}-\d{2})/)?.[1];
+    if (!a || !b || !date) continue;
+    try {
+      const espn = await fetchEspnScore(date, a, b);
+      if (!espn) {
+        C.warn(`  ESPN: no completed score for ${m.event_slug} (${a} vs ${b})`);
+        continue;
+      }
+      const r = results[m.event_slug];
+      if (espn.winner !== r.winner) {
+        C.warn(`  ESPN winner '${espn.winner}' != settled '${r.winner}' for ${m.event_slug}; keeping winner-only`);
+        continue;
+      }
+      results[m.event_slug] = { ...r, homeGoals: espn.aGoals, awayGoals: espn.bGoals, score: espn.score, source: "espn" };
+      backfilled += 1;
+      C.ok(`  ESPN backfill ${m.event_slug}: ${espn.score}`);
+    } catch (err) {
+      C.warn(`  ESPN fetch failed for ${m.event_slug}: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+  if (winnerOnly.length > 0) {
+    C.info(`ESPN backfill: ${backfilled}/${winnerOnly.length} winner-only fixtures got an exact score`);
+  }
 
   const resolved = Object.values(results).filter((r) => r.status === "resolved");
   const generatedAt = new Date().toISOString();
