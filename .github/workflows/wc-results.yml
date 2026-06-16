@@ -81,3 +81,15 @@ jobs:
           # (inside deploy-web.sh) has everything it needs in CI.
           vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
           bash scripts/world-cup/deploy-web.sh
+
+      - name: Verify live site (real acceptance, not just a green CLI)
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          url="https://forecasting-agent.com/world-cup/groups"
+          code=$(curl -sS -o /dev/null -w "%{http_code}" "$url")
+          echo "GET $url -> $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::Live site returned $code (expected 200) — the deploy did not alias production."
+            exit 1
+          fi
+          echo "Live site healthy (200) — scores published."
