@@ -28,7 +28,10 @@ export interface MatchResult {
   readonly awayGoals: number | null;
   readonly score: string | null; // "1-1" — home-away, ordered as team a vs team b
   readonly settledAt: string | null; // ISO timestamp of UMA resolution
-  readonly source: "exact_score" | "moneyline" | null;
+  // "espn": Polymarket settled the winner only (e.g. its exact-score market hit
+  // the "Any Other Score" bucket), so the numeric score was backfilled from
+  // ESPN's results feed (see lib/espn-results.ts). Winner stays Polymarket's.
+  readonly source: "exact_score" | "moneyline" | "espn" | null;
 }
 
 interface GammaMarket {

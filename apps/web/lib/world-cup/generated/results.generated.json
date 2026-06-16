@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-06-16T14:55:51.432Z",
+ "generatedAt": "2026-06-16T17:33:31.188Z",
  "source": "polymarket-settlement",
  "note": "Market-blind: settled winner + final score only — no prices or implied probabilities.",
  "counts": {
@@ -322,11 +322,11 @@
    "event_slug": "fifwc-ger-kor-2026-06-14",
    "status": "resolved",
    "winner": "a",
-   "homeGoals": null,
-   "awayGoals": null,
-   "score": null,
+   "homeGoals": 7,
+   "awayGoals": 1,
+   "score": "7-1",
    "settledAt": "2026-06-14T21:29:57Z",
-   "source": "moneyline"
+   "source": "espn"
   },
   "fifwc-gha-pan-2026-06-17": {
    "event_slug": "fifwc-gha-pan-2026-06-17",
@@ -632,11 +632,11 @@
    "event_slug": "fifwc-swe-tun-2026-06-14",
    "status": "resolved",
    "winner": "a",
-   "homeGoals": null,
-   "awayGoals": null,
-   "score": null,
+   "homeGoals": 5,
+   "awayGoals": 1,
+   "score": "5-1",
    "settledAt": "2026-06-15T06:26:27Z",
-   "source": "moneyline"
+   "source": "espn"
   },
   "fifwc-tun-jpn-2026-06-21": {
    "event_slug": "fifwc-tun-jpn-2026-06-21",
@@ -712,11 +712,11 @@
    "event_slug": "fifwc-usa-par-2026-06-12",
    "status": "resolved",
    "winner": "a",
-   "homeGoals": null,
-   "awayGoals": null,
-   "score": null,
+   "homeGoals": 4,
+   "awayGoals": 1,
+   "score": "4-1",
    "settledAt": "2026-06-13T05:49:27Z",
-   "source": "moneyline"
+   "source": "espn"
   },
   "fifwc-uzb-col-2026-06-17": {
    "event_slug": "fifwc-uzb-col-2026-06-17",
