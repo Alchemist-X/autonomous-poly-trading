@@ -1,16 +1,18 @@
-# Scheduled World Cup results refresh — the always-on replacement for the Mac
-# /schedule routine. It runs ONLY the cheap, credential-free settlement fetch
-# (`pnpm wc:results`, market-blind: settled winner + final score, no prices),
-# commits the single regenerated results JSON to the dedicated `wc-scores`
-# branch, and pushes. Vercel's Git integration (Production Branch -> wc-scores)
-# then rebuilds + deploys forecasting-agent.com in its OWN cloud — the heavy
-# Next build never runs here or on the VPS.
+# Scheduled World Cup results refresh + publish — the always-on, cloud-native
+# replacement for the Mac /schedule routine. It runs the cheap, credential-free
+# settlement fetch (`pnpm wc:results`, market-blind: settled winner + final
+# score, no prices), and when the scores actually changed it builds and deploys
+# the site to forecasting-agent.com via the Vercel CLI using a VERCEL_TOKEN.
 #
-# One-time setup before this does anything (see docs / the PR description):
-#   1. Land the build-blocker fix + vercel.json `check:true` on main.
-#   2. Create the `wc-scores` branch from main.
-#   3. In Vercel (forecasting-agent.com project): connect the Git repo, set
-#      Production Branch = wc-scores, and clear any prior `vercel rollback` pin.
+# The heavy Next build runs here on GitHub's runner (never on the small Hostinger
+# VPS, which sits next to the live-trading containers). deploy-web.sh's `vercel
+# promote` re-aliases production, which also clears any prior `vercel rollback`
+# pin — so no Vercel dashboard wiring is needed.
+#
+# One-time setup (the only thing a human must do):
+#   In the repo: Settings -> Secrets and variables -> Actions -> New repository
+#   secret named VERCEL_TOKEN, value = a Vercel token scoped to the
+#   forecasting-agent.com team. Nothing else.
 #
 # Manual test: Actions tab -> "World Cup results refresh" -> Run workflow.
 name: World Cup results refresh
@@ -23,23 +25,18 @@ on:
     - cron: "0 19 * * *"
   workflow_dispatch: {}
 
-# Never let two refreshes race the same branch push.
+# Never let two runs deploy at once.
 concurrency:
   group: wc-results
   cancel-in-progress: false
 
-permissions:
-  contents: write
-
 jobs:
-  refresh:
+  refresh-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
-      - name: Checkout wc-scores
+      - name: Checkout main
         uses: actions/checkout@v4
-        with:
-          ref: wc-scores
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -58,18 +55,29 @@ jobs:
       - name: Refresh settled results
         run: pnpm wc:results
 
-      - name: Commit and push if changed
+      - name: Detect score change
+        id: diff
         run: |
-          RESULTS="apps/web/lib/world-cup/generated/results.generated.json"
-          if git diff --quiet -- "$RESULTS"; then
-            echo "No score changes — skipping commit (no wasted Vercel build)."
-            exit 0
+          if git diff --quiet -- apps/web/lib/world-cup/generated/results.generated.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No score changes — skipping the deploy (no wasted build)."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Scores changed — will build + deploy."
           fi
-          git config user.name "wc-results-bot"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "$RESULTS"
-          git commit -m "chore(wc): refresh group-stage results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          # Serialize against any concurrent push to the data branch.
-          git pull --rebase --autostash origin wc-scores
-          git push origin HEAD:wc-scores
-          echo "Pushed refreshed scores to wc-scores — Vercel will rebuild forecasting-agent.com."
+
+      - name: Install Vercel CLI
+        if: steps.diff.outputs.changed == 'true'
+        run: npm install -g vercel@latest
+
+      - name: Build + deploy to forecasting-agent.com
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: team_2pB0XDZyHAZM66UPHg0fuAvA
+          VERCEL_PROJECT_ID: prj_kPZRCALGVSeotZxQ1PD0fvOOwmRc
+        run: |
+          # Pull project settings + production env into .vercel/ so `vercel build`
+          # (inside deploy-web.sh) has everything it needs in CI.
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          bash scripts/world-cup/deploy-web.sh
