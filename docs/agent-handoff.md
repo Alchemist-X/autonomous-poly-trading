@@ -11,6 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-06-16 by Claude（世界杯比分自动化上云）。要点：
+> ① **比分刷新搬上 GitHub Actions 定时任务**（新增 `.github/workflows/wc-results.yml`，每日 UTC 07:00/19:00 + 手动触发，跑 `pnpm wc:results` → 仅当有变化时提交 `results.generated.json` 到 **`wc-scores` 数据分支** → Vercel git 集成在云端重建发布）。取代原先"Mac 上 Claude `/schedule` 例程、只在 app 开着才跑"的方案；服务器零负担、GitHub 不放 Vercel 令牌、heavy build 全在 Vercel 云。**刻意没选在 Hostinger/Manus VPS 上构建**——小机器跑 Next build 有 OOM 拖垮实盘交易容器的风险，且违背 repo「web→Vercel」设计（6 方案对抗式评审结论，见本 PR）。
+> ② **修好 catch-all 路由 `check:true`**：直接写进源码 `vercel.json`（云端 git 构建即正确，不再依赖 `deploy-web.sh` 的 post-build `config.json` 补丁）——了结此前"catch-all 路由部署需补 check:true"TODO。⚠️ 首次云部署后需打开 `/world-cup/groups` 确认不 404，以验证 `check` 在 legacy-routes→build-output 映射中确实生效。
+> ③ **修 `next build` 阻塞**：`apps/web/lib/prediction-access.ts`（+ 同名测试）的 import 由 `./prediction-access-rules.js` 改 extensionless（`.js` specifier 在 Next 16 turbopack 解析失败，是 apps/web 生产图里唯一一处）。构建恢复绿（279 页全生成）、`vitest` 8/8。
+> ④ 比分数据刷新 **4→16** 场已结算（`results.generated.json`）。
+> ⚠️ **待用户手动 3 步**（自动化才真正生效，只能用户做）：(a) 合并本 PR 到 main（GH Actions schedule 只认 main 上的工作流文件）；(b) 从 main 建 `wc-scores` 分支；(c) Vercel `forecasting-agent.com` 项目（`prj_kPZRC…`）接 git 仓库 + 生产分支设为 `wc-scores` + 解除任何遗留 `vercel rollback` 生产锁（否则部署 Ready 但不换 alias = 静默不更新，见 `deploy-web.sh:40`）。另：旧的 Mac `/schedule` 例程 `world-cup-daily-results` 在云任务生效前要停掉（一个调度器原则）。
+>
 > 最后更新：2026-06-15 by Claude（本会话共合并 **PR #18–#27** + 建 **issue #25**；main `ea82839`；全程 typecheck + vitest **713** 全绿）。要点：
 > ① **Forecasting Engine `/research` 全量双语化**（EN 默认 + 一键 `中文` toggle，chrome 与流式研究内容一起切；新增 `apps/web/lib/research/locale.ts` + `i18n.ts`，`locale` 从 composer→SSE→route→driver→`buildPredictionDemoRun`/`replayRun` 全链路打通，服务端按语言生成内容）——**PR #18**，已部署 forecasting-agent.com（web 项目 `prj_kPZRC…`，`scripts/world-cup/deploy-web.sh`）并实测 EN/zh 双语 + toggle live、0 console error。/research beta 入口仍 dormant。
 > ② 清掉 3 个 open issue：AW setup 文档 + `poly:aw/okx` 别名（**#19** closes #7）、持久化 agent-loop 纯库（**#20**，#6，no live-money）、market-intelligence Python 模块作为可选增强落地（**#21**，#5）。

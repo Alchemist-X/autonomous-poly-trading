@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { emailDomain, isAdminEmail, normalizeEmail, shouldAutoActivate } from "./prediction-access-rules.js";
+import { emailDomain, isAdminEmail, normalizeEmail, shouldAutoActivate } from "./prediction-access-rules";
 
 const ENV_KEYS = [
   "PREDICTION_ADMIN_EMAILS",
