@@ -1,0 +1,75 @@
+# Scheduled World Cup results refresh — the always-on replacement for the Mac
+# /schedule routine. It runs ONLY the cheap, credential-free settlement fetch
+# (`pnpm wc:results`, market-blind: settled winner + final score, no prices),
+# commits the single regenerated results JSON to the dedicated `wc-scores`
+# branch, and pushes. Vercel's Git integration (Production Branch -> wc-scores)
+# then rebuilds + deploys forecasting-agent.com in its OWN cloud — the heavy
+# Next build never runs here or on the VPS.
+#
+# One-time setup before this does anything (see docs / the PR description):
+#   1. Land the build-blocker fix + vercel.json `check:true` on main.
+#   2. Create the `wc-scores` branch from main.
+#   3. In Vercel (forecasting-agent.com project): connect the Git repo, set
+#      Production Branch = wc-scores, and clear any prior `vercel rollback` pin.
+#
+# Manual test: Actions tab -> "World Cup results refresh" -> Run workflow.
+name: World Cup results refresh
+
+on:
+  schedule:
+    # Twice daily, UTC. Timed after the day's late kickoffs settle on Polymarket.
+    # Group stage finishes late; adjust or add slots as the schedule demands.
+    - cron: "0 7 * * *"
+    - cron: "0 19 * * *"
+  workflow_dispatch: {}
+
+# Never let two refreshes race the same branch push.
+concurrency:
+  group: wc-results
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout wc-scores
+        uses: actions/checkout@v4
+        with:
+          ref: wc-scores
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Refresh settled results
+        run: pnpm wc:results
+
+      - name: Commit and push if changed
+        run: |
+          RESULTS="apps/web/lib/world-cup/generated/results.generated.json"
+          if git diff --quiet -- "$RESULTS"; then
+            echo "No score changes — skipping commit (no wasted Vercel build)."
+            exit 0
+          fi
+          git config user.name "wc-results-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$RESULTS"
+          git commit -m "chore(wc): refresh group-stage results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          # Serialize against any concurrent push to the data branch.
+          git pull --rebase --autostash origin wc-scores
+          git push origin HEAD:wc-scores
+          echo "Pushed refreshed scores to wc-scores — Vercel will rebuild forecasting-agent.com."
