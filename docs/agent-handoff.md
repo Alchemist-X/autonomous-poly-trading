@@ -11,12 +11,14 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-16 by Claude（世界杯比分自动化上云）。要点：
-> ① **比分刷新搬上 GitHub Actions 定时任务**（新增 `.github/workflows/wc-results.yml`，每日 UTC 07:00/19:00 + 手动触发，跑 `pnpm wc:results` → 仅当有变化时提交 `results.generated.json` 到 **`wc-scores` 数据分支** → Vercel git 集成在云端重建发布）。取代原先"Mac 上 Claude `/schedule` 例程、只在 app 开着才跑"的方案；服务器零负担、GitHub 不放 Vercel 令牌、heavy build 全在 Vercel 云。**刻意没选在 Hostinger/Manus VPS 上构建**——小机器跑 Next build 有 OOM 拖垮实盘交易容器的风险，且违背 repo「web→Vercel」设计（6 方案对抗式评审结论，见本 PR）。
-> ② **修好 catch-all 路由 `check:true`**：直接写进源码 `vercel.json`（云端 git 构建即正确，不再依赖 `deploy-web.sh` 的 post-build `config.json` 补丁）——了结此前"catch-all 路由部署需补 check:true"TODO。⚠️ 首次云部署后需打开 `/world-cup/groups` 确认不 404，以验证 `check` 在 legacy-routes→build-output 映射中确实生效。
-> ③ **修 `next build` 阻塞**：`apps/web/lib/prediction-access.ts`（+ 同名测试）的 import 由 `./prediction-access-rules.js` 改 extensionless（`.js` specifier 在 Next 16 turbopack 解析失败，是 apps/web 生产图里唯一一处）。构建恢复绿（279 页全生成）、`vitest` 8/8。
-> ④ 比分数据刷新 **4→16** 场已结算（`results.generated.json`）。
-> ⚠️ **待用户手动 3 步**（自动化才真正生效，只能用户做）：(a) 合并本 PR 到 main（GH Actions schedule 只认 main 上的工作流文件）；(b) 从 main 建 `wc-scores` 分支；(c) Vercel `forecasting-agent.com` 项目（`prj_kPZRC…`）接 git 仓库 + 生产分支设为 `wc-scores` + 解除任何遗留 `vercel rollback` 生产锁（否则部署 Ready 但不换 alias = 静默不更新，见 `deploy-web.sh:40`）。另：旧的 Mac `/schedule` 例程 `world-cup-daily-results` 在云任务生效前要停掉（一个调度器原则）。
+> 最后更新：2026-06-16 by Claude（世界杯比分自动化上云 — 基本落地，剩 1 步用户配密钥）。要点：
+> ① **比分刷新搬上 GitHub Actions 定时任务**（`.github/workflows/wc-results.yml`，每日 UTC 07:00/19:00 + 手动触发）：跑 `pnpm wc:results`（市场盲测，只取已结算比分）→ **仅当比分有变化时**用 `VERCEL_TOKEN` 调 `scripts/world-cup/deploy-web.sh` 直接 build + 部署 + `promote` 到 forecasting-agent.com。取代原先"Mac 上 Claude `/schedule` 例程、只在 app 开着才跑"。heavy build 跑在 GitHub runner（**刻意不在 Hostinger/Manus VPS 构建**——OOM 会拖垮实盘交易容器，且违背 repo「web→Vercel」设计；6 方案对抗式评审结论）。
+>   - 演进：初版设计是"提交到 `wc-scores` 分支 → Vercel git 集成构建"（PR #29）；用户提供 token 后改为 **token 直接部署**（follow-up PR），更省事——`promote` 顺手解 rollback 锁，**不再需要任何 Vercel 后台接线，也不再需要 `wc-scores` 分支**（待该 follow-up PR 合并后删除）。
+> ② **修好 catch-all 路由 `check:true`**：写进源码 `vercel.json`（了结此前 TODO；`deploy-web.sh` 的 post-build 补丁现成 no-op）。⚠️ 首次部署后打开 `/world-cup/groups` 确认不 404。
+> ③ **修 `next build` 阻塞**：`apps/web/lib/prediction-access.ts`（+ 同名测试）import 由 `.js` 改 extensionless（Next 16 turbopack 解析失败，是生产图里唯一一处）。构建绿（279 页）、`vitest` 8/8。
+> ④ 比分刷新 **4→16** 场已结算（`results.generated.json`）。
+> ✅ **已完成**：PR #29 合并到 main（`376dad7`，含 ②③④ + 初版工作流）；旧 Mac 例程 `world-cup-daily-results` 已暂停。
+> ⚠️ **剩唯一 1 步用户手动**：在 GitHub 仓库 Settings → Secrets and variables → Actions 加一个 repository secret `VERCEL_TOKEN`（值 = Vercel 后台新建、scope 选 forecasting-agent.com 所在 team 的 token；用户在 GitHub UI 自行输入，agent 不接触明文）。**安全：凡是在对话里出现过的 token 一律视为已泄漏，必须吊销换新。** 配好后从 Actions 页 Run workflow 触发一次验收。
 >
 > 最后更新：2026-06-15 by Claude（本会话共合并 **PR #18–#27** + 建 **issue #25**；main `ea82839`；全程 typecheck + vitest **713** 全绿）。要点：
 > ① **Forecasting Engine `/research` 全量双语化**（EN 默认 + 一键 `中文` toggle，chrome 与流式研究内容一起切；新增 `apps/web/lib/research/locale.ts` + `i18n.ts`，`locale` 从 composer→SSE→route→driver→`buildPredictionDemoRun`/`replayRun` 全链路打通，服务端按语言生成内容）——**PR #18**，已部署 forecasting-agent.com（web 项目 `prj_kPZRC…`，`scripts/world-cup/deploy-web.sh`）并实测 EN/zh 双语 + toggle live、0 console error。/research beta 入口仍 dormant。
