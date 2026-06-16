@@ -40,6 +40,12 @@ echo "   deployed: $DEPLOY_URL"
 # A prior `vercel rollback` pins production so that subsequent `--prod` deploys
 # create Ready deployments but do NOT auto-alias. Promote explicitly so every
 # deploy (including the daily scheduled run) actually goes live.
+# `--prod` already aliases production when it is NOT rollback-pinned, so promote
+# is the fallback for the pinned case. Unlike build/deploy, `vercel promote` does
+# not honor VERCEL_ORG_ID, so it must be scoped explicitly; and we tolerate a
+# non-zero exit (with a loud WARN) so a promote hiccup never fails a deploy that
+# already aliased above — CI verifies the live alias separately.
 echo "   promoting to production alias ..."
-vercel promote "$DEPLOY_URL" --yes
+vercel promote "$DEPLOY_URL" --yes --scope "$VERCEL_ORG_ID" ||
+  echo "   WARN promote returned non-zero — relying on the --prod auto-alias above"
 echo "OK -> https://forecasting-agent.com"
