@@ -11,6 +11,12 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-06-17 by Claude（比分回补 ESPN：补齐 Polymarket 漏给的悬殊比分）。
+> 问题：部分已完场比赛页面显示 "–"。根因：Polymarket exact-score 市场只列 ~16 个常见比分 + "Any Other Score" 桶，悬殊比分（7-1/5-1/4-1）落进该桶 → 只得胜负、不得具体比分（已用 Gamma API 实证）。
+> 修复（**PR #33**，已合并 + 部署）：新增 `scripts/world-cup/lib/espn-results.ts`，对"已结算但 `score=null`"的场次按 日期+队名 从 **ESPN 免费无密钥 scoreboard** 拉真实比分（定向到 team a/b），集成在 `update-results.ts` 的回补 pass。**仅当 ESPN 胜负与 Polymarket settled winner 一致才采用**（`source="espn"`）；查不到/不一致则保持 winner-only（安全降级）。
+> **市场盲测合规**：ESPN 是结果源，代码只读最终进球数 + 完赛状态，**绝不读赔率/价格**（结算映射允许、市场价格禁止）。
+> 线上已验收：ger-kor 7-1 / swe-tun 5-1 / usa-par 4-1，0 已结算场次缺分；forecasting-agent.com/world-cup/groups 显示真实比分。今后若有新场次落进 "Any Other Score" 桶，定时任务会自动回补（队名对不上 ESPN 时退回 winner-only，不会报错）。
+>
 > 最后更新：2026-06-16 by Claude（世界杯比分自动更新已全量上线 + 线上验收通过，无遗留用户待办）。要点：
 > ① **已上线**：GitHub Actions `.github/workflows/wc-results.yml`（每日 UTC 07:00/19:00 + 手动触发）跑 `pnpm wc:results`（市场盲测，只取已结算比分）→ 用 `VERCEL_TOKEN` secret 调 `scripts/world-cup/deploy-web.sh`（build + 部署 + `promote` 到 forecasting-agent.com）→ curl 校验线上 200（§8 真实验收）。首次手动触发**全绿**，线上 `/world-cup/groups` 返回 200、16 场 FT 比分在线、无 404。取代原先"Mac `/schedule` 例程、只在 app 开着才跑"。heavy build 跑 GitHub runner（**刻意不在 Hostinger/Manus VPS 构建**——OOM 会拖垮实盘交易容器、违背「web→Vercel」设计；6 方案对抗式评审结论）。
 > ② 配套修复：`vercel.json` 加 `check:true`（catch-all 路由不再 404，线上已验证）；`apps/web/lib/prediction-access.ts`(+测试) import 由 `.js` 改 extensionless（修红构建，279 页绿、`vitest` 8/8）；`deploy-web.sh` 的 `vercel promote` 加 `--scope "$VERCEL_ORG_ID"` + 容错（promote 不认 VERCEL_ORG_ID，否则部署成功但报 "different team" 把 run 染红）。
