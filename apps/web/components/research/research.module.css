@@ -623,7 +623,13 @@
   margin-top: 22px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
+}
+
+/* Extra breathing room separates the loud conclusion zone from the quiet
+   supporting cards below it. */
+.result > .card:first-of-type {
+  margin-top: 4px;
 }
 
 .conclusionCard {
@@ -634,18 +640,75 @@
   box-shadow: 0 14px 44px rgba(37, 99, 235, 0.1);
 }
 
+/* ---- Tier 1: decision eyebrow (the 5-second read) ---- */
+
+.decisionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0 0 18px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid #eef1f6;
+}
+
+.verdictPill {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 8px 15px;
+  border-radius: 10px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrowMetrics {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+/* The edge is the second-loudest thing on the page — a co-hero with the
+   probability. Big, sign-colored, with a small directional caption. */
+.eyebrowEdge {
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.eyebrowEdgeCaption {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8a93a6;
+}
+
 .conclusionTop {
   display: flex;
   align-items: flex-end;
-  gap: 18px;
+  gap: 14px;
   flex-wrap: wrap;
+}
+
+.bigProbCi {
+  font-size: 14px;
+  font-weight: 600;
+  color: #8a93a6;
+  font-variant-numeric: tabular-nums;
+  padding-bottom: 12px;
 }
 
 .bigProb {
   font-size: clamp(48px, 9vw, 76px);
   font-weight: 800;
   line-height: 0.95;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
   color: #0f1115;
 }
@@ -667,43 +730,99 @@
   font-variant-numeric: tabular-nums;
 }
 
-.ciText {
-  font-size: 14px;
-  color: #5b6472;
-  font-variant-numeric: tabular-nums;
+/* Tells the decision-maker whether the edge is structurally significant —
+   a market outside the 80% interval is a high-conviction disagreement. */
+.ciMarketRead {
+  margin: 10px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .ciNote {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   font-size: 12px;
   line-height: 1.5;
   color: #aab1be;
 }
 
 .verdict {
-  margin: 16px 0 0;
-  font-size: 15px;
-  line-height: 1.6;
-  color: #3f4651;
+  margin: 18px 0 0;
+  font-size: 14px;
+  line-height: 1.62;
+  color: #5b6472;
+}
+
+/* The lead clause restates the call — bold it in ink so the verdict opens loud. */
+.verdictLead {
+  font-weight: 800;
+  color: #0f1115;
 }
 
 .edgeRow {
   display: flex;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 14px;
+  align-items: stretch;
+  margin-top: 20px;
   flex-wrap: wrap;
 }
 
-.metric {
+/* Tier 2: the edge is the actionable signal — it dominates the row. */
+.edgePrimary {
+  flex: 2 1 200px;
+  border: 1px solid #f3c9c4;
+  border-radius: 14px;
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.edgeLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a93a6;
+}
+
+.edgeValue {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.edgeRead {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Tier 4: market-implied is reference-only — a muted ghost stat. */
+.metricGhost {
+  flex: 1 1 110px;
   background: #fff;
-  border: 1px solid #e8eaf0;
+  border: 1px solid #eef1f6;
   border-radius: 12px;
-  padding: 10px 14px;
-  min-width: 120px;
+  padding: 11px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.metricGhostValue {
+  font-size: 19px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #5b6472;
+  margin-top: 2px;
 }
 
 .metricLabel { font-size: 11.5px; color: #8a93a6; font-weight: 600; }
-.metricValue { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 2px; }
 .metricPos { color: #15803d; }
 .metricNeg { color: #c0392b; }
 
@@ -724,30 +843,53 @@
 }
 
 .cardTitle {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: #8a93a6;
-  margin: 0 0 14px;
+  color: #6b7382;
+  margin: 0 0 15px;
+  display: flex;
+  align-items: center;
+}
+
+/* A short leading rule turns each section label into a consistent marker. */
+.cardTitle::before {
+  content: "";
+  width: 18px;
+  height: 2px;
+  background: #d2d7e0;
+  border-radius: 2px;
+  margin-right: 10px;
+  flex: 0 0 auto;
 }
 
 /* CI bar */
 
 .ciTrack {
   position: relative;
-  height: 16px;
+  height: 18px;
   border-radius: 999px;
   background: #eef1f6;
-  margin: 18px 0 8px;
+  margin: 34px 0 10px;
 }
 
 .ciBand {
   position: absolute;
   top: 0;
   bottom: 0;
-  background: rgba(37, 99, 235, 0.18);
+  background: rgba(37, 99, 235, 0.16);
   border-radius: 999px;
+}
+
+/* The model↔market gap, tinted by edge direction — makes the edge geometric. */
+.ciGap {
+  position: absolute;
+  top: 50%;
+  height: 5px;
+  border-radius: 3px;
+  transform: translateY(-50%);
+  opacity: 0.5;
 }
 
 .ciPoint {
@@ -759,16 +901,40 @@
   background: #2563eb;
   border: 3px solid #fff;
   transform: translate(-50%, -50%);
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.45);
+  z-index: 2;
 }
 
 .ciMarket {
   position: absolute;
-  top: -4px;
-  bottom: -4px;
-  width: 2px;
+  top: -5px;
+  bottom: -5px;
+  width: 3px;
+  border-radius: 2px;
   background: #c0392b;
   transform: translateX(-50%);
+  z-index: 1;
+}
+
+.ciModelTag,
+.ciMarketTag {
+  position: absolute;
+  top: -23px;
+  transform: translateX(-50%);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ciModelTag {
+  color: #2563eb;
+}
+
+.ciMarketTag {
+  color: #c0392b;
 }
 
 .ciScale {
@@ -796,16 +962,25 @@
   background: #fbfcfe;
 }
 
+/* The bottleneck node (lowest probability) is flagged amber — it's where the
+   case structurally breaks. Its number stays ink; the others soften. */
+.treeNodeBottleneck {
+  border-color: #f5dcb3;
+  background: #fef3e2;
+}
+
 .treeNodeLabel { font-size: 12.5px; font-weight: 700; color: #2563eb; }
-.treeNodeProb { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin: 4px 0; }
+.treeNodeLabelBottleneck { color: #b45309; }
+.treeNodeProb { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; color: #0f1115; font-variant-numeric: tabular-nums; margin: 4px 0; }
+.treeNodeProbMuted { color: #3f4651; }
 .treeNodeRationale { font-size: 12px; color: #8a93a6; line-height: 1.45; }
 
 .treeOp {
   display: grid;
   place-items: center;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: #aab1be;
+  color: #c2c8d2;
   flex: 0 0 auto;
 }
 
@@ -817,7 +992,7 @@
   color: #fff;
 }
 
-.treeResultProb { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin: 4px 0; }
+.treeResultProb { font-size: 27px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; margin: 4px 0; }
 .treeResultNote { font-size: 12px; font-weight: 700; color: #9ec0ff; }
 .treeNote { margin: 12px 0 0; font-size: 12.5px; line-height: 1.55; color: #8a93a6; }
 
@@ -838,10 +1013,28 @@
   border-bottom: 1px solid #f1f3f7;
   vertical-align: top;
 }
-.ledgerTitle { font-weight: 600; color: #0f1115; }
-.ledgerSource { font-size: 12px; color: #8a93a6; }
+.ledgerTitle { font-size: 13px; font-weight: 500; color: #5b6472; line-height: 1.4; }
+.ledgerTitleKey { font-size: 14px; font-weight: 700; color: #0f1115; }
+.ledgerSource { font-size: 12px; color: #8a93a6; margin-top: 2px; }
 .num { font-variant-numeric: tabular-nums; text-align: right; }
-.ledgerCaption { margin: 12px 0 0; font-size: 12px; line-height: 1.55; color: #8a93a6; }
+.ledgerReliability { color: #8a93a6; }
+.ledgerNode { color: #8a93a6; font-weight: 600; }
+.ledgerCaption { margin: 14px 0 0; font-size: 12px; line-height: 1.55; color: #8a93a6; }
+
+/* Impact column: a magnitude bar makes heavy evidence pre-attentive. */
+.impactCell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.impactBar {
+  height: 6px;
+  border-radius: 3px;
+  opacity: 0.45;
+  flex: 0 0 auto;
+}
 
 /* limitations / archive */
 
@@ -860,4 +1053,8 @@
 
 @media (max-width: 600px) {
   .stageBody, .outcomeRow { padding-left: 16px; }
+  /* Stack the pill and edge left-aligned when the eyebrow wraps, so they read as
+     a clean two-line decision header instead of a zigzag. */
+  .decisionEyebrow { align-items: flex-start; }
+  .eyebrowMetrics { margin-left: 0; }
 }

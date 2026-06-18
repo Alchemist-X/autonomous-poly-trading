@@ -11,6 +11,12 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-06-18 by Claude（优化 `/research` Forecasting Engine 结果可视化——decision-maker 信息分层；**改动在分支 `claude/great-wing-b09925`，未提交/未 PR**）。要点：
+> 用「颜色 + 字号」建立 4 级信息层级（决策 / 模型 / 证据 / 元信息），让 PM 5 秒读出结论。Dynamic Workflow 先出方案（3 设计 lens + synthesis），再 10 轮截图迭代收敛。
+> 改动：① 结论卡顶新增 **decision eyebrow**——方向化判定 pill（`Likely No` 等，按 `yesProbability` 5 档派生、非解析文案）+ edge 升为 co-hero（27px，`-57pp 低于市场`）；卡片左侧方向色 5px 边框 + 同色阴影。② **model↔market CI 条**：MODEL/MARKET 标签 + 几何 gap 连接 + "市场落在模型 80% 区间之外＝高把握分歧"读数。③ **条件模型瓶颈标记**：最低概率节点标 amber + ⚠（本例 B|A 15%＝结构性致命点）。④ verdict 首句加粗、edge 升为主卡 / market 降为 ghost、证据账本 top-3 加 rail+底色+影响力条、贝叶斯末点落方向色。
+> review 入口：[`result-charts.tsx`](../apps/web/components/research/result-charts.tsx)、[`research.module.css`](../apps/web/components/research/research.module.css)、新 [`call.ts`](../apps/web/lib/research/call.ts)（方向化判定派生器）、[`i18n.ts`](../apps/web/lib/research/i18n.ts)（en/zh 同补）。
+> 验收：`pnpm --filter @autopoly/web exec next build` 绿（279 页）；EN/中文 + 桌面/移动截图自评通过。注：`/research` 是用户自填问题的研究控制台、可显示市场价（与 WC 公开预测管线的市场盲测规则无关）。
+>
 > 最后更新：2026-06-17 by Claude（比分回补 ESPN：补齐 Polymarket 漏给的悬殊比分）。
 > 问题：部分已完场比赛页面显示 "–"。根因：Polymarket exact-score 市场只列 ~16 个常见比分 + "Any Other Score" 桶，悬殊比分（7-1/5-1/4-1）落进该桶 → 只得胜负、不得具体比分（已用 Gamma API 实证）。
 > 修复（**PR #33**，已合并 + 部署）：新增 `scripts/world-cup/lib/espn-results.ts`，对"已结算但 `score=null`"的场次按 日期+队名 从 **ESPN 免费无密钥 scoreboard** 拉真实比分（定向到 team a/b），集成在 `update-results.ts` 的回补 pass。**仅当 ESPN 胜负与 Polymarket settled winner 一致才采用**（`source="espn"`）；查不到/不一致则保持 winner-only（安全降级）。

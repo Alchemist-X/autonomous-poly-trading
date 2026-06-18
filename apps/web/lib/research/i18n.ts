@@ -34,6 +34,20 @@ export type ConsoleStringKey =
   | "phaseError"
   | "machineLabel"
   | "bigProbLabel"
+  | "callStrongYes"
+  | "callLeanYes"
+  | "callTossup"
+  | "callLeanNo"
+  | "callStrongNo"
+  | "edgeAboveMarket"
+  | "edgeBelowMarket"
+  | "edgeReadBelow"
+  | "edgeReadAbove"
+  | "ciModelMarker"
+  | "ciMarketMarker"
+  | "ciInlineLabel"
+  | "ciMarketOutside"
+  | "ciMarketInside"
   | "snapshotPrefix"
   | "ciLabel"
   | "ciMarket"
@@ -84,6 +98,20 @@ const STRINGS: Record<ConsoleLocale, Record<ConsoleStringKey, string>> = {
     phaseError: "ERROR",
     machineLabel: "Forecasting Engine state machine",
     bigProbLabel: "Yes probability",
+    callStrongYes: "Likely Yes",
+    callLeanYes: "Leans Yes",
+    callTossup: "Toss-up",
+    callLeanNo: "Leans No",
+    callStrongNo: "Likely No",
+    edgeAboveMarket: "above market",
+    edgeBelowMarket: "below market",
+    edgeReadBelow: "Model below market",
+    edgeReadAbove: "Model above market",
+    ciModelMarker: "Model",
+    ciMarketMarker: "Market",
+    ciInlineLabel: "80% CI ",
+    ciMarketOutside: "The market sits outside the model's 80% interval — a high-conviction gap.",
+    ciMarketInside: "The market sits inside the model's 80% interval.",
     snapshotPrefix: "Research snapshot ",
     ciLabel: "80% subjective credible interval: ",
     ciMarket: "market-implied",
@@ -136,6 +164,20 @@ const STRINGS: Record<ConsoleLocale, Record<ConsoleStringKey, string>> = {
     phaseError: "出错 ERROR",
     machineLabel: "Forecasting Engine 状态机",
     bigProbLabel: "Yes 概率",
+    callStrongYes: "大概率会",
+    callLeanYes: "略偏会",
+    callTossup: "五五开",
+    callLeanNo: "略偏不会",
+    callStrongNo: "大概率不会",
+    edgeAboveMarket: "高于市场",
+    edgeBelowMarket: "低于市场",
+    edgeReadBelow: "模型低于市场",
+    edgeReadAbove: "模型高于市场",
+    ciModelMarker: "模型",
+    ciMarketMarker: "市场",
+    ciInlineLabel: "80% 可信区间 ",
+    ciMarketOutside: "市场落在模型 80% 区间之外——高把握的分歧。",
+    ciMarketInside: "市场落在模型 80% 区间之内。",
     snapshotPrefix: "研究快照 ",
     ciLabel: "80% 主观可信区间：",
     ciMarket: "市场隐含",
