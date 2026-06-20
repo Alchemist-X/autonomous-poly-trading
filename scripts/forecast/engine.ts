@@ -357,7 +357,10 @@ export async function runForecast(
   state: ForecastState,
   opts: RunForecastOptions = {}
 ): Promise<ForecastState> {
-  const maxRounds = opts.maxRounds ?? (Number(process.env.FORECAST_MAX_ROUNDS) || 4);
+  // Default 3: across a varied batch, round 1 does the bulk of the prior→evidence
+  // correction and rounds beyond 3 moved <2pp (or oscillated without converging),
+  // so 3 captures ~all the signal at ~1/2 the cost of higher caps.
+  const maxRounds = opts.maxRounds ?? (Number(process.env.FORECAST_MAX_ROUNDS) || 3);
   const epsilon = opts.convergenceEpsilon ?? 0.01;
   const log = opts.onLog ?? (() => {});
 

@@ -105,3 +105,26 @@ Ranked by NECESSITY after a multi-lens proposal + adversarial challenge pass.
 - Automatic Brier/calibration scoring (no settlement oracle — explicit non-goal).
 - Multi-outcome / continuous (binary only, v1). Enforcing market-blindness (open web is fine).
 
+
+## Empirical: max-rounds tuning (6-question batch @ max-rounds 6)
+
+Round 1 does the bulk of the prior→evidence correction; rounds beyond 3 moved
+<2pp or oscillated without converging. Per-round |move| (pp):
+
+| Question (prior→final) | rounds | moves |
+| --- | --- | --- |
+| Foldable iPhone (60%→41%) | 6 (max) | −28.9, +4.7, −2.3, +5.1, +4.8, −2.9 (oscillates, never converges) |
+| Unemployment >5% (12%→1.6%) | 4 conv | −4.0, −4.4, −1.8, −0.2 |
+| ETH >$6k (5%→1%) | 3 conv | −2.5, −1.5, +0.0 |
+| GPT-6 by 2026 (40%→34%) | 3 max | +9.2, −13.9, −1.6 |
+| Film >$2B (7%→1%) | 2 conv | −5.1, −0.9 |
+
+**Decision: default max-rounds = 3** (was 4). 3 captures ~all the signal at ~half
+the cost; the one case that wanted more (iPhone) oscillated in a ±4pp band rather
+than converging — a sign it's genuinely uncertain, not under-researched, so extra
+rounds don't help. Users can bump `--max-rounds` for hard/contested questions.
+Reflections fired in 5/6 multi-round runs (1–2 each) — (a) is actively used.
+
+**Follow-up (P1):** the single sub-1pp convergence stop missed the oscillating
+case; a "small move for K consecutive rounds" band-convergence would stop it
+earlier (already on the P1 list as "convergence needs K-round stability").
