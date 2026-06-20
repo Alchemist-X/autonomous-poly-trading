@@ -10,6 +10,7 @@
 import {
   applyLlrs,
   clamp,
+  clampUnverified,
   credibleInterval,
   effectiveLlr,
 } from "./bayes";
@@ -166,17 +167,25 @@ async function runOneRound(
   }
 
   // Thread the survivors' LLRs through the Bayesian update from the prior.
+  // P0-4: decide verification BEFORE applying each LLR, and soft-clamp any source
+  // whose URL is absent from the agent's real tool trace (possible fabrication).
   const priorProb = state.currentProb;
-  const llrs = survivors.map((ev) => effectiveLlr(ev.stance, ev.llr));
+  const verifiedFlags = survivors.map((ev) => traceCanonical.has(canonicalizeUrl(ev.source_url)));
+  const llrs = survivors.map((ev, i) => {
+    const base = effectiveLlr(ev.stance, ev.llr);
+    return verifiedFlags[i] ? base : clampUnverified(base);
+  });
   const { post, steps } = applyLlrs(priorProb, llrs);
 
   const ts = nowUtc();
   const perSourceUpdates: PerSourceUpdate[] = [];
   const newLedger: LedgerEntry[] = [];
+  let unverifiedPp = 0;
   survivors.forEach((ev, i) => {
     const step = steps[i];
     const canon = canonicalizeUrl(ev.source_url);
-    const verified = traceCanonical.has(canon);
+    const verified = verifiedFlags[i];
+    if (!verified) unverifiedPp += Math.abs(step.deltaPp);
     perSourceUpdates.push({
       url: ev.source_url,
       title: ev.source_title,
@@ -220,6 +229,7 @@ async function runOneRound(
     perSourceUpdates,
     newSourceCount: survivors.length,
     duplicateCount,
+    unverifiedPp,
     agentHolisticProb: out.agent_holistic_probability,
     confidence: out.confidence,
     reasoning: out.round_summary + (out.notes ? `  Notes: ${out.notes}` : ""),

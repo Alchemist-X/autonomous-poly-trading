@@ -110,6 +110,12 @@ export function renderReport(state: ForecastState): string {
       lines.push(`*Searches:* ${r.searchQueries.map((q) => `\`${q}\``).join(", ")}`);
       lines.push("");
     }
+    if (r.unverifiedPp > 0.1) {
+      lines.push(
+        `> ⚠ ${r.unverifiedPp.toFixed(1)}pp of this round's movement came from soft-clamped UNVERIFIED sources (not found in the agent's tool trace).`
+      );
+      lines.push("");
+    }
     if (r.perSourceUpdates.length === 0) {
       lines.push("_No new evidence this round._");
       lines.push("");

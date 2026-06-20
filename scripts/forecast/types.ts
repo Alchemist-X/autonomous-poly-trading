@@ -93,6 +93,7 @@ export interface RoundRecord {
   perSourceUpdates: PerSourceUpdate[];
   newSourceCount: number;
   duplicateCount: number; // sources dropped because already counted in a prior round
+  unverifiedPp: number; // total |pp| of this round's movement from unverified (soft-clamped) sources
   agentHolisticProb: number;
   confidence: Confidence;
   reasoning: string;

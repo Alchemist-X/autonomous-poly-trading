@@ -28,18 +28,42 @@ export interface AgentRunResult {
 
 const DEFAULT_TIMEOUT_MS = Number(process.env.FORECAST_AGENT_TIMEOUT_MS) || 360_000;
 
-function pushUrlsDeep(node: unknown, urls: Set<string>): void {
+// Collect every URL the agent actually interacted with via a tool, so a cited
+// source can be reconciled against what was really retrieved (fabrication guard).
+// Two strong signals, captured without over-capturing page-embedded links:
+//   - tool_use with input.url  → e.g. WebFetch: the URL the agent explicitly fetched
+//   - {title, url} pairs        → WebSearch result links returned to the agent
+function collectToolUrlsDeep(node: unknown, urls: Set<string>): void {
   if (!node || typeof node !== "object") return;
   if (Array.isArray(node)) {
-    for (const item of node) pushUrlsDeep(item, urls);
+    for (const item of node) collectToolUrlsDeep(item, urls);
     return;
   }
   const rec = node as Record<string, unknown>;
-  // A search-result link is any object carrying both a title and a url string.
+  if (rec.type === "tool_use" && rec.input && typeof rec.input === "object") {
+    const u = (rec.input as Record<string, unknown>).url;
+    if (typeof u === "string" && u) urls.add(u);
+  }
   if (typeof rec.url === "string" && typeof rec.title === "string") {
     urls.add(rec.url);
   }
-  for (const v of Object.values(rec)) pushUrlsDeep(v, urls);
+  for (const v of Object.values(rec)) collectToolUrlsDeep(v, urls);
+}
+
+// Exported for testing: pull the tool-interaction URL set out of a raw
+// stream-json stdout (covers both WebSearch results and WebFetch fetches).
+export function extractToolUrls(stdout: string): Set<string> {
+  const urls = new Set<string>();
+  for (const line of stdout.split("\n")) {
+    const t = line.trim();
+    if (!t || t[0] !== "{") continue;
+    try {
+      collectToolUrlsDeep(JSON.parse(t), urls);
+    } catch {
+      /* skip non-JSON lines */
+    }
+  }
+  return urls;
 }
 
 function parseStreamJson(stdout: string): {
@@ -66,6 +90,7 @@ function parseStreamJson(stdout: string): {
       continue;
     }
     const type = obj.type;
+    collectToolUrlsDeep(obj, urls); // tool_use.input.url (WebFetch) + {title,url} (WebSearch)
     if (type === "assistant") {
       const msg = obj.message as { content?: unknown } | undefined;
       const content = (msg?.content as unknown[]) ?? [];
@@ -79,9 +104,6 @@ function parseStreamJson(stdout: string): {
           lastAssistantTexts.push(b.text);
         }
       }
-    } else if (type === "user") {
-      // tool_result frames carry the search links; scan them deeply.
-      pushUrlsDeep(obj, urls);
     } else if (type === "result") {
       if (typeof obj.result === "string") finalText = obj.result;
       if (typeof obj.total_cost_usd === "number") costUsd = obj.total_cost_usd;

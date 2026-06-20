@@ -37,6 +37,17 @@ export function effectiveLlr(stance: string, rawLlr: number): number {
   return 0; // neutral
 }
 
+// P0-4: a source whose cited URL did NOT appear in the agent's real tool trace
+// (possibly fabricated/hallucinated) is soft-clamped — its magnitude is capped
+// low so it can barely move the probability, but it is NOT dropped (the trace
+// capture can still false-negative, e.g. odd result shapes), which would delete
+// real evidence.
+export const UNVERIFIED_MAX_LLR = 0.2;
+export function clampUnverified(llr: number): number {
+  const mag = Math.min(Math.abs(llr), UNVERIFIED_MAX_LLR);
+  return Math.sign(llr) * mag;
+}
+
 export interface AppliedStep {
   probBefore: number;
   probAfter: number;

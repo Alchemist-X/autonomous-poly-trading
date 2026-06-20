@@ -2,13 +2,14 @@ import { describe, expect, it } from "vitest";
 import {
   applyLlrs,
   clamp,
+  clampUnverified,
   credibleInterval,
   effectiveLlr,
   invLogit,
   logit,
 } from "./bayes";
 import { canonicalizeUrl } from "./url";
-import { extractJsonObject, validateRoundOutput } from "./claude-agent";
+import { extractJsonObject, extractToolUrls, validateRoundOutput } from "./claude-agent";
 import { validateFraming, validateAudit } from "./framing";
 import { newForecastState } from "./engine";
 import type { EventFraming } from "./types";
@@ -54,6 +55,13 @@ describe("bayes log-odds", () => {
     expect(effectiveLlr("supports_no", 9)).toBeCloseTo(-2, 9);
   });
 
+  it("clampUnverified caps magnitude at 0.2 and keeps sign (P0-4)", () => {
+    expect(clampUnverified(1.5)).toBeCloseTo(0.2, 9);
+    expect(clampUnverified(-1.5)).toBeCloseTo(-0.2, 9);
+    expect(clampUnverified(0.1)).toBeCloseTo(0.1, 9); // below cap, unchanged
+    expect(clampUnverified(0)).toBe(0);
+  });
+
   it("credible interval narrows with more sources", () => {
     const few = credibleInterval(0.5, 1, "medium");
     const many = credibleInterval(0.5, 25, "medium");
@@ -81,6 +89,30 @@ describe("url canonicalization (dedupe key)", () => {
 
   it("empty input is empty", () => {
     expect(canonicalizeUrl("")).toBe("");
+  });
+});
+
+describe("extractToolUrls (fabrication-guard capture, P0-4)", () => {
+  const webfetch = JSON.stringify({
+    type: "assistant",
+    message: { content: [{ type: "tool_use", name: "WebFetch", input: { url: "https://en.wikipedia.org/wiki/Bitcoin" } }] },
+  });
+  const websearch = JSON.stringify({
+    type: "user",
+    message: { content: [{ type: "tool_result", content: [{ title: "Foo", url: "https://example.com/foo" }] }] },
+  });
+  // a bare url with no title and not under tool_use (e.g. a link embedded in page text) must NOT be captured
+  const pageLink = JSON.stringify({ type: "user", message: { content: [{ type: "tool_result", content: [{ url: "https://random.com/embedded" }] }] } });
+
+  it("captures WebFetch tool_use.input.url (the prior false-negative)", () => {
+    const urls = extractToolUrls([webfetch, "noise line", websearch].join("\n"));
+    expect(urls.has("https://en.wikipedia.org/wiki/Bitcoin")).toBe(true);
+  });
+  it("captures WebSearch {title,url} result links", () => {
+    expect(extractToolUrls(websearch).has("https://example.com/foo")).toBe(true);
+  });
+  it("does NOT over-capture bare page-embedded links (no title, not a tool_use)", () => {
+    expect(extractToolUrls(pageLink).has("https://random.com/embedded")).toBe(false);
   });
 });
 
