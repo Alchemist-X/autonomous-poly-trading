@@ -28,6 +28,7 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..
 const GEN_DIR = path.join(REPO_ROOT, "apps/web/lib/world-cup/generated");
 const PREDICTIONS = path.join(GEN_DIR, "predictions.generated.json");
 const OUT = path.join(GEN_DIR, "results.generated.json");
+const OVERRIDES = path.join(REPO_ROOT, "scripts/world-cup/results-overrides.json");
 const ARTIFACT_DIR = path.join(REPO_ROOT, "runtime-artifacts/world-cup");
 const LOG = path.join(ARTIFACT_DIR, "results-log.jsonl");
 
@@ -61,6 +62,49 @@ async function archiveError(reason: string, context: Record<string, unknown>): P
   await mkdir(dir, { recursive: true });
   await writeFile(path.join(dir, "error.json"), JSON.stringify({ stage: "update-results", reason, ...context }, null, 2));
   return dir;
+}
+
+interface OverrideEntry {
+  readonly winner: "a" | "draw" | "b";
+  readonly homeGoals?: number | null;
+  readonly awayGoals?: number | null;
+  readonly score?: string | null;
+  readonly note?: string;
+}
+
+// Apply operator-verified overrides over the fetched results. Keys starting with
+// "_" (e.g. "_note") are ignored; a missing file is a no-op.
+async function applyOverrides(results: Record<string, MatchResult>): Promise<void> {
+  let raw: string;
+  try {
+    raw = await readFile(OVERRIDES, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return;
+    throw err;
+  }
+  const overrides = JSON.parse(raw) as Record<string, OverrideEntry>;
+  let applied = 0;
+  for (const [slug, ov] of Object.entries(overrides)) {
+    if (slug.startsWith("_") || !(slug in results)) continue;
+    const prev = results[slug];
+    const next: MatchResult = {
+      ...prev,
+      status: "resolved",
+      winner: ov.winner,
+      homeGoals: ov.homeGoals ?? null,
+      awayGoals: ov.awayGoals ?? null,
+      score: ov.score ?? null,
+      source: "verified"
+    };
+    if (prev.winner !== next.winner || prev.score !== next.score) {
+      C.warn(
+        `  override ${slug}: ${prev.score ?? "(winner only)"} → ${next.score ?? "(winner only)"}, winner ${prev.winner ?? "?"} → ${next.winner} [verified]`
+      );
+    }
+    results[slug] = next;
+    applied += 1;
+  }
+  if (applied > 0) C.info(`verified overrides applied: ${applied}`);
 }
 
 async function main(): Promise<void> {
@@ -136,6 +180,13 @@ async function main(): Promise<void> {
   if (winnerOnly.length > 0) {
     C.info(`ESPN backfill: ${backfilled}/${winnerOnly.length} winner-only fixtures got an exact score`);
   }
+
+  // Operator-verified overrides (results-overrides.json): authoritative settled
+  // facts confirmed from public sources, applied LAST so they win over fetched
+  // Polymarket/ESPN data and persist across daily re-runs. This is the durable
+  // "verified result is authoritative on conflict" policy — market-blind (winner
+  // + score only). A missing file is fine (no overrides).
+  await applyOverrides(results);
 
   const resolved = Object.values(results).filter((r) => r.status === "resolved");
   const generatedAt = new Date().toISOString();
