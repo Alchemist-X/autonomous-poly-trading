@@ -41,10 +41,10 @@ export default async function GroupsPage({ params }: { params: Promise<{ locale:
   const accuracyPct = settled > 0 ? Math.round((hits / settled) * 100) : 0;
   const accuracyBadge =
     settled > 0 ? (
-      <div className={styles.accuracyBar}>
+      <Link href={withLocale("/world-cup/performance", locale)} className={styles.accuracyBar}>
         <span aria-hidden>✅</span>
-        {t(locale, "accuracyLabel")} · <strong>{hits}/{settled}</strong> · {accuracyPct}%
-      </div>
+        {t(locale, "accuracyLabel")} · <strong>{hits}/{settled}</strong> · {accuracyPct}% →
+      </Link>
     ) : null;
 
   return (
