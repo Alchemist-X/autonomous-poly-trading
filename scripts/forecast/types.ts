@@ -11,7 +11,21 @@ export type Stance = "supports_yes" | "supports_no" | "neutral";
 export type Strength = "weak" | "moderate" | "strong";
 export type Confidence = "low" | "medium" | "high";
 
-// ---- The structured object the agent MUST emit each round (validated, fail-closed). ----
+// ---- The structured frame the agent writes BEFORE forecasting (Round 0). ----
+// A free-text user prompt is not a well-posed forecastable event; this step
+// turns it into a crisp binary question with explicit resolution, an inferred
+// resolution date, a settlement source, and a forecastability judgement (so a
+// hopelessly vague prompt is flagged for clarification rather than given a
+// false-precision number).
+export interface EventFraming {
+  normalizedQuestion: string; // the crisp binary question actually forecast
+  resolutionCriteria: string; // exactly what counts as YES vs NO
+  resolutionDate: string | null; // YYYY-MM-DD by which it must resolve (inferred)
+  settlementSource: string; // what authoritative source would confirm the outcome
+  assumptions: string; // assumptions the agent made while framing
+  forecastable: boolean; // false => too vague/subjective to forecast as binary
+  clarificationNeeded: string; // when not forecastable, what the user must specify
+}
 export interface AgentEvidence {
   claim: string; // the specific fact found, in one sentence
   source_url: string; // where it came from
@@ -88,9 +102,8 @@ export type ForecastStatus =
 
 export interface ForecastState {
   eventId: string;
-  eventText: string;
-  resolutionCriteria: string | null;
-  deadline: string | null;
+  eventText: string; // the original user prompt, verbatim
+  framing: EventFraming; // Round-0 frame: the normalized question actually forecast
   createdAtUtc: string;
   updatedAtUtc: string;
   currentProb: number; // the maintained P(YES), threaded across rounds

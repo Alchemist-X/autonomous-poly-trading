@@ -59,11 +59,14 @@ const signed = (pp: number): string => `${pp >= 0 ? "+" : ""}${pp.toFixed(1)}pp`
 
 export function renderReport(state: ForecastState): string {
   const lines: string[] = [];
-  lines.push(`# Forecast: ${state.eventText}`);
+  lines.push(`# Forecast: ${state.framing.normalizedQuestion}`);
   lines.push("");
   lines.push(`- **Event ID**: \`${state.eventId}\``);
-  if (state.resolutionCriteria) lines.push(`- **Resolution criteria**: ${state.resolutionCriteria}`);
-  if (state.deadline) lines.push(`- **Deadline**: ${state.deadline}`);
+  lines.push(`- **Your prompt**: ${state.eventText}`);
+  lines.push(`- **Resolution criteria**: ${state.framing.resolutionCriteria}`);
+  if (state.framing.resolutionDate) lines.push(`- **Resolution date**: ${state.framing.resolutionDate}`);
+  if (state.framing.settlementSource) lines.push(`- **Settlement source**: ${state.framing.settlementSource}`);
+  if (state.framing.assumptions) lines.push(`- **Framing assumptions**: ${state.framing.assumptions}`);
   lines.push(`- **Rounds run**: ${state.round}`);
   lines.push(`- **Status**: ${state.status}`);
   lines.push(

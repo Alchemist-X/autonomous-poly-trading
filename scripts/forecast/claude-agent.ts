@@ -16,8 +16,8 @@ import type { AgentRoundOutput } from "./types";
 
 export interface AgentRunResult {
   rawFinalText: string;
-  parsed: AgentRoundOutput | null;
-  parseError: string | null;
+  jsonObject: unknown | null; // first balanced JSON object extracted from the final text
+  jsonError: string | null; // set when no JSON object could be extracted
   searchQueries: string[];
   searchResultUrls: Set<string>; // every URL the agent's searches actually returned
   costUsd: number | null;
@@ -183,7 +183,7 @@ export interface RunAgentOptions {
   cwd?: string;
 }
 
-export async function runAgent(prompt: string, opts: RunAgentOptions = {}): Promise<AgentRunResult> {
+export async function runAgentRaw(prompt: string, opts: RunAgentOptions = {}): Promise<AgentRunResult> {
   const baseUrl = process.env.ANTHROPIC_BASE_URL;
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
@@ -219,19 +219,12 @@ export async function runAgent(prompt: string, opts: RunAgentOptions = {}): Prom
     child.on("close", (code) => {
       clearTimeout(timer);
       const parsedStream = parseStreamJson(stdout);
-      let parsed: AgentRoundOutput | null = null;
-      let parseError: string | null = null;
-      try {
-        const obj = extractJsonObject(parsedStream.finalText);
-        if (!obj) throw new Error("no JSON object found in agent final text");
-        parsed = validateRoundOutput(obj);
-      } catch (err) {
-        parseError = err instanceof Error ? err.message : String(err);
-      }
+      const jsonObject = extractJsonObject(parsedStream.finalText);
+      const jsonError = jsonObject ? null : "no JSON object found in agent final text";
       resolve({
         rawFinalText: parsedStream.finalText,
-        parsed,
-        parseError,
+        jsonObject,
+        jsonError,
         searchQueries: parsedStream.searchQueries,
         searchResultUrls: parsedStream.searchResultUrls,
         costUsd: parsedStream.costUsd,

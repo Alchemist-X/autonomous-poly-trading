@@ -13,10 +13,12 @@ import {
   credibleInterval,
   effectiveLlr,
 } from "./bayes";
-import { runAgent } from "./claude-agent";
+import { runAgentRaw, validateRoundOutput } from "./claude-agent";
 import { saveState, writeReport } from "./store";
 import { canonicalizeUrl } from "./url";
 import type {
+  AgentRoundOutput,
+  EventFraming,
   ForecastState,
   LedgerEntry,
   PerSourceUpdate,
@@ -45,9 +47,9 @@ function buildPrompt(state: ForecastState, roundNo: number, maxRounds: number): 
 
   return `You are a forecasting research agent. You estimate the probability that a specific BINARY (yes/no) event will happen, using live web research, and you attribute every probability change to a cited source.
 
-EVENT: ${state.eventText}
-RESOLUTION CRITERIA: ${state.resolutionCriteria ?? "(none given — infer a reasonable resolution and state your assumption in notes)"}
-DEADLINE: ${state.deadline ?? "(none specified)"}
+EVENT: ${state.framing.normalizedQuestion}
+RESOLUTION CRITERIA: ${state.framing.resolutionCriteria}
+RESOLUTION DATE (must occur by): ${state.framing.resolutionDate ?? "(open-ended)"}
 
 CURRENT ESTIMATE (this is your PRIOR for this round): P(YES) = ${(state.currentProb * 100).toFixed(1)}%
 ROUND: ${roundNo} of ${maxRounds}
@@ -87,8 +89,7 @@ If you genuinely found no new relevant information this round, return an empty n
 export function newForecastState(input: {
   eventId: string;
   eventText: string;
-  resolutionCriteria?: string | null;
-  deadline?: string | null;
+  framing: EventFraming;
   startProb?: number;
 }): ForecastState {
   const ts = nowUtc();
@@ -96,8 +97,7 @@ export function newForecastState(input: {
   return {
     eventId: input.eventId,
     eventText: input.eventText,
-    resolutionCriteria: input.resolutionCriteria ?? null,
-    deadline: input.deadline ?? null,
+    framing: input.framing,
     createdAtUtc: ts,
     updatedAtUtc: ts,
     currentProb: p,
@@ -118,19 +118,27 @@ async function runOneRound(
   const log = opts.onLog ?? (() => {});
   const prompt = buildPrompt(state, roundNo, maxRounds);
 
-  // Run the agent, with one retry on a fail-closed parse/validation error.
-  let result = await runAgent(prompt, { model: opts.model });
-  if (!result.parsed) {
-    log(`  ⚠ round ${roundNo}: agent output failed validation (${result.parseError}); retrying once…`);
-    result = await runAgent(prompt, { model: opts.model });
+  // Run the agent, validating fail-closed with one retry on a parse/schema miss.
+  const validate = (r: { jsonObject: unknown | null }): AgentRoundOutput | null => {
+    try {
+      return validateRoundOutput(r.jsonObject);
+    } catch {
+      return null;
+    }
+  };
+  let result = await runAgentRaw(prompt, { model: opts.model });
+  let out = validate(result);
+  if (!out) {
+    log(`  ⚠ round ${roundNo}: agent output failed validation; retrying once…`);
+    result = await runAgentRaw(prompt, { model: opts.model });
+    out = validate(result);
   }
-  if (!result.parsed) {
+  if (!out) {
     throw new Error(
-      `round ${roundNo} aborted: agent output invalid after retry: ${result.parseError}\n` +
+      `round ${roundNo} aborted: agent output invalid after retry: ${result.jsonError ?? "schema mismatch"}\n` +
         `stderr: ${result.stderrTail}`
     );
   }
-  const out = result.parsed;
 
   // Canonical set of URLs the agent's searches actually returned (for the
   // fabricated-citation guard).

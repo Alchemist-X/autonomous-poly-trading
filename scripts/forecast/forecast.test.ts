@@ -9,6 +9,7 @@ import {
 } from "./bayes";
 import { canonicalizeUrl } from "./url";
 import { extractJsonObject, validateRoundOutput } from "./claude-agent";
+import { validateFraming } from "./framing";
 
 describe("bayes log-odds", () => {
   it("logit/invLogit round-trip", () => {
@@ -138,5 +139,38 @@ describe("validateRoundOutput (fail-closed)", () => {
   });
   it("accepts an empty-evidence no-new-info round", () => {
     expect(() => validateRoundOutput({ ...good, new_evidence: [], found_new_information: false })).not.toThrow();
+  });
+});
+
+describe("validateFraming (Round 0)", () => {
+  const good = {
+    normalized_question: "Will X ship before 2027-01-01?",
+    resolution_criteria: "YES iff X ships to consumers before 2027-01-01.",
+    resolution_date: "2026-12-31",
+    settlement_source: "Official vendor announcement.",
+    assumptions: "Calendar year, UTC.",
+    forecastable: true,
+    clarification_needed: "",
+  };
+
+  it("accepts a well-formed frame", () => {
+    const f = validateFraming(good);
+    expect(f.normalizedQuestion).toContain("Will X");
+    expect(f.resolutionDate).toBe("2026-12-31");
+    expect(f.forecastable).toBe(true);
+  });
+  it("coerces a null/empty/'null' resolution_date to null", () => {
+    expect(validateFraming({ ...good, resolution_date: "null" }).resolutionDate).toBeNull();
+    expect(validateFraming({ ...good, resolution_date: "" }).resolutionDate).toBeNull();
+    expect(validateFraming({ ...good, resolution_date: null }).resolutionDate).toBeNull();
+  });
+  it("preserves a not-forecastable verdict with clarification", () => {
+    const f = validateFraming({ ...good, forecastable: false, clarification_needed: "need a date" });
+    expect(f.forecastable).toBe(false);
+    expect(f.clarificationNeeded).toBe("need a date");
+  });
+  it("rejects missing normalized_question or non-boolean forecastable", () => {
+    expect(() => validateFraming({ ...good, normalized_question: "" })).toThrow();
+    expect(() => validateFraming({ ...good, forecastable: "yes" })).toThrow();
   });
 });
