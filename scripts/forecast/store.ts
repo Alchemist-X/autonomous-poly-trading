@@ -86,6 +86,32 @@ export function renderReport(state: ForecastState): string {
   lines.push(`- **Last updated**: ${state.updatedAtUtc}`);
   lines.push("");
 
+  if (state.summary) {
+    const s = state.summary;
+    lines.push("## Summary");
+    lines.push("");
+    lines.push(s.verdict);
+    lines.push("");
+    if (s.keyFactorsYes.length) {
+      lines.push("**Strongest factors for YES:**");
+      for (const f of s.keyFactorsYes) lines.push(`- ${f}`);
+      lines.push("");
+    }
+    if (s.keyFactorsNo.length) {
+      lines.push("**Strongest factors for NO:**");
+      for (const f of s.keyFactorsNo) lines.push(`- ${f}`);
+      lines.push("");
+    }
+    if (s.mainUncertainties) {
+      lines.push(`**Main uncertainties:** ${s.mainUncertainties}`);
+      lines.push("");
+    }
+    if (s.calibrationNote) {
+      lines.push(`**Calibration note:** ${s.calibrationNote}`);
+      lines.push("");
+    }
+  }
+
   lines.push("## Probability trajectory");
   lines.push("");
   lines.push("| Round | Prior | → Posterior | New sources | Confidence |");

@@ -144,6 +144,17 @@ export type ForecastStatus =
   | "resolved"
   | "aborted";
 
+// A final, whole-forecast synthesis written after the last round. It EXPLAINS the
+// engine's final probability (the balance of evidence, key drivers, open
+// uncertainties) — it does NOT re-decide the number (engine still owns it).
+export interface ForecastSummary {
+  verdict: string; // 1-2 paragraphs: the overall read on why P(YES) landed here
+  keyFactorsYes: string[]; // strongest factors pushing toward YES
+  keyFactorsNo: string[]; // strongest factors pushing toward NO
+  mainUncertainties: string; // what is unresolved / could move it before resolution
+  calibrationNote: string; // optional: if the agent thinks the number is mis-calibrated, why (no new number)
+}
+
 export interface ForecastState {
   eventId: string;
   eventText: string; // the original user prompt, verbatim
@@ -156,4 +167,5 @@ export interface ForecastState {
   status: ForecastStatus;
   evidenceLedger: LedgerEntry[];
   roundHistory: RoundRecord[];
+  summary: ForecastSummary | null; // final whole-forecast synthesis (after the last round)
 }

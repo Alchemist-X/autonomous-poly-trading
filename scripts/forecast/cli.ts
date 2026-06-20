@@ -101,6 +101,7 @@ async function main(): Promise<void> {
   console.log("\n──────────────────────────────────────────");
   console.log(`FINAL P(YES) = ${pct(final.currentProb)}  (80% band ${pct(final.credibleInterval[0])} – ${pct(final.credibleInterval[1])})`);
   console.log(`Status: ${final.status}  ·  Rounds: ${final.round}  ·  Sources: ${final.evidenceLedger.length}`);
+  if (final.summary?.verdict) console.log(`\n${final.summary.verdict}`);
   const totalCost = final.roundHistory.reduce((s, r) => s + (r.costUsd ?? 0), 0);
   if (totalCost > 0) console.log(`Total round cost: $${totalCost.toFixed(3)}`);
   console.log(`\nTrace:  ${dir}/report.md`);

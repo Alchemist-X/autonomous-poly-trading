@@ -14,6 +14,7 @@ import {
 import { canonicalizeUrl } from "./url";
 import { extractJsonObject, extractToolUrls, validateRoundOutput } from "./claude-agent";
 import { validateFraming, validateAudit } from "./framing";
+import { validateSummary } from "./summary";
 import { newForecastState } from "./engine";
 import type { EventFraming } from "./types";
 
@@ -305,5 +306,30 @@ describe("newForecastState prior seeding (P0-2)", () => {
     // an M9-quake-style ~0.03% prior must NOT be flattened toward 0.5
     expect(newForecastState({ eventId: "e", eventText: "t", framing: framing(0.0003) }).currentProb).toBeCloseTo(0.01, 6);
     expect(newForecastState({ eventId: "e", eventText: "t", framing: framing(0.999) }).currentProb).toBeCloseTo(0.99, 6);
+  });
+});
+
+describe("validateSummary (final synthesis)", () => {
+  const good = {
+    verdict: "P(YES) landed low because the balance of evidence is against it.",
+    key_factors_yes: ["one supportive signal", ""],
+    key_factors_no: ["strong opposing evidence"],
+    main_uncertainties: "the resolution date is far off",
+    calibration_note: "",
+  };
+  it("accepts a well-formed summary and filters empty factor strings", () => {
+    const s = validateSummary(good);
+    expect(s.verdict).toContain("balance of evidence");
+    expect(s.keyFactorsYes).toEqual(["one supportive signal"]); // empty dropped
+    expect(s.keyFactorsNo).toHaveLength(1);
+  });
+  it("requires a non-empty verdict", () => {
+    expect(() => validateSummary({ ...good, verdict: "" })).toThrow();
+    expect(() => validateSummary({})).toThrow();
+  });
+  it("tolerates missing optional arrays/fields", () => {
+    const s = validateSummary({ verdict: "ok" });
+    expect(s.keyFactorsYes).toEqual([]);
+    expect(s.mainUncertainties).toBe("");
   });
 });

@@ -65,6 +65,8 @@ claude-agent.ts  spawn `claude --print --output-format stream-json --verbose
                  actual search queries + result URLs; runAgentRaw + validators
 bayes.ts      logit / invLogit / applyLlrs (per-source pp attribution) / clamps
 store.ts      per-event state.json + report.md; eventId; canonical paths
+summary.ts    final whole-forecast synthesis after the last round (explains the
+              number — verdict + factors-for/against + uncertainties; never re-decides it)
 url.ts        canonicalizeUrl — the cross-round dedupe key
 types.ts      shared types + EventFraming + the agent round-output contract
 forecast.test.ts  unit tests for the deterministic core (run with `pnpm test`)

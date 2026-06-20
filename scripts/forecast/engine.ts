@@ -19,6 +19,7 @@ import {
 } from "./bayes";
 import { runAgentRaw, validateRoundOutput } from "./claude-agent";
 import { saveState, writeReport } from "./store";
+import { summarizeForecast } from "./summary";
 import { canonicalizeUrl } from "./url";
 import type {
   AgentRoundOutput,
@@ -130,6 +131,7 @@ export function newForecastState(input: {
     status: "open",
     evidenceLedger: [],
     roundHistory: [],
+    summary: null,
   };
 }
 
@@ -405,6 +407,16 @@ export async function runForecast(
     if (roundNo >= maxRounds) {
       state.status = "max_rounds";
       log(`  ■ reached max rounds — stopping.`);
+    }
+  }
+
+  // Final whole-forecast synthesis (explains the number; never re-decides it).
+  if (state.roundHistory.length > 0 && state.status !== "aborted") {
+    log(`\n▶ Writing final summary…`);
+    try {
+      state.summary = await summarizeForecast(state, { model: opts.model });
+    } catch (err) {
+      log(`  ⚠ summary generation failed (non-fatal): ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 
