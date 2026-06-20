@@ -11,6 +11,14 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-06-21 by Claude（展示界面文案/UX 大精简，面向 decision-maker；dynamic workflow 6 维评审 + 实施。改动**未提交**，working tree）。要点：
+> ① 全站精简 + 去术语：冠军页长句→「谁会拿到最后的冠军？」+ 一行法（Elo 模拟+贝叶斯，保留预测时间）；删「对阵」、「边际概率」→「各队打进每一轮的概率」；顶栏去重（删与 tab 重复的 预测/夺冠之路，仅留 本地部署+GitHub+语言）+ 删 GitHub「predict-raven」标签、aria-label→「View source on GitHub」。
+> ①b **法务页/页脚全删（2026-06-21 用户决定：内测协议已获用户同意）**：删 `apps/web/app/terms/`、`apps/web/app/privacy/`、`components/world-cup/legal-footer.tsx`、`lib/legal-copy.ts`，并从 WC layout / 自助页 / research 控制台卸掉 `LegalFooter`（页脚现已无内容→整块移除）。i18n 删 footerTerms/footerPrivacy/footerResearchTag/footerAgeGate。⚠️ **OAuth 登录配置若曾填 Terms/Privacy URL，需到 provider 后台同步移除/更新**（否则授权可能被拒）；站点已无任何 18+/免责/隐私声明，后续如需重新合规要自行补回。
+> ② 预测效果页重构：4 张精简卡 + 可见「什么时候下注」两行规则（定义 押/反押/跳过/−100%）+ 点击展开「全部预测·32」+ 校准段重命名「校准：概率有多可信」+ 加讲清楚的定义；比分 grid 对称（`minmax(0,1fr) auto` + shrink guard）。
+> ③ `/research` 控制台去术语（遵 forecasting-console-style 记忆）：edge→差距/gap、删 Bayesian/credible-interval/node、状态机→进度、treeTitle/ledgerCaption/ciNote 等改人话。④ 自助页 FormulaCard 改可折叠。i18n 三语各 114 键齐（删 navForecasts/navBracket/footerResearchTag/footerAgeGate；新增 perfRule/perfRuleTerms/perfAllToggle/perfBetsWord）。
+> ⚠️ **顺手发现并修了数据 bug**：`results.generated.json` 两场 winner 反了——eng-hrv(06-17) 实际**英格兰 4-2 克罗地亚**、che-bih(06-18) 实际**瑞士 4-1 波黑**（ESPN/FIFA/Sky 等 5+ 源一致），却记成客胜(b)。已手工改 winner+score 并 `pnpm wc:performance` 重算（settled 仍 32、bestPick 16/32→18/32、ECE 14.6%→10.5%）。**根因**：这两场落进 Polymarket「Any Other Score」桶 → moneyline-only 结算把 a/b 映射弄反，ESPN 回补又对这两场队名没匹配上。**⚠️ 下次 `pnpm wc:results` 会用实时抓取覆盖此手工修正**，根因待查 `scripts/world-cup/lib/settlement.ts` + `espn-results.ts`。
+> 验收：`pnpm --filter @autopoly/web build` 绿；桌面/移动 + zh 预览自评、0 console error。
+>
 > 最后更新：2026-06-19 by Claude（世界杯新增「预测效果」页 + 市场盲测规则细化）。
 > 新增第 4 个 WC tab `/world-cup/performance`（预测效果）：把盲测预测对比 Polymarket 预测时刻价格打分——最佳预测命中率、Mock PNL（只显示收益率%）、Brier 技巧分（友好名「相对市场水平」）、校准 ECE，外加逐场「我们 vs 市场」概率条 + 三市场各自的模拟下注（押/反押/跳过，%）。
 > 管线：`fetch-baseline-prices.ts` 一次性抓预测时刻 CLOB 价格（固定历史，已 commit `baseline-prices.generated.json`）；`build-performance.ts` 据「预测+结算+价格」重算 `performance.generated.json`，已链入 `wc:results`，随每日结算刷新。改名（zh）：出线名单/对阵 → **夺冠之路**。

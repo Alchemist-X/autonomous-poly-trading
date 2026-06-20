@@ -31,11 +31,9 @@ const Root = (
 
 export function FormulaCard({ locale }: { locale: Locale }) {
   return (
-    <section className={styles.formulaCard}>
-      <h2 className={styles.panelTitle} style={{ marginBottom: 14 }}>
-        {t(locale, "formulaTitle")}
-      </h2>
-      <div className={styles.formulaRow}>
+    <details className={styles.formulaCard}>
+      <summary className={styles.formulaSummary}>{t(locale, "formulaTitle")}</summary>
+      <div className={styles.formulaRow} style={{ marginTop: 14 }}>
         <span className={styles.formulaPiece}>
           π = 10<sup>R/400</sup>
         </span>
@@ -50,6 +48,6 @@ export function FormulaCard({ locale }: { locale: Locale }) {
         </span>
       </div>
       <p className={styles.formulaLegend}>{t(locale, "formulaLegend")}</p>
-    </section>
+    </details>
   );
 }
