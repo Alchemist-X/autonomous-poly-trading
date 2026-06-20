@@ -129,7 +129,7 @@
 - **风控上限是 env 可调的默认值，不是宪法**：单笔 ≤ 15% / 总敞口 ≤ 80% / 单事件 ≤ 30% / 最多 22 仓 / 最小 $5。需要更激进或更保守时**主动向用户提出调参**（相关 env 见 `.env.example`）；任何调整必须经用户确认后写入 env——agent 不得擅自改参数，也不得绕过执行层裁剪。
 - **下单依据的概率必须出自 forecasting 流程**（命令为 `forecast:*`；旧 `pulse:*` 名保留为兼容别名）并带归档（`recommendation.json` / 报告 markdown / evidence artifact）。对话中的快速估计允许，但必须标注"非交易依据"。持仓复审：`ENV_FILE=.env.pizza pnpm forecast:positions -- --json`；找新机会：`pnpm forecast:recommend`。
 - **持仓退出标准：净 edge 为负就卖出**。复审算出的扣费后 edge < 0 即 reduce/close，不需要额外"反向证据"；stop-loss 优先级最高。
-- **世界杯预测产品 = 市场盲测（2026-06-11 用户决定，永久生效）**：公开预测管线任何环节不得读取、引用或展示市场价格/隐含概率；市场数据只用于事件结构与结算映射（实现见 `scripts/world-cup/` 的 `stripPrices`）。
+- **世界杯预测产品 = 预测盲测（2026-06-11 用户决定）**：预测的*生成*环节任何时候不得读取或引用市场价格/隐含概率来形成预测；预测管线只用市场数据做事件结构与结算映射（见 `scripts/world-cup/` 的 `stripPrices`）。**细化（2026-06-19 用户决定）**：`/world-cup/performance`（预测效果）页是*事后基准评测*，允许展示 Polymarket 在预测时刻的隐含概率，并据此算 Mock PNL / Brier 技巧分（"相对市场水平"）/ 校准 ECE——这是给盲测预测打分，不参与预测生成，因此不违反盲测。预测时刻价格由 `scripts/world-cup/fetch-baseline-prices.ts` 一次性抓取留档，`build-performance.ts` 据此每日重算。
 - **forecasting 流程的时间 / token 开销以实测为准**：见 [`docs/diagrams/forecasting-cost-profile.md`](docs/diagrams/forecasting-cost-profile.md)（一轮 live run ≈ 12–15 分钟，渲染占 95%，静默 0 字节 5 分钟内属正常）。每个 session 结束把新数据追加进去。
 
 ### 关键路径速查

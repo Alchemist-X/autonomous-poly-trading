@@ -11,6 +11,11 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-06-19 by Claude（世界杯新增「预测效果」页 + 市场盲测规则细化）。
+> 新增第 4 个 WC tab `/world-cup/performance`（预测效果）：把盲测预测对比 Polymarket 预测时刻价格打分——最佳预测命中率、Mock PNL（只显示收益率%）、Brier 技巧分（友好名「相对市场水平」）、校准 ECE，外加逐场「我们 vs 市场」概率条 + 三市场各自的模拟下注（押/反押/跳过，%）。
+> 管线：`fetch-baseline-prices.ts` 一次性抓预测时刻 CLOB 价格（固定历史，已 commit `baseline-prices.generated.json`）；`build-performance.ts` 据「预测+结算+价格」重算 `performance.generated.json`，已链入 `wc:results`，随每日结算刷新。改名（zh）：出线名单/对阵 → **夺冠之路**。
+> ⚠️ **政策细化（已写进 CLAUDE.md CN+EN + 记忆）**：市场盲测只约束预测*生成*；该 performance 页是*事后*基准评测，允许展示市场隐含概率与对比指标。预测本身仍全程不看价格。bug 教训：Polymarket 队腿顺序不固定，必须按队名映射 a/b（按位置错配会虚增 PNL）。
+> typecheck + next build 全绿；桌面/移动 + en/zh 截图自评、0 console error。
 > 最后更新：2026-06-18 by Claude（优化 `/research` Forecasting Engine 结果可视化——decision-maker 信息分层；**改动在分支 `claude/great-wing-b09925`，未提交/未 PR**）。要点：
 > 用「颜色 + 字号」建立 4 级信息层级（决策 / 模型 / 证据 / 元信息），让 PM 5 秒读出结论。Dynamic Workflow 先出方案（3 设计 lens + synthesis），再 10 轮截图迭代收敛。
 > 改动：① 结论卡顶新增 **decision eyebrow**——方向化判定 pill（`Likely No` 等，按 `yesProbability` 5 档派生、非解析文案）+ edge 升为 co-hero（27px，`-57pp 低于市场`）；卡片左侧方向色 5px 边框 + 同色阴影。② **model↔market CI 条**：MODEL/MARKET 标签 + 几何 gap 连接 + "市场落在模型 80% 区间之外＝高把握分歧"读数。③ **条件模型瓶颈标记**：最低概率节点标 amber + ⚠（本例 B|A 15%＝结构性致命点）。④ verdict 首句加粗、edge 升为主卡 / market 降为 ghost、证据账本 top-3 加 rail+底色+影响力条、贝叶斯末点落方向色。
