@@ -20,29 +20,33 @@
 - **Cross-round dedupe** by canonical URL; **fabricated-source guard** (P0-4):
   cited URLs reconciled against the actual WebSearch+WebFetch tool trace;
   unverified sources soft-clamped to |llr|≤0.2 (not dropped).
+- **(a) Reflection / cross-check**: each round may correct a prior source
+  (target + signed adjustment + reason + NEW cited source), clamped to |llr|≤1.0,
+  tagged separately, threaded before new evidence — never re-picks the whole number.
+- **(b) Per-round why-changed**: computed net pp + supporting/opposing split +
+  dominant driver, rendered as a "Why it changed" line.
+- **Default max-rounds = 3** (tuned from a 6-question batch; see below).
 - **Fail-closed** structured output (validate + 1 retry, never default a number).
 - **Continuity invariant** (round N prior == N-1 posterior); stop on
   max-rounds / no-new-info / convergence. Resumable state + traceable report.
 
-## Approved, not yet built
+## Future: agentic redesign (discussed 2026-06-21, NOT urgent)
 
-### (a) Reflection / cross-check stage (before each round's new search)
-Feed the full evidence ledger + round history back to the agent and let it
-re-examine prior rounds for staleness, contradictions, and missed
-double-counting. **Guardrails (agreed):**
-- A prior source may be **reweighted/retracted ONLY with a NEW cited reason**.
-- Adjustment magnitude is **clamped** (same per-step LLR clamp).
-- Reflection deltas are **tagged separately** (reflection-type, not new-source)
-  and applied as their own attributed ledger entries.
-- The agent may **not re-pick the whole probability** from scratch — only adjust
-  specific prior sources with justification (preserves the continuity invariant
-  and prevents oscillation / self-persuasion).
-
-### (b) Per-round "why it changed" summary (delta → source AND reasoning)
-Each round emits a structured synthesis: computed **net +pp vs −pp**
-decomposition + **dominant driver(s)**, plus a one-line agent synthesis naming
-the specific sources. Reasoning-type deltas (e.g. reflection reweights) are
-traceable alongside source-type deltas. Rendered in report.md + state.json.
+The per-round "score every source" cadence is somewhat rigid. Keep the core
+binding (engine owns the number; every move attributed via LLR — this prevents
+the demo's hallucinated-number problem), but loosen the *unit* and add
+cross-check as a first-class step:
+- **Level 1 (preferred first):** evidence unit = a reasoned CLAIM backed by 1+
+  sources (not one-source-one-LLR); add an explicit cross_check action so the
+  agent fetches + adjudicates conflicting sources before scoring. Directly targets
+  the oscillating/contested case (e.g. foldable iPhone). Evolution of new_evidence[],
+  not a rewrite.
+- **Level 2 (bigger):** a true action loop — agent picks search / fetch /
+  cross_check / reason / update / reflect / finalize each step; only `update`
+  moves the probability (still via engine LLR). Higher quality ceiling, much more
+  orchestration. Do only if Level 1 proves insufficient.
+- **Red line:** "more agentic" = freer RESEARCH; the OUTPUT stays structured,
+  attributed, and guardrailed (reflection guardrails preserved).
 
 ## Non-goals (decided)
 - No automatic Brier/calibration scoring (arbitrary prompt events have no
