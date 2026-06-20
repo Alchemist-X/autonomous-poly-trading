@@ -114,7 +114,8 @@
 
 - **i18n**：所有面向用户的文案走 i18n（`apps/web/lib/world-cup/messages/` 下 `en` / `zh-CN` / `zh-TW` 三语都补齐，新文案进 message resource、不要硬编码；`zh-TW` 为生成文件，必要时同步更新生成器）。
 - **移动端**：桌面 + 移动两个视口都要适配并截图自评（布局不崩、文字不溢出、交互可用）。
-- **自动发布**：合入 `main` 会触发 GitHub→Vercel 自动部署（当前自动部署到 `autopoly-pizza-spectator` 项目，后续会并入 `forecasting-agent.com`；`forecasting-agent.com` = 独立的 `web` 项目，暂为手动部署）。无论走哪条路径，合并前都必须本地 `pnpm --filter @autopoly/web exec next build` 通过 + 桌面/移动截图自评，避免把坏构建推上生产。
+- **自动发布**：合入 `main` 会触发 GitHub→Vercel 自动部署（当前自动部署到 `autopoly-pizza-spectator` 项目，后续会并入 `forecasting-agent.com`；`forecasting-agent.com` = 独立的 `web` 项目，暂为手动部署）。无论走哪条路径，合并前都必须本地 `pnpm --filter @autopoly/web build` 通过 + 桌面/移动截图自评，避免把坏构建推上生产。⚠️ **构建命令用 `build`，不要用 `exec next build`**——后者会跳过 prebuild（构建 `@autopoly/contracts/db/norns` 那一步），全新 worktree 里会因 `@autopoly/*` 未构建直接失败。**前置：Node ≥20（仓库带 `.nvmrc`，跑 `nvm use`）；全新 worktree 先 `pnpm install`。**
+- **PR 合并车道**：面向**公开世界杯网站（`apps/web` 非交易路径）**与**纯文档 / i18n** 的改动——本地 build 通过 + 桌面/移动自评 OK + 改动在 PR 范围内，即可直接开 PR 并合并，无需逐次确认。但凡触及**交易 / 执行器 / 风控参数 / 密钥 / 市场盲测等政策 / 任何不可逆或资金相关操作**——一律停下等用户确认。
 
 ---
 
