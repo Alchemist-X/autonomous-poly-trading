@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-06-20T09:32:16.127Z",
+ "generatedAt": "2026-06-20T17:32:42.941Z",
  "source": "polymarket-settlement",
  "note": "Market-blind: settled winner + final score only — no prices or implied probabilities.",
  "counts": {
@@ -141,12 +141,12 @@
   "fifwc-che-bih-2026-06-18": {
    "event_slug": "fifwc-che-bih-2026-06-18",
    "status": "resolved",
-   "winner": "b",
-   "homeGoals": null,
-   "awayGoals": null,
-   "score": null,
+   "winner": "a",
+   "homeGoals": 4,
+   "awayGoals": 1,
+   "score": "4-1",
    "settledAt": "2026-06-18T21:14:46Z",
-   "source": "moneyline"
+   "source": "espn"
   },
   "fifwc-che-can-2026-06-24": {
    "event_slug": "fifwc-che-can-2026-06-24",
@@ -261,12 +261,12 @@
   "fifwc-eng-hrv-2026-06-17": {
    "event_slug": "fifwc-eng-hrv-2026-06-17",
    "status": "resolved",
-   "winner": "b",
-   "homeGoals": null,
-   "awayGoals": null,
-   "score": null,
+   "winner": "a",
+   "homeGoals": 4,
+   "awayGoals": 2,
+   "score": "4-2",
    "settledAt": "2026-06-17T22:31:16Z",
-   "source": "moneyline"
+   "source": "espn"
   },
   "fifwc-esp-cvi-2026-06-15": {
    "event_slug": "fifwc-esp-cvi-2026-06-15",

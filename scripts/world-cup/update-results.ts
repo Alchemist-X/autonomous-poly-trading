@@ -46,7 +46,16 @@ interface Forecast {
 }
 
 function pending(event_slug: string): MatchResult {
-  return { event_slug, status: "pending", winner: null, homeGoals: null, awayGoals: null, score: null, settledAt: null, source: null };
+  return {
+    event_slug,
+    status: "pending",
+    winner: null,
+    homeGoals: null,
+    awayGoals: null,
+    score: null,
+    settledAt: null,
+    source: null
+  };
 }
 
 async function loadGroupMatches(): Promise<readonly Forecast[]> {
@@ -59,7 +68,10 @@ async function archiveError(reason: string, context: Record<string, unknown>): P
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
   const dir = path.join(REPO_ROOT, "run-error", `${stamp}-update-results`);
   await mkdir(dir, { recursive: true });
-  await writeFile(path.join(dir, "error.json"), JSON.stringify({ stage: "update-results", reason, ...context }, null, 2));
+  await writeFile(
+    path.join(dir, "error.json"),
+    JSON.stringify({ stage: "update-results", reason, ...context }, null, 2)
+  );
   return dir;
 }
 
@@ -74,26 +86,42 @@ async function main(): Promise<void> {
 
   // Future fixtures cannot have settled — skip the network call and mark pending.
   const due = matches.filter((m) => all || (m.kickoff_utc != null && new Date(m.kickoff_utc) <= now));
-  C.info(`probing ${due.length} fixtures kicked off before now${all ? " (--all)" : ""}; ${matches.length - due.length} still in the future`);
+  C.info(
+    `probing ${due.length} fixtures kicked off before now${all ? " (--all)" : ""}; ${matches.length - due.length} still in the future`
+  );
 
+  // Team a/b labels orient the moneyline winner to home/away (the market legs
+  // are not ordered home-first). See scripts/world-cup/lib/settlement.ts.
   const fetchErrors: string[] = [];
-  const settled = await fetchResults(due.map((m) => m.event_slug), {
-    onError: (slug, err) => {
-      fetchErrors.push(slug);
-      C.warn(`  fetch failed for ${slug}: ${err instanceof Error ? err.message : String(err)}`);
-    },
-    onProgress: (done, total, slug) => {
-      if (done === total || done % 8 === 0) {
-        C.info(`  progress ${done}/${total} (${((Date.now() - startedAt) / 1000).toFixed(0)}s) — ${slug}`);
+  const settled = await fetchResults(
+    due.map((m) => ({
+      event_slug: m.event_slug,
+      teamA: m.outcomes?.find((o) => o.key === "a")?.label_en ?? "",
+      teamB: m.outcomes?.find((o) => o.key === "b")?.label_en ?? ""
+    })),
+    {
+      onError: (slug, err) => {
+        fetchErrors.push(slug);
+        C.warn(`  fetch failed for ${slug}: ${err instanceof Error ? err.message : String(err)}`);
+      },
+      onProgress: (done, total, slug) => {
+        if (done === total || done % 8 === 0) {
+          C.info(`  progress ${done}/${total} (${((Date.now() - startedAt) / 1000).toFixed(0)}s) — ${slug}`);
+        }
       }
     }
-  });
+  );
 
   // Every fixture down (network outage) on a tournament day with due matches is
   // a hard failure — don't blow away a good results file with all-pending data.
   if (due.length > 0 && fetchErrors.length === due.length) {
-    const dir = await archiveError("all fetches failed — Gamma unreachable?", { dueCount: due.length, errors: fetchErrors });
-    throw new Error(`all ${due.length} settlement fetches failed; existing results.generated.json left untouched. Context: ${dir}`);
+    const dir = await archiveError("all fetches failed — Gamma unreachable?", {
+      dueCount: due.length,
+      errors: fetchErrors
+    });
+    throw new Error(
+      `all ${due.length} settlement fetches failed; existing results.generated.json left untouched. Context: ${dir}`
+    );
   }
 
   const results: Record<string, MatchResult> = {};
@@ -126,7 +154,13 @@ async function main(): Promise<void> {
         C.warn(`  ESPN winner '${espn.winner}' != settled '${r.winner}' for ${m.event_slug}; keeping winner-only`);
         continue;
       }
-      results[m.event_slug] = { ...r, homeGoals: espn.aGoals, awayGoals: espn.bGoals, score: espn.score, source: "espn" };
+      results[m.event_slug] = {
+        ...r,
+        homeGoals: espn.aGoals,
+        awayGoals: espn.bGoals,
+        score: espn.score,
+        source: "espn"
+      };
       backfilled += 1;
       C.ok(`  ESPN backfill ${m.event_slug}: ${espn.score}`);
     } catch (err) {
@@ -170,17 +204,21 @@ async function main(): Promise<void> {
   );
 
   const elapsed = ((Date.now() - startedAt) / 1000).toFixed(1);
-  C.ok(`${resolved.length}/${matches.length} fixtures settled in ${elapsed}s${fetchErrors.length ? ` (${fetchErrors.length} fetch warnings)` : ""}`);
+  C.ok(
+    `${resolved.length}/${matches.length} fixtures settled in ${elapsed}s${fetchErrors.length ? ` (${fetchErrors.length} fetch warnings)` : ""}`
+  );
   for (const r of resolved.sort((a, b) => (a.settledAt ?? "").localeCompare(b.settledAt ?? ""))) {
     C.ok(`  ${r.event_slug}  ${r.score ?? "(winner only)"}  → ${r.winner}  [${r.source}]`);
   }
   C.ok(`data:  ${OUT}`);
   C.ok(`log:   ${LOG}`);
-  C.info("page data refreshed. Deploy to publish: pnpm tsx scripts/world-cup/import-predictions.ts && (your deploy step)");
+  C.info(
+    "page data refreshed. Deploy to publish: pnpm tsx scripts/world-cup/import-predictions.ts && (your deploy step)"
+  );
 }
 
 main().catch(async (err) => {
-  C.err(`update-results failed: ${err instanceof Error ? err.stack ?? err.message : String(err)}`);
+  C.err(`update-results failed: ${err instanceof Error ? (err.stack ?? err.message) : String(err)}`);
   await archiveError("uncaught", { message: err instanceof Error ? err.message : String(err) }).catch(() => undefined);
   process.exitCode = 1;
 });

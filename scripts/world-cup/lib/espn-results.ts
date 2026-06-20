@@ -16,6 +16,8 @@
  * ESPN's derived winner agrees with Polymarket's settled winner.
  */
 
+import { teamNamesMatch } from "./team-name.js";
+
 const ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard";
 
 export interface EspnScore {
@@ -43,19 +45,10 @@ interface EspnEvent {
   }>;
 }
 
-// Accent-/punctuation-insensitive comparison so "Côte d'Ivoire", "United States",
-// "Curaçao" match ESPN's spellings.
-function norm(s: string): string {
-  return s
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "");
-}
-
+// Accent-/punctuation-insensitive comparison (see lib/team-name.ts) so
+// "Côte d'Ivoire", "United States", "Curaçao" match ESPN's spellings. Shared with
+// settlement.ts so both paths orient team a/b identically.
 function nameMatches(comp: EspnCompetitor, target: string): boolean {
-  const t = norm(target);
-  if (!t) return false;
   const names = [
     comp.team?.displayName,
     comp.team?.shortDisplayName,
@@ -63,10 +56,7 @@ function nameMatches(comp: EspnCompetitor, target: string): boolean {
     comp.team?.location,
     comp.team?.abbreviation
   ].filter((n): n is string => Boolean(n));
-  return names.some((n) => {
-    const x = norm(n);
-    return x === t || (x.length >= 3 && t.includes(x)) || (t.length >= 3 && x.includes(t));
-  });
+  return names.some((n) => teamNamesMatch(n, target));
 }
 
 // A kickoff late in the UTC day can land on ESPN's next calendar date, so probe
@@ -76,7 +66,9 @@ function candidateDates(slugDate: string): readonly string[] {
   const out: string[] = [];
   for (const delta of [0, 1, -1]) {
     const d = new Date(base.getTime() + delta * 86_400_000);
-    out.push(`${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`);
+    out.push(
+      `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`
+    );
   }
   return out;
 }

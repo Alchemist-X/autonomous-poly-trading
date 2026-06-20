@@ -12,13 +12,27 @@
  * Result derivation, per fixture, from two Gamma events:
  *   <slug>-exact-score : the resolved "Home X - Y Away" market → score + winner
  *   <slug>             : the resolved 1x2 moneyline market     → winner fallback
- * Home is always team `a` (first team in the event slug); our forecast
- * event_slug IS the Polymarket event slug, so the ordering is consistent.
+ * Team `a` is home (first code in the event slug). The exact-score market lists
+ * the score home-first, but the moneyline market orders its win-legs ARBITRARILY
+ * (home- or away-first; the draw leg may even sit in the middle), so leg position
+ * does NOT encode home/away. The winning moneyline leg is mapped to a/b by TEAM
+ * NAME — never by position — using the team a/b labels the caller supplies.
  */
+
+import { normTeamName, teamNamesMatch } from "./team-name.js";
 
 const GAMMA_BASE = "https://gamma-api.polymarket.com";
 
 export type Winner = "a" | "draw" | "b";
+
+// A fixture to resolve. Team labels (English) orient the moneyline winner to
+// home (a) / away (b) — the slug alone can't, since the market legs aren't
+// ordered home-first.
+export interface FixtureRef {
+  readonly event_slug: string;
+  readonly teamA: string; // home team, English label
+  readonly teamB: string; // away team, English label
+}
 
 export interface MatchResult {
   readonly event_slug: string;
@@ -122,23 +136,51 @@ function resultFromExactScore(slug: string, ev: GammaEvent): MatchResult | null 
   };
 }
 
-// Fallback when the exact-score event hasn't resolved yet: derive only the
-// winner from the 1x2 moneyline. The draw leg's title starts with "Draw"; the
-// other two are single-team win legs. With no score, map the winning leg to
-// home/away by its position among the non-draw legs (home = team a).
-function resultFromMoneyline(slug: string, ev: GammaEvent): MatchResult | null {
+// Map a winning moneyline leg's team name to home (a) / away (b). Polymarket
+// orders the legs arbitrarily, so we match by NAME, not position. Exact
+// normalized match wins; fall back to substring tolerance only when neither team
+// matches exactly. Returns null when the name matches both teams or neither — the
+// caller treats that as a hard error rather than guessing (no silent fallback).
+function sideFromTeamName(legName: string, teamA: string, teamB: string): Winner | null {
+  const exactA = normTeamName(legName) === normTeamName(teamA);
+  const exactB = normTeamName(legName) === normTeamName(teamB);
+  if (exactA !== exactB) return exactA ? "a" : "b";
+  if (!exactA && !exactB) {
+    const fuzzyA = teamNamesMatch(legName, teamA);
+    const fuzzyB = teamNamesMatch(legName, teamB);
+    if (fuzzyA !== fuzzyB) return fuzzyA ? "a" : "b";
+  }
+  return null;
+}
+
+// Fallback when the exact-score event hasn't resolved a numbered leg (e.g. it
+// settled the "Any Other Score" bucket): derive only the winner from the 1x2
+// moneyline. The draw leg's title starts with "Draw"; the other two are
+// single-team win legs. With no score, map the winning leg to home/away by its
+// TEAM NAME — the legs are not ordered home-first, so position is unreliable.
+function resultFromMoneyline(fixture: FixtureRef, ev: GammaEvent): MatchResult | null {
+  const { event_slug, teamA, teamB } = fixture;
   const markets = ev.markets ?? [];
   const won = markets.find(isResolvedYes);
   if (!won) return null;
   const title = won.groupItemTitle ?? won.question ?? "";
   const isDraw = /^draw\b/i.test(title) || /end in a draw/i.test(won.question ?? "");
   if (isDraw) {
-    return { ...PENDING(slug), status: "resolved", winner: "draw", settledAt: settledAtOf(won), source: "moneyline" };
+    return {
+      ...PENDING(event_slug),
+      status: "resolved",
+      winner: "draw",
+      settledAt: settledAtOf(won),
+      source: "moneyline"
+    };
   }
-  const teamLegs = markets.filter((m) => !/^draw\b/i.test(m.groupItemTitle ?? "") && !/end in a draw/i.test(m.question ?? ""));
-  const idx = teamLegs.indexOf(won);
-  const winner: Winner = idx <= 0 ? "a" : "b";
-  return { ...PENDING(slug), status: "resolved", winner, settledAt: settledAtOf(won), source: "moneyline" };
+  const winner = sideFromTeamName(title, teamA, teamB);
+  if (winner === null) {
+    throw new Error(
+      `moneyline winner leg "${title}" did not uniquely match team a="${teamA}" / b="${teamB}" for ${event_slug}`
+    );
+  }
+  return { ...PENDING(event_slug), status: "resolved", winner, settledAt: settledAtOf(won), source: "moneyline" };
 }
 
 /**
@@ -146,7 +188,8 @@ function resultFromMoneyline(slug: string, ev: GammaEvent): MatchResult | null {
  * one call), fall back to the moneyline event for a winner-only result. Returns
  * a `pending` result when nothing has settled yet.
  */
-export async function fetchResult(event_slug: string, fetchImpl: typeof fetch = fetch): Promise<MatchResult> {
+export async function fetchResult(fixture: FixtureRef, fetchImpl: typeof fetch = fetch): Promise<MatchResult> {
+  const { event_slug } = fixture;
   const exact = await fetchEventBySlug(`${event_slug}-exact-score`, fetchImpl);
   if (exact) {
     const r = resultFromExactScore(event_slug, exact);
@@ -154,7 +197,7 @@ export async function fetchResult(event_slug: string, fetchImpl: typeof fetch = 
   }
   const moneyline = await fetchEventBySlug(event_slug, fetchImpl);
   if (moneyline) {
-    const r = resultFromMoneyline(event_slug, moneyline);
+    const r = resultFromMoneyline(fixture, moneyline);
     if (r) return r;
   }
   return PENDING(event_slug);
@@ -166,7 +209,7 @@ export async function fetchResult(event_slug: string, fetchImpl: typeof fetch = 
  * reported via onError) so one flaky request never aborts a daily run.
  */
 export async function fetchResults(
-  slugs: readonly string[],
+  fixtures: readonly FixtureRef[],
   opts?: {
     concurrency?: number;
     onProgress?: (done: number, total: number, slug: string) => void;
@@ -176,23 +219,24 @@ export async function fetchResults(
 ): Promise<readonly MatchResult[]> {
   const concurrency = opts?.concurrency ?? 6;
   const fetchImpl = opts?.fetchImpl ?? fetch;
-  const out: MatchResult[] = new Array(slugs.length);
+  const out: MatchResult[] = new Array(fixtures.length);
   let cursor = 0;
   let done = 0;
   const worker = async (): Promise<void> => {
-    while (cursor < slugs.length) {
+    while (cursor < fixtures.length) {
       const i = cursor;
       cursor += 1;
+      const fixture = fixtures[i];
       try {
-        out[i] = await fetchResult(slugs[i], fetchImpl);
+        out[i] = await fetchResult(fixture, fetchImpl);
       } catch (err) {
-        out[i] = PENDING(slugs[i]);
-        opts?.onError?.(slugs[i], err);
+        out[i] = PENDING(fixture.event_slug);
+        opts?.onError?.(fixture.event_slug, err);
       }
       done += 1;
-      opts?.onProgress?.(done, slugs.length, slugs[i]);
+      opts?.onProgress?.(done, fixtures.length, fixture.event_slug);
     }
   };
-  await Promise.all(Array.from({ length: Math.min(concurrency, slugs.length) }, worker));
+  await Promise.all(Array.from({ length: Math.min(concurrency, fixtures.length) }, worker));
   return out;
 }

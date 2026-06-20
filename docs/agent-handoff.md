@@ -11,6 +11,12 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-06-21 by Claude（修复世界杯胜负盘 a/b 映射 bug——按队名而非腿位置）。
+> 问题：`scripts/world-cup/lib/settlement.ts` 的 `resultFromMoneyline` 按"市场第几条腿"定主/客，但 Polymarket 腿顺序是乱的（实测有主队在前、也有客队在前，平局腿还会跑到中间）→ eng-hrv、che-bih 两场赢家记反（记成 b，实为 a），且因赢家与 ESPN 不符触发安全闸、比分补不回。**两个症状同一根因**；ESPN 队名匹配本身没坏（"Bosnia-Herzegovina" 与我方 `label_en` 完全一致）。这是 2026-06-19 已写下教训（"必须按队名映射 a/b"）的代码落地。
+> 修复（Option A，用户拍板）：新增 `scripts/world-cup/lib/team-name.ts`（共享归一化+匹配）；`resultFromMoneyline` 改按队名映射 a/b（精确→子串兜底，不唯一就抛错、绝不按位置瞎猜）；`fetchResult(s)` 改收 `FixtureRef{event_slug,teamA,teamB}`；`update-results.ts` 把 a/b 的 `label_en` 传进去；`espn-results.ts` 复用同一匹配器；**安全闸保持原样**。
+> 验证：`tsc`+Prettier 绿；真跑 `pnpm wc:results` → 两场自动修成 `4-2→a`/`4-1→a`（source=espn），ESPN 补分 7/7、moneyline 脏数据归零；`results.generated.json` 只动这两场 + 重算 `performance.generated.json`（最佳预测命中 16→18、命中率 50→56%、ECE 14.6→10.5%）。全程盲测合规（只读已结算赢家+比分）。
+> 注（残余）：`scripts/` 无 tsconfig 覆盖、CI 不做类型检查（仅 `tsx` 跑），这些结算脚本离交易近，建议后补类型检查。
+>
 > 最后更新：2026-06-19 by Claude（世界杯新增「预测效果」页 + 市场盲测规则细化）。
 > 新增第 4 个 WC tab `/world-cup/performance`（预测效果）：把盲测预测对比 Polymarket 预测时刻价格打分——最佳预测命中率、Mock PNL（只显示收益率%）、Brier 技巧分（友好名「相对市场水平」）、校准 ECE，外加逐场「我们 vs 市场」概率条 + 三市场各自的模拟下注（押/反押/跳过，%）。
 > 管线：`fetch-baseline-prices.ts` 一次性抓预测时刻 CLOB 价格（固定历史，已 commit `baseline-prices.generated.json`）；`build-performance.ts` 据「预测+结算+价格」重算 `performance.generated.json`，已链入 `wc:results`，随每日结算刷新。改名（zh）：出线名单/对阵 → **夺冠之路**。
