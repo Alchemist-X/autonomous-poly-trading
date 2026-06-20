@@ -11,6 +11,7 @@ import {
   applyLlrs,
   clamp,
   clampUnverified,
+  clusterFactors,
   confirmationRatio,
   credibleInterval,
   effectiveLlr,
@@ -64,8 +65,9 @@ YOUR TASK THIS ROUND:
 2. DISCONFIRMATION (required): run at least ONE search aimed at FALSIFYING the current lean — if P(YES) above is >50%, search for the strongest reasons it will NOT happen; if <50%, search for the strongest reasons it WILL. Report what you find even if it is weak or comes up empty (say so in round_summary). Do not only look for evidence that confirms the current estimate.
 3. For each NEW source, decide whether it makes YES more likely (supports_yes), less likely (supports_no), or neutral, and how strongly.
 4. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Be conservative — a single web article is rarely "strong".
-5. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
-6. Only cite source_url values you actually retrieved via WebSearch.
+5. Group correlated sources with cluster_id: give sources that trace to the SAME underlying story, wire report, poll, or primary actor the SAME cluster_id string; give genuinely independent sources DIFFERENT cluster_ids. (Five outlets re-reporting one announcement are one cluster, not five.)
+6. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
+7. Only cite source_url values you actually retrieved via WebSearch.
 
 OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or after, no markdown code fence — of EXACTLY this shape:
 {
@@ -78,6 +80,7 @@ OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or aft
       "stance": "supports_yes" | "supports_no" | "neutral",
       "strength": "weak" | "moderate" | "strong",
       "llr": -1.5,
+      "cluster_id": "okc-sweep",
       "rationale": "why this moves the probability and by how much"
     }
   ],
@@ -174,7 +177,12 @@ async function runOneRound(
   const priorProb = state.currentProb;
   const verifiedFlags = survivors.map((ev) => traceCanonical.has(canonicalizeUrl(ev.source_url)));
   const baseLlrs = survivors.map((ev) => effectiveLlr(ev.stance, ev.llr));
-  const llrs = baseLlrs.map((base, i) => (verifiedFlags[i] ? base : clampUnverified(base)));
+  // P0-3: damp correlated (same-cluster) sources before they enter the sum.
+  const factors = clusterFactors(survivors.map((ev) => ev.cluster_id), baseLlrs);
+  const llrs = baseLlrs.map((base, i) => {
+    const clustered = base * factors[i];
+    return verifiedFlags[i] ? clustered : clampUnverified(clustered);
+  });
   const { post, steps } = applyLlrs(priorProb, llrs);
 
   const ts = nowUtc();
@@ -194,6 +202,8 @@ async function runOneRound(
       deltaPp: step.deltaPp,
       explanation: ev.rationale || ev.claim,
       verified,
+      clusterId: ev.cluster_id || `__solo_${i}`,
+      clusterFactor: factors[i],
     });
     newLedger.push({
       id: `${state.eventId}-r${roundNo}-${i}`,
@@ -203,6 +213,8 @@ async function runOneRound(
       claim: ev.claim,
       stance: ev.stance,
       strength: ev.strength,
+      clusterId: ev.cluster_id || `__solo_${i}`,
+      clusterFactor: factors[i],
       effectiveLlr: llrs[i],
       probBefore: step.probBefore,
       probAfter: step.probAfter,

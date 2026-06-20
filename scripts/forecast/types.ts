@@ -43,6 +43,7 @@ export interface AgentEvidence {
   strength: Strength; // how strongly it moves the belief
   llr: number; // signed log-likelihood ratio in nats; + favors YES, - favors NO
   rationale: string; // why this moves the probability and by how much
+  cluster_id: string; // P0-3: same id => sources share one underlying story/poll/origin
 }
 
 export interface AgentRoundOutput {
@@ -65,7 +66,9 @@ export interface LedgerEntry {
   claim: string;
   stance: Stance;
   strength: Strength;
-  effectiveLlr: number; // sign from stance, magnitude clamped — the value actually applied
+  clusterId: string; // P0-3: the source's claim-cluster
+  clusterFactor: number; // independence discount applied within its cluster (1 = full, <1 = damped)
+  effectiveLlr: number; // sign from stance, magnitude clamped, cluster + verification discounts applied — the value actually applied
   probBefore: number; // running P(YES) just before this source
   probAfter: number; // running P(YES) just after this source
   deltaPp: number; // (probAfter - probBefore) * 100, the "+N percentage points" attribution
@@ -83,6 +86,8 @@ export interface PerSourceUpdate {
   deltaPp: number;
   explanation: string;
   verified: boolean;
+  clusterId: string;
+  clusterFactor: number; // <1 means damped as a correlated same-cluster source
 }
 
 export interface RoundRecord {

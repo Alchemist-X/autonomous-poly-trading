@@ -3,6 +3,7 @@ import {
   applyLlrs,
   clamp,
   clampUnverified,
+  clusterFactors,
   confirmationRatio,
   credibleInterval,
   effectiveLlr,
@@ -73,6 +74,19 @@ describe("bayes log-odds", () => {
     // no lean / no evidence => null
     expect(confirmationRatio(0.5, [1, -1])).toBeNull();
     expect(confirmationRatio(0.7, [])).toBeNull();
+  });
+
+  it("clusterFactors damps correlated same-cluster sources (P0-3)", () => {
+    // same cluster: strongest keeps full weight, each next ×0.5^rank
+    expect(clusterFactors(["a", "a", "a"], [1.0, 0.8, 0.6])).toEqual([1, 0.5, 0.25]);
+    // strongest is picked regardless of input order
+    expect(clusterFactors(["a", "a"], [0.5, 1.0])).toEqual([0.5, 1]);
+    // different clusters => all independent (full weight)
+    expect(clusterFactors(["a", "b", "c"], [1, 1, 1])).toEqual([1, 1, 1]);
+    // blank/missing ids => each treated as its own cluster (no damping)
+    expect(clusterFactors(["", ""], [1, 1])).toEqual([1, 1]);
+    // mixed: a-cluster damped, b independent
+    expect(clusterFactors(["a", "a", "b"], [1.0, 0.5, 0.9])).toEqual([1, 0.5, 1]);
   });
 
   it("credible interval narrows with more sources", () => {

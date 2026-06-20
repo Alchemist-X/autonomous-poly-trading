@@ -182,6 +182,7 @@ export function validateRoundOutput(raw: unknown): AgentRoundOutput {
       strength: ev.strength as AgentRoundOutput["new_evidence"][number]["strength"],
       llr: ev.llr,
       rationale: typeof ev.rationale === "string" ? ev.rationale : "",
+      cluster_id: typeof ev.cluster_id === "string" ? ev.cluster_id : "",
     };
   });
   const prob = Number(o.agent_holistic_probability);

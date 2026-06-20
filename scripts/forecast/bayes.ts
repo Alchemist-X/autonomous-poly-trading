@@ -48,7 +48,31 @@ export function clampUnverified(llr: number): number {
   return Math.sign(llr) * mag;
 }
 
-// P0-5: share of a round's evidence weight that REINFORCED the current lean
+// P0-3: independence-aware aggregation. Additive log-odds is valid only under
+// conditional independence given the hypothesis. Five outlets echoing one wire
+// story are NOT five independent pieces of evidence. The agent tags each source
+// with a cluster id (same underlying story/poll/origin => same id); within a
+// cluster the strongest source keeps full weight and each additional same-cluster
+// source is geometrically damped, so one fact cannot be counted five times.
+export const CLUSTER_DECAY = 0.5;
+export function clusterFactors(clusterIds: string[], llrs: number[]): number[] {
+  const groups = new Map<string, number[]>();
+  clusterIds.forEach((cid, i) => {
+    // blank / missing id => treat the source as its own independent cluster
+    const key = cid && cid.trim() ? cid.trim() : `__solo_${i}`;
+    const arr = groups.get(key);
+    if (arr) arr.push(i);
+    else groups.set(key, [i]);
+  });
+  const factors = new Array(clusterIds.length).fill(1);
+  for (const idxs of groups.values()) {
+    if (idxs.length <= 1) continue;
+    // rank within the cluster by |llr| desc: strongest full, then ×decay^rank
+    const ranked = [...idxs].sort((a, b) => Math.abs(llrs[b]) - Math.abs(llrs[a]));
+    ranked.forEach((idx, rank) => (factors[idx] = Math.pow(CLUSTER_DECAY, rank)));
+  }
+  return factors;
+}
 // (vs opposed it). A prior-aware agent told "P(YES)=78%, find new evidence"
 // tends to surface confirming results; a ratio near 1.0 round after round is a
 // confirmation-bias ratchet. Returns null when there is no lean (prior == 0.5)

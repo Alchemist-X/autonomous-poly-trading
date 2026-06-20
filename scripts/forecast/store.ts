@@ -129,14 +129,20 @@ export function renderReport(state: ForecastState): string {
       lines.push("_No new evidence this round._");
       lines.push("");
     } else {
-      lines.push("| Source | Moved | From → To | Verified |");
-      lines.push("| --- | --- | --- | --- |");
+      const clusters = new Set(r.perSourceUpdates.map((u) => u.clusterId)).size;
+      lines.push(
+        `*${r.perSourceUpdates.length} source(s) in ${clusters} independent cluster(s).*`
+      );
+      lines.push("");
+      lines.push("| Source | Moved | From → To | Verified | Cluster |");
+      lines.push("| --- | --- | --- | --- | --- |");
       for (const u of r.perSourceUpdates) {
         const label = u.title ? `[${u.title}](${u.url})` : u.url;
+        const cluster = u.clusterFactor < 1 ? `↓×${u.clusterFactor} correlated` : "independent";
         lines.push(
           `| ${label} | ${signed(u.deltaPp)} | ${pct(u.from)} → ${pct(u.to)} | ${
             u.verified ? "✓ in search trace" : "⚠ not in trace"
-          } |`
+          } | ${cluster} |`
         );
       }
       lines.push("");
