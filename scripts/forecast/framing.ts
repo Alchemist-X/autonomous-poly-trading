@@ -1,12 +1,12 @@
-// Round 0 — event framing.
+// Round 0 — event framing (with a self-estimated prior and a skeptical audit).
 //
-// A free-text user prompt ("will Apple do a foldable in 2026?") is not yet a
-// well-posed forecastable event: the resolution window, the exact YES/NO bar,
-// and the settlement source are all implicit. Before any probability is
-// estimated, the agent reads the prompt (and may WebSearch for dates/context)
-// and writes an explicit frame. If the question is too vague or subjective to
-// forecast as a binary, it says so and asks for clarification instead of
-// emitting a false-precision number.
+// A free-text user prompt is not yet a well-posed forecastable event: the
+// resolution window, the exact YES/NO bar, and the settlement source are all
+// implicit. Before any probability is estimated, the agent (may WebSearch for
+// dates/context) frames it explicitly AND states a base-rate prior from its own
+// knowledge. Because a drifted YES/NO bar or a wrong forecastable verdict
+// silently corrupts every downstream round (P0-1), a second, independent
+// skeptical pass audits the frame and may correct it.
 
 import { extractJsonObject, runAgentRaw } from "./claude-agent";
 import type { EventFraming } from "./types";
@@ -15,33 +15,50 @@ function buildFramingPrompt(question: string, userResolution: string | null): st
   const pinned = userResolution
     ? `\nUSER-SPECIFIED RESOLUTION (authoritative — keep it, do not override; only fill in the date/source/assumptions around it):\n"${userResolution}"\n`
     : "";
-  return `You are a forecasting question editor. The user gave a rough description of a future event they want a probability for. BEFORE any forecasting, turn it into a precise, well-posed BINARY (yes/no) question with explicit resolution.
+  return `You are a forecasting question editor. The user gave a rough description of a future event they want a probability for. BEFORE any forecasting, turn it into a precise, well-posed BINARY (yes/no) question with explicit resolution, and state a base-rate prior.
 
 USER PROMPT: "${question}"${pinned}
-You MAY use WebSearch to look up dates, definitions, or context needed to frame this well (e.g. when a relevant season/event/deadline falls, or how an entity is defined). Do not estimate the probability yet — only frame the question.
+You MAY use WebSearch to look up dates, definitions, or context needed to frame this well. Do not estimate the full evidence-based probability yet — only frame the question and give a BASE-RATE prior.
 
 Produce:
 - normalized_question: a crisp question answerable strictly YES or NO.
 - resolution_criteria: exactly what counts as YES and what counts as NO, including edge cases.
-- resolution_date: the date (YYYY-MM-DD) by which the event must occur for YES; infer a sensible one from the question/context if unstated. This bounds the time window. Use null only if the question is genuinely open-ended.
+- resolution_date: the date (YYYY-MM-DD) by which the event must occur for YES; infer a sensible one if unstated, null only if genuinely open-ended.
 - settlement_source: the authoritative source that would confirm the real outcome.
-- assumptions: any assumptions you made while framing (timezone, definitions, scope).
-- forecastable: true if this can be sensibly forecast as a binary event with a checkable resolution; false if it is too vague, subjective, or has no resolvable answer.
-- clarification_needed: if forecastable is false, what the user must specify to make it forecastable; otherwise an empty string.
+- assumptions: assumptions you made (timezone, definitions, scope).
+- forecastable: true if this can be sensibly forecast as a binary event with a checkable resolution; false if too vague/subjective/unresolvable.
+- clarification_needed: if forecastable is false, what the user must specify; else "".
+- prior_probability: your PRIOR P(YES) in [0,1] from GENERAL KNOWLEDGE / a reference class ONLY — the base rate BEFORE weighing specific current evidence (e.g. "a named product shipping by a pre-announced date ~0.55", "a specific bilateral ceasefire holding 6 months ~0.3"). Not 0.5 unless the reference class truly is a coin flip.
+- prior_rationale: the reference class and why that base rate.
 
-OUTPUT FORMAT: respond with ONLY a single JSON object — no prose before or after, no markdown code fence:
-{
-  "normalized_question": "...",
-  "resolution_criteria": "...",
-  "resolution_date": "2026-12-31",
-  "settlement_source": "...",
-  "assumptions": "...",
-  "forecastable": true,
-  "clarification_needed": ""
-}`;
+OUTPUT only a single JSON object, no prose, no code fence:
+{"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"..."}`;
 }
 
-export function validateFraming(raw: unknown): EventFraming {
+function buildAuditPrompt(question: string, frame: EventFraming): string {
+  return `You are a SKEPTICAL forecasting-question auditor. Another editor framed a user's prompt into a binary question. Your job is to catch errors that would make the whole forecast quantify the WRONG question: an ambiguous or drifted YES/NO bar, an inverted edge case, a wrong resolution date, a mis-judged forecastable verdict, or a base-rate prior that ignores the reference class. You MAY WebSearch to check dates/definitions.
+
+ORIGINAL USER PROMPT: "${question}"
+PROPOSED FRAME:
+- normalized_question: ${frame.normalizedQuestion}
+- resolution_criteria: ${frame.resolutionCriteria}
+- resolution_date: ${frame.resolutionDate ?? "(none)"}
+- forecastable: ${frame.forecastable}
+- prior_probability: ${frame.priorProbability}
+- prior_rationale: ${frame.priorRationale}
+
+Re-derive the frame independently. Return a CORRECTED frame (keep it if already correct), PLUS an honest audit. Be strict: if the resolution bar is ambiguous or unfaithful to the user's intent, fix it and say so in framing_caveats.
+
+OUTPUT only a single JSON object, no prose, no code fence:
+{"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"...","framing_caveats":"edge cases / ambiguities the user should know, or '' if none","framing_confidence":"high|medium|low"}`;
+}
+
+function num(v: unknown, fallback: number): number {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : fallback;
+}
+
+function coreFraming(raw: unknown): Omit<EventFraming, "framingCaveats" | "framingConfidence"> {
   if (!raw || typeof raw !== "object") throw new Error("framing output is not an object");
   const o = raw as Record<string, unknown>;
   if (typeof o.normalized_question !== "string" || !o.normalized_question.trim())
@@ -60,6 +77,26 @@ export function validateFraming(raw: unknown): EventFraming {
     assumptions: typeof o.assumptions === "string" ? o.assumptions : "",
     forecastable: o.forecastable,
     clarificationNeeded: typeof o.clarification_needed === "string" ? o.clarification_needed : "",
+    priorProbability: num(o.prior_probability, 0.5),
+    priorRationale: typeof o.prior_rationale === "string" ? o.prior_rationale : "",
+  };
+}
+
+export function validateFraming(raw: unknown): EventFraming {
+  return { ...coreFraming(raw), framingCaveats: "", framingConfidence: "medium" };
+}
+
+const CONF = new Set(["high", "medium", "low"]);
+export function validateAudit(raw: unknown): EventFraming {
+  const core = coreFraming(raw);
+  const o = raw as Record<string, unknown>;
+  const conf = CONF.has(o.framing_confidence as string)
+    ? (o.framing_confidence as EventFraming["framingConfidence"])
+    : "medium";
+  return {
+    ...core,
+    framingCaveats: typeof o.framing_caveats === "string" ? o.framing_caveats : "",
+    framingConfidence: conf,
   };
 }
 
@@ -69,19 +106,31 @@ export interface FrameResult {
   costUsd: number | null;
 }
 
+async function runValidated<T>(
+  prompt: string,
+  validate: (raw: unknown) => T,
+  model?: string
+): Promise<{ value: T; searchQueries: string[]; costUsd: number | null }> {
+  let res = await runAgentRaw(prompt, { model });
+  try {
+    return { value: validate(res.jsonObject ?? extractJsonObject(res.rawFinalText)), searchQueries: res.searchQueries, costUsd: res.costUsd };
+  } catch {
+    res = await runAgentRaw(prompt, { model });
+    return { value: validate(res.jsonObject ?? extractJsonObject(res.rawFinalText)), searchQueries: res.searchQueries, costUsd: res.costUsd };
+  }
+}
+
 export async function frameEvent(
   question: string,
   opts: { userResolution?: string | null; model?: string } = {}
 ): Promise<FrameResult> {
-  const prompt = buildFramingPrompt(question, opts.userResolution ?? null);
-  // One retry on a fail-closed parse/validation miss.
-  let res = await runAgentRaw(prompt, { model: opts.model });
-  let framing: EventFraming | null = null;
-  try {
-    framing = validateFraming(res.jsonObject ?? extractJsonObject(res.rawFinalText));
-  } catch {
-    res = await runAgentRaw(prompt, { model: opts.model });
-    framing = validateFraming(res.jsonObject ?? extractJsonObject(res.rawFinalText));
-  }
-  return { framing, searchQueries: res.searchQueries, costUsd: res.costUsd };
+  // Pass 1: frame + base-rate prior.
+  const first = await runValidated(buildFramingPrompt(question, opts.userResolution ?? null), validateFraming, opts.model);
+  // Pass 2 (P0-1): independent skeptical audit; its corrected frame is authoritative.
+  const audited = await runValidated(buildAuditPrompt(question, first.value), validateAudit, opts.model);
+  return {
+    framing: audited.value,
+    searchQueries: [...first.searchQueries, ...audited.searchQueries],
+    costUsd: (first.costUsd ?? 0) + (audited.costUsd ?? 0),
+  };
 }

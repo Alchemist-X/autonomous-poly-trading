@@ -67,6 +67,14 @@ export function renderReport(state: ForecastState): string {
   if (state.framing.resolutionDate) lines.push(`- **Resolution date**: ${state.framing.resolutionDate}`);
   if (state.framing.settlementSource) lines.push(`- **Settlement source**: ${state.framing.settlementSource}`);
   if (state.framing.assumptions) lines.push(`- **Framing assumptions**: ${state.framing.assumptions}`);
+  lines.push(
+    `- **Base-rate prior**: ${pct(state.framing.priorProbability)}${
+      state.framing.priorRationale ? ` — ${state.framing.priorRationale}` : ""
+    }`
+  );
+  if (state.framing.framingCaveats)
+    lines.push(`- **Framing caveats** (audit): ${state.framing.framingCaveats}`);
+  lines.push(`- **Framing confidence**: ${state.framing.framingConfidence}`);
   lines.push(`- **Rounds run**: ${state.round}`);
   lines.push(`- **Status**: ${state.status}`);
   lines.push(

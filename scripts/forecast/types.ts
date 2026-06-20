@@ -25,6 +25,15 @@ export interface EventFraming {
   assumptions: string; // assumptions the agent made while framing
   forecastable: boolean; // false => too vague/subjective to forecast as binary
   clarificationNeeded: string; // when not forecastable, what the user must specify
+  // P0-2: the model's own prior P(YES) from general knowledge, BEFORE any web
+  // evidence — a base-rate anchor so the forecast doesn't start blind at 0.5.
+  priorProbability: number; // 0..1
+  priorRationale: string; // reference class / why this base rate
+  // P0-1: a second, skeptical audit pass over the frame. Surfaces ambiguities in
+  // the YES/NO bar, edge cases, date, or forecastability that a single-shot frame
+  // would miss and silently corrupt every downstream round.
+  framingCaveats: string; // ambiguities / edge cases the audit flagged
+  framingConfidence: "high" | "medium" | "low";
 }
 export interface AgentEvidence {
   claim: string; // the specific fact found, in one sentence

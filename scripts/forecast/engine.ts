@@ -61,7 +61,7 @@ YOUR TASK THIS ROUND:
 1. Use WebSearch to find NEW, relevant, recent evidence about whether this event will happen. Do not re-count any source already listed above.
 2. For each NEW source, decide whether it makes YES more likely (supports_yes), less likely (supports_no), or neutral, and how strongly.
 3. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Be conservative — a single web article is rarely "strong".
-4. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch.
+4. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
 5. Only cite source_url values you actually retrieved via WebSearch.
 
 OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or after, no markdown code fence — of EXACTLY this shape:
@@ -93,7 +93,11 @@ export function newForecastState(input: {
   startProb?: number;
 }): ForecastState {
   const ts = nowUtc();
-  const p = clamp(input.startProb ?? 0.5, 0.01, 0.99);
+  // P0-2: seed from the model's base-rate prior, not a blind 0.5. Clamp only to
+  // the engine's own probability range [0.01, 0.99] (matching PROB_FLOOR/CEIL) so
+  // genuinely rare / near-certain base rates (e.g. an M9 quake ~0.03%) are kept,
+  // not flattened toward 50%.
+  const p = clamp(input.startProb ?? input.framing.priorProbability ?? 0.5, 0.01, 0.99);
   return {
     eventId: input.eventId,
     eventText: input.eventText,

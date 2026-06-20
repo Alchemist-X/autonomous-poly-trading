@@ -78,6 +78,8 @@ async function main(): Promise<void> {
     console.log(`  Resolution: ${framing.resolutionCriteria}`);
     if (framing.resolutionDate) console.log(`  By:         ${framing.resolutionDate}`);
     if (framing.settlementSource) console.log(`  Source:     ${framing.settlementSource}`);
+    console.log(`  Prior:      ${pct(framing.priorProbability)} — ${framing.priorRationale}`);
+    console.log(`  Audit:      confidence=${framing.framingConfidence}${framing.framingCaveats ? `; ${framing.framingCaveats}` : ""}`);
     if (costUsd != null) console.log(`  (framing cost $${costUsd.toFixed(3)})`);
 
     if (!framing.forecastable) {

@@ -9,7 +9,9 @@ import {
 } from "./bayes";
 import { canonicalizeUrl } from "./url";
 import { extractJsonObject, validateRoundOutput } from "./claude-agent";
-import { validateFraming } from "./framing";
+import { validateFraming, validateAudit } from "./framing";
+import { newForecastState } from "./engine";
+import type { EventFraming } from "./types";
 
 describe("bayes log-odds", () => {
   it("logit/invLogit round-trip", () => {
@@ -151,13 +153,23 @@ describe("validateFraming (Round 0)", () => {
     assumptions: "Calendar year, UTC.",
     forecastable: true,
     clarification_needed: "",
+    prior_probability: 0.55,
+    prior_rationale: "Pre-announced products ship on time ~half the time.",
   };
 
-  it("accepts a well-formed frame", () => {
+  it("accepts a well-formed frame and parses the prior", () => {
     const f = validateFraming(good);
     expect(f.normalizedQuestion).toContain("Will X");
     expect(f.resolutionDate).toBe("2026-12-31");
     expect(f.forecastable).toBe(true);
+    expect(f.priorProbability).toBeCloseTo(0.55, 6);
+  });
+  it("clamps prior into [0,1] and defaults to 0.5 when missing/invalid", () => {
+    expect(validateFraming({ ...good, prior_probability: 1.7 }).priorProbability).toBe(1);
+    expect(validateFraming({ ...good, prior_probability: -3 }).priorProbability).toBe(0);
+    const noPrior = { ...good } as Record<string, unknown>;
+    delete noPrior.prior_probability;
+    expect(validateFraming(noPrior).priorProbability).toBe(0.5);
   });
   it("coerces a null/empty/'null' resolution_date to null", () => {
     expect(validateFraming({ ...good, resolution_date: "null" }).resolutionDate).toBeNull();
@@ -172,5 +184,44 @@ describe("validateFraming (Round 0)", () => {
   it("rejects missing normalized_question or non-boolean forecastable", () => {
     expect(() => validateFraming({ ...good, normalized_question: "" })).toThrow();
     expect(() => validateFraming({ ...good, forecastable: "yes" })).toThrow();
+  });
+  it("validateAudit carries caveats + confidence and corrects the frame", () => {
+    const a = validateAudit({
+      ...good,
+      resolution_criteria: "YES iff X ships, intraday touch counts (corrected).",
+      framing_caveats: "original bar was ambiguous on touch-vs-close",
+      framing_confidence: "high",
+    });
+    expect(a.framingCaveats).toContain("ambiguous");
+    expect(a.framingConfidence).toBe("high");
+    expect(a.resolutionCriteria).toContain("corrected");
+  });
+  it("validateAudit defaults confidence to medium on bad value", () => {
+    expect(validateAudit({ ...good, framing_confidence: "certain" }).framingConfidence).toBe("medium");
+  });
+});
+
+describe("newForecastState prior seeding (P0-2)", () => {
+  const framing = (priorProbability: number): EventFraming => ({
+    normalizedQuestion: "q",
+    resolutionCriteria: "c",
+    resolutionDate: "2026-12-31",
+    settlementSource: "s",
+    assumptions: "",
+    forecastable: true,
+    clarificationNeeded: "",
+    priorProbability,
+    priorRationale: "r",
+    framingCaveats: "",
+    framingConfidence: "medium",
+  });
+
+  it("seeds currentProb from the base-rate prior, not 0.5", () => {
+    expect(newForecastState({ eventId: "e", eventText: "t", framing: framing(0.55) }).currentProb).toBeCloseTo(0.55, 6);
+  });
+  it("keeps rare/near-certain priors, clamped only to [0.01, 0.99]", () => {
+    // an M9-quake-style ~0.03% prior must NOT be flattened toward 0.5
+    expect(newForecastState({ eventId: "e", eventText: "t", framing: framing(0.0003) }).currentProb).toBeCloseTo(0.01, 6);
+    expect(newForecastState({ eventId: "e", eventText: "t", framing: framing(0.999) }).currentProb).toBeCloseTo(0.99, 6);
   });
 });
