@@ -10,6 +10,7 @@
 import {
   applyLlrs,
   clamp,
+  clampReflection,
   clampUnverified,
   clusterFactors,
   confirmationRatio,
@@ -26,6 +27,7 @@ import type {
   LedgerEntry,
   PerSourceUpdate,
   RoundRecord,
+  WhyChanged,
 } from "./types";
 
 export interface RunForecastOptions {
@@ -45,7 +47,10 @@ function buildPrompt(state: ForecastState, roundNo: number, maxRounds: number): 
     state.evidenceLedger.length === 0
       ? "(none yet — this is the first round)"
       : state.evidenceLedger
-          .map((e) => `- ${e.url}  — ${e.claim}`)
+          .map(
+            (e) =>
+              `- [${e.stance}, ${e.deltaPp >= 0 ? "+" : ""}${e.deltaPp.toFixed(1)}pp] ${e.url} — ${e.claim}`
+          )
           .join("\n");
 
   return `You are a forecasting research agent. You estimate the probability that a specific BINARY (yes/no) event will happen, using live web research, and you attribute every probability change to a cited source.
@@ -68,6 +73,7 @@ YOUR TASK THIS ROUND:
 5. Group correlated sources with cluster_id: give sources that trace to the SAME underlying story, wire report, poll, or primary actor the SAME cluster_id string; give genuinely independent sources DIFFERENT cluster_ids. (Five outlets re-reporting one announcement are one cluster, not five.)
 6. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
 7. Only cite source_url values you actually retrieved via WebSearch.
+8. REFLECTION (optional): each prior source above shows its [stance, ±pp effect]. If this round's research shows a PRIOR source was wrong, stale, or double-counted, add a reflection entry: its target_url, a signed llr_adjustment (the CHANGE to its weight — NEGATIVE to walk it back toward NO, POSITIVE toward YES), a reason, and a new_source_url citing the NEW information that justifies the change. Only adjust a prior source when you have a NEW cited reason; do not re-litigate the whole estimate. Leave reflection empty ([]) if nothing prior needs correcting.
 
 OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or after, no markdown code fence — of EXACTLY this shape:
 {
@@ -84,12 +90,20 @@ OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or aft
       "rationale": "why this moves the probability and by how much"
     }
   ],
+  "reflection": [
+    {
+      "target_url": "https://... (a URL from the SOURCES ALREADY COUNTED list)",
+      "llr_adjustment": -0.6,
+      "reason": "why the prior source should be reweighted, given new info",
+      "new_source_url": "https://... (the new source justifying this change)"
+    }
+  ],
   "agent_holistic_probability": 0.42,
   "confidence": "low" | "medium" | "high",
   "found_new_information": true,
   "notes": "caveats, resolution assumptions, what to check next round"
 }
-If you genuinely found no new relevant information this round, return an empty new_evidence array and set found_new_information to false.`;
+If you genuinely found no new relevant information this round, return an empty new_evidence array, an empty reflection array, and set found_new_information to false.`;
 }
 
 export function newForecastState(input: {
@@ -171,26 +185,86 @@ async function runOneRound(
     survivors.push(ev);
   }
 
-  // Thread the survivors' LLRs through the Bayesian update from the prior.
-  // P0-4: decide verification BEFORE applying each LLR, and soft-clamp any source
-  // whose URL is absent from the agent's real tool trace (possible fabrication).
   const priorProb = state.currentProb;
+
+  // (a) Reflection: corrections to PRIOR sources. Guardrail — keep only those whose
+  // target is a real prior-round source (cited new source already enforced at
+  // validation). Applied BEFORE this round's new evidence, clamped tighter, and
+  // tagged separately so they never silently re-pick the whole probability.
+  const ledgerByCanon = new Map(state.evidenceLedger.map((e) => [e.urlCanonical, e]));
+  const reflItems = out.reflection
+    .map((r) => ({ r, target: ledgerByCanon.get(canonicalizeUrl(r.target_url)) }))
+    .filter((x): x is { r: (typeof out.reflection)[number]; target: LedgerEntry } => x.target !== undefined);
+  const reflVerified = reflItems.map((x) => traceCanonical.has(canonicalizeUrl(x.r.new_source_url)));
+  const reflLlrs = reflItems.map((x, i) => {
+    const a = clampReflection(x.r.llr_adjustment);
+    return reflVerified[i] ? a : clampUnverified(a);
+  });
+
+  // P0-4 + P0-3: new evidence, verification-clamped and cluster-damped.
   const verifiedFlags = survivors.map((ev) => traceCanonical.has(canonicalizeUrl(ev.source_url)));
   const baseLlrs = survivors.map((ev) => effectiveLlr(ev.stance, ev.llr));
-  // P0-3: damp correlated (same-cluster) sources before they enter the sum.
-  const factors = clusterFactors(survivors.map((ev) => ev.cluster_id), baseLlrs);
-  const llrs = baseLlrs.map((base, i) => {
+  const factors = clusterFactors(
+    survivors.map((ev) => ev.cluster_id),
+    baseLlrs
+  );
+  const evLlrs = baseLlrs.map((base, i) => {
     const clustered = base * factors[i];
     return verifiedFlags[i] ? clustered : clampUnverified(clustered);
   });
-  const { post, steps } = applyLlrs(priorProb, llrs);
+
+  // Thread reflection adjustments first, then this round's new evidence.
+  const { post, steps } = applyLlrs(priorProb, [...reflLlrs, ...evLlrs]);
+  const reflSteps = steps.slice(0, reflItems.length);
+  const evSteps = steps.slice(reflItems.length);
 
   const ts = nowUtc();
   const perSourceUpdates: PerSourceUpdate[] = [];
   const newLedger: LedgerEntry[] = [];
   let unverifiedPp = 0;
+
+  reflItems.forEach((x, i) => {
+    const step = reflSteps[i];
+    const verified = reflVerified[i];
+    if (!verified) unverifiedPp += Math.abs(step.deltaPp);
+    const stance = reflLlrs[i] >= 0 ? "supports_yes" : "supports_no";
+    const targetLabel = (x.target.title || x.r.target_url).slice(0, 60);
+    perSourceUpdates.push({
+      url: x.r.new_source_url,
+      title: `↻ reflection on: ${targetLabel}`,
+      from: step.probBefore,
+      to: step.probAfter,
+      deltaPp: step.deltaPp,
+      explanation: x.r.reason,
+      verified,
+      clusterId: "__reflection",
+      clusterFactor: 1,
+      kind: "reflection",
+    });
+    newLedger.push({
+      id: `${state.eventId}-r${roundNo}-refl-${i}`,
+      url: x.r.new_source_url,
+      urlCanonical: canonicalizeUrl(x.r.new_source_url),
+      title: `reflection on ${targetLabel}`,
+      claim: x.r.reason,
+      stance,
+      strength: "moderate",
+      kind: "reflection",
+      clusterId: "__reflection",
+      clusterFactor: 1,
+      effectiveLlr: reflLlrs[i],
+      probBefore: step.probBefore,
+      probAfter: step.probAfter,
+      deltaPp: step.deltaPp,
+      rationale: x.r.reason,
+      retrievedAtUtc: ts,
+      firstSeenRound: roundNo,
+      verifiedInSearchTrace: verified,
+    });
+  });
+
   survivors.forEach((ev, i) => {
-    const step = steps[i];
+    const step = evSteps[i];
     const canon = canonicalizeUrl(ev.source_url);
     const verified = verifiedFlags[i];
     if (!verified) unverifiedPp += Math.abs(step.deltaPp);
@@ -204,6 +278,7 @@ async function runOneRound(
       verified,
       clusterId: ev.cluster_id || `__solo_${i}`,
       clusterFactor: factors[i],
+      kind: "evidence",
     });
     newLedger.push({
       id: `${state.eventId}-r${roundNo}-${i}`,
@@ -213,9 +288,10 @@ async function runOneRound(
       claim: ev.claim,
       stance: ev.stance,
       strength: ev.strength,
+      kind: "evidence",
       clusterId: ev.cluster_id || `__solo_${i}`,
       clusterFactor: factors[i],
-      effectiveLlr: llrs[i],
+      effectiveLlr: evLlrs[i],
       probBefore: step.probBefore,
       probAfter: step.probAfter,
       deltaPp: step.deltaPp,
@@ -225,6 +301,27 @@ async function runOneRound(
       verifiedInSearchTrace: verified,
     });
   });
+
+  // (b) why-changed: decompose the round's net move across all of its deltas.
+  let upPp = 0;
+  let downPp = 0;
+  let dom: PerSourceUpdate | null = null;
+  for (const u of perSourceUpdates) {
+    if (u.deltaPp >= 0) upPp += u.deltaPp;
+    else downPp += u.deltaPp;
+    if (!dom || Math.abs(u.deltaPp) > Math.abs(dom.deltaPp)) dom = u;
+  }
+  const whyChanged: WhyChanged | null = dom
+    ? {
+        netPp: (post - priorProb) * 100,
+        upPp,
+        downPp,
+        dominantUrl: dom.url,
+        dominantTitle: dom.title,
+        dominantPp: dom.deltaPp,
+        dominantKind: dom.kind,
+      }
+    : null;
 
   // Commit the round into state (continuity: priorProb == previous postProb).
   state.evidenceLedger.push(...newLedger);
@@ -241,8 +338,10 @@ async function runOneRound(
     perSourceUpdates,
     newSourceCount: survivors.length,
     duplicateCount,
+    reflectionCount: reflItems.length,
     unverifiedPp,
     confirmationRatio: confirmationRatio(priorProb, baseLlrs),
+    whyChanged,
     agentHolisticProb: out.agent_holistic_probability,
     confidence: out.confidence,
     reasoning: out.round_summary + (out.notes ? `  Notes: ${out.notes}` : ""),
@@ -283,13 +382,14 @@ export async function runForecast(
 
     log(
       `  ✓ ${record.newSourceCount} new source(s)` +
+        (record.reflectionCount ? `, ${record.reflectionCount} reflection(s)` : "") +
         (record.duplicateCount ? `, ${record.duplicateCount} dup skipped` : "") +
         ` → P(YES) ${(record.priorProb * 100).toFixed(1)}% → ${(record.postProb * 100).toFixed(1)}%` +
         (record.costUsd != null ? `  ($${record.costUsd.toFixed(3)})` : "")
     );
 
     // Stop conditions.
-    if (record.newSourceCount === 0) {
+    if (record.newSourceCount === 0 && record.reflectionCount === 0) {
       state.status = "no_new_info";
       log(`  ■ no new evidence — stopping.`);
       break;

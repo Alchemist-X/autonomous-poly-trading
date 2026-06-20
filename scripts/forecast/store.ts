@@ -129,23 +129,38 @@ export function renderReport(state: ForecastState): string {
       lines.push("_No new evidence this round._");
       lines.push("");
     } else {
-      const clusters = new Set(r.perSourceUpdates.map((u) => u.clusterId)).size;
+      const evidence = r.perSourceUpdates.filter((u) => u.kind === "evidence");
+      const clusters = new Set(evidence.map((u) => u.clusterId)).size;
       lines.push(
-        `*${r.perSourceUpdates.length} source(s) in ${clusters} independent cluster(s).*`
+        `*${evidence.length} new source(s) in ${clusters} independent cluster(s)` +
+          (r.reflectionCount ? `, ${r.reflectionCount} reflection(s) on prior sources` : "") +
+          ".*"
       );
       lines.push("");
-      lines.push("| Source | Moved | From → To | Verified | Cluster |");
-      lines.push("| --- | --- | --- | --- | --- |");
+      lines.push("| Source | Kind | Moved | From → To | Verified | Cluster |");
+      lines.push("| --- | --- | --- | --- | --- | --- |");
       for (const u of r.perSourceUpdates) {
         const label = u.title ? `[${u.title}](${u.url})` : u.url;
-        const cluster = u.clusterFactor < 1 ? `↓×${u.clusterFactor} correlated` : "independent";
+        const kind = u.kind === "reflection" ? "↻ reflection" : "evidence";
+        const cluster =
+          u.kind === "reflection" ? "—" : u.clusterFactor < 1 ? `↓×${u.clusterFactor} correlated` : "independent";
         lines.push(
-          `| ${label} | ${signed(u.deltaPp)} | ${pct(u.from)} → ${pct(u.to)} | ${
+          `| ${label} | ${kind} | ${signed(u.deltaPp)} | ${pct(u.from)} → ${pct(u.to)} | ${
             u.verified ? "✓ in search trace" : "⚠ not in trace"
           } | ${cluster} |`
         );
       }
       lines.push("");
+      if (r.whyChanged) {
+        const w = r.whyChanged;
+        const dom = w.dominantTitle ? `[${w.dominantTitle}](${w.dominantUrl})` : w.dominantUrl;
+        lines.push(
+          `**Why it changed:** net ${signed(w.netPp)} this round — ${signed(w.upPp)} from supporting sources, ${signed(
+            w.downPp
+          )} against. Biggest mover: ${dom} (${signed(w.dominantPp)}${w.dominantKind === "reflection" ? ", reflection" : ""}).`
+        );
+        lines.push("");
+      }
       for (const u of r.perSourceUpdates) {
         if (u.explanation) lines.push(`- **${signed(u.deltaPp)}** — ${u.explanation}  \n  ${u.url}`);
       }
@@ -159,7 +174,9 @@ export function renderReport(state: ForecastState): string {
   lines.push("| --- | --- | --- | --- | --- |");
   state.evidenceLedger.forEach((e, i) => {
     const label = e.title ? `[${e.title}](${e.url})` : e.url;
-    lines.push(`| ${i + 1} | ${label} | ${e.stance} | ${signed(e.deltaPp)} | ${e.firstSeenRound} |`);
+    lines.push(
+      `| ${i + 1} | ${label} | ${e.stance}${e.kind === "reflection" ? " ↻" : ""} | ${signed(e.deltaPp)} | ${e.firstSeenRound} |`
+    );
   });
   lines.push("");
   lines.push(

@@ -189,9 +189,29 @@ export function validateRoundOutput(raw: unknown): AgentRoundOutput {
   if (!Number.isFinite(prob) || prob < 0 || prob > 1)
     throw new Error("agent_holistic_probability must be 0..1");
   if (!CONFIDENCES.has(o.confidence as string)) throw new Error("confidence invalid");
+  // (a) reflection is optional; keep only well-formed entries (target + new source + finite adj).
+  const reflectionRaw = Array.isArray(o.reflection) ? o.reflection : [];
+  const reflection = reflectionRaw
+    .map((r) => r as Record<string, unknown>)
+    .filter(
+      (r) =>
+        typeof r.target_url === "string" &&
+        r.target_url.trim() &&
+        typeof r.new_source_url === "string" &&
+        r.new_source_url.trim() &&
+        typeof r.llr_adjustment === "number" &&
+        Number.isFinite(r.llr_adjustment)
+    )
+    .map((r) => ({
+      target_url: r.target_url as string,
+      llr_adjustment: r.llr_adjustment as number,
+      reason: typeof r.reason === "string" ? r.reason : "",
+      new_source_url: r.new_source_url as string,
+    }));
   return {
     round_summary: typeof o.round_summary === "string" ? o.round_summary : "",
     new_evidence,
+    reflection,
     agent_holistic_probability: prob,
     confidence: o.confidence as AgentRoundOutput["confidence"],
     found_new_information: Boolean(o.found_new_information),

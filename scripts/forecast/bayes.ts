@@ -48,6 +48,16 @@ export function clampUnverified(llr: number): number {
   return Math.sign(llr) * mag;
 }
 
+// (a) A reflection adjusts the weight of a PRIOR source; its magnitude is clamped
+// tighter than fresh evidence so a single round can nudge but never violently
+// re-litigate the running probability (anti-oscillation / no self-persuasion).
+export const REFLECTION_MAX_LLR = 1.0;
+export function clampReflection(llr: number): number {
+  const v = Number.isFinite(llr) ? llr : 0;
+  const mag = Math.min(Math.abs(v), REFLECTION_MAX_LLR);
+  return Math.sign(v) * mag;
+}
+
 // P0-3: independence-aware aggregation. Additive log-odds is valid only under
 // conditional independence given the hypothesis. Five outlets echoing one wire
 // story are NOT five independent pieces of evidence. The agent tags each source

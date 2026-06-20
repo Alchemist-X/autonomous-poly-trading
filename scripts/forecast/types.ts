@@ -46,9 +46,21 @@ export interface AgentEvidence {
   cluster_id: string; // P0-3: same id => sources share one underlying story/poll/origin
 }
 
+// (a) Reflection: an adjustment to a PRIOR-round source, proposed when this
+// round's research shows it was wrong / stale / double-counted. Guardrailed: only
+// applied with a NEW cited reason, magnitude-clamped, tagged separately, and it
+// can only nudge a specific prior source — never re-pick the whole probability.
+export interface ReflectionAdjustment {
+  target_url: string; // a prior source's URL to reweight
+  llr_adjustment: number; // signed CHANGE to its weight (+ = should have favored YES more)
+  reason: string; // why, in light of what
+  new_source_url: string; // the NEW source justifying the change (required)
+}
+
 export interface AgentRoundOutput {
   round_summary: string;
   new_evidence: AgentEvidence[];
+  reflection: ReflectionAdjustment[]; // (a) cross-round corrections; may be empty
   agent_holistic_probability: number; // agent's own gut P(YES) 0..1 — sanity check only
   confidence: Confidence;
   found_new_information: boolean; // false => no fresh evidence this round (stop signal)
@@ -66,6 +78,7 @@ export interface LedgerEntry {
   claim: string;
   stance: Stance;
   strength: Strength;
+  kind: "evidence" | "reflection"; // (a) reflection entries adjust a prior source
   clusterId: string; // P0-3: the source's claim-cluster
   clusterFactor: number; // independence discount applied within its cluster (1 = full, <1 = damped)
   effectiveLlr: number; // sign from stance, magnitude clamped, cluster + verification discounts applied — the value actually applied
@@ -88,6 +101,19 @@ export interface PerSourceUpdate {
   verified: boolean;
   clusterId: string;
   clusterFactor: number; // <1 means damped as a correlated same-cluster source
+  kind: "evidence" | "reflection"; // (a) reflection = a correction to a prior source
+}
+
+// (b) Computed decomposition of why a round's probability moved: net, the split
+// of supporting vs opposing percentage points, and the single dominant driver.
+export interface WhyChanged {
+  netPp: number; // postProb - priorProb, in pp
+  upPp: number; // sum of positive per-source deltas
+  downPp: number; // sum of negative per-source deltas (<= 0)
+  dominantUrl: string;
+  dominantTitle: string;
+  dominantPp: number;
+  dominantKind: "evidence" | "reflection";
 }
 
 export interface RoundRecord {
@@ -98,8 +124,10 @@ export interface RoundRecord {
   perSourceUpdates: PerSourceUpdate[];
   newSourceCount: number;
   duplicateCount: number; // sources dropped because already counted in a prior round
+  reflectionCount: number; // (a) prior-source corrections applied this round
   unverifiedPp: number; // total |pp| of this round's movement from unverified (soft-clamped) sources
   confirmationRatio: number | null; // P0-5: share of evidence weight reinforcing the current lean
+  whyChanged: WhyChanged | null; // (b) decomposition of the round's net move
   agentHolisticProb: number;
   confidence: Confidence;
   reasoning: string;

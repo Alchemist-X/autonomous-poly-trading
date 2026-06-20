@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   applyLlrs,
   clamp,
+  clampReflection,
   clampUnverified,
   clusterFactors,
   confirmationRatio,
@@ -62,6 +63,13 @@ describe("bayes log-odds", () => {
     expect(clampUnverified(-1.5)).toBeCloseTo(-0.2, 9);
     expect(clampUnverified(0.1)).toBeCloseTo(0.1, 9); // below cap, unchanged
     expect(clampUnverified(0)).toBe(0);
+  });
+
+  it("clampReflection caps magnitude at 1.0 and keeps sign (a)", () => {
+    expect(clampReflection(2.5)).toBeCloseTo(1, 9);
+    expect(clampReflection(-2.5)).toBeCloseTo(-1, 9);
+    expect(clampReflection(-0.6)).toBeCloseTo(-0.6, 9); // below cap, unchanged
+    expect(clampReflection(NaN)).toBe(0);
   });
 
   it("confirmationRatio measures share reinforcing the lean (P0-5)", () => {
@@ -200,6 +208,21 @@ describe("validateRoundOutput (fail-closed)", () => {
   });
   it("accepts an empty-evidence no-new-info round", () => {
     expect(() => validateRoundOutput({ ...good, new_evidence: [], found_new_information: false })).not.toThrow();
+  });
+  it("defaults reflection to [] when absent (a)", () => {
+    expect(validateRoundOutput(good).reflection).toEqual([]);
+  });
+  it("parses valid reflection entries and drops malformed ones (a)", () => {
+    const out = validateRoundOutput({
+      ...good,
+      reflection: [
+        { target_url: "https://a.com", llr_adjustment: -0.6, reason: "stale", new_source_url: "https://b.com" },
+        { target_url: "https://a.com", llr_adjustment: -0.6, reason: "no new source" }, // missing new_source_url
+        { target_url: "https://a.com", llr_adjustment: "lots", reason: "bad adj", new_source_url: "https://c.com" }, // non-finite
+      ],
+    });
+    expect(out.reflection).toHaveLength(1);
+    expect(out.reflection[0].new_source_url).toBe("https://b.com");
   });
 });
 
