@@ -5,14 +5,21 @@
 
 ## Shipped (verified end-to-end)
 
-- Round-0 **framing**: normalize prompt → binary question + resolution criteria +
-  inferred resolution date + settlement source; refuse + ask clarification if
-  not forecastable. `--resolution` optional override.
+- Round-0 **framing** + **skeptical audit** (P0-1) + model **self-estimated
+  base-rate prior** (P0-2): normalize prompt → binary question + resolution
+  criteria + inferred date + settlement source; a second pass corrects an
+  ambiguous bar; the prior seeds currentProb (clamped [0.01,0.99]) instead of 0.5.
+  Refuse + ask clarification if not forecastable.
 - **Iterative loop**: each round the agent (Claude Code WebSearch) finds NEW
   evidence and proposes a signed per-source LLR; engine threads it through a
   Bayesian log-odds update (per-source percentage-point attribution).
-- **Cross-round dedupe** by canonical URL; **fabricated-source guard** (cited
-  URLs reconciled against the actual WebSearch trace).
+- **Independence-aware aggregation** (P0-3): per-source cluster_id; same-cluster
+  sources damped ×0.5^rank so correlated echoes aren't counted N times.
+- **Disconfirmation pass + confirmation-ratio** (P0-5): each round must search to
+  falsify the current lean; one-sided rounds flagged.
+- **Cross-round dedupe** by canonical URL; **fabricated-source guard** (P0-4):
+  cited URLs reconciled against the actual WebSearch+WebFetch tool trace;
+  unverified sources soft-clamped to |llr|≤0.2 (not dropped).
 - **Fail-closed** structured output (validate + 1 retry, never default a number).
 - **Continuity invariant** (round N prior == N-1 posterior); stop on
   max-rounds / no-new-info / convergence. Resumable state + traceable report.
@@ -50,8 +57,8 @@ traceable alongside source-type deltas. Rendered in report.md + state.json.
 Ranked by NECESSITY after a multi-lens proposal + adversarial challenge pass.
 "Necessary" = the forecaster is materially wrong/untrustworthy without it.
 
-### NECESSARY (correctness / trust)
-1. **Validate the framing before spending rounds** [S–M] — Round 0 is single-shot
+### NECESSARY (correctness / trust) — ✅ ALL 5 SHIPPED + validated
+1. **Validate the framing before spending rounds** [S–M] — ✅ second skeptical audit
    and only retries on JSON parse failure; if it drifts the YES/NO bar, inverts an
    edge case, picks the wrong resolution date, or wrongly returns forecastable, the
    whole calibrated engine quantifies the WRONG question ("garbage bar in,
