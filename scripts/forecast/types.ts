@@ -94,6 +94,7 @@ export interface RoundRecord {
   newSourceCount: number;
   duplicateCount: number; // sources dropped because already counted in a prior round
   unverifiedPp: number; // total |pp| of this round's movement from unverified (soft-clamped) sources
+  confirmationRatio: number | null; // P0-5: share of evidence weight reinforcing the current lean
   agentHolisticProb: number;
   confidence: Confidence;
   reasoning: string;

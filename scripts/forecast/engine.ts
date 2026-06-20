@@ -11,6 +11,7 @@ import {
   applyLlrs,
   clamp,
   clampUnverified,
+  confirmationRatio,
   credibleInterval,
   effectiveLlr,
 } from "./bayes";
@@ -60,10 +61,11 @@ ${counted}
 
 YOUR TASK THIS ROUND:
 1. Use WebSearch to find NEW, relevant, recent evidence about whether this event will happen. Do not re-count any source already listed above.
-2. For each NEW source, decide whether it makes YES more likely (supports_yes), less likely (supports_no), or neutral, and how strongly.
-3. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Be conservative — a single web article is rarely "strong".
-4. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
-5. Only cite source_url values you actually retrieved via WebSearch.
+2. DISCONFIRMATION (required): run at least ONE search aimed at FALSIFYING the current lean — if P(YES) above is >50%, search for the strongest reasons it will NOT happen; if <50%, search for the strongest reasons it WILL. Report what you find even if it is weak or comes up empty (say so in round_summary). Do not only look for evidence that confirms the current estimate.
+3. For each NEW source, decide whether it makes YES more likely (supports_yes), less likely (supports_no), or neutral, and how strongly.
+4. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Be conservative — a single web article is rarely "strong".
+5. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
+6. Only cite source_url values you actually retrieved via WebSearch.
 
 OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or after, no markdown code fence — of EXACTLY this shape:
 {
@@ -171,10 +173,8 @@ async function runOneRound(
   // whose URL is absent from the agent's real tool trace (possible fabrication).
   const priorProb = state.currentProb;
   const verifiedFlags = survivors.map((ev) => traceCanonical.has(canonicalizeUrl(ev.source_url)));
-  const llrs = survivors.map((ev, i) => {
-    const base = effectiveLlr(ev.stance, ev.llr);
-    return verifiedFlags[i] ? base : clampUnverified(base);
-  });
+  const baseLlrs = survivors.map((ev) => effectiveLlr(ev.stance, ev.llr));
+  const llrs = baseLlrs.map((base, i) => (verifiedFlags[i] ? base : clampUnverified(base)));
   const { post, steps } = applyLlrs(priorProb, llrs);
 
   const ts = nowUtc();
@@ -230,6 +230,7 @@ async function runOneRound(
     newSourceCount: survivors.length,
     duplicateCount,
     unverifiedPp,
+    confirmationRatio: confirmationRatio(priorProb, baseLlrs),
     agentHolisticProb: out.agent_holistic_probability,
     confidence: out.confidence,
     reasoning: out.round_summary + (out.notes ? `  Notes: ${out.notes}` : ""),

@@ -116,6 +116,15 @@ export function renderReport(state: ForecastState): string {
       );
       lines.push("");
     }
+    if (r.confirmationRatio != null) {
+      const oneSided = r.confirmationRatio > 0.85;
+      lines.push(
+        `*Confirmation ratio:* ${(r.confirmationRatio * 100).toFixed(0)}% of evidence weight reinforced the prior lean${
+          oneSided ? " ⚠ one-sided (possible confirmation bias)" : ""
+        }`
+      );
+      lines.push("");
+    }
     if (r.perSourceUpdates.length === 0) {
       lines.push("_No new evidence this round._");
       lines.push("");

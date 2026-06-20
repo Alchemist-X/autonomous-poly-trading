@@ -48,6 +48,25 @@ export function clampUnverified(llr: number): number {
   return Math.sign(llr) * mag;
 }
 
+// P0-5: share of a round's evidence weight that REINFORCED the current lean
+// (vs opposed it). A prior-aware agent told "P(YES)=78%, find new evidence"
+// tends to surface confirming results; a ratio near 1.0 round after round is a
+// confirmation-bias ratchet. Returns null when there is no lean (prior == 0.5)
+// or no evidence. Measured on the stance-signed LLRs (before any unverified
+// soft-clamp) so it reflects what the agent actually went and found.
+export function confirmationRatio(priorProb: number, llrs: number[]): number | null {
+  const leanDir = priorProb > 0.5 ? 1 : priorProb < 0.5 ? -1 : 0;
+  if (leanDir === 0) return null;
+  let confirming = 0;
+  let total = 0;
+  for (const l of llrs) {
+    const m = Math.abs(l);
+    total += m;
+    if (Math.sign(l) === leanDir) confirming += m;
+  }
+  return total > 0 ? confirming / total : null;
+}
+
 export interface AppliedStep {
   probBefore: number;
   probAfter: number;

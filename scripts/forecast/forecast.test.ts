@@ -3,6 +3,7 @@ import {
   applyLlrs,
   clamp,
   clampUnverified,
+  confirmationRatio,
   credibleInterval,
   effectiveLlr,
   invLogit,
@@ -60,6 +61,18 @@ describe("bayes log-odds", () => {
     expect(clampUnverified(-1.5)).toBeCloseTo(-0.2, 9);
     expect(clampUnverified(0.1)).toBeCloseTo(0.1, 9); // below cap, unchanged
     expect(clampUnverified(0)).toBe(0);
+  });
+
+  it("confirmationRatio measures share reinforcing the lean (P0-5)", () => {
+    // lean YES (prior>0.5): all-positive evidence => 100% confirming
+    expect(confirmationRatio(0.78, [1, 0.5, 0.3])).toBeCloseTo(1, 9);
+    // balanced => 50%
+    expect(confirmationRatio(0.78, [1, -1])).toBeCloseTo(0.5, 9);
+    // lean NO (prior<0.5): negative reinforces, positive opposes
+    expect(confirmationRatio(0.2, [-1, -1, 0.5])).toBeCloseTo(2 / 2.5, 9);
+    // no lean / no evidence => null
+    expect(confirmationRatio(0.5, [1, -1])).toBeNull();
+    expect(confirmationRatio(0.7, [])).toBeNull();
   });
 
   it("credible interval narrows with more sources", () => {
