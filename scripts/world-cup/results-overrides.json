@@ -1,0 +1,5 @@
+{
+  "_note": "Operator-verified settled results that OVERRIDE fetched Polymarket/ESPN data. Use ONLY when the feeds are missing or inconsistent AND the result was confirmed from authoritative public sources (ESPN/FIFA match centre, major outlets). These win over any fetched value and persist across daily re-runs (source=\"verified\"). Market-blind: settled facts only — winner + final score, never prices/odds.",
+  "fifwc-eng-hrv-2026-06-17": { "winner": "a", "homeGoals": 4, "awayGoals": 2, "score": "4-2", "note": "England 4-2 Croatia (ESPN/FIFA/Sky)" },
+  "fifwc-che-bih-2026-06-18": { "winner": "a", "homeGoals": 4, "awayGoals": 1, "score": "4-1", "note": "Switzerland 4-1 Bosnia-Herzegovina (ESPN/FOX/Al Jazeera)" }
+}

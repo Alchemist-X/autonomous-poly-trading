@@ -44,12 +44,14 @@ interface EspnEvent {
 }
 
 // Accent-/punctuation-insensitive comparison so "Côte d'Ivoire", "United States",
-// "Curaçao" match ESPN's spellings.
+// "Curaçao" match ESPN's spellings. The connector "and" is dropped too, so
+// "Bosnia and Herzegovina" matches ESPN's "Bosnia-Herzegovina".
 function norm(s: string): string {
   return s
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
+    .replace(/\band\b/g, "")
     .replace(/[^a-z0-9]/g, "");
 }
 
