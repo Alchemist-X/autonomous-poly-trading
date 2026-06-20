@@ -1,15 +1,15 @@
 {
- "generatedAt": "2026-06-20T10:02:09.199Z",
+ "generatedAt": "2026-06-20T16:42:28.189Z",
  "agg": {
   "settled": 32,
-  "bestPickHit": 16,
-  "bestPickPct": 50,
-  "roiPct": 27.3,
+  "bestPickHit": 18,
+  "bestPickPct": 56,
+  "roiPct": 19,
   "bets": 55,
   "wins": 21,
   "skips": 41,
-  "bssPct": -10.2,
-  "ecePct": 14.6
+  "bssPct": -11.1,
+  "ecePct": 10.5
  },
  "matches": [
   {
@@ -312,8 +312,8 @@
    "slug": "fifwc-che-bih-2026-06-18",
    "homeEn": "Switzerland",
    "awayEn": "Bosnia-Herzegovina",
-   "score": null,
-   "winner": "b",
+   "score": "4-1",
+   "winner": "a",
    "our": [
     0.65,
     0.23,
@@ -328,8 +328,8 @@
     {
      "leg": "a",
      "side": "yes",
-     "retPct": -100,
-     "win": false
+     "retPct": 65.3,
+     "win": true
     },
     {
      "leg": "draw",
@@ -340,8 +340,8 @@
     {
      "leg": "b",
      "side": "no",
-     "retPct": -100,
-     "win": false
+     "retPct": 19.8,
+     "win": true
     }
    ]
   },
@@ -423,8 +423,8 @@
    "slug": "fifwc-eng-hrv-2026-06-17",
    "homeEn": "England",
    "awayEn": "Croatia",
-   "score": null,
-   "winner": "b",
+   "score": "4-2",
+   "winner": "a",
    "our": [
     0.52,
     0.24,
@@ -439,8 +439,8 @@
     {
      "leg": "a",
      "side": "no",
-     "retPct": 129.9,
-     "win": true
+     "retPct": -100,
+     "win": false
     },
     {
      "leg": "draw",
@@ -451,8 +451,8 @@
     {
      "leg": "b",
      "side": "yes",
-     "retPct": 412.8,
-     "win": true
+     "retPct": -100,
+     "win": false
     }
    ]
   },
@@ -1210,14 +1210,14 @@
    "hi": 0.2,
    "n": 24,
    "predPct": 16,
-   "obsPct": 25
+   "obsPct": 21
   },
   {
    "lo": 0.2,
    "hi": 0.3,
    "n": 29,
    "predPct": 24,
-   "obsPct": 34
+   "obsPct": 31
   },
   {
    "lo": 0.3,
@@ -1238,14 +1238,14 @@
    "hi": 0.6,
    "n": 9,
    "predPct": 56,
-   "obsPct": 33
+   "obsPct": 44
   },
   {
    "lo": 0.6,
    "hi": 0.7,
    "n": 8,
    "predPct": 64,
-   "obsPct": 50
+   "obsPct": 63
   },
   {
    "lo": 0.7,

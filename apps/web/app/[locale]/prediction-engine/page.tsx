@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { WorldCupHeader } from "../../../components/world-cup/wc-header";
-import { LegalFooter } from "../../../components/world-cup/legal-footer";
 import { FormulaCard } from "../../../components/world-cup/formula-card";
 import { SampleRun, type SampleView } from "../../../components/world-cup/sample-run";
 // Beta gate to the Deep Research console — disabled for now (see hero below).
@@ -166,7 +165,6 @@ export default async function PredictionEnginePage({ params }: { params: Promise
           <div style={{ height: 48 }} />
         )}
       </div>
-      <LegalFooter locale={locale} />
     </div>
   );
 }

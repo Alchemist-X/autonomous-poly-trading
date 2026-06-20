@@ -18,8 +18,6 @@ import { StateMachineLegend } from "./state-machine-legend";
 import { StageTimeline } from "./stage-timeline";
 import { ResultCharts } from "./result-charts";
 import { SAMPLE_CASES, type SampleCase } from "../../lib/research/sample-cases";
-import { LegalFooter } from "../world-cup/legal-footer";
-import type { Locale as WorldCupLocale } from "../../lib/world-cup/i18n";
 
 const DRIVER_LABEL: Record<string, string> = {
   mock: "MOCK",
@@ -31,10 +29,6 @@ const DRIVER_LABEL: Record<string, string> = {
 const TIER_LABEL: Record<string, string> = Object.fromEntries(
   NORN_TIER_LIST.map((spec) => [spec.tier, spec.label])
 );
-
-// Console locale → the World Cup footer's locale (it carries the shared
-// compliance footer; it has no "zh" so we map to the simplified variant).
-const FOOTER_LOCALE: Record<ConsoleLocale, WorldCupLocale> = { en: "en", zh: "zh-CN" };
 
 export function ResearchConsole() {
   const { state, start, reset } = useResearchStream();
@@ -235,8 +229,6 @@ export function ResearchConsole() {
           </>
         ) : null}
       </main>
-
-      <LegalFooter locale={FOOTER_LOCALE[locale]} />
     </div>
   );
 }

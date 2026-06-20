@@ -25,7 +25,7 @@ export function WcHero({
         {t(locale, subKey)}
       </p>
       <p className={styles.heroMeta}>
-        {t(locale, "heroMeta")} {getGeneratedAt().slice(0, 16).replace("T", " ")} UTC
+        {t(locale, "heroMeta")} {getGeneratedAt().slice(0, 10)}
       </p>
       <div className={styles.tabRow}>
         <TabNav />

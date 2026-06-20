@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { DISCLAIMER_SHORT } from "../../../lib/legal-copy";
 import { contentFor, getByFamily, sortedOutcomes } from "../../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../../lib/world-cup/team-meta";
-import { isZh, LOCALES, localeOf, t, teamLabel, tierLabel, withLocale } from "../../../lib/world-cup/i18n";
+import { LOCALES, localeOf, t, teamLabel, tierLabel, withLocale } from "../../../lib/world-cup/i18n";
 import { WcHero } from "../../../components/world-cup/wc-hero";
 import styles from "../../../components/world-cup/world-cup.module.css";
 
@@ -117,10 +116,6 @@ export default async function ChampionPage({ params }: { params: Promise<{ local
           </div>
         </>
       ) : null}
-
-      <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {isZh(locale) ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
-      </p>
     </div>
   );
 }
