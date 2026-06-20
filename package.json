@@ -41,6 +41,7 @@
     "wc:baseline": "tsx scripts/world-cup/fetch-baseline-prices.ts",
     "wc:performance": "tsx scripts/world-cup/build-performance.ts",
     "wc:gen-tw": "tsx scripts/world-cup/gen-traditional.ts",
+    "forecast:event": "tsx scripts/forecast/cli.ts",
     "db:generate": "pnpm --filter @autopoly/db drizzle-kit generate",
     "db:migrate": "pnpm --filter @autopoly/db drizzle-kit migrate",
     "db:seed": "pnpm --filter @autopoly/db seed",
