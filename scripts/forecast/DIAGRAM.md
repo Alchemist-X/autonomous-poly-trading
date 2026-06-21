@@ -3,32 +3,51 @@
 > 用于展示。主图一张讲清全流程；想深入再用文末的可选细节图。
 > Mermaid 源码 —— 贴进 Notion / Typora / VS Code / GitHub，或在 https://mermaid.live 渲染导出 PNG/SVG。
 
-## 主图 · 一张图看懂预测流程
+## 主图 · 一张图看懂预测流程（横向）
 
 ```mermaid
-flowchart TD
-    P(["用户 prompt：二元（是/否）事件"]) --> FRAME
+flowchart LR
+    P(["用户 prompt<br/>二元（是/否）事件"]) --> FRAME
 
     subgraph FRAME["① 框定问题"]
         direction TB
-        F["归一化问题 + 审计判定标准"] --> PR["模型自估基率先验<br/>（不是盲目 50%）"]
+        F["归一化问题<br/>+ 审计判定标准"] --> PR["模型自估<br/>基率先验"]
     end
 
     FRAME --> CHK{"可预测？"}
-    CHK -- 否 --> STOP(["要求澄清 · 停止"])
+    CHK -- 否 --> STOP(["要求澄清<br/>· 停止"])
     CHK -- 是 --> LOOP
 
-    subgraph LOOP["② 多轮迭代（默认 3 轮）"]
+    subgraph LOOP["② 多轮迭代"]
         direction TB
-        SE["联网找新证据<br/>+ 反证搜索"] --> SC["每条信源：方向 + 强度 + 同源分组"]
-        SC --> EN["引擎合并：去重 · 聚类折扣 · 核验 · 贝叶斯更新"]
-        EN --> AT["逐源归因：谁把概率推动了多少"]
+        SE["联网找新证据<br/>+ 反证搜索"] --> SC["每条信源<br/>方向 + 强度 + 同源分组"]
+        SC --> EN["引擎合并<br/>去重 · 聚类折扣 · 核验 · 贝叶斯"]
+        EN --> AT["逐源归因<br/>谁把概率推了多少"]
     end
 
-    LOOP --> Q{"停止？<br/>收敛 / 无新信息 / 到轮数上限"}
+    LOOP --> Q{"停止？<br/>收敛 / 无新信息 / 封顶"}
     Q -- "否：下一轮" --> LOOP
-    Q -- 是 --> SUM["③ 收尾总览<br/>结论 + 正反因素 + 不确定性"]
-    SUM --> OUT(["④ 输出：概率 + 可追溯报告"])
+    Q -- 是 --> SUM["③ 收尾总览<br/>结论 + 正反因素<br/>+ 不确定性"]
+    SUM --> OUT(["④ 输出<br/>概率 + 可追溯报告"])
+
+    classDef start fill:#F8FAFC,stroke:#94A3B8,stroke-width:1.5px,color:#0F172A
+    classDef stop fill:#FEE2E2,stroke:#EF4444,stroke-width:1.5px,color:#7F1D1D
+    classDef dec fill:#FEF3C7,stroke:#F59E0B,stroke-width:1.5px,color:#78350F
+    classDef fnode fill:#FFFFFF,stroke:#6366F1,stroke-width:1.5px,color:#1E1B4B
+    classDef lnode fill:#FFFFFF,stroke:#10B981,stroke-width:1.5px,color:#064E3B
+    classDef sum fill:#F5F3FF,stroke:#8B5CF6,stroke-width:1.5px,color:#4C1D95
+    classDef out fill:#DCFCE7,stroke:#16A34A,stroke-width:1.5px,color:#14532D
+
+    class P start
+    class STOP stop
+    class CHK,Q dec
+    class F,PR fnode
+    class SE,SC,EN,AT lnode
+    class SUM sum
+    class OUT out
+
+    style FRAME fill:#EEF2FF,stroke:#6366F1,color:#3730A3
+    style LOOP fill:#ECFDF5,stroke:#10B981,color:#065F46
 ```
 
 ### 讲解时一句话带过每个阶段
