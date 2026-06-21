@@ -2142,6 +2142,12 @@
   color: #9aa1ad;
   line-height: 1.4;
 }
+.perfTopLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 22px 0 6px;
+}
 .perfLegend {
   font-size: 13px;
   color: #6b7280;
