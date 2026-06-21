@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Forecasting Engine — 活报告控制台（原型）</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --panel:#ffffff; --ink:#0f1115; --muted:#646b76; --faint:#9aa1ab;
+    --line:#e7e9ee; --accent:#4f46e5; --accent-soft:#eef0fe;
+    --up:#15803d; --up-soft:#e7f5ec; --down:#b91c1c; --down-soft:#fdeced; --warn:#b45309;
+    --radius:14px; --shadow:0 1px 2px rgba(16,18,27,.04),0 8px 24px rgba(16,18,27,.05);
+    --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+  button{font-family:inherit;cursor:pointer}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+
+  /* top bar */
+  header{position:sticky;top:0;z-index:30;background:rgba(246,247,249,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .bar{display:flex;align-items:center;gap:14px;height:58px}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.02em}
+  .logo .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#9333ea);display:grid;place-items:center;color:#fff;font-size:14px}
+  .pill{font-size:12px;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:3px 10px;font-weight:700}
+  .spacer{flex:1}
+  .meter{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+  .meter b{color:var(--ink);font-variant-numeric:tabular-nums;font-family:var(--mono)}
+  .toggle{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--panel)}
+  .toggle button{border:0;background:transparent;padding:5px 11px;font-size:12px;font-weight:700;color:var(--muted)}
+  .toggle button.on{background:var(--ink);color:#fff}
+
+  /* gate */
+  #gate{display:grid;place-items:center;min-height:calc(100vh - 58px);padding:40px 0}
+  .gate-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);width:min(560px,92vw);padding:30px}
+  .gate-card h1{font-size:23px;margin:0 0 4px;letter-spacing:-.02em}
+  .gate-card .sub{color:var(--muted);font-size:14px;margin-bottom:22px}
+  .social{display:flex;flex-direction:column;gap:10px}
+  .social button{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#fff;font-weight:600;font-size:14px}
+  .social button:hover{border-color:#cfd3da;background:#fafbfc}
+  .social .ic{width:18px;height:18px;display:inline-block}
+  .or{display:flex;align-items:center;gap:10px;color:var(--faint);font-size:12px;margin:16px 0}
+  .or::before,.or::after{content:"";height:1px;background:var(--line);flex:1}
+  .invite{display:flex;gap:8px}
+  .invite input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:var(--mono)}
+  .invite input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  .powered{margin-top:18px;text-align:center;font-size:11px;color:var(--faint)}
+
+  /* composer */
+  #composer{display:none;max-width:780px;margin:46px auto 0;padding-bottom:60px}
+  #composer.show{display:block}
+  .comp-box{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:8px}
+  .comp-box textarea{width:100%;border:0;resize:none;font-size:16px;padding:14px;font-family:inherit;background:transparent;color:var(--ink)}
+  .comp-box textarea:focus{outline:none}
+  .comp-foot{display:flex;align-items:center;gap:10px;padding:8px 10px 6px}
+  .comp-foot .hint{font-size:12px;color:var(--faint);flex:1}
+  .btn{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:700;font-size:14px}
+  .btn:hover{background:#4338ca}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .chip{font-size:13px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 13px}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .lead{text-align:center;margin-bottom:24px}
+  .lead h2{font-size:26px;letter-spacing:-.025em;margin:0 0 8px}
+  .lead p{color:var(--muted);margin:0;font-size:15px}
+
+  /* run app */
+  #app{display:none;padding:18px 0 80px}
+  #app.show{display:block}
+  .cols{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:18px;align-items:start}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .panel-h{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);font-weight:700;font-size:13px}
+  .panel-h .tag{margin-left:auto;font-weight:600;font-size:11px;color:var(--muted)}
+
+  /* left: status + stream */
+  .statusbar{display:flex;flex-wrap:wrap;gap:8px 14px;padding:12px 16px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  .statusbar .k{color:var(--ink);font-weight:700;font-family:var(--mono)}
+  .heartbeat{display:flex;align-items:center;gap:9px;padding:11px 16px;background:linear-gradient(0deg,#fff,#fafbff);border-bottom:1px solid var(--line);font-size:12.5px}
+  .hb-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(79,70,229,.5);animation:pulse 1.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(79,70,229,.45)}70%{box-shadow:0 0 0 8px rgba(79,70,229,0)}100%{box-shadow:0 0 0 0 rgba(79,70,229,0)}}
+  .hb-text{color:var(--muted)}.hb-text b{color:var(--ink)}
+  .done .hb-dot{background:var(--up);animation:none}
+
+  .stream{padding:6px 0;max-height:58vh;overflow:auto}
+  .stage{padding:9px 16px;border-bottom:1px solid #f1f2f6}
+  .stage:last-child{border-bottom:0}
+  .stage-h{display:flex;align-items:center;gap:9px;font-size:13px}
+  .st-ic{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--faint);flex:none}
+  .stage.active .st-ic{border-color:var(--accent);color:var(--accent)}
+  .stage.ok .st-ic{background:var(--up);border-color:var(--up);color:#fff}
+  .stage .name{font-weight:600}.stage.pending .name{color:var(--faint)}
+  .stage .mini{margin-left:auto;font-size:11px;color:var(--faint);font-family:var(--mono)}
+  .lines{margin:8px 0 2px 27px;display:flex;flex-direction:column;gap:5px}
+  .line{font-size:12.5px;color:var(--muted);opacity:0;transform:translateY(3px);animation:in .35s forwards}
+  .line .dot{color:var(--accent);margin-right:6px}
+  @keyframes in{to{opacity:1;transform:none}}
+  .summary{margin:6px 0 0 27px;font-size:12.5px;color:var(--muted)}
+  .summary b{color:var(--ink)}
+
+  /* insert context box */
+  .insert{border-top:1px solid var(--line);padding:11px 14px;background:#fcfcfd;border-radius:0 0 var(--radius) var(--radius)}
+  .insert-row{display:flex;gap:8px}
+  .insert input{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:13px;font-family:inherit}
+  .insert input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  .insert .btn{padding:9px 14px;font-size:13px}
+  .insert .cap{font-size:11px;color:var(--faint);margin-top:7px}
+  .echo{margin-top:9px;display:flex;flex-direction:column;gap:6px}
+  .echo .said{font-size:12px;background:var(--accent-soft);color:#3730a3;border-radius:9px;padding:7px 10px;align-self:flex-end;max-width:90%}
+  .echo .applied{font-size:11.5px;color:var(--up);display:flex;gap:6px;align-items:center}
+
+  /* right: living report */
+  .report{display:flex;flex-direction:column;gap:16px}
+  .concl{padding:20px}
+  .concl .eyebrow{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--down);margin-bottom:8px}
+  .concl .q{font-size:14px;color:var(--muted);margin-bottom:14px}
+  .concl .big{display:flex;align-items:baseline;gap:12px}
+  .concl .prob{font-size:54px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+  .concl .verdict{font-size:15px;font-weight:700;color:var(--down)}
+  .concl .converging{font-size:11px;color:var(--warn);background:#fef6e7;border-radius:999px;padding:3px 9px;font-weight:700;margin-left:auto}
+  .ci{margin-top:18px}
+  .ci .ci-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px}
+  .ci-track{position:relative;height:10px;background:#eef0f3;border-radius:6px}
+  .ci-fill{position:absolute;height:100%;background:linear-gradient(90deg,#c7d2fe,#818cf8);border-radius:6px;transition:left .5s,width .5s}
+  .ci-point{position:absolute;top:-3px;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--accent);transform:translateX(-50%);transition:left .5s}
+  .ci-mkt{position:absolute;top:-6px;width:2px;height:22px;background:var(--down);transform:translateX(-50%)}
+  .ci-mkt span{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--down);white-space:nowrap;font-weight:700}
+  .ci-scale{display:flex;justify-content:space-between;font-size:10px;color:var(--faint);margin-top:5px;font-family:var(--mono)}
+
+  .sec-h{font-size:12px;font-weight:800;letter-spacing:.03em;color:var(--muted);text-transform:uppercase;margin:0 0 12px}
+
+  /* tree */
+  .tree{padding:18px}
+  .formula{font-family:var(--mono);font-size:12px;color:var(--muted);background:#f7f8fa;border:1px solid var(--line);border-radius:8px;padding:8px 11px;margin-bottom:12px;overflow-x:auto}
+  .node{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden}
+  .node-h{display:flex;align-items:center;gap:10px;padding:11px 13px;cursor:pointer}
+  .node-h:hover{background:#fafbfc}
+  .node-p{font-family:var(--mono);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;width:48px}
+  .node.weak .node-p{color:var(--warn)}
+  .node-bar{flex:1;height:6px;background:#eef0f3;border-radius:4px;overflow:hidden}
+  .node-bar i{display:block;height:100%;background:var(--accent)}
+  .node-name{font-size:13px;font-weight:600;flex:none;max-width:46%}
+  .caret{margin-left:auto;color:var(--faint);transition:transform .2s;font-size:11px}
+  .node.open .caret{transform:rotate(90deg)}
+  .node-body{display:none;padding:0 13px 12px 13px;font-size:12.5px;color:var(--muted)}
+  .node.open .node-body{display:block}
+  .bottleneck{font-size:11px;color:var(--warn);background:#fef6e7;border-radius:6px;padding:2px 7px;font-weight:700;margin-left:8px}
+
+  /* waterfall */
+  .waterfall{padding:18px}
+  .wf{display:flex;align-items:flex-end;gap:6px;height:120px;margin-top:8px}
+  .wf-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px;color:var(--faint)}
+  .wf-bar{width:100%;border-radius:4px 4px 0 0;background:#cbd5e1;transition:height .4s}
+  .wf-col.up .wf-bar{background:var(--up)}.wf-col.down .wf-bar{background:var(--down)}
+  .wf-col.anchor .wf-bar{background:var(--accent)}
+  .wf-v{font-family:var(--mono);font-weight:700;color:var(--ink)}
+
+  /* evidence ledger */
+  .ledger{padding:6px}
+  .ev{display:flex;gap:11px;padding:12px;border-radius:10px;align-items:flex-start}
+  .ev+.ev{border-top:1px solid #f1f2f6}
+  .ev.muted{opacity:.42}
+  .ev .stance{width:4px;align-self:stretch;border-radius:3px;flex:none}
+  .ev.support .stance{background:var(--up)}.ev.weaken .stance{background:var(--down)}
+  .ev-main{flex:1;min-width:0}
+  .ev-title{font-size:13px;font-weight:600;line-height:1.4}
+  .ev-meta{font-size:11px;color:var(--faint);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .prov{font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px}
+  .prov.search_api{background:#e8f1fe;color:#1d4ed8}
+  .prov.model_search{background:#f3e8ff;color:#7e22ce}
+  .prov.site_fetch{background:#e7f5ec;color:#15803d}
+  .prov.user{background:#fff4e5;color:#b45309}
+  .ev-imp{font-family:var(--mono);font-weight:700;font-size:13px;text-align:right;flex:none;width:52px}
+  .ev.support .ev-imp{color:var(--up)}.ev.weaken .ev-imp{color:var(--down)}
+  .ev-act{display:flex;gap:5px;margin-top:7px}
+  .ev-act button{font-size:11px;border:1px solid var(--line);background:#fff;border-radius:7px;padding:3px 9px;color:var(--muted)}
+  .ev-act button:hover{border-color:#cfd3da;color:var(--ink)}
+  .ev-act button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .limits{padding:16px 18px;font-size:12.5px;color:var(--muted)}
+  .limits li{margin-bottom:5px}
+
+  /* term tooltip */
+  .term{border-bottom:1px dashed var(--accent);cursor:help;color:inherit}
+  #tip{position:fixed;z-index:60;max-width:300px;background:var(--ink);color:#fff;border-radius:10px;padding:11px 13px;font-size:12.5px;line-height:1.5;box-shadow:0 12px 30px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .12s;transform:translateY(4px)}
+  #tip.show{opacity:1;transform:none}
+  #tip .tt{font-weight:800;margin-bottom:3px}
+  #tip .tt small{font-weight:500;color:#c7c9d1;margin-left:6px}
+
+  .note{font-size:11px;color:var(--faint);text-align:center;padding:24px 0 0}
+
+  @media(max-width:880px){
+    .cols{grid-template-columns:1fr}
+    .concl .prob{font-size:44px}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+  <div class="logo"><span class="mark">◆</span> Forecasting Engine</div>
+  <span class="pill" id="modePill">原型 · Prototype</span>
+  <div class="spacer"></div>
+  <div class="meter" id="usageMeter" title="按用量计量：token + 搜索量">
+    <span data-t="usage">用量</span> · <b id="uTok">0</b> tok · <b id="uSrch">0</b> <span data-t="searches">搜索</span>
+  </div>
+  <div class="toggle"><button id="zhBtn" class="on" onclick="setLang('zh')">中</button><button id="enBtn" onclick="setLang('en')">EN</button></div>
+</div></header>
+
+<main class="wrap">
+
+  <!-- LOGIN GATE -->
+  <section id="gate">
+    <div class="gate-card">
+      <h1 data-t="gateTitle">登录 Forecasting Engine</h1>
+      <div class="sub" data-t="gateSub">用 Privy 社交登录，内测期还需邀请码。</div>
+      <div class="social">
+        <button onclick="login()"><span class="ic" id="gIc"></span> <span data-t="google">用 Google 继续</span></button>
+        <button onclick="login()"><span class="ic" id="xIc"></span> <span data-t="x">用 Twitter / X 继续</span></button>
+      </div>
+      <div class="or"><span data-t="and">内测期同时需要</span></div>
+      <div class="invite">
+        <input id="inviteCode" placeholder="INVITE-XXXX" value="RAVEN-2026" />
+        <button class="btn" onclick="login()" data-t="enter">进入</button>
+      </div>
+      <div class="powered" data-t="powered">登录由 Privy 提供 · Google / Twitter(X) · 双闸：社交登录 + 邀请码白名单</div>
+    </div>
+  </section>
+
+  <!-- COMPOSER -->
+  <section id="composer">
+    <div class="lead">
+      <h2 data-t="compTitle">问一个可验证的二元问题</h2>
+      <p data-t="compSub">它会一边推理一边把一份会自我更新的活报告长给你看 —— 看着它思考，随时插话。</p>
+    </div>
+    <div class="comp-box">
+      <textarea id="q" rows="2" data-ph="例：美联储会在 2026 年 9 月底前降息吗？"></textarea>
+      <div class="comp-foot">
+        <span class="hint" data-t="compHint">市场盲测：预测生成不读任何赔率/价格，只用事实与新闻。</span>
+        <button class="btn" onclick="startRun()" data-t="run">开始预测</button>
+      </div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <!-- RUNNING / RESULT -->
+  <section id="app">
+    <div class="cols">
+      <!-- LEFT: activity stream -->
+      <div class="panel" style="position:sticky;top:74px">
+        <div class="panel-h"><span data-t="leftTitle">实时活动流</span><span class="tag" data-t="leftTag">看着它推理 · 随时插话</span></div>
+        <div class="statusbar">
+          <span><span data-t="sStatus">状态</span> <span class="k" id="stStatus">running</span></span>
+          <span><span data-t="sStage">阶段</span> <span class="k" id="stStage">0/7</span></span>
+          <span><span data-t="sElapsed">已耗时</span> <span class="k" id="stElapsed">0s</span></span>
+          <span>tier <span class="k">skuld</span></span>
+          <span>driver <span class="k">vps</span></span>
+        </div>
+        <div class="heartbeat" id="heartbeat">
+          <span class="hb-dot"></span>
+          <span class="hb-text" id="hbText"><b data-t="hbInit">正在启动…</b></span>
+        </div>
+        <div class="stream" id="stream"></div>
+        <div class="insert">
+          <div class="insert-row">
+            <input id="ctxInput" data-ph="插话：补一条背景 / 贴个链接 / 否决某条证据…" />
+            <button class="btn" onclick="sendContext()" data-t="send">发送</button>
+          </div>
+          <div class="cap" data-t="ctxCap">运行中也能说话。你的输入会在下一个阶段边界被采纳，并明确回流。</div>
+          <div class="echo" id="echo"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: living report -->
+      <div class="report">
+        <div class="panel concl">
+          <div class="eyebrow" id="eyebrow">— 推理中 —</div>
+          <div class="q" id="rq"></div>
+          <div class="big">
+            <span class="prob" id="probNum">—</span>
+            <span class="verdict" id="verdict"></span>
+            <span class="converging" id="converging" data-t="converging">仍在收敛</span>
+          </div>
+          <div class="ci">
+            <div class="ci-label"><span><span class="term" data-term="ci" data-t="ci80">80% 可信区间</span></span><span id="ciRange">—</span></div>
+            <div class="ci-track">
+              <div class="ci-fill" id="ciFill" style="left:30%;width:23%"></div>
+              <div class="ci-point" id="ciPoint" style="left:41%"></div>
+              <div class="ci-mkt" id="ciMkt" style="left:55%"><span data-t="mkt">市场(事后对比)</span></div>
+            </div>
+            <div class="ci-scale"><span>0%</span><span>50%</span><span>100%</span></div>
+          </div>
+        </div>
+
+        <div class="panel tree">
+          <div class="sec-h"><span class="term" data-term="condprob" data-t="treeH">条件概率树</span></div>
+          <div class="formula"><span class="term" data-term="condprob">P(降息)</span> = P(A) × P(B|A) × P(C|A,B)</div>
+          <div id="treeBox"></div>
+        </div>
+
+        <div class="panel waterfall">
+          <div class="sec-h"><span class="term" data-term="bayes" data-t="wfH">贝叶斯更新瀑布</span></div>
+          <div class="wf" id="wf"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><span class="term" data-term="ledger" data-t="evH">证据台账</span><span class="tag" data-t="evTag">点"忽略"即时重算</span></div>
+          <div class="ledger" id="ledger"></div>
+        </div>
+
+        <div class="panel limits">
+          <div class="sec-h" data-t="limH">局限</div>
+          <ul id="limits"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="note" data-t="protoNote">这是交互原型：流式过程为模拟，数字为演示数据。真实引擎接入见 PRD §9。</div>
+  </section>
+</main>
+
+<div id="tip"></div>
+
+<script>
+/* ---------------- i18n ---------------- */
+const L = {
+  zh:{usage:"用量",searches:"搜索",gateTitle:"登录 Forecasting Engine",gateSub:"用 Privy 社交登录，内测期还需邀请码。",
+    google:"用 Google 继续",x:"用 Twitter / X 继续",and:"内测期同时需要",enter:"进入",
+    powered:"登录由 Privy 提供 · Google / Twitter(X) · 双闸：社交登录 + 邀请码白名单",
+    compTitle:"问一个可验证的二元问题",compSub:"它会一边推理一边把一份会自我更新的活报告长给你看 —— 看着它思考，随时插话。",
+    compHint:"市场盲测：预测生成不读任何赔率/价格，只用事实与新闻。",run:"开始预测",
+    leftTitle:"实时活动流",leftTag:"看着它推理 · 随时插话",sStatus:"状态",sStage:"阶段",sElapsed:"已耗时",
+    hbInit:"正在启动…",send:"发送",ctxCap:"运行中也能说话。你的输入会在下一个阶段边界被采纳，并明确回流。",
+    converging:"仍在收敛",ci80:"80% 可信区间",mkt:"市场(事后对比)",treeH:"条件概率树",wfH:"贝叶斯更新瀑布",
+    evH:"证据台账",evTag:'点"忽略"即时重算',limH:"局限",protoNote:"这是交互原型：流式过程为模拟，数字为演示数据。真实引擎接入见 PRD §9。",
+    qph:"例：美联储会在 2026 年 9 月底前降息吗？",ctxph:"插话：补一条背景 / 贴个链接 / 否决某条证据…",
+    done:"已完成",working:"仍在",eta:"预计还需",ignore:"忽略",restore:"恢复",ignored:"已忽略",
+    likelyNo:"倾向：不会发生",applied:"已采纳",atStage:"阶段",saidPrefix:"你说了：",
+    verdictNo:"倾向不降息",mins:"分钟"},
+  en:{usage:"Usage",searches:"searches",gateTitle:"Sign in to Forecasting Engine",gateSub:"Social login via Privy; an invite code is required during beta.",
+    google:"Continue with Google",x:"Continue with Twitter / X",and:"Also required during beta",enter:"Enter",
+    powered:"Login by Privy · Google / Twitter(X) · two gates: social login + invite-code allowlist",
+    compTitle:"Ask one verifiable yes/no question",compSub:"It reasons in the open and grows a self-updating living report — watch it think, interject anytime.",
+    compHint:"Forecast-blind: generation never reads any odds/prices — facts & news only.",run:"Run forecast",
+    leftTitle:"Live activity stream",leftTag:"watch it reason · interject anytime",sStatus:"status",sStage:"stage",sElapsed:"elapsed",
+    hbInit:"starting…",send:"Send",ctxCap:"You can talk mid-run. Your input is adopted at the next stage boundary and echoed back.",
+    converging:"still converging",ci80:"80% credible interval",mkt:"market (post-hoc)",treeH:"Conditional-probability tree",wfH:"Bayesian update waterfall",
+    evH:"Evidence ledger",evTag:'click "ignore" to recompute',limH:"Limitations",protoNote:"Interactive prototype: streaming is simulated, numbers are demo data. Real engine wiring: PRD §9.",
+    qph:"e.g. Will the Fed cut rates before end of Sept 2026?",ctxph:"Interject: add background / paste a link / veto an evidence item…",
+    done:"done",working:"still in",eta:"≈ left",ignore:"ignore",restore:"restore",ignored:"ignored",
+    likelyNo:"Leaning: won't happen",applied:"adopted",atStage:"stage",saidPrefix:"You said: ",
+    verdictNo:"leaning no cut",mins:"min"}
+};
+let lang='zh';
+function T(k){return (L[lang]&&L[lang][k])||k;}
+
+/* ---------------- content (bilingual) ---------------- */
+const QUESTION={zh:"美联储会在 2026 年 9 月底前降息吗？",en:"Will the Fed cut rates before end of September 2026?"};
+const STAGES=[
+  {id:"definition",zh:"定义问题",en:"Define question",lines:{zh:["锁定事件：FOMC 在 9/30 前下调联邦基金目标利率","判定标准：任一会议宣布 ≥25bp 下调记为 Yes","截止：2026-09-30 23:59 ET"],en:["Event: FOMC cuts the fed-funds target before 9/30","Criterion: any meeting announcing a ≥25bp cut = Yes","Deadline: 2026-09-30 23:59 ET"]}},
+  {id:"decompose",zh:"拆解结构",en:"Decompose",lines:{zh:["拆成 3 个条件：通胀回落 → 就业走弱 → 无外部冲击打断"],en:["Split into 3 conditions: inflation eases → labor softens → no shock interrupts"]}},
+  {id:"search",zh:"多源检索证据",en:"Multi-source search",lines:{zh:["调度 3 个来源：搜索 API · 模型内置搜索 · 站点专采","检索 14 条候选 → 去重 → 留 5 条相关","站点专采：BLS 就业、Fed SEP 点阵图"],en:["Dispatched 3 sources: search API · model search · site fetch","14 candidates → deduped → 5 relevant kept","Site fetch: BLS jobs, Fed SEP dot-plot"]}},
+  {id:"weigh",zh:"称重证据",en:"Weigh evidence",lines:{zh:["逐条定 impact(±pp) 与信度(0–1)","最强一条：8 月 CPI 2.4%，连降三月"],en:["Per-item impact (±pp) and confidence (0–1)","Strongest: Aug CPI 2.4%, 3rd monthly fall"]}},
+  {id:"model",zh:"条件建模",en:"Conditional model",lines:{zh:["P(A)=0.65 · P(B|A)=0.62 · P(C|A,B)=0.87","结构先验 ≈ 0.35"],en:["P(A)=0.65 · P(B|A)=0.62 · P(C|A,B)=0.87","Structural prior ≈ 0.35"]}},
+  {id:"bayes",zh:"贝叶斯更新",en:"Bayesian update",lines:{zh:["先验 35% → 吸收 5 条证据 → 后验 41%"],en:["Prior 35% → absorb 5 items → posterior 41%"]}},
+  {id:"conclude",zh:"收敛结论",en:"Conclude",lines:{zh:["41% Yes · 80% 区间 [30%, 53%]","方向：更可能不降息，但远未板上钉钉"],en:["41% Yes · 80% interval [30%, 53%]","Direction: more likely no cut, but far from certain"]}}
+];
+const TREE=[
+  {id:"A",p:65,name:{zh:"通胀持续回落至可接受区间",en:"Inflation keeps easing into range"},r:{zh:"核心 PCE 3 个月年化已降至 2.6%，趋势向下但仍高于 2% 目标。",en:"3-mo annualized core PCE down to 2.6%, trending down but above the 2% target."}},
+  {id:"B",p:62,name:{zh:"就业走弱足以触发宽松",en:"Labor softens enough to trigger easing"},r:{zh:"职位空缺回落，但失业率仍 3.9%，未到明显衰退信号。",en:"Openings falling, but unemployment still 3.9% — not a clear recession signal."}},
+  {id:"C",p:87,name:{zh:"9 月会议前无外部冲击打断",en:"No external shock before the Sept meeting"},r:{zh:"地缘/能源是主要尾部风险；基线无重大冲击。",en:"Geopolitics/energy are the main tail risk; baseline assumes none."}}
+];
+let EVIDENCE=[
+  {id:"e1",stance:"support",imp:9,conf:.80,prov:"search_api",t:{zh:"8 月 CPI 同比 2.4%，连续 3 月回落",en:"Aug CPI 2.4% YoY, 3rd straight monthly decline"},s:{zh:"路透",en:"Reuters"},date:"2026-09-11"},
+  {id:"e2",stance:"weaken",imp:-7,conf:.85,prov:"site_fetch",t:{zh:"9 月非农超预期，失业率维持 3.9%",en:"Sept payrolls beat, unemployment holds at 3.9%"},s:{zh:"BLS",en:"BLS"},date:"2026-09-05"},
+  {id:"e3",stance:"support",imp:6,conf:.70,prov:"site_fetch",t:{zh:"Fed 点阵图中位数显示年内仍有一次降息",en:"Fed dot-plot median still shows one cut this year"},s:{zh:"Fed SEP",en:"Fed SEP"},date:"2026-06-18"},
+  {id:"e4",stance:"weaken",imp:-5,conf:.60,prov:"model_search",t:{zh:"多位票委近期发言偏鹰，强调'数据依赖'",en:"Several voters lean hawkish, stress 'data-dependent'"},s:{zh:"多家媒体",en:"multiple outlets"},date:"2026-09-19"},
+  {id:"e5",stance:"support",imp:3,conf:.55,prov:"search_api",t:{zh:"密歇根长期通胀预期回落至 2.9%",en:"UMich long-run inflation expectations ease to 2.9%"},s:{zh:"UMich",en:"UMich"},date:"2026-09-12"}
+];
+const LIMITS={zh:["证据只覆盖到检索时点，会后新数据未纳入。","'无外部冲击'是基线假设，尾部事件无法前瞻。","结构模型与历史降息周期拟合，制度变化会失真。"],
+  en:["Evidence only as of search time; post-meeting data not included.","'No external shock' is a baseline assumption; tail events aren't foreseeable.","The structural model is fit to past easing cycles; regime change distorts it."]};
+const GLOSSARY={
+  bayes:{zh:{n:"贝叶斯更新",d:"从一个起始猜测（先验）出发，每来一条新证据就按它的分量把概率往上或往下调一点，最后得到更新后的概率（后验）。"},en:{n:"Bayesian update",d:"Start from an initial guess (prior); each new piece of evidence nudges the probability up or down by its weight, yielding the updated probability (posterior)."}},
+  condprob:{zh:{n:"条件概率",d:"在'前一件事成立'的前提下，后一件事发生的概率。P(B|A) 读作'在 A 发生的条件下 B 的概率'。把问题拆成一串条件相乘，更容易逐段核对。"},en:{n:"Conditional probability",d:"The chance of one thing given another already holds. P(B|A) reads 'probability of B given A'. Chaining conditions makes each step checkable."}},
+  ci:{zh:{n:"可信区间",d:"模型认为真实概率有 80% 的把握落在这个区间内。区间越窄，说明越笃定；越宽，说明分歧/不确定越大。"},en:{n:"Credible interval",d:"The model is 80% confident the true probability sits inside this band. Narrower = more certain; wider = more uncertainty/disagreement."}},
+  ledger:{zh:{n:"证据台账",d:"把每条证据摊开：立场（支持/削弱）、对概率的影响（±百分点）、可信度。你可以忽略任意一条，结论会立刻重算。"},en:{n:"Evidence ledger",d:"Every piece laid out: stance (support/weaken), impact on the probability (±pp), confidence. Ignore any item and the conclusion recomputes instantly."}}
+};
+const PRIOR=35;
+
+/* ---------------- term tooltips ---------------- */
+const tip=document.getElementById('tip');
+function bindTips(){
+  document.querySelectorAll('.term').forEach(el=>{
+    el.onmouseenter=e=>{
+      const g=GLOSSARY[el.dataset.term]; if(!g)return;
+      const c=g[lang];
+      tip.innerHTML='<div class="tt">'+c.n+' <small>'+(lang==='zh'?'名词解释':'term')+'</small></div>'+c.d;
+      const r=el.getBoundingClientRect();
+      tip.style.left=Math.min(window.innerWidth-320,Math.max(12,r.left))+'px';
+      tip.style.top=(r.bottom+8)+'px';
+      tip.classList.add('show');
+    };
+    el.onmouseleave=()=>tip.classList.remove('show');
+  });
+}
+
+/* ---------------- lang ---------------- */
+function setLang(l){
+  lang=l;
+  document.getElementById('zhBtn').classList.toggle('on',l==='zh');
+  document.getElementById('enBtn').classList.toggle('on',l==='en');
+  document.documentElement.lang=l;
+  document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=T(el.dataset.t);});
+  document.getElementById('q').placeholder=T('qph');
+  document.getElementById('ctxInput').placeholder=T('ctxph');
+  document.getElementById('chips').innerHTML='';
+  CHIPS.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c[lang];b.onclick=()=>{document.getElementById('q').value=c.q[lang];};document.getElementById('chips').appendChild(b);});
+  if(running){renderReport();renderStream();}
+  document.getElementById('rq').textContent=QUESTION[lang];
+}
+const CHIPS=[
+  {zh:"美联储 9 月底前降息？",en:"Fed cut before end of Sept?",q:QUESTION},
+  {zh:"比特币年底突破 12 万？",en:"BTC above 120k by year-end?",q:{zh:"比特币会在 2026 年底前突破 12 万美元吗？",en:"Will BTC break $120k before end of 2026?"}},
+  {zh:"该不该现在锁定房贷利率？",en:"Lock my mortgage rate now?",q:{zh:"我现在该锁定 30 年房贷利率，还是再等等？",en:"Should I lock a 30-yr mortgage rate now or wait?"}}
+];
+document.getElementById('q').placeholder=T('qph');
+document.getElementById('ctxInput').placeholder=T('ctxph');
+CHIPS.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c.zh;b.onclick=()=>{document.getElementById('q').value=c.q[lang];};document.getElementById('chips').appendChild(b);});
+
+/* ---------------- flow ---------------- */
+function login(){document.getElementById('gate').style.display='none';document.getElementById('composer').classList.add('show');}
+let running=false,t0=0,elapsedTimer=0,hbTimer=0,curStage=-1,tokens=0,searches=0;
+
+function startRun(){
+  running=true;
+  document.getElementById('composer').classList.remove('show');
+  document.getElementById('app').classList.add('show');
+  document.getElementById('rq').textContent=QUESTION[lang];
+  t0=Date.now();
+  renderTree(); renderLedger(); renderLimits(); renderWaterfall(); recompute(true);
+  elapsedTimer=setInterval(tickElapsed,1000);
+  hbTimer=setInterval(tickHeartbeat,1400);
+  scheduleStages();
+  bindTips();
+}
+function tickElapsed(){
+  const s=Math.floor((Date.now()-t0)/1000);
+  document.getElementById('stElapsed').textContent=(s<60?s+'s':Math.floor(s/60)+'m'+(s%60)+'s');
+}
+let hbi=0;
+function tickHeartbeat(){
+  if(!running||curStage>=STAGES.length)return;
+  const st=STAGES[Math.max(0,curStage)];
+  const s=Math.floor((Date.now()-t0)/1000);
+  const dots=['·','··','···'][hbi++%3];
+  document.getElementById('hbText').innerHTML=T('working')+' <b>'+st[lang]+'</b> '+dots+' · '+s+'s · '+T('eta')+' 1–3 '+T('mins');
+  tokens+=Math.floor(280+Math.random()*420); document.getElementById('uTok').textContent=tokens.toLocaleString();
+}
+
+const STREAM=[];
+function scheduleStages(){
+  let delay=400;
+  STAGES.forEach((st,i)=>{
+    setTimeout(()=>enterStage(i),delay); delay+=1500;
+    st.lines[lang].forEach((_,j)=>{ /* lines revealed in enterStage */ });
+    if(st.id==='search'){ setTimeout(()=>{searches=3;document.getElementById('uSrch').textContent='3';},delay-900); }
+    if(st.id==='weigh'){ setTimeout(()=>revealEvidenceProgressively(),delay-700); }
+    if(st.id==='bayes'){ setTimeout(()=>animateToPosterior(),delay-700); }
+  });
+  setTimeout(finishRun,delay+200);
+}
+function enterStage(i){
+  curStage=i;
+  document.getElementById('stStage').textContent=(i+1)+'/7';
+  renderStream();
+  const box=document.getElementById('stream');
+  box.scrollTop=box.scrollHeight;
+}
+function renderStream(){
+  const box=document.getElementById('stream'); box.innerHTML='';
+  STAGES.forEach((st,i)=>{
+    const cls=i<curStage?'ok':(i===curStage?'active':'pending');
+    const div=document.createElement('div'); div.className='stage '+cls;
+    let h='<div class="stage-h"><span class="st-ic">'+(i<curStage?'✓':(i+1))+'</span><span class="name">'+st[lang]+'</span>';
+    if(i<curStage)h+='<span class="mini">'+T('done')+'</span>';
+    h+='</div>';
+    if(i===curStage){h+='<div class="lines">'+st.lines[lang].map((l,k)=>'<div class="line" style="animation-delay:'+(k*0.25)+'s"><span class="dot">▸</span>'+l+'</div>').join('')+'</div>';}
+    else if(i<curStage){h+='<div class="summary">'+st.lines[lang][0]+'</div>';}
+    div.innerHTML=h; box.appendChild(div);
+  });
+}
+let evShown=0;
+function revealEvidenceProgressively(){
+  evShown=0;
+  const iv=setInterval(()=>{evShown++;renderLedger();recompute();if(evShown>=EVIDENCE.length)clearInterval(iv);},420);
+}
+
+/* ---------------- report ---------------- */
+function renderReport(){renderTree();renderLedger();renderLimits();renderWaterfall();recompute();}
+function renderTree(){
+  const box=document.getElementById('treeBox'); box.innerHTML='';
+  TREE.forEach((n,i)=>{
+    const weak=n.p<60;
+    const d=document.createElement('div'); d.className='node'+(weak?' weak':'');
+    d.innerHTML='<div class="node-h"><span class="node-p">'+n.p+'%</span><span class="node-name">'+n.name[lang]+(weak?'<span class="bottleneck">'+(lang==='zh'?'瓶颈':'bottleneck')+'</span>':'')+'</span><span class="node-bar"><i style="width:'+n.p+'%"></i></span><span class="caret">▸</span></div><div class="node-body">'+n.r[lang]+'</div>';
+    d.querySelector('.node-h').onclick=()=>d.classList.toggle('open');
+    box.appendChild(d);
+  });
+}
+let ignored={};
+function renderLedger(){
+  const box=document.getElementById('ledger'); box.innerHTML='';
+  EVIDENCE.forEach((e,i)=>{
+    if(i>=evShown && running && curStage<5 && evShown>0)return;
+    const off=ignored[e.id];
+    const d=document.createElement('div'); d.className='ev '+e.stance+(off?' muted':'');
+    d.innerHTML='<span class="stance"></span><div class="ev-main"><div class="ev-title">'+e.t[lang]+'</div>'+
+      '<div class="ev-meta"><span class="prov '+e.prov+'">'+provLabel(e.prov)+'</span>'+e.s[lang]+' · '+e.date+' · '+(lang==='zh'?'信度':'conf')+' '+e.conf.toFixed(2)+'</div>'+
+      '<div class="ev-act"><button class="'+(off?'on':'')+'" onclick="toggleEv(\''+e.id+'\')">'+(off?T('restore'):T('ignore'))+'</button></div></div>'+
+      '<div class="ev-imp">'+(e.imp>0?'+':'')+e.imp+'pp</div>';
+    box.appendChild(d);
+  });
+}
+function provLabel(p){const m={search_api:{zh:'搜索API',en:'Search API'},model_search:{zh:'模型搜索',en:'Model search'},site_fetch:{zh:'站点专采',en:'Site fetch'},user:{zh:'用户提供',en:'User-supplied'}};return m[p][lang];}
+function toggleEv(id){ignored[id]=!ignored[id];renderLedger();recompute();}
+function activeProb(){let p=PRIOR;EVIDENCE.forEach(e=>{if(!ignored[e.id]&&isShown(e))p+=e.imp;});return Math.max(2,Math.min(98,p));}
+function isShown(e){const i=EVIDENCE.indexOf(e);return !(i>=evShown && running && curStage<5 && evShown>0);}
+let displayedP=PRIOR;
+function recompute(init){
+  const target=running&&curStage<5&&evShown===0?PRIOR:activeProb();
+  displayedP=target;
+  document.getElementById('probNum').textContent=Math.round(displayedP)+'%';
+  const isNo=displayedP<50;
+  document.getElementById('eyebrow').textContent=running&&curStage<6?'— '+(lang==='zh'?'推理中':'reasoning')+' —':(isNo?'LIKELY NO':'LIKELY YES');
+  document.getElementById('eyebrow').style.color=isNo?'var(--down)':'var(--up)';
+  document.getElementById('verdict').textContent=curStage>=6||!running?(isNo?T('verdictNo'):'')+'':'';
+  // CI band ±11
+  const lo=Math.max(0,displayedP-11),hi=Math.min(100,displayedP+11);
+  document.getElementById('ciFill').style.left=lo+'%';
+  document.getElementById('ciFill').style.width=(hi-lo)+'%';
+  document.getElementById('ciPoint').style.left=displayedP+'%';
+  document.getElementById('ciRange').textContent='['+Math.round(lo)+'%, '+Math.round(hi)+'%]';
+  renderWaterfall();
+}
+function renderWaterfall(){
+  const wf=document.getElementById('wf'); if(!wf)return; wf.innerHTML='';
+  const steps=[{l:lang==='zh'?'先验':'prior',v:PRIOR,cls:'anchor'}];
+  let acc=PRIOR;
+  EVIDENCE.forEach(e=>{ if(ignored[e.id]||!isShown(e))return; acc+=e.imp; steps.push({l:(e.imp>0?'+':'')+e.imp,v:acc,cls:e.imp>0?'up':'down'}); });
+  steps.push({l:lang==='zh'?'后验':'post',v:acc,cls:'anchor'});
+  steps.forEach(s=>{
+    const c=document.createElement('div'); c.className='wf-col '+s.cls;
+    c.innerHTML='<span class="wf-v">'+Math.round(s.v)+'</span><div class="wf-bar" style="height:'+(s.v*0.95)+'%"></div><span>'+s.l+'</span>';
+    wf.appendChild(c);
+  });
+}
+function animateToPosterior(){evShown=EVIDENCE.length;renderLedger();recompute();}
+function renderLimits(){document.getElementById('limits').innerHTML=LIMITS[lang].map(l=>'<li>'+l+'</li>').join('');}
+
+function finishRun(){
+  curStage=STAGES.length; running=false;
+  clearInterval(hbTimer);
+  document.getElementById('stStatus').textContent='done';
+  document.getElementById('stStage').textContent='7/7';
+  document.getElementById('heartbeat').classList.add('done');
+  document.getElementById('hbText').innerHTML='<b>'+(lang==='zh'?'完成 · 报告已冻结为 v1':'done · report frozen as v1')+'</b>';
+  document.getElementById('converging').style.display='none';
+  evShown=EVIDENCE.length; renderStream(); renderLedger(); recompute();
+}
+
+/* ---------------- insert context (mid-run) ---------------- */
+function sendContext(){
+  const inp=document.getElementById('ctxInput'); const v=inp.value.trim(); if(!v)return; inp.value='';
+  const echo=document.getElementById('echo');
+  const said=document.createElement('div'); said.className='said'; said.textContent=T('saidPrefix')+v; echo.appendChild(said);
+  searches+=1; document.getElementById('uSrch').textContent=searches;
+  setTimeout(()=>{
+    const stageName=(STAGES[Math.min(curStage,STAGES.length-1)]||STAGES[3])[lang];
+    const ap=document.createElement('div'); ap.className='applied';
+    ap.innerHTML='✓ '+T('applied')+' · '+T('atStage')+'「'+stageName+'」';
+    echo.appendChild(ap);
+    // add a user-supplied evidence row that nudges the probability
+    const ne={id:'u'+Date.now(),stance:'support',imp:4,conf:.6,prov:'user',t:{zh:'你补充：'+v,en:'You added: '+v},s:{zh:'用户提供',en:'user'},date:(lang==='zh'?'刚刚':'just now')};
+    EVIDENCE.push(ne); evShown=EVIDENCE.length; renderLedger(); recompute();
+    echo.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },1300);
+}
+
+setLang('zh');
+</script>
+</body>
+</html>
