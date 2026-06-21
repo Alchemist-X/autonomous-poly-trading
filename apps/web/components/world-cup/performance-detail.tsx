@@ -72,9 +72,18 @@ function MatchRow({ m, locale }: { m: PerfMatch; locale: Locale }) {
   );
 }
 
+// A match's mock return = the sum of its bet legs (skipped legs contribute 0).
+// Used to surface our biggest calls first.
+function matchReturn(m: PerfMatch): number {
+  return m.legs.reduce((sum, l) => sum + (l.retPct ?? 0), 0);
+}
+
 export function PerformanceDetail({ locale }: { locale: Locale }) {
   const { agg, matches, bins } = getPerformance();
   const sign = (n: number) => `${n >= 0 ? "+" : "−"}${Math.abs(n)}%`;
+  const ranked = [...matches].sort((a, b) => matchReturn(b) - matchReturn(a));
+  const topMatches = ranked.slice(0, 3);
+  const restMatches = ranked.slice(3);
   const cards = [
     { label: t(locale, "perfHitRate"), value: `${agg.bestPickPct}%`, sub: `${agg.bestPickHit} / ${agg.settled} ${t(locale, "perfHitRateNote")}`, cls: styles.perfNeutral },
     { label: t(locale, "perfPnl"), value: sign(agg.roiPct), sub: `${agg.bets} ${t(locale, "perfBetsWord")}`, cls: agg.roiPct >= 0 ? styles.perfPos : styles.perfNeg },
@@ -98,17 +107,25 @@ export function PerformanceDetail({ locale }: { locale: Locale }) {
         <p className={styles.perfRuleTerms}>{t(locale, "perfRuleTerms")}</p>
       </div>
 
-      <details className={styles.perfAll}>
-        <summary className={styles.perfAllSummary}>
-          {t(locale, "perfAllToggle")} · {matches.length}
-        </summary>
-        <p className={styles.perfLegend}>{t(locale, "perfLegendNote")}</p>
-        <div className={styles.perfList}>
-          {matches.map((m) => (
-            <MatchRow key={m.slug} m={m} locale={locale} />
-          ))}
-        </div>
-      </details>
+      <p className={styles.perfTopLabel}>{t(locale, "perfTopLabel")}</p>
+      <p className={styles.perfLegend}>{t(locale, "perfLegendNote")}</p>
+      <div className={styles.perfList}>
+        {topMatches.map((m) => (
+          <MatchRow key={m.slug} m={m} locale={locale} />
+        ))}
+      </div>
+      {restMatches.length > 0 ? (
+        <details className={styles.perfAll}>
+          <summary className={styles.perfAllSummary}>
+            {t(locale, "perfShowRest").replace("{n}", String(restMatches.length))}
+          </summary>
+          <div className={styles.perfList}>
+            {restMatches.map((m) => (
+              <MatchRow key={m.slug} m={m} locale={locale} />
+            ))}
+          </div>
+        </details>
+      ) : null}
 
       <h2 className={styles.perfCalibTitle}>{t(locale, "perfCalibTitle")}</h2>
       <p className={styles.perfCalibNote}>{t(locale, "perfCalibNote")}</p>
