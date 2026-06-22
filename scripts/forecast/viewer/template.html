@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Predict Raven — Forecast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  :root{
+    --bg:#0C0B0E; --bg2:#141318; --bg3:#1C1A22; --line:rgba(255,255,255,0.09);
+    --ink:#ECE7DE; --ink2:#9A95A3; --ink3:#5E5A68; --grid:rgba(255,255,255,0.055);
+    --orange:#E0703C; --yes:#46C49A; --no:#E5645D; --warn:#E0A93C; --glow:rgba(224,112,60,0.13);
+  }
+  body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  textarea{font-family:inherit}
+  ::selection{background:rgba(224,112,60,0.28)}
+  button{font-family:inherit}
+  a{color:inherit}
+  @keyframes ravenRise{0%{transform:translateY(14px);opacity:0}100%{transform:translateY(0);opacity:1}}
+  @keyframes ravenGlow{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+  @keyframes ravenDrift{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+  @keyframes ravenSpin{to{transform:rotate(360deg)}}
+  @keyframes ravenDots{0%,20%{opacity:0.2}50%{opacity:1}100%{opacity:0.2}}
+  @keyframes ravenFadeUp{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+  header button{white-space:nowrap}
+  @media (max-width:480px){ header{padding:16px 14px !important;gap:8px} header button{font-size:10px !important;padding:8px 10px !important} .hdr-newq{display:none !important} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script id="run-data" type="application/json">__RUN_JSON__</script>
+<script>
+(function(){
+"use strict";
+var RUN = JSON.parse(document.getElementById("run-data").textContent);
+var P = new URLSearchParams(location.search);
+var expandAll = P.get("expand") === "all";
+
+// ---------- live vs static ----------
+var LIVE = (RUN === null); // server injects null -> connect to the engine; build.mjs injects data -> replay a saved run
+
+// ---------- derived playback structures (recomputed whenever RUN updates) ----------
+var prior, STEPS, SEQ, ROUNDS_X;
+function rounds(){ return (RUN && RUN.roundHistory) ? RUN.roundHistory : []; }
+function derive(){
+  prior = (RUN && RUN.framing && RUN.framing.priorProbability!=null) ? RUN.framing.priorProbability
+        : (rounds()[0] ? rounds()[0].priorProb : 0.5);
+  STEPS = [{type:"prior", round:0, prob:prior}];
+  rounds().forEach(function(r){
+    STEPS.push({type:"search", round:r.round});
+    r.perSourceUpdates.forEach(function(s){
+      STEPS.push({type:"source", round:r.round, prob:s.to, from:s.from, deltaPp:s.deltaPp, title:s.title, url:s.url, verified:s.verified, kind:s.kind});
+    });
+  });
+  SEQ = [{prob:prior, round:0}];
+  rounds().forEach(function(r){ r.perSourceUpdates.forEach(function(s){ SEQ.push({prob:s.to, round:r.round}); }); });
+  ROUNDS_X = [];
+  rounds().forEach(function(r){ var i0=-1,i1=-1; SEQ.forEach(function(p,i){ if(p.round===r.round){ if(i0<0)i0=i; i1=i; } }); ROUNDS_X.push({round:r.round,i0:i0,i1:i1}); });
+}
+if (RUN) derive(); else { prior=0.5; STEPS=[]; SEQ=[]; ROUNDS_X=[]; }
+
+// ---------- state ----------
+var S = {
+  phase: P.get("phase") || "input",
+  theme: P.get("theme") || "dark",
+  question: RUN ? (RUN.eventText || RUN.framing.normalizedQuestion) : "",
+  stepIndex: 0,
+  displayProb: prior,
+  openRounds: {},
+  openSources: {},
+  framingOpen: expandAll,
+  completed: false,
+  live: null,      // live-mode status {status, log, jobStatus}
+  eventId: null,
+  recent: []
+};
+var openParam = P.get("open");
+if (RUN) {
+  if (expandAll) { rounds().forEach(function(r){ S.openRounds[r.round]=true; r.perSourceUpdates.forEach(function(_,si){ S.openSources["r"+r.round+"s"+si]=true; }); }); }
+  else if (openParam) { openParam.split(",").forEach(function(n){ var rn=n.trim(); S.openRounds[rn]=true; var rd=rounds().find(function(r){return String(r.round)===rn;}); if(rd) rd.perSourceUpdates.forEach(function(_,si){ S.openSources["r"+rn+"s"+si]=true; }); }); }
+  else if (rounds()[0]) { S.openRounds[rounds()[0].round]=true; }
+}
+// reasoning freeze via ?step= (static replay only)
+var frozenStep = P.get("step");
+var autoplay = true;
+if (!LIVE && S.phase === "reasoning" && frozenStep != null) {
+  S.stepIndex = Math.max(0, Math.min(STEPS.length-1, parseInt(frozenStep,10)||0));
+  S.completed = S.stepIndex >= STEPS.length-1;
+  S.displayProb = lastProbUpTo(S.stepIndex);
+  autoplay = false;
+}
+
+// ---------- helpers ----------
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function pct(p,d){ return (p*100).toFixed(d==null?1:d)+"%"; }
+function absPp(pp){ return Math.abs(pp).toFixed(1); }
+function arrow(pp){ return pp>=0 ? "▲" : "▼"; }
+function signPp(pp){ return (pp>=0?"+":"−")+absPp(pp); }
+function canon(url){ return String(url||"").replace(/^https?:\/\//,"").replace(/^www\./,"").split("/")[0]; }
+function dirColor(pp){ return pp>=0 ? "var(--yes)" : "var(--no)"; }
+function chipStyle(pp){ var up=pp>=0; return "color:"+(up?"var(--yes)":"var(--no)")+";background:"+(up?"rgba(70,196,154,0.14)":"rgba(229,100,93,0.14)")+";"; }
+function badge(v){ return v ? {text:"✓ VERIFIED", style:"color:var(--yes);background:rgba(70,196,154,0.10);"} : {text:"⚠ UNVERIFIED", style:"color:var(--warn);background:rgba(224,169,60,0.12);"}; }
+function lastProbUpTo(idx){ var p=prior; for(var i=0;i<=idx;i++){ if(STEPS[i].type==="source") p=STEPS[i].prob; } return p; }
+function verdict(p){ var v=p*100; if(v<10)return"Very unlikely"; if(v<25)return"Unlikely"; if(v<40)return"Leaning no"; if(v<=60)return"Toss-up"; if(v<75)return"Leaning yes"; if(v<90)return"Likely"; return"Very likely"; }
+function totalSeconds(){ if(!RUN)return 0; var t=(new Date(RUN.updatedAtUtc)-new Date(RUN.createdAtUtc))/1000; return isFinite(t)&&t>0?Math.round(t):0; }
+function duration(){ var t=totalSeconds(),m=Math.floor(t/60),s=t%60; return m+"m "+(s<10?"0":"")+s+"s"; }
+function clock(sec){ sec=Math.round(sec); var m=Math.floor(sec/60),s=sec%60; return m+":"+(s<10?"0":"")+s; }
+function isReflection(s){ return s.kind==="reflection"; }
+function reflectionTitle(t){ return String(t||"").replace(/^↻\s*reflection on:\s*/i,""); }
+
+// summary may be: object (new), string (design), or null/undefined (older runs)
+function summaryData(){
+  var sm = RUN.summary;
+  if (sm && typeof sm === "object") return sm;
+  if (typeof sm === "string" && sm.trim()) return {verdict:sm, keyFactorsYes:[], keyFactorsNo:[], mainUncertainties:"", _fallback:false};
+  // graceful fallback: use the final iteration's real reasoning (no fabrication), trimmed to 2 sentences
+  var last = RUN.roundHistory[RUN.roundHistory.length-1];
+  var txt = (last && last.reasoning) || "";
+  var concise = txt.split(/(?<=[.!?])\s+/).slice(0,2).join(" ");
+  return {verdict: concise || txt, keyFactorsYes:[], keyFactorsNo:[], mainUncertainties:"", _fallback:true};
+}
+
+// ---------- theme ----------
+function applyTheme(){
+  var t=S.theme, accent="#E0703C";
+  var pal = t==="light"
+    ? {bg:"#F4F1EA",bg2:"#FBF9F4",bg3:"#FFFFFF",line:"rgba(20,18,24,0.10)",ink:"#1A1820",ink2:"#5C5766",ink3:"#A39DAB",grid:"rgba(20,18,24,0.06)",glow:"rgba(200,90,41,0.12)",yes:"#1E9E73",no:"#CB463F",warn:"#B7791F"}
+    : {bg:"#0C0B0E",bg2:"#141318",bg3:"#1C1A22",line:"rgba(255,255,255,0.09)",ink:"#ECE7DE",ink2:"#9A95A3",ink3:"#5E5A68",grid:"rgba(255,255,255,0.055)",glow:"rgba(224,112,60,0.13)",yes:"#46C49A",no:"#E5645D",warn:"#E0A93C"};
+  var r=document.documentElement.style;
+  r.setProperty("--bg",pal.bg); r.setProperty("--bg2",pal.bg2); r.setProperty("--bg3",pal.bg3); r.setProperty("--line",pal.line);
+  r.setProperty("--ink",pal.ink); r.setProperty("--ink2",pal.ink2); r.setProperty("--ink3",pal.ink3); r.setProperty("--grid",pal.grid);
+  r.setProperty("--glow",pal.glow); r.setProperty("--orange",accent); r.setProperty("--yes",pal.yes); r.setProperty("--no",pal.no); r.setProperty("--warn",pal.warn);
+  document.body.style.background = pal.bg;
+}
+
+// ---------- header (shared) ----------
+function headerHtml(){
+  return ''+
+  '<header style="position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:20px clamp(20px,4vw,44px);max-width:1320px;margin:0 auto;">'+
+    '<div style="display:flex;align-items:center;gap:13px;">'+
+      '<div style="width:42px;height:42px;border-radius:11px;background:#100F13;border:1px solid rgba(224,112,60,0.35);display:flex;align-items:center;justify-content:center;box-shadow:0 0 22px var(--glow);overflow:hidden;">'+
+        '<img src="logos/raven-logo.png" alt="Predict Raven" style="width:34px;height:34px;object-fit:contain;">'+
+      '</div>'+
+      '<div style="line-height:1;">'+
+        '<div style="font-size:18px;font-weight:600;letter-spacing:0.5px;">Predict<span style="color:var(--orange);">Raven</span></div>'+
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9.5px;letter-spacing:2.5px;color:var(--ink3);margin-top:4px;">BY RAVEN&middot;LABS</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;align-items:center;gap:10px;">'+
+      (S.phase!=="input" ? '<button data-action="newq" class="hdr-newq" style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:1px;color:var(--ink2);background:transparent;border:1px solid var(--line);border-radius:8px;padding:9px 14px;cursor:pointer;">+ NEW QUESTION</button>' : '')+
+      '<button data-action="theme" style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:1px;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:9px 13px;cursor:pointer;">'+(S.theme==="light"?"◐ DARK":"◑ LIGHT")+'</button>'+
+    '</div>'+
+  '</header>';
+}
+
+// ---------- INPUT ----------
+function inputHtml(){
+  var examples=[
+    "Will Apple ship a foldable iPhone in 2026?",
+    "Will Bitcoin trade above $150k before 2027?",
+    "Will the Fed cut rates at the next meeting?",
+    "Will GPT-5 launch before 2026?"
+  ];
+  var chips = examples.map(function(q){ return '<button data-action="example" data-q="'+esc(q)+'" style="font-size:12.5px;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:100px;padding:8px 14px;cursor:pointer;text-align:left;">'+esc(q)+'</button>'; }).join("");
+  return ''+
+  '<section style="position:relative;z-index:3;max-width:780px;margin:0 auto;padding:clamp(28px,7vh,90px) 24px 80px;text-align:center;">'+
+    '<div style="position:absolute;inset:-8% 0 auto;z-index:-1;pointer-events:none;overflow:hidden;height:780px;">'+
+      '<div style="position:absolute;top:2%;left:50%;transform:translateX(-50%);width:720px;height:720px;max-width:130vw;background:radial-gradient(circle at center,var(--glow),transparent 60%);"></div>'+
+      '<svg viewBox="0 0 800 800" style="position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:900px;height:900px;max-width:170vw;">'+
+        '<g fill="none" stroke="var(--orange)">'+
+          '<circle cx="400" cy="330" r="140" stroke-opacity="0.14"></circle>'+
+          '<circle cx="400" cy="330" r="215" stroke-opacity="0.10"></circle>'+
+          '<circle cx="400" cy="330" r="295" stroke-opacity="0.07" stroke-dasharray="2 11"></circle>'+
+          '<circle cx="400" cy="330" r="375" stroke-opacity="0.05"></circle>'+
+        '</g>'+
+        '<g style="transform-origin:400px 330px;animation:ravenDrift 55s linear infinite;"><circle cx="400" cy="190" r="4.5" fill="var(--orange)" opacity="0.85"></circle></g>'+
+        '<g style="transform-origin:400px 330px;animation:ravenDrift 110s linear infinite;"><circle cx="400" cy="625" r="3" fill="var(--orange)" opacity="0.5"></circle></g>'+
+        '<g fill="var(--ink)">'+
+          '<circle cx="150" cy="140" r="1.4" opacity="0.5" style="animation:ravenGlow 3s ease-in-out infinite;"></circle>'+
+          '<circle cx="662" cy="150" r="1.2" opacity="0.4" style="animation:ravenGlow 4s ease-in-out infinite 0.6s;"></circle>'+
+          '<circle cx="704" cy="520" r="1.5" opacity="0.45" style="animation:ravenGlow 3.5s ease-in-out infinite 1s;"></circle>'+
+          '<circle cx="120" cy="520" r="1.3" opacity="0.4" style="animation:ravenGlow 4.5s ease-in-out infinite 0.3s;"></circle>'+
+        '</g>'+
+      '</svg>'+
+    '</div>'+
+    '<h1 style="font-family:\'Instrument Serif\',serif;font-weight:400;font-size:clamp(40px,6.5vw,68px);line-height:1.04;margin:0 0 20px;letter-spacing:-0.5px;">Ask Raven about<br>the <span style="font-style:italic;color:var(--orange);">future.</span></h1>'+
+    '<p style="max-width:470px;margin:0 auto 30px;color:var(--ink2);font-size:16px;line-height:1.6;">Pose a yes / no question. Raven runs iterations of live research.</p>'+
+    '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;text-align:left;box-shadow:0 24px 60px -30px rgba(0,0,0,0.6);">'+
+      '<div style="display:flex;align-items:center;gap:9px;font-family:\'JetBrains Mono\',monospace;font-size:12px;color:var(--orange);margin-bottom:10px;"><span>raven</span><span style="color:var(--ink3);">&#9656;</span></div>'+
+      '<textarea id="qbox" rows="2" placeholder="Will Apple ship a foldable iPhone in 2026?" style="width:100%;resize:none;border:none;outline:none;background:transparent;color:var(--ink);font-family:\'Instrument Serif\',serif;font-size:25px;line-height:1.3;letter-spacing:-0.2px;">'+esc(S.question)+'</textarea>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);">'+
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:var(--ink3);">&#8629; Enter to consult</div>'+
+        '<button data-action="consult" style="display:flex;align-items:center;gap:9px;background:var(--orange);color:#150C07;font-weight:600;font-size:14px;border:none;border-radius:10px;padding:11px 20px;cursor:pointer;box-shadow:0 8px 24px -8px var(--orange);">Consult Raven <span style="font-size:16px;">&rarr;</span></button>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:24px;">'+chips+'</div>'+
+  '</section>';
+}
+
+// ---------- REASONING ----------
+function reasoningHtml(){
+  var step = STEPS[S.stepIndex];
+  var actionLabel = S.completed ? "Belief converged" : step.type==="prior" ? "Establishing base rate" : step.type==="search" ? "Searching the web" : "Weighing new evidence";
+  var prop = S.completed ? 1 : (STEPS.length>1 ? S.stepIndex/(STEPS.length-1) : 0);
+  var elapsed = clock(prop*totalSeconds());
+  // latest source for hero delta
+  var lastSrc=null; for(var i=S.stepIndex;i>=0;i--){ if(STEPS[i].type==="source"){ lastSrc=STEPS[i]; break; } }
+  var deltaChip;
+  if(lastSrc){ deltaChip='<div style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-weight:700;font-size:21px;letter-spacing:-0.5px;padding:6px 14px;border-radius:10px;'+chipStyle(lastSrc.deltaPp)+'"><span style="font-size:16px;">'+arrow(lastSrc.deltaPp)+'</span>'+signPp(lastSrc.deltaPp)+' pp</div>'; }
+  else { deltaChip='<div style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-weight:700;font-size:18px;padding:6px 14px;border-radius:10px;color:var(--ink2);background:var(--bg3);">base rate</div>'; }
+  // evidence stream — newest first, top 3 (3rd fades out); shared with live mode
+  var seen=[]; for(var j=0;j<=S.stepIndex;j++){ if(STEPS[j].type==="source") seen.push(STEPS[j]); }
+  var top = seen.slice().reverse().slice(0,3).map(function(s){ return {url:s.url,title:s.title,deltaPp:s.deltaPp,from:s.from,to:s.prob,kind:s.kind}; });
+  var cards = streamCardsHtml(top);
+
+  return ''+
+  '<section style="position:relative;z-index:3;max-width:760px;margin:0 auto;padding:10px clamp(18px,4vw,32px) 90px;">'+
+    '<div style="text-align:center;margin-bottom:26px;">'+
+      '<div style="display:inline-flex;align-items:center;gap:10px;font-family:\'JetBrains Mono\',monospace;font-size:12px;letter-spacing:1.5px;color:var(--orange);background:var(--bg2);border:1px solid rgba(224,112,60,0.28);border-radius:100px;padding:8px 16px;">'+
+        (S.completed ? '<span style="color:var(--yes);">✓</span>' : '<span style="width:13px;height:13px;border-radius:50%;border:2px solid var(--orange);border-top-color:transparent;display:inline-block;animation:ravenSpin 0.8s linear infinite;"></span>')+
+        '<span>'+esc(actionLabel)+'</span>'+
+        (S.completed?'':'<span style="letter-spacing:2px;"><span style="animation:ravenDots 1.2s infinite;">.</span><span style="animation:ravenDots 1.2s infinite 0.2s;">.</span><span style="animation:ravenDots 1.2s infinite 0.4s;">.</span></span>')+
+      '</div>'+
+      '<h2 style="font-family:\'Instrument Serif\',serif;font-weight:400;font-size:clamp(22px,3.4vw,30px);margin:16px auto 0;line-height:1.2;max-width:600px;">'+esc(S.question)+'</h2>'+
+    '</div>'+
+    '<div style="text-align:center;margin:0 0 22px;font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:2px;color:var(--ink3);">RUNTIME &middot; '+elapsed+'</div>'+
+    '<div style="text-align:center;background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:26px 24px 28px;margin-bottom:22px;">'+
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10.5px;letter-spacing:2.5px;color:var(--ink3);margin-bottom:8px;">RAVEN’S BELIEF &middot; P(YES)</div>'+
+      '<div id="heroNow" style="font-size:clamp(56px,11vw,84px);font-weight:600;line-height:0.9;letter-spacing:-2px;color:var(--orange);font-variant-numeric:tabular-nums;">'+pct(S.displayProb)+'</div>'+
+      deltaChip+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:11px;">'+cards+'</div>'+
+  '</section>';
+}
+
+// ---------- chart (result) ----------
+function buildChart(){
+  var N=SEQ.length, W=1000, H=416, L=56, Rp=70, Tp=42, Bp=42;
+  var pw=W-L-Rp, ph=H-Tp-Bp;
+  var maxP=Math.max.apply(null, SEQ.map(function(p){return p.prob;}).concat([prior]));
+  var ymax=Math.max(0.2, Math.ceil((maxP*1.12)/0.1)*0.1); if(ymax>1)ymax=1;
+  var step = ymax<=0.3?0.05:(ymax<=0.6?0.1:0.2);
+  var ticks=[]; for(var t=0;t<=ymax+1e-9;t+=step) ticks.push(Math.round(t*100)/100);
+  function x(i){ return L+(N<=1?0:(i/(N-1))*pw); }
+  function y(p){ return Tp+(1-p/ymax)*ph; }
+  var els="";
+  els+='<defs><linearGradient id="ravenArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--orange)" stop-opacity="0.20"></stop><stop offset="100%" stop-color="var(--orange)" stop-opacity="0"></stop></linearGradient></defs>';
+  ticks.forEach(function(tk){
+    els+='<line x1="'+L+'" x2="'+(W-Rp)+'" y1="'+y(tk)+'" y2="'+y(tk)+'" stroke="var(--grid)" stroke-width="1"></line>';
+    els+='<text x="'+(L-10)+'" y="'+(y(tk)+4)+'" text-anchor="end" font-size="13" fill="var(--ink3)" font-family="JetBrains Mono,monospace">'+Math.round(tk*100)+'%</text>';
+  });
+  ROUNDS_X.forEach(function(rg,idx){
+    var cx=(x(rg.i0)+x(rg.i1))/2;
+    els+='<text x="'+cx+'" y="'+(Tp-18)+'" text-anchor="middle" font-size="12" letter-spacing="1" fill="var(--ink3)" font-family="JetBrains Mono,monospace">IT'+rg.round+'</text>';
+    if(idx>0){ var sx=(x(ROUNDS_X[idx-1].i1)+x(rg.i0))/2; els+='<line x1="'+sx+'" x2="'+sx+'" y1="'+(Tp-8)+'" y2="'+(H-Bp)+'" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 5"></line>'; }
+  });
+  var dd="M "+x(0)+" "+(H-Bp); for(var i=0;i<N;i++) dd+=" L "+x(i)+" "+y(SEQ[i].prob); dd+=" L "+x(N-1)+" "+(H-Bp)+" Z";
+  els+='<path d="'+dd+'" fill="url(#ravenArea)"></path>';
+  for(var k=1;k<N;k++){ var up=SEQ[k].prob>=SEQ[k-1].prob; els+='<line x1="'+x(k-1)+'" y1="'+y(SEQ[k-1].prob)+'" x2="'+x(k)+'" y2="'+y(SEQ[k].prob)+'" stroke="'+(up?"var(--yes)":"var(--no)")+'" stroke-width="3" stroke-linecap="round"></line>'; }
+  for(var m=0;m<N;m++){
+    var isLast=m===N-1, p=SEQ[m];
+    if(m===0){
+      els+='<circle cx="'+x(0)+'" cy="'+y(p.prob)+'" r="5" fill="var(--bg3)" stroke="var(--orange)" stroke-width="2"></circle>';
+      els+='<text x="'+x(0)+'" y="'+(y(p.prob)-14)+'" text-anchor="middle" font-size="11" fill="var(--ink2)" font-family="JetBrains Mono,monospace">prior '+Math.round(p.prob*100)+'%</text>';
+    } else {
+      els+='<circle cx="'+x(m)+'" cy="'+y(p.prob)+'" r="'+(isLast?6:3.5)+'" fill="'+(isLast?"var(--orange)":"var(--bg3)")+'" stroke="var(--orange)" stroke-width="2"></circle>';
+    }
+    if(isLast){ els+='<text x="'+(x(m)-12)+'" y="'+(y(p.prob)-13)+'" text-anchor="end" font-size="17" font-weight="600" fill="var(--orange)" font-family="Space Grotesk,sans-serif">'+pct(p.prob)+'</text>'; }
+  }
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;overflow:visible;">'+els+'</svg>';
+}
+
+// ---------- RESULT ----------
+function resultHtml(){
+  var sm = summaryData();
+  var ci = RUN.credibleInterval;
+  var ciText = (ci && ci.length===2) ? ' &middot; 80% CI '+pct(ci[0],0)+'–'+pct(ci[1],0) : '';
+  // summary key factors
+  function factorList(list,kind){
+    if(!list || !list.length) return '';
+    var col = kind==="yes" ? "var(--yes)" : "var(--no)";
+    var head = kind==="yes" ? "▲ PUSHING TOWARD YES" : "▼ PUSHING TOWARD NO";
+    var items = list.map(function(f){ return '<li style="font-size:12.5px;line-height:1.55;color:var(--ink2);margin:0 0 8px;">'+esc(f)+'</li>'; }).join("");
+    return '<div style="flex:1 1 280px;min-width:240px;"><div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;letter-spacing:1px;color:'+col+';margin-bottom:9px;">'+head+'</div><ul style="margin:0;padding-left:16px;">'+items+'</ul></div>';
+  }
+  var factors = (sm.keyFactorsYes&&sm.keyFactorsYes.length)||(sm.keyFactorsNo&&sm.keyFactorsNo.length)
+    ? '<div style="display:flex;flex-wrap:wrap;gap:20px 34px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);">'+factorList(sm.keyFactorsYes,"yes")+factorList(sm.keyFactorsNo,"no")+'</div>'
+    : '';
+  var uncert = sm.mainUncertainties ? '<div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line);"><div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;letter-spacing:1px;color:var(--ink3);margin-bottom:8px;">OPEN UNCERTAINTIES</div><p style="font-size:13px;line-height:1.6;color:var(--ink2);margin:0;">'+esc(sm.mainUncertainties)+'</p></div>' : '';
+  var fallbackNote = sm._fallback ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:9px;letter-spacing:1px;color:var(--ink3);margin-left:8px;">(final-iteration read)</span>' : '';
+
+  // framing rows
+  var f=RUN.framing;
+  var rows=[
+    {l:"NORMALIZED QUESTION", v:f.normalizedQuestion},
+    {l:"RESOLUTION CRITERIA", v:f.resolutionCriteria},
+    {l:"RESOLUTION DATE", v:f.resolutionDate},
+    {l:"SETTLEMENT SOURCE", v:f.settlementSource},
+    {l:"PRIOR · "+Math.round((f.priorProbability||0)*100)+"%", v:f.priorRationale},
+    {l:"ASSUMPTIONS", v:f.assumptions},
+    {l:"CAVEATS", v:f.framingCaveats}
+  ].filter(function(r){ return r.v; });
+  var framingRows = rows.map(function(r){ return '<div style="flex:1 1 280px;min-width:240px;"><div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;letter-spacing:1.5px;color:var(--orange);margin-bottom:7px;">'+esc(r.l)+'</div><div style="font-size:13px;line-height:1.6;color:var(--ink2);">'+esc(r.v)+'</div></div>'; }).join("");
+
+  // iteration timeline
+  var rounds = RUN.roundHistory.map(function(r){
+    var net=(r.postProb-r.priorProb)*100;
+    var open=!!S.openRounds[r.round];
+    var srcHtml = r.perSourceUpdates.map(function(s,si){
+      var key="r"+r.round+"s"+si, so=!!S.openSources[key], b=badge(s.verified), up=s.deltaPp>=0;
+      var refl=isReflection(s), title=refl?reflectionTitle(s.title):s.title;
+      var tag = refl ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:8.5px;letter-spacing:0.5px;color:var(--warn);border:1px solid rgba(224,169,60,0.4);border-radius:4px;padding:1px 5px;margin-right:7px;">↻ REVISION</span>' : '';
+      return '<div style="border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--bg3);">'+
+        '<button data-action="src" data-key="'+key+'" style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;background:transparent;border:none;cursor:pointer;text-align:left;">'+
+          '<span style="display:inline-block;width:8px;height:8px;border-radius:2px;flex:none;background:'+dirColor(s.deltaPp)+';"></span>'+
+          // fix #3: source title colored by pp direction
+          '<span style="font-size:12.5px;line-height:1.35;font-weight:500;color:'+dirColor(s.deltaPp)+';flex:1;">'+tag+esc(title)+'</span>'+
+          '<span style="font-weight:700;font-size:14px;letter-spacing:-0.5px;padding:3px 9px;border-radius:7px;white-space:nowrap;'+chipStyle(s.deltaPp)+'">'+arrow(s.deltaPp)+' '+signPp(s.deltaPp)+'pp</span>'+
+          '<span style="font-family:\'JetBrains Mono\',monospace;font-size:14px;color:var(--ink3);transform:rotate('+(so?"180":"0")+'deg);transition:transform 0.2s;">&#9662;</span>'+
+        '</button>'+
+        (so ? '<div style="padding:0 14px 14px 34px;">'+
+          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-family:\'JetBrains Mono\',monospace;font-size:10.5px;color:var(--ink3);"><a href="'+esc(s.url)+'" target="_blank" rel="noopener" style="color:var(--ink3);text-decoration:none;">'+esc(canon(s.url))+'</a><span style="padding:2px 7px;border-radius:5px;'+b.style+'">'+b.text+'</span>'+(refl?'<span style="padding:2px 7px;border-radius:5px;color:var(--warn);background:rgba(224,169,60,0.10);">REVISES A PRIOR SOURCE</span>':'')+'</div>'+
+          '<p style="font-size:12.5px;line-height:1.6;color:var(--ink2);margin:0;">'+esc(s.explanation)+'</p>'+
+          '<div style="margin-top:10px;font-family:\'JetBrains Mono\',monospace;font-size:11px;color:var(--ink3);">moved belief '+pct(s.from,0)+' &rarr; <span style="color:var(--ink);">'+pct(s.to,0)+'</span></div>'+
+        '</div>' : '')+
+      '</div>';
+    }).join("");
+    // (b) whyChanged decomposition line
+    var wc=r.whyChanged;
+    var wcLine = wc ? '<div style="display:flex;flex-wrap:wrap;gap:10px 18px;margin:0 0 14px;font-family:\'JetBrains Mono\',monospace;font-size:10.5px;color:var(--ink3);">'+
+        '<span>net <span style="color:'+dirColor(wc.netPp)+';">'+signPp(wc.netPp)+'pp</span></span>'+
+        '<span style="color:var(--yes);">▲ +'+absPp(wc.upPp)+'</span>'+
+        '<span style="color:var(--no);">▼ −'+absPp(wc.downPp)+'</span>'+
+        (wc.dominantTitle?'<span>led by <span style="color:var(--ink2);">'+esc(reflectionTitle(wc.dominantTitle).slice(0,52))+(reflectionTitle(wc.dominantTitle).length>52?"…":"")+'</span></span>':'')+
+      '</div>' : '';
+    return '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:hidden;">'+
+      '<button data-action="round" data-round="'+r.round+'" style="width:100%;display:flex;align-items:center;gap:14px;padding:16px 18px;background:transparent;border:none;cursor:pointer;text-align:left;">'+
+        '<span style="font-family:\'Instrument Serif\',serif;font-size:15px;letter-spacing:1px;color:var(--ink3);flex:none;">ITERATION</span>'+
+        '<span style="font-family:\'Instrument Serif\',serif;font-size:26px;color:var(--ink);width:30px;flex:none;">'+(r.round<10?"0":"")+r.round+'</span>'+
+        '<div style="display:flex;align-items:baseline;gap:8px;flex:1;">'+
+          '<span style="font-size:16px;color:var(--ink3);font-variant-numeric:tabular-nums;">'+pct(r.priorProb,0)+'</span>'+
+          '<span style="color:var(--ink3);">&rarr;</span>'+
+          '<span style="font-size:22px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;">'+pct(r.postProb,0)+'</span>'+
+        '</div>'+
+        '<span style="font-weight:700;font-size:15px;letter-spacing:-0.5px;padding:5px 11px;border-radius:8px;'+chipStyle(net)+'">'+arrow(net)+' '+signPp(net)+'pp</span>'+
+        '<span style="font-family:\'JetBrains Mono\',monospace;font-size:18px;color:var(--ink3);transform:rotate('+(open?"180":"0")+'deg);transition:transform 0.2s;">&#9662;</span>'+
+      '</button>'+
+      (open ? '<div style="padding:0 18px 18px;">'+wcLine+
+        '<p style="font-size:13.5px;line-height:1.65;color:var(--ink2);margin:0 0 18px;border-left:2px solid var(--orange);padding-left:13px;">'+esc(r.reasoning)+'</p>'+
+        '<div style="display:flex;flex-direction:column;gap:9px;">'+srcHtml+'</div>'+
+      '</div>' : '')+
+    '</div>';
+  }).join("");
+
+  return ''+
+  '<section style="position:relative;z-index:3;max-width:1100px;margin:0 auto;padding:6px clamp(16px,4vw,44px) 90px;">'+
+    '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:clamp(20px,3vw,32px);display:flex;flex-wrap:wrap;gap:30px;align-items:center;box-shadow:0 30px 70px -40px rgba(0,0,0,0.7);">'+
+      '<div style="flex:1 1 300px;">'+
+        '<div style="display:inline-flex;align-items:center;gap:8px;font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:1.5px;color:var(--yes);background:rgba(70,196,154,0.1);border:1px solid rgba(70,196,154,0.28);border-radius:100px;padding:6px 12px;margin-bottom:18px;"><span>✓</span>COMPLETE &middot; '+RUN.roundHistory.length+' ITERATIONS &middot; '+duration()+'</div>'+
+        '<h2 style="font-family:\'Instrument Serif\',serif;font-weight:400;font-size:clamp(24px,3.2vw,34px);line-height:1.15;margin:0 0 24px;">'+esc(S.question)+'</h2>'+
+        '<div style="display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;">'+
+          '<div>'+
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10.5px;letter-spacing:2px;color:var(--ink3);margin-bottom:4px;">RAVEN’S ESTIMATE &middot; P(YES)</div>'+
+            '<div style="font-size:clamp(58px,9vw,86px);font-weight:600;line-height:0.85;letter-spacing:-2px;color:var(--orange);font-variant-numeric:tabular-nums;">'+pct(RUN.currentProb)+'</div>'+
+          '</div>'+
+          '<div style="padding-bottom:8px;">'+
+            '<div style="font-family:\'Instrument Serif\',serif;font-style:italic;font-size:26px;color:var(--ink);">'+esc(verdict(RUN.currentProb))+'</div>'+
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:var(--ink3);margin-top:6px;">started '+Math.round((f.priorProbability||0)*100)+'% prior'+ciText+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="display:flex;gap:10px;margin-top:26px;flex-wrap:wrap;">'+
+          '<button data-action="newq" style="font-family:\'JetBrains Mono\',monospace;font-size:12px;color:var(--ink2);background:transparent;border:1px solid var(--line);border-radius:9px;padding:11px 16px;cursor:pointer;">+ New question</button>'+
+        '</div>'+
+      '</div>'+
+      '<div style="flex:1 1 420px;min-width:320px;background:var(--bg3);border:1px solid var(--line);border-radius:14px;padding:18px 18px 10px;">'+
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10.5px;letter-spacing:2px;color:var(--ink3);margin-bottom:2px;">BELIEF TRAJECTORY</div>'+
+        buildChart()+
+      '</div>'+
+    '</div>'+
+    '<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px;">'+
+      '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:22px 24px;">'+
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:2px;color:var(--orange);margin-bottom:13px;">RAVEN’S SUMMARY'+fallbackNote+'</div>'+
+        '<p style="font-family:\'Instrument Serif\',serif;font-size:19px;line-height:1.55;color:var(--ink);margin:0;">'+esc(sm.verdict)+'</p>'+
+        factors+uncert+
+      '</div>'+
+      '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:hidden;">'+
+        '<button data-action="framing" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:transparent;border:none;cursor:pointer;text-align:left;">'+
+          '<span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:2px;color:var(--ink2);">RESOLUTION &amp; FRAMING</span>'+
+          '<span style="font-family:\'JetBrains Mono\',monospace;font-size:18px;color:var(--ink3);transform:rotate('+(S.framingOpen?"180":"0")+'deg);transition:transform 0.2s;">&#9662;</span>'+
+        '</button>'+
+        (S.framingOpen ? '<div style="padding:0 18px 22px;display:flex;flex-wrap:wrap;gap:22px 40px;">'+framingRows+'</div>' : '')+
+      '</div>'+
+    '</div>'+
+    '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:2px;color:var(--ink3);margin:28px 2px 12px;">ITERATION TIMELINE</div>'+
+    '<div style="display:flex;flex-direction:column;gap:12px;">'+rounds+'</div>'+
+  '</section>';
+}
+
+// ---------- render + events ----------
+function render(){
+  applyTheme();
+  var body = S.phase==="input" ? inputHtml() : S.phase==="reasoning" ? (LIVE?liveReasoningHtml():reasoningHtml()) : resultHtml();
+  document.getElementById("app").innerHTML = headerHtml()+body;
+  var qb=document.getElementById("qbox");
+  if(qb){ qb.addEventListener("input",function(e){ S.question=e.target.value; }); qb.addEventListener("keydown",function(e){ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); startRun(); } }); }
+}
+document.getElementById("app").addEventListener("click",function(e){
+  var el=e.target.closest("[data-action]"); if(!el) return;
+  var a=el.getAttribute("data-action");
+  if(a==="theme"){ S.theme=S.theme==="light"?"dark":"light"; render(); }
+  else if(a==="newq"){ newQuestion(); }
+  else if(a==="consult"){ startRun(); }
+  else if(a==="example"){ S.question=el.getAttribute("data-q"); var qb=document.getElementById("qbox"); if(qb)qb.value=S.question; }
+  else if(a==="round"){ var r=el.getAttribute("data-round"); S.openRounds[r]=!S.openRounds[r]; render(); }
+  else if(a==="src"){ var k=el.getAttribute("data-key"); S.openSources[k]=!S.openSources[k]; render(); }
+  else if(a==="framing"){ S.framingOpen=!S.framingOpen; render(); }
+  else if(a==="openrun"){ openRun(el.getAttribute("data-id")); }
+});
+
+// ---------- playback ----------
+var T=null, RAF=null;
+function startRun(){
+  if(LIVE){ startLive(); return; }
+  if(T)clearTimeout(T);
+  S.phase="reasoning"; S.stepIndex=0; S.completed=false; S.displayProb=STEPS[0].prob;
+  render();
+  T=setTimeout(advance,1000);
+}
+function advance(){
+  var next=S.stepIndex+1;
+  if(next>=STEPS.length){ finish(); return; }
+  var step=STEPS[next]; S.stepIndex=next; render();
+  if(step.type==="source") tweenTo(step.prob);
+  T=setTimeout(advance, step.type==="search"?1050:1250);
+}
+function finish(){
+  if(T)clearTimeout(T);
+  S.completed=true; render(); tweenTo(RUN.currentProb);
+  T=setTimeout(function(){ S.phase="result"; render(); window.scrollTo(0,0); },1100);
+}
+function tweenTo(target){
+  if(RAF)cancelAnimationFrame(RAF);
+  var start=S.displayProb, t0=performance.now(), dur=620;
+  function frame(t){
+    var k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3);
+    S.displayProb=start+(target-start)*e;
+    var hn=document.getElementById("heroNow"); if(hn)hn.textContent=pct(S.displayProb);
+    if(k<1)RAF=requestAnimationFrame(frame);
+  }
+  RAF=requestAnimationFrame(frame);
+}
+function newQuestion(){
+  if(T)clearTimeout(T); if(RAF)cancelAnimationFrame(RAF);
+  if(LIVE){ RUN=null; derive(); S.eventId=null; S.live=null; S.question=""; }
+  S.phase="input"; S.completed=false; S.stepIndex=0; S.displayProb=prior; render();
+  if(LIVE) loadRecent();
+}
+
+// ---------- shared evidence-stream cards (static replay + live) ----------
+function streamCardsHtml(items){
+  return items.map(function(s,idx){
+    var up=s.deltaPp>=0;
+    var fade = idx===2 ? "-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 30%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 30%,transparent 100%);" : "";
+    var refl = isReflection(s);
+    var title = refl ? reflectionTitle(s.title) : s.title;
+    var tag = refl ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:8.5px;letter-spacing:0.5px;color:var(--warn);border:1px solid rgba(224,169,60,0.4);border-radius:4px;padding:1px 5px;margin-right:7px;vertical-align:middle;">↻ REVISION</span>' : '';
+    return '<div style="display:flex;align-items:center;gap:16px;background:var(--bg2);border:1px solid var(--line);border-left:3px solid '+(up?"var(--yes)":"var(--no)")+';border-radius:13px;padding:15px 18px;'+fade+'animation:ravenRise 0.5s ease both;">'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;letter-spacing:0.5px;color:var(--ink3);margin-bottom:5px;">'+esc(canon(s.url))+'</div>'+
+          '<div style="font-size:13.5px;line-height:1.4;font-weight:500;color:'+dirColor(s.deltaPp)+';">'+tag+esc(title)+'</div>'+
+        '</div>'+
+        '<div style="text-align:right;flex:none;">'+
+          '<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;font-weight:700;font-size:24px;letter-spacing:-1px;line-height:1;color:'+dirColor(s.deltaPp)+';"><span style="font-size:17px;">'+arrow(s.deltaPp)+'</span>'+signPp(s.deltaPp)+'<span style="font-size:13px;font-weight:500;">pp</span></div>'+
+          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10.5px;color:var(--ink3);margin-top:5px;">'+pct(s.from,0)+' &rarr; <span style="color:var(--ink);">'+pct(s.to,0)+'</span></div>'+
+        '</div>'+
+      '</div>';
+  }).join("");
+}
+
+// ---------- LIVE reasoning (real engine progress, polled from /api) ----------
+function liveReasoningHtml(){
+  var L = S.live || {status:"Starting…"};
+  var hasState = !!RUN;
+  var done = L.jobStatus==="done"||L.jobStatus==="error"||L.jobStatus==="unforecastable";
+  var heroProb = hasState ? pct(RUN.currentProb) : "<span style=\"color:var(--ink3);font-size:0.6em;letter-spacing:4px;\">•••</span>";
+  var allSrc=[]; rounds().forEach(function(r){ r.perSourceUpdates.forEach(function(s){ allSrc.push(s); }); });
+  var lastSrc = allSrc.length ? allSrc[allSrc.length-1] : null;
+  var deltaChip = lastSrc
+    ? '<div style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-weight:700;font-size:21px;letter-spacing:-0.5px;padding:6px 14px;border-radius:10px;'+chipStyle(lastSrc.deltaPp)+'"><span style="font-size:16px;">'+arrow(lastSrc.deltaPp)+'</span>'+signPp(lastSrc.deltaPp)+' pp</div>'
+    : '<div style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-weight:700;font-size:16px;padding:6px 14px;border-radius:10px;color:var(--ink2);background:var(--bg3);">'+(hasState?"base rate":"researching…")+'</div>';
+  var top = allSrc.slice().reverse().slice(0,3).map(function(s){ return {url:s.url,title:s.title,deltaPp:s.deltaPp,from:s.from,to:s.to,kind:s.kind}; });
+  var cards = top.length ? streamCardsHtml(top)
+    : '<div style="text-align:center;color:var(--ink3);font-family:\'JetBrains Mono\',monospace;font-size:12px;padding:26px;border:1px dashed var(--line);border-radius:13px;">no evidence counted yet — the agent is searching the web…</div>';
+  var iterLine = hasState ? ('ITERATION '+RUN.round+' · '+(RUN.evidenceLedger?RUN.evidenceLedger.length:0)+' SOURCES') : 'FRAMING THE QUESTION';
+  return ''+
+  '<section style="position:relative;z-index:3;max-width:760px;margin:0 auto;padding:10px clamp(18px,4vw,32px) 90px;">'+
+    '<div style="text-align:center;margin-bottom:22px;">'+
+      '<div style="display:inline-flex;align-items:center;gap:10px;font-family:\'JetBrains Mono\',monospace;font-size:12px;letter-spacing:1.5px;color:var(--orange);background:var(--bg2);border:1px solid rgba(224,112,60,0.28);border-radius:100px;padding:8px 16px;">'+
+        (done ? '<span style="color:var(--yes);">✓</span>' : '<span style="width:13px;height:13px;border-radius:50%;border:2px solid var(--orange);border-top-color:transparent;display:inline-block;animation:ravenSpin 0.8s linear infinite;"></span>')+
+        '<span>'+esc(L.status||"Working")+'</span>'+
+        (done?'':'<span style="letter-spacing:2px;"><span style="animation:ravenDots 1.2s infinite;">.</span><span style="animation:ravenDots 1.2s infinite 0.2s;">.</span><span style="animation:ravenDots 1.2s infinite 0.4s;">.</span></span>')+
+      '</div>'+
+      '<h2 style="font-family:\'Instrument Serif\',serif;font-weight:400;font-size:clamp(22px,3.4vw,30px);margin:16px auto 0;line-height:1.2;max-width:600px;">'+esc(S.question)+'</h2>'+
+      '<div style="margin-top:10px;font-family:\'JetBrains Mono\',monospace;font-size:10.5px;letter-spacing:2px;color:var(--ink3);">LIVE &middot; '+iterLine+'</div>'+
+    '</div>'+
+    '<div style="text-align:center;background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:26px 24px 28px;margin-bottom:22px;">'+
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10.5px;letter-spacing:2.5px;color:var(--ink3);margin-bottom:8px;">RAVEN’S BELIEF &middot; P(YES)</div>'+
+      '<div id="heroNow" style="font-size:clamp(56px,11vw,84px);font-weight:600;line-height:0.9;letter-spacing:-2px;color:var(--orange);font-variant-numeric:tabular-nums;">'+heroProb+'</div>'+
+      deltaChip+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:11px;">'+cards+'</div>'+
+  '</section>';
+}
+
+function liveStatusText(jobStatus, logTail, state){
+  if(jobStatus==="error") return "Run failed — "+(logTail||"see server log");
+  if(jobStatus==="unforecastable") return "Not a clean yes/no question — try rephrasing";
+  if(!state){ return /Round\s*1/i.test(logTail) ? "Researching · iteration 1" : "Framing the question"; }
+  if(jobStatus==="done") return "Belief converged";
+  return "Researching · iteration "+(state.round+1);
+}
+
+function recentHtml(){
+  if(!LIVE || !S.recent || !S.recent.length) return '';
+  var items = S.recent.slice(0,8).map(function(r){
+    return '<button data-action="openrun" data-id="'+esc(r.eventId)+'" style="display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 14px;cursor:pointer;">'+
+      '<span style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.5px;color:var(--orange);font-variant-numeric:tabular-nums;width:54px;flex:none;">'+pct(r.currentProb,0)+'</span>'+
+      '<span style="flex:1;min-width:0;font-size:13px;color:var(--ink);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+esc(r.eventText||r.question||r.eventId)+'</span>'+
+      '<span style="font-family:\'JetBrains Mono\',monospace;font-size:9.5px;letter-spacing:0.5px;color:var(--ink3);flex:none;">'+r.round+'IT · '+(r.sources||0)+'src</span>'+
+    '</button>';
+  }).join("");
+  return '<div style="margin-top:34px;text-align:left;">'+
+    '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10.5px;letter-spacing:2px;color:var(--ink3);margin:0 2px 12px;">RECENT FORECASTS &middot; click to open</div>'+
+    '<div style="display:flex;flex-direction:column;gap:8px;">'+items+'</div>'+
+  '</div>';
+}
+
+// ---------- live engine control ----------
+function loadRecent(){
+  fetch("/api/runs").then(function(r){return r.json();}).then(function(list){ S.recent=Array.isArray(list)?list:[]; if(S.phase==="input") render(); }).catch(function(){});
+}
+function startLive(){
+  var q=(S.question||"").trim(); if(!q) return;
+  RUN=null; derive();
+  S.phase="reasoning"; S.live={status:"Starting forecast…", log:[], jobStatus:"running"};
+  render();
+  fetch("/api/forecast",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({question:q, maxRounds:3})})
+    .then(function(r){return r.json();})
+    .then(function(d){ if(d&&d.eventId){ S.eventId=d.eventId; pollLoop(); } else { S.live={status:"Could not start: "+((d&&d.error)||"unknown"), jobStatus:"error"}; render(); } })
+    .catch(function(e){ S.live={status:"Could not reach server: "+e.message, jobStatus:"error"}; render(); });
+}
+function pollLoop(){
+  if(!S.eventId) return;
+  fetch("/api/runs/"+encodeURIComponent(S.eventId)).then(function(r){return r.json();}).then(function(d){
+    if(d.state){ RUN=d.state; derive(); }
+    var jobStatus=d.job?d.job.status:"running";
+    var logTail=(d.job&&d.job.log&&d.job.log.length)?d.job.log[d.job.log.length-1]:"";
+    S.live={status:liveStatusText(jobStatus,logTail,d.state), log:(d.job&&d.job.log)||[], jobStatus:jobStatus};
+    var jobDone = jobStatus==="done"||jobStatus==="error"||jobStatus==="unforecastable";
+    if(jobDone && d.state){
+      if(!Object.keys(S.openRounds).length && rounds()[0]) S.openRounds[rounds()[0].round]=true;
+      S.phase="result"; render(); window.scrollTo(0,0); loadRecent(); return;
+    }
+    if(jobDone && !d.state){ render(); return; }
+    render();
+    setTimeout(pollLoop, 1600);
+  }).catch(function(){ setTimeout(pollLoop, 2600); });
+}
+function openRun(id){
+  fetch("/api/runs/"+encodeURIComponent(id)).then(function(r){return r.json();}).then(function(d){
+    if(d.state){ RUN=d.state; derive(); S.question=RUN.eventText||RUN.framing.normalizedQuestion; S.openRounds={}; if(rounds()[0])S.openRounds[rounds()[0].round]=true; S.phase="result"; render(); window.scrollTo(0,0); }
+  }).catch(function(){});
+}
+
+// ---------- boot ----------
+render();
+if(LIVE){ loadRecent(); }
+else if(S.phase==="reasoning" && autoplay){ S.stepIndex=0; S.displayProb=prior; T=setTimeout(advance,900); }
+})();
+</script>
+</body>
+</html>

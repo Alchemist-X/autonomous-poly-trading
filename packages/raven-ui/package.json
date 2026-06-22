@@ -1,0 +1,45 @@
+{
+  "name": "@autopoly/raven-ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Predict Raven design system — React components for the iterative forecaster UI",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./src/styles.css"
+  },
+  "files": [
+    "dist",
+    "src/styles.css",
+    "src/tokens.css",
+    "src/fonts.css"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "storybook": "storybook dev -p 6011 --no-open",
+    "build-storybook": "storybook build"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@storybook/react-vite": "^10.4.6",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "storybook": "^10.4.6",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.16"
+  }
+}
