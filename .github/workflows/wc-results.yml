@@ -1,5 +1,4 @@
-# Scheduled World Cup results refresh + publish — the always-on, cloud-native
-# replacement for the Mac /schedule routine. It runs the cheap, credential-free
+# World Cup results refresh + publish — runs the cheap, credential-free
 # settlement fetch (`pnpm wc:results`, market-blind: settled winner + final
 # score, no prices), and when the scores actually changed it builds and deploys
 # the site to forecasting-agent.com via the Vercel CLI using a VERCEL_TOKEN.
@@ -18,11 +17,11 @@
 name: World Cup results refresh
 
 on:
-  schedule:
-    # Twice daily, UTC. Timed after the day's late kickoffs settle on Polymarket.
-    # Group stage finishes late; adjust or add slots as the schedule demands.
-    - cron: "0 7 * * *"
-    - cron: "0 19 * * *"
+  # Group stage finished (2026-06-28); the final 72 results are frozen in
+  # results.generated.json, so the twice-daily cron is disabled. Run manually
+  # only — e.g. to republish forecasting-agent.com after a UI change:
+  # Actions -> "World Cup results refresh" -> Run workflow.
+  # (To re-enable a schedule for the knockout stage, restore a `schedule:` block.)
   workflow_dispatch: {}
 
 # Never let two runs deploy at once.
@@ -52,26 +51,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Refresh group-stage settlement (group stage is over, so this is now a
+      # no-op against the frozen results — kept so a manual run still self-checks
+      # the data before publishing).
       - name: Refresh settled results
         run: pnpm wc:results
 
-      - name: Detect score change
-        id: diff
-        run: |
-          if git diff --quiet -- apps/web/lib/world-cup/generated/results.generated.json; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No score changes — skipping the deploy (no wasted build)."
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "Scores changed — will build + deploy."
-          fi
-
+      # This workflow is manual-only now (no cron), so every run deploys — the
+      # operator triggers it precisely when they want to republish current main
+      # (e.g. after a UI change). No score-change gate.
       - name: Install Vercel CLI
-        if: steps.diff.outputs.changed == 'true'
         run: npm install -g vercel@latest
 
       - name: Build + deploy to forecasting-agent.com
-        if: steps.diff.outputs.changed == 'true'
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: team_2pB0XDZyHAZM66UPHg0fuAvA
@@ -83,7 +75,6 @@ jobs:
           bash scripts/world-cup/deploy-web.sh
 
       - name: Verify live site (real acceptance, not just a green CLI)
-        if: steps.diff.outputs.changed == 'true'
         run: |
           url="https://forecasting-agent.com/world-cup/groups"
           code=$(curl -sS -o /dev/null -w "%{http_code}" "$url")
