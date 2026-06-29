@@ -1,0 +1,578 @@
+[
+  {
+    "matchId": "PMSR-M01",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M01 MEX V RSA.pdf",
+    "teamA": "Mexico",
+    "teamB": "South Africa",
+    "date": "2026-06-11",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M02",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M02 KOR V CZE .pdf",
+    "teamA": "Korea Republic",
+    "teamB": "Czechia",
+    "date": "2026-06-11",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M03",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M03-CAN-V-BIH-V2.pdf",
+    "teamA": "Canada",
+    "teamB": "Bosnia-Herzegovina",
+    "date": "2026-06-12",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M04",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M04-USA-V-PAR.pdf",
+    "teamA": "United States",
+    "teamB": "Paraguay",
+    "date": "2026-06-12",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M05",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M05-HAI-V-SCO.pdf",
+    "teamA": "Haiti",
+    "teamB": "Scotland",
+    "date": "2026-06-13",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M06",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M06-AUS-V-TUR.pdf",
+    "teamA": "Australia",
+    "teamB": "Türkiye",
+    "date": "2026-06-14",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M07",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M07-BRA-V-MAR POST-V2.pdf",
+    "teamA": "Brazil",
+    "teamB": "Morocco",
+    "date": "2026-06-13",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M08",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M08-QAT-V-SUI.pdf",
+    "teamA": "Qatar",
+    "teamB": "Switzerland",
+    "date": "2026-06-13",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M09",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M09-CIV-V-ECU.pdf",
+    "teamA": "Côte d'Ivoire",
+    "teamB": "Ecuador",
+    "date": "2026-06-14",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M10",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M10-GER-V-CUW-V2.pdf",
+    "teamA": "Germany",
+    "teamB": "Curaçao",
+    "date": "2026-06-14",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M11",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M11-NED-V-JPN.pdf",
+    "teamA": "Netherlands",
+    "teamB": "Japan",
+    "date": "2026-06-14",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M12",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M12-SWE-V-TUN.pdf",
+    "teamA": "Sweden",
+    "teamB": "Tunisia",
+    "date": "2026-06-14",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M13",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M13-KSA-V-URU.pdf",
+    "teamA": "Saudi Arabia",
+    "teamB": "Uruguay",
+    "date": "2026-06-15",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M14",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M14-ESP-V-CPV.pdf",
+    "teamA": "Spain",
+    "teamB": "Cabo Verde",
+    "date": "2026-06-15",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M15",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M15-IRN-V-NZL.pdf",
+    "teamA": "IR Iran",
+    "teamB": "New Zealand",
+    "date": "2026-06-15",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M16",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M16-BEL-V-EGY.pdf",
+    "teamA": "Belgium",
+    "teamB": "Egypt",
+    "date": "2026-06-15",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M17",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M17-FRA-V-SEN.pdf",
+    "teamA": "France",
+    "teamB": "Senegal",
+    "date": "2026-06-16",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M18",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M18-IRQ-V-NOR.pdf",
+    "teamA": "Iraq",
+    "teamB": "Norway",
+    "date": "2026-06-16",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M19",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M19-ARG-V-ALG.pdf",
+    "teamA": "Argentina",
+    "teamB": "Algeria",
+    "date": "2026-06-16",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M20",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M20-AUT-V-JOR-V3.pdf",
+    "teamA": "Austria",
+    "teamB": "Jordan",
+    "date": "2026-06-17",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M21",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M21-GHA-V-PAN-V2.pdf",
+    "teamA": "Ghana",
+    "teamB": "Panama",
+    "date": "2026-06-17",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M22",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M22-ENG-V-CRO.pdf",
+    "teamA": "England",
+    "teamB": "Croatia",
+    "date": "2026-06-17",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M23",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M23-POR-V-COD.pdf",
+    "teamA": "Portugal",
+    "teamB": "DR Congo",
+    "date": "2026-06-17",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M24",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M24-UZB-V-COL-V2.pdf",
+    "teamA": "Uzbekistan",
+    "teamB": "Colombia",
+    "date": "2026-06-17",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M25",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M25-CZE-V-RSA.pdf",
+    "teamA": "Czechia",
+    "teamB": "South Africa",
+    "date": "2026-06-18",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M26",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M26-SUI-V-BIH.pdf",
+    "teamA": "Switzerland",
+    "teamB": "Bosnia-Herzegovina",
+    "date": "2026-06-18",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M27",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M27-CAN-V-QAT.pdf",
+    "teamA": "Canada",
+    "teamB": "Qatar",
+    "date": "2026-06-18",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M28",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M28-MEX-V-KOR.pdf",
+    "teamA": "Mexico",
+    "teamB": "Korea Republic",
+    "date": "2026-06-18",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M29",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M29-BRA-V-HAI.pdf",
+    "teamA": "Brazil",
+    "teamB": "Haiti",
+    "date": "2026-06-19",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M30",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M30-SCO-V-MAR.pdf",
+    "teamA": "Scotland",
+    "teamB": "Morocco",
+    "date": "2026-06-19",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M31",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M31-TUR-V-PAR.pdf",
+    "teamA": "Türkiye",
+    "teamB": "Paraguay",
+    "date": "2026-06-19",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M32",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M32-USA-V-AUS.pdf",
+    "teamA": "United States",
+    "teamB": "Australia",
+    "date": "2026-06-19",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M33",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M33-GER-V-CIV.pdf",
+    "teamA": "Germany",
+    "teamB": "Côte d'Ivoire",
+    "date": "2026-06-20",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M34",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M34-ECU-V-CUW.pdf",
+    "teamA": "Ecuador",
+    "teamB": "Curaçao",
+    "date": "2026-06-20",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M35",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M35-NED-V-SWE.pdf",
+    "teamA": "Netherlands",
+    "teamB": "Sweden",
+    "date": "2026-06-20",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M36",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M36-TUN-V-JPN.pdf",
+    "teamA": "Tunisia",
+    "teamB": "Japan",
+    "date": "2026-06-21",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M37",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M37-URU-V-CPV.pdf",
+    "teamA": "Uruguay",
+    "teamB": "Cabo Verde",
+    "date": "2026-06-21",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M38",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M38-ESP-V-KSA.pdf",
+    "teamA": "Spain",
+    "teamB": "Saudi Arabia",
+    "date": "2026-06-21",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M39",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M39-BEL-V-IRN.pdf",
+    "teamA": "Belgium",
+    "teamB": "IR Iran",
+    "date": "2026-06-21",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M40",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M40-NZL-V-EGY.pdf",
+    "teamA": "New Zealand",
+    "teamB": "Egypt",
+    "date": "2026-06-21",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M41",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M41-NOR-V-SEN.pdf",
+    "teamA": "Norway",
+    "teamB": "Senegal",
+    "date": "2026-06-22",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M42",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M42-FRA-V-IRQ.pdf",
+    "teamA": "France",
+    "teamB": "Iraq",
+    "date": "2026-06-22",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M43",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M43-ARG-V-AUT.pdf",
+    "teamA": "Argentina",
+    "teamB": "Austria",
+    "date": "2026-06-22",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M44",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M44-JOR-V-ALG.pdf",
+    "teamA": "Jordan",
+    "teamB": "Algeria",
+    "date": "2026-06-22",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M45",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M45-ENG-V-GHA.pdf",
+    "teamA": "England",
+    "teamB": "Ghana",
+    "date": "2026-06-23",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M46",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M46-PAN-V-CRO.pdf",
+    "teamA": "Panama",
+    "teamB": "Croatia",
+    "date": "2026-06-23",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M47",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M47-POR-V-GHA.pdf",
+    "teamA": "Portugal",
+    "teamB": "Uzbekistan",
+    "date": "2026-06-23",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M48",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M48-COL-V-COD-V2.pdf",
+    "teamA": "Colombia",
+    "teamB": "DR Congo",
+    "date": "2026-06-23",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M49",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M49-SCO-V-BRA.pdf",
+    "teamA": "Scotland",
+    "teamB": "Brazil",
+    "date": "2026-06-24",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M50",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M50-MAR-V-HAI.pdf",
+    "teamA": "Morocco",
+    "teamB": "Haiti",
+    "date": "2026-06-24",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M51",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M51-SUI-V-CAN.pdf",
+    "teamA": "Switzerland",
+    "teamB": "Canada",
+    "date": "2026-06-24",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M52",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M52-BIH-V-QAT.pdf",
+    "teamA": "Bosnia-Herzegovina",
+    "teamB": "Qatar",
+    "date": "2026-06-24",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M53",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M53-CZE-V-MEX.pdf",
+    "teamA": "Czechia",
+    "teamB": "Mexico",
+    "date": "2026-06-24",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M54",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M54-RSA-V-KOR.pdf",
+    "teamA": "South Africa",
+    "teamB": "Korea Republic",
+    "date": "2026-06-24",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M55",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M55-CUW-V-CIV.pdf",
+    "teamA": "Curaçao",
+    "teamB": "Côte d'Ivoire",
+    "date": "2026-06-25",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M56",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M56-ECU-V-GER.pdf",
+    "teamA": "Ecuador",
+    "teamB": "Germany",
+    "date": "2026-06-25",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M57",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M57-JPN-V-SWE.pdf",
+    "teamA": "Japan",
+    "teamB": "Sweden",
+    "date": "2026-06-25",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M58",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M58-TUN-V-NED.pdf",
+    "teamA": "Tunisia",
+    "teamB": "Netherlands",
+    "date": "2026-06-25",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M59",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M59-TUR-v-USA.pdf",
+    "teamA": "Türkiye",
+    "teamB": "United States",
+    "date": "2026-06-25",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M60",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M60-PAR-V-AUS.pdf",
+    "teamA": "Paraguay",
+    "teamB": "Australia",
+    "date": "2026-06-25",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M61",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M61-NOR-V-FRA.pdf",
+    "teamA": "Norway",
+    "teamB": "France",
+    "date": "2026-06-26",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M62",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M62-SEN-V-IRQ.pdf",
+    "teamA": "Senegal",
+    "teamB": "Iraq",
+    "date": "2026-06-26",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M63",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M63-EGY-V-IRN.pdf",
+    "teamA": "Egypt",
+    "teamB": "IR Iran",
+    "date": "2026-06-26",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M64",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M64-NZL-V-BEL.pdf",
+    "teamA": "New Zealand",
+    "teamB": "Belgium",
+    "date": "2026-06-26",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M65",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M65-CPV-V-KSA.pdf",
+    "teamA": "Cabo Verde",
+    "teamB": "Saudi Arabia",
+    "date": "2026-06-26",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M66",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M66-URU-V-ESP.pdf",
+    "teamA": "Uruguay",
+    "teamB": "Spain",
+    "date": "2026-06-26",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M67",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M67-PAN-V-ENG.pdf",
+    "teamA": "Panama",
+    "teamB": "England",
+    "date": "2026-06-27",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M68",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M68-CRO-V-GHA.pdf",
+    "teamA": "Croatia",
+    "teamB": "Ghana",
+    "date": "2026-06-27",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M69",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M69-ALG-V-AUT.pdf",
+    "teamA": "Algeria",
+    "teamB": "Austria",
+    "date": "2026-06-27",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M70",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M70-JOR-V-ARG.pdf",
+    "teamA": "Jordan",
+    "teamB": "Argentina",
+    "date": "2026-06-27",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M71",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M71-COL-V-POR.pdf",
+    "teamA": "Colombia",
+    "teamB": "Portugal",
+    "date": "2026-06-27",
+    "neutral": true
+  },
+  {
+    "matchId": "PMSR-M72",
+    "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M72-COD-V-UZB.pdf",
+    "teamA": "DR Congo",
+    "teamB": "Uzbekistan",
+    "date": "2026-06-27",
+    "neutral": true
+  }
+]
