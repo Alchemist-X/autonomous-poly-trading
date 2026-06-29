@@ -1,15 +1,13 @@
-"use client";
-
-import { useState } from "react";
 import type { Fifa8Fixture, ForecasterMeta, Pick, Tier } from "../../lib/world-cup/fifa8-store";
 import { resolveTeam } from "../../lib/world-cup/team-meta";
-import { t, teamLabel, type Locale, type StrKey } from "../../lib/world-cup/i18n";
+import { t, teamLabel, withLocale, type Locale, type StrKey } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
 
 // One Round-of-32 fixture, market-blind: the multi-calibrated headline call
-// (favoured side + win %, plain-language verdict, confidence chip), a per-model
-// comparison of all nine forecasters' win / draw / loss splits, and an
-// expandable list of the headline drivers. No prices anywhere on this surface.
+// (favoured side + win %, plain-language verdict, confidence chip) and a
+// per-model comparison of all nine forecasters' win / draw / loss splits. The
+// full reasoning + FIFA-stat evidence lives on the per-match detail page, which
+// this card links to. No prices anywhere on this surface.
 
 function tierClass(tier: Tier) {
   if (tier === "high") return styles.tierHigh;
@@ -21,15 +19,6 @@ const TIER_LABEL_KEY: Record<Tier, StrKey> = {
   high: "tierHigh",
   medium: "tierMedium",
   low: "tierLow"
-};
-
-// The published (multi-calibrated) headline exposes a small fixed set of driver
-// labels; map them to i18n keys so the "why" panel is localized rather than
-// showing the engine's raw English. (The headline forecaster only ever emits
-// these labels, so the English fallback below is a safety net, not a live path.)
-const DRIVER_KEY: Record<string, StrKey> = {
-  "Consensus of all models": "knDriverConsensus",
-  "Bias correction": "knDriverBias"
 };
 
 // Round three probabilities to integer percents that sum to exactly 100
@@ -62,16 +51,6 @@ function verdict(locale: Locale, pick: Pick, favouredName: string, pct: number):
   return t(locale, key).replace("{team}", favouredName).replace("{pct}", String(pct));
 }
 
-// One localized driver line: which way the factor leaned, and by how much.
-function driverDetail(locale: Locale, contributionPp: number, nameA: string, nameB: string): string {
-  const fav = contributionPp >= 0 ? nameA : nameB;
-  const sign = contributionPp >= 0 ? "+" : "−";
-  return t(locale, "knDriverPp")
-    .replace("{sign}", sign)
-    .replace("{pp}", Math.abs(contributionPp).toFixed(1))
-    .replace("{team}", fav);
-}
-
 function Splits({ a, draw, b }: { a: number; draw: number; b: number }) {
   return (
     <span className={styles.knBar} aria-hidden>
@@ -93,8 +72,6 @@ export function Fifa8MatchCard({
   headlineId: string;
   locale: Locale;
 }) {
-  const [open, setOpen] = useState(false);
-
   const headline = fixture.headline;
   const teamA = resolveTeam(fixture.teamA);
   const teamB = resolveTeam(fixture.teamB);
@@ -175,31 +152,9 @@ export function Fifa8MatchCard({
         </div>
       </div>
 
-      <button
-        type="button"
-        className={styles.knToggle}
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-      >
-        {open ? t(locale, "knHideWhy") : t(locale, "knWhy")}
-      </button>
-
-      {open ? (
-        <div className={styles.knDrivers}>
-          <ul className={styles.knDriverList}>
-            {headline.drivers.map((d, i) => {
-              const labelKey = DRIVER_KEY[d.label];
-              return (
-                <li key={i} className={styles.knDriverItem}>
-                  <span className={styles.knDriverLabel}>{labelKey ? t(locale, labelKey) : d.label}</span>
-                  <span className={styles.knDriverDetail}>{driverDetail(locale, d.contributionPp, nameA, nameB)}</span>
-                </li>
-              );
-            })}
-          </ul>
-          <p className={styles.knMethodNote}>{t(locale, "knMarketBlindNote")}</p>
-        </div>
-      ) : null}
+      <a className={styles.knDetailLink} href={withLocale(`/world-cup/knockout/${fixture.fixtureId}`, locale)}>
+        {t(locale, "knSeeReasoning")}
+      </a>
     </section>
   );
 }
