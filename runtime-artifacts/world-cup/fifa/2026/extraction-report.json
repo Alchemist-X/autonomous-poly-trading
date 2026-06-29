@@ -1,0 +1,2606 @@
+{
+  "generatedAt": "20260629T150526Z",
+  "matches": [
+    {
+      "matchId": "PMSR-M01",
+      "teamA": "Mexico",
+      "teamB": "South Africa",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.78,
+        "B": 0.1
+      }
+    },
+    {
+      "matchId": "PMSR-M02",
+      "teamA": "Korea Republic",
+      "teamB": "Czechia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.77,
+        "B": 0.64
+      }
+    },
+    {
+      "matchId": "PMSR-M03",
+      "teamA": "Canada",
+      "teamB": "Bosnia-Herzegovina",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)",
+        "teamB 'Bosnia-Herzegovina' != page-1 away 'Bosnia and Herzegovina'"
+      ],
+      "xgReal": {
+        "A": 1.49,
+        "B": 0.76
+      }
+    },
+    {
+      "matchId": "PMSR-M04",
+      "teamA": "United States",
+      "teamB": "Paraguay",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)",
+        "teamA 'United States' != page-1 home 'USA'"
+      ],
+      "xgReal": {
+        "A": 1.88,
+        "B": 0.6
+      }
+    },
+    {
+      "matchId": "PMSR-M05",
+      "teamA": "Haiti",
+      "teamB": "Scotland",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.7,
+        "B": 0.91
+      }
+    },
+    {
+      "matchId": "PMSR-M06",
+      "teamA": "Australia",
+      "teamB": "Türkiye",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.99,
+        "B": 1.66
+      }
+    },
+    {
+      "matchId": "PMSR-M07",
+      "teamA": "Brazil",
+      "teamB": "Morocco",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.99,
+        "B": 1.33
+      }
+    },
+    {
+      "matchId": "PMSR-M08",
+      "teamA": "Qatar",
+      "teamB": "Switzerland",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.52,
+        "B": 3.14
+      }
+    },
+    {
+      "matchId": "PMSR-M09",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Ecuador",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.88,
+        "B": 1.36
+      }
+    },
+    {
+      "matchId": "PMSR-M10",
+      "teamA": "Germany",
+      "teamB": "Curaçao",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 4.17,
+        "B": 0.4
+      }
+    },
+    {
+      "matchId": "PMSR-M11",
+      "teamA": "Netherlands",
+      "teamB": "Japan",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.63,
+        "B": 0.34
+      }
+    },
+    {
+      "matchId": "PMSR-M12",
+      "teamA": "Sweden",
+      "teamB": "Tunisia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.09,
+        "B": 0.34
+      }
+    },
+    {
+      "matchId": "PMSR-M13",
+      "teamA": "Saudi Arabia",
+      "teamB": "Uruguay",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.06,
+        "B": 1.5
+      }
+    },
+    {
+      "matchId": "PMSR-M14",
+      "teamA": "Spain",
+      "teamB": "Cabo Verde",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.26,
+        "B": 0.13
+      }
+    },
+    {
+      "matchId": "PMSR-M15",
+      "teamA": "IR Iran",
+      "teamB": "New Zealand",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.85,
+        "B": 1.47
+      }
+    },
+    {
+      "matchId": "PMSR-M16",
+      "teamA": "Belgium",
+      "teamB": "Egypt",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.07,
+        "B": 0.73
+      }
+    },
+    {
+      "matchId": "PMSR-M17",
+      "teamA": "France",
+      "teamB": "Senegal",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.62,
+        "B": 0.39
+      }
+    },
+    {
+      "matchId": "PMSR-M18",
+      "teamA": "Iraq",
+      "teamB": "Norway",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.2,
+        "B": 2.41
+      }
+    },
+    {
+      "matchId": "PMSR-M19",
+      "teamA": "Argentina",
+      "teamB": "Algeria",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.58,
+        "B": 0.41
+      }
+    },
+    {
+      "matchId": "PMSR-M20",
+      "teamA": "Austria",
+      "teamB": "Jordan",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.93,
+        "B": 0.53
+      }
+    },
+    {
+      "matchId": "PMSR-M21",
+      "teamA": "Ghana",
+      "teamB": "Panama",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.98,
+        "B": 0.77
+      }
+    },
+    {
+      "matchId": "PMSR-M22",
+      "teamA": "England",
+      "teamB": "Croatia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 3.33,
+        "B": 0.82
+      }
+    },
+    {
+      "matchId": "PMSR-M23",
+      "teamA": "Portugal",
+      "teamB": "DR Congo",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)",
+        "teamB 'DR Congo' != page-1 away 'Congo DR'"
+      ],
+      "xgReal": {
+        "A": 0.57,
+        "B": 0.54
+      }
+    },
+    {
+      "matchId": "PMSR-M24",
+      "teamA": "Uzbekistan",
+      "teamB": "Colombia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.11,
+        "B": 1.16
+      }
+    },
+    {
+      "matchId": "PMSR-M25",
+      "teamA": "Czechia",
+      "teamB": "South Africa",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.36,
+        "B": 1.34
+      }
+    },
+    {
+      "matchId": "PMSR-M26",
+      "teamA": "Switzerland",
+      "teamB": "Bosnia-Herzegovina",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)",
+        "teamB 'Bosnia-Herzegovina' != page-1 away 'Bosnia and Herzegovina'"
+      ],
+      "xgReal": {
+        "A": 1.85,
+        "B": 0.3
+      }
+    },
+    {
+      "matchId": "PMSR-M27",
+      "teamA": "Canada",
+      "teamB": "Qatar",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 3.9,
+        "B": 0.2
+      }
+    },
+    {
+      "matchId": "PMSR-M28",
+      "teamA": "Mexico",
+      "teamB": "Korea Republic",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.34,
+        "B": 0.87
+      }
+    },
+    {
+      "matchId": "PMSR-M29",
+      "teamA": "Brazil",
+      "teamB": "Haiti",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.42,
+        "B": 0.26
+      }
+    },
+    {
+      "matchId": "PMSR-M30",
+      "teamA": "Scotland",
+      "teamB": "Morocco",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.74,
+        "B": 0.8
+      }
+    },
+    {
+      "matchId": "PMSR-M31",
+      "teamA": "Türkiye",
+      "teamB": "Paraguay",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.13,
+        "B": 0.36
+      }
+    },
+    {
+      "matchId": "PMSR-M32",
+      "teamA": "United States",
+      "teamB": "Australia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)",
+        "teamA 'United States' != page-1 home 'USA'"
+      ],
+      "xgReal": {
+        "A": 1.58,
+        "B": 0.31
+      }
+    },
+    {
+      "matchId": "PMSR-M33",
+      "teamA": "Germany",
+      "teamB": "Côte d'Ivoire",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.47,
+        "B": 1.27
+      }
+    },
+    {
+      "matchId": "PMSR-M34",
+      "teamA": "Ecuador",
+      "teamB": "Curaçao",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.76,
+        "B": 0.63
+      }
+    },
+    {
+      "matchId": "PMSR-M35",
+      "teamA": "Netherlands",
+      "teamB": "Sweden",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.25,
+        "B": 1.3
+      }
+    },
+    {
+      "matchId": "PMSR-M36",
+      "teamA": "Tunisia",
+      "teamB": "Japan",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.02,
+        "B": 1.36
+      }
+    },
+    {
+      "matchId": "PMSR-M37",
+      "teamA": "Uruguay",
+      "teamB": "Cabo Verde",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.23,
+        "B": 0.54
+      }
+    },
+    {
+      "matchId": "PMSR-M38",
+      "teamA": "Spain",
+      "teamB": "Saudi Arabia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 3.2,
+        "B": 0.11
+      }
+    },
+    {
+      "matchId": "PMSR-M39",
+      "teamA": "Belgium",
+      "teamB": "IR Iran",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.48,
+        "B": 0.48
+      }
+    },
+    {
+      "matchId": "PMSR-M40",
+      "teamA": "New Zealand",
+      "teamB": "Egypt",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.71,
+        "B": 2.1
+      }
+    },
+    {
+      "matchId": "PMSR-M41",
+      "teamA": "Norway",
+      "teamB": "Senegal",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.5,
+        "B": 2.05
+      }
+    },
+    {
+      "matchId": "PMSR-M42",
+      "teamA": "France",
+      "teamB": "Iraq",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.3,
+        "B": 0.7
+      }
+    },
+    {
+      "matchId": "PMSR-M43",
+      "teamA": "Argentina",
+      "teamB": "Austria",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.45,
+        "B": 0.63
+      }
+    },
+    {
+      "matchId": "PMSR-M44",
+      "teamA": "Jordan",
+      "teamB": "Algeria",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.38,
+        "B": 2.05
+      }
+    },
+    {
+      "matchId": "PMSR-M45",
+      "teamA": "England",
+      "teamB": "Ghana",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.78,
+        "B": 0.34
+      }
+    },
+    {
+      "matchId": "PMSR-M46",
+      "teamA": "Panama",
+      "teamB": "Croatia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.69,
+        "B": 0.82
+      }
+    },
+    {
+      "matchId": "PMSR-M47",
+      "teamA": "Portugal",
+      "teamB": "Uzbekistan",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.03,
+        "B": 0.44
+      }
+    },
+    {
+      "matchId": "PMSR-M48",
+      "teamA": "Colombia",
+      "teamB": "DR Congo",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)",
+        "teamB 'DR Congo' != page-1 away 'Congo DR'"
+      ],
+      "xgReal": {
+        "A": 1.54,
+        "B": 0.42
+      }
+    },
+    {
+      "matchId": "PMSR-M49",
+      "teamA": "Scotland",
+      "teamB": "Brazil",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.69,
+        "B": 3.78
+      }
+    },
+    {
+      "matchId": "PMSR-M50",
+      "teamA": "Morocco",
+      "teamB": "Haiti",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.12,
+        "B": 0.67
+      }
+    },
+    {
+      "matchId": "PMSR-M51",
+      "teamA": "Switzerland",
+      "teamB": "Canada",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.68,
+        "B": 1.61
+      }
+    },
+    {
+      "matchId": "PMSR-M52",
+      "teamA": "Bosnia-Herzegovina",
+      "teamB": "Qatar",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)",
+        "teamA 'Bosnia-Herzegovina' != page-1 home 'Bosnia and Herzegovina'"
+      ],
+      "xgReal": {
+        "A": 0.77,
+        "B": 1.17
+      }
+    },
+    {
+      "matchId": "PMSR-M53",
+      "teamA": "Czechia",
+      "teamB": "Mexico",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.44,
+        "B": 2.1
+      }
+    },
+    {
+      "matchId": "PMSR-M54",
+      "teamA": "South Africa",
+      "teamB": "Korea Republic",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.89,
+        "B": 0.74
+      }
+    },
+    {
+      "matchId": "PMSR-M55",
+      "teamA": "Curaçao",
+      "teamB": "Côte d'Ivoire",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.66,
+        "B": 0.93
+      }
+    },
+    {
+      "matchId": "PMSR-M56",
+      "teamA": "Ecuador",
+      "teamB": "Germany",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.29,
+        "B": 0.74
+      }
+    },
+    {
+      "matchId": "PMSR-M57",
+      "teamA": "Japan",
+      "teamB": "Sweden",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.22,
+        "B": 0.56
+      }
+    },
+    {
+      "matchId": "PMSR-M58",
+      "teamA": "Tunisia",
+      "teamB": "Netherlands",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.76,
+        "B": 1.79
+      }
+    },
+    {
+      "matchId": "PMSR-M59",
+      "teamA": "Türkiye",
+      "teamB": "United States",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)",
+        "teamB 'United States' != page-1 away 'USA'"
+      ],
+      "xgReal": {
+        "A": 1.71,
+        "B": 1.78
+      }
+    },
+    {
+      "matchId": "PMSR-M60",
+      "teamA": "Paraguay",
+      "teamB": "Australia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.29,
+        "B": 0.7
+      }
+    },
+    {
+      "matchId": "PMSR-M61",
+      "teamA": "Norway",
+      "teamB": "France",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.45,
+        "B": 1.05
+      }
+    },
+    {
+      "matchId": "PMSR-M62",
+      "teamA": "Senegal",
+      "teamB": "Iraq",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 2.7,
+        "B": 0.21
+      }
+    },
+    {
+      "matchId": "PMSR-M63",
+      "teamA": "Egypt",
+      "teamB": "IR Iran",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.92,
+        "B": 2.24
+      }
+    },
+    {
+      "matchId": "PMSR-M64",
+      "teamA": "New Zealand",
+      "teamB": "Belgium",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.3,
+        "B": 3.99
+      }
+    },
+    {
+      "matchId": "PMSR-M65",
+      "teamA": "Cabo Verde",
+      "teamB": "Saudi Arabia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.37,
+        "B": 0.35
+      }
+    },
+    {
+      "matchId": "PMSR-M66",
+      "teamA": "Uruguay",
+      "teamB": "Spain",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.22,
+        "B": 1.12
+      }
+    },
+    {
+      "matchId": "PMSR-M67",
+      "teamA": "Panama",
+      "teamB": "England",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.72,
+        "B": 1.61
+      }
+    },
+    {
+      "matchId": "PMSR-M68",
+      "teamA": "Croatia",
+      "teamB": "Ghana",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.48,
+        "B": 0.75
+      }
+    },
+    {
+      "matchId": "PMSR-M69",
+      "teamA": "Algeria",
+      "teamB": "Austria",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.54,
+        "B": 1.06
+      }
+    },
+    {
+      "matchId": "PMSR-M70",
+      "teamA": "Jordan",
+      "teamB": "Argentina",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 0.96,
+        "B": 2.52
+      }
+    },
+    {
+      "matchId": "PMSR-M71",
+      "teamA": "Colombia",
+      "teamB": "Portugal",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": 1.85,
+        "B": 0.97
+      }
+    },
+    {
+      "matchId": "PMSR-M72",
+      "teamA": "DR Congo",
+      "teamB": "Uzbekistan",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "zone5 distance absent (page-3 has only zone 4)",
+        "teamA 'DR Congo' != page-1 home 'Congo DR'"
+      ],
+      "xgReal": {
+        "A": 2.11,
+        "B": 0.16
+      }
+    }
+  ]
+}

@@ -1,0 +1,414 @@
+{
+  "fixtureId": "fifwc-col-gha-2026-07-03",
+  "teamA": "Colombia",
+  "teamB": "Ghana",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.6848439514899566,
+        "draw": 0.24440875514410687,
+        "away": 0.07074729336593653
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Colombia",
+          "p": 0.6848439514899566
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.24440875514410687
+        },
+        {
+          "key": "b",
+          "label": "Ghana",
+          "p": 0.07074729336593653
+        }
+      ],
+      "headline": "Colombia are a clear favourite to beat Ghana (68.5% to win).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Colombia's attack is projected for about 1.7 goals against Ghana's defence, versus roughly 0.4 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": 61.4
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "Colombia carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 24.4%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.7904660769715321,
+        "draw": 0.15081259196926525,
+        "away": 0.05872133105920262
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Colombia",
+          "p": 0.7904660769715321
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.15081259196926525
+        },
+        {
+          "key": "b",
+          "label": "Ghana",
+          "p": 0.05872133105920262
+        }
+      ],
+      "headline": "Colombia are the clear favourite to beat Ghana, winning roughly 79 times out of 100 to Ghana's 6.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage Colombia created 0.7 more good chances per game than they gave up, versus 0.3 for Ghana — Colombia simply made better chances more often.",
+          "contributionPp": 6
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "Colombia are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that Ghana would need a clear upset to advance.",
+          "contributionPp": 4
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.455560912216727,
+        "draw": 0.24084492864095872,
+        "away": 0.3035941591423143
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Colombia",
+          "p": 0.455560912216727
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.24084492864095872
+        },
+        {
+          "key": "b",
+          "label": "Ghana",
+          "p": 0.3035941591423143
+        }
+      ],
+      "headline": "Colombia is the favourite, expected to generate the better scoring chances over 90 minutes.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Colombia has been creating about 2 goals of chances a game; Ghana's defence usually allows about 1.7. That points to roughly 1.7 goals for Colombia.",
+          "contributionPp": 14.7
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "Ghana has been creating about 0.7 goals of chances a game; Colombia's defence usually allows about 0.7. That points to roughly 1.3 goals for Ghana.",
+          "contributionPp": 2.1
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, Colombia projects to outscore Ghana by about 0.3 goals on the night.",
+          "contributionPp": 8.2
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.7908851496420743,
+        "draw": 0.1505943632747294,
+        "away": 0.05852048708319625
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Colombia",
+          "p": 0.7908851496420743
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.1505943632747294
+        },
+        {
+          "key": "b",
+          "label": "Ghana",
+          "p": 0.05852048708319625
+        }
+      ],
+      "headline": "Colombia is clearly the stronger side here with about a 79% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "Colombia and Ghana ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Form and strength",
+          "detail": "Colombia carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": 22.6
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.6375312155973548,
+        "draw": 0.23873435841258034,
+        "away": 0.12373442599006489
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Colombia",
+          "p": 0.6375312155973548
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.23873435841258034
+        },
+        {
+          "key": "b",
+          "label": "Ghana",
+          "p": 0.12373442599006489
+        }
+      ],
+      "headline": "Colombia is the clear favourite — its game style matches up well against Ghana.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "Colombia has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": 33.8
+        },
+        {
+          "label": "Style matchup",
+          "detail": "Colombia leans on keeping the ball while Ghana leans on sitting in a deep block; that clash is close to a wash.",
+          "contributionPp": 0
+        },
+        {
+          "label": "How even it is",
+          "detail": "Colombia controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0.7285000204451081,
+        "draw": 0.21660558689065937,
+        "away": 0.05489439266423258
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Colombia",
+          "p": 0.7285000204451081
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.21660558689065937
+        },
+        {
+          "key": "b",
+          "label": "Ghana",
+          "p": 0.05489439266423258
+        }
+      ],
+      "headline": "Colombia are clear favourites to beat Ghana, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "Colombia completed line-breaking passes more reliably, slicing through Ghana's lines more often.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Converting chances",
+          "detail": "Colombia turned more of its forward runs into real scoring looks than Ghana did.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "Colombia created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": 19.6
+        },
+        {
+          "label": "Controlling the ball",
+          "detail": "Colombia held possession noticeably more, keeping Ghana chasing the game.",
+          "contributionPp": 1.7
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.6322182283049156,
+        "draw": 0.31407727755455567,
+        "away": 0.05370449414052868
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Colombia",
+          "p": 0.6322182283049156
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.31407727755455567
+        },
+        {
+          "key": "b",
+          "label": "Ghana",
+          "p": 0.05370449414052868
+        }
+      ],
+      "headline": "Colombia is the clear favourite (63%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "Colombia spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+          "contributionPp": 0
+        },
+        {
+          "label": "Ball control",
+          "detail": "Colombia keeps the ball more (53% vs 41%), dictating the tempo of build-up.",
+          "contributionPp": 1.7100000000000009
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "Colombia has created the better chances on average (1.72 vs 0.83 expected goals a game).",
+          "contributionPp": 15.989162948088083
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.49852339027628256,
+        "draw": 0.27277879477452566,
+        "away": 0.22869781494919178
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Colombia",
+          "p": 0.49852339027628256
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.27277879477452566
+        },
+        {
+          "key": "b",
+          "label": "Ghana",
+          "p": 0.22869781494919178
+        }
+      ],
+      "headline": "Pulling every angle together, Colombia is narrowly the side to back here, at about a 50% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "100% of the underlying views lean Colombia, so the blended call sides with Colombia with confidence.",
+          "contributionPp": 27
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — Colombia edges it, but the result is close to a toss-up.",
+          "contributionPp": 16.5
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Colombia win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.6523161181179938,
+        "draw": 0.22860708208267266,
+        "away": 0.11907679979933344
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Colombia",
+          "p": 0.6523161181179938
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.22860708208267266
+        },
+        {
+          "key": "b",
+          "label": "Ghana",
+          "p": 0.11907679979933344
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Colombia is the call here at about 65%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Colombia at 65%.",
+          "contributionPp": 31.9
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by 0 points.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

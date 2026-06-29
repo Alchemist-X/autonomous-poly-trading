@@ -1,0 +1,535 @@
+{
+  "id": "prodegy",
+  "name": "PRODEGY split attack/defence Elo",
+  "family": "elo",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-t21-t14-2026-07-04",
+      "teamA": "T21",
+      "teamB": "T14",
+      "prediction": {
+        "probs": {
+          "home": 0.6366748019043433,
+          "draw": 0.1959176831343325,
+          "away": 0.1674075149613242
+        },
+        "rationale": {
+          "headline": "T21 is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T21 has been creating about 2.7 goals of chances a game; T14's defence usually allows about 1.8. That points to roughly 2.2 goals for T21.",
+              "contributionPp": 34.2
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T14 has been creating about 0.3 goals of chances a game; T21's defence usually allows about 0.6. That points to roughly 1 goals for T14.",
+              "contributionPp": 15.5
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T21 projects to outscore T14 by about 1.2 goals on the night.",
+              "contributionPp": 24
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t00-t07-2026-07-05",
+      "teamA": "T00",
+      "teamB": "T07",
+      "prediction": {
+        "probs": {
+          "home": 0.5900238420509895,
+          "draw": 0.2001104576618578,
+          "away": 0.20986570028715262
+        },
+        "rationale": {
+          "headline": "T00 is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T00 has been creating about 2.3 goals of chances a game; T07's defence usually allows about 1.4. That points to roughly 2.2 goals for T00.",
+              "contributionPp": 34.9
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T07 has been creating about 0.6 goals of chances a game; T00's defence usually allows about 0.7. That points to roughly 1.3 goals for T07.",
+              "contributionPp": 4.5
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T00 projects to outscore T07 by about 1 goals on the night.",
+              "contributionPp": 20.7
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t25-t02-2026-07-06",
+      "teamA": "T25",
+      "teamB": "T02",
+      "prediction": {
+        "probs": {
+          "home": 0.555461636544831,
+          "draw": 0.22747972205128822,
+          "away": 0.2170586414038808
+        },
+        "rationale": {
+          "headline": "T25 is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T25 has been creating about 1.9 goals of chances a game; T02's defence usually allows about 1.4. That points to roughly 1.8 goals for T25.",
+              "contributionPp": 22.7
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T02 has been creating about 0.5 goals of chances a game; T25's defence usually allows about 0.8. That points to roughly 1.1 goals for T02.",
+              "contributionPp": 13.9
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T25 projects to outscore T02 by about 0.8 goals on the night.",
+              "contributionPp": 17.4
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t12-t43-2026-07-07",
+      "teamA": "T12",
+      "teamB": "T43",
+      "prediction": {
+        "probs": {
+          "home": 0.5104568353856447,
+          "draw": 0.22153731508913158,
+          "away": 0.26800584952522377
+        },
+        "rationale": {
+          "headline": "T12 is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T12 has been creating about 2 goals of chances a game; T43's defence usually allows about 1.4. That points to roughly 1.9 goals for T12.",
+              "contributionPp": 26
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T43 has been creating about 0.8 goals of chances a game; T12's defence usually allows about 0.8. That points to roughly 1.3 goals for T43.",
+              "contributionPp": 0.1
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T12 projects to outscore T43 by about 0.6 goals on the night.",
+              "contributionPp": 13.4
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t30-t23-2026-07-08",
+      "teamA": "T30",
+      "teamB": "T23",
+      "prediction": {
+        "probs": {
+          "home": 0.5208160367834367,
+          "draw": 0.21650793567735668,
+          "away": 0.26267602753920677
+        },
+        "rationale": {
+          "headline": "T30 is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T30 has been creating about 2 goals of chances a game; T23's defence usually allows about 1.4. That points to roughly 2 goals for T30.",
+              "contributionPp": 28.6
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T23 has been creating about 0.8 goals of chances a game; T30's defence usually allows about 0.8. That points to roughly 1.4 goals for T23.",
+              "contributionPp": -1.2
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T30 projects to outscore T23 by about 0.6 goals on the night.",
+              "contributionPp": 14.4
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t06-t28-2026-07-09",
+      "teamA": "T06",
+      "teamB": "T28",
+      "prediction": {
+        "probs": {
+          "home": 0.4986322947405985,
+          "draw": 0.21813979871119732,
+          "away": 0.2832279065482042
+        },
+        "rationale": {
+          "headline": "T06 is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T06 has been creating about 2 goals of chances a game; T28's defence usually allows about 1.3. That points to roughly 2 goals for T06.",
+              "contributionPp": 27.7
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T28 has been creating about 0.9 goals of chances a game; T06's defence usually allows about 0.8. That points to roughly 1.4 goals for T28.",
+              "contributionPp": -4.9
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T06 projects to outscore T28 by about 0.5 goals on the night.",
+              "contributionPp": 12.2
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t24-t31-2026-07-04",
+      "teamA": "T24",
+      "teamB": "T31",
+      "prediction": {
+        "probs": {
+          "home": 0.5157110944224147,
+          "draw": 0.21492832267319192,
+          "away": 0.26936058290439335
+        },
+        "rationale": {
+          "headline": "T24 is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T24 has been creating about 2 goals of chances a game; T31's defence usually allows about 1.3. That points to roughly 2 goals for T24.",
+              "contributionPp": 29.4
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T31 has been creating about 0.8 goals of chances a game; T24's defence usually allows about 0.8. That points to roughly 1.4 goals for T31.",
+              "contributionPp": -3.5
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T24 projects to outscore T31 by about 0.6 goals on the night.",
+              "contributionPp": 13.9
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t33-t27-2026-07-05",
+      "teamA": "T33",
+      "teamB": "T27",
+      "prediction": {
+        "probs": {
+          "home": 0.48314583366379593,
+          "draw": 0.21980600063963962,
+          "away": 0.2970481656965645
+        },
+        "rationale": {
+          "headline": "T33 is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T33 has been creating about 1.9 goals of chances a game; T27's defence usually allows about 1.3. That points to roughly 1.9 goals for T33.",
+              "contributionPp": 26.5
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T27 has been creating about 1 goals of chances a game; T33's defence usually allows about 0.9. That points to roughly 1.5 goals for T27.",
+              "contributionPp": -6.8
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T33 projects to outscore T27 by about 0.5 goals on the night.",
+              "contributionPp": 10.6
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t45-t47-2026-07-06",
+      "teamA": "T45",
+      "teamB": "T47",
+      "prediction": {
+        "probs": {
+          "home": 0.4680921870983667,
+          "draw": 0.22497283229305448,
+          "away": 0.30693498060857877
+        },
+        "rationale": {
+          "headline": "T45 is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T45 has been creating about 1.9 goals of chances a game; T47's defence usually allows about 1.4. That points to roughly 1.9 goals for T45.",
+              "contributionPp": 23.4
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T47 has been creating about 1 goals of chances a game; T45's defence usually allows about 0.8. That points to roughly 1.5 goals for T47.",
+              "contributionPp": -6
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T45 projects to outscore T47 by about 0.4 goals on the night.",
+              "contributionPp": 9.1
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t34-t39-2026-07-07",
+      "teamA": "T34",
+      "teamB": "T39",
+      "prediction": {
+        "probs": {
+          "home": 0.40350893441952906,
+          "draw": 0.23349707108511158,
+          "away": 0.36299399449535946
+        },
+        "rationale": {
+          "headline": "T34 is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T34 has been creating about 1.6 goals of chances a game; T39's defence usually allows about 1.3. That points to roughly 1.7 goals for T34.",
+              "contributionPp": 14.7
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T39 has been creating about 1.1 goals of chances a game; T34's defence usually allows about 0.9. That points to roughly 1.6 goals for T39.",
+              "contributionPp": -10.3
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T34 projects to outscore T39 by about 0.1 goals on the night.",
+              "contributionPp": 2.3
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t18-t32-2026-07-08",
+      "teamA": "T18",
+      "teamB": "T32",
+      "prediction": {
+        "probs": {
+          "home": 0.47359278403533334,
+          "draw": 0.21164239698280424,
+          "away": 0.3147648189818623
+        },
+        "rationale": {
+          "headline": "T18 is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T18 has been creating about 1.9 goals of chances a game; T32's defence usually allows about 1.2. That points to roughly 2.1 goals for T18.",
+              "contributionPp": 30.5
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T32 has been creating about 1.2 goals of chances a game; T18's defence usually allows about 0.9. That points to roughly 1.7 goals for T32.",
+              "contributionPp": -14.9
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T18 projects to outscore T32 by about 0.4 goals on the night.",
+              "contributionPp": 9.4
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t16-t29-2026-07-09",
+      "teamA": "T16",
+      "teamB": "T29",
+      "prediction": {
+        "probs": {
+          "home": 0.4123604121496665,
+          "draw": 0.22548138290749323,
+          "away": 0.36215820494284034
+        },
+        "rationale": {
+          "headline": "T16 is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T16 has been creating about 1.6 goals of chances a game; T29's defence usually allows about 1.2. That points to roughly 1.8 goals for T16.",
+              "contributionPp": 19.8
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T29 has been creating about 1.2 goals of chances a game; T16's defence usually allows about 0.9. That points to roughly 1.6 goals for T29.",
+              "contributionPp": -14.4
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T16 projects to outscore T29 by about 0.1 goals on the night.",
+              "contributionPp": 2.9
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t20-t38-2026-07-04",
+      "teamA": "T20",
+      "teamB": "T38",
+      "prediction": {
+        "probs": {
+          "home": 0.43188247478149805,
+          "draw": 0.2442738180391385,
+          "away": 0.3238437071793634
+        },
+        "rationale": {
+          "headline": "T20 is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T20 has been creating about 1.5 goals of chances a game; T38's defence usually allows about 1.3. That points to roughly 1.6 goals for T20.",
+              "contributionPp": 11.6
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T38 has been creating about 0.9 goals of chances a game; T20's defence usually allows about 0.9. That points to roughly 1.3 goals for T38.",
+              "contributionPp": 0.3
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T20 projects to outscore T38 by about 0.2 goals on the night.",
+              "contributionPp": 5.8
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t03-t46-2026-07-05",
+      "teamA": "T03",
+      "teamB": "T46",
+      "prediction": {
+        "probs": {
+          "home": 0.39996849777637655,
+          "draw": 0.23864349587996475,
+          "away": 0.36138800634365875
+        },
+        "rationale": {
+          "headline": "T03 and T46 look evenly matched, with no side meaningfully on top.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T03 has been creating about 1.5 goals of chances a game; T46's defence usually allows about 1.2. That points to roughly 1.6 goals for T03.",
+              "contributionPp": 11.8
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T46 has been creating about 1.1 goals of chances a game; T03's defence usually allows about 0.9. That points to roughly 1.5 goals for T46.",
+              "contributionPp": -7.5
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T03 projects to outscore T46 by about 0.1 goals on the night.",
+              "contributionPp": 2.1
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t05-t37-2026-07-06",
+      "teamA": "T05",
+      "teamB": "T37",
+      "prediction": {
+        "probs": {
+          "home": 0.4012703123102058,
+          "draw": 0.2363211362075551,
+          "away": 0.36240855148223905
+        },
+        "rationale": {
+          "headline": "T05 and T37 look evenly matched, with no side meaningfully on top.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T05 has been creating about 1.5 goals of chances a game; T37's defence usually allows about 1.2. That points to roughly 1.6 goals for T05.",
+              "contributionPp": 13.1
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T37 has been creating about 1.1 goals of chances a game; T05's defence usually allows about 0.9. That points to roughly 1.5 goals for T37.",
+              "contributionPp": -8.8
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T05 projects to outscore T37 by about 0.1 goals on the night.",
+              "contributionPp": 2.2
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t17-t11-2026-07-07",
+      "teamA": "T17",
+      "teamB": "T11",
+      "prediction": {
+        "probs": {
+          "home": 0.4135421970873203,
+          "draw": 0.23918413734790805,
+          "away": 0.34727366556477174
+        },
+        "rationale": {
+          "headline": "T17 is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T17 has been creating about 1.3 goals of chances a game; T11's defence usually allows about 1.1. That points to roughly 1.6 goals for T17.",
+              "contributionPp": 12.7
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "T11 has been creating about 1.2 goals of chances a game; T17's defence usually allows about 1.1. That points to roughly 1.5 goals for T11.",
+              "contributionPp": -5.4
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, T17 projects to outscore T11 by about 0.2 goals on the night.",
+              "contributionPp": 3.6
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    }
+  ]
+}

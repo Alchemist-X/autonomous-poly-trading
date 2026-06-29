@@ -1,0 +1,419 @@
+{
+  "fixtureId": "fifwc-aus-egy-2026-07-03",
+  "teamA": "Australia",
+  "teamB": "Egypt",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.34085378327043225,
+        "draw": 0.36206077735381886,
+        "away": 0.2970854393757489
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Australia",
+          "p": 0.34085378327043225
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.36206077735381886
+        },
+        {
+          "key": "b",
+          "label": "Egypt",
+          "p": 0.2970854393757489
+        }
+      ],
+      "headline": "Australia are narrowly ahead to beat Egypt (34.1% to win), though a tight low-scoring draw is very much in play (36.2%).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Australia's attack is projected for about 1 goals against Egypt's defence, versus roughly 0.9 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": 4.4
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "Australia carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": 3.8
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 36.2%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.4499650941880131,
+        "draw": 0.2550344283407846,
+        "away": 0.2950004774712022
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Australia",
+          "p": 0.4499650941880131
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2550344283407846
+        },
+        {
+          "key": "b",
+          "label": "Egypt",
+          "p": 0.2950004774712022
+        }
+      ],
+      "headline": "Australia are favoured to beat Egypt, winning roughly 45 times out of 100 to Egypt's 30.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage Australia created 0.5 more good chances per game than they gave up, versus 0.1 for Egypt — Australia simply made better chances more often.",
+          "contributionPp": -2.5
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "Australia are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": 2.5
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that Egypt would need a clear upset to advance.",
+          "contributionPp": 1.2
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.2752852067889202,
+        "draw": 0.2915796876950881,
+        "away": 0.43313510551599166
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Australia",
+          "p": 0.2752852067889202
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2915796876950881
+        },
+        {
+          "key": "b",
+          "label": "Egypt",
+          "p": 0.43313510551599166
+        }
+      ],
+      "headline": "Egypt is the favourite, expected to generate the better scoring chances over 90 minutes.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Australia has been creating about 1.1 goals of chances a game; Egypt's defence usually allows about 1.5. That points to roughly 0.9 goals for Australia.",
+          "contributionPp": -20.5
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "Egypt has been creating about 1.1 goals of chances a game; Australia's defence usually allows about 1.2. That points to roughly 1.2 goals for Egypt.",
+          "contributionPp": 6.2
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, Australia projects to outscore Egypt by about -0.3 goals on the night.",
+          "contributionPp": -7.4
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.4528455769108504,
+        "draw": 0.2547299307073814,
+        "away": 0.29242449238176815
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Australia",
+          "p": 0.4528455769108504
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2547299307073814
+        },
+        {
+          "key": "b",
+          "label": "Egypt",
+          "p": 0.29242449238176815
+        }
+      ],
+      "headline": "Australia is a slight favourite here with about a 45% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "Egypt ran a heavier high-intensity workload in the group stage than Australia, leaving it more likely to tire and fade as this match wears on.",
+          "contributionPp": 0.4
+        },
+        {
+          "label": "Form and strength",
+          "detail": "Australia carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": 3.5
+        },
+        {
+          "label": "Rest edge",
+          "detail": "Australia comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+          "contributionPp": 0.2
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.3320073419568032,
+        "draw": 0.29793790662216474,
+        "away": 0.37005475142103206
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Australia",
+          "p": 0.3320073419568032
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.29793790662216474
+        },
+        {
+          "key": "b",
+          "label": "Egypt",
+          "p": 0.37005475142103206
+        }
+      ],
+      "headline": "Australia and Egypt look evenly matched, with Egypt a hair ahead on the day.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "Egypt has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": -3.4
+        },
+        {
+          "label": "Style matchup",
+          "detail": "Australia leans on sitting in a deep block while Egypt leans on sitting in a deep block; that clash tilts the game toward Australia, who is the lower-rated side here.",
+          "contributionPp": 0.7
+        },
+        {
+          "label": "How even it is",
+          "detail": "The styles roughly cancel out, so a draw is very much in play.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0,
+        "draw": 0.03290143026082581,
+        "away": 0.9670985697391742
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Australia",
+          "p": 0
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.03290143026082581
+        },
+        {
+          "key": "b",
+          "label": "Egypt",
+          "p": 0.9670985697391742
+        }
+      ],
+      "headline": "Egypt are clear favourites to beat Australia, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "Australia completed line-breaking passes more reliably, slicing through Egypt's lines more often.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Converting chances",
+          "detail": "Australia turned more of its forward runs into real scoring looks than Egypt did.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "Australia created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": 1.3
+        },
+        {
+          "label": "Controlling the ball",
+          "detail": "Egypt held possession noticeably more, keeping Australia chasing the game.",
+          "contributionPp": -1
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.18355523399795223,
+        "draw": 0.23649020416641592,
+        "away": 0.5799545618356319
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Australia",
+          "p": 0.18355523399795223
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.23649020416641592
+        },
+        {
+          "key": "b",
+          "label": "Egypt",
+          "p": 0.5799545618356319
+        }
+      ],
+      "headline": "Egypt is the clear favourite (58%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "Australia builds through more players, but Egypt's other strengths outweigh it here. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+          "contributionPp": 0
+        },
+        {
+          "label": "Ball control",
+          "detail": "Egypt keeps the ball more (42% vs 49%), dictating the tempo of build-up.",
+          "contributionPp": -0.9650000000000005
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "Egypt has created the better chances on average (1.10 vs 1.22 expected goals a game).",
+          "contributionPp": -2.2102516135269035
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.4510143474778002,
+        "draw": 0.28129614990957613,
+        "away": 0.26768950261262364
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Australia",
+          "p": 0.4510143474778002
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.28129614990957613
+        },
+        {
+          "key": "b",
+          "label": "Egypt",
+          "p": 0.26768950261262364
+        }
+      ],
+      "headline": "Pulling every angle together, Australia is narrowly the side to back here, at about a 45% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "The underlying views are split — about 57% lean Egypt — so the blended call for Australia is held back.",
+          "contributionPp": 18.3
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — Australia edges it, but the result is close to a toss-up.",
+          "contributionPp": 11.8
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Australia win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.31069082307384643,
+        "draw": 0.2515038143820069,
+        "away": 0.43780536254414665
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Australia",
+          "p": 0.31069082307384643
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2515038143820069
+        },
+        {
+          "key": "b",
+          "label": "Egypt",
+          "p": 0.43780536254414665
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Egypt is the call here at about 44%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Egypt at 44%.",
+          "contributionPp": -2.3
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by 0 points.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

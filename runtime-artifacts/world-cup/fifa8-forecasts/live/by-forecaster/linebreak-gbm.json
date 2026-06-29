@@ -1,0 +1,542 @@
+{
+  "id": "linebreak-gbm",
+  "name": "Line-breaks & offers efficiency (gradient-boosted)",
+  "family": "ml",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.9224040837667004,
+          "draw": 0.07034328527020049,
+          "away": 0.007252630963099214
+        },
+        "rationale": {
+          "headline": "Brazil are clear favourites to beat Japan, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Brazil completed line-breaking passes more reliably, slicing through Japan's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Brazil turned more of its forward runs into real scoring looks than Japan did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Brazil created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 10.5
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.719353534156862,
+          "draw": 0.23582084201272446,
+          "away": 0.0448256238304136
+        },
+        "rationale": {
+          "headline": "Germany are clear favourites to beat Paraguay, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Germany completed line-breaking passes more reliably, slicing through Paraguay's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Germany turned more of its forward runs into real scoring looks than Paraguay did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Germany created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 12.2
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "Germany held possession noticeably more, keeping Paraguay chasing the game.",
+              "contributionPp": 1.7
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.9060456507687844,
+          "draw": 0.08169649027659862,
+          "away": 0.012257858954617097
+        },
+        "rationale": {
+          "headline": "Netherlands are clear favourites to beat Morocco, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Netherlands completed line-breaking passes more reliably, slicing through Morocco's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Netherlands turned more of its forward runs into real scoring looks than Morocco did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Netherlands created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 2.8
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.345729976683314,
+          "draw": 0.3710286700531077,
+          "away": 0.28324135326357824
+        },
+        "rationale": {
+          "headline": "Côte d'Ivoire are narrow favourites to beat Norway, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Côte d'Ivoire completed line-breaking passes more reliably, slicing through Norway's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Côte d'Ivoire turned more of its forward runs into real scoring looks than Norway did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Norway created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": -1
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.9410207994405135,
+          "draw": 0.05090921340391375,
+          "away": 0.008069987155572743
+        },
+        "rationale": {
+          "headline": "France are clear favourites to beat Sweden, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "France completed line-breaking passes more reliably, slicing through Sweden's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "France turned more of its forward runs into real scoring looks than Sweden did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "France created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 19.8
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.6339382524358441,
+          "draw": 0.10286619713818841,
+          "away": 0.26319555042596754
+        },
+        "rationale": {
+          "headline": "Mexico are clear favourites to beat Ecuador, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Mexico completed line-breaking passes more reliably, slicing through Ecuador's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Mexico turned more of its forward runs into real scoring looks than Ecuador did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Ecuador created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": -0.7
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.7496459061088397,
+          "draw": 0.2381793303014435,
+          "away": 0.012174763589716808
+        },
+        "rationale": {
+          "headline": "Belgium are clear favourites to beat Senegal, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Belgium completed line-breaking passes more reliably, slicing through Senegal's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Belgium turned more of its forward runs into real scoring looks than Senegal did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Belgium created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 9.1
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.5248984288863631,
+          "draw": 0.42844759159658247,
+          "away": 0.0466539795170545
+        },
+        "rationale": {
+          "headline": "England are clear favourites to beat DR Congo, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "England completed line-breaking passes more reliably, slicing through DR Congo's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "England turned more of its forward runs into real scoring looks than DR Congo did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "England created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 18.3
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "England held possession noticeably more, keeping DR Congo chasing the game.",
+              "contributionPp": 1.7
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.6708076399341769,
+          "draw": 0.13330773270763088,
+          "away": 0.19588462735819218
+        },
+        "rationale": {
+          "headline": "United States are clear favourites to beat Bosnia-Herzegovina, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "United States completed line-breaking passes more reliably, slicing through Bosnia-Herzegovina's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "United States turned more of its forward runs into real scoring looks than Bosnia-Herzegovina did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "United States created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 12.1
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "United States held possession noticeably more, keeping Bosnia-Herzegovina chasing the game.",
+              "contributionPp": 1.3
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.7010752980866725,
+          "draw": 0.29586139731963507,
+          "away": 0.003063304593692552
+        },
+        "rationale": {
+          "headline": "Switzerland are clear favourites to beat Algeria, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Switzerland completed line-breaking passes more reliably, slicing through Algeria's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Switzerland turned more of its forward runs into real scoring looks than Algeria did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Switzerland created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 13.6
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.6844727368351972,
+          "draw": 0.2745630519649502,
+          "away": 0.04096421119985254
+        },
+        "rationale": {
+          "headline": "Spain are clear favourites to beat Austria, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Spain completed line-breaking passes more reliably, slicing through Austria's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Spain turned more of its forward runs into real scoring looks than Austria did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Spain created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 23.9
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "Spain held possession noticeably more, keeping Austria chasing the game.",
+              "contributionPp": 1.4
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.6388134686284408,
+          "draw": 0.3611865313715592,
+          "away": 0
+        },
+        "rationale": {
+          "headline": "Portugal are clear favourites to beat Croatia, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Portugal completed line-breaking passes more reliably, slicing through Croatia's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Portugal turned more of its forward runs into real scoring looks than Croatia did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Portugal created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 10.6
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "Portugal held possession noticeably more, keeping Croatia chasing the game.",
+              "contributionPp": 0.5
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.754405229879562,
+          "draw": 0.1994915404030338,
+          "away": 0.04610322971740407
+        },
+        "rationale": {
+          "headline": "Argentina are clear favourites to beat Cabo Verde, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Argentina completed line-breaking passes more reliably, slicing through Cabo Verde's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Argentina turned more of its forward runs into real scoring looks than Cabo Verde did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Argentina created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 24.9
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "Argentina held possession noticeably more, keeping Cabo Verde chasing the game.",
+              "contributionPp": 1.3
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0,
+          "draw": 0.03290143026082581,
+          "away": 0.9670985697391742
+        },
+        "rationale": {
+          "headline": "Egypt are clear favourites to beat Australia, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Australia completed line-breaking passes more reliably, slicing through Egypt's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Australia turned more of its forward runs into real scoring looks than Egypt did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Australia created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 1.3
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "Egypt held possession noticeably more, keeping Australia chasing the game.",
+              "contributionPp": -1
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.7285000204451081,
+          "draw": 0.21660558689065937,
+          "away": 0.05489439266423258
+        },
+        "rationale": {
+          "headline": "Colombia are clear favourites to beat Ghana, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "Colombia completed line-breaking passes more reliably, slicing through Ghana's lines more often.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Converting chances",
+              "detail": "Colombia turned more of its forward runs into real scoring looks than Ghana did.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "Colombia created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 19.6
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "Colombia held possession noticeably more, keeping Ghana chasing the game.",
+              "contributionPp": 1.7
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    }
+  ]
+}

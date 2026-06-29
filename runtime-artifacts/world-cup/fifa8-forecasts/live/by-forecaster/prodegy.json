@@ -1,0 +1,502 @@
+{
+  "id": "prodegy",
+  "name": "PRODEGY split attack/defence Elo",
+  "family": "elo",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.555665967272923,
+          "draw": 0.17549030811517566,
+          "away": 0.2688437246119015
+        },
+        "rationale": {
+          "headline": "Brazil is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Brazil has been creating about 2.2 goals of chances a game; Japan's defence usually allows about 0.7. That points to roughly 2.8 goals for Brazil.",
+              "contributionPp": 45.1
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Japan has been creating about 1.4 goals of chances a game; Brazil's defence usually allows about 0.8. That points to roughly 2 goals for Japan.",
+              "contributionPp": -28.6
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Brazil projects to outscore Japan by about 0.8 goals on the night.",
+              "contributionPp": 18.4
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.5190739984394597,
+          "draw": 0.20827606618884037,
+          "away": 0.27264993537169996
+        },
+        "rationale": {
+          "headline": "Germany is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Germany has been creating about 2.1 goals of chances a game; Paraguay's defence usually allows about 1.3. That points to roughly 2.1 goals for Germany.",
+              "contributionPp": 32.7
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Paraguay has been creating about 1.1 goals of chances a game; Germany's defence usually allows about 0.9. That points to roughly 1.5 goals for Paraguay.",
+              "contributionPp": -8
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Germany projects to outscore Paraguay by about 0.6 goals on the night.",
+              "contributionPp": 14.2
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.4239097249028562,
+          "draw": 0.20241948990995473,
+          "away": 0.37367078518718905
+        },
+        "rationale": {
+          "headline": "Netherlands is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Netherlands has been creating about 1.8 goals of chances a game; Morocco's defence usually allows about 1. That points to roughly 2.1 goals for Netherlands.",
+              "contributionPp": 33
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Morocco has been creating about 1.5 goals of chances a game; Netherlands's defence usually allows about 0.8. That points to roughly 2 goals for Morocco.",
+              "contributionPp": -28.9
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Netherlands projects to outscore Morocco by about 0.1 goals on the night.",
+              "contributionPp": 3.2
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.3099273607763254,
+          "draw": 0.2311334144854312,
+          "away": 0.4589392247382434
+        },
+        "rationale": {
+          "headline": "Norway is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Côte d'Ivoire has been creating about 1.1 goals of chances a game; Norway's defence usually allows about 1. That points to roughly 1.4 goals for Côte d'Ivoire.",
+              "contributionPp": 3.4
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Norway has been creating about 1.9 goals of chances a game; Côte d'Ivoire's defence usually allows about 1.5. That points to roughly 1.8 goals for Norway.",
+              "contributionPp": -19.8
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Côte d'Ivoire projects to outscore Norway by about -0.3 goals on the night.",
+              "contributionPp": -8.3
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.40742027952578164,
+          "draw": 0.20101522198874416,
+          "away": 0.39156449848547425
+        },
+        "rationale": {
+          "headline": "France and Sweden look evenly matched, with no side meaningfully on top.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "France has been creating about 2.2 goals of chances a game; Sweden's defence usually allows about 1.4. That points to roughly 2.1 goals for France.",
+              "contributionPp": 32.7
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Sweden has been creating about 1.3 goals of chances a game; France's defence usually allows about 0.6. That points to roughly 2.1 goals for Sweden.",
+              "contributionPp": -31.4
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, France projects to outscore Sweden by about 0 goals on the night.",
+              "contributionPp": 1
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.33256145501395507,
+          "draw": 0.19980221812551396,
+          "away": 0.467636326860531
+        },
+        "rationale": {
+          "headline": "Ecuador is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Mexico has been creating about 1.5 goals of chances a game; Ecuador's defence usually allows about 0.9. That points to roughly 1.9 goals for Mexico.",
+              "contributionPp": 25.2
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Ecuador has been creating about 1.8 goals of chances a game; Mexico's defence usually allows about 0.9. That points to roughly 2.3 goals for Ecuador.",
+              "contributionPp": -36.1
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Mexico projects to outscore Ecuador by about -0.4 goals on the night.",
+              "contributionPp": -8.5
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.4040934679757825,
+          "draw": 0.19412492401176476,
+          "away": 0.4017816080124527
+        },
+        "rationale": {
+          "headline": "Belgium and Senegal look evenly matched, with no side meaningfully on top.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Belgium has been creating about 1.9 goals of chances a game; Senegal's defence usually allows about 0.9. That points to roughly 2.3 goals for Belgium.",
+              "contributionPp": 35.9
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Senegal has been creating about 1.7 goals of chances a game; Belgium's defence usually allows about 0.8. That points to roughly 2.2 goals for Senegal.",
+              "contributionPp": -35.8
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Belgium projects to outscore Senegal by about 0 goals on the night.",
+              "contributionPp": 0.2
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.5329856580845507,
+          "draw": 0.19179443290440923,
+          "away": 0.2752199090110402
+        },
+        "rationale": {
+          "headline": "England is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "England has been creating about 2.3 goals of chances a game; DR Congo's defence usually allows about 1.2. That points to roughly 2.4 goals for England.",
+              "contributionPp": 39.9
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "DR Congo has been creating about 1.1 goals of chances a game; England's defence usually allows about 0.7. That points to roughly 1.8 goals for DR Congo.",
+              "contributionPp": -19.1
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, England projects to outscore DR Congo by about 0.7 goals on the night.",
+              "contributionPp": 15.7
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.4082283320177586,
+          "draw": 0.3318465740739791,
+          "away": 0.25992509390826235
+        },
+        "rationale": {
+          "headline": "United States is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "United States has been creating about 1.5 goals of chances a game; Bosnia-Herzegovina's defence usually allows about 1.9. That points to roughly 1 goals for United States.",
+              "contributionPp": -16.8
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Bosnia-Herzegovina has been creating about 0.5 goals of chances a game; United States's defence usually allows about 1.1. That points to roughly 0.7 goals for Bosnia-Herzegovina.",
+              "contributionPp": 27.4
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, United States projects to outscore Bosnia-Herzegovina by about 0.3 goals on the night.",
+              "contributionPp": 6.4
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.4616175326017593,
+          "draw": 0.2083204016005722,
+          "away": 0.33006206579766856
+        },
+        "rationale": {
+          "headline": "Switzerland is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Switzerland has been creating about 1.8 goals of chances a game; Algeria's defence usually allows about 1.1. That points to roughly 2.1 goals for Switzerland.",
+              "contributionPp": 31.8
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Algeria has been creating about 1.4 goals of chances a game; Switzerland's defence usually allows about 1. That points to roughly 1.8 goals for Algeria.",
+              "contributionPp": -19.6
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Switzerland projects to outscore Algeria by about 0.3 goals on the night.",
+              "contributionPp": 8
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.45488591473181733,
+          "draw": 0.17519134982866674,
+          "away": 0.36992273543951587
+        },
+        "rationale": {
+          "headline": "Spain is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Spain has been creating about 2.7 goals of chances a game; Austria's defence usually allows about 1.2. That points to roughly 2.8 goals for Spain.",
+              "contributionPp": 45.1
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Austria has been creating about 1.5 goals of chances a game; Spain's defence usually allows about 0.3. That points to roughly 2.6 goals for Austria.",
+              "contributionPp": -42.1
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Spain projects to outscore Austria by about 0.3 goals on the night.",
+              "contributionPp": 6.1
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.3955756530784938,
+          "draw": 0.2111705367446182,
+          "away": 0.3932538101768881
+        },
+        "rationale": {
+          "headline": "Portugal and Croatia look evenly matched, with no side meaningfully on top.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Portugal has been creating about 1.8 goals of chances a game; Croatia's defence usually allows about 1.2. That points to roughly 1.9 goals for Portugal.",
+              "contributionPp": 26.2
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Croatia has been creating about 1.3 goals of chances a game; Portugal's defence usually allows about 0.8. That points to roughly 1.9 goals for Croatia.",
+              "contributionPp": -26
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Portugal projects to outscore Croatia by about 0 goals on the night.",
+              "contributionPp": 0.1
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.5127790965319629,
+          "draw": 0.20716172831914834,
+          "away": 0.28005917514888884
+        },
+        "rationale": {
+          "headline": "Argentina is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Argentina has been creating about 2.6 goals of chances a game; Cabo Verde's defence usually allows about 1.8. That points to roughly 2.2 goals for Argentina.",
+              "contributionPp": 33.2
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Cabo Verde has been creating about 0.8 goals of chances a game; Argentina's defence usually allows about 0.5. That points to roughly 1.6 goals for Cabo Verde.",
+              "contributionPp": -10.4
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Argentina projects to outscore Cabo Verde by about 0.6 goals on the night.",
+              "contributionPp": 13.6
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0.2752852067889202,
+          "draw": 0.2915796876950881,
+          "away": 0.43313510551599166
+        },
+        "rationale": {
+          "headline": "Egypt is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Australia has been creating about 1.1 goals of chances a game; Egypt's defence usually allows about 1.5. That points to roughly 0.9 goals for Australia.",
+              "contributionPp": -20.5
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Egypt has been creating about 1.1 goals of chances a game; Australia's defence usually allows about 1.2. That points to roughly 1.2 goals for Egypt.",
+              "contributionPp": 6.2
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Australia projects to outscore Egypt by about -0.3 goals on the night.",
+              "contributionPp": -7.4
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.455560912216727,
+          "draw": 0.24084492864095872,
+          "away": 0.3035941591423143
+        },
+        "rationale": {
+          "headline": "Colombia is the favourite, expected to generate the better scoring chances over 90 minutes.",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Colombia has been creating about 2 goals of chances a game; Ghana's defence usually allows about 1.7. That points to roughly 1.7 goals for Colombia.",
+              "contributionPp": 14.7
+            },
+            {
+              "label": "Defence vs attack",
+              "detail": "Ghana has been creating about 0.7 goals of chances a game; Colombia's defence usually allows about 0.7. That points to roughly 1.3 goals for Ghana.",
+              "contributionPp": 2.1
+            },
+            {
+              "label": "Two-way balance",
+              "detail": "Across both ends, Colombia projects to outscore Ghana by about 0.3 goals on the night.",
+              "contributionPp": 8.2
+            }
+          ],
+          "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+        }
+      }
+    }
+  ]
+}

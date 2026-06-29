@@ -1,0 +1,535 @@
+{
+  "id": "tactical-melo",
+  "name": "Tactical style-clash mElo",
+  "family": "elo",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-t21-t14-2026-07-04",
+      "teamA": "T21",
+      "teamB": "T14",
+      "prediction": {
+        "probs": {
+          "home": 0.7468792820278007,
+          "draw": 0.18777764877439831,
+          "away": 0.06534306919780088
+        },
+        "rationale": {
+          "headline": "T21 is the clear favourite — its game style matches up well against T14.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T21 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 42
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T21 leans on keeping the ball while T14 leans on sitting in a deep block; that clash is close to a wash.",
+              "contributionPp": -0.1
+            },
+            {
+              "label": "How even it is",
+              "detail": "T21 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t00-t07-2026-07-05",
+      "teamA": "T00",
+      "teamB": "T07",
+      "prediction": {
+        "probs": {
+          "home": 0.465891981513817,
+          "draw": 0.2878878581115293,
+          "away": 0.2462201603746538
+        },
+        "rationale": {
+          "headline": "T00 and T07 look evenly matched, with T00 a hair ahead on the day.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T00 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 15.7
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T00 leans on keeping the ball while T07 leans on springing counter-attacks; that clash is close to a wash.",
+              "contributionPp": -0.3
+            },
+            {
+              "label": "How even it is",
+              "detail": "The styles roughly cancel out, so a draw is very much in play.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t25-t02-2026-07-06",
+      "teamA": "T25",
+      "teamB": "T02",
+      "prediction": {
+        "probs": {
+          "home": 0.7927699235773358,
+          "draw": 0.16162373321795726,
+          "away": 0.04560634320470693
+        },
+        "rationale": {
+          "headline": "T25 is the clear favourite — its game style matches up well against T02.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T25 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 44.2
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T25 leans on keeping the ball while T02 leans on springing counter-attacks; that clash tilts the game toward T25.",
+              "contributionPp": 1.6
+            },
+            {
+              "label": "How even it is",
+              "detail": "T25 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t12-t43-2026-07-07",
+      "teamA": "T12",
+      "teamB": "T43",
+      "prediction": {
+        "probs": {
+          "home": 0.5848104643903341,
+          "draw": 0.2578429152703515,
+          "away": 0.15734662033931432
+        },
+        "rationale": {
+          "headline": "T12 is the slight favourite — its game style matches up well against T43.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T12 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 28.6
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T12 leans on keeping the ball while T43 leans on springing counter-attacks; that clash is close to a wash.",
+              "contributionPp": 0.2
+            },
+            {
+              "label": "How even it is",
+              "detail": "T12 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t30-t23-2026-07-08",
+      "teamA": "T30",
+      "teamB": "T23",
+      "prediction": {
+        "probs": {
+          "home": 0.5486810232271755,
+          "draw": 0.26890823434668015,
+          "away": 0.18241074242614436
+        },
+        "rationale": {
+          "headline": "T30 is the slight favourite — its game style matches up well against T23.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T30 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 25.1
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T30 leans on keeping the ball while T23 leans on springing counter-attacks; that clash is close to a wash.",
+              "contributionPp": 0
+            },
+            {
+              "label": "How even it is",
+              "detail": "T30 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t06-t28-2026-07-09",
+      "teamA": "T06",
+      "teamB": "T28",
+      "prediction": {
+        "probs": {
+          "home": 0.6552902821984579,
+          "draw": 0.23150702348925178,
+          "away": 0.1132026943122905
+        },
+        "rationale": {
+          "headline": "T06 is the clear favourite — its game style matches up well against T28.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T06 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 34.9
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T06 leans on keeping the ball while T28 leans on springing counter-attacks; that clash tilts the game toward T06.",
+              "contributionPp": 0.7
+            },
+            {
+              "label": "How even it is",
+              "detail": "T06 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t24-t31-2026-07-04",
+      "teamA": "T24",
+      "teamB": "T31",
+      "prediction": {
+        "probs": {
+          "home": 0.9353179310802345,
+          "draw": 0.059451709002740626,
+          "away": 0.005230359917024787
+        },
+        "rationale": {
+          "headline": "T24 is the clear favourite — its game style matches up well against T31.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T24 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 49.4
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T24 leans on keeping the ball while T31 leans on springing counter-attacks; that clash tilts the game toward T24.",
+              "contributionPp": 1.2
+            },
+            {
+              "label": "How even it is",
+              "detail": "T24 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t33-t27-2026-07-05",
+      "teamA": "T33",
+      "teamB": "T27",
+      "prediction": {
+        "probs": {
+          "home": 0.5592810028350622,
+          "draw": 0.2658338993682961,
+          "away": 0.17488509779664171
+        },
+        "rationale": {
+          "headline": "T33 is the slight favourite — its game style matches up well against T27.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T33 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 26.1
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T33 leans on keeping the ball while T27 leans on springing counter-attacks; that clash is close to a wash.",
+              "contributionPp": 0.1
+            },
+            {
+              "label": "How even it is",
+              "detail": "T33 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t45-t47-2026-07-06",
+      "teamA": "T45",
+      "teamB": "T47",
+      "prediction": {
+        "probs": {
+          "home": 0.4616867692903139,
+          "draw": 0.28860719765027915,
+          "away": 0.24970603305940706
+        },
+        "rationale": {
+          "headline": "T45 and T47 look evenly matched, with T45 a hair ahead on the day.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T45 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 14.4
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T45 leans on keeping the ball while T47 leans on springing counter-attacks; that clash tilts the game toward T45.",
+              "contributionPp": 0.6
+            },
+            {
+              "label": "How even it is",
+              "detail": "The styles roughly cancel out, so a draw is very much in play.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t34-t39-2026-07-07",
+      "teamA": "T34",
+      "teamB": "T39",
+      "prediction": {
+        "probs": {
+          "home": 0.7922266526760596,
+          "draw": 0.16195082248359163,
+          "away": 0.04582252484034867
+        },
+        "rationale": {
+          "headline": "T34 is the clear favourite — its game style matches up well against T39.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T34 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 44.7
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T34 leans on keeping the ball while T39 leans on springing counter-attacks; that clash tilts the game toward T39, who is the lower-rated side here.",
+              "contributionPp": -1
+            },
+            {
+              "label": "How even it is",
+              "detail": "T34 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t18-t32-2026-07-08",
+      "teamA": "T18",
+      "teamB": "T32",
+      "prediction": {
+        "probs": {
+          "home": 0.2782021954337978,
+          "draw": 0.29343156005785453,
+          "away": 0.42836624450834765
+        },
+        "rationale": {
+          "headline": "T18 and T32 look evenly matched, with T32 a hair ahead on the day.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T32 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": -10.6
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T18 leans on keeping the ball while T32 leans on springing counter-attacks; that clash is close to a wash.",
+              "contributionPp": 0
+            },
+            {
+              "label": "How even it is",
+              "detail": "The styles roughly cancel out, so a draw is very much in play.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t16-t29-2026-07-09",
+      "teamA": "T16",
+      "teamB": "T29",
+      "prediction": {
+        "probs": {
+          "home": 0.5227547766688654,
+          "draw": 0.27581966200747876,
+          "away": 0.20142556132365583
+        },
+        "rationale": {
+          "headline": "T16 is the slight favourite — its game style matches up well against T29.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T16 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 22.5
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T16 leans on keeping the ball while T29 leans on springing counter-attacks; that clash is close to a wash.",
+              "contributionPp": -0.4
+            },
+            {
+              "label": "How even it is",
+              "detail": "T16 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t20-t38-2026-07-04",
+      "teamA": "T20",
+      "teamB": "T38",
+      "prediction": {
+        "probs": {
+          "home": 0.7397518682907313,
+          "draw": 0.19157804902376,
+          "away": 0.06867008268550862
+        },
+        "rationale": {
+          "headline": "T20 is the clear favourite — its game style matches up well against T38.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T20 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 41.9
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T20 leans on keeping the ball while T38 leans on springing counter-attacks; that clash tilts the game toward T38, who is the lower-rated side here.",
+              "contributionPp": -1.2
+            },
+            {
+              "label": "How even it is",
+              "detail": "T20 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t03-t46-2026-07-05",
+      "teamA": "T03",
+      "teamB": "T46",
+      "prediction": {
+        "probs": {
+          "home": 0.35311903562382607,
+          "draw": 0.2982413501591325,
+          "away": 0.34863961421704154
+        },
+        "rationale": {
+          "headline": "T03 and T46 look evenly matched, with T03 a hair ahead on the day.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T03 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 0.6
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T03 leans on keeping the ball while T46 leans on springing counter-attacks; that clash is close to a wash.",
+              "contributionPp": -0.2
+            },
+            {
+              "label": "How even it is",
+              "detail": "The styles roughly cancel out, so a draw is very much in play.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t05-t37-2026-07-06",
+      "teamA": "T05",
+      "teamB": "T37",
+      "prediction": {
+        "probs": {
+          "home": 0.1628180775651242,
+          "draw": 0.2604660819000324,
+          "away": 0.5767158405348434
+        },
+        "rationale": {
+          "headline": "T37 is the slight favourite — its game style matches up well against T05.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T37 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": -28.5
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T05 leans on keeping the ball while T37 leans on springing counter-attacks; that clash tilts the game toward T05, who is the lower-rated side here.",
+              "contributionPp": 0.7
+            },
+            {
+              "label": "How even it is",
+              "detail": "T37 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t17-t11-2026-07-07",
+      "teamA": "T17",
+      "teamB": "T11",
+      "prediction": {
+        "probs": {
+          "home": 0.5298820257056169,
+          "draw": 0.2740061867499554,
+          "away": 0.1961117875444277
+        },
+        "rationale": {
+          "headline": "T17 is the slight favourite — its game style matches up well against T11.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "T17 has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 23.2
+            },
+            {
+              "label": "Style matchup",
+              "detail": "T17 leans on keeping the ball while T11 leans on keeping the ball; that clash is close to a wash.",
+              "contributionPp": -0.3
+            },
+            {
+              "label": "How even it is",
+              "detail": "T17 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    }
+  ]
+}

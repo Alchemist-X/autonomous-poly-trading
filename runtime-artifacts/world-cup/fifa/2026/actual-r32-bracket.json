@@ -1,0 +1,98 @@
+[
+ {
+  "slug": "fifwc-rsa-can-2026-06-28",
+  "date": "2026-06-28",
+  "teamA": "South Africa",
+  "teamB": "Canada"
+ },
+ {
+  "slug": "fifwc-bra-jpn-2026-06-29",
+  "date": "2026-06-29",
+  "teamA": "Brazil",
+  "teamB": "Japan"
+ },
+ {
+  "slug": "fifwc-ger-par-2026-06-29",
+  "date": "2026-06-29",
+  "teamA": "Germany",
+  "teamB": "Paraguay"
+ },
+ {
+  "slug": "fifwc-nld-mar-2026-06-29",
+  "date": "2026-06-29",
+  "teamA": "Netherlands",
+  "teamB": "Morocco"
+ },
+ {
+  "slug": "fifwc-civ-nor-2026-06-30",
+  "date": "2026-06-30",
+  "teamA": "Côte d'Ivoire",
+  "teamB": "Norway"
+ },
+ {
+  "slug": "fifwc-fra-swe-2026-06-30",
+  "date": "2026-06-30",
+  "teamA": "France",
+  "teamB": "Sweden"
+ },
+ {
+  "slug": "fifwc-mex-ecu-2026-06-30",
+  "date": "2026-06-30",
+  "teamA": "Mexico",
+  "teamB": "Ecuador"
+ },
+ {
+  "slug": "fifwc-bel-sen-2026-07-01",
+  "date": "2026-07-01",
+  "teamA": "Belgium",
+  "teamB": "Senegal"
+ },
+ {
+  "slug": "fifwc-eng-cdr-2026-07-01",
+  "date": "2026-07-01",
+  "teamA": "England",
+  "teamB": "DR Congo"
+ },
+ {
+  "slug": "fifwc-usa-bih-2026-07-01",
+  "date": "2026-07-01",
+  "teamA": "United States",
+  "teamB": "Bosnia-Herzegovina"
+ },
+ {
+  "slug": "fifwc-che-alg-2026-07-02",
+  "date": "2026-07-02",
+  "teamA": "Switzerland",
+  "teamB": "Algeria"
+ },
+ {
+  "slug": "fifwc-esp-aut-2026-07-02",
+  "date": "2026-07-02",
+  "teamA": "Spain",
+  "teamB": "Austria"
+ },
+ {
+  "slug": "fifwc-prt-hrv-2026-07-02",
+  "date": "2026-07-02",
+  "teamA": "Portugal",
+  "teamB": "Croatia"
+ },
+ {
+  "slug": "fifwc-arg-cvi-2026-07-03",
+  "date": "2026-07-03",
+  "teamA": "Argentina",
+  "teamB": "Cabo Verde"
+ },
+ {
+  "slug": "fifwc-aus-egy-2026-07-03",
+  "date": "2026-07-03",
+  "teamA": "Australia",
+  "teamB": "Egypt"
+ },
+ {
+  "slug": "fifwc-col-gha-2026-07-03",
+  "date": "2026-07-03",
+  "teamA": "Colombia",
+  "teamB": "Ghana"
+ }
+]

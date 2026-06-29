@@ -1,0 +1,419 @@
+{
+  "fixtureId": "fifwc-t03-t46-2026-07-05",
+  "teamA": "T03",
+  "teamB": "T46",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.5475343643158237,
+        "draw": 0.2536219101907254,
+        "away": 0.19884372549345103
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T03",
+          "p": 0.5475343643158237
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2536219101907254
+        },
+        {
+          "key": "b",
+          "label": "T46",
+          "p": 0.19884372549345103
+        }
+      ],
+      "headline": "T03 are a slight favourite to beat T46 (54.8% to win).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "T03's attack is projected for about 1.7 goals against T46's defence, versus roughly 0.9 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": 34.9
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "T03 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 25.4%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.5197764634080007,
+        "draw": 0.24484445645746672,
+        "away": 0.23537908013453254
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T03",
+          "p": 0.5197764634080007
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.24484445645746672
+        },
+        {
+          "key": "b",
+          "label": "T46",
+          "p": 0.23537908013453254
+        }
+      ],
+      "headline": "T03 are favoured to beat T46, winning roughly 52 times out of 100 to T46's 24.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage T03 created 0.4 more good chances per game than they gave up, versus 0.2 for T46 — T03 simply made better chances more often.",
+          "contributionPp": 0.9
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "T03 are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": 4.6
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that T46 would need a clear upset to advance.",
+          "contributionPp": 2.3
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.39996849777637655,
+        "draw": 0.23864349587996475,
+        "away": 0.36138800634365875
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T03",
+          "p": 0.39996849777637655
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.23864349587996475
+        },
+        {
+          "key": "b",
+          "label": "T46",
+          "p": 0.36138800634365875
+        }
+      ],
+      "headline": "T03 and T46 look evenly matched, with no side meaningfully on top.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "T03 has been creating about 1.5 goals of chances a game; T46's defence usually allows about 1.2. That points to roughly 1.6 goals for T03.",
+          "contributionPp": 11.8
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "T46 has been creating about 1.1 goals of chances a game; T03's defence usually allows about 0.9. That points to roughly 1.5 goals for T46.",
+          "contributionPp": -7.5
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, T03 projects to outscore T46 by about 0.1 goals on the night.",
+          "contributionPp": 2.1
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.5048815507599989,
+        "draw": 0.24750345295512854,
+        "away": 0.24761499628487266
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T03",
+          "p": 0.5048815507599989
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.24750345295512854
+        },
+        {
+          "key": "b",
+          "label": "T46",
+          "p": 0.24761499628487266
+        }
+      ],
+      "headline": "T03 is clearly the stronger side here with about a 50% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "T03 ran a heavier high-intensity workload in the group stage than T46, leaving it more likely to tire and fade as this match wears on.",
+          "contributionPp": -0.5
+        },
+        {
+          "label": "Form and strength",
+          "detail": "T03 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": 6.6
+        },
+        {
+          "label": "Rest edge",
+          "detail": "T46 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+          "contributionPp": -0.3
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.35311903562382607,
+        "draw": 0.2982413501591325,
+        "away": 0.34863961421704154
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T03",
+          "p": 0.35311903562382607
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2982413501591325
+        },
+        {
+          "key": "b",
+          "label": "T46",
+          "p": 0.34863961421704154
+        }
+      ],
+      "headline": "T03 and T46 look evenly matched, with T03 a hair ahead on the day.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "T03 has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": 0.6
+        },
+        {
+          "label": "Style matchup",
+          "detail": "T03 leans on keeping the ball while T46 leans on springing counter-attacks; that clash is close to a wash.",
+          "contributionPp": -0.2
+        },
+        {
+          "label": "How even it is",
+          "detail": "The styles roughly cancel out, so a draw is very much in play.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0.8959071369534882,
+        "draw": 0.10409286304651189,
+        "away": 0
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T03",
+          "p": 0.8959071369534882
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.10409286304651189
+        },
+        {
+          "key": "b",
+          "label": "T46",
+          "p": 0
+        }
+      ],
+      "headline": "T03 are clear favourites to beat T46, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "T03 completed line-breaking passes more reliably, slicing through T46's lines more often.",
+          "contributionPp": 3.7
+        },
+        {
+          "label": "Converting chances",
+          "detail": "T03 turned more of its forward runs into real scoring looks than T46 did.",
+          "contributionPp": 2.5
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "T03 created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": 8.9
+        },
+        {
+          "label": "Controlling the ball",
+          "detail": "T03 held possession noticeably more, keeping T46 chasing the game.",
+          "contributionPp": 0.5
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.6935179277005085,
+        "draw": 0.19918252221515712,
+        "away": 0.10729955008433441
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T03",
+          "p": 0.6935179277005085
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.19918252221515712
+        },
+        {
+          "key": "b",
+          "label": "T46",
+          "p": 0.10729955008433441
+        }
+      ],
+      "headline": "T03 is the clear favourite (69%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "T03 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+          "contributionPp": 0.13421202176628766
+        },
+        {
+          "label": "Ball control",
+          "detail": "T03 keeps the ball more (55% vs 51%), dictating the tempo of build-up.",
+          "contributionPp": 0.5236121541817905
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "T03 has created the better chances on average (1.43 vs 1.19 expected goals a game).",
+          "contributionPp": 4.430000055099058
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.4577548272612071,
+        "draw": 0.21317937512547308,
+        "away": 0.3290657976133198
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T03",
+          "p": 0.4577548272612071
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.21317937512547308
+        },
+        {
+          "key": "b",
+          "label": "T46",
+          "p": 0.3290657976133198
+        }
+      ],
+      "headline": "Pulling every angle together, T03 is narrowly the side to back here, at about a 46% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "100% of the underlying views lean T03, so the blended call sides with T03 with confidence.",
+          "contributionPp": 12.9
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — T03 edges it, but the result is close to a toss-up.",
+          "contributionPp": 12.4
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T03 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.6993026420737843,
+        "draw": 0.28843606151439116,
+        "away": 0.012261296411824558
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T03",
+          "p": 0.6993026420737843
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.28843606151439116
+        },
+        {
+          "key": "b",
+          "label": "T46",
+          "p": 0.012261296411824558
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, T03 is the call here at about 70%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T03 at 70%.",
+          "contributionPp": 36.6
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T03's win chance by 0 points.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

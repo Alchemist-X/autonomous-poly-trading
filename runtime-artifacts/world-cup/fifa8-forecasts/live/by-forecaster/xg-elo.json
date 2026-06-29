@@ -1,0 +1,502 @@
+{
+  "id": "xg-elo",
+  "name": "xG-corrected Elo",
+  "family": "elo",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.4574625282829638,
+          "draw": 0.2542206374365978,
+          "away": 0.28831683428043836
+        },
+        "rationale": {
+          "headline": "Brazil are favoured to beat Japan, winning roughly 46 times out of 100 to Japan's 29.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Brazil created 1.3 more good chances per game than they gave up, versus 0.6 for Japan — Brazil simply made better chances more often.",
+              "contributionPp": 4.4
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Brazil are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 2.7
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Japan would need a clear upset to advance.",
+              "contributionPp": 1.4
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.5044500438324093,
+          "draw": 0.24757661430968952,
+          "away": 0.24797334185790126
+        },
+        "rationale": {
+          "headline": "Germany are favoured to beat Paraguay, winning roughly 50 times out of 100 to Paraguay's 25.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Germany created 1.5 more good chances per game than they gave up, versus 1.2 for Paraguay — Germany simply made better chances more often.",
+              "contributionPp": 12
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Germany are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 4.1
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Paraguay would need a clear upset to advance.",
+              "contributionPp": 2.1
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.49433179414873063,
+          "draw": 0.24922936640753773,
+          "away": 0.2564388394437317
+        },
+        "rationale": {
+          "headline": "Netherlands are favoured to beat Morocco, winning roughly 49 times out of 100 to Morocco's 26.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Netherlands created 0.8 more good chances per game than they gave up, versus 0.6 for Morocco — Netherlands simply made better chances more often.",
+              "contributionPp": 0.8
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Netherlands are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 3.8
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Morocco would need a clear upset to advance.",
+              "contributionPp": 1.9
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.17255372572905706,
+          "draw": 0.22558420918892813,
+          "away": 0.6018620650820149
+        },
+        "rationale": {
+          "headline": "Norway are the clear favourite to beat Côte d'Ivoire, winning roughly 60 times out of 100 to Côte d'Ivoire's 17.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Norway created 0.4 more good chances per game than they gave up, versus 0.1 for Côte d'Ivoire — Norway simply made better chances more often.",
+              "contributionPp": -2.9
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Norway are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": -6.9
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Côte d'Ivoire would need a clear upset to advance.",
+              "contributionPp": -3.4
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.7113166470344101,
+          "draw": 0.18765298871576191,
+          "away": 0.101030364249828
+        },
+        "rationale": {
+          "headline": "France are the clear favourite to beat Sweden, winning roughly 71 times out of 100 to Sweden's 10.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage France created 0.8 more good chances per game than they gave up, versus 0 for Sweden — France simply made better chances more often.",
+              "contributionPp": 4.6
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "France are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Sweden would need a clear upset to advance.",
+              "contributionPp": 4
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.3098310184347411,
+          "draw": 0.2565694255035939,
+          "away": 0.4335995560616649
+        },
+        "rationale": {
+          "headline": "Ecuador are a slight favourite to beat Mexico, winning roughly 43 times out of 100 to Mexico's 31.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Ecuador created 0.7 more good chances per game than they gave up, versus 0.9 for Mexico — Ecuador simply made better chances more often.",
+              "contributionPp": 1.3
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Ecuador are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": -2
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The two sides are close, so a single moment could swing the tie either way.",
+              "contributionPp": -1
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.4032981755081785,
+          "draw": 0.25851662056241204,
+          "away": 0.33818520392940954
+        },
+        "rationale": {
+          "headline": "Belgium are a slight favourite to beat Senegal, winning roughly 40 times out of 100 to Senegal's 34.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Belgium created 1.7 more good chances per game than they gave up, versus 0.6 for Senegal — Belgium simply made better chances more often.",
+              "contributionPp": 6.4
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Belgium are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 1
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The two sides are close, so a single moment could swing the tie either way.",
+              "contributionPp": 0.5
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.7258461931136365,
+          "draw": 0.18151590744739515,
+          "away": 0.09263789943896829
+        },
+        "rationale": {
+          "headline": "England are the clear favourite to beat DR Congo, winning roughly 73 times out of 100 to DR Congo's 9.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage England created 1.6 more good chances per game than they gave up, versus 0.3 for DR Congo — England simply made better chances more often.",
+              "contributionPp": 8.1
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "England are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that DR Congo would need a clear upset to advance.",
+              "contributionPp": 4
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.558707263862642,
+          "draw": 0.23667826315473328,
+          "away": 0.20461447298262478
+        },
+        "rationale": {
+          "headline": "United States are the clear favourite to beat Bosnia-Herzegovina, winning roughly 56 times out of 100 to Bosnia-Herzegovina's 20.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage United States created 0.9 more good chances per game than they gave up, versus 0.9 for Bosnia-Herzegovina — United States simply made better chances more often.",
+              "contributionPp": 10.6
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "United States are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 5.7
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Bosnia-Herzegovina would need a clear upset to advance.",
+              "contributionPp": 2.8
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.4854892356540272,
+          "draw": 0.2505746967646241,
+          "away": 0.2639360675813487
+        },
+        "rationale": {
+          "headline": "Switzerland are favoured to beat Algeria, winning roughly 49 times out of 100 to Algeria's 26.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Switzerland created 1.4 more good chances per game than they gave up, versus 0.3 for Algeria — Switzerland simply made better chances more often.",
+              "contributionPp": 6.5
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Switzerland are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 3.5
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Algeria would need a clear upset to advance.",
+              "contributionPp": 1.8
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.7063120249771766,
+          "draw": 0.18970469889045588,
+          "away": 0.10398327613236741
+        },
+        "rationale": {
+          "headline": "Spain are the clear favourite to beat Austria, winning roughly 71 times out of 100 to Austria's 10.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Spain created 2 more good chances per game than they gave up, versus 0.3 for Austria — Spain simply made better chances more often.",
+              "contributionPp": 12
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Spain are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Austria would need a clear upset to advance.",
+              "contributionPp": 4
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.4661000065097742,
+          "draw": 0.25319802896441607,
+          "away": 0.28070196452580964
+        },
+        "rationale": {
+          "headline": "Portugal are favoured to beat Croatia, winning roughly 47 times out of 100 to Croatia's 28.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Portugal created 0.2 more good chances per game than they gave up, versus 0.9 for Croatia — Portugal simply made better chances more often.",
+              "contributionPp": 6.8
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Portugal are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 3
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Croatia would need a clear upset to advance.",
+              "contributionPp": 1.5
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.8358675259964929,
+          "draw": 0.12560996000254837,
+          "away": 0.03852251400095861
+        },
+        "rationale": {
+          "headline": "Argentina are the clear favourite to beat Cabo Verde, winning roughly 84 times out of 100 to Cabo Verde's 4.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Argentina created 1.5 more good chances per game than they gave up, versus 0.9 for Cabo Verde — Argentina simply made better chances more often.",
+              "contributionPp": 12
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Argentina are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Cabo Verde would need a clear upset to advance.",
+              "contributionPp": 4
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0.4499650941880131,
+          "draw": 0.2550344283407846,
+          "away": 0.2950004774712022
+        },
+        "rationale": {
+          "headline": "Australia are favoured to beat Egypt, winning roughly 45 times out of 100 to Egypt's 30.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Australia created 0.5 more good chances per game than they gave up, versus 0.1 for Egypt — Australia simply made better chances more often.",
+              "contributionPp": -2.5
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Australia are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 2.5
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Egypt would need a clear upset to advance.",
+              "contributionPp": 1.2
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.7904660769715321,
+          "draw": 0.15081259196926525,
+          "away": 0.05872133105920262
+        },
+        "rationale": {
+          "headline": "Colombia are the clear favourite to beat Ghana, winning roughly 79 times out of 100 to Ghana's 6.",
+          "drivers": [
+            {
+              "label": "Chance-creation form",
+              "detail": "Across the group stage Colombia created 0.7 more good chances per game than they gave up, versus 0.3 for Ghana — Colombia simply made better chances more often.",
+              "contributionPp": 6
+            },
+            {
+              "label": "Earned standing, not lucky results",
+              "detail": "Colombia are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Margin of safety",
+              "detail": "The gap is wide enough that Ghana would need a clear upset to advance.",
+              "contributionPp": 4
+            }
+          ],
+          "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+        }
+      }
+    }
+  ]
+}
