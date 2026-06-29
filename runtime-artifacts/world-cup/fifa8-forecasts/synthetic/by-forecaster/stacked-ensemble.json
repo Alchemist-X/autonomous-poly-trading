@@ -1,0 +1,455 @@
+{
+  "id": "stacked-ensemble",
+  "name": "Stacked Ensemble",
+  "family": "ensemble",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-t21-t14-2026-07-04",
+      "teamA": "T21",
+      "teamB": "T14",
+      "prediction": {
+        "probs": {
+          "home": 0.48573442426738767,
+          "draw": 0.20938487858027544,
+          "away": 0.3048806971523369
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T21 is narrowly the side to back here, at about a 49% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T21, so the blended call sides with T21 with confidence.",
+              "contributionPp": 18.1
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T21 edges it, but the result is close to a toss-up.",
+              "contributionPp": 15.2
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T21 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t00-t07-2026-07-05",
+      "teamA": "T00",
+      "teamB": "T07",
+      "prediction": {
+        "probs": {
+          "home": 0.4608539592979248,
+          "draw": 0.21779214168410516,
+          "away": 0.32135389901797007
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T00 is narrowly the side to back here, at about a 46% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T00, so the blended call sides with T00 with confidence.",
+              "contributionPp": 14
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T00 edges it, but the result is close to a toss-up.",
+              "contributionPp": 12.8
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T00 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t25-t02-2026-07-06",
+      "teamA": "T25",
+      "teamB": "T02",
+      "prediction": {
+        "probs": {
+          "home": 0.4722796557412866,
+          "draw": 0.21532435629395377,
+          "away": 0.3123959879647597
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T25 is narrowly the side to back here, at about a 47% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T25, so the blended call sides with T25 with confidence.",
+              "contributionPp": 16
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T25 edges it, but the result is close to a toss-up.",
+              "contributionPp": 13.9
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T25 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t12-t43-2026-07-07",
+      "teamA": "T12",
+      "teamB": "T43",
+      "prediction": {
+        "probs": {
+          "home": 0.4404182397443096,
+          "draw": 0.222718224102219,
+          "away": 0.3368635361534714
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T12 is slightly the side to back here, at about a 44% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "86% of the underlying views lean T12, so the blended call sides with T12 with confidence.",
+              "contributionPp": 10.4
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T12 edges it, but the result is close to a toss-up.",
+              "contributionPp": 10.7
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T12 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t30-t23-2026-07-08",
+      "teamA": "T30",
+      "teamB": "T23",
+      "prediction": {
+        "probs": {
+          "home": 0.46183230640406686,
+          "draw": 0.21626016739794157,
+          "away": 0.3219075261979916
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T30 is narrowly the side to back here, at about a 46% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T30, so the blended call sides with T30 with confidence.",
+              "contributionPp": 14
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T30 edges it, but the result is close to a toss-up.",
+              "contributionPp": 12.8
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T30 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t06-t28-2026-07-09",
+      "teamA": "T06",
+      "teamB": "T28",
+      "prediction": {
+        "probs": {
+          "home": 0.46994541442621734,
+          "draw": 0.21395665478048534,
+          "away": 0.3160979307932974
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T06 is narrowly the side to back here, at about a 47% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T06, so the blended call sides with T06 with confidence.",
+              "contributionPp": 15.4
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T06 edges it, but the result is close to a toss-up.",
+              "contributionPp": 13.7
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T06 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t24-t31-2026-07-04",
+      "teamA": "T24",
+      "teamB": "T31",
+      "prediction": {
+        "probs": {
+          "home": 0.4742104104157186,
+          "draw": 0.214560302137838,
+          "away": 0.3112292874464434
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T24 is narrowly the side to back here, at about a 47% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T24, so the blended call sides with T24 with confidence.",
+              "contributionPp": 16.3
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T24 edges it, but the result is close to a toss-up.",
+              "contributionPp": 14.1
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T24 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t33-t27-2026-07-05",
+      "teamA": "T33",
+      "teamB": "T27",
+      "prediction": {
+        "probs": {
+          "home": 0.4294907403400796,
+          "draw": 0.23833451054648538,
+          "away": 0.33217474911343503
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T33 is slightly the side to back here, at about a 43% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "86% of the underlying views lean T33, so the blended call sides with T33 with confidence.",
+              "contributionPp": 9.7
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T33 edges it, but the result is close to a toss-up.",
+              "contributionPp": 9.6
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T33 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t45-t47-2026-07-06",
+      "teamA": "T45",
+      "teamB": "T47",
+      "prediction": {
+        "probs": {
+          "home": 0.46810967279806814,
+          "draw": 0.210825869369978,
+          "away": 0.321064457831954
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T45 is narrowly the side to back here, at about a 47% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T45, so the blended call sides with T45 with confidence.",
+              "contributionPp": 14.7
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T45 edges it, but the result is close to a toss-up.",
+              "contributionPp": 13.5
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T45 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t34-t39-2026-07-07",
+      "teamA": "T34",
+      "teamB": "T39",
+      "prediction": {
+        "probs": {
+          "home": 0.47755058135102785,
+          "draw": 0.20869001297620782,
+          "away": 0.3137594056727644
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T34 is narrowly the side to back here, at about a 48% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T34, so the blended call sides with T34 with confidence.",
+              "contributionPp": 16.4
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T34 edges it, but the result is close to a toss-up.",
+              "contributionPp": 14.4
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T34 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t18-t32-2026-07-08",
+      "teamA": "T18",
+      "teamB": "T32",
+      "prediction": {
+        "probs": {
+          "home": 0.4509367959450067,
+          "draw": 0.21438751922225496,
+          "away": 0.3346756848327383
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T18 is narrowly the side to back here, at about a 45% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "86% of the underlying views lean T18, so the blended call sides with T18 with confidence.",
+              "contributionPp": 11.6
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T18 edges it, but the result is close to a toss-up.",
+              "contributionPp": 11.8
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T18 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t16-t29-2026-07-09",
+      "teamA": "T16",
+      "teamB": "T29",
+      "prediction": {
+        "probs": {
+          "home": 0.46426790171778876,
+          "draw": 0.21193219235870775,
+          "away": 0.32379990592350355
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T16 is narrowly the side to back here, at about a 46% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T16, so the blended call sides with T16 with confidence.",
+              "contributionPp": 14
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T16 edges it, but the result is close to a toss-up.",
+              "contributionPp": 13.1
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T16 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t20-t38-2026-07-04",
+      "teamA": "T20",
+      "teamB": "T38",
+      "prediction": {
+        "probs": {
+          "home": 0.4543190441208,
+          "draw": 0.22047704530656928,
+          "away": 0.3252039105726307
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T20 is narrowly the side to back here, at about a 45% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T20, so the blended call sides with T20 with confidence.",
+              "contributionPp": 12.9
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T20 edges it, but the result is close to a toss-up.",
+              "contributionPp": 12.1
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T20 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t03-t46-2026-07-05",
+      "teamA": "T03",
+      "teamB": "T46",
+      "prediction": {
+        "probs": {
+          "home": 0.4577548272612071,
+          "draw": 0.21317937512547308,
+          "away": 0.3290657976133198
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T03 is narrowly the side to back here, at about a 46% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean T03, so the blended call sides with T03 with confidence.",
+              "contributionPp": 12.9
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T03 edges it, but the result is close to a toss-up.",
+              "contributionPp": 12.4
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T03 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t05-t37-2026-07-06",
+      "teamA": "T05",
+      "teamB": "T37",
+      "prediction": {
+        "probs": {
+          "home": 0.4370354573004083,
+          "draw": 0.2230760692423314,
+          "away": 0.3398884734572603
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T05 is slightly the side to back here, at about a 44% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "86% of the underlying views lean T05, so the blended call sides with T05 with confidence.",
+              "contributionPp": 9.7
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T05 edges it, but the result is close to a toss-up.",
+              "contributionPp": 10.4
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T05 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t17-t11-2026-07-07",
+      "teamA": "T17",
+      "teamB": "T11",
+      "prediction": {
+        "probs": {
+          "home": 0.4311138806237205,
+          "draw": 0.22068271432321745,
+          "away": 0.348203405053062
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, T17 is slightly the side to back here, at about a 43% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "71% of the underlying views lean T17, so the blended call sides with T17 with confidence.",
+              "contributionPp": 8.3
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — T17 edges it, but the result is close to a toss-up.",
+              "contributionPp": 9.8
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T17 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    }
+  ]
+}

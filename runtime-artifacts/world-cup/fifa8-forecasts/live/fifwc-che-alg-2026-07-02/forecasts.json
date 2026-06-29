@@ -1,0 +1,409 @@
+{
+  "fixtureId": "fifwc-che-alg-2026-07-02",
+  "teamA": "Switzerland",
+  "teamB": "Algeria",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.621862963287914,
+        "draw": 0.22824381763204332,
+        "away": 0.14989321908004272
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Switzerland",
+          "p": 0.621862963287914
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.22824381763204332
+        },
+        {
+          "key": "b",
+          "label": "Algeria",
+          "p": 0.14989321908004272
+        }
+      ],
+      "headline": "Switzerland are a clear favourite to beat Algeria (62.2% to win).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Switzerland's attack is projected for about 2.1 goals against Algeria's defence, versus roughly 1 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": 47.2
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "Switzerland carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 22.8%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.4854892356540272,
+        "draw": 0.2505746967646241,
+        "away": 0.2639360675813487
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Switzerland",
+          "p": 0.4854892356540272
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2505746967646241
+        },
+        {
+          "key": "b",
+          "label": "Algeria",
+          "p": 0.2639360675813487
+        }
+      ],
+      "headline": "Switzerland are favoured to beat Algeria, winning roughly 49 times out of 100 to Algeria's 26.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage Switzerland created 1.4 more good chances per game than they gave up, versus 0.3 for Algeria — Switzerland simply made better chances more often.",
+          "contributionPp": 6.5
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "Switzerland are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": 3.5
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that Algeria would need a clear upset to advance.",
+          "contributionPp": 1.8
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.4616175326017593,
+        "draw": 0.2083204016005722,
+        "away": 0.33006206579766856
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Switzerland",
+          "p": 0.4616175326017593
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2083204016005722
+        },
+        {
+          "key": "b",
+          "label": "Algeria",
+          "p": 0.33006206579766856
+        }
+      ],
+      "headline": "Switzerland is the favourite, expected to generate the better scoring chances over 90 minutes.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Switzerland has been creating about 1.8 goals of chances a game; Algeria's defence usually allows about 1.1. That points to roughly 2.1 goals for Switzerland.",
+          "contributionPp": 31.8
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "Algeria has been creating about 1.4 goals of chances a game; Switzerland's defence usually allows about 1. That points to roughly 1.8 goals for Algeria.",
+          "contributionPp": -19.6
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, Switzerland projects to outscore Algeria by about 0.3 goals on the night.",
+          "contributionPp": 8
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.49369247037349373,
+        "draw": 0.24932974087706777,
+        "away": 0.25697778874943855
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Switzerland",
+          "p": 0.49369247037349373
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.24932974087706777
+        },
+        {
+          "key": "b",
+          "label": "Algeria",
+          "p": 0.25697778874943855
+        }
+      ],
+      "headline": "Switzerland is clearly the stronger side here with about a 49% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "Switzerland and Algeria ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Form and strength",
+          "detail": "Switzerland carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": 5.7
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.3794208514091583,
+        "draw": 0.2975689629911313,
+        "away": 0.32301018559971034
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Switzerland",
+          "p": 0.3794208514091583
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2975689629911313
+        },
+        {
+          "key": "b",
+          "label": "Algeria",
+          "p": 0.32301018559971034
+        }
+      ],
+      "headline": "Switzerland and Algeria look evenly matched, with Switzerland a hair ahead on the day.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "Switzerland has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": 6.3
+        },
+        {
+          "label": "Style matchup",
+          "detail": "Switzerland leans on keeping the ball while Algeria leans on keeping the ball; that clash tilts the game toward Algeria, who is the lower-rated side here.",
+          "contributionPp": -2.3
+        },
+        {
+          "label": "How even it is",
+          "detail": "The styles roughly cancel out, so a draw is very much in play.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0.7010752980866725,
+        "draw": 0.29586139731963507,
+        "away": 0.003063304593692552
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Switzerland",
+          "p": 0.7010752980866725
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.29586139731963507
+        },
+        {
+          "key": "b",
+          "label": "Algeria",
+          "p": 0.003063304593692552
+        }
+      ],
+      "headline": "Switzerland are clear favourites to beat Algeria, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "Switzerland completed line-breaking passes more reliably, slicing through Algeria's lines more often.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Converting chances",
+          "detail": "Switzerland turned more of its forward runs into real scoring looks than Algeria did.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "Switzerland created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": 13.6
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.8023065326431799,
+        "draw": 0.14851929326417898,
+        "away": 0.0491741740926412
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Switzerland",
+          "p": 0.8023065326431799
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.14851929326417898
+        },
+        {
+          "key": "b",
+          "label": "Algeria",
+          "p": 0.0491741740926412
+        }
+      ],
+      "headline": "Switzerland is the clear favourite (80%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "Switzerland spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+          "contributionPp": 0
+        },
+        {
+          "label": "Ball control",
+          "detail": "Algeria keeps the ball more (53% vs 54%), dictating the tempo of build-up.",
+          "contributionPp": -0.20999999999999872
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "Switzerland has created the better chances on average (1.84 vs 1.34 expected goals a game).",
+          "contributionPp": 8.92950630759727
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.49058827557695855,
+        "draw": 0.2700091817884498,
+        "away": 0.23940254263459176
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Switzerland",
+          "p": 0.49058827557695855
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2700091817884498
+        },
+        {
+          "key": "b",
+          "label": "Algeria",
+          "p": 0.23940254263459176
+        }
+      ],
+      "headline": "Pulling every angle together, Switzerland is narrowly the side to back here, at about a 49% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "100% of the underlying views lean Switzerland, so the blended call sides with Switzerland with confidence.",
+          "contributionPp": 25.1
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — Switzerland edges it, but the result is close to a toss-up.",
+          "contributionPp": 15.7
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Switzerland win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.5545066449541455,
+        "draw": 0.24355343652971284,
+        "away": 0.2019399185161418
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Switzerland",
+          "p": 0.5545066449541455
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.24355343652971284
+        },
+        {
+          "key": "b",
+          "label": "Algeria",
+          "p": 0.2019399185161418
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Switzerland is the call here at about 55%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Switzerland at 55%.",
+          "contributionPp": 22.1
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by 0 points.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

@@ -50,6 +50,8 @@ runtime-artifacts/world-cup/*
 !runtime-artifacts/world-cup/run-ledger/
 !runtime-artifacts/world-cup/reports/
 !runtime-artifacts/world-cup/code-archive/
+!runtime-artifacts/world-cup/fifa/
+!runtime-artifacts/world-cup/fifa8-forecasts/
 __pycache__/
 run-error/
 output/

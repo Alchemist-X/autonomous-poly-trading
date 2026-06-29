@@ -1,0 +1,409 @@
+{
+  "fixtureId": "fifwc-bra-jpn-2026-06-29",
+  "teamA": "Brazil",
+  "teamB": "Japan",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.519861728111965,
+        "draw": 0.31317566048947615,
+        "away": 0.166962611398559
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Brazil",
+          "p": 0.519861728111965
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.31317566048947615
+        },
+        {
+          "key": "b",
+          "label": "Japan",
+          "p": 0.166962611398559
+        }
+      ],
+      "headline": "Brazil are a slight favourite to beat Japan (52% to win), though a tight low-scoring draw is very much in play (31.3%).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Brazil's attack is projected for about 1.4 goals against Japan's defence, versus roughly 0.7 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": 35.3
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "Brazil carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 31.3%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.4574625282829638,
+        "draw": 0.2542206374365978,
+        "away": 0.28831683428043836
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Brazil",
+          "p": 0.4574625282829638
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2542206374365978
+        },
+        {
+          "key": "b",
+          "label": "Japan",
+          "p": 0.28831683428043836
+        }
+      ],
+      "headline": "Brazil are favoured to beat Japan, winning roughly 46 times out of 100 to Japan's 29.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage Brazil created 1.3 more good chances per game than they gave up, versus 0.6 for Japan — Brazil simply made better chances more often.",
+          "contributionPp": 4.4
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "Brazil are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": 2.7
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that Japan would need a clear upset to advance.",
+          "contributionPp": 1.4
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.555665967272923,
+        "draw": 0.17549030811517566,
+        "away": 0.2688437246119015
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Brazil",
+          "p": 0.555665967272923
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.17549030811517566
+        },
+        {
+          "key": "b",
+          "label": "Japan",
+          "p": 0.2688437246119015
+        }
+      ],
+      "headline": "Brazil is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Brazil has been creating about 2.2 goals of chances a game; Japan's defence usually allows about 0.7. That points to roughly 2.8 goals for Brazil.",
+          "contributionPp": 45.1
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "Japan has been creating about 1.4 goals of chances a game; Brazil's defence usually allows about 0.8. That points to roughly 2 goals for Japan.",
+          "contributionPp": -28.6
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, Brazil projects to outscore Japan by about 0.8 goals on the night.",
+          "contributionPp": 18.4
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.46577656505868087,
+        "draw": 0.2532379542784191,
+        "away": 0.2809854806629
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Brazil",
+          "p": 0.46577656505868087
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2532379542784191
+        },
+        {
+          "key": "b",
+          "label": "Japan",
+          "p": 0.2809854806629
+        }
+      ],
+      "headline": "Brazil is a slight favourite here with about a 47% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "Brazil and Japan ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Form and strength",
+          "detail": "Brazil carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": 4.4
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.532198382901802,
+        "draw": 0.27340263440979734,
+        "away": 0.1943989826884007
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Brazil",
+          "p": 0.532198382901802
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.27340263440979734
+        },
+        {
+          "key": "b",
+          "label": "Japan",
+          "p": 0.1943989826884007
+        }
+      ],
+      "headline": "Brazil is the slight favourite — its game style matches up well against Japan.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "Brazil has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": 23.7
+        },
+        {
+          "label": "Style matchup",
+          "detail": "Brazil leans on sitting in a deep block while Japan leans on sitting in a deep block; that clash tilts the game toward Japan, who is the lower-rated side here.",
+          "contributionPp": -0.6
+        },
+        {
+          "label": "How even it is",
+          "detail": "Brazil controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0.9224040837667004,
+        "draw": 0.07034328527020049,
+        "away": 0.007252630963099214
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Brazil",
+          "p": 0.9224040837667004
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.07034328527020049
+        },
+        {
+          "key": "b",
+          "label": "Japan",
+          "p": 0.007252630963099214
+        }
+      ],
+      "headline": "Brazil are clear favourites to beat Japan, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "Brazil completed line-breaking passes more reliably, slicing through Japan's lines more often.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Converting chances",
+          "detail": "Brazil turned more of its forward runs into real scoring looks than Japan did.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "Brazil created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": 10.5
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.8142337966957813,
+        "draw": 0.11556479354049237,
+        "away": 0.07020140976372628
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Brazil",
+          "p": 0.8142337966957813
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.11556479354049237
+        },
+        {
+          "key": "b",
+          "label": "Japan",
+          "p": 0.07020140976372628
+        }
+      ],
+      "headline": "Brazil is the clear favourite (81%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "Brazil spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+          "contributionPp": 0
+        },
+        {
+          "label": "Ball control",
+          "detail": "Brazil keeps the ball more (49% vs 48%), dictating the tempo of build-up.",
+          "contributionPp": 0.2400000000000002
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "Brazil has created the better chances on average (1.94 vs 1.39 expected goals a game).",
+          "contributionPp": 9.836984867728269
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.504254619872516,
+        "draw": 0.259073420034144,
+        "away": 0.23667196009334
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Brazil",
+          "p": 0.504254619872516
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.259073420034144
+        },
+        {
+          "key": "b",
+          "label": "Japan",
+          "p": 0.23667196009334
+        }
+      ],
+      "headline": "Pulling every angle together, Brazil is narrowly the side to back here, at about a 50% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "100% of the underlying views lean Brazil, so the blended call sides with Brazil with confidence.",
+          "contributionPp": 26.8
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — Brazil edges it, but the result is close to a toss-up.",
+          "contributionPp": 17.1
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Brazil win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.5964822089954166,
+        "draw": 0.21431358669678785,
+        "away": 0.1892042043077956
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Brazil",
+          "p": 0.5964822089954166
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.21431358669678785
+        },
+        {
+          "key": "b",
+          "label": "Japan",
+          "p": 0.1892042043077956
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Brazil is the call here at about 60%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Brazil at 60%.",
+          "contributionPp": 26.3
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by 0 points.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

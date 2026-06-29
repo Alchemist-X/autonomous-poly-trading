@@ -1,0 +1,535 @@
+{
+  "id": "fatigue-elo",
+  "name": "Physical-decay dynamic-K Elo",
+  "family": "elo",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-t21-t14-2026-07-04",
+      "teamA": "T21",
+      "teamB": "T14",
+      "prediction": {
+        "probs": {
+          "home": 0.9103644821225352,
+          "draw": 0.07651205723311423,
+          "away": 0.013123460644350585
+        },
+        "rationale": {
+          "headline": "T21 is clearly the stronger side here with about a 91% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T21 ran a heavier high-intensity workload in the group stage than T14, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -2.6
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T21 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 30
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T14 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -1.4
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t00-t07-2026-07-05",
+      "teamA": "T00",
+      "teamB": "T07",
+      "prediction": {
+        "probs": {
+          "home": 0.7978956550904237,
+          "draw": 0.14690521398714654,
+          "away": 0.055199130922429736
+        },
+        "rationale": {
+          "headline": "T00 is clearly the stronger side here with about a 80% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T00 ran a heavier high-intensity workload in the group stage than T07, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1.9
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T00 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 24.8
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T07 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -1
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t25-t02-2026-07-06",
+      "teamA": "T25",
+      "teamB": "T02",
+      "prediction": {
+        "probs": {
+          "home": 0.767073095733069,
+          "draw": 0.16259246756349424,
+          "away": 0.07033443670343673
+        },
+        "rationale": {
+          "headline": "T25 is clearly the stronger side here with about a 77% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T25 ran a heavier high-intensity workload in the group stage than T02, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1.5
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T25 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 22
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T02 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.8
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t12-t43-2026-07-07",
+      "teamA": "T12",
+      "teamB": "T43",
+      "prediction": {
+        "probs": {
+          "home": 0.7329144328659991,
+          "draw": 0.17843200841630313,
+          "away": 0.08865355871769778
+        },
+        "rationale": {
+          "headline": "T12 is clearly the stronger side here with about a 73% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T12 ran a heavier high-intensity workload in the group stage than T43, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1.5
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T12 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 19.6
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T43 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.8
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t30-t23-2026-07-08",
+      "teamA": "T30",
+      "teamB": "T23",
+      "prediction": {
+        "probs": {
+          "home": 0.7232812380648709,
+          "draw": 0.18261898759512576,
+          "away": 0.09409977434000344
+        },
+        "rationale": {
+          "headline": "T30 is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T30 ran a heavier high-intensity workload in the group stage than T23, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1.3
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T30 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 18.8
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T23 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.7
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t06-t28-2026-07-09",
+      "teamA": "T06",
+      "teamB": "T28",
+      "prediction": {
+        "probs": {
+          "home": 0.7038254703483855,
+          "draw": 0.19071236924019283,
+          "away": 0.10546216041142178
+        },
+        "rationale": {
+          "headline": "T06 is clearly the stronger side here with about a 70% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T06 ran a heavier high-intensity workload in the group stage than T28, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1.2
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T06 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 17.5
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T28 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.7
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t24-t31-2026-07-04",
+      "teamA": "T24",
+      "teamB": "T31",
+      "prediction": {
+        "probs": {
+          "home": 0.7204504725438801,
+          "draw": 0.18382654312097424,
+          "away": 0.0957229843351457
+        },
+        "rationale": {
+          "headline": "T24 is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T24 ran a heavier high-intensity workload in the group stage than T31, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1.3
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T24 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 18.7
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T31 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.7
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t33-t27-2026-07-05",
+      "teamA": "T33",
+      "teamB": "T27",
+      "prediction": {
+        "probs": {
+          "home": 0.6620229539252241,
+          "draw": 0.20651051392082515,
+          "away": 0.13146653215395074
+        },
+        "rationale": {
+          "headline": "T33 is clearly the stronger side here with about a 66% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T33 ran a heavier high-intensity workload in the group stage than T27, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T33 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 14.9
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T27 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.6
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t45-t47-2026-07-06",
+      "teamA": "T45",
+      "teamB": "T47",
+      "prediction": {
+        "probs": {
+          "home": 0.649877153732149,
+          "draw": 0.21070445232071627,
+          "away": 0.1394183939471348
+        },
+        "rationale": {
+          "headline": "T45 is clearly the stronger side here with about a 65% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T45 ran a heavier high-intensity workload in the group stage than T47, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T45 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 14.2
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T47 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.6
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t34-t39-2026-07-07",
+      "teamA": "T34",
+      "teamB": "T39",
+      "prediction": {
+        "probs": {
+          "home": 0.6212222539591672,
+          "draw": 0.21990833347810768,
+          "away": 0.15886941256272513
+        },
+        "rationale": {
+          "headline": "T34 is clearly the stronger side here with about a 62% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T34 ran a heavier high-intensity workload in the group stage than T39, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T34 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 12.7
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T39 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.6
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t18-t32-2026-07-08",
+      "teamA": "T18",
+      "teamB": "T32",
+      "prediction": {
+        "probs": {
+          "home": 0.5776028830333757,
+          "draw": 0.23208462288118356,
+          "away": 0.1903124940854408
+        },
+        "rationale": {
+          "headline": "T18 is clearly the stronger side here with about a 58% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T18 ran a heavier high-intensity workload in the group stage than T32, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -1
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T18 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 10.5
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T32 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.5
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t16-t29-2026-07-09",
+      "teamA": "T16",
+      "teamB": "T29",
+      "prediction": {
+        "probs": {
+          "home": 0.5691124965400245,
+          "draw": 0.23419952480669526,
+          "away": 0.19668797865328025
+        },
+        "rationale": {
+          "headline": "T16 is clearly the stronger side here with about a 57% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T16 ran a heavier high-intensity workload in the group stage than T29, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -0.9
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T16 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 10
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T29 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.5
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t20-t38-2026-07-04",
+      "teamA": "T20",
+      "teamB": "T38",
+      "prediction": {
+        "probs": {
+          "home": 0.5637069383068505,
+          "draw": 0.2355027924868238,
+          "away": 0.20079026920632564
+        },
+        "rationale": {
+          "headline": "T20 is clearly the stronger side here with about a 56% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T20 ran a heavier high-intensity workload in the group stage than T38, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -0.7
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T20 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 9.6
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T38 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.4
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t03-t46-2026-07-05",
+      "teamA": "T03",
+      "teamB": "T46",
+      "prediction": {
+        "probs": {
+          "home": 0.5048815507599989,
+          "draw": 0.24750345295512854,
+          "away": 0.24761499628487266
+        },
+        "rationale": {
+          "headline": "T03 is clearly the stronger side here with about a 50% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T03 ran a heavier high-intensity workload in the group stage than T46, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -0.5
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T03 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 6.6
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T46 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.3
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t05-t37-2026-07-06",
+      "teamA": "T05",
+      "teamB": "T37",
+      "prediction": {
+        "probs": {
+          "home": 0.46253281127530066,
+          "draw": 0.2536313481277196,
+          "away": 0.28383584059697975
+        },
+        "rationale": {
+          "headline": "T05 is a slight favourite here with about a 46% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T05 ran a heavier high-intensity workload in the group stage than T37, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -0.7
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T05 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 4.8
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T37 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.4
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t17-t11-2026-07-07",
+      "teamA": "T17",
+      "teamB": "T11",
+      "prediction": {
+        "probs": {
+          "home": 0.4230218889459269,
+          "draw": 0.25738285849005677,
+          "away": 0.31959525256401633
+        },
+        "rationale": {
+          "headline": "T17 is a slight favourite here with about a 42% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "T17 and T11 ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Form and strength",
+              "detail": "T17 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 2.5
+            },
+            {
+              "label": "Rest edge",
+              "detail": "T11 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    }
+  ]
+}

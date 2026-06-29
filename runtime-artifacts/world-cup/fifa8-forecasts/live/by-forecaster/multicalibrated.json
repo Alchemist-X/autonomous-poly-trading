@@ -1,0 +1,427 @@
+{
+  "id": "multicalibrated",
+  "name": "Multi-calibrated 8-in-1",
+  "family": "ensemble",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.5964822089954166,
+          "draw": 0.21431358669678785,
+          "away": 0.1892042043077956
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Brazil is the call here at about 60%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Brazil at 60%.",
+              "contributionPp": 26.3
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.5432007222350586,
+          "draw": 0.2544637711812257,
+          "away": 0.20233550658371585
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Germany is the call here at about 54%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Germany at 54%.",
+              "contributionPp": 21
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.5213026531059777,
+          "draw": 0.23410823873298195,
+          "away": 0.24458910816104035
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Netherlands is the call here at about 52%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Netherlands at 52%.",
+              "contributionPp": 18.8
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.31652109748463514,
+          "draw": 0.2459749097640073,
+          "away": 0.4375039927513576
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Norway is the call here at about 44%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Norway at 44%.",
+              "contributionPp": -1.7
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.7193880149315198,
+          "draw": 0.15797228952510178,
+          "away": 0.12263969554337838
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, France is the call here at about 72%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours France at 72%.",
+              "contributionPp": 38.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.4488378216366269,
+          "draw": 0.22295763887909326,
+          "away": 0.3282045394842799
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Mexico is the call here at about 45%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Mexico at 45%.",
+              "contributionPp": 11.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.5289386488003581,
+          "draw": 0.24114273546930987,
+          "away": 0.229918615730332
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Belgium is the call here at about 53%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Belgium at 53%.",
+              "contributionPp": 19.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Belgium's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.6181357926117624,
+          "draw": 0.2494329230883427,
+          "away": 0.13243128429989495
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, England is the call here at about 62%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours England at 62%.",
+              "contributionPp": 28.5
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.5501230053620605,
+          "draw": 0.22926971534560833,
+          "away": 0.22060727929233118
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, United States is the call here at about 55%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours United States at 55%.",
+              "contributionPp": 21.7
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.5545066449541455,
+          "draw": 0.24355343652971284,
+          "away": 0.2019399185161418
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Switzerland is the call here at about 55%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Switzerland at 55%.",
+              "contributionPp": 22.1
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.7928281516715217,
+          "draw": 0.1602236428237996,
+          "away": 0.04694820550467869
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Spain is the call here at about 79%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Spain at 59%.",
+              "contributionPp": 26
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +20 points.",
+              "contributionPp": 20
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.5097751441623065,
+          "draw": 0.27377371310937637,
+          "away": 0.21645114272831723
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Portugal is the call here at about 51%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Portugal at 51%.",
+              "contributionPp": 17.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.6991365875744135,
+          "draw": 0.19629668935141936,
+          "away": 0.1045667230741672
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Argentina is the call here at about 70%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Argentina at 70%.",
+              "contributionPp": 36.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0.31069082307384643,
+          "draw": 0.2515038143820069,
+          "away": 0.43780536254414665
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Egypt is the call here at about 44%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Egypt at 44%.",
+              "contributionPp": -2.3
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.6523161181179938,
+          "draw": 0.22860708208267266,
+          "away": 0.11907679979933344
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Colombia is the call here at about 65%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Colombia at 65%.",
+              "contributionPp": 31.9
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    }
+  ]
+}
