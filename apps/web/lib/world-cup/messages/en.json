@@ -124,5 +124,8 @@
   "peStep4Tag": "±8pp · confidence tiers",
   "peStep5Title": "Report & public scoring",
   "peStep5Copy": "Multilingual reports with full sources; every question Brier-scored in public after settlement — wrong calls stay on record.",
-  "peStep5Tag": "Traceable"
+  "peStep5Tag": "Traceable",
+  "knDriverConsensus": "Models’ consensus",
+  "knDriverBias": "Bias correction",
+  "knDriverPp": "{sign}{pp} pts → {team}"
 }

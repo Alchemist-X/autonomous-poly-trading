@@ -183,11 +183,13 @@ async function priceForEvent(ev: GammaEvent, tsISO: string, teamA: string, teamB
   else direct = sim(l1.title, teamA) + sim(l2.title, teamB) >= sim(l1.title, teamB) + sim(l2.title, teamA);
   const [a, b] = direct ? [l1.p, l2.p] : [l2.p, l1.p];
 
-  // Vig-normalise: Polymarket 1x2 yes-prices sum to > 1 (the overround). Divide
-  // by the total so {a,draw,b} is a proper probability vector for benchmarking.
-  const total = a + draw + b;
-  if (total <= 0) throw new Error("non-positive probability total");
-  return { a: a / total, draw: draw / total, b: b / total };
+  // Store RAW yes-prices (overround-inclusive, summing to > 1), matching the
+  // group-stage baseline-prices.generated.json convention that lib/performance.ts
+  // expects: it uses each leg price as the raw Mock-PNL entry cost and normalises
+  // internally where it needs a probability. Normalising here would double-strip
+  // the vig and inflate Mock PNL.
+  if (a + draw + b <= 0) throw new Error("non-positive probability total");
+  return { a, draw, b };
 }
 
 // Page the World Cup series until a short page (all events fetched).
@@ -209,6 +211,15 @@ async function main(): Promise<void> {
   const generatedAt = data.generatedAt;
   C.info(`fifa8 R32 forecast generatedAt = ${generatedAt}`);
   C.info(`capturing prediction-time Polymarket prices for ${fixtures.length} R32 fixtures …`);
+
+  // Baseline is captured-once history: preserve any previously-captured price so a
+  // transient failure on a re-run can't null out good data.
+  let prior: Record<string, BaselinePrice | null> = {};
+  try {
+    prior = (JSON.parse(await readFile(OUT, "utf8")) as { prices?: Record<string, BaselinePrice | null> }).prices ?? {};
+  } catch {
+    // no prior file — first capture
+  }
 
   let events: readonly GammaEvent[];
   try {
@@ -249,6 +260,11 @@ async function main(): Promise<void> {
     }
   };
   await Promise.all(Array.from({ length: Math.min(4, fixtures.length || 1) }, worker));
+
+  // Restore any good prior price where this run came up null (transient failure).
+  for (const id of Object.keys(prices)) {
+    if (prices[id] == null && prior[id]) prices[id] = prior[id]!;
+  }
 
   const captured = Object.values(prices).filter(Boolean).length;
   await mkdir(GEN_DIR, { recursive: true });

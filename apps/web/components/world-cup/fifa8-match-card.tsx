@@ -23,11 +23,53 @@ const TIER_LABEL_KEY: Record<Tier, StrKey> = {
   low: "tierLow"
 };
 
+// The published (multi-calibrated) headline exposes a small fixed set of driver
+// labels; map them to i18n keys so the "why" panel is localized rather than
+// showing the engine's raw English. (The headline forecaster only ever emits
+// these labels, so the English fallback below is a safety net, not a live path.)
+const DRIVER_KEY: Record<string, StrKey> = {
+  "Consensus of all models": "knDriverConsensus",
+  "Bias correction": "knDriverBias"
+};
+
+// Round three probabilities to integer percents that sum to exactly 100
+// (largest-remainder), so a displayed split never reads 99% or 101%.
+function pct3(a: number, draw: number, b: number): [number, number, number] {
+  const raw = [a * 100, draw * 100, b * 100] as const;
+  const out: [number, number, number] = [Math.floor(raw[0]), Math.floor(raw[1]), Math.floor(raw[2])];
+  let remainder = Math.max(0, Math.min(3, 100 - out[0] - out[1] - out[2]));
+  // Award each remaining point to the largest fractional part, highest first.
+  const fracs: Array<[number, number]> = [
+    [0, raw[0] - out[0]],
+    [1, raw[1] - out[1]],
+    [2, raw[2] - out[2]]
+  ];
+  fracs.sort((x, y) => y[1] - x[1]);
+  for (const [idx] of fracs) {
+    if (remainder <= 0) break;
+    if (idx === 0) out[0] += 1;
+    else if (idx === 1) out[1] += 1;
+    else out[2] += 1;
+    remainder -= 1;
+  }
+  return out;
+}
+
 // Plain-language verdict, templated in the web per locale so prose stays
 // jargon-free regardless of locale. `{team}` / `{pct}` filled from the data.
 function verdict(locale: Locale, pick: Pick, favouredName: string, pct: number): string {
   const key: StrKey = pick === "draw" ? "knTplDraw" : "knTplPick";
   return t(locale, key).replace("{team}", favouredName).replace("{pct}", String(pct));
+}
+
+// One localized driver line: which way the factor leaned, and by how much.
+function driverDetail(locale: Locale, contributionPp: number, nameA: string, nameB: string): string {
+  const fav = contributionPp >= 0 ? nameA : nameB;
+  const sign = contributionPp >= 0 ? "+" : "−";
+  return t(locale, "knDriverPp")
+    .replace("{sign}", sign)
+    .replace("{pp}", Math.abs(contributionPp).toFixed(1))
+    .replace("{team}", fav);
 }
 
 function Splits({ a, draw, b }: { a: number; draw: number; b: number }) {
@@ -61,6 +103,11 @@ export function Fifa8MatchCard({
   const nameA = teamLabel(teamA, locale);
   const nameB = teamLabel(teamB, locale);
 
+  // Sum-to-100 percents drive BOTH the verdict number and the split labels, so
+  // the headline % and the bar labels can never disagree.
+  const [pa, pd, pb] = pct3(headline.a, headline.draw, headline.b);
+  const headlinePct = headline.pick === "b" ? pb : headline.pick === "draw" ? pd : pa;
+
   const metaById = new Map(meta.map((m) => [m.id, m]));
 
   return (
@@ -84,14 +131,14 @@ export function Fifa8MatchCard({
         </span>
       </div>
 
-      <p className={styles.knVerdict}>{verdict(locale, headline.pick, favouredName, headline.pickPct)}</p>
+      <p className={styles.knVerdict}>{verdict(locale, headline.pick, favouredName, headlinePct)}</p>
 
       <div className={styles.knHeadlineSplits}>
         <Splits a={headline.a} draw={headline.draw} b={headline.b} />
         <span className={styles.knSplitLabels}>
-          <span className={styles.knSplitA}>{nameA} {Math.round(headline.a * 100)}%</span>
-          <span className={styles.knSplitD}>{t(locale, "draw")} {Math.round(headline.draw * 100)}%</span>
-          <span className={styles.knSplitB}>{nameB} {Math.round(headline.b * 100)}%</span>
+          <span className={styles.knSplitA}>{nameA} {pa}%</span>
+          <span className={styles.knSplitD}>{t(locale, "draw")} {pd}%</span>
+          <span className={styles.knSplitB}>{nameB} {pb}%</span>
         </span>
       </div>
 
@@ -101,6 +148,7 @@ export function Fifa8MatchCard({
           {fixture.forecasters.map((row) => {
             const m = metaById.get(row.id);
             const isHeadline = row.id === headlineId;
+            const [ra, rd, rb] = pct3(row.a, row.draw, row.b);
             return (
               <div
                 key={row.id}
@@ -112,9 +160,9 @@ export function Fifa8MatchCard({
                 </span>
                 <Splits a={row.a} draw={row.draw} b={row.b} />
                 <span className={styles.knModelNums}>
-                  <span className={styles.knNumA}>{Math.round(row.a * 100)}</span>
-                  <span className={styles.knNumD}>{Math.round(row.draw * 100)}</span>
-                  <span className={styles.knNumB}>{Math.round(row.b * 100)}</span>
+                  <span className={styles.knNumA}>{ra}</span>
+                  <span className={styles.knNumD}>{rd}</span>
+                  <span className={styles.knNumB}>{rb}</span>
                 </span>
               </div>
             );
@@ -139,12 +187,15 @@ export function Fifa8MatchCard({
       {open ? (
         <div className={styles.knDrivers}>
           <ul className={styles.knDriverList}>
-            {headline.drivers.map((d) => (
-              <li key={d.label} className={styles.knDriverItem}>
-                <span className={styles.knDriverLabel}>{d.label}</span>
-                <span className={styles.knDriverDetail}>{d.detail}</span>
-              </li>
-            ))}
+            {headline.drivers.map((d, i) => {
+              const labelKey = DRIVER_KEY[d.label];
+              return (
+                <li key={i} className={styles.knDriverItem}>
+                  <span className={styles.knDriverLabel}>{labelKey ? t(locale, labelKey) : d.label}</span>
+                  <span className={styles.knDriverDetail}>{driverDetail(locale, d.contributionPp, nameA, nameB)}</span>
+                </li>
+              );
+            })}
           </ul>
           <p className={styles.knMethodNote}>{t(locale, "knMarketBlindNote")}</p>
         </div>

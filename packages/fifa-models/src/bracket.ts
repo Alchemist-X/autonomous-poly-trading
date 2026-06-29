@@ -127,7 +127,10 @@ const toStanding = (t: Tally): TeamStanding => ({
   gd: t.gf - t.ga,
 });
 
-/** Rank one group's teams by points -> GD -> GF -> head-to-head points. */
+/** Rank one group's teams by points -> GD -> GF, then a head-to-head MINI-TABLE
+ * among any teams still exactly tied. The mini-table is computed over the full
+ * tied set at once (FIFA's rule) — a pairwise head-to-head comparator inside
+ * Array.sort would be non-transitive and order-dependent for 3-way cyclic ties. */
 const rankGroup = (
   groupTeams: readonly string[],
   tallies: ReadonlyMap<string, Tally>,
@@ -136,13 +139,37 @@ const rankGroup = (
   const rows = groupTeams.map((team) =>
     toStanding(tallies.get(team) ?? { team, played: 0, points: 0, gf: 0, ga: 0 }),
   );
-  return [...rows].sort((a, b) => {
-    if (b.points !== a.points) return b.points - a.points;
-    if (b.gd !== a.gd) return b.gd - a.gd;
-    if (b.gf !== a.gf) return b.gf - a.gf;
-    const h2h = headToHeadPoints([a.team, b.team], matches);
-    return (h2h.get(b.team) ?? 0) - (h2h.get(a.team) ?? 0);
-  });
+  const base = [...rows].sort(
+    (a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf,
+  );
+
+  const ranked: TeamStanding[] = [];
+  let i = 0;
+  while (i < base.length) {
+    const head = base[i]!;
+    let j = i;
+    while (
+      j + 1 < base.length &&
+      base[j + 1]!.points === head.points &&
+      base[j + 1]!.gd === head.gd &&
+      base[j + 1]!.gf === head.gf
+    ) {
+      j += 1;
+    }
+    const tied = base.slice(i, j + 1);
+    if (tied.length > 1) {
+      const h2h = headToHeadPoints(tied.map((t) => t.team), matches);
+      tied.sort(
+        (a, b) =>
+          (h2h.get(b.team) ?? 0) - (h2h.get(a.team) ?? 0) ||
+          b.gf - a.gf ||
+          a.team.localeCompare(b.team),
+      );
+    }
+    ranked.push(...tied);
+    i = j + 1;
+  }
+  return ranked;
 };
 
 /** Full standings table for all 12 groups, each ranked 1..4. */

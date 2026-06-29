@@ -124,5 +124,8 @@
   "peStep4Tag": "±8pp · 置信分檔",
   "peStep5Title": "報告與公開記分",
   "peStep5Copy": "多語言報告附全部來源；賽後逐題公開 Brier 記分，錯的也留檔。",
-  "peStep5Tag": "可追溯"
+  "peStep5Tag": "可追溯",
+  "knDriverConsensus": "各模型共識",
+  "knDriverBias": "偏差校正",
+  "knDriverPp": "{sign}{pp} 個百分點 → {team}"
 }

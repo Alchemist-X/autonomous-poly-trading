@@ -107,7 +107,10 @@ function fixturesForForecaster(forecasterId: string, fixtures: readonly Fixture[
 
 async function main(): Promise<void> {
   const forecasts = await readJson<Fifa8Forecasts>("fifa8-r32.generated.json");
-  const results = (await readJson<{ results: Record<string, PerfResult> }>("fifa8-results.generated.json")).results;
+  // Results may not exist yet (no R32 settled) — degrade to all-pending, don't crash.
+  const results = (
+    await readJsonOptional<{ results: Record<string, PerfResult> }>("fifa8-results.generated.json", { results: {} })
+  ).results;
   const baseline = (
     await readJsonOptional<{ prices: Record<string, BaselinePrice | null> }>("fifa8-baseline-prices.generated.json", {
       prices: {}
