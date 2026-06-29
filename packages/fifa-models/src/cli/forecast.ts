@@ -115,6 +115,24 @@ const main = async (): Promise<number> => {
   const args = parseArgs(process.argv.slice(2));
   const { data, standings } = await loadData(args);
 
+  // Curated team FIFA-stat cards — the market-blind evidence the per-match detail
+  // page shows. Derived from the same group-stage profiles the models consumed.
+  const r1 = (x: number): number => Math.round(x * 10) / 10;
+  const teamStats: Record<string, unknown> = {};
+  for (const [team, p] of data.profiles) {
+    teamStats[team] = {
+      elo: Math.round(p.prior.elo),
+      matches: p.matchesObserved,
+      xgFor: Math.round(p.attackRate * 100) / 100,
+      xgAgainst: Math.round(p.defenseRate * 100) / 100,
+      possessionPct: r1(p.possessionPct),
+      highPressPct: r1(p.highPressPct),
+      counterAttackPct: r1(p.counterAttackPct),
+      lowBlockPct: r1(p.lowBlockPct),
+      highIntensityKm: r1(p.avgHighIntensityKm),
+    };
+  }
+
   const kept = data.fixtures.filter((f) => !isSkipped(f.id, args.skip));
   const dropped = data.fixtures.length - kept.length;
   if (dropped > 0) log("warn", `skipping ${dropped} already-played fixture(s): ${data.fixtures.filter((f) => isSkipped(f.id, args.skip)).map((f) => `${f.teamA} v ${f.teamB}`).join("; ")}`);
@@ -154,6 +172,7 @@ const main = async (): Promise<number> => {
   if (standings) {
     await writeFile(path.join(args.out, "standings.json"), JSON.stringify(standings, null, 2));
   }
+  await writeFile(path.join(args.out, "team-stats.json"), JSON.stringify(teamStats, null, 2));
   await writeFile(path.join(args.out, "leaderboard.json"), JSON.stringify(result.leaderboard, null, 2));
   const summary = [
     `# FIFA 8-model forecast run`,

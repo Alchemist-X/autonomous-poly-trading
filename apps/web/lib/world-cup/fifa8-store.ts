@@ -15,17 +15,36 @@ export interface ForecasterMeta {
   readonly family: ForecasterFamily;
 }
 
-export interface ForecasterRow {
-  readonly id: string;
-  readonly a: number;
-  readonly draw: number;
-  readonly b: number;
-}
-
 export interface HeadlineDriver {
   readonly label: string;
   readonly detail: string;
   readonly contributionPp: number;
+}
+
+export interface ForecasterRow {
+  readonly id: string;
+  readonly name: string;
+  readonly family: ForecasterFamily;
+  readonly a: number;
+  readonly draw: number;
+  readonly b: number;
+  // Full rationale, so the per-match detail page can show how each model reasoned.
+  readonly headline: string;
+  readonly drivers: readonly HeadlineDriver[];
+  readonly methodNote: string;
+}
+
+// Curated market-blind FIFA-stat card per team (the evidence the detail page renders).
+export interface TeamStats {
+  readonly elo: number;
+  readonly matches: number;
+  readonly xgFor: number;
+  readonly xgAgainst: number;
+  readonly possessionPct: number;
+  readonly highPressPct: number;
+  readonly counterAttackPct: number;
+  readonly lowBlockPct: number;
+  readonly highIntensityKm: number;
 }
 
 export interface Headline {
@@ -46,6 +65,8 @@ export interface Fifa8Fixture {
   readonly stage: string;
   readonly teamA: string;
   readonly teamB: string;
+  readonly statsA: TeamStats | null;
+  readonly statsB: TeamStats | null;
   readonly headline: Headline;
   readonly forecasters: readonly ForecasterRow[];
 }
@@ -76,4 +97,13 @@ export function getHeadlineForecasterId(): string {
 
 export function getFifa8GeneratedAt(): string {
   return data.generatedAt;
+}
+
+// One fixture by its id — for the per-match detail page (/world-cup/knockout/[id]).
+export function getFifa8FixtureById(id: string): Fifa8Fixture | undefined {
+  return data.fixtures.find((f) => f.fixtureId === id);
+}
+
+export function getFifa8FixtureIds(): readonly string[] {
+  return data.fixtures.map((f) => f.fixtureId);
 }

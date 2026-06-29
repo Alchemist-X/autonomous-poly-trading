@@ -1,7 +1,8 @@
-import { getFifa8Fixtures, getForecasterMeta, getHeadlineForecasterId } from "../../../../lib/world-cup/fifa8-store";
+import { getFifa8Fixtures, getForecasterMeta, getHeadlineForecasterId, getFifa8GeneratedAt } from "../../../../lib/world-cup/fifa8-store";
 import { LOCALES, localeOf, t } from "../../../../lib/world-cup/i18n";
 import { WcHero } from "../../../../components/world-cup/wc-hero";
 import { Fifa8MatchCard } from "../../../../components/world-cup/fifa8-match-card";
+import { Fifa8ModelGuide } from "../../../../components/world-cup/fifa8-model-guide";
 import styles from "../../../../components/world-cup/world-cup.module.css";
 
 export function generateStaticParams(): Array<{ locale: string }> {
@@ -20,9 +21,11 @@ export default async function KnockoutPredictionsPage({ params }: { params: Prom
 
   return (
     <div>
-      <WcHero locale={locale} wide subKey="subKnockoutPred" />
+      <WcHero locale={locale} wide subKey="subKnockoutPred" metaKey="knHeroMeta" predictedAt={getFifa8GeneratedAt()} />
 
       <p className={styles.knIntro}>{t(locale, "knIntro")}</p>
+
+      <Fifa8ModelGuide meta={meta} locale={locale} />
 
       <div className={styles.knGrid}>
         {fixtures.map((fixture) => (

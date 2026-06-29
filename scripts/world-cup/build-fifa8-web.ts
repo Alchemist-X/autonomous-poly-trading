@@ -59,6 +59,10 @@ async function stableStamp(): Promise<string> {
 
 async function main(): Promise<void> {
   const generatedAt = await stableStamp();
+  // Curated per-team FIFA-stat cards (the evidence the detail page renders).
+  const teamStats = JSON.parse(
+    await readFile(path.join(ARCHIVE, "team-stats.json"), "utf8"),
+  ) as Record<string, unknown>;
   // Fixture dirs are slug-named (fifwc-<a>-<b>-<date>); exclude the rollup dir.
   const dateOf = (dir: string): string => (dir.match(/(\d{4}-\d{2}-\d{2})/) ?? [])[1] ?? "";
   const dirs = (await readdir(ARCHIVE, { withFileTypes: true }))
@@ -84,6 +88,8 @@ async function main(): Promise<void> {
       stage: "R32",
       teamA: ff.teamA,
       teamB: ff.teamB,
+      statsA: teamStats[ff.teamA] ?? null,
+      statsB: teamStats[ff.teamB] ?? null,
       headline: {
         forecaster: headline.id,
         pick: pickKey,
@@ -95,11 +101,18 @@ async function main(): Promise<void> {
         drivers: headline.drivers,
         methodNote: headline.methodNote,
       },
+      // Every forecaster's full rationale (not just probs) so the detail page can
+      // show how each model reasoned, and which it agreed/disagreed with.
       forecasters: ff.forecasters.map((f) => ({
         id: f.id,
+        name: f.name,
+        family: f.family,
         a: round(f.probs.home),
         draw: round(f.probs.draw),
         b: round(f.probs.away),
+        headline: f.headline,
+        drivers: f.drivers,
+        methodNote: f.methodNote,
       })),
     });
   }

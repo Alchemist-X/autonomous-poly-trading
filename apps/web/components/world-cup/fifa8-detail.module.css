@@ -1,0 +1,476 @@
+/* Per-match knockout detail page (/world-cup/knockout/[id]).
+   Forecasting-engine presentation: decision-first hero, evidence as comparison
+   cards, then how the nine models read the tie. Light editorial theme matching
+   world-cup.module.css. Market-blind: probabilities + FIFA stats only, never a
+   price. Colour vocabulary: blue = team A / amber = team B / gray = draw. */
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 18px 0 64px;
+}
+
+.back {
+  display: inline-block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #5b6472;
+  text-decoration: none;
+  margin: 6px 0 18px;
+}
+
+.back:hover {
+  color: #0f1115;
+}
+
+/* ---------- hero / decision-first verdict ---------- */
+
+.hero {
+  background: #ffffff;
+  border: 1px solid #e8eaf0;
+  border-left: 5px solid #2563eb;
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 8px 30px rgba(15, 17, 21, 0.05);
+}
+
+.heroTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.matchNo {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #b3bac7;
+}
+
+.tierChip {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f3f5f8;
+  white-space: nowrap;
+}
+
+.tierHigh {
+  color: #15803d;
+}
+
+.tierMedium {
+  color: #b45309;
+}
+
+.tierLow {
+  color: #b91c1c;
+}
+
+.matchup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.teamAway {
+  justify-content: flex-end;
+}
+
+.flag {
+  font-size: 30px;
+  line-height: 1;
+  flex: none;
+}
+
+.teamName {
+  font-size: clamp(19px, 4vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0f1115;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vs {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b3bac7;
+  flex: none;
+}
+
+.verdict {
+  font-size: clamp(18px, 3.4vw, 22px);
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: #1d4ed8;
+  margin: 4px 0 16px;
+}
+
+.splitWrap {
+  margin-top: 4px;
+}
+
+.bar {
+  display: flex;
+  width: 100%;
+  height: 11px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #eef0f4;
+  gap: 1.5px;
+}
+
+.segA {
+  background: #2563eb;
+  height: 100%;
+}
+
+.segD {
+  background: #cbd2dd;
+  height: 100%;
+}
+
+.segB {
+  background: #f59e0b;
+  height: 100%;
+}
+
+.splitLabels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.splitA {
+  color: #1d4ed8;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.splitD {
+  color: #8a93a6;
+  flex: none;
+}
+
+.splitB {
+  color: #b45309;
+  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- sections ---------- */
+
+.section {
+  margin-top: 30px;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: #8a93a6;
+  margin: 0 0 14px;
+}
+
+/* ---------- evidence comparison cards ---------- */
+
+.evGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  gap: 12px;
+}
+
+.evCard {
+  background: #fff;
+  border: 1px solid #e8eaf0;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.evLabel {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #0f1115;
+  margin-bottom: 10px;
+}
+
+.evRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.evVal {
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #8a93a6;
+}
+
+.evValRight {
+  text-align: right;
+}
+
+.evValLead {
+  color: #0f1115;
+}
+
+.evMini {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #eef0f4;
+  gap: 1.5px;
+}
+
+.evMiniA,
+.evMiniB {
+  height: 100%;
+  background: #d8dce4;
+}
+
+.evMiniA {
+  border-radius: 999px 0 0 999px;
+}
+
+.evMiniB {
+  border-radius: 0 999px 999px 0;
+}
+
+.evMiniLead {
+  background: #2563eb;
+}
+
+.evRead {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #5b6472;
+  margin: 0;
+}
+
+/* ---------- model group sections ---------- */
+
+.modelGroup {
+  margin-bottom: 18px;
+}
+
+.modelGroupHead {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 10px;
+}
+
+.modelList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modelRow {
+  background: #fff;
+  border: 1px solid #e8eaf0;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.modelRowLead {
+  border-color: #aec3f3;
+  background: #f5f8ff;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+}
+
+.modelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.modelName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f1115;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.modelBadge {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1d4ed8;
+  background: #e8f0fe;
+  border-radius: 999px;
+  padding: 1px 7px;
+  flex: none;
+}
+
+.modelNums {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+.numA {
+  color: #1d4ed8;
+}
+
+.numD {
+  color: #8a93a6;
+}
+
+.numB {
+  color: #b45309;
+}
+
+.modelReason {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #2a3140;
+  margin: 10px 0 0;
+}
+
+.modelDriver {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.modelDriverLabel {
+  font-weight: 700;
+  color: #0f1115;
+}
+
+.modelDriverPp {
+  color: #5b6472;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- legend ---------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #8a93a6;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: none;
+}
+
+.dotA {
+  background: #2563eb;
+}
+
+.dotD {
+  background: #cbd2dd;
+}
+
+.dotB {
+  background: #f59e0b;
+}
+
+/* ---------- method + disclaimer ---------- */
+
+.methodNote {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #5b6472;
+  background: #fff;
+  border: 1px solid #e8eaf0;
+  border-left: 3px solid #2563eb;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 0 0 12px;
+}
+
+.disclaimer {
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: #9aa1ad;
+  margin: 0;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 560px) {
+  .hero {
+    padding: 18px 16px;
+  }
+  .flag {
+    font-size: 26px;
+  }
+  .evGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 390px) {
+  .matchup {
+    gap: 7px;
+  }
+  .team {
+    gap: 7px;
+  }
+  .modelHead {
+    flex-wrap: wrap;
+  }
+}
