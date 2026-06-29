@@ -1,0 +1,1344 @@
+{
+ "generatedAt": "2026-06-29T15:31:59.808Z",
+ "headlineForecaster": "multicalibrated",
+ "marketBlind": true,
+ "forecasterMeta": [
+  {
+   "id": "dixon-coles-bayes",
+   "name": "Dixon-Coles (Bayesian-shrunk)",
+   "family": "statistical"
+  },
+  {
+   "id": "xg-elo",
+   "name": "xG-corrected Elo",
+   "family": "elo"
+  },
+  {
+   "id": "prodegy",
+   "name": "PRODEGY split attack/defence Elo",
+   "family": "elo"
+  },
+  {
+   "id": "fatigue-elo",
+   "name": "Physical-decay dynamic-K Elo",
+   "family": "elo"
+  },
+  {
+   "id": "tactical-melo",
+   "name": "Tactical style-clash mElo",
+   "family": "elo"
+  },
+  {
+   "id": "linebreak-gbm",
+   "name": "Line-breaks & offers efficiency (gradient-boosted)",
+   "family": "ml"
+  },
+  {
+   "id": "passnet-rf",
+   "name": "Passing-network structure (random forest)",
+   "family": "ml"
+  },
+  {
+   "id": "stacked-ensemble",
+   "name": "Stacked Ensemble",
+   "family": "ensemble"
+  },
+  {
+   "id": "multicalibrated",
+   "name": "Multi-calibrated 8-in-1",
+   "family": "ensemble"
+  }
+ ],
+ "fixtures": [
+  {
+   "fixtureId": "fifwc-bra-jpn-2026-06-29",
+   "matchNo": 1,
+   "date": "2026-06-29",
+   "stage": "R32",
+   "teamA": "Brazil",
+   "teamB": "Japan",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 60,
+    "tier": "medium",
+    "a": 0.596,
+    "draw": 0.214,
+    "b": 0.189,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Brazil at 60%.",
+      "contributionPp": 26.3
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.52,
+     "draw": 0.313,
+     "b": 0.167
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.457,
+     "draw": 0.254,
+     "b": 0.288
+    },
+    {
+     "id": "prodegy",
+     "a": 0.556,
+     "draw": 0.175,
+     "b": 0.269
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.466,
+     "draw": 0.253,
+     "b": 0.281
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.532,
+     "draw": 0.273,
+     "b": 0.194
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.922,
+     "draw": 0.07,
+     "b": 0.007
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.814,
+     "draw": 0.116,
+     "b": 0.07
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.504,
+     "draw": 0.259,
+     "b": 0.237
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.596,
+     "draw": 0.214,
+     "b": 0.189
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-ger-par-2026-06-29",
+   "matchNo": 2,
+   "date": "2026-06-29",
+   "stage": "R32",
+   "teamA": "Germany",
+   "teamB": "Paraguay",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 54,
+    "tier": "medium",
+    "a": 0.543,
+    "draw": 0.254,
+    "b": 0.202,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Germany at 54%.",
+      "contributionPp": 21
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.558,
+     "draw": 0.273,
+     "b": 0.168
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.504,
+     "draw": 0.248,
+     "b": 0.248
+    },
+    {
+     "id": "prodegy",
+     "a": 0.519,
+     "draw": 0.208,
+     "b": 0.273
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.464,
+     "draw": 0.253,
+     "b": 0.282
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.397,
+     "draw": 0.297,
+     "b": 0.307
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.719,
+     "draw": 0.236,
+     "b": 0.045
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.695,
+     "draw": 0.25,
+     "b": 0.055
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.488,
+     "draw": 0.271,
+     "b": 0.241
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.543,
+     "draw": 0.254,
+     "b": 0.202
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-nld-mar-2026-06-29",
+   "matchNo": 3,
+   "date": "2026-06-29",
+   "stage": "R32",
+   "teamA": "Netherlands",
+   "teamB": "Morocco",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 52,
+    "tier": "medium",
+    "a": 0.521,
+    "draw": 0.234,
+    "b": 0.245,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Netherlands at 52%.",
+      "contributionPp": 18.8
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.387,
+     "draw": 0.313,
+     "b": 0.3
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.494,
+     "draw": 0.249,
+     "b": 0.256
+    },
+    {
+     "id": "prodegy",
+     "a": 0.424,
+     "draw": 0.202,
+     "b": 0.374
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.498,
+     "draw": 0.249,
+     "b": 0.253
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.324,
+     "draw": 0.298,
+     "b": 0.379
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.906,
+     "draw": 0.082,
+     "b": 0.012
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.643,
+     "draw": 0.216,
+     "b": 0.14
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.494,
+     "draw": 0.263,
+     "b": 0.243
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.521,
+     "draw": 0.234,
+     "b": 0.245
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-civ-nor-2026-06-30",
+   "matchNo": 4,
+   "date": "2026-06-30",
+   "stage": "R32",
+   "teamA": "Côte d'Ivoire",
+   "teamB": "Norway",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "b",
+    "pickPct": 44,
+    "tier": "low",
+    "a": 0.317,
+    "draw": 0.246,
+    "b": 0.438,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Norway at 44%.",
+      "contributionPp": -1.7
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.341,
+     "draw": 0.296,
+     "b": 0.364
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.173,
+     "draw": 0.226,
+     "b": 0.602
+    },
+    {
+     "id": "prodegy",
+     "a": 0.31,
+     "draw": 0.231,
+     "b": 0.459
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.182,
+     "draw": 0.229,
+     "b": 0.589
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.184,
+     "draw": 0.27,
+     "b": 0.546
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.346,
+     "draw": 0.371,
+     "b": 0.283
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.538,
+     "draw": 0.069,
+     "b": 0.393
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.459,
+     "draw": 0.277,
+     "b": 0.264
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.317,
+     "draw": 0.246,
+     "b": 0.438
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-fra-swe-2026-06-30",
+   "matchNo": 5,
+   "date": "2026-06-30",
+   "stage": "R32",
+   "teamA": "France",
+   "teamB": "Sweden",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 72,
+    "tier": "high",
+    "a": 0.719,
+    "draw": 0.158,
+    "b": 0.123,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours France at 72%.",
+      "contributionPp": 38.6
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.73,
+     "draw": 0.19,
+     "b": 0.08
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.711,
+     "draw": 0.188,
+     "b": 0.101
+    },
+    {
+     "id": "prodegy",
+     "a": 0.407,
+     "draw": 0.201,
+     "b": 0.392
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.723,
+     "draw": 0.183,
+     "b": 0.094
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.849,
+     "draw": 0.125,
+     "b": 0.026
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.941,
+     "draw": 0.051,
+     "b": 0.008
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.874,
+     "draw": 0.069,
+     "b": 0.057
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.52,
+     "draw": 0.257,
+     "b": 0.223
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.719,
+     "draw": 0.158,
+     "b": 0.123
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-mex-ecu-2026-06-30",
+   "matchNo": 6,
+   "date": "2026-06-30",
+   "stage": "R32",
+   "teamA": "Mexico",
+   "teamB": "Ecuador",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 45,
+    "tier": "low",
+    "a": 0.449,
+    "draw": 0.223,
+    "b": 0.328,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Mexico at 45%.",
+      "contributionPp": 11.6
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.333,
+     "draw": 0.372,
+     "b": 0.295
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.31,
+     "draw": 0.257,
+     "b": 0.434
+    },
+    {
+     "id": "prodegy",
+     "a": 0.333,
+     "draw": 0.2,
+     "b": 0.468
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.341,
+     "draw": 0.259,
+     "b": 0.4
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.766,
+     "draw": 0.177,
+     "b": 0.057
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.634,
+     "draw": 0.103,
+     "b": 0.263
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.39,
+     "draw": 0.15,
+     "b": 0.46
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.484,
+     "draw": 0.267,
+     "b": 0.249
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.449,
+     "draw": 0.223,
+     "b": 0.328
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-bel-sen-2026-07-01",
+   "matchNo": 7,
+   "date": "2026-07-01",
+   "stage": "R32",
+   "teamA": "Belgium",
+   "teamB": "Senegal",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 53,
+    "tier": "medium",
+    "a": 0.529,
+    "draw": 0.241,
+    "b": 0.23,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Belgium at 53%.",
+      "contributionPp": 19.6
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Belgium's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.545,
+     "draw": 0.261,
+     "b": 0.194
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.403,
+     "draw": 0.259,
+     "b": 0.338
+    },
+    {
+     "id": "prodegy",
+     "a": 0.404,
+     "draw": 0.194,
+     "b": 0.402
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.411,
+     "draw": 0.258,
+     "b": 0.331
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.533,
+     "draw": 0.273,
+     "b": 0.194
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.75,
+     "draw": 0.238,
+     "b": 0.012
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.694,
+     "draw": 0.178,
+     "b": 0.128
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.491,
+     "draw": 0.268,
+     "b": 0.241
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.529,
+     "draw": 0.241,
+     "b": 0.23
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-eng-cdr-2026-07-01",
+   "matchNo": 8,
+   "date": "2026-07-01",
+   "stage": "R32",
+   "teamA": "England",
+   "teamB": "DR Congo",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 62,
+    "tier": "high",
+    "a": 0.618,
+    "draw": 0.249,
+    "b": 0.132,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours England at 62%.",
+      "contributionPp": 28.5
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.671,
+     "draw": 0.233,
+     "b": 0.095
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.726,
+     "draw": 0.182,
+     "b": 0.093
+    },
+    {
+     "id": "prodegy",
+     "a": 0.533,
+     "draw": 0.192,
+     "b": 0.275
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.716,
+     "draw": 0.186,
+     "b": 0.098
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.575,
+     "draw": 0.261,
+     "b": 0.164
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.525,
+     "draw": 0.428,
+     "b": 0.047
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.71,
+     "draw": 0.235,
+     "b": 0.055
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.488,
+     "draw": 0.279,
+     "b": 0.233
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.618,
+     "draw": 0.249,
+     "b": 0.132
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-usa-bih-2026-07-01",
+   "matchNo": 9,
+   "date": "2026-07-01",
+   "stage": "R32",
+   "teamA": "United States",
+   "teamB": "Bosnia-Herzegovina",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 55,
+    "tier": "medium",
+    "a": 0.55,
+    "draw": 0.229,
+    "b": 0.221,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours United States at 55%.",
+      "contributionPp": 21.7
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.585,
+     "draw": 0.261,
+     "b": 0.154
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.559,
+     "draw": 0.237,
+     "b": 0.205
+    },
+    {
+     "id": "prodegy",
+     "a": 0.408,
+     "draw": 0.332,
+     "b": 0.26
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.518,
+     "draw": 0.245,
+     "b": 0.237
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.59,
+     "draw": 0.256,
+     "b": 0.154
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.671,
+     "draw": 0.133,
+     "b": 0.196
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.579,
+     "draw": 0.102,
+     "b": 0.319
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.492,
+     "draw": 0.267,
+     "b": 0.241
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.55,
+     "draw": 0.229,
+     "b": 0.221
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-che-alg-2026-07-02",
+   "matchNo": 10,
+   "date": "2026-07-02",
+   "stage": "R32",
+   "teamA": "Switzerland",
+   "teamB": "Algeria",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 55,
+    "tier": "medium",
+    "a": 0.555,
+    "draw": 0.244,
+    "b": 0.202,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Switzerland at 55%.",
+      "contributionPp": 22.1
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.622,
+     "draw": 0.228,
+     "b": 0.15
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.485,
+     "draw": 0.251,
+     "b": 0.264
+    },
+    {
+     "id": "prodegy",
+     "a": 0.462,
+     "draw": 0.208,
+     "b": 0.33
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.494,
+     "draw": 0.249,
+     "b": 0.257
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.379,
+     "draw": 0.298,
+     "b": 0.323
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.701,
+     "draw": 0.296,
+     "b": 0.003
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.802,
+     "draw": 0.149,
+     "b": 0.049
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.491,
+     "draw": 0.27,
+     "b": 0.239
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.555,
+     "draw": 0.244,
+     "b": 0.202
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-esp-aut-2026-07-02",
+   "matchNo": 11,
+   "date": "2026-07-02",
+   "stage": "R32",
+   "teamA": "Spain",
+   "teamB": "Austria",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 79,
+    "tier": "high",
+    "a": 0.793,
+    "draw": 0.16,
+    "b": 0.047,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Spain at 59%.",
+      "contributionPp": 26
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +20 points.",
+      "contributionPp": 20
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.796,
+     "draw": 0.161,
+     "b": 0.043
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.706,
+     "draw": 0.19,
+     "b": 0.104
+    },
+    {
+     "id": "prodegy",
+     "a": 0.455,
+     "draw": 0.175,
+     "b": 0.37
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.696,
+     "draw": 0.194,
+     "b": 0.11
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.525,
+     "draw": 0.275,
+     "b": 0.2
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.684,
+     "draw": 0.275,
+     "b": 0.041
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.397,
+     "draw": 0.561,
+     "b": 0.041
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.485,
+     "draw": 0.282,
+     "b": 0.233
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.793,
+     "draw": 0.16,
+     "b": 0.047
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-prt-hrv-2026-07-02",
+   "matchNo": 12,
+   "date": "2026-07-02",
+   "stage": "R32",
+   "teamA": "Portugal",
+   "teamB": "Croatia",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 51,
+    "tier": "medium",
+    "a": 0.51,
+    "draw": 0.274,
+    "b": 0.216,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Portugal at 51%.",
+      "contributionPp": 17.6
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.54,
+     "draw": 0.308,
+     "b": 0.152
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.466,
+     "draw": 0.253,
+     "b": 0.281
+    },
+    {
+     "id": "prodegy",
+     "a": 0.396,
+     "draw": 0.211,
+     "b": 0.393
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.453,
+     "draw": 0.255,
+     "b": 0.292
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.42,
+     "draw": 0.294,
+     "b": 0.286
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.639,
+     "draw": 0.361,
+     "b": 0
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.681,
+     "draw": 0.232,
+     "b": 0.086
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.483,
+     "draw": 0.275,
+     "b": 0.242
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.51,
+     "draw": 0.274,
+     "b": 0.216
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-arg-cvi-2026-07-03",
+   "matchNo": 13,
+   "date": "2026-07-03",
+   "stage": "R32",
+   "teamA": "Argentina",
+   "teamB": "Cabo Verde",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 70,
+    "tier": "high",
+    "a": 0.699,
+    "draw": 0.196,
+    "b": 0.105,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Argentina at 70%.",
+      "contributionPp": 36.6
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.76,
+     "draw": 0.193,
+     "b": 0.047
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.836,
+     "draw": 0.126,
+     "b": 0.039
+    },
+    {
+     "id": "prodegy",
+     "a": 0.513,
+     "draw": 0.207,
+     "b": 0.28
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.832,
+     "draw": 0.128,
+     "b": 0.04
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.835,
+     "draw": 0.135,
+     "b": 0.03
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.754,
+     "draw": 0.199,
+     "b": 0.046
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.56,
+     "draw": 0.311,
+     "b": 0.13
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.503,
+     "draw": 0.272,
+     "b": 0.225
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.699,
+     "draw": 0.196,
+     "b": 0.105
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-aus-egy-2026-07-03",
+   "matchNo": 14,
+   "date": "2026-07-03",
+   "stage": "R32",
+   "teamA": "Australia",
+   "teamB": "Egypt",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "b",
+    "pickPct": 44,
+    "tier": "low",
+    "a": 0.311,
+    "draw": 0.252,
+    "b": 0.438,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Egypt at 44%.",
+      "contributionPp": -2.3
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.341,
+     "draw": 0.362,
+     "b": 0.297
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.45,
+     "draw": 0.255,
+     "b": 0.295
+    },
+    {
+     "id": "prodegy",
+     "a": 0.275,
+     "draw": 0.292,
+     "b": 0.433
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.453,
+     "draw": 0.255,
+     "b": 0.292
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.332,
+     "draw": 0.298,
+     "b": 0.37
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0,
+     "draw": 0.033,
+     "b": 0.967
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.184,
+     "draw": 0.236,
+     "b": 0.58
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.451,
+     "draw": 0.281,
+     "b": 0.268
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.311,
+     "draw": 0.252,
+     "b": 0.438
+    }
+   ]
+  },
+  {
+   "fixtureId": "fifwc-col-gha-2026-07-03",
+   "matchNo": 15,
+   "date": "2026-07-03",
+   "stage": "R32",
+   "teamA": "Colombia",
+   "teamB": "Ghana",
+   "headline": {
+    "forecaster": "multicalibrated",
+    "pick": "a",
+    "pickPct": 65,
+    "tier": "high",
+    "a": 0.652,
+    "draw": 0.229,
+    "b": 0.119,
+    "drivers": [
+     {
+      "label": "Consensus of all models",
+      "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Colombia at 65%.",
+      "contributionPp": 31.9
+     },
+     {
+      "label": "Bias correction",
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by 0 points.",
+      "contributionPp": 0
+     }
+    ],
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+   },
+   "forecasters": [
+    {
+     "id": "dixon-coles-bayes",
+     "a": 0.685,
+     "draw": 0.244,
+     "b": 0.071
+    },
+    {
+     "id": "xg-elo",
+     "a": 0.79,
+     "draw": 0.151,
+     "b": 0.059
+    },
+    {
+     "id": "prodegy",
+     "a": 0.456,
+     "draw": 0.241,
+     "b": 0.304
+    },
+    {
+     "id": "fatigue-elo",
+     "a": 0.791,
+     "draw": 0.151,
+     "b": 0.059
+    },
+    {
+     "id": "tactical-melo",
+     "a": 0.638,
+     "draw": 0.239,
+     "b": 0.124
+    },
+    {
+     "id": "linebreak-gbm",
+     "a": 0.729,
+     "draw": 0.217,
+     "b": 0.055
+    },
+    {
+     "id": "passnet-rf",
+     "a": 0.632,
+     "draw": 0.314,
+     "b": 0.054
+    },
+    {
+     "id": "stacked-ensemble",
+     "a": 0.499,
+     "draw": 0.273,
+     "b": 0.229
+    },
+    {
+     "id": "multicalibrated",
+     "a": 0.652,
+     "draw": 0.229,
+     "b": 0.119
+    }
+   ]
+  }
+ ]
+}
