@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { ForecasterMeta, ForecasterFamily } from "../../lib/world-cup/fifa8-store";
-import { t, type Locale, type StrKey } from "../../lib/world-cup/i18n";
+import { t, withLocale, type Locale, type StrKey } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
 
 // "How the models work" guide for the knockout list page. An accessible
@@ -78,6 +78,9 @@ export function Fifa8ModelGuide({
             })}
           </ul>
           <p className={styles.kgFooter}>{t(locale, "kgFooter")}</p>
+          <a className={styles.kgMethodLink} href={withLocale("/world-cup/knockout/how-it-works", locale)}>
+            {t(locale, "kgFullMethod")}
+          </a>
         </div>
       ) : null}
     </div>

@@ -1,0 +1,523 @@
+/* "How it works" methodology page (/world-cup/knockout/how-it-works).
+   Long-form, diagram-led walkthrough of the FIFA 8-model knockout pipeline.
+   Mirrors the light editorial theme of fifa8-detail.module.css. Market-blind:
+   stats and model logic only, never a price. Colour vocabulary matches the rest
+   of the world-cup product — blue = primary / team A, amber = team B, gray =
+   draw / neutral. The pipeline diagram is themed through these classes so the
+   SVG reads correctly in the site theme. */
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 18px 0 72px;
+}
+
+.back {
+  display: inline-block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #5b6472;
+  text-decoration: none;
+  margin: 6px 0 18px;
+}
+
+.back:hover {
+  color: #0f1115;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  background: #ffffff;
+  border: 1px solid #e8eaf0;
+  border-left: 5px solid #2563eb;
+  border-radius: 16px;
+  padding: 24px 26px;
+  box-shadow: 0 8px 30px rgba(15, 17, 21, 0.05);
+}
+
+.eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #1d4ed8;
+  margin: 0 0 10px;
+}
+
+.title {
+  font-size: clamp(22px, 4.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: #0f1115;
+  margin: 0 0 12px;
+}
+
+.intro {
+  font-size: clamp(14.5px, 2.6vw, 16px);
+  line-height: 1.7;
+  color: #3a4252;
+  margin: 0;
+}
+
+/* ---------- sections ---------- */
+
+.section {
+  margin-top: 38px;
+}
+
+.h2 {
+  font-size: clamp(17px, 3vw, 20px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #0f1115;
+  margin: 0 0 12px;
+}
+
+.lead {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #3a4252;
+  margin: 0 0 18px;
+  max-width: 760px;
+}
+
+.body {
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: #3a4252;
+  margin: 0 0 14px;
+  max-width: 760px;
+}
+
+.body:last-child {
+  margin-bottom: 0;
+}
+
+.note {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #5b6472;
+  background: #f7f9fc;
+  border: 1px solid #e8eaf0;
+  border-left: 3px solid #2563eb;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 18px 0 0;
+  max-width: 760px;
+}
+
+/* ---------- pipeline diagram ---------- */
+
+.pipelineFig {
+  margin: 0 0 20px;
+  padding: 0;
+}
+
+.pipelineSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fbfcfe;
+  border: 1px solid #e8eaf0;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+/* SVG box + label classes — fills come from here so the diagram themes. */
+.svgBox {
+  fill: #ffffff;
+  stroke: #cdd6e6;
+  stroke-width: 1.4;
+}
+
+.svgBoxFinal {
+  fill: #eef4ff;
+  stroke: #2563eb;
+  stroke-width: 1.8;
+}
+
+.svgLabel {
+  fill: #2a3140;
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.svgLabelFinal {
+  fill: #1d4ed8;
+  font-size: 11px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.svgConnector {
+  stroke: #9fb0cc;
+  stroke-width: 1.6;
+  fill: none;
+}
+
+.svgArrowHead {
+  fill: #9fb0cc;
+}
+
+/* Mobile stacked pipeline — hidden on desktop, shown ≤720px. */
+.stack {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.stackItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stackBox {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #cdd6e6;
+  border-radius: 12px;
+  padding: 11px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stackBoxFinal {
+  background: #eef4ff;
+  border-color: #2563eb;
+}
+
+.stackLabel {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f1115;
+  line-height: 1.4;
+}
+
+.stackBoxFinal .stackLabel {
+  color: #1d4ed8;
+}
+
+.stackCaption {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #5b6472;
+}
+
+.stackArrow {
+  font-size: 18px;
+  line-height: 1;
+  color: #9fb0cc;
+  margin: 5px 0;
+}
+
+.pipelineCap {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #9aa1ad;
+  margin: 10px 2px 0;
+}
+
+/* Numbered stage captions below the diagram (desktop only — on mobile the
+   stacked diagram carries the captions inline, so this list is hidden). */
+.stageCaptions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 10px 18px;
+}
+
+.stageCaptionItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #5b6472;
+}
+
+.stageNo {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #eef4ff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.stageName {
+  color: #0f1115;
+  font-weight: 700;
+}
+
+/* ---------- data field grid ---------- */
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.fieldCard {
+  background: #fff;
+  border: 1px solid #e8eaf0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldName {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f1115;
+}
+
+.fieldMeaning {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #5b6472;
+  margin: 0;
+  flex: 1;
+}
+
+.fieldExample {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  border-top: 1px solid #f0f2f6;
+  padding-top: 8px;
+}
+
+.fieldExampleLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #9aa1ad;
+}
+
+.fieldExampleVal {
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #1d4ed8;
+}
+
+/* ---------- data → profile diagram ---------- */
+
+.profileDiagram {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 16px;
+}
+
+.profileChip {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #5b6472;
+  background: #fff;
+  border: 1px solid #e8eaf0;
+  border-radius: 999px;
+  padding: 6px 13px;
+}
+
+.profileArrow {
+  font-size: 16px;
+  color: #9fb0cc;
+  font-weight: 700;
+}
+
+.profileResult {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1d4ed8;
+  background: #eef4ff;
+  border: 1px solid #c7d8fb;
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+
+/* ---------- the eight models ---------- */
+
+.modelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.modelCard {
+  background: #fbfcfe;
+  border: 1px solid #f0f2f6;
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.modelHead {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 9px;
+  flex-wrap: wrap;
+}
+
+.modelNo {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modelName {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0f1115;
+  letter-spacing: -0.01em;
+  min-width: 0;
+}
+
+.modelFamily {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #6b748a;
+  background: #eef1f6;
+  border-radius: 999px;
+  padding: 2px 9px;
+  white-space: nowrap;
+  flex: none;
+}
+
+.modelDesc {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #3a4252;
+  margin: 0;
+}
+
+/* ---------- final blend diagram ---------- */
+
+.finalDiagram {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 16px;
+}
+
+.finalStep {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #2a3140;
+  background: #fff;
+  border: 1px solid #e8eaf0;
+  border-radius: 10px;
+  padding: 8px 13px;
+}
+
+.finalStepOut {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #1d4ed8;
+  background: #eef4ff;
+  border: 1px solid #c7d8fb;
+  border-radius: 10px;
+  padding: 8px 14px;
+}
+
+.finalArrow {
+  font-size: 16px;
+  color: #9fb0cc;
+  font-weight: 700;
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  margin-top: 42px;
+  border-top: 1px solid #e8eaf0;
+  padding-top: 18px;
+}
+
+.footerNote {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #9aa1ad;
+  margin: 0 0 14px;
+  max-width: 760px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 720px) {
+  .pipelineSvg {
+    display: none;
+  }
+  .stack {
+    display: flex;
+  }
+  /* The stacked diagram already shows each stage's caption, so the separate
+     numbered caption list below it would be pure duplication on mobile. */
+  .stageCaptions {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero {
+    padding: 20px 17px;
+  }
+  .fieldGrid {
+    grid-template-columns: 1fr;
+  }
+  .modelGrid {
+    grid-template-columns: 1fr;
+  }
+  .stageCaptions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 390px) {
+  .page {
+    padding: 14px 0 56px;
+  }
+  .pipelineSvg {
+    padding: 12px;
+  }
+  .finalArrow,
+  .profileArrow {
+    font-size: 14px;
+  }
+}
