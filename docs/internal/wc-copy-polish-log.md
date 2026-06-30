@@ -28,3 +28,10 @@ Goal: maximum information density + zero confusion for a first-time visitor.
   1. **Bilingual per-model rationale (bigger, engine-level):** the rich per-model reasoning sentence is hidden on zh (only the driver line remains). To give zh the same density as en, the engine would need to emit Chinese headline/methodNote and the archive be regenerated — flag for the user (touches the forecasting pipeline, market-blind regen).
   2. Still pending: an always-visible "怎么预测的? →" link from the knockout-list intro to /how-it-works (currently only via the ⓘ tooltip).
   3. The 9-model comparison table on the LIST card — mobile density (still unexamined).
+
+## 2026-06-30 ~14:10 HKT — iteration 4
+- **Shipped (PR #53):** surfaced the methodology deep link as an always-visible sibling of the ⓘ guide toggle on the knockout list (was buried 2 clicks deep inside the tooltip). The cryptic per-model names on every card now have a one-click path to the page that explains them. Removed the in-tooltip duplicate; new `.kgBar` flex row; reused `kgFullMethod` (no new i18n). Verified live: SSR-visible on zh + en.
+- **Next direction (iteration 5):**
+  1. The list-card 9-model rows have mini-bars on **desktop** but they look absent/hidden on **mobile** (≤390px) — verify, and if so add a compact bar so model lean is scannable on phones too.
+  2. Bilingual per-model rationale (engine-level; still flagged for the user — gives zh the per-model reasoning prose currently hidden).
+  3. Intro paragraph tightening (pending from iter 1) — 4 sentences, could be denser.
