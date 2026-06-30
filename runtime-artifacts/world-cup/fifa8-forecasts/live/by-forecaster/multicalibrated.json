@@ -9,12 +9,12 @@
       "teamB": "Japan",
       "prediction": {
         "probs": {
-          "home": 0.5964822089954166,
-          "draw": 0.21431358669678785,
-          "away": 0.1892042043077956
+          "home": 0.5081380963939485,
+          "draw": 0.33068045886754843,
+          "away": 0.16118144473850304
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Brazil is the call here at about 60%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Brazil is the call here at about 51%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -23,11 +23,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by -8.8 points.",
+              "contributionPp": -8.8
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -37,12 +37,12 @@
       "teamB": "Paraguay",
       "prediction": {
         "probs": {
-          "home": 0.5432007222350586,
-          "draw": 0.2544637711812257,
-          "away": 0.20233550658371585
+          "home": 0.4662219583683662,
+          "draw": 0.36011616625935705,
+          "away": 0.17366187537227676
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Germany is the call here at about 54%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Germany is the call here at about 47%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -51,11 +51,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by -7.7 points.",
+              "contributionPp": -7.7
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -65,12 +65,12 @@
       "teamB": "Morocco",
       "prediction": {
         "probs": {
-          "home": 0.5213026531059777,
-          "draw": 0.23410823873298195,
-          "away": 0.24458910816104035
+          "home": 0.46149593291505336,
+          "draw": 0.3219755725931048,
+          "away": 0.2165284944918418
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Netherlands is the call here at about 52%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Netherlands is the call here at about 46%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -79,11 +79,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by -6 points.",
+              "contributionPp": -6
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -93,12 +93,12 @@
       "teamB": "Norway",
       "prediction": {
         "probs": {
-          "home": 0.31652109748463514,
-          "draw": 0.2459749097640073,
-          "away": 0.4375039927513576
+          "home": 0.2947134703866259,
+          "draw": 0.29792562686022717,
+          "away": 0.40736090275314696
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Norway is the call here at about 44%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Norway is the call here at about 41%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -107,11 +107,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by -2.2 points.",
+              "contributionPp": -2.2
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -121,12 +121,12 @@
       "teamB": "Sweden",
       "prediction": {
         "probs": {
-          "home": 0.7193880149315198,
-          "draw": 0.15797228952510178,
-          "away": 0.12263969554337838
+          "home": 0.6763721265524154,
+          "draw": 0.20832143248288243,
+          "away": 0.11530644096470223
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, France is the call here at about 72%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, France is the call here at about 68%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -135,11 +135,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by -4.3 points.",
+              "contributionPp": -4.3
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -149,12 +149,12 @@
       "teamB": "Ecuador",
       "prediction": {
         "probs": {
-          "home": 0.4488378216366269,
-          "draw": 0.22295763887909326,
-          "away": 0.3282045394842799
+          "home": 0.38002944281277107,
+          "draw": 0.3420809002638634,
+          "away": 0.2778896569233656
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Mexico is the call here at about 45%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Mexico is the call here at about 38%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -163,11 +163,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by -6.9 points.",
+              "contributionPp": -6.9
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -177,12 +177,12 @@
       "teamB": "Senegal",
       "prediction": {
         "probs": {
-          "home": 0.5289386488003581,
-          "draw": 0.24114273546930987,
-          "away": 0.229918615730332
+          "home": 0.44195480886262645,
+          "draw": 0.3659366392296618,
+          "away": 0.1921085519077118
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Belgium is the call here at about 53%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Belgium is the call here at about 44%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -191,11 +191,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Belgium's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Belgium's win chance by -8.7 points.",
+              "contributionPp": -8.7
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -205,12 +205,12 @@
       "teamB": "DR Congo",
       "prediction": {
         "probs": {
-          "home": 0.6181357926117624,
-          "draw": 0.2494329230883427,
-          "away": 0.13243128429989495
+          "home": 0.5803631418279878,
+          "draw": 0.29529810097457,
+          "away": 0.12433875719744233
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, England is the call here at about 62%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, England is the call here at about 58%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -219,11 +219,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by -3.8 points.",
+              "contributionPp": -3.8
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -233,12 +233,12 @@
       "teamB": "Bosnia-Herzegovina",
       "prediction": {
         "probs": {
-          "home": 0.5501230053620605,
-          "draw": 0.22926971534560833,
-          "away": 0.22060727929233118
+          "home": 0.47954024042453475,
+          "draw": 0.32815718956819606,
+          "away": 0.19230257000726922
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, United States is the call here at about 55%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, United States is the call here at about 48%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -247,11 +247,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by -7.1 points.",
+              "contributionPp": -7.1
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -261,12 +261,12 @@
       "teamB": "Algeria",
       "prediction": {
         "probs": {
-          "home": 0.5545066449541455,
-          "draw": 0.24355343652971284,
-          "away": 0.2019399185161418
+          "home": 0.49355599457788746,
+          "draw": 0.3267010605265578,
+          "away": 0.17974294489555476
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Switzerland is the call here at about 55%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Switzerland is the call here at about 49%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -275,11 +275,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by -6.1 points.",
+              "contributionPp": -6.1
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -289,12 +289,12 @@
       "teamB": "Austria",
       "prediction": {
         "probs": {
-          "home": 0.7928281516715217,
-          "draw": 0.1602236428237996,
-          "away": 0.04694820550467869
+          "home": 0.754389158239145,
+          "draw": 0.20093884423296357,
+          "away": 0.04467199752789143
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Spain is the call here at about 79%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Spain is the call here at about 75%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -303,11 +303,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +20 points.",
-              "contributionPp": 20
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +16.1 points.",
+              "contributionPp": 16.1
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -317,12 +317,12 @@
       "teamB": "Croatia",
       "prediction": {
         "probs": {
-          "home": 0.5097751441623065,
-          "draw": 0.27377371310937637,
-          "away": 0.21645114272831723
+          "home": 0.43294452787949134,
+          "draw": 0.38322670198405984,
+          "away": 0.1838287701364488
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Portugal is the call here at about 51%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Portugal is the call here at about 43%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -331,11 +331,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by -7.7 points.",
+              "contributionPp": -7.7
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -345,12 +345,12 @@
       "teamB": "Cabo Verde",
       "prediction": {
         "probs": {
-          "home": 0.6991365875744135,
-          "draw": 0.19629668935141936,
-          "away": 0.1045667230741672
+          "home": 0.6463502095575607,
+          "draw": 0.2569780891283643,
+          "away": 0.09667170131407507
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Argentina is the call here at about 70%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Argentina is the call here at about 65%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -359,11 +359,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by -5.3 points.",
+              "contributionPp": -5.3
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -373,12 +373,12 @@
       "teamB": "Egypt",
       "prediction": {
         "probs": {
-          "home": 0.31069082307384643,
-          "draw": 0.2515038143820069,
-          "away": 0.43780536254414665
+          "home": 0.256702494000712,
+          "draw": 0.38156899615766987,
+          "away": 0.36172850984161825
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Egypt is the call here at about 44%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, a draw is the call here at about 38%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -387,11 +387,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by -5.4 points.",
+              "contributionPp": -5.4
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     },
@@ -401,12 +401,12 @@
       "teamB": "Ghana",
       "prediction": {
         "probs": {
-          "home": 0.6523161181179938,
-          "draw": 0.22860708208267266,
-          "away": 0.11907679979933344
+          "home": 0.6021923828302119,
+          "draw": 0.28788063572735495,
+          "away": 0.10992698144243311
         },
         "rationale": {
-          "headline": "Blending all 8 models and correcting for known group-stage biases, Colombia is the call here at about 65%.",
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Colombia is the call here at about 60%.",
           "drivers": [
             {
               "label": "Consensus of all models",
@@ -415,11 +415,11 @@
             },
             {
               "label": "Bias correction",
-              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by 0 points.",
-              "contributionPp": 0
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by -5 points.",
+              "contributionPp": -5
             }
           ],
-          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
         }
       }
     }

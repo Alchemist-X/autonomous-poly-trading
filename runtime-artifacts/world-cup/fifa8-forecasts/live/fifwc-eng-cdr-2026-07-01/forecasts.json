@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.6714095749309539,
-        "draw": 0.23309126500189511,
-        "away": 0.09549916006715096
+        "home": 0.6303815035753155,
+        "draw": 0.2799550385874899,
+        "away": 0.08966345783719464
       },
       "outcomes": [
         {
           "key": "a",
           "label": "England",
-          "p": 0.6714095749309539
+          "p": 0.6303815035753155
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.23309126500189511
+          "p": 0.2799550385874899
         },
         {
           "key": "b",
           "label": "DR Congo",
-          "p": 0.09549916006715096
+          "p": 0.08966345783719464
         }
       ],
       "headline": "England are a clear favourite to beat DR Congo (67.1% to win).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.7258461931136365,
-        "draw": 0.18151590744739515,
-        "away": 0.09263789943896829
+        "home": 0.6814916433481714,
+        "draw": 0.23153131533930169,
+        "away": 0.0869770413125269
       },
       "outcomes": [
         {
           "key": "a",
           "label": "England",
-          "p": 0.7258461931136365
+          "p": 0.6814916433481714
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.18151590744739515
+          "p": 0.23153131533930169
         },
         {
           "key": "b",
           "label": "DR Congo",
-          "p": 0.09263789943896829
+          "p": 0.0869770413125269
         }
       ],
       "headline": "England are the clear favourite to beat DR Congo, winning roughly 73 times out of 100 to DR Congo's 9.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.5329856580845507,
-        "draw": 0.19179443290440923,
-        "away": 0.2752199090110402
+        "home": 0.5004163078281536,
+        "draw": 0.2411817471681835,
+        "away": 0.25840194500366287
       },
       "outcomes": [
         {
           "key": "a",
           "label": "England",
-          "p": 0.5329856580845507
+          "p": 0.5004163078281536
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.19179443290440923
+          "p": 0.2411817471681835
         },
         {
           "key": "b",
           "label": "DR Congo",
-          "p": 0.2752199090110402
+          "p": 0.25840194500366287
         }
       ],
       "headline": "England is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.71642454809772,
-        "draw": 0.18552623558564546,
-        "away": 0.09804921631663449
+        "home": 0.6726457302527302,
+        "draw": 0.23529658288390082,
+        "away": 0.09205768686336895
       },
       "outcomes": [
         {
           "key": "a",
           "label": "England",
-          "p": 0.71642454809772
+          "p": 0.6726457302527302
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.18552623558564546
+          "p": 0.23529658288390082
         },
         {
           "key": "b",
           "label": "DR Congo",
-          "p": 0.09804921631663449
+          "p": 0.09205768686336895
         }
       ],
       "headline": "England is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -195,25 +195,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.5749044416504607,
-        "draw": 0.26104173116099166,
-        "away": 0.1640538271885477
+        "home": 0.5397735448991979,
+        "draw": 0.30619752535097433,
+        "away": 0.15402892974982782
       },
       "outcomes": [
         {
           "key": "a",
           "label": "England",
-          "p": 0.5749044416504607
+          "p": 0.5397735448991979
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.26104173116099166
+          "p": 0.30619752535097433
         },
         {
           "key": "b",
           "label": "DR Congo",
-          "p": 0.1640538271885477
+          "p": 0.15402892974982782
         }
       ],
       "headline": "England is the slight favourite — its game style matches up well against DR Congo.",
@@ -241,25 +241,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.5248984288863631,
-        "draw": 0.42844759159658247,
-        "away": 0.0466539795170545
+        "home": 0.49282326791323144,
+        "draw": 0.46337365442175726,
+        "away": 0.04380307766501128
       },
       "outcomes": [
         {
           "key": "a",
           "label": "England",
-          "p": 0.5248984288863631
+          "p": 0.49282326791323144
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.42844759159658247
+          "p": 0.46337365442175726
         },
         {
           "key": "b",
           "label": "DR Congo",
-          "p": 0.0466539795170545
+          "p": 0.04380307766501128
         }
       ],
       "headline": "England are clear favourites to beat DR Congo, mostly on cleaner attacking play.",
@@ -292,25 +292,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.7104967122901328,
-        "draw": 0.23473539055693796,
-        "away": 0.05476789715292926
+        "home": 0.6670801288838211,
+        "draw": 0.2814986959587168,
+        "away": 0.05142117515746215
       },
       "outcomes": [
         {
           "key": "a",
           "label": "England",
-          "p": 0.7104967122901328
+          "p": 0.6670801288838211
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.23473539055693796
+          "p": 0.2814986959587168
         },
         {
           "key": "b",
           "label": "DR Congo",
-          "p": 0.05476789715292926
+          "p": 0.05142117515746215
         }
       ],
       "headline": "England is the clear favourite (71%) — its passing play is the harder one to break down.",
@@ -338,25 +338,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.4881207838402813,
-        "draw": 0.27931083045288463,
-        "away": 0.23256838570683416
+        "home": 0.4582930079232805,
+        "draw": 0.32335024808623547,
+        "away": 0.21835674399048405
       },
       "outcomes": [
         {
           "key": "a",
           "label": "England",
-          "p": 0.4881207838402813
+          "p": 0.4582930079232805
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.27931083045288463
+          "p": 0.32335024808623547
         },
         {
           "key": "b",
           "label": "DR Congo",
-          "p": 0.23256838570683416
+          "p": 0.21835674399048405
         }
       ],
       "headline": "Pulling every angle together, England is narrowly the side to back here, at about a 49% chance to win.",
@@ -379,28 +379,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.6181357926117624,
-        "draw": 0.2494329230883427,
-        "away": 0.13243128429989495
+        "home": 0.5803631418279878,
+        "draw": 0.29529810097457,
+        "away": 0.12433875719744233
       },
       "outcomes": [
         {
           "key": "a",
           "label": "England",
-          "p": 0.6181357926117624
+          "p": 0.5803631418279878
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2494329230883427
+          "p": 0.29529810097457
         },
         {
           "key": "b",
           "label": "DR Congo",
-          "p": 0.13243128429989495
+          "p": 0.12433875719744233
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, England is the call here at about 62%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, England is the call here at about 58%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -409,11 +409,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by -3.8 points.",
+          "contributionPp": -3.8
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

@@ -9,9 +9,9 @@
       "teamB": "Japan",
       "prediction": {
         "probs": {
-          "home": 0.46577656505868087,
-          "draw": 0.2532379542784191,
-          "away": 0.2809854806629
+          "home": 0.39679107531545654,
+          "draw": 0.36383979496841845,
+          "away": 0.23936912971612503
         },
         "rationale": {
           "headline": "Brazil is a slight favourite here with about a 47% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -37,9 +37,9 @@
       "teamB": "Paraguay",
       "prediction": {
         "probs": {
-          "home": 0.4641365830763831,
-          "draw": 0.25343844187265246,
-          "away": 0.2824249750509645
+          "home": 0.3983622588385197,
+          "draw": 0.3592361397449434,
+          "away": 0.24240160141653688
         },
         "rationale": {
           "headline": "Germany is a slight favourite here with about a 46% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -70,9 +70,9 @@
       "teamB": "Morocco",
       "prediction": {
         "probs": {
-          "home": 0.4983881107708898,
-          "draw": 0.24858127515898612,
-          "away": 0.2530306140701241
+          "home": 0.44121027346320507,
+          "draw": 0.3347881823270792,
+          "away": 0.22400154420971571
         },
         "rationale": {
           "headline": "Netherlands is clearly the stronger side here with about a 50% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -103,9 +103,9 @@
       "teamB": "Norway",
       "prediction": {
         "probs": {
-          "home": 0.18188209764366534,
-          "draw": 0.2291142100877622,
-          "away": 0.5890036922685725
+          "home": 0.1693508098630481,
+          "draw": 0.2822265933543356,
+          "away": 0.5484225967826163
         },
         "rationale": {
           "headline": "Norway is clearly the stronger side here with about a 59% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -136,9 +136,9 @@
       "teamB": "Sweden",
       "prediction": {
         "probs": {
-          "home": 0.7234755609811426,
-          "draw": 0.1825357146092227,
-          "away": 0.09398872440963464
+          "home": 0.6802152573199295,
+          "draw": 0.23141608476332018,
+          "away": 0.08836865791675023
         },
         "rationale": {
           "headline": "France is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -169,9 +169,9 @@
       "teamB": "Ecuador",
       "prediction": {
         "probs": {
-          "home": 0.3410564742020581,
-          "draw": 0.25864459359738085,
-          "away": 0.4002989322005611
+          "home": 0.2887713459308875,
+          "draw": 0.37229692231793865,
+          "away": 0.3389317317511739
         },
         "rationale": {
           "headline": "Ecuador is a slight favourite here with about a 40% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -202,9 +202,9 @@
       "teamB": "Senegal",
       "prediction": {
         "probs": {
-          "home": 0.4110967524636569,
-          "draw": 0.25812861912762775,
-          "away": 0.33077462840871535
+          "home": 0.343491985452735,
+          "draw": 0.3801291982014834,
+          "away": 0.2763788163457816
         },
         "rationale": {
           "headline": "Belgium is a slight favourite here with about a 41% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -230,9 +230,9 @@
       "teamB": "DR Congo",
       "prediction": {
         "probs": {
-          "home": 0.71642454809772,
-          "draw": 0.18552623558564546,
-          "away": 0.09804921631663449
+          "home": 0.6726457302527302,
+          "draw": 0.23529658288390082,
+          "away": 0.09205768686336895
         },
         "rationale": {
           "headline": "England is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -263,9 +263,9 @@
       "teamB": "Bosnia-Herzegovina",
       "prediction": {
         "probs": {
-          "home": 0.5175810801033383,
-          "draw": 0.24525264596194524,
-          "away": 0.23716627393471654
+          "home": 0.4511735614993833,
+          "draw": 0.34208945256345574,
+          "away": 0.20673698593716097
         },
         "rationale": {
           "headline": "United States is clearly the stronger side here with about a 52% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -296,9 +296,9 @@
       "teamB": "Algeria",
       "prediction": {
         "probs": {
-          "home": 0.49369247037349373,
-          "draw": 0.24932974087706777,
-          "away": 0.25697778874943855
+          "home": 0.4394264350988141,
+          "draw": 0.33184244100068916,
+          "away": 0.22873112390049677
         },
         "rationale": {
           "headline": "Switzerland is clearly the stronger side here with about a 49% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -324,9 +324,9 @@
       "teamB": "Austria",
       "prediction": {
         "probs": {
-          "home": 0.6955210845370281,
-          "draw": 0.1940216833340527,
-          "away": 0.11045723212891917
+          "home": 0.6617998672161842,
+          "draw": 0.2330982412938616,
+          "away": 0.10510189148995414
         },
         "rationale": {
           "headline": "Spain is clearly the stronger side here with about a 70% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -352,9 +352,9 @@
       "teamB": "Croatia",
       "prediction": {
         "probs": {
-          "home": 0.45348281077491637,
-          "draw": 0.25466119130430803,
-          "away": 0.29185599792077555
+          "home": 0.38513627755436575,
+          "draw": 0.3669947184826296,
+          "away": 0.2478690039630046
         },
         "rationale": {
           "headline": "Portugal is a slight favourite here with about a 45% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -385,9 +385,9 @@
       "teamB": "Cabo Verde",
       "prediction": {
         "probs": {
-          "home": 0.8319067093842701,
-          "draw": 0.12793881602167995,
-          "away": 0.04015447459404992
+          "home": 0.7690958898437462,
+          "draw": 0.19378138831647385,
+          "away": 0.03712272183977996
         },
         "rationale": {
           "headline": "Argentina is clearly the stronger side here with about a 83% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -413,9 +413,9 @@
       "teamB": "Egypt",
       "prediction": {
         "probs": {
-          "home": 0.4528455769108504,
-          "draw": 0.2547299307073814,
-          "away": 0.29242449238176815
+          "home": 0.37415520625974996,
+          "draw": 0.3842345145610352,
+          "away": 0.2416102791792148
         },
         "rationale": {
           "headline": "Australia is a slight favourite here with about a 45% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -446,9 +446,9 @@
       "teamB": "Ghana",
       "prediction": {
         "probs": {
-          "home": 0.7908851496420743,
-          "draw": 0.1505943632747294,
-          "away": 0.05852048708319625
+          "home": 0.7301138199406572,
+          "draw": 0.21586238610084346,
+          "away": 0.05402379395849929
         },
         "rationale": {
           "headline": "Colombia is clearly the stronger side here with about a 79% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",

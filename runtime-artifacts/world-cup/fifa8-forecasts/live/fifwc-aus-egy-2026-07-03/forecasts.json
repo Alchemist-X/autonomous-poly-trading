@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.34085378327043225,
-        "draw": 0.36206077735381886,
-        "away": 0.2970854393757489
+        "home": 0.2816240769181045,
+        "draw": 0.4729146234382765,
+        "away": 0.24546129964361907
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Australia",
-          "p": 0.34085378327043225
+          "p": 0.2816240769181045
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.36206077735381886
+          "p": 0.4729146234382765
         },
         {
           "key": "b",
           "label": "Egypt",
-          "p": 0.2970854393757489
+          "p": 0.24546129964361907
         }
       ],
       "headline": "Australia are narrowly ahead to beat Egypt (34.1% to win), though a tight low-scoring draw is very much in play (36.2%).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4499650941880131,
-        "draw": 0.2550344283407846,
-        "away": 0.2950004774712022
+        "home": 0.37177526116976406,
+        "draw": 0.3844861000476568,
+        "away": 0.2437386387825791
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Australia",
-          "p": 0.4499650941880131
+          "p": 0.37177526116976406
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2550344283407846
+          "p": 0.3844861000476568
         },
         {
           "key": "b",
           "label": "Egypt",
-          "p": 0.2950004774712022
+          "p": 0.2437386387825791
         }
       ],
       "headline": "Australia are favoured to beat Egypt, winning roughly 45 times out of 100 to Egypt's 30.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.2752852067889202,
-        "draw": 0.2915796876950881,
-        "away": 0.43313510551599166
+        "home": 0.22744926433640178,
+        "draw": 0.4146809385283633,
+        "away": 0.3578697971352349
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Australia",
-          "p": 0.2752852067889202
+          "p": 0.22744926433640178
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2915796876950881
+          "p": 0.4146809385283633
         },
         {
           "key": "b",
           "label": "Egypt",
-          "p": 0.43313510551599166
+          "p": 0.3578697971352349
         }
       ],
       "headline": "Egypt is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4528455769108504,
-        "draw": 0.2547299307073814,
-        "away": 0.29242449238176815
+        "home": 0.37415520625974996,
+        "draw": 0.3842345145610352,
+        "away": 0.2416102791792148
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Australia",
-          "p": 0.4528455769108504
+          "p": 0.37415520625974996
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2547299307073814
+          "p": 0.3842345145610352
         },
         {
           "key": "b",
           "label": "Egypt",
-          "p": 0.29242449238176815
+          "p": 0.2416102791792148
         }
       ],
       "headline": "Australia is a slight favourite here with about a 45% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -195,25 +195,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.3320073419568032,
-        "draw": 0.29793790662216474,
-        "away": 0.37005475142103206
+        "home": 0.27431486988787374,
+        "draw": 0.41993429825053047,
+        "away": 0.3057508318615958
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Australia",
-          "p": 0.3320073419568032
+          "p": 0.27431486988787374
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.29793790662216474
+          "p": 0.41993429825053047
         },
         {
           "key": "b",
           "label": "Egypt",
-          "p": 0.37005475142103206
+          "p": 0.3057508318615958
         }
       ],
       "headline": "Australia and Egypt look evenly matched, with Egypt a hair ahead on the day.",
@@ -242,8 +242,8 @@
       "family": "ml",
       "probs": {
         "home": 0,
-        "draw": 0.03290143026082581,
-        "away": 0.9670985697391742
+        "draw": 0.20095285615320324,
+        "away": 0.7990471438467968
       },
       "outcomes": [
         {
@@ -254,12 +254,12 @@
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.03290143026082581
+          "p": 0.20095285615320324
         },
         {
           "key": "b",
           "label": "Egypt",
-          "p": 0.9670985697391742
+          "p": 0.7990471438467968
         }
       ],
       "headline": "Egypt are clear favourites to beat Australia, mostly on cleaner attacking play.",
@@ -292,25 +292,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.18355523399795223,
-        "draw": 0.23649020416641592,
-        "away": 0.5799545618356319
+        "home": 0.15165908631604197,
+        "draw": 0.3691642809228696,
+        "away": 0.4791766327610883
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Australia",
-          "p": 0.18355523399795223
+          "p": 0.15165908631604197
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.23649020416641592
+          "p": 0.3691642809228696
         },
         {
           "key": "b",
           "label": "Egypt",
-          "p": 0.5799545618356319
+          "p": 0.4791766327610883
         }
       ],
       "headline": "Egypt is the clear favourite (58%) — its passing play is the harder one to break down.",
@@ -338,25 +338,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.4510143474778002,
-        "draw": 0.28129614990957613,
-        "away": 0.26768950261262364
+        "home": 0.37264218711775954,
+        "draw": 0.40618435735942404,
+        "away": 0.22117345552281634
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Australia",
-          "p": 0.4510143474778002
+          "p": 0.37264218711775954
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.28129614990957613
+          "p": 0.40618435735942404
         },
         {
           "key": "b",
           "label": "Egypt",
-          "p": 0.26768950261262364
+          "p": 0.22117345552281634
         }
       ],
       "headline": "Pulling every angle together, Australia is narrowly the side to back here, at about a 45% chance to win.",
@@ -379,28 +379,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.31069082307384643,
-        "draw": 0.2515038143820069,
-        "away": 0.43780536254414665
+        "home": 0.256702494000712,
+        "draw": 0.38156899615766987,
+        "away": 0.36172850984161825
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Australia",
-          "p": 0.31069082307384643
+          "p": 0.256702494000712
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2515038143820069
+          "p": 0.38156899615766987
         },
         {
           "key": "b",
           "label": "Egypt",
-          "p": 0.43780536254414665
+          "p": 0.36172850984161825
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Egypt is the call here at about 44%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, a draw is the call here at about 38%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -409,11 +409,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by -5.4 points.",
+          "contributionPp": -5.4
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

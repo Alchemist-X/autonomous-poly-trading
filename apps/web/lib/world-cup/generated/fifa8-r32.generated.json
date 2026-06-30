@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-06-29T16:20:24.636Z",
+ "generatedAt": "2026-06-30T03:11:33.792Z",
  "headlineForecaster": "multicalibrated",
  "marketBlind": true,
  "forecasterMeta": [
@@ -82,11 +82,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 60,
+    "pickPct": 51,
     "tier": "medium",
-    "a": 0.596,
-    "draw": 0.214,
-    "b": 0.189,
+    "a": 0.508,
+    "draw": 0.331,
+    "b": 0.161,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -95,20 +95,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by -8.8 points.",
+      "contributionPp": -8.8
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.52,
-     "draw": 0.313,
-     "b": 0.167,
+     "a": 0.443,
+     "draw": 0.415,
+     "b": 0.142,
      "headline": "Brazil are a slight favourite to beat Japan (52% to win), though a tight low-scoring draw is very much in play (31.3%).",
      "drivers": [
       {
@@ -133,9 +133,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.457,
-     "draw": 0.254,
-     "b": 0.288,
+     "a": 0.39,
+     "draw": 0.365,
+     "b": 0.246,
      "headline": "Brazil are favoured to beat Japan, winning roughly 46 times out of 100 to Japan's 29.",
      "drivers": [
       {
@@ -160,9 +160,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.556,
-     "draw": 0.175,
-     "b": 0.269,
+     "a": 0.473,
+     "draw": 0.298,
+     "b": 0.229,
      "headline": "Brazil is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -187,9 +187,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.466,
-     "draw": 0.253,
-     "b": 0.281,
+     "a": 0.397,
+     "draw": 0.364,
+     "b": 0.239,
      "headline": "Brazil is a slight favourite here with about a 47% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -209,9 +209,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.532,
-     "draw": 0.273,
-     "b": 0.194,
+     "a": 0.453,
+     "draw": 0.381,
+     "b": 0.166,
      "headline": "Brazil is the slight favourite — its game style matches up well against Japan.",
      "drivers": [
       {
@@ -236,9 +236,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.922,
-     "draw": 0.07,
-     "b": 0.007,
+     "a": 0.786,
+     "draw": 0.208,
+     "b": 0.006,
      "headline": "Brazil are clear favourites to beat Japan, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -263,9 +263,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.814,
-     "draw": 0.116,
-     "b": 0.07,
+     "a": 0.694,
+     "draw": 0.247,
+     "b": 0.06,
      "headline": "Brazil is the clear favourite (81%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -290,9 +290,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.504,
-     "draw": 0.259,
-     "b": 0.237,
+     "a": 0.43,
+     "draw": 0.369,
+     "b": 0.202,
      "headline": "Pulling every angle together, Brazil is narrowly the side to back here, at about a 50% chance to win.",
      "drivers": [
       {
@@ -312,10 +312,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.596,
-     "draw": 0.214,
-     "b": 0.189,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Brazil is the call here at about 60%.",
+     "a": 0.508,
+     "draw": 0.331,
+     "b": 0.161,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Brazil is the call here at about 51%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -324,11 +324,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by -8.8 points.",
+       "contributionPp": -8.8
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -364,11 +364,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 54,
+    "pickPct": 47,
     "tier": "medium",
-    "a": 0.543,
-    "draw": 0.254,
-    "b": 0.202,
+    "a": 0.466,
+    "draw": 0.36,
+    "b": 0.174,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -377,20 +377,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by -7.7 points.",
+      "contributionPp": -7.7
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.558,
-     "draw": 0.273,
-     "b": 0.168,
+     "a": 0.479,
+     "draw": 0.376,
+     "b": 0.145,
      "headline": "Germany are a slight favourite to beat Paraguay (55.8% to win).",
      "drivers": [
       {
@@ -415,9 +415,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.504,
-     "draw": 0.248,
-     "b": 0.248,
+     "a": 0.433,
+     "draw": 0.354,
+     "b": 0.213,
      "headline": "Germany are favoured to beat Paraguay, winning roughly 50 times out of 100 to Paraguay's 25.",
      "drivers": [
       {
@@ -442,9 +442,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.519,
-     "draw": 0.208,
-     "b": 0.273,
+     "a": 0.446,
+     "draw": 0.32,
+     "b": 0.234,
      "headline": "Germany is the favourite, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -469,9 +469,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.464,
-     "draw": 0.253,
-     "b": 0.282,
+     "a": 0.398,
+     "draw": 0.359,
+     "b": 0.242,
      "headline": "Germany is a slight favourite here with about a 46% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -496,9 +496,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.397,
-     "draw": 0.297,
-     "b": 0.307,
+     "a": 0.34,
+     "draw": 0.396,
+     "b": 0.263,
      "headline": "Germany and Paraguay look evenly matched, with Germany a hair ahead on the day.",
      "drivers": [
       {
@@ -523,9 +523,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.719,
-     "draw": 0.236,
-     "b": 0.045,
+     "a": 0.617,
+     "draw": 0.344,
+     "b": 0.038,
      "headline": "Germany are clear favourites to beat Paraguay, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -555,9 +555,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.695,
-     "draw": 0.25,
-     "b": 0.055,
+     "a": 0.597,
+     "draw": 0.356,
+     "b": 0.047,
      "headline": "Germany is the clear favourite (70%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -582,9 +582,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.488,
-     "draw": 0.271,
-     "b": 0.241,
+     "a": 0.419,
+     "draw": 0.374,
+     "b": 0.207,
      "headline": "Pulling every angle together, Germany is narrowly the side to back here, at about a 49% chance to win.",
      "drivers": [
       {
@@ -604,10 +604,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.543,
-     "draw": 0.254,
-     "b": 0.202,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Germany is the call here at about 54%.",
+     "a": 0.466,
+     "draw": 0.36,
+     "b": 0.174,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Germany is the call here at about 47%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -616,11 +616,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by -7.7 points.",
+       "contributionPp": -7.7
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -656,11 +656,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 52,
+    "pickPct": 46,
     "tier": "medium",
-    "a": 0.521,
-    "draw": 0.234,
-    "b": 0.245,
+    "a": 0.461,
+    "draw": 0.322,
+    "b": 0.217,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -669,20 +669,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by -6 points.",
+      "contributionPp": -6
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.387,
-     "draw": 0.313,
-     "b": 0.3,
+     "a": 0.343,
+     "draw": 0.392,
+     "b": 0.265,
      "headline": "Netherlands are narrowly ahead to beat Morocco (38.7% to win), though a tight low-scoring draw is very much in play (31.3%).",
      "drivers": [
       {
@@ -707,9 +707,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.494,
-     "draw": 0.249,
-     "b": 0.256,
+     "a": 0.438,
+     "draw": 0.335,
+     "b": 0.227,
      "headline": "Netherlands are favoured to beat Morocco, winning roughly 49 times out of 100 to Morocco's 26.",
      "drivers": [
       {
@@ -734,9 +734,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.424,
-     "draw": 0.202,
-     "b": 0.374,
+     "a": 0.375,
+     "draw": 0.294,
+     "b": 0.331,
      "headline": "Netherlands is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -761,9 +761,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.498,
-     "draw": 0.249,
-     "b": 0.253,
+     "a": 0.441,
+     "draw": 0.335,
+     "b": 0.224,
      "headline": "Netherlands is clearly the stronger side here with about a 50% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -788,9 +788,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.324,
-     "draw": 0.298,
-     "b": 0.379,
+     "a": 0.287,
+     "draw": 0.378,
+     "b": 0.335,
      "headline": "Netherlands and Morocco look evenly matched, with Morocco a hair ahead on the day.",
      "drivers": [
       {
@@ -815,9 +815,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.906,
-     "draw": 0.082,
-     "b": 0.012,
+     "a": 0.802,
+     "draw": 0.187,
+     "b": 0.011,
      "headline": "Netherlands are clear favourites to beat Morocco, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -842,9 +842,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.643,
-     "draw": 0.216,
-     "b": 0.14,
+     "a": 0.569,
+     "draw": 0.306,
+     "b": 0.124,
      "headline": "Netherlands is the clear favourite (64%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -869,9 +869,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.494,
-     "draw": 0.263,
-     "b": 0.243,
+     "a": 0.437,
+     "draw": 0.348,
+     "b": 0.215,
      "headline": "Pulling every angle together, Netherlands is narrowly the side to back here, at about a 49% chance to win.",
      "drivers": [
       {
@@ -891,10 +891,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.521,
-     "draw": 0.234,
-     "b": 0.245,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Netherlands is the call here at about 52%.",
+     "a": 0.461,
+     "draw": 0.322,
+     "b": 0.217,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Netherlands is the call here at about 46%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -903,11 +903,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by -6 points.",
+       "contributionPp": -6
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -943,11 +943,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "b",
-    "pickPct": 44,
+    "pickPct": 41,
     "tier": "low",
-    "a": 0.317,
-    "draw": 0.246,
-    "b": 0.438,
+    "a": 0.295,
+    "draw": 0.298,
+    "b": 0.407,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -956,20 +956,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by -2.2 points.",
+      "contributionPp": -2.2
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.341,
-     "draw": 0.296,
-     "b": 0.364,
+     "a": 0.317,
+     "draw": 0.344,
+     "b": 0.339,
      "headline": "Norway are narrowly ahead to beat Côte d'Ivoire (36.4% to win), though a tight low-scoring draw is very much in play (29.6%).",
      "drivers": [
       {
@@ -994,9 +994,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.173,
-     "draw": 0.226,
-     "b": 0.602,
+     "a": 0.161,
+     "draw": 0.279,
+     "b": 0.56,
      "headline": "Norway are the clear favourite to beat Côte d'Ivoire, winning roughly 60 times out of 100 to Côte d'Ivoire's 17.",
      "drivers": [
       {
@@ -1021,9 +1021,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.31,
-     "draw": 0.231,
-     "b": 0.459,
+     "a": 0.289,
+     "draw": 0.284,
+     "b": 0.427,
      "headline": "Norway is the favourite, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -1048,9 +1048,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.182,
-     "draw": 0.229,
-     "b": 0.589,
+     "a": 0.169,
+     "draw": 0.282,
+     "b": 0.548,
      "headline": "Norway is clearly the stronger side here with about a 59% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -1075,9 +1075,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.184,
-     "draw": 0.27,
-     "b": 0.546,
+     "a": 0.172,
+     "draw": 0.32,
+     "b": 0.508,
      "headline": "Norway is the slight favourite — its game style matches up well against Côte d'Ivoire.",
      "drivers": [
       {
@@ -1102,9 +1102,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.346,
-     "draw": 0.371,
-     "b": 0.283,
+     "a": 0.322,
+     "draw": 0.414,
+     "b": 0.264,
      "headline": "Côte d'Ivoire are narrow favourites to beat Norway, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -1129,9 +1129,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.538,
-     "draw": 0.069,
-     "b": 0.393,
+     "a": 0.501,
+     "draw": 0.133,
+     "b": 0.366,
      "headline": "Côte d'Ivoire is the slight edge (54%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -1156,9 +1156,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.459,
-     "draw": 0.277,
-     "b": 0.264,
+     "a": 0.428,
+     "draw": 0.327,
+     "b": 0.246,
      "headline": "Pulling every angle together, Côte d'Ivoire is narrowly the side to back here, at about a 46% chance to win.",
      "drivers": [
       {
@@ -1178,10 +1178,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.317,
-     "draw": 0.246,
-     "b": 0.438,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Norway is the call here at about 44%.",
+     "a": 0.295,
+     "draw": 0.298,
+     "b": 0.407,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Norway is the call here at about 41%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -1190,11 +1190,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by -2.2 points.",
+       "contributionPp": -2.2
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -1230,11 +1230,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 72,
+    "pickPct": 68,
     "tier": "high",
-    "a": 0.719,
-    "draw": 0.158,
-    "b": 0.123,
+    "a": 0.676,
+    "draw": 0.208,
+    "b": 0.115,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -1243,20 +1243,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by -4.3 points.",
+      "contributionPp": -4.3
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.73,
-     "draw": 0.19,
-     "b": 0.08,
+     "a": 0.686,
+     "draw": 0.238,
+     "b": 0.076,
      "headline": "France are a clear favourite to beat Sweden (73% to win).",
      "drivers": [
       {
@@ -1281,9 +1281,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.711,
-     "draw": 0.188,
-     "b": 0.101,
+     "a": 0.669,
+     "draw": 0.236,
+     "b": 0.095,
      "headline": "France are the clear favourite to beat Sweden, winning roughly 71 times out of 100 to Sweden's 10.",
      "drivers": [
       {
@@ -1308,9 +1308,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.407,
-     "draw": 0.201,
-     "b": 0.392,
+     "a": 0.383,
+     "draw": 0.249,
+     "b": 0.368,
      "headline": "France and Sweden look evenly matched, with no side meaningfully on top.",
      "drivers": [
       {
@@ -1335,9 +1335,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.723,
-     "draw": 0.183,
-     "b": 0.094,
+     "a": 0.68,
+     "draw": 0.231,
+     "b": 0.088,
      "headline": "France is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -1362,9 +1362,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.849,
-     "draw": 0.125,
-     "b": 0.026,
+     "a": 0.798,
+     "draw": 0.178,
+     "b": 0.024,
      "headline": "France is the clear favourite — its game style matches up well against Sweden.",
      "drivers": [
       {
@@ -1389,8 +1389,8 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.941,
-     "draw": 0.051,
+     "a": 0.885,
+     "draw": 0.108,
      "b": 0.008,
      "headline": "France are clear favourites to beat Sweden, mostly on cleaner attacking play.",
      "drivers": [
@@ -1416,9 +1416,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.874,
-     "draw": 0.069,
-     "b": 0.057,
+     "a": 0.822,
+     "draw": 0.124,
+     "b": 0.054,
      "headline": "France is the clear favourite (87%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -1443,9 +1443,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.52,
-     "draw": 0.257,
-     "b": 0.223,
+     "a": 0.489,
+     "draw": 0.302,
+     "b": 0.21,
      "headline": "Pulling every angle together, France is narrowly the side to back here, at about a 52% chance to win.",
      "drivers": [
       {
@@ -1465,10 +1465,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.719,
-     "draw": 0.158,
-     "b": 0.123,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, France is the call here at about 72%.",
+     "a": 0.676,
+     "draw": 0.208,
+     "b": 0.115,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, France is the call here at about 68%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -1477,11 +1477,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by -4.3 points.",
+       "contributionPp": -4.3
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -1517,11 +1517,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 45,
+    "pickPct": 38,
     "tier": "low",
-    "a": 0.449,
-    "draw": 0.223,
-    "b": 0.328,
+    "a": 0.38,
+    "draw": 0.342,
+    "b": 0.278,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -1530,20 +1530,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by -6.9 points.",
+      "contributionPp": -6.9
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.333,
-     "draw": 0.372,
-     "b": 0.295,
+     "a": 0.282,
+     "draw": 0.468,
+     "b": 0.25,
      "headline": "Mexico are narrowly ahead to beat Ecuador (33.3% to win), though a tight low-scoring draw is very much in play (37.2%).",
      "drivers": [
       {
@@ -1568,9 +1568,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.31,
-     "draw": 0.257,
-     "b": 0.434,
+     "a": 0.262,
+     "draw": 0.371,
+     "b": 0.367,
      "headline": "Ecuador are a slight favourite to beat Mexico, winning roughly 43 times out of 100 to Mexico's 31.",
      "drivers": [
       {
@@ -1595,9 +1595,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.333,
-     "draw": 0.2,
-     "b": 0.468,
+     "a": 0.282,
+     "draw": 0.322,
+     "b": 0.396,
      "headline": "Ecuador is the favourite, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -1622,9 +1622,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.341,
-     "draw": 0.259,
-     "b": 0.4,
+     "a": 0.289,
+     "draw": 0.372,
+     "b": 0.339,
      "headline": "Ecuador is a slight favourite here with about a 40% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -1649,9 +1649,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.766,
-     "draw": 0.177,
-     "b": 0.057,
+     "a": 0.649,
+     "draw": 0.303,
+     "b": 0.048,
      "headline": "Mexico is the clear favourite — its game style matches up well against Ecuador.",
      "drivers": [
       {
@@ -1676,9 +1676,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.634,
-     "draw": 0.103,
-     "b": 0.263,
+     "a": 0.537,
+     "draw": 0.24,
+     "b": 0.223,
      "headline": "Mexico are clear favourites to beat Ecuador, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -1703,9 +1703,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.39,
-     "draw": 0.15,
-     "b": 0.46,
+     "a": 0.33,
+     "draw": 0.28,
+     "b": 0.39,
      "headline": "Ecuador is the slight edge (46%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -1730,9 +1730,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.484,
-     "draw": 0.267,
-     "b": 0.249,
+     "a": 0.41,
+     "draw": 0.379,
+     "b": 0.211,
      "headline": "Pulling every angle together, Mexico is narrowly the side to back here, at about a 48% chance to win.",
      "drivers": [
       {
@@ -1752,10 +1752,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.449,
-     "draw": 0.223,
-     "b": 0.328,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Mexico is the call here at about 45%.",
+     "a": 0.38,
+     "draw": 0.342,
+     "b": 0.278,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Mexico is the call here at about 38%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -1764,11 +1764,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by -6.9 points.",
+       "contributionPp": -6.9
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -1804,11 +1804,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 53,
-    "tier": "medium",
-    "a": 0.529,
-    "draw": 0.241,
-    "b": 0.23,
+    "pickPct": 44,
+    "tier": "low",
+    "a": 0.442,
+    "draw": 0.366,
+    "b": 0.192,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -1817,20 +1817,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Belgium's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Belgium's win chance by -8.7 points.",
+      "contributionPp": -8.7
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.545,
-     "draw": 0.261,
-     "b": 0.194,
+     "a": 0.455,
+     "draw": 0.382,
+     "b": 0.162,
      "headline": "Belgium are a slight favourite to beat Senegal (54.5% to win).",
      "drivers": [
       {
@@ -1855,9 +1855,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.403,
-     "draw": 0.259,
-     "b": 0.338,
+     "a": 0.337,
+     "draw": 0.38,
+     "b": 0.283,
      "headline": "Belgium are a slight favourite to beat Senegal, winning roughly 40 times out of 100 to Senegal's 34.",
      "drivers": [
       {
@@ -1882,9 +1882,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.404,
-     "draw": 0.194,
-     "b": 0.402,
+     "a": 0.338,
+     "draw": 0.327,
+     "b": 0.336,
      "headline": "Belgium and Senegal look evenly matched, with no side meaningfully on top.",
      "drivers": [
       {
@@ -1909,9 +1909,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.411,
-     "draw": 0.258,
-     "b": 0.331,
+     "a": 0.343,
+     "draw": 0.38,
+     "b": 0.276,
      "headline": "Belgium is a slight favourite here with about a 41% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -1931,9 +1931,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.533,
-     "draw": 0.273,
-     "b": 0.194,
+     "a": 0.445,
+     "draw": 0.393,
+     "b": 0.162,
      "headline": "Belgium is the slight favourite — its game style matches up well against Senegal.",
      "drivers": [
       {
@@ -1958,9 +1958,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.75,
-     "draw": 0.238,
-     "b": 0.012,
+     "a": 0.626,
+     "draw": 0.363,
+     "b": 0.01,
      "headline": "Belgium are clear favourites to beat Senegal, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -1985,9 +1985,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.694,
-     "draw": 0.178,
-     "b": 0.128,
+     "a": 0.58,
+     "draw": 0.313,
+     "b": 0.107,
      "headline": "Belgium is the clear favourite (69%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -2012,9 +2012,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.491,
-     "draw": 0.268,
-     "b": 0.241,
+     "a": 0.411,
+     "draw": 0.388,
+     "b": 0.201,
      "headline": "Pulling every angle together, Belgium is narrowly the side to back here, at about a 49% chance to win.",
      "drivers": [
       {
@@ -2034,10 +2034,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.529,
-     "draw": 0.241,
-     "b": 0.23,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Belgium is the call here at about 53%.",
+     "a": 0.442,
+     "draw": 0.366,
+     "b": 0.192,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Belgium is the call here at about 44%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -2046,11 +2046,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Belgium's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Belgium's win chance by -8.7 points.",
+       "contributionPp": -8.7
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -2086,11 +2086,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 62,
-    "tier": "high",
-    "a": 0.618,
-    "draw": 0.249,
-    "b": 0.132,
+    "pickPct": 58,
+    "tier": "medium",
+    "a": 0.58,
+    "draw": 0.295,
+    "b": 0.124,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -2099,20 +2099,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by -3.8 points.",
+      "contributionPp": -3.8
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.671,
-     "draw": 0.233,
-     "b": 0.095,
+     "a": 0.63,
+     "draw": 0.28,
+     "b": 0.09,
      "headline": "England are a clear favourite to beat DR Congo (67.1% to win).",
      "drivers": [
       {
@@ -2137,9 +2137,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.726,
-     "draw": 0.182,
-     "b": 0.093,
+     "a": 0.681,
+     "draw": 0.232,
+     "b": 0.087,
      "headline": "England are the clear favourite to beat DR Congo, winning roughly 73 times out of 100 to DR Congo's 9.",
      "drivers": [
       {
@@ -2164,9 +2164,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.533,
-     "draw": 0.192,
-     "b": 0.275,
+     "a": 0.5,
+     "draw": 0.241,
+     "b": 0.258,
      "headline": "England is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -2191,9 +2191,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.716,
-     "draw": 0.186,
-     "b": 0.098,
+     "a": 0.673,
+     "draw": 0.235,
+     "b": 0.092,
      "headline": "England is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -2218,9 +2218,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.575,
-     "draw": 0.261,
-     "b": 0.164,
+     "a": 0.54,
+     "draw": 0.306,
+     "b": 0.154,
      "headline": "England is the slight favourite — its game style matches up well against DR Congo.",
      "drivers": [
       {
@@ -2245,9 +2245,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.525,
-     "draw": 0.428,
-     "b": 0.047,
+     "a": 0.493,
+     "draw": 0.463,
+     "b": 0.044,
      "headline": "England are clear favourites to beat DR Congo, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -2277,9 +2277,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.71,
-     "draw": 0.235,
-     "b": 0.055,
+     "a": 0.667,
+     "draw": 0.281,
+     "b": 0.051,
      "headline": "England is the clear favourite (71%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -2304,9 +2304,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.488,
-     "draw": 0.279,
-     "b": 0.233,
+     "a": 0.458,
+     "draw": 0.323,
+     "b": 0.218,
      "headline": "Pulling every angle together, England is narrowly the side to back here, at about a 49% chance to win.",
      "drivers": [
       {
@@ -2326,10 +2326,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.618,
-     "draw": 0.249,
-     "b": 0.132,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, England is the call here at about 62%.",
+     "a": 0.58,
+     "draw": 0.295,
+     "b": 0.124,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, England is the call here at about 58%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -2338,11 +2338,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by -3.8 points.",
+       "contributionPp": -3.8
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -2378,11 +2378,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 55,
+    "pickPct": 48,
     "tier": "medium",
-    "a": 0.55,
-    "draw": 0.229,
-    "b": 0.221,
+    "a": 0.48,
+    "draw": 0.328,
+    "b": 0.192,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -2391,20 +2391,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by -7.1 points.",
+      "contributionPp": -7.1
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.585,
-     "draw": 0.261,
-     "b": 0.154,
+     "a": 0.51,
+     "draw": 0.356,
+     "b": 0.134,
      "headline": "United States are a slight favourite to beat Bosnia-Herzegovina (58.5% to win).",
      "drivers": [
       {
@@ -2429,9 +2429,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.559,
-     "draw": 0.237,
-     "b": 0.205,
+     "a": 0.487,
+     "draw": 0.335,
+     "b": 0.178,
      "headline": "United States are the clear favourite to beat Bosnia-Herzegovina, winning roughly 56 times out of 100 to Bosnia-Herzegovina's 20.",
      "drivers": [
       {
@@ -2456,9 +2456,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.408,
-     "draw": 0.332,
-     "b": 0.26,
+     "a": 0.356,
+     "draw": 0.418,
+     "b": 0.227,
      "headline": "United States is the favourite, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -2483,9 +2483,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.518,
-     "draw": 0.245,
-     "b": 0.237,
+     "a": 0.451,
+     "draw": 0.342,
+     "b": 0.207,
      "headline": "United States is clearly the stronger side here with about a 52% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -2510,9 +2510,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.59,
-     "draw": 0.256,
-     "b": 0.154,
+     "a": 0.514,
+     "draw": 0.352,
+     "b": 0.134,
      "headline": "United States is the slight favourite — its game style matches up well against Bosnia-Herzegovina.",
      "drivers": [
       {
@@ -2537,9 +2537,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.671,
-     "draw": 0.133,
-     "b": 0.196,
+     "a": 0.585,
+     "draw": 0.245,
+     "b": 0.171,
      "headline": "United States are clear favourites to beat Bosnia-Herzegovina, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -2569,9 +2569,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.579,
-     "draw": 0.102,
-     "b": 0.319,
+     "a": 0.505,
+     "draw": 0.217,
+     "b": 0.278,
      "headline": "United States is the clear favourite (58%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -2596,9 +2596,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.492,
-     "draw": 0.267,
-     "b": 0.241,
+     "a": 0.429,
+     "draw": 0.361,
+     "b": 0.21,
      "headline": "Pulling every angle together, United States is narrowly the side to back here, at about a 49% chance to win.",
      "drivers": [
       {
@@ -2618,10 +2618,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.55,
-     "draw": 0.229,
-     "b": 0.221,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, United States is the call here at about 55%.",
+     "a": 0.48,
+     "draw": 0.328,
+     "b": 0.192,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, United States is the call here at about 48%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -2630,11 +2630,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by -7.1 points.",
+       "contributionPp": -7.1
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -2670,11 +2670,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 55,
+    "pickPct": 49,
     "tier": "medium",
-    "a": 0.555,
-    "draw": 0.244,
-    "b": 0.202,
+    "a": 0.494,
+    "draw": 0.327,
+    "b": 0.18,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -2683,20 +2683,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by -6.1 points.",
+      "contributionPp": -6.1
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.622,
-     "draw": 0.228,
-     "b": 0.15,
+     "a": 0.554,
+     "draw": 0.313,
+     "b": 0.133,
      "headline": "Switzerland are a clear favourite to beat Algeria (62.2% to win).",
      "drivers": [
       {
@@ -2721,9 +2721,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.485,
-     "draw": 0.251,
-     "b": 0.264,
+     "a": 0.432,
+     "draw": 0.333,
+     "b": 0.235,
      "headline": "Switzerland are favoured to beat Algeria, winning roughly 49 times out of 100 to Algeria's 26.",
      "drivers": [
       {
@@ -2748,9 +2748,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.462,
-     "draw": 0.208,
-     "b": 0.33,
+     "a": 0.411,
+     "draw": 0.295,
+     "b": 0.294,
      "headline": "Switzerland is the favourite, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -2775,9 +2775,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.494,
-     "draw": 0.249,
-     "b": 0.257,
+     "a": 0.439,
+     "draw": 0.332,
+     "b": 0.229,
      "headline": "Switzerland is clearly the stronger side here with about a 49% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -2797,9 +2797,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.379,
-     "draw": 0.298,
-     "b": 0.323,
+     "a": 0.338,
+     "draw": 0.375,
+     "b": 0.288,
      "headline": "Switzerland and Algeria look evenly matched, with Switzerland a hair ahead on the day.",
      "drivers": [
       {
@@ -2824,8 +2824,8 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.701,
-     "draw": 0.296,
+     "a": 0.624,
+     "draw": 0.373,
      "b": 0.003,
      "headline": "Switzerland are clear favourites to beat Algeria, mostly on cleaner attacking play.",
      "drivers": [
@@ -2851,9 +2851,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.802,
-     "draw": 0.149,
-     "b": 0.049,
+     "a": 0.714,
+     "draw": 0.242,
+     "b": 0.044,
      "headline": "Switzerland is the clear favourite (80%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -2878,9 +2878,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.491,
-     "draw": 0.27,
-     "b": 0.239,
+     "a": 0.437,
+     "draw": 0.35,
+     "b": 0.213,
      "headline": "Pulling every angle together, Switzerland is narrowly the side to back here, at about a 49% chance to win.",
      "drivers": [
       {
@@ -2900,10 +2900,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.555,
-     "draw": 0.244,
-     "b": 0.202,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Switzerland is the call here at about 55%.",
+     "a": 0.494,
+     "draw": 0.327,
+     "b": 0.18,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Switzerland is the call here at about 49%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -2912,11 +2912,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by -6.1 points.",
+       "contributionPp": -6.1
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -2952,11 +2952,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 79,
+    "pickPct": 75,
     "tier": "high",
-    "a": 0.793,
-    "draw": 0.16,
-    "b": 0.047,
+    "a": 0.754,
+    "draw": 0.201,
+    "b": 0.045,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -2965,20 +2965,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +20 points.",
-      "contributionPp": 20
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +16.1 points.",
+      "contributionPp": 16.1
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.796,
-     "draw": 0.161,
-     "b": 0.043,
+     "a": 0.757,
+     "draw": 0.202,
+     "b": 0.041,
      "headline": "Spain are a clear favourite to beat Austria (79.6% to win).",
      "drivers": [
       {
@@ -3003,9 +3003,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.706,
-     "draw": 0.19,
-     "b": 0.104,
+     "a": 0.672,
+     "draw": 0.229,
+     "b": 0.099,
      "headline": "Spain are the clear favourite to beat Austria, winning roughly 71 times out of 100 to Austria's 10.",
      "drivers": [
       {
@@ -3030,9 +3030,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.455,
-     "draw": 0.175,
-     "b": 0.37,
+     "a": 0.433,
+     "draw": 0.215,
+     "b": 0.352,
      "headline": "Spain is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -3057,9 +3057,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.696,
-     "draw": 0.194,
-     "b": 0.11,
+     "a": 0.662,
+     "draw": 0.233,
+     "b": 0.105,
      "headline": "Spain is clearly the stronger side here with about a 70% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -3079,9 +3079,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.525,
-     "draw": 0.275,
-     "b": 0.2,
+     "a": 0.499,
+     "draw": 0.31,
+     "b": 0.19,
      "headline": "Spain is the slight favourite — its game style matches up well against Austria.",
      "drivers": [
       {
@@ -3106,9 +3106,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.684,
-     "draw": 0.275,
-     "b": 0.041,
+     "a": 0.651,
+     "draw": 0.31,
+     "b": 0.039,
      "headline": "Spain are clear favourites to beat Austria, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -3138,9 +3138,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.397,
-     "draw": 0.561,
-     "b": 0.041,
+     "a": 0.378,
+     "draw": 0.582,
+     "b": 0.039,
      "headline": "Spain and Austria look evenly matched on how they build play, with a 40% lean to Spain.",
      "drivers": [
       {
@@ -3165,9 +3165,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.485,
-     "draw": 0.282,
-     "b": 0.233,
+     "a": 0.461,
+     "draw": 0.317,
+     "b": 0.222,
      "headline": "Pulling every angle together, Spain is narrowly the side to back here, at about a 48% chance to win.",
      "drivers": [
       {
@@ -3187,10 +3187,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.793,
-     "draw": 0.16,
-     "b": 0.047,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Spain is the call here at about 79%.",
+     "a": 0.754,
+     "draw": 0.201,
+     "b": 0.045,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Spain is the call here at about 75%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -3199,11 +3199,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +20 points.",
-       "contributionPp": 20
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +16.1 points.",
+       "contributionPp": 16.1
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -3239,11 +3239,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 51,
-    "tier": "medium",
-    "a": 0.51,
-    "draw": 0.274,
-    "b": 0.216,
+    "pickPct": 43,
+    "tier": "low",
+    "a": 0.433,
+    "draw": 0.383,
+    "b": 0.184,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -3252,20 +3252,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by -7.7 points.",
+      "contributionPp": -7.7
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.54,
-     "draw": 0.308,
-     "b": 0.152,
+     "a": 0.458,
+     "draw": 0.413,
+     "b": 0.129,
      "headline": "Portugal are a slight favourite to beat Croatia (54% to win), though a tight low-scoring draw is very much in play (30.8%).",
      "drivers": [
       {
@@ -3290,9 +3290,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.466,
-     "draw": 0.253,
-     "b": 0.281,
+     "a": 0.396,
+     "draw": 0.366,
+     "b": 0.238,
      "headline": "Portugal are favoured to beat Croatia, winning roughly 47 times out of 100 to Croatia's 28.",
      "drivers": [
       {
@@ -3317,9 +3317,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.396,
-     "draw": 0.211,
-     "b": 0.393,
+     "a": 0.336,
+     "draw": 0.33,
+     "b": 0.334,
      "headline": "Portugal and Croatia look evenly matched, with no side meaningfully on top.",
      "drivers": [
       {
@@ -3344,9 +3344,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.453,
-     "draw": 0.255,
-     "b": 0.292,
+     "a": 0.385,
+     "draw": 0.367,
+     "b": 0.248,
      "headline": "Portugal is a slight favourite here with about a 45% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -3371,9 +3371,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.42,
-     "draw": 0.294,
-     "b": 0.286,
+     "a": 0.357,
+     "draw": 0.401,
+     "b": 0.243,
      "headline": "Portugal and Croatia look evenly matched, with Portugal a hair ahead on the day.",
      "drivers": [
       {
@@ -3398,8 +3398,8 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.639,
-     "draw": 0.361,
+     "a": 0.543,
+     "draw": 0.457,
      "b": 0,
      "headline": "Portugal are clear favourites to beat Croatia, mostly on cleaner attacking play.",
      "drivers": [
@@ -3430,9 +3430,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.681,
-     "draw": 0.232,
-     "b": 0.086,
+     "a": 0.579,
+     "draw": 0.348,
+     "b": 0.073,
      "headline": "Portugal is the clear favourite (68%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -3457,9 +3457,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.483,
-     "draw": 0.275,
-     "b": 0.242,
+     "a": 0.41,
+     "draw": 0.384,
+     "b": 0.205,
      "headline": "Pulling every angle together, Portugal is narrowly the side to back here, at about a 48% chance to win.",
      "drivers": [
       {
@@ -3479,10 +3479,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.51,
-     "draw": 0.274,
-     "b": 0.216,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Portugal is the call here at about 51%.",
+     "a": 0.433,
+     "draw": 0.383,
+     "b": 0.184,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Portugal is the call here at about 43%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -3491,11 +3491,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by -7.7 points.",
+       "contributionPp": -7.7
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -3531,11 +3531,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 70,
+    "pickPct": 65,
     "tier": "high",
-    "a": 0.699,
-    "draw": 0.196,
-    "b": 0.105,
+    "a": 0.646,
+    "draw": 0.257,
+    "b": 0.097,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -3544,20 +3544,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by -5.3 points.",
+      "contributionPp": -5.3
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.76,
-     "draw": 0.193,
-     "b": 0.047,
+     "a": 0.703,
+     "draw": 0.253,
+     "b": 0.044,
      "headline": "Argentina are a clear favourite to beat Cabo Verde (76% to win).",
      "drivers": [
       {
@@ -3582,9 +3582,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.836,
-     "draw": 0.126,
-     "b": 0.039,
+     "a": 0.773,
+     "draw": 0.192,
+     "b": 0.036,
      "headline": "Argentina are the clear favourite to beat Cabo Verde, winning roughly 84 times out of 100 to Cabo Verde's 4.",
      "drivers": [
       {
@@ -3609,9 +3609,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.513,
-     "draw": 0.207,
-     "b": 0.28,
+     "a": 0.474,
+     "draw": 0.267,
+     "b": 0.259,
      "headline": "Argentina is the favourite, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -3636,9 +3636,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.832,
-     "draw": 0.128,
-     "b": 0.04,
+     "a": 0.769,
+     "draw": 0.194,
+     "b": 0.037,
      "headline": "Argentina is clearly the stronger side here with about a 83% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -3658,9 +3658,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.835,
-     "draw": 0.135,
-     "b": 0.03,
+     "a": 0.772,
+     "draw": 0.2,
+     "b": 0.028,
      "headline": "Argentina is the clear favourite — its game style matches up well against Cabo Verde.",
      "drivers": [
       {
@@ -3685,9 +3685,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.754,
-     "draw": 0.199,
-     "b": 0.046,
+     "a": 0.697,
+     "draw": 0.26,
+     "b": 0.043,
      "headline": "Argentina are clear favourites to beat Cabo Verde, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -3717,9 +3717,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.56,
-     "draw": 0.311,
-     "b": 0.13,
+     "a": 0.518,
+     "draw": 0.363,
+     "b": 0.12,
      "headline": "Argentina is the clear favourite (56%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -3744,9 +3744,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.503,
-     "draw": 0.272,
-     "b": 0.225,
+     "a": 0.465,
+     "draw": 0.327,
+     "b": 0.208,
      "headline": "Pulling every angle together, Argentina is narrowly the side to back here, at about a 50% chance to win.",
      "drivers": [
       {
@@ -3766,10 +3766,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.699,
-     "draw": 0.196,
-     "b": 0.105,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Argentina is the call here at about 70%.",
+     "a": 0.646,
+     "draw": 0.257,
+     "b": 0.097,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Argentina is the call here at about 65%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -3778,11 +3778,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by -5.3 points.",
+       "contributionPp": -5.3
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -3817,12 +3817,12 @@
    },
    "headline": {
     "forecaster": "multicalibrated",
-    "pick": "b",
-    "pickPct": 44,
+    "pick": "draw",
+    "pickPct": 38,
     "tier": "low",
-    "a": 0.311,
-    "draw": 0.252,
-    "b": 0.438,
+    "a": 0.257,
+    "draw": 0.382,
+    "b": 0.362,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -3831,20 +3831,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by -5.4 points.",
+      "contributionPp": -5.4
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.341,
-     "draw": 0.362,
-     "b": 0.297,
+     "a": 0.282,
+     "draw": 0.473,
+     "b": 0.245,
      "headline": "Australia are narrowly ahead to beat Egypt (34.1% to win), though a tight low-scoring draw is very much in play (36.2%).",
      "drivers": [
       {
@@ -3869,9 +3869,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.45,
-     "draw": 0.255,
-     "b": 0.295,
+     "a": 0.372,
+     "draw": 0.384,
+     "b": 0.244,
      "headline": "Australia are favoured to beat Egypt, winning roughly 45 times out of 100 to Egypt's 30.",
      "drivers": [
       {
@@ -3896,9 +3896,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.275,
-     "draw": 0.292,
-     "b": 0.433,
+     "a": 0.227,
+     "draw": 0.415,
+     "b": 0.358,
      "headline": "Egypt is the favourite, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -3923,9 +3923,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.453,
-     "draw": 0.255,
-     "b": 0.292,
+     "a": 0.374,
+     "draw": 0.384,
+     "b": 0.242,
      "headline": "Australia is a slight favourite here with about a 45% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -3950,9 +3950,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.332,
-     "draw": 0.298,
-     "b": 0.37,
+     "a": 0.274,
+     "draw": 0.42,
+     "b": 0.306,
      "headline": "Australia and Egypt look evenly matched, with Egypt a hair ahead on the day.",
      "drivers": [
       {
@@ -3978,8 +3978,8 @@
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
      "a": 0,
-     "draw": 0.033,
-     "b": 0.967,
+     "draw": 0.201,
+     "b": 0.799,
      "headline": "Egypt are clear favourites to beat Australia, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -4009,9 +4009,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.184,
-     "draw": 0.236,
-     "b": 0.58,
+     "a": 0.152,
+     "draw": 0.369,
+     "b": 0.479,
      "headline": "Egypt is the clear favourite (58%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -4036,9 +4036,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.451,
-     "draw": 0.281,
-     "b": 0.268,
+     "a": 0.373,
+     "draw": 0.406,
+     "b": 0.221,
      "headline": "Pulling every angle together, Australia is narrowly the side to back here, at about a 45% chance to win.",
      "drivers": [
       {
@@ -4058,10 +4058,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.311,
-     "draw": 0.252,
-     "b": 0.438,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Egypt is the call here at about 44%.",
+     "a": 0.257,
+     "draw": 0.382,
+     "b": 0.362,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, a draw is the call here at about 38%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -4070,11 +4070,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by -5.4 points.",
+       "contributionPp": -5.4
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   },
@@ -4110,11 +4110,11 @@
    "headline": {
     "forecaster": "multicalibrated",
     "pick": "a",
-    "pickPct": 65,
+    "pickPct": 60,
     "tier": "high",
-    "a": 0.652,
-    "draw": 0.229,
-    "b": 0.119,
+    "a": 0.602,
+    "draw": 0.288,
+    "b": 0.11,
     "drivers": [
      {
       "label": "Consensus of all models",
@@ -4123,20 +4123,20 @@
      },
      {
       "label": "Bias correction",
-      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by 0 points.",
-      "contributionPp": 0
+      "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by -5 points.",
+      "contributionPp": -5
      }
     ],
-    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
    },
    "forecasters": [
     {
      "id": "dixon-coles-bayes",
      "name": "Dixon-Coles (Bayesian-shrunk)",
      "family": "statistical",
-     "a": 0.685,
-     "draw": 0.244,
-     "b": 0.071,
+     "a": 0.632,
+     "draw": 0.302,
+     "b": 0.065,
      "headline": "Colombia are a clear favourite to beat Ghana (68.5% to win).",
      "drivers": [
       {
@@ -4161,9 +4161,9 @@
      "id": "xg-elo",
      "name": "xG-corrected Elo",
      "family": "elo",
-     "a": 0.79,
-     "draw": 0.151,
-     "b": 0.059,
+     "a": 0.73,
+     "draw": 0.216,
+     "b": 0.054,
      "headline": "Colombia are the clear favourite to beat Ghana, winning roughly 79 times out of 100 to Ghana's 6.",
      "drivers": [
       {
@@ -4188,9 +4188,9 @@
      "id": "prodegy",
      "name": "PRODEGY split attack/defence Elo",
      "family": "elo",
-     "a": 0.456,
-     "draw": 0.241,
-     "b": 0.304,
+     "a": 0.421,
+     "draw": 0.299,
+     "b": 0.28,
      "headline": "Colombia is the favourite, expected to generate the better scoring chances over 90 minutes.",
      "drivers": [
       {
@@ -4215,9 +4215,9 @@
      "id": "fatigue-elo",
      "name": "Physical-decay dynamic-K Elo",
      "family": "elo",
-     "a": 0.791,
-     "draw": 0.151,
-     "b": 0.059,
+     "a": 0.73,
+     "draw": 0.216,
+     "b": 0.054,
      "headline": "Colombia is clearly the stronger side here with about a 79% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
      "drivers": [
       {
@@ -4237,9 +4237,9 @@
      "id": "tactical-melo",
      "name": "Tactical style-clash mElo",
      "family": "elo",
-     "a": 0.638,
-     "draw": 0.239,
-     "b": 0.124,
+     "a": 0.589,
+     "draw": 0.297,
+     "b": 0.114,
      "headline": "Colombia is the clear favourite — its game style matches up well against Ghana.",
      "drivers": [
       {
@@ -4264,9 +4264,9 @@
      "id": "linebreak-gbm",
      "name": "Line-breaks & offers efficiency (gradient-boosted)",
      "family": "ml",
-     "a": 0.729,
-     "draw": 0.217,
-     "b": 0.055,
+     "a": 0.673,
+     "draw": 0.277,
+     "b": 0.051,
      "headline": "Colombia are clear favourites to beat Ghana, mostly on cleaner attacking play.",
      "drivers": [
       {
@@ -4296,9 +4296,9 @@
      "id": "passnet-rf",
      "name": "Passing-network structure (random forest)",
      "family": "ml",
-     "a": 0.632,
-     "draw": 0.314,
-     "b": 0.054,
+     "a": 0.584,
+     "draw": 0.367,
+     "b": 0.05,
      "headline": "Colombia is the clear favourite (63%) — its passing play is the harder one to break down.",
      "drivers": [
       {
@@ -4323,9 +4323,9 @@
      "id": "stacked-ensemble",
      "name": "Stacked Ensemble",
      "family": "ensemble",
-     "a": 0.499,
-     "draw": 0.273,
-     "b": 0.229,
+     "a": 0.46,
+     "draw": 0.329,
+     "b": 0.211,
      "headline": "Pulling every angle together, Colombia is narrowly the side to back here, at about a 50% chance to win.",
      "drivers": [
       {
@@ -4345,10 +4345,10 @@
      "id": "multicalibrated",
      "name": "Multi-calibrated 8-in-1",
      "family": "ensemble",
-     "a": 0.652,
-     "draw": 0.229,
-     "b": 0.119,
-     "headline": "Blending all 8 models and correcting for known group-stage biases, Colombia is the call here at about 65%.",
+     "a": 0.602,
+     "draw": 0.288,
+     "b": 0.11,
+     "headline": "Blending all 8 models and correcting for known group-stage biases, Colombia is the call here at about 60%.",
      "drivers": [
       {
        "label": "Consensus of all models",
@@ -4357,11 +4357,11 @@
       },
       {
        "label": "Bias correction",
-       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by 0 points.",
-       "contributionPp": 0
+       "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by -5 points.",
+       "contributionPp": -5
       }
      ],
-     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+     "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
    ]
   }

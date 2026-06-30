@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.38707344562119916,
-        "draw": 0.31340443645395777,
-        "away": 0.2995221179248431
+        "home": 0.34266624163388726,
+        "draw": 0.3921744724564031,
+        "away": 0.26515928590970955
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Netherlands",
-          "p": 0.38707344562119916
+          "p": 0.34266624163388726
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.31340443645395777
+          "p": 0.3921744724564031
         },
         {
           "key": "b",
           "label": "Morocco",
-          "p": 0.2995221179248431
+          "p": 0.26515928590970955
         }
       ],
       "headline": "Netherlands are narrowly ahead to beat Morocco (38.7% to win), though a tight low-scoring draw is very much in play (31.3%).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.49433179414873063,
-        "draw": 0.24922936640753773,
-        "away": 0.2564388394437317
+        "home": 0.437619319892206,
+        "draw": 0.3353619209673535,
+        "away": 0.22701875914044045
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Netherlands",
-          "p": 0.49433179414873063
+          "p": 0.437619319892206
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.24922936640753773
+          "p": 0.3353619209673535
         },
         {
           "key": "b",
           "label": "Morocco",
-          "p": 0.2564388394437317
+          "p": 0.22701875914044045
         }
       ],
       "headline": "Netherlands are favoured to beat Morocco, winning roughly 49 times out of 100 to Morocco's 26.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4239097249028562,
-        "draw": 0.20241948990995473,
-        "away": 0.37367078518718905
+        "home": 0.37527645946209365,
+        "draw": 0.2939223320928675,
+        "away": 0.3308012084450389
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Netherlands",
-          "p": 0.4239097249028562
+          "p": 0.37527645946209365
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.20241948990995473
+          "p": 0.2939223320928675
         },
         {
           "key": "b",
           "label": "Morocco",
-          "p": 0.37367078518718905
+          "p": 0.3308012084450389
         }
       ],
       "headline": "Netherlands is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4983881107708898,
-        "draw": 0.24858127515898612,
-        "away": 0.2530306140701241
+        "home": 0.44121027346320507,
+        "draw": 0.3347881823270792,
+        "away": 0.22400154420971571
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Netherlands",
-          "p": 0.4983881107708898
+          "p": 0.44121027346320507
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.24858127515898612
+          "p": 0.3347881823270792
         },
         {
           "key": "b",
           "label": "Morocco",
-          "p": 0.2530306140701241
+          "p": 0.22400154420971571
         }
       ],
       "headline": "Netherlands is clearly the stronger side here with about a 50% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -195,25 +195,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.3237336209196603,
-        "draw": 0.2976040706344766,
-        "away": 0.378662308445863
+        "home": 0.28659311152961736,
+        "draw": 0.37818681188952274,
+        "away": 0.3352200765808599
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Netherlands",
-          "p": 0.3237336209196603
+          "p": 0.28659311152961736
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2976040706344766
+          "p": 0.37818681188952274
         },
         {
           "key": "b",
           "label": "Morocco",
-          "p": 0.378662308445863
+          "p": 0.3352200765808599
         }
       ],
       "headline": "Netherlands and Morocco look evenly matched, with Morocco a hair ahead on the day.",
@@ -241,25 +241,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.9060456507687844,
-        "draw": 0.08169649027659862,
-        "away": 0.012257858954617097
+        "home": 0.8020990884544034,
+        "draw": 0.18704934188621078,
+        "away": 0.010851569659385819
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Netherlands",
-          "p": 0.9060456507687844
+          "p": 0.8020990884544034
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.08169649027659862
+          "p": 0.18704934188621078
         },
         {
           "key": "b",
           "label": "Morocco",
-          "p": 0.012257858954617097
+          "p": 0.010851569659385819
         }
       ],
       "headline": "Netherlands are clear favourites to beat Morocco, mostly on cleaner attacking play.",
@@ -287,25 +287,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.6431248395674724,
-        "draw": 0.21646581296555187,
-        "away": 0.14040934746697584
+        "home": 0.5693420051646986,
+        "draw": 0.3063571833715761,
+        "away": 0.12430081146372522
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Netherlands",
-          "p": 0.6431248395674724
+          "p": 0.5693420051646986
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.21646581296555187
+          "p": 0.3063571833715761
         },
         {
           "key": "b",
           "label": "Morocco",
-          "p": 0.14040934746697584
+          "p": 0.12430081146372522
         }
       ],
       "headline": "Netherlands is the clear favourite (64%) — its passing play is the harder one to break down.",
@@ -333,25 +333,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.49381403814822894,
-        "draw": 0.26346496805679226,
-        "away": 0.2427209937949789
+        "home": 0.43716096372031577,
+        "draw": 0.34796433575382535,
+        "away": 0.2148747005258589
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Netherlands",
-          "p": 0.49381403814822894
+          "p": 0.43716096372031577
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.26346496805679226
+          "p": 0.34796433575382535
         },
         {
           "key": "b",
           "label": "Morocco",
-          "p": 0.2427209937949789
+          "p": 0.2148747005258589
         }
       ],
       "headline": "Pulling every angle together, Netherlands is narrowly the side to back here, at about a 49% chance to win.",
@@ -374,28 +374,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.5213026531059777,
-        "draw": 0.23410823873298195,
-        "away": 0.24458910816104035
+        "home": 0.46149593291505336,
+        "draw": 0.3219755725931048,
+        "away": 0.2165284944918418
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Netherlands",
-          "p": 0.5213026531059777
+          "p": 0.46149593291505336
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.23410823873298195
+          "p": 0.3219755725931048
         },
         {
           "key": "b",
           "label": "Morocco",
-          "p": 0.24458910816104035
+          "p": 0.2165284944918418
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Netherlands is the call here at about 52%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Netherlands is the call here at about 46%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -404,11 +404,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by -6 points.",
+          "contributionPp": -6
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.5581868858437716,
-        "draw": 0.2733952419776241,
-        "away": 0.16841787217860438
+        "home": 0.479084383361718,
+        "draw": 0.3763647959614196,
+        "away": 0.14455082067686245
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Germany",
-          "p": 0.5581868858437716
+          "p": 0.479084383361718
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2733952419776241
+          "p": 0.3763647959614196
         },
         {
           "key": "b",
           "label": "Paraguay",
-          "p": 0.16841787217860438
+          "p": 0.14455082067686245
         }
       ],
       "headline": "Germany are a slight favourite to beat Paraguay (55.8% to win).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.5044500438324093,
-        "draw": 0.24757661430968952,
-        "away": 0.24797334185790126
+        "home": 0.4329627662622702,
+        "draw": 0.35420501107711433,
+        "away": 0.21283222266061538
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Germany",
-          "p": 0.5044500438324093
+          "p": 0.4329627662622702
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.24757661430968952
+          "p": 0.35420501107711433
         },
         {
           "key": "b",
           "label": "Paraguay",
-          "p": 0.24797334185790126
+          "p": 0.21283222266061538
         }
       ],
       "headline": "Germany are favoured to beat Paraguay, winning roughly 50 times out of 100 to Paraguay's 25.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.5190739984394597,
-        "draw": 0.20827606618884037,
-        "away": 0.27264993537169996
+        "home": 0.44551431208484515,
+        "draw": 0.32047387310207365,
+        "away": 0.23401181481308111
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Germany",
-          "p": 0.5190739984394597
+          "p": 0.44551431208484515
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.20827606618884037
+          "p": 0.32047387310207365
         },
         {
           "key": "b",
           "label": "Paraguay",
-          "p": 0.27264993537169996
+          "p": 0.23401181481308111
         }
       ],
       "headline": "Germany is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4641365830763831,
-        "draw": 0.25343844187265246,
-        "away": 0.2824249750509645
+        "home": 0.3983622588385197,
+        "draw": 0.3592361397449434,
+        "away": 0.24240160141653688
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Germany",
-          "p": 0.4641365830763831
+          "p": 0.3983622588385197
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.25343844187265246
+          "p": 0.3592361397449434
         },
         {
           "key": "b",
           "label": "Paraguay",
-          "p": 0.2824249750509645
+          "p": 0.24240160141653688
         }
       ],
       "headline": "Germany is a slight favourite here with about a 46% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -195,25 +195,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.3967193104004787,
-        "draw": 0.2965229722111567,
-        "away": 0.3067577173883645
+        "home": 0.3404989099727703,
+        "draw": 0.39621501935163606,
+        "away": 0.26328607067559373
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Germany",
-          "p": 0.3967193104004787
+          "p": 0.3404989099727703
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2965229722111567
+          "p": 0.39621501935163606
         },
         {
           "key": "b",
           "label": "Paraguay",
-          "p": 0.3067577173883645
+          "p": 0.26328607067559373
         }
       ],
       "headline": "Germany and Paraguay look evenly matched, with Germany a hair ahead on the day.",
@@ -241,25 +241,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.719353534156862,
-        "draw": 0.23582084201272446,
-        "away": 0.0448256238304136
+        "home": 0.6174115749954576,
+        "draw": 0.3441151880005317,
+        "away": 0.03847323700401059
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Germany",
-          "p": 0.719353534156862
+          "p": 0.6174115749954576
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.23582084201272446
+          "p": 0.3441151880005317
         },
         {
           "key": "b",
           "label": "Paraguay",
-          "p": 0.0448256238304136
+          "p": 0.03847323700401059
         }
       ],
       "headline": "Germany are clear favourites to beat Paraguay, mostly on cleaner attacking play.",
@@ -292,25 +292,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.6952126479683852,
-        "draw": 0.25001945487868565,
-        "away": 0.05476789715292927
+        "home": 0.59669177331841,
+        "draw": 0.3563016686613917,
+        "away": 0.04700655802019839
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Germany",
-          "p": 0.6952126479683852
+          "p": 0.59669177331841
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.25001945487868565
+          "p": 0.3563016686613917
         },
         {
           "key": "b",
           "label": "Paraguay",
-          "p": 0.05476789715292927
+          "p": 0.04700655802019839
         }
       ],
       "headline": "Germany is the clear favourite (70%) — its passing play is the harder one to break down.",
@@ -338,25 +338,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.4884727741627183,
-        "draw": 0.27066053599843226,
-        "away": 0.2408666898388494
+        "home": 0.4192496881129385,
+        "draw": 0.37401763417574585,
+        "away": 0.20673267771131562
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Germany",
-          "p": 0.4884727741627183
+          "p": 0.4192496881129385
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.27066053599843226
+          "p": 0.37401763417574585
         },
         {
           "key": "b",
           "label": "Paraguay",
-          "p": 0.2408666898388494
+          "p": 0.20673267771131562
         }
       ],
       "headline": "Pulling every angle together, Germany is narrowly the side to back here, at about a 49% chance to win.",
@@ -379,28 +379,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.5432007222350586,
-        "draw": 0.2544637711812257,
-        "away": 0.20233550658371585
+        "home": 0.4662219583683662,
+        "draw": 0.36011616625935705,
+        "away": 0.17366187537227676
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Germany",
-          "p": 0.5432007222350586
+          "p": 0.4662219583683662
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2544637711812257
+          "p": 0.36011616625935705
         },
         {
           "key": "b",
           "label": "Paraguay",
-          "p": 0.20233550658371585
+          "p": 0.17366187537227676
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Germany is the call here at about 54%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Germany is the call here at about 47%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -409,11 +409,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by -7.7 points.",
+          "contributionPp": -7.7
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

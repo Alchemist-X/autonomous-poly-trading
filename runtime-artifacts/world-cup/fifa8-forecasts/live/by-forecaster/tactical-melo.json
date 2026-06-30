@@ -9,9 +9,9 @@
       "teamB": "Japan",
       "prediction": {
         "probs": {
-          "home": 0.532198382901802,
-          "draw": 0.27340263440979734,
-          "away": 0.1943989826884007
+          "home": 0.45337525430492326,
+          "draw": 0.38101791364794835,
+          "away": 0.16560683204712837
         },
         "rationale": {
           "headline": "Brazil is the slight favourite — its game style matches up well against Japan.",
@@ -42,9 +42,9 @@
       "teamB": "Paraguay",
       "prediction": {
         "probs": {
-          "home": 0.3967193104004787,
-          "draw": 0.2965229722111567,
-          "away": 0.3067577173883645
+          "home": 0.3404989099727703,
+          "draw": 0.39621501935163606,
+          "away": 0.26328607067559373
         },
         "rationale": {
           "headline": "Germany and Paraguay look evenly matched, with Germany a hair ahead on the day.",
@@ -75,9 +75,9 @@
       "teamB": "Morocco",
       "prediction": {
         "probs": {
-          "home": 0.3237336209196603,
-          "draw": 0.2976040706344766,
-          "away": 0.378662308445863
+          "home": 0.28659311152961736,
+          "draw": 0.37818681188952274,
+          "away": 0.3352200765808599
         },
         "rationale": {
           "headline": "Netherlands and Morocco look evenly matched, with Morocco a hair ahead on the day.",
@@ -108,9 +108,9 @@
       "teamB": "Norway",
       "prediction": {
         "probs": {
-          "home": 0.18425332488157498,
-          "draw": 0.26963054747154563,
-          "away": 0.5461161276468793
+          "home": 0.17155866461242567,
+          "draw": 0.31995144169026635,
+          "away": 0.508489893697308
         },
         "rationale": {
           "headline": "Norway is the slight favourite — its game style matches up well against Côte d'Ivoire.",
@@ -141,9 +141,9 @@
       "teamB": "Sweden",
       "prediction": {
         "probs": {
-          "home": 0.8488194173079926,
-          "draw": 0.12549876549520358,
-          "away": 0.025681817196803968
+          "home": 0.798064163465721,
+          "draw": 0.17778966652505782,
+          "away": 0.02414617000922127
         },
         "rationale": {
           "headline": "France is the clear favourite — its game style matches up well against Sweden.",
@@ -174,9 +174,9 @@
       "teamB": "Ecuador",
       "prediction": {
         "probs": {
-          "home": 0.7661960714239905,
-          "draw": 0.17712815746335847,
-          "away": 0.05667577111265101
+          "home": 0.648735583482816,
+          "draw": 0.30327723567224585,
+          "away": 0.04798718084493815
         },
         "rationale": {
           "headline": "Mexico is the clear favourite — its game style matches up well against Ecuador.",
@@ -207,9 +207,9 @@
       "teamB": "Senegal",
       "prediction": {
         "probs": {
-          "home": 0.5331038449201544,
-          "draw": 0.27316482057376124,
-          "away": 0.1937313345060843
+          "home": 0.4454350394322302,
+          "draw": 0.39269269975543025,
+          "away": 0.16187226081233952
         },
         "rationale": {
           "headline": "Belgium is the slight favourite — its game style matches up well against Senegal.",
@@ -240,9 +240,9 @@
       "teamB": "DR Congo",
       "prediction": {
         "probs": {
-          "home": 0.5749044416504607,
-          "draw": 0.26104173116099166,
-          "away": 0.1640538271885477
+          "home": 0.5397735448991979,
+          "draw": 0.30619752535097433,
+          "away": 0.15402892974982782
         },
         "rationale": {
           "headline": "England is the slight favourite — its game style matches up well against DR Congo.",
@@ -273,9 +273,9 @@
       "teamB": "Bosnia-Herzegovina",
       "prediction": {
         "probs": {
-          "home": 0.5895261688556436,
-          "draw": 0.2562765367657148,
-          "away": 0.15419729437864158
+          "home": 0.513887835982303,
+          "draw": 0.3516989384328465,
+          "away": 0.13441322558485047
         },
         "rationale": {
           "headline": "United States is the slight favourite — its game style matches up well against Bosnia-Herzegovina.",
@@ -306,9 +306,9 @@
       "teamB": "Algeria",
       "prediction": {
         "probs": {
-          "home": 0.3794208514091583,
-          "draw": 0.2975689629911313,
-          "away": 0.32301018559971034
+          "home": 0.3377154041072345,
+          "draw": 0.3747792704594941,
+          "away": 0.28750532543327145
         },
         "rationale": {
           "headline": "Switzerland and Algeria look evenly matched, with Switzerland a hair ahead on the day.",
@@ -339,9 +339,9 @@
       "teamB": "Austria",
       "prediction": {
         "probs": {
-          "home": 0.5247690460975164,
-          "draw": 0.27531383006575394,
-          "away": 0.19991712383672955
+          "home": 0.49932646579316026,
+          "draw": 0.31044906948416684,
+          "away": 0.1902244647226729
         },
         "rationale": {
           "headline": "Spain is the slight favourite — its game style matches up well against Austria.",
@@ -372,9 +372,9 @@
       "teamB": "Croatia",
       "prediction": {
         "probs": {
-          "home": 0.4199658396406455,
-          "draw": 0.2943969472454624,
-          "away": 0.2856372131138921
+          "home": 0.35667080721935607,
+          "draw": 0.4007417112359687,
+          "away": 0.24258748154467527
         },
         "rationale": {
           "headline": "Portugal and Croatia look evenly matched, with Portugal a hair ahead on the day.",
@@ -405,9 +405,9 @@
       "teamB": "Cabo Verde",
       "prediction": {
         "probs": {
-          "home": 0.8345869814307549,
-          "draw": 0.13513024395459625,
-          "away": 0.030282774614649007
+          "home": 0.7715737953484875,
+          "draw": 0.2004298473358837,
+          "away": 0.027996357315628908
         },
         "rationale": {
           "headline": "Argentina is the clear favourite — its game style matches up well against Cabo Verde.",
@@ -438,9 +438,9 @@
       "teamB": "Egypt",
       "prediction": {
         "probs": {
-          "home": 0.3320073419568032,
-          "draw": 0.29793790662216474,
-          "away": 0.37005475142103206
+          "home": 0.27431486988787374,
+          "draw": 0.41993429825053047,
+          "away": 0.3057508318615958
         },
         "rationale": {
           "headline": "Australia and Egypt look evenly matched, with Egypt a hair ahead on the day.",
@@ -471,9 +471,9 @@
       "teamB": "Ghana",
       "prediction": {
         "probs": {
-          "home": 0.6375312155973548,
-          "draw": 0.23873435841258034,
-          "away": 0.12373442599006489
+          "home": 0.58854354688775,
+          "draw": 0.29722973579601825,
+          "away": 0.11422671731623167
         },
         "rationale": {
           "headline": "Colombia is the clear favourite — its game style matches up well against Ghana.",

@@ -9,9 +9,9 @@
       "teamB": "Japan",
       "prediction": {
         "probs": {
-          "home": 0.504254619872516,
-          "draw": 0.259073420034144,
-          "away": 0.23667196009334
+          "home": 0.4295702013835643,
+          "draw": 0.3688109783766883,
+          "away": 0.2016188202397474
         },
         "rationale": {
           "headline": "Pulling every angle together, Brazil is narrowly the side to back here, at about a 50% chance to win.",
@@ -37,9 +37,9 @@
       "teamB": "Paraguay",
       "prediction": {
         "probs": {
-          "home": 0.4884727741627183,
-          "draw": 0.27066053599843226,
-          "away": 0.2408666898388494
+          "home": 0.4192496881129385,
+          "draw": 0.37401763417574585,
+          "away": 0.20673267771131562
         },
         "rationale": {
           "headline": "Pulling every angle together, Germany is narrowly the side to back here, at about a 49% chance to win.",
@@ -65,9 +65,9 @@
       "teamB": "Morocco",
       "prediction": {
         "probs": {
-          "home": 0.49381403814822894,
-          "draw": 0.26346496805679226,
-          "away": 0.2427209937949789
+          "home": 0.43716096372031577,
+          "draw": 0.34796433575382535,
+          "away": 0.2148747005258589
         },
         "rationale": {
           "headline": "Pulling every angle together, Netherlands is narrowly the side to back here, at about a 49% chance to win.",
@@ -93,9 +93,9 @@
       "teamB": "Norway",
       "prediction": {
         "probs": {
-          "home": 0.45918461973872665,
-          "draw": 0.2769162025186356,
-          "away": 0.2638991777426378
+          "home": 0.42754778088033296,
+          "draw": 0.3267351306766598,
+          "away": 0.24571708844300727
         },
         "rationale": {
           "headline": "Pulling every angle together, Côte d'Ivoire is narrowly the side to back here, at about a 46% chance to win.",
@@ -121,9 +121,9 @@
       "teamB": "Sweden",
       "prediction": {
         "probs": {
-          "home": 0.5195720254886658,
-          "draw": 0.25745967817385085,
-          "away": 0.2229682963374834
+          "home": 0.4885041569817749,
+          "draw": 0.30185996138359894,
+          "away": 0.20963588163462615
         },
         "rationale": {
           "headline": "Pulling every angle together, France is narrowly the side to back here, at about a 52% chance to win.",
@@ -149,9 +149,9 @@
       "teamB": "Ecuador",
       "prediction": {
         "probs": {
-          "home": 0.4843019023385195,
-          "draw": 0.26701919604782454,
-          "away": 0.24867890161365597
+          "home": 0.4100567582022449,
+          "draw": 0.37938766946445956,
+          "away": 0.21055557233329555
         },
         "rationale": {
           "headline": "Pulling every angle together, Mexico is narrowly the side to back here, at about a 48% chance to win.",
@@ -177,9 +177,9 @@
       "teamB": "Senegal",
       "prediction": {
         "probs": {
-          "home": 0.491335501297146,
-          "draw": 0.2681400461829842,
-          "away": 0.24052445251986984
+          "home": 0.4105354903743533,
+          "draw": 0.38849424836510305,
+          "away": 0.20097026126054365
         },
         "rationale": {
           "headline": "Pulling every angle together, Belgium is narrowly the side to back here, at about a 49% chance to win.",
@@ -205,9 +205,9 @@
       "teamB": "DR Congo",
       "prediction": {
         "probs": {
-          "home": 0.4881207838402813,
-          "draw": 0.27931083045288463,
-          "away": 0.23256838570683416
+          "home": 0.4582930079232805,
+          "draw": 0.32335024808623547,
+          "away": 0.21835674399048405
         },
         "rationale": {
           "headline": "Pulling every angle together, England is narrowly the side to back here, at about a 49% chance to win.",
@@ -233,9 +233,9 @@
       "teamB": "Bosnia-Herzegovina",
       "prediction": {
         "probs": {
-          "home": 0.4921966600536947,
-          "draw": 0.2672457059815419,
-          "away": 0.2405576339647634
+          "home": 0.4290460540601481,
+          "draw": 0.36126072369131457,
+          "away": 0.20969322224853734
         },
         "rationale": {
           "headline": "Pulling every angle together, United States is narrowly the side to back here, at about a 49% chance to win.",
@@ -261,9 +261,9 @@
       "teamB": "Algeria",
       "prediction": {
         "probs": {
-          "home": 0.49058827557695855,
-          "draw": 0.2700091817884498,
-          "away": 0.23940254263459176
+          "home": 0.4366634493634599,
+          "draw": 0.35024882461972734,
+          "away": 0.21308772601681283
         },
         "rationale": {
           "headline": "Pulling every angle together, Switzerland is narrowly the side to back here, at about a 49% chance to win.",
@@ -289,9 +289,9 @@
       "teamB": "Austria",
       "prediction": {
         "probs": {
-          "home": 0.4849595994880483,
-          "draw": 0.2817914065664989,
-          "away": 0.23324899394545276
+          "home": 0.4614471159562924,
+          "draw": 0.31661259114207496,
+          "away": 0.2219402929016326
         },
         "rationale": {
           "headline": "Pulling every angle together, Spain is narrowly the side to back here, at about a 48% chance to win.",
@@ -317,9 +317,9 @@
       "teamB": "Croatia",
       "prediction": {
         "probs": {
-          "home": 0.4833116666676614,
-          "draw": 0.27484171047152745,
-          "away": 0.24184662286081113
+          "home": 0.4104694858905458,
+          "draw": 0.3841337364266529,
+          "away": 0.2053967776828014
         },
         "rationale": {
           "headline": "Pulling every angle together, Portugal is narrowly the side to back here, at about a 48% chance to win.",
@@ -345,9 +345,9 @@
       "teamB": "Cabo Verde",
       "prediction": {
         "probs": {
-          "home": 0.5034052762717234,
-          "draw": 0.2719842372108546,
-          "away": 0.2246104865174221
+          "home": 0.4653970505813047,
+          "draw": 0.32695105762879617,
+          "away": 0.2076518917898991
         },
         "rationale": {
           "headline": "Pulling every angle together, Argentina is narrowly the side to back here, at about a 50% chance to win.",
@@ -373,9 +373,9 @@
       "teamB": "Egypt",
       "prediction": {
         "probs": {
-          "home": 0.4510143474778002,
-          "draw": 0.28129614990957613,
-          "away": 0.26768950261262364
+          "home": 0.37264218711775954,
+          "draw": 0.40618435735942404,
+          "away": 0.22117345552281634
         },
         "rationale": {
           "headline": "Pulling every angle together, Australia is narrowly the side to back here, at about a 45% chance to win.",
@@ -401,9 +401,9 @@
       "teamB": "Ghana",
       "prediction": {
         "probs": {
-          "home": 0.49852339027628256,
-          "draw": 0.27277879477452566,
-          "away": 0.22869781494919178
+          "home": 0.4602170327374427,
+          "draw": 0.3286582099445031,
+          "away": 0.21112475731805425
         },
         "rationale": {
           "headline": "Pulling every angle together, Colombia is narrowly the side to back here, at about a 50% chance to win.",

@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.5395145839592782,
-        "draw": 0.30833907519797576,
-        "away": 0.15214634084274606
+        "home": 0.45820179644141457,
+        "draw": 0.4125825553280348,
+        "away": 0.1292156482305507
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Portugal",
-          "p": 0.5395145839592782
+          "p": 0.45820179644141457
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.30833907519797576
+          "p": 0.4125825553280348
         },
         {
           "key": "b",
           "label": "Croatia",
-          "p": 0.15214634084274606
+          "p": 0.1292156482305507
         }
       ],
       "headline": "Portugal are a slight favourite to beat Croatia (54% to win), though a tight low-scoring draw is very much in play (30.8%).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4661000065097742,
-        "draw": 0.25319802896441607,
-        "away": 0.28070196452580964
+        "home": 0.3958518762122163,
+        "draw": 0.3657520762398491,
+        "away": 0.23839604754793456
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Portugal",
-          "p": 0.4661000065097742
+          "p": 0.3958518762122163
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.25319802896441607
+          "p": 0.3657520762398491
         },
         {
           "key": "b",
           "label": "Croatia",
-          "p": 0.28070196452580964
+          "p": 0.23839604754793456
         }
       ],
       "headline": "Portugal are favoured to beat Croatia, winning roughly 47 times out of 100 to Croatia's 28.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.3955756530784938,
-        "draw": 0.2111705367446182,
-        "away": 0.3932538101768881
+        "home": 0.3359565807079877,
+        "draw": 0.33005874559117765,
+        "away": 0.3339846737008348
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Portugal",
-          "p": 0.3955756530784938
+          "p": 0.3359565807079877
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2111705367446182
+          "p": 0.33005874559117765
         },
         {
           "key": "b",
           "label": "Croatia",
-          "p": 0.3932538101768881
+          "p": 0.3339846737008348
         }
       ],
       "headline": "Portugal and Croatia look evenly matched, with no side meaningfully on top.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.45348281077491637,
-        "draw": 0.25466119130430803,
-        "away": 0.29185599792077555
+        "home": 0.38513627755436575,
+        "draw": 0.3669947184826296,
+        "away": 0.2478690039630046
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Portugal",
-          "p": 0.45348281077491637
+          "p": 0.38513627755436575
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.25466119130430803
+          "p": 0.3669947184826296
         },
         {
           "key": "b",
           "label": "Croatia",
-          "p": 0.29185599792077555
+          "p": 0.2478690039630046
         }
       ],
       "headline": "Portugal is a slight favourite here with about a 45% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -195,25 +195,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.4199658396406455,
-        "draw": 0.2943969472454624,
-        "away": 0.2856372131138921
+        "home": 0.35667080721935607,
+        "draw": 0.4007417112359687,
+        "away": 0.24258748154467527
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Portugal",
-          "p": 0.4199658396406455
+          "p": 0.35667080721935607
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2943969472454624
+          "p": 0.4007417112359687
         },
         {
           "key": "b",
           "label": "Croatia",
-          "p": 0.2856372131138921
+          "p": 0.24258748154467527
         }
       ],
       "headline": "Portugal and Croatia look evenly matched, with Portugal a hair ahead on the day.",
@@ -241,20 +241,20 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.6388134686284408,
-        "draw": 0.3611865313715592,
+        "home": 0.5425348778683169,
+        "draw": 0.4574651221316831,
         "away": 0
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Portugal",
-          "p": 0.6388134686284408
+          "p": 0.5425348778683169
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.3611865313715592
+          "p": 0.4574651221316831
         },
         {
           "key": "b",
@@ -292,25 +292,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.681437124039241,
-        "draw": 0.2323956835751438,
-        "away": 0.08616719238561514
+        "home": 0.5787345211417277,
+        "draw": 0.34808495043648296,
+        "away": 0.0731805284217894
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Portugal",
-          "p": 0.681437124039241
+          "p": 0.5787345211417277
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2323956835751438
+          "p": 0.34808495043648296
         },
         {
           "key": "b",
           "label": "Croatia",
-          "p": 0.08616719238561514
+          "p": 0.0731805284217894
         }
       ],
       "headline": "Portugal is the clear favourite (68%) — its passing play is the harder one to break down.",
@@ -338,25 +338,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.4833116666676614,
-        "draw": 0.27484171047152745,
-        "away": 0.24184662286081113
+        "home": 0.4104694858905458,
+        "draw": 0.3841337364266529,
+        "away": 0.2053967776828014
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Portugal",
-          "p": 0.4833116666676614
+          "p": 0.4104694858905458
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.27484171047152745
+          "p": 0.3841337364266529
         },
         {
           "key": "b",
           "label": "Croatia",
-          "p": 0.24184662286081113
+          "p": 0.2053967776828014
         }
       ],
       "headline": "Pulling every angle together, Portugal is narrowly the side to back here, at about a 48% chance to win.",
@@ -379,28 +379,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.5097751441623065,
-        "draw": 0.27377371310937637,
-        "away": 0.21645114272831723
+        "home": 0.43294452787949134,
+        "draw": 0.38322670198405984,
+        "away": 0.1838287701364488
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Portugal",
-          "p": 0.5097751441623065
+          "p": 0.43294452787949134
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.27377371310937637
+          "p": 0.38322670198405984
         },
         {
           "key": "b",
           "label": "Croatia",
-          "p": 0.21645114272831723
+          "p": 0.1838287701364488
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Portugal is the call here at about 51%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Portugal is the call here at about 43%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -409,11 +409,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by -7.7 points.",
+          "contributionPp": -7.7
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

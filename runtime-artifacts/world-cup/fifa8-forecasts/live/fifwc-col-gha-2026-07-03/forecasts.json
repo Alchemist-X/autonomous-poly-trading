@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.6848439514899566,
-        "draw": 0.24440875514410687,
-        "away": 0.07074729336593653
+        "home": 0.6322207892155699,
+        "draw": 0.3024681139289097,
+        "away": 0.06531109685552038
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Colombia",
-          "p": 0.6848439514899566
+          "p": 0.6322207892155699
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.24440875514410687
+          "p": 0.3024681139289097
         },
         {
           "key": "b",
           "label": "Ghana",
-          "p": 0.07074729336593653
+          "p": 0.06531109685552038
         }
       ],
       "headline": "Colombia are a clear favourite to beat Ghana (68.5% to win).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.7904660769715321,
-        "draw": 0.15081259196926525,
-        "away": 0.05872133105920262
+        "home": 0.7297269486629998,
+        "draw": 0.21606384618118551,
+        "away": 0.054209205155814656
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Colombia",
-          "p": 0.7904660769715321
+          "p": 0.7297269486629998
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.15081259196926525
+          "p": 0.21606384618118551
         },
         {
           "key": "b",
           "label": "Ghana",
-          "p": 0.05872133105920262
+          "p": 0.054209205155814656
         }
       ],
       "headline": "Colombia are the clear favourite to beat Ghana, winning roughly 79 times out of 100 to Ghana's 6.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.455560912216727,
-        "draw": 0.24084492864095872,
-        "away": 0.3035941591423143
+        "home": 0.4205557759995021,
+        "draw": 0.29917813056913006,
+        "away": 0.2802660934313677
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Colombia",
-          "p": 0.455560912216727
+          "p": 0.4205557759995021
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.24084492864095872
+          "p": 0.29917813056913006
         },
         {
           "key": "b",
           "label": "Ghana",
-          "p": 0.3035941591423143
+          "p": 0.2802660934313677
         }
       ],
       "headline": "Colombia is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.7908851496420743,
-        "draw": 0.1505943632747294,
-        "away": 0.05852048708319625
+        "home": 0.7301138199406572,
+        "draw": 0.21586238610084346,
+        "away": 0.05402379395849929
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Colombia",
-          "p": 0.7908851496420743
+          "p": 0.7301138199406572
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.1505943632747294
+          "p": 0.21586238610084346
         },
         {
           "key": "b",
           "label": "Ghana",
-          "p": 0.05852048708319625
+          "p": 0.05402379395849929
         }
       ],
       "headline": "Colombia is clearly the stronger side here with about a 79% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -190,25 +190,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.6375312155973548,
-        "draw": 0.23873435841258034,
-        "away": 0.12373442599006489
+        "home": 0.58854354688775,
+        "draw": 0.29722973579601825,
+        "away": 0.11422671731623167
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Colombia",
-          "p": 0.6375312155973548
+          "p": 0.58854354688775
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.23873435841258034
+          "p": 0.29722973579601825
         },
         {
           "key": "b",
           "label": "Ghana",
-          "p": 0.12373442599006489
+          "p": 0.11422671731623167
         }
       ],
       "headline": "Colombia is the clear favourite — its game style matches up well against Ghana.",
@@ -236,25 +236,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.7285000204451081,
-        "draw": 0.21660558689065937,
-        "away": 0.05489439266423258
+        "home": 0.6725223415748011,
+        "draw": 0.2768013310980977,
+        "away": 0.050676327327101284
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Colombia",
-          "p": 0.7285000204451081
+          "p": 0.6725223415748011
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.21660558689065937
+          "p": 0.2768013310980977
         },
         {
           "key": "b",
           "label": "Ghana",
-          "p": 0.05489439266423258
+          "p": 0.050676327327101284
         }
       ],
       "headline": "Colombia are clear favourites to beat Ghana, mostly on cleaner attacking play.",
@@ -287,25 +287,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.6322182283049156,
-        "draw": 0.31407727755455567,
-        "away": 0.05370449414052868
+        "home": 0.5836388076229725,
+        "draw": 0.36678333220015186,
+        "away": 0.04957786017687552
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Colombia",
-          "p": 0.6322182283049156
+          "p": 0.5836388076229725
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.31407727755455567
+          "p": 0.36678333220015186
         },
         {
           "key": "b",
           "label": "Ghana",
-          "p": 0.05370449414052868
+          "p": 0.04957786017687552
         }
       ],
       "headline": "Colombia is the clear favourite (63%) — its passing play is the harder one to break down.",
@@ -333,25 +333,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.49852339027628256,
-        "draw": 0.27277879477452566,
-        "away": 0.22869781494919178
+        "home": 0.4602170327374427,
+        "draw": 0.3286582099445031,
+        "away": 0.21112475731805425
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Colombia",
-          "p": 0.49852339027628256
+          "p": 0.4602170327374427
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.27277879477452566
+          "p": 0.3286582099445031
         },
         {
           "key": "b",
           "label": "Ghana",
-          "p": 0.22869781494919178
+          "p": 0.21112475731805425
         }
       ],
       "headline": "Pulling every angle together, Colombia is narrowly the side to back here, at about a 50% chance to win.",
@@ -374,28 +374,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.6523161181179938,
-        "draw": 0.22860708208267266,
-        "away": 0.11907679979933344
+        "home": 0.6021923828302119,
+        "draw": 0.28788063572735495,
+        "away": 0.10992698144243311
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Colombia",
-          "p": 0.6523161181179938
+          "p": 0.6021923828302119
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.22860708208267266
+          "p": 0.28788063572735495
         },
         {
           "key": "b",
           "label": "Ghana",
-          "p": 0.11907679979933344
+          "p": 0.10992698144243311
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Colombia is the call here at about 65%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Colombia is the call here at about 60%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -404,11 +404,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by -5 points.",
+          "contributionPp": -5
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

@@ -24,6 +24,7 @@ export {
   type CalibrationSample,
   type MCBoostModel,
 } from "./calibration/mcboost.js";
+export { calibrateKnockoutDraw, knockoutEvenness, KNOCKOUT_DRAW_K } from "./calibration/knockout-draw.js";
 
 // Base model factories (for direct use / testing).
 export { createDixonColesBayes } from "./models/dixon-coles-bayesian.js";

@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.519861728111965,
-        "draw": 0.31317566048947615,
-        "away": 0.166962611398559
+        "home": 0.4428657635166988,
+        "draw": 0.41490021467079435,
+        "away": 0.14223402181250683
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Brazil",
-          "p": 0.519861728111965
+          "p": 0.4428657635166988
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.31317566048947615
+          "p": 0.41490021467079435
         },
         {
           "key": "b",
           "label": "Japan",
-          "p": 0.166962611398559
+          "p": 0.14223402181250683
         }
       ],
       "headline": "Brazil are a slight favourite to beat Japan (52% to win), though a tight low-scoring draw is very much in play (31.3%).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4574625282829638,
-        "draw": 0.2542206374365978,
-        "away": 0.28831683428043836
+        "home": 0.38970841843675885,
+        "draw": 0.36467693435300513,
+        "away": 0.24561464721023593
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Brazil",
-          "p": 0.4574625282829638
+          "p": 0.38970841843675885
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2542206374365978
+          "p": 0.36467693435300513
         },
         {
           "key": "b",
           "label": "Japan",
-          "p": 0.28831683428043836
+          "p": 0.24561464721023593
         }
       ],
       "headline": "Brazil are favoured to beat Japan, winning roughly 46 times out of 100 to Japan's 29.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.555665967272923,
-        "draw": 0.17549030811517566,
-        "away": 0.2688437246119015
+        "home": 0.4733670888801559,
+        "draw": 0.2976072396219029,
+        "away": 0.22902567149794106
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Brazil",
-          "p": 0.555665967272923
+          "p": 0.4733670888801559
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.17549030811517566
+          "p": 0.2976072396219029
         },
         {
           "key": "b",
           "label": "Japan",
-          "p": 0.2688437246119015
+          "p": 0.22902567149794106
         }
       ],
       "headline": "Brazil is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.46577656505868087,
-        "draw": 0.2532379542784191,
-        "away": 0.2809854806629
+        "home": 0.39679107531545654,
+        "draw": 0.36383979496841845,
+        "away": 0.23936912971612503
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Brazil",
-          "p": 0.46577656505868087
+          "p": 0.39679107531545654
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2532379542784191
+          "p": 0.36383979496841845
         },
         {
           "key": "b",
           "label": "Japan",
-          "p": 0.2809854806629
+          "p": 0.23936912971612503
         }
       ],
       "headline": "Brazil is a slight favourite here with about a 47% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -190,25 +190,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.532198382901802,
-        "draw": 0.27340263440979734,
-        "away": 0.1943989826884007
+        "home": 0.45337525430492326,
+        "draw": 0.38101791364794835,
+        "away": 0.16560683204712837
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Brazil",
-          "p": 0.532198382901802
+          "p": 0.45337525430492326
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.27340263440979734
+          "p": 0.38101791364794835
         },
         {
           "key": "b",
           "label": "Japan",
-          "p": 0.1943989826884007
+          "p": 0.16560683204712837
         }
       ],
       "headline": "Brazil is the slight favourite — its game style matches up well against Japan.",
@@ -236,25 +236,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.9224040837667004,
-        "draw": 0.07034328527020049,
-        "away": 0.007252630963099214
+        "home": 0.7857881562311892,
+        "draw": 0.2080333894312642,
+        "away": 0.00617845433754649
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Brazil",
-          "p": 0.9224040837667004
+          "p": 0.7857881562311892
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.07034328527020049
+          "p": 0.2080333894312642
         },
         {
           "key": "b",
           "label": "Japan",
-          "p": 0.007252630963099214
+          "p": 0.00617845433754649
         }
       ],
       "headline": "Brazil are clear favourites to beat Japan, mostly on cleaner attacking play.",
@@ -282,25 +282,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.8142337966957813,
-        "draw": 0.11556479354049237,
-        "away": 0.07020140976372628
+        "home": 0.6936388130828406,
+        "draw": 0.24655720587036586,
+        "away": 0.05980398104679352
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Brazil",
-          "p": 0.8142337966957813
+          "p": 0.6936388130828406
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.11556479354049237
+          "p": 0.24655720587036586
         },
         {
           "key": "b",
           "label": "Japan",
-          "p": 0.07020140976372628
+          "p": 0.05980398104679352
         }
       ],
       "headline": "Brazil is the clear favourite (81%) — its passing play is the harder one to break down.",
@@ -328,25 +328,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.504254619872516,
-        "draw": 0.259073420034144,
-        "away": 0.23667196009334
+        "home": 0.4295702013835643,
+        "draw": 0.3688109783766883,
+        "away": 0.2016188202397474
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Brazil",
-          "p": 0.504254619872516
+          "p": 0.4295702013835643
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.259073420034144
+          "p": 0.3688109783766883
         },
         {
           "key": "b",
           "label": "Japan",
-          "p": 0.23667196009334
+          "p": 0.2016188202397474
         }
       ],
       "headline": "Pulling every angle together, Brazil is narrowly the side to back here, at about a 50% chance to win.",
@@ -369,28 +369,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.5964822089954166,
-        "draw": 0.21431358669678785,
-        "away": 0.1892042043077956
+        "home": 0.5081380963939485,
+        "draw": 0.33068045886754843,
+        "away": 0.16118144473850304
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Brazil",
-          "p": 0.5964822089954166
+          "p": 0.5081380963939485
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.21431358669678785
+          "p": 0.33068045886754843
         },
         {
           "key": "b",
           "label": "Japan",
-          "p": 0.1892042043077956
+          "p": 0.16118144473850304
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Brazil is the call here at about 60%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Brazil is the call here at about 51%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -399,11 +399,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by -8.8 points.",
+          "contributionPp": -8.8
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }
