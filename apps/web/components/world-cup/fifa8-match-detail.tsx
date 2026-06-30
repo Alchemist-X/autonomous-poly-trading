@@ -23,12 +23,21 @@ const TIER_LABEL_KEY: Record<Tier, StrKey> = {
   low: "tierLow"
 };
 
-// The published (multi-calibrated) headline emits a small fixed driver set; map
-// those to i18n keys. Other models emit free-form generated labels, which we
-// render as-is (they are content, like the archived report prose).
+// The top driver shown per model comes from a small fixed vocabulary (one
+// characteristic driver per base model + the published blend's consensus/bias).
+// Map each to an i18n key so the label localizes; anything unmapped falls back
+// to the raw English label (graceful, but every label the archive emits as the
+// displayed top driver is covered here).
 const DRIVER_KEY: Record<string, StrKey> = {
   "Consensus of all models": "knDriverConsensus",
-  "Bias correction": "knDriverBias"
+  "Bias correction": "knDriverBias",
+  "Attack vs defence": "knDriverAttackDefence",
+  "Chance-creation form": "knDriverChanceForm",
+  "Physical load": "knDriverPhysicalLoad",
+  "Overall quality": "knDriverOverallQuality",
+  "Breaking through the defence": "knDriverLineBreaks",
+  "Passing structure": "knDriverPassingStructure",
+  "Model agreement": "knDriverModelAgreement"
 };
 
 // One evidence dimension. `better` says which direction wins the read: for
@@ -184,7 +193,11 @@ function ModelRow({
         </span>
       </div>
       <Splits a={row.a} draw={row.draw} b={row.b} />
-      <p className={styles.modelReason}>{row.headline}</p>
+      {/* The per-model rationale prose is generated in English only. Show it on
+          the English locale; on zh the localized group header + driver line below
+          already carry the verdict and the reason, so English here would just
+          leak untranslated text. (Bilingual prose is a follow-up.) */}
+      {locale === "en" ? <p className={styles.modelReason}>{row.headline}</p> : null}
       {topDriver ? (
         <p className={styles.modelDriver}>
           <span className={styles.modelDriverLabel}>
@@ -348,7 +361,9 @@ export function Fifa8MatchDetail({
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>{t(locale, "kndMethodTitle")}</h2>
-        <p className={styles.methodNote}>{headline.methodNote}</p>
+        {/* Method note is English-only generated prose; the localized disclaimers
+            below plus the methodology page carry it on zh. */}
+        {locale === "en" ? <p className={styles.methodNote}>{headline.methodNote}</p> : null}
         <p className={styles.disclaimer}>{t(locale, "kndPredictedAt").replace("{date}", getFifa8GeneratedAt().slice(0, 10))}</p>
         <p className={styles.disclaimer}>{t(locale, "knMarketBlindNote")}</p>
       </section>
