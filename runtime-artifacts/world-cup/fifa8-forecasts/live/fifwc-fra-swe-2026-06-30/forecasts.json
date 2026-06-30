@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.7295140876877547,
-        "draw": 0.18998960799793574,
-        "away": 0.0804963043143096
+        "home": 0.6858927096335931,
+        "draw": 0.23842427174694508,
+        "away": 0.07568301861946189
       },
       "outcomes": [
         {
           "key": "a",
           "label": "France",
-          "p": 0.7295140876877547
+          "p": 0.6858927096335931
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.18998960799793574
+          "p": 0.23842427174694508
         },
         {
           "key": "b",
           "label": "Sweden",
-          "p": 0.0804963043143096
+          "p": 0.07568301861946189
         }
       ],
       "headline": "France are a clear favourite to beat Sweden (73% to win).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.7113166470344101,
-        "draw": 0.18765298871576191,
-        "away": 0.101030364249828
+        "home": 0.6687833870190292,
+        "draw": 0.23622737088117554,
+        "away": 0.09498924209979528
       },
       "outcomes": [
         {
           "key": "a",
           "label": "France",
-          "p": 0.7113166470344101
+          "p": 0.6687833870190292
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.18765298871576191
+          "p": 0.23622737088117554
         },
         {
           "key": "b",
           "label": "Sweden",
-          "p": 0.101030364249828
+          "p": 0.09498924209979528
         }
       ],
       "headline": "France are the clear favourite to beat Sweden, winning roughly 71 times out of 100 to Sweden's 10.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.40742027952578164,
-        "draw": 0.20101522198874416,
-        "away": 0.39156449848547425
+        "home": 0.38305853745654117,
+        "draw": 0.24879060789200727,
+        "away": 0.3681508546514516
       },
       "outcomes": [
         {
           "key": "a",
           "label": "France",
-          "p": 0.40742027952578164
+          "p": 0.38305853745654117
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.20101522198874416
+          "p": 0.24879060789200727
         },
         {
           "key": "b",
           "label": "Sweden",
-          "p": 0.39156449848547425
+          "p": 0.3681508546514516
         }
       ],
       "headline": "France and Sweden look evenly matched, with no side meaningfully on top.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.7234755609811426,
-        "draw": 0.1825357146092227,
-        "away": 0.09398872440963464
+        "home": 0.6802152573199295,
+        "draw": 0.23141608476332018,
+        "away": 0.08836865791675023
       },
       "outcomes": [
         {
           "key": "a",
           "label": "France",
-          "p": 0.7234755609811426
+          "p": 0.6802152573199295
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.1825357146092227
+          "p": 0.23141608476332018
         },
         {
           "key": "b",
           "label": "Sweden",
-          "p": 0.09398872440963464
+          "p": 0.08836865791675023
         }
       ],
       "headline": "France is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -195,25 +195,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.8488194173079926,
-        "draw": 0.12549876549520358,
-        "away": 0.025681817196803968
+        "home": 0.798064163465721,
+        "draw": 0.17778966652505782,
+        "away": 0.02414617000922127
       },
       "outcomes": [
         {
           "key": "a",
           "label": "France",
-          "p": 0.8488194173079926
+          "p": 0.798064163465721
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.12549876549520358
+          "p": 0.17778966652505782
         },
         {
           "key": "b",
           "label": "Sweden",
-          "p": 0.025681817196803968
+          "p": 0.02414617000922127
         }
       ],
       "headline": "France is the clear favourite — its game style matches up well against Sweden.",
@@ -241,25 +241,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.9410207994405135,
-        "draw": 0.05090921340391375,
-        "away": 0.008069987155572743
+        "home": 0.8847523534406144,
+        "draw": 0.10766020520593877,
+        "away": 0.007587441353446794
       },
       "outcomes": [
         {
           "key": "a",
           "label": "France",
-          "p": 0.9410207994405135
+          "p": 0.8847523534406144
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.05090921340391375
+          "p": 0.10766020520593877
         },
         {
           "key": "b",
           "label": "Sweden",
-          "p": 0.008069987155572743
+          "p": 0.007587441353446794
         }
       ],
       "headline": "France are clear favourites to beat Sweden, mostly on cleaner attacking play.",
@@ -287,25 +287,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.873965301985898,
-        "draw": 0.06871712581618153,
-        "away": 0.05731757219792048
+        "home": 0.8217064471021196,
+        "draw": 0.12440329146501591,
+        "away": 0.053890261432864565
       },
       "outcomes": [
         {
           "key": "a",
           "label": "France",
-          "p": 0.873965301985898
+          "p": 0.8217064471021196
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.06871712581618153
+          "p": 0.12440329146501591
         },
         {
           "key": "b",
           "label": "Sweden",
-          "p": 0.05731757219792048
+          "p": 0.053890261432864565
         }
       ],
       "headline": "France is the clear favourite (87%) — its passing play is the harder one to break down.",
@@ -333,25 +333,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.5195720254886658,
-        "draw": 0.25745967817385085,
-        "away": 0.2229682963374834
+        "home": 0.4885041569817749,
+        "draw": 0.30185996138359894,
+        "away": 0.20963588163462615
       },
       "outcomes": [
         {
           "key": "a",
           "label": "France",
-          "p": 0.5195720254886658
+          "p": 0.4885041569817749
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.25745967817385085
+          "p": 0.30185996138359894
         },
         {
           "key": "b",
           "label": "Sweden",
-          "p": 0.2229682963374834
+          "p": 0.20963588163462615
         }
       ],
       "headline": "Pulling every angle together, France is narrowly the side to back here, at about a 52% chance to win.",
@@ -374,28 +374,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.7193880149315198,
-        "draw": 0.15797228952510178,
-        "away": 0.12263969554337838
+        "home": 0.6763721265524154,
+        "draw": 0.20832143248288243,
+        "away": 0.11530644096470223
       },
       "outcomes": [
         {
           "key": "a",
           "label": "France",
-          "p": 0.7193880149315198
+          "p": 0.6763721265524154
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.15797228952510178
+          "p": 0.20832143248288243
         },
         {
           "key": "b",
           "label": "Sweden",
-          "p": 0.12263969554337838
+          "p": 0.11530644096470223
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, France is the call here at about 72%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, France is the call here at about 68%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -404,11 +404,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by -4.3 points.",
+          "contributionPp": -4.3
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

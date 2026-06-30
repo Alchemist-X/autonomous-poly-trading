@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.621862963287914,
-        "draw": 0.22824381763204332,
-        "away": 0.14989321908004272
+        "home": 0.5535085938638294,
+        "draw": 0.31307425505829767,
+        "away": 0.13341715107787291
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Switzerland",
-          "p": 0.621862963287914
+          "p": 0.5535085938638294
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.22824381763204332
+          "p": 0.31307425505829767
         },
         {
           "key": "b",
           "label": "Algeria",
-          "p": 0.14989321908004272
+          "p": 0.13341715107787291
         }
       ],
       "headline": "Switzerland are a clear favourite to beat Algeria (62.2% to win).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4854892356540272,
-        "draw": 0.2505746967646241,
-        "away": 0.2639360675813487
+        "home": 0.4321248892876598,
+        "draw": 0.3329505529536835,
+        "away": 0.2349245577586567
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Switzerland",
-          "p": 0.4854892356540272
+          "p": 0.4321248892876598
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2505746967646241
+          "p": 0.3329505529536835
         },
         {
           "key": "b",
           "label": "Algeria",
-          "p": 0.2639360675813487
+          "p": 0.2349245577586567
         }
       ],
       "headline": "Switzerland are favoured to beat Algeria, winning roughly 49 times out of 100 to Algeria's 26.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4616175326017593,
-        "draw": 0.2083204016005722,
-        "away": 0.33006206579766856
+        "home": 0.41087713283705063,
+        "draw": 0.29534079504608285,
+        "away": 0.29378207211686647
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Switzerland",
-          "p": 0.4616175326017593
+          "p": 0.41087713283705063
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2083204016005722
+          "p": 0.29534079504608285
         },
         {
           "key": "b",
           "label": "Algeria",
-          "p": 0.33006206579766856
+          "p": 0.29378207211686647
         }
       ],
       "headline": "Switzerland is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.49369247037349373,
-        "draw": 0.24932974087706777,
-        "away": 0.25697778874943855
+        "home": 0.4394264350988141,
+        "draw": 0.33184244100068916,
+        "away": 0.22873112390049677
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Switzerland",
-          "p": 0.49369247037349373
+          "p": 0.4394264350988141
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.24932974087706777
+          "p": 0.33184244100068916
         },
         {
           "key": "b",
           "label": "Algeria",
-          "p": 0.25697778874943855
+          "p": 0.22873112390049677
         }
       ],
       "headline": "Switzerland is clearly the stronger side here with about a 49% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -190,25 +190,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.3794208514091583,
-        "draw": 0.2975689629911313,
-        "away": 0.32301018559971034
+        "home": 0.3377154041072345,
+        "draw": 0.3747792704594941,
+        "away": 0.28750532543327145
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Switzerland",
-          "p": 0.3794208514091583
+          "p": 0.3377154041072345
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2975689629911313
+          "p": 0.3747792704594941
         },
         {
           "key": "b",
           "label": "Algeria",
-          "p": 0.32301018559971034
+          "p": 0.28750532543327145
         }
       ],
       "headline": "Switzerland and Algeria look evenly matched, with Switzerland a hair ahead on the day.",
@@ -236,25 +236,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.7010752980866725,
-        "draw": 0.29586139731963507,
-        "away": 0.003063304593692552
+        "home": 0.6240140116801854,
+        "draw": 0.3732593981893032,
+        "away": 0.0027265901305113588
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Switzerland",
-          "p": 0.7010752980866725
+          "p": 0.6240140116801854
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.29586139731963507
+          "p": 0.3732593981893032
         },
         {
           "key": "b",
           "label": "Algeria",
-          "p": 0.003063304593692552
+          "p": 0.0027265901305113588
         }
       ],
       "headline": "Switzerland are clear favourites to beat Algeria, mostly on cleaner attacking play.",
@@ -282,25 +282,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.8023065326431799,
-        "draw": 0.14851929326417898,
-        "away": 0.0491741740926412
+        "home": 0.7141180403848659,
+        "draw": 0.24211294688518425,
+        "away": 0.04376901272994974
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Switzerland",
-          "p": 0.8023065326431799
+          "p": 0.7141180403848659
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.14851929326417898
+          "p": 0.24211294688518425
         },
         {
           "key": "b",
           "label": "Algeria",
-          "p": 0.0491741740926412
+          "p": 0.04376901272994974
         }
       ],
       "headline": "Switzerland is the clear favourite (80%) — its passing play is the harder one to break down.",
@@ -328,25 +328,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.49058827557695855,
-        "draw": 0.2700091817884498,
-        "away": 0.23940254263459176
+        "home": 0.4366634493634599,
+        "draw": 0.35024882461972734,
+        "away": 0.21308772601681283
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Switzerland",
-          "p": 0.49058827557695855
+          "p": 0.4366634493634599
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2700091817884498
+          "p": 0.35024882461972734
         },
         {
           "key": "b",
           "label": "Algeria",
-          "p": 0.23940254263459176
+          "p": 0.21308772601681283
         }
       ],
       "headline": "Pulling every angle together, Switzerland is narrowly the side to back here, at about a 49% chance to win.",
@@ -369,28 +369,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.5545066449541455,
-        "draw": 0.24355343652971284,
-        "away": 0.2019399185161418
+        "home": 0.49355599457788746,
+        "draw": 0.3267010605265578,
+        "away": 0.17974294489555476
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Switzerland",
-          "p": 0.5545066449541455
+          "p": 0.49355599457788746
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.24355343652971284
+          "p": 0.3267010605265578
         },
         {
           "key": "b",
           "label": "Algeria",
-          "p": 0.2019399185161418
+          "p": 0.17974294489555476
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Switzerland is the call here at about 55%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Switzerland is the call here at about 49%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -399,11 +399,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by -6.1 points.",
+          "contributionPp": -6.1
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.34055438221938866,
-        "draw": 0.2955710976511631,
-        "away": 0.3638745201294482
+        "home": 0.3170909131708718,
+        "draw": 0.3441047434067327,
+        "away": 0.3388043434223955
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Côte d'Ivoire",
-          "p": 0.34055438221938866
+          "p": 0.3170909131708718
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2955710976511631
+          "p": 0.3441047434067327
         },
         {
           "key": "b",
           "label": "Norway",
-          "p": 0.3638745201294482
+          "p": 0.3388043434223955
         }
       ],
       "headline": "Norway are narrowly ahead to beat Côte d'Ivoire (36.4% to win), though a tight low-scoring draw is very much in play (29.6%).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.17255372572905706,
-        "draw": 0.22558420918892813,
-        "away": 0.6018620650820149
+        "home": 0.16066514283529243,
+        "draw": 0.27893980197255797,
+        "away": 0.5603950551921497
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Côte d'Ivoire",
-          "p": 0.17255372572905706
+          "p": 0.16066514283529243
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.22558420918892813
+          "p": 0.27893980197255797
         },
         {
           "key": "b",
           "label": "Norway",
-          "p": 0.6018620650820149
+          "p": 0.5603950551921497
         }
       ],
       "headline": "Norway are the clear favourite to beat Côte d'Ivoire, winning roughly 60 times out of 100 to Côte d'Ivoire's 17.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.3099273607763254,
-        "draw": 0.2311334144854312,
-        "away": 0.4589392247382434
+        "home": 0.28857402804434734,
+        "draw": 0.2841066788847665,
+        "away": 0.42731929307088623
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Côte d'Ivoire",
-          "p": 0.3099273607763254
+          "p": 0.28857402804434734
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2311334144854312
+          "p": 0.2841066788847665
         },
         {
           "key": "b",
           "label": "Norway",
-          "p": 0.4589392247382434
+          "p": 0.42731929307088623
         }
       ],
       "headline": "Norway is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.18188209764366534,
-        "draw": 0.2291142100877622,
-        "away": 0.5890036922685725
+        "home": 0.1693508098630481,
+        "draw": 0.2822265933543356,
+        "away": 0.5484225967826163
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Côte d'Ivoire",
-          "p": 0.18188209764366534
+          "p": 0.1693508098630481
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2291142100877622
+          "p": 0.2822265933543356
         },
         {
           "key": "b",
           "label": "Norway",
-          "p": 0.5890036922685725
+          "p": 0.5484225967826163
         }
       ],
       "headline": "Norway is clearly the stronger side here with about a 59% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -195,25 +195,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.18425332488157498,
-        "draw": 0.26963054747154563,
-        "away": 0.5461161276468793
+        "home": 0.17155866461242567,
+        "draw": 0.31995144169026635,
+        "away": 0.508489893697308
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Côte d'Ivoire",
-          "p": 0.18425332488157498
+          "p": 0.17155866461242567
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.26963054747154563
+          "p": 0.31995144169026635
         },
         {
           "key": "b",
           "label": "Norway",
-          "p": 0.5461161276468793
+          "p": 0.508489893697308
         }
       ],
       "headline": "Norway is the slight favourite — its game style matches up well against Côte d'Ivoire.",
@@ -241,25 +241,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.345729976683314,
-        "draw": 0.3710286700531077,
-        "away": 0.28324135326357824
+        "home": 0.3219099202383274,
+        "draw": 0.41436345034997746,
+        "away": 0.2637266294116952
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Côte d'Ivoire",
-          "p": 0.345729976683314
+          "p": 0.3219099202383274
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.3710286700531077
+          "p": 0.41436345034997746
         },
         {
           "key": "b",
           "label": "Norway",
-          "p": 0.28324135326357824
+          "p": 0.2637266294116952
         }
       ],
       "headline": "Côte d'Ivoire are narrow favourites to beat Norway, mostly on cleaner attacking play.",
@@ -287,25 +287,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.538083292205029,
-        "draw": 0.06882092665548467,
-        "away": 0.3930957811394863
+        "home": 0.5010105034483616,
+        "draw": 0.13297717454652058,
+        "away": 0.3660123220051178
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Côte d'Ivoire",
-          "p": 0.538083292205029
+          "p": 0.5010105034483616
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.06882092665548467
+          "p": 0.13297717454652058
         },
         {
           "key": "b",
           "label": "Norway",
-          "p": 0.3930957811394863
+          "p": 0.3660123220051178
         }
       ],
       "headline": "Côte d'Ivoire is the slight edge (54%) — its passing play is the harder one to break down.",
@@ -333,25 +333,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.45918461973872665,
-        "draw": 0.2769162025186356,
-        "away": 0.2638991777426378
+        "home": 0.42754778088033296,
+        "draw": 0.3267351306766598,
+        "away": 0.24571708844300727
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Côte d'Ivoire",
-          "p": 0.45918461973872665
+          "p": 0.42754778088033296
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2769162025186356
+          "p": 0.3267351306766598
         },
         {
           "key": "b",
           "label": "Norway",
-          "p": 0.2638991777426378
+          "p": 0.24571708844300727
         }
       ],
       "headline": "Pulling every angle together, Côte d'Ivoire is narrowly the side to back here, at about a 46% chance to win.",
@@ -374,28 +374,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.31652109748463514,
-        "draw": 0.2459749097640073,
-        "away": 0.4375039927513576
+        "home": 0.2947134703866259,
+        "draw": 0.29792562686022717,
+        "away": 0.40736090275314696
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Côte d'Ivoire",
-          "p": 0.31652109748463514
+          "p": 0.2947134703866259
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2459749097640073
+          "p": 0.29792562686022717
         },
         {
           "key": "b",
           "label": "Norway",
-          "p": 0.4375039927513576
+          "p": 0.40736090275314696
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Norway is the call here at about 44%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Norway is the call here at about 41%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -404,11 +404,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by -2.2 points.",
+          "contributionPp": -2.2
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

@@ -9,9 +9,9 @@
       "teamB": "Japan",
       "prediction": {
         "probs": {
-          "home": 0.8142337966957813,
-          "draw": 0.11556479354049237,
-          "away": 0.07020140976372628
+          "home": 0.6936388130828406,
+          "draw": 0.24655720587036586,
+          "away": 0.05980398104679352
         },
         "rationale": {
           "headline": "Brazil is the clear favourite (81%) — its passing play is the harder one to break down.",
@@ -42,9 +42,9 @@
       "teamB": "Paraguay",
       "prediction": {
         "probs": {
-          "home": 0.6952126479683852,
-          "draw": 0.25001945487868565,
-          "away": 0.05476789715292927
+          "home": 0.59669177331841,
+          "draw": 0.3563016686613917,
+          "away": 0.04700655802019839
         },
         "rationale": {
           "headline": "Germany is the clear favourite (70%) — its passing play is the harder one to break down.",
@@ -75,9 +75,9 @@
       "teamB": "Morocco",
       "prediction": {
         "probs": {
-          "home": 0.6431248395674724,
-          "draw": 0.21646581296555187,
-          "away": 0.14040934746697584
+          "home": 0.5693420051646986,
+          "draw": 0.3063571833715761,
+          "away": 0.12430081146372522
         },
         "rationale": {
           "headline": "Netherlands is the clear favourite (64%) — its passing play is the harder one to break down.",
@@ -108,9 +108,9 @@
       "teamB": "Norway",
       "prediction": {
         "probs": {
-          "home": 0.538083292205029,
-          "draw": 0.06882092665548467,
-          "away": 0.3930957811394863
+          "home": 0.5010105034483616,
+          "draw": 0.13297717454652058,
+          "away": 0.3660123220051178
         },
         "rationale": {
           "headline": "Côte d'Ivoire is the slight edge (54%) — its passing play is the harder one to break down.",
@@ -141,9 +141,9 @@
       "teamB": "Sweden",
       "prediction": {
         "probs": {
-          "home": 0.873965301985898,
-          "draw": 0.06871712581618153,
-          "away": 0.05731757219792048
+          "home": 0.8217064471021196,
+          "draw": 0.12440329146501591,
+          "away": 0.053890261432864565
         },
         "rationale": {
           "headline": "France is the clear favourite (87%) — its passing play is the harder one to break down.",
@@ -174,9 +174,9 @@
       "teamB": "Ecuador",
       "prediction": {
         "probs": {
-          "home": 0.3896613143406633,
-          "draw": 0.1499020192413089,
-          "away": 0.4604366664180279
+          "home": 0.3299248972259297,
+          "draw": 0.28022495790131063,
+          "away": 0.38985014487275965
         },
         "rationale": {
           "headline": "Ecuador is the slight edge (46%) — its passing play is the harder one to break down.",
@@ -207,9 +207,9 @@
       "teamB": "Senegal",
       "prediction": {
         "probs": {
-          "home": 0.6939563584632111,
-          "draw": 0.17793298523504086,
-          "away": 0.12811065630174803
+          "home": 0.5798353938764118,
+          "draw": 0.31312171797858723,
+          "away": 0.10704288814500094
         },
         "rationale": {
           "headline": "Belgium is the clear favourite (69%) — its passing play is the harder one to break down.",
@@ -240,9 +240,9 @@
       "teamB": "DR Congo",
       "prediction": {
         "probs": {
-          "home": 0.7104967122901328,
-          "draw": 0.23473539055693796,
-          "away": 0.05476789715292926
+          "home": 0.6670801288838211,
+          "draw": 0.2814986959587168,
+          "away": 0.05142117515746215
         },
         "rationale": {
           "headline": "England is the clear favourite (71%) — its passing play is the harder one to break down.",
@@ -273,9 +273,9 @@
       "teamB": "Bosnia-Herzegovina",
       "prediction": {
         "probs": {
-          "home": 0.5789460551613996,
-          "draw": 0.10209478948282237,
-          "away": 0.31895915535577807
+          "home": 0.5046651890193434,
+          "draw": 0.21729926519530884,
+          "away": 0.27803554578534784
         },
         "rationale": {
           "headline": "United States is the clear favourite (58%) — its passing play is the harder one to break down.",
@@ -306,9 +306,9 @@
       "teamB": "Algeria",
       "prediction": {
         "probs": {
-          "home": 0.8023065326431799,
-          "draw": 0.14851929326417898,
-          "away": 0.0491741740926412
+          "home": 0.7141180403848659,
+          "draw": 0.24211294688518425,
+          "away": 0.04376901272994974
         },
         "rationale": {
           "headline": "Switzerland is the clear favourite (80%) — its passing play is the harder one to break down.",
@@ -339,9 +339,9 @@
       "teamB": "Austria",
       "prediction": {
         "probs": {
-          "home": 0.39746603548584325,
-          "draw": 0.5610803472879745,
-          "away": 0.041453617226182286
+          "home": 0.37819553620371993,
+          "draw": 0.5823606583016137,
+          "away": 0.03944380549466639
         },
         "rationale": {
           "headline": "Spain and Austria look evenly matched on how they build play, with a 40% lean to Spain.",
@@ -372,9 +372,9 @@
       "teamB": "Croatia",
       "prediction": {
         "probs": {
-          "home": 0.681437124039241,
-          "draw": 0.2323956835751438,
-          "away": 0.08616719238561514
+          "home": 0.5787345211417277,
+          "draw": 0.34808495043648296,
+          "away": 0.0731805284217894
         },
         "rationale": {
           "headline": "Portugal is the clear favourite (68%) — its passing play is the harder one to break down.",
@@ -405,9 +405,9 @@
       "teamB": "Cabo Verde",
       "prediction": {
         "probs": {
-          "home": 0.5597665430270355,
-          "draw": 0.31055084217943485,
-          "away": 0.12968261479352958
+          "home": 0.517502915480484,
+          "draw": 0.362605797555724,
+          "away": 0.11989128696379193
         },
         "rationale": {
           "headline": "Argentina is the clear favourite (56%) — its passing play is the harder one to break down.",
@@ -438,9 +438,9 @@
       "teamB": "Egypt",
       "prediction": {
         "probs": {
-          "home": 0.18355523399795223,
-          "draw": 0.23649020416641592,
-          "away": 0.5799545618356319
+          "home": 0.15165908631604197,
+          "draw": 0.3691642809228696,
+          "away": 0.4791766327610883
         },
         "rationale": {
           "headline": "Egypt is the clear favourite (58%) — its passing play is the harder one to break down.",
@@ -471,9 +471,9 @@
       "teamB": "Ghana",
       "prediction": {
         "probs": {
-          "home": 0.6322182283049156,
-          "draw": 0.31407727755455567,
-          "away": 0.05370449414052868
+          "home": 0.5836388076229725,
+          "draw": 0.36678333220015186,
+          "away": 0.04957786017687552
         },
         "rationale": {
           "headline": "Colombia is the clear favourite (63%) — its passing play is the harder one to break down.",

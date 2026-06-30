@@ -1,0 +1,599 @@
+{
+  "generatedAt": "20260629T174925Z",
+  "matches": [
+    {
+      "matchId": "report_128068",
+      "teamA": "Netherlands",
+      "teamB": "USA",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128069",
+      "teamA": "Argentina",
+      "teamB": "Australia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128071",
+      "teamA": "France",
+      "teamB": "Poland",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128070",
+      "teamA": "England",
+      "teamB": "Senegal",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128072b",
+      "teamA": "Japan",
+      "teamB": "Croatia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128073",
+      "teamA": "Brazil",
+      "teamB": "Korea Republic",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128074",
+      "teamA": "Morocco",
+      "teamB": "Spain",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128075",
+      "teamA": "Portugal",
+      "teamB": "Switzerland",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128077b",
+      "teamA": "Croatia",
+      "teamB": "Brazil",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)",
+        "manifest score 0-0 != page-1 1-1; using page-1"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_M57_NED_v_ARG",
+      "teamA": "Netherlands",
+      "teamB": "Argentina",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128079",
+      "teamA": "Morocco",
+      "teamB": "Portugal",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128078",
+      "teamA": "England",
+      "teamB": "France",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128080",
+      "teamA": "Argentina",
+      "teamB": "Croatia",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128081",
+      "teamA": "France",
+      "teamB": "Morocco",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128082",
+      "teamA": "Croatia",
+      "teamB": "Morocco",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    },
+    {
+      "matchId": "report_128083",
+      "teamA": "Argentina",
+      "teamB": "France",
+      "tabularFieldsPresent": [
+        "attemptsAtGoal",
+        "attemptsOffTarget",
+        "attemptsOnTarget",
+        "ballProgressions",
+        "crosses",
+        "forcedTurnovers",
+        "highIntensityDistanceKm",
+        "lineBreaksAttempted",
+        "lineBreaksCompleted",
+        "passesCompleted",
+        "phaseCounterAttackPct",
+        "phaseHighPressPct",
+        "phaseLowBlockPct",
+        "possessionPct",
+        "teamTotalDistanceKm",
+        "totalPasses"
+      ],
+      "nullFields": [
+        "offerConversionPct",
+        "movementInBehind",
+        "ballRecoveryTimeSec",
+        "passNetwork"
+      ],
+      "parseWarnings": [
+        "label not found: xg (expected goals)",
+        "zone5 distance absent (page-3 has only zone 4)",
+        "manifest score 2-2 != page-1 3-3; using page-1"
+      ],
+      "xgReal": {
+        "A": null,
+        "B": null
+      }
+    }
+  ]
+}

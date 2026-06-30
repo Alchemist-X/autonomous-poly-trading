@@ -9,9 +9,9 @@
       "teamB": "Japan",
       "prediction": {
         "probs": {
-          "home": 0.4574625282829638,
-          "draw": 0.2542206374365978,
-          "away": 0.28831683428043836
+          "home": 0.38970841843675885,
+          "draw": 0.36467693435300513,
+          "away": 0.24561464721023593
         },
         "rationale": {
           "headline": "Brazil are favoured to beat Japan, winning roughly 46 times out of 100 to Japan's 29.",
@@ -42,9 +42,9 @@
       "teamB": "Paraguay",
       "prediction": {
         "probs": {
-          "home": 0.5044500438324093,
-          "draw": 0.24757661430968952,
-          "away": 0.24797334185790126
+          "home": 0.4329627662622702,
+          "draw": 0.35420501107711433,
+          "away": 0.21283222266061538
         },
         "rationale": {
           "headline": "Germany are favoured to beat Paraguay, winning roughly 50 times out of 100 to Paraguay's 25.",
@@ -75,9 +75,9 @@
       "teamB": "Morocco",
       "prediction": {
         "probs": {
-          "home": 0.49433179414873063,
-          "draw": 0.24922936640753773,
-          "away": 0.2564388394437317
+          "home": 0.437619319892206,
+          "draw": 0.3353619209673535,
+          "away": 0.22701875914044045
         },
         "rationale": {
           "headline": "Netherlands are favoured to beat Morocco, winning roughly 49 times out of 100 to Morocco's 26.",
@@ -108,9 +108,9 @@
       "teamB": "Norway",
       "prediction": {
         "probs": {
-          "home": 0.17255372572905706,
-          "draw": 0.22558420918892813,
-          "away": 0.6018620650820149
+          "home": 0.16066514283529243,
+          "draw": 0.27893980197255797,
+          "away": 0.5603950551921497
         },
         "rationale": {
           "headline": "Norway are the clear favourite to beat Côte d'Ivoire, winning roughly 60 times out of 100 to Côte d'Ivoire's 17.",
@@ -141,9 +141,9 @@
       "teamB": "Sweden",
       "prediction": {
         "probs": {
-          "home": 0.7113166470344101,
-          "draw": 0.18765298871576191,
-          "away": 0.101030364249828
+          "home": 0.6687833870190292,
+          "draw": 0.23622737088117554,
+          "away": 0.09498924209979528
         },
         "rationale": {
           "headline": "France are the clear favourite to beat Sweden, winning roughly 71 times out of 100 to Sweden's 10.",
@@ -174,9 +174,9 @@
       "teamB": "Ecuador",
       "prediction": {
         "probs": {
-          "home": 0.3098310184347411,
-          "draw": 0.2565694255035939,
-          "away": 0.4335995560616649
+          "home": 0.2623328597232004,
+          "draw": 0.37053988461655,
+          "away": 0.3671272556602496
         },
         "rationale": {
           "headline": "Ecuador are a slight favourite to beat Mexico, winning roughly 43 times out of 100 to Mexico's 31.",
@@ -207,9 +207,9 @@
       "teamB": "Senegal",
       "prediction": {
         "probs": {
-          "home": 0.4032981755081785,
-          "draw": 0.25851662056241204,
-          "away": 0.33818520392940954
+          "home": 0.33697588269568374,
+          "draw": 0.38045339288897206,
+          "away": 0.28257072441534414
         },
         "rationale": {
           "headline": "Belgium are a slight favourite to beat Senegal, winning roughly 40 times out of 100 to Senegal's 34.",
@@ -240,9 +240,9 @@
       "teamB": "DR Congo",
       "prediction": {
         "probs": {
-          "home": 0.7258461931136365,
-          "draw": 0.18151590744739515,
-          "away": 0.09263789943896829
+          "home": 0.6814916433481714,
+          "draw": 0.23153131533930169,
+          "away": 0.0869770413125269
         },
         "rationale": {
           "headline": "England are the clear favourite to beat DR Congo, winning roughly 73 times out of 100 to DR Congo's 9.",
@@ -273,9 +273,9 @@
       "teamB": "Bosnia-Herzegovina",
       "prediction": {
         "probs": {
-          "home": 0.558707263862642,
-          "draw": 0.23667826315473328,
-          "away": 0.20461447298262478
+          "home": 0.48702310761080325,
+          "draw": 0.3346151939834927,
+          "away": 0.17836169840570404
         },
         "rationale": {
           "headline": "United States are the clear favourite to beat Bosnia-Herzegovina, winning roughly 56 times out of 100 to Bosnia-Herzegovina's 20.",
@@ -306,9 +306,9 @@
       "teamB": "Algeria",
       "prediction": {
         "probs": {
-          "home": 0.4854892356540272,
-          "draw": 0.2505746967646241,
-          "away": 0.2639360675813487
+          "home": 0.4321248892876598,
+          "draw": 0.3329505529536835,
+          "away": 0.2349245577586567
         },
         "rationale": {
           "headline": "Switzerland are favoured to beat Algeria, winning roughly 49 times out of 100 to Algeria's 26.",
@@ -339,9 +339,9 @@
       "teamB": "Austria",
       "prediction": {
         "probs": {
-          "home": 0.7063120249771766,
-          "draw": 0.18970469889045588,
-          "away": 0.10398327613236741
+          "home": 0.6720676263239931,
+          "draw": 0.2289905588740706,
+          "away": 0.0989418148019364
         },
         "rationale": {
           "headline": "Spain are the clear favourite to beat Austria, winning roughly 71 times out of 100 to Austria's 10.",
@@ -372,9 +372,9 @@
       "teamB": "Croatia",
       "prediction": {
         "probs": {
-          "home": 0.4661000065097742,
-          "draw": 0.25319802896441607,
-          "away": 0.28070196452580964
+          "home": 0.3958518762122163,
+          "draw": 0.3657520762398491,
+          "away": 0.23839604754793456
         },
         "rationale": {
           "headline": "Portugal are favoured to beat Croatia, winning roughly 47 times out of 100 to Croatia's 28.",
@@ -405,9 +405,9 @@
       "teamB": "Cabo Verde",
       "prediction": {
         "probs": {
-          "home": 0.8358675259964929,
-          "draw": 0.12560996000254837,
-          "away": 0.03852251400095861
+          "home": 0.7727576559318452,
+          "draw": 0.19162836614205522,
+          "away": 0.03561397792609946
         },
         "rationale": {
           "headline": "Argentina are the clear favourite to beat Cabo Verde, winning roughly 84 times out of 100 to Cabo Verde's 4.",
@@ -438,9 +438,9 @@
       "teamB": "Egypt",
       "prediction": {
         "probs": {
-          "home": 0.4499650941880131,
-          "draw": 0.2550344283407846,
-          "away": 0.2950004774712022
+          "home": 0.37177526116976406,
+          "draw": 0.3844861000476568,
+          "away": 0.2437386387825791
         },
         "rationale": {
           "headline": "Australia are favoured to beat Egypt, winning roughly 45 times out of 100 to Egypt's 30.",
@@ -471,9 +471,9 @@
       "teamB": "Ghana",
       "prediction": {
         "probs": {
-          "home": 0.7904660769715321,
-          "draw": 0.15081259196926525,
-          "away": 0.05872133105920262
+          "home": 0.7297269486629998,
+          "draw": 0.21606384618118551,
+          "away": 0.054209205155814656
         },
         "rationale": {
           "headline": "Colombia are the clear favourite to beat Ghana, winning roughly 79 times out of 100 to Ghana's 6.",

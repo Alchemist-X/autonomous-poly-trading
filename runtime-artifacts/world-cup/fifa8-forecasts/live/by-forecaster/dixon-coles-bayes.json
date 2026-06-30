@@ -9,9 +9,9 @@
       "teamB": "Japan",
       "prediction": {
         "probs": {
-          "home": 0.519861728111965,
-          "draw": 0.31317566048947615,
-          "away": 0.166962611398559
+          "home": 0.4428657635166988,
+          "draw": 0.41490021467079435,
+          "away": 0.14223402181250683
         },
         "rationale": {
           "headline": "Brazil are a slight favourite to beat Japan (52% to win), though a tight low-scoring draw is very much in play (31.3%).",
@@ -42,9 +42,9 @@
       "teamB": "Paraguay",
       "prediction": {
         "probs": {
-          "home": 0.5581868858437716,
-          "draw": 0.2733952419776241,
-          "away": 0.16841787217860438
+          "home": 0.479084383361718,
+          "draw": 0.3763647959614196,
+          "away": 0.14455082067686245
         },
         "rationale": {
           "headline": "Germany are a slight favourite to beat Paraguay (55.8% to win).",
@@ -75,9 +75,9 @@
       "teamB": "Morocco",
       "prediction": {
         "probs": {
-          "home": 0.38707344562119916,
-          "draw": 0.31340443645395777,
-          "away": 0.2995221179248431
+          "home": 0.34266624163388726,
+          "draw": 0.3921744724564031,
+          "away": 0.26515928590970955
         },
         "rationale": {
           "headline": "Netherlands are narrowly ahead to beat Morocco (38.7% to win), though a tight low-scoring draw is very much in play (31.3%).",
@@ -108,9 +108,9 @@
       "teamB": "Norway",
       "prediction": {
         "probs": {
-          "home": 0.34055438221938866,
-          "draw": 0.2955710976511631,
-          "away": 0.3638745201294482
+          "home": 0.3170909131708718,
+          "draw": 0.3441047434067327,
+          "away": 0.3388043434223955
         },
         "rationale": {
           "headline": "Norway are narrowly ahead to beat Côte d'Ivoire (36.4% to win), though a tight low-scoring draw is very much in play (29.6%).",
@@ -141,9 +141,9 @@
       "teamB": "Sweden",
       "prediction": {
         "probs": {
-          "home": 0.7295140876877547,
-          "draw": 0.18998960799793574,
-          "away": 0.0804963043143096
+          "home": 0.6858927096335931,
+          "draw": 0.23842427174694508,
+          "away": 0.07568301861946189
         },
         "rationale": {
           "headline": "France are a clear favourite to beat Sweden (73% to win).",
@@ -174,9 +174,9 @@
       "teamB": "Ecuador",
       "prediction": {
         "probs": {
-          "home": 0.3331560849032437,
-          "draw": 0.3717293039155768,
-          "away": 0.2951146111811795
+          "home": 0.2820821134319759,
+          "draw": 0.4680453583480467,
+          "away": 0.24987252821997735
         },
         "rationale": {
           "headline": "Mexico are narrowly ahead to beat Ecuador (33.3% to win), though a tight low-scoring draw is very much in play (37.2%).",
@@ -207,9 +207,9 @@
       "teamB": "Senegal",
       "prediction": {
         "probs": {
-          "home": 0.5449791836658957,
-          "draw": 0.26095453775944466,
-          "away": 0.1940662785746597
+          "home": 0.45535748143463706,
+          "draw": 0.3824903951599937,
+          "away": 0.16215212340536925
         },
         "rationale": {
           "headline": "Belgium are a slight favourite to beat Senegal (54.5% to win).",
@@ -240,9 +240,9 @@
       "teamB": "DR Congo",
       "prediction": {
         "probs": {
-          "home": 0.6714095749309539,
-          "draw": 0.23309126500189511,
-          "away": 0.09549916006715096
+          "home": 0.6303815035753155,
+          "draw": 0.2799550385874899,
+          "away": 0.08966345783719464
         },
         "rationale": {
           "headline": "England are a clear favourite to beat DR Congo (67.1% to win).",
@@ -273,9 +273,9 @@
       "teamB": "Bosnia-Herzegovina",
       "prediction": {
         "probs": {
-          "home": 0.5849908429078303,
-          "draw": 0.2614554746364993,
-          "away": 0.15355368245567044
+          "home": 0.5099344087047315,
+          "draw": 0.3562133999032684,
+          "away": 0.13385219139200016
         },
         "rationale": {
           "headline": "United States are a slight favourite to beat Bosnia-Herzegovina (58.5% to win).",
@@ -306,9 +306,9 @@
       "teamB": "Algeria",
       "prediction": {
         "probs": {
-          "home": 0.621862963287914,
-          "draw": 0.22824381763204332,
-          "away": 0.14989321908004272
+          "home": 0.5535085938638294,
+          "draw": 0.31307425505829767,
+          "away": 0.13341715107787291
         },
         "rationale": {
           "headline": "Switzerland are a clear favourite to beat Algeria (62.2% to win).",
@@ -339,9 +339,9 @@
       "teamB": "Austria",
       "prediction": {
         "probs": {
-          "home": 0.7958370767997206,
-          "draw": 0.1611073696753434,
-          "away": 0.043055553524935945
+          "home": 0.7572522004884407,
+          "draw": 0.20177972501430805,
+          "away": 0.040968074497251206
         },
         "rationale": {
           "headline": "Spain are a clear favourite to beat Austria (79.6% to win).",
@@ -372,9 +372,9 @@
       "teamB": "Croatia",
       "prediction": {
         "probs": {
-          "home": 0.5395145839592782,
-          "draw": 0.30833907519797576,
-          "away": 0.15214634084274606
+          "home": 0.45820179644141457,
+          "draw": 0.4125825553280348,
+          "away": 0.1292156482305507
         },
         "rationale": {
           "headline": "Portugal are a slight favourite to beat Croatia (54% to win), though a tight low-scoring draw is very much in play (30.8%).",
@@ -405,9 +405,9 @@
       "teamB": "Cabo Verde",
       "prediction": {
         "probs": {
-          "home": 0.7603753380735055,
-          "draw": 0.19250614672005883,
-          "away": 0.047118515206435396
+          "home": 0.7029652972551682,
+          "draw": 0.2534737409542588,
+          "away": 0.043560961790573026
         },
         "rationale": {
           "headline": "Argentina are a clear favourite to beat Cabo Verde (76% to win).",
@@ -438,9 +438,9 @@
       "teamB": "Egypt",
       "prediction": {
         "probs": {
-          "home": 0.34085378327043225,
-          "draw": 0.36206077735381886,
-          "away": 0.2970854393757489
+          "home": 0.2816240769181045,
+          "draw": 0.4729146234382765,
+          "away": 0.24546129964361907
         },
         "rationale": {
           "headline": "Australia are narrowly ahead to beat Egypt (34.1% to win), though a tight low-scoring draw is very much in play (36.2%).",
@@ -471,9 +471,9 @@
       "teamB": "Ghana",
       "prediction": {
         "probs": {
-          "home": 0.6848439514899566,
-          "draw": 0.24440875514410687,
-          "away": 0.07074729336593653
+          "home": 0.6322207892155699,
+          "draw": 0.3024681139289097,
+          "away": 0.06531109685552038
         },
         "rationale": {
           "headline": "Colombia are a clear favourite to beat Ghana (68.5% to win).",

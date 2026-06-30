@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.7603753380735055,
-        "draw": 0.19250614672005883,
-        "away": 0.047118515206435396
+        "home": 0.7029652972551682,
+        "draw": 0.2534737409542588,
+        "away": 0.043560961790573026
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Argentina",
-          "p": 0.7603753380735055
+          "p": 0.7029652972551682
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.19250614672005883
+          "p": 0.2534737409542588
         },
         {
           "key": "b",
           "label": "Cabo Verde",
-          "p": 0.047118515206435396
+          "p": 0.043560961790573026
         }
       ],
       "headline": "Argentina are a clear favourite to beat Cabo Verde (76% to win).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.8358675259964929,
-        "draw": 0.12560996000254837,
-        "away": 0.03852251400095861
+        "home": 0.7727576559318452,
+        "draw": 0.19162836614205522,
+        "away": 0.03561397792609946
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Argentina",
-          "p": 0.8358675259964929
+          "p": 0.7727576559318452
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.12560996000254837
+          "p": 0.19162836614205522
         },
         {
           "key": "b",
           "label": "Cabo Verde",
-          "p": 0.03852251400095861
+          "p": 0.03561397792609946
         }
       ],
       "headline": "Argentina are the clear favourite to beat Cabo Verde, winning roughly 84 times out of 100 to Cabo Verde's 4.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.5127790965319629,
-        "draw": 0.20716172831914834,
-        "away": 0.28005917514888884
+        "home": 0.474063126420049,
+        "draw": 0.2670227933227292,
+        "away": 0.25891408025722185
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Argentina",
-          "p": 0.5127790965319629
+          "p": 0.474063126420049
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.20716172831914834
+          "p": 0.2670227933227292
         },
         {
           "key": "b",
           "label": "Cabo Verde",
-          "p": 0.28005917514888884
+          "p": 0.25891408025722185
         }
       ],
       "headline": "Argentina is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.8319067093842701,
-        "draw": 0.12793881602167995,
-        "away": 0.04015447459404992
+        "home": 0.7690958898437462,
+        "draw": 0.19378138831647385,
+        "away": 0.03712272183977996
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Argentina",
-          "p": 0.8319067093842701
+          "p": 0.7690958898437462
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.12793881602167995
+          "p": 0.19378138831647385
         },
         {
           "key": "b",
           "label": "Cabo Verde",
-          "p": 0.04015447459404992
+          "p": 0.03712272183977996
         }
       ],
       "headline": "Argentina is clearly the stronger side here with about a 83% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -190,25 +190,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.8345869814307549,
-        "draw": 0.13513024395459625,
-        "away": 0.030282774614649007
+        "home": 0.7715737953484875,
+        "draw": 0.2004298473358837,
+        "away": 0.027996357315628908
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Argentina",
-          "p": 0.8345869814307549
+          "p": 0.7715737953484875
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.13513024395459625
+          "p": 0.2004298473358837
         },
         {
           "key": "b",
           "label": "Cabo Verde",
-          "p": 0.030282774614649007
+          "p": 0.027996357315628908
         }
       ],
       "headline": "Argentina is the clear favourite — its game style matches up well against Cabo Verde.",
@@ -236,25 +236,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.754405229879562,
-        "draw": 0.1994915404030338,
-        "away": 0.04610322971740407
+        "home": 0.6974459455994002,
+        "draw": 0.2599317217709935,
+        "away": 0.042622332629606234
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Argentina",
-          "p": 0.754405229879562
+          "p": 0.6974459455994002
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.1994915404030338
+          "p": 0.2599317217709935
         },
         {
           "key": "b",
           "label": "Cabo Verde",
-          "p": 0.04610322971740407
+          "p": 0.042622332629606234
         }
       ],
       "headline": "Argentina are clear favourites to beat Cabo Verde, mostly on cleaner attacking play.",
@@ -287,25 +287,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.5597665430270355,
-        "draw": 0.31055084217943485,
-        "away": 0.12968261479352958
+        "home": 0.517502915480484,
+        "draw": 0.362605797555724,
+        "away": 0.11989128696379193
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Argentina",
-          "p": 0.5597665430270355
+          "p": 0.517502915480484
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.31055084217943485
+          "p": 0.362605797555724
         },
         {
           "key": "b",
           "label": "Cabo Verde",
-          "p": 0.12968261479352958
+          "p": 0.11989128696379193
         }
       ],
       "headline": "Argentina is the clear favourite (56%) — its passing play is the harder one to break down.",
@@ -333,25 +333,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.5034052762717234,
-        "draw": 0.2719842372108546,
-        "away": 0.2246104865174221
+        "home": 0.4653970505813047,
+        "draw": 0.32695105762879617,
+        "away": 0.2076518917898991
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Argentina",
-          "p": 0.5034052762717234
+          "p": 0.4653970505813047
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2719842372108546
+          "p": 0.32695105762879617
         },
         {
           "key": "b",
           "label": "Cabo Verde",
-          "p": 0.2246104865174221
+          "p": 0.2076518917898991
         }
       ],
       "headline": "Pulling every angle together, Argentina is narrowly the side to back here, at about a 50% chance to win.",
@@ -374,28 +374,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.6991365875744135,
-        "draw": 0.19629668935141936,
-        "away": 0.1045667230741672
+        "home": 0.6463502095575607,
+        "draw": 0.2569780891283643,
+        "away": 0.09667170131407507
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Argentina",
-          "p": 0.6991365875744135
+          "p": 0.6463502095575607
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.19629668935141936
+          "p": 0.2569780891283643
         },
         {
           "key": "b",
           "label": "Cabo Verde",
-          "p": 0.1045667230741672
+          "p": 0.09667170131407507
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Argentina is the call here at about 70%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Argentina is the call here at about 65%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -404,11 +404,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by -5.3 points.",
+          "contributionPp": -5.3
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

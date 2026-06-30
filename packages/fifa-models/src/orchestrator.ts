@@ -51,6 +51,7 @@ import {
   type CalibrationSample,
   type MCBoostModel,
 } from "./calibration/mcboost.js";
+import { calibrateKnockoutDraw } from "./calibration/knockout-draw.js";
 import { leaderboard, scoreModel, type ScoredModel } from "./evaluate.js";
 
 export interface TournamentData {
@@ -212,8 +213,9 @@ const multicalRationale = (
     `Market-blind: equal-weight linear (arithmetic) opinion pool of all ${nBase} model views (seven base models + the ` +
     `stacked ensemble), then MCBoost multicalibration (alpha=${mc.alpha}, ${mc.iterations} correction round(s)) ` +
     `learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and ` +
-    `bounded to within ${Math.round(BOUND_PP * 100)}pp per outcome of the consensus. No betting or ` +
-    `market-implied probabilities were used at any stage.`;
+    `bounded to within ${Math.round(BOUND_PP * 100)}pp per outcome of the consensus, then a knockout ` +
+    `90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ` +
+    `ties. No betting or market-implied probabilities were used at any stage.`;
   return { headline, drivers, methodNote };
 };
 
@@ -286,25 +288,39 @@ export function runForecasts(data: TournamentData): OrchestratorResult {
       skipped.push(fx.id);
       continue;
     }
+    // Each forecaster's RAW 1X2 feeds the ensemble/multical pool; the DISPLAYED 1X2
+    // gets the knockout 90' draw calibration (lift the draw on even ties, ~31% target).
+    const cal = (probs: OneXTwo): OneXTwo => calibrateKnockoutDraw(probs, rf.profileA, rf.profileB);
     const base = new Map<string, OneXTwo>();
     for (const { model, state } of fitted) {
       const pred = model.predict(state, rf);
       base.set(model.id, pred.probs);
       const list = basePred.get(model.id) ?? [];
-      list.push({ fixtureId: fx.id, teamA: fx.teamA, teamB: fx.teamB, prediction: pred });
+      list.push({
+        fixtureId: fx.id,
+        teamA: fx.teamA,
+        teamB: fx.teamB,
+        prediction: { probs: cal(pred.probs), rationale: pred.rationale },
+      });
       basePred.set(model.id, list);
     }
     const ens = ensemble.predictMeta(metaState, base, rf);
     base.set(ENSEMBLE_ID, ens.probs);
-    ensPred.push({ fixtureId: fx.id, teamA: fx.teamA, teamB: fx.teamB, prediction: ens });
+    ensPred.push({
+      fixtureId: fx.id,
+      teamA: fx.teamA,
+      teamB: fx.teamB,
+      prediction: { probs: cal(ens.probs), rationale: ens.rationale },
+    });
 
     const pooled = poolEight([...base.values()]);
     const corrected = boundToConsensus(pooled, applyMCBoost(mcModel, rf, pooled));
+    const finalProbs = cal(corrected);
     mcPred.push({
       fixtureId: fx.id,
       teamA: fx.teamA,
       teamB: fx.teamB,
-      prediction: { probs: corrected, rationale: multicalRationale(rf, pooled, corrected, base.size, mcModel) },
+      prediction: { probs: finalProbs, rationale: multicalRationale(rf, pooled, finalProbs, base.size, mcModel) },
     });
   }
 

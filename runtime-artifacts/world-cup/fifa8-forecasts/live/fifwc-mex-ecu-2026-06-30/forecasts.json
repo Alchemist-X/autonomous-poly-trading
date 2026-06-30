@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.3331560849032437,
-        "draw": 0.3717293039155768,
-        "away": 0.2951146111811795
+        "home": 0.2820821134319759,
+        "draw": 0.4680453583480467,
+        "away": 0.24987252821997735
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Mexico",
-          "p": 0.3331560849032437
+          "p": 0.2820821134319759
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.3717293039155768
+          "p": 0.4680453583480467
         },
         {
           "key": "b",
           "label": "Ecuador",
-          "p": 0.2951146111811795
+          "p": 0.24987252821997735
         }
       ],
       "headline": "Mexico are narrowly ahead to beat Ecuador (33.3% to win), though a tight low-scoring draw is very much in play (37.2%).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.3098310184347411,
-        "draw": 0.2565694255035939,
-        "away": 0.4335995560616649
+        "home": 0.2623328597232004,
+        "draw": 0.37053988461655,
+        "away": 0.3671272556602496
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Mexico",
-          "p": 0.3098310184347411
+          "p": 0.2623328597232004
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2565694255035939
+          "p": 0.37053988461655
         },
         {
           "key": "b",
           "label": "Ecuador",
-          "p": 0.4335995560616649
+          "p": 0.3671272556602496
         }
       ],
       "headline": "Ecuador are a slight favourite to beat Mexico, winning roughly 43 times out of 100 to Mexico's 31.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.33256145501395507,
-        "draw": 0.19980221812551396,
-        "away": 0.467636326860531
+        "home": 0.28157864234595603,
+        "draw": 0.3224752849995549,
+        "away": 0.3959460726544891
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Mexico",
-          "p": 0.33256145501395507
+          "p": 0.28157864234595603
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.19980221812551396
+          "p": 0.3224752849995549
         },
         {
           "key": "b",
           "label": "Ecuador",
-          "p": 0.467636326860531
+          "p": 0.3959460726544891
         }
       ],
       "headline": "Ecuador is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.3410564742020581,
-        "draw": 0.25864459359738085,
-        "away": 0.4002989322005611
+        "home": 0.2887713459308875,
+        "draw": 0.37229692231793865,
+        "away": 0.3389317317511739
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Mexico",
-          "p": 0.3410564742020581
+          "p": 0.2887713459308875
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.25864459359738085
+          "p": 0.37229692231793865
         },
         {
           "key": "b",
           "label": "Ecuador",
-          "p": 0.4002989322005611
+          "p": 0.3389317317511739
         }
       ],
       "headline": "Ecuador is a slight favourite here with about a 40% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -195,25 +195,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.7661960714239905,
-        "draw": 0.17712815746335847,
-        "away": 0.05667577111265101
+        "home": 0.648735583482816,
+        "draw": 0.30327723567224585,
+        "away": 0.04798718084493815
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Mexico",
-          "p": 0.7661960714239905
+          "p": 0.648735583482816
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.17712815746335847
+          "p": 0.30327723567224585
         },
         {
           "key": "b",
           "label": "Ecuador",
-          "p": 0.05667577111265101
+          "p": 0.04798718084493815
         }
       ],
       "headline": "Mexico is the clear favourite — its game style matches up well against Ecuador.",
@@ -241,25 +241,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.6339382524358441,
-        "draw": 0.10286619713818841,
-        "away": 0.26319555042596754
+        "home": 0.5367533421591583,
+        "draw": 0.24039988879080043,
+        "away": 0.2228467690500413
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Mexico",
-          "p": 0.6339382524358441
+          "p": 0.5367533421591583
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.10286619713818841
+          "p": 0.24039988879080043
         },
         {
           "key": "b",
           "label": "Ecuador",
-          "p": 0.26319555042596754
+          "p": 0.2228467690500413
         }
       ],
       "headline": "Mexico are clear favourites to beat Ecuador, mostly on cleaner attacking play.",
@@ -287,25 +287,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.3896613143406633,
-        "draw": 0.1499020192413089,
-        "away": 0.4604366664180279
+        "home": 0.3299248972259297,
+        "draw": 0.28022495790131063,
+        "away": 0.38985014487275965
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Mexico",
-          "p": 0.3896613143406633
+          "p": 0.3299248972259297
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.1499020192413089
+          "p": 0.28022495790131063
         },
         {
           "key": "b",
           "label": "Ecuador",
-          "p": 0.4604366664180279
+          "p": 0.38985014487275965
         }
       ],
       "headline": "Ecuador is the slight edge (46%) — its passing play is the harder one to break down.",
@@ -333,25 +333,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.4843019023385195,
-        "draw": 0.26701919604782454,
-        "away": 0.24867890161365597
+        "home": 0.4100567582022449,
+        "draw": 0.37938766946445956,
+        "away": 0.21055557233329555
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Mexico",
-          "p": 0.4843019023385195
+          "p": 0.4100567582022449
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.26701919604782454
+          "p": 0.37938766946445956
         },
         {
           "key": "b",
           "label": "Ecuador",
-          "p": 0.24867890161365597
+          "p": 0.21055557233329555
         }
       ],
       "headline": "Pulling every angle together, Mexico is narrowly the side to back here, at about a 48% chance to win.",
@@ -374,28 +374,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.4488378216366269,
-        "draw": 0.22295763887909326,
-        "away": 0.3282045394842799
+        "home": 0.38002944281277107,
+        "draw": 0.3420809002638634,
+        "away": 0.2778896569233656
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Mexico",
-          "p": 0.4488378216366269
+          "p": 0.38002944281277107
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.22295763887909326
+          "p": 0.3420809002638634
         },
         {
           "key": "b",
           "label": "Ecuador",
-          "p": 0.3282045394842799
+          "p": 0.2778896569233656
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Mexico is the call here at about 45%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Mexico is the call here at about 38%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -404,11 +404,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by -6.9 points.",
+          "contributionPp": -6.9
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

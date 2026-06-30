@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.5849908429078303,
-        "draw": 0.2614554746364993,
-        "away": 0.15355368245567044
+        "home": 0.5099344087047315,
+        "draw": 0.3562133999032684,
+        "away": 0.13385219139200016
       },
       "outcomes": [
         {
           "key": "a",
           "label": "United States",
-          "p": 0.5849908429078303
+          "p": 0.5099344087047315
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2614554746364993
+          "p": 0.3562133999032684
         },
         {
           "key": "b",
           "label": "Bosnia-Herzegovina",
-          "p": 0.15355368245567044
+          "p": 0.13385219139200016
         }
       ],
       "headline": "United States are a slight favourite to beat Bosnia-Herzegovina (58.5% to win).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.558707263862642,
-        "draw": 0.23667826315473328,
-        "away": 0.20461447298262478
+        "home": 0.48702310761080325,
+        "draw": 0.3346151939834927,
+        "away": 0.17836169840570404
       },
       "outcomes": [
         {
           "key": "a",
           "label": "United States",
-          "p": 0.558707263862642
+          "p": 0.48702310761080325
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.23667826315473328
+          "p": 0.3346151939834927
         },
         {
           "key": "b",
           "label": "Bosnia-Herzegovina",
-          "p": 0.20461447298262478
+          "p": 0.17836169840570404
         }
       ],
       "headline": "United States are the clear favourite to beat Bosnia-Herzegovina, winning roughly 56 times out of 100 to Bosnia-Herzegovina's 20.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.4082283320177586,
-        "draw": 0.3318465740739791,
-        "away": 0.25992509390826235
+        "home": 0.3558511652408775,
+        "draw": 0.41757306750302725,
+        "away": 0.2265757672560953
       },
       "outcomes": [
         {
           "key": "a",
           "label": "United States",
-          "p": 0.4082283320177586
+          "p": 0.3558511652408775
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.3318465740739791
+          "p": 0.41757306750302725
         },
         {
           "key": "b",
           "label": "Bosnia-Herzegovina",
-          "p": 0.25992509390826235
+          "p": 0.2265757672560953
         }
       ],
       "headline": "United States is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.5175810801033383,
-        "draw": 0.24525264596194524,
-        "away": 0.23716627393471654
+        "home": 0.4511735614993833,
+        "draw": 0.34208945256345574,
+        "away": 0.20673698593716097
       },
       "outcomes": [
         {
           "key": "a",
           "label": "United States",
-          "p": 0.5175810801033383
+          "p": 0.4511735614993833
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.24525264596194524
+          "p": 0.34208945256345574
         },
         {
           "key": "b",
           "label": "Bosnia-Herzegovina",
-          "p": 0.23716627393471654
+          "p": 0.20673698593716097
         }
       ],
       "headline": "United States is clearly the stronger side here with about a 52% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -195,25 +195,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.5895261688556436,
-        "draw": 0.2562765367657148,
-        "away": 0.15419729437864158
+        "home": 0.513887835982303,
+        "draw": 0.3516989384328465,
+        "away": 0.13441322558485047
       },
       "outcomes": [
         {
           "key": "a",
           "label": "United States",
-          "p": 0.5895261688556436
+          "p": 0.513887835982303
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2562765367657148
+          "p": 0.3516989384328465
         },
         {
           "key": "b",
           "label": "Bosnia-Herzegovina",
-          "p": 0.15419729437864158
+          "p": 0.13441322558485047
         }
       ],
       "headline": "United States is the slight favourite — its game style matches up well against Bosnia-Herzegovina.",
@@ -241,25 +241,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.6708076399341769,
-        "draw": 0.13330773270763088,
-        "away": 0.19588462735819218
+        "home": 0.5847406012786874,
+        "draw": 0.24450747527285505,
+        "away": 0.17075192344845735
       },
       "outcomes": [
         {
           "key": "a",
           "label": "United States",
-          "p": 0.6708076399341769
+          "p": 0.5847406012786874
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.13330773270763088
+          "p": 0.24450747527285505
         },
         {
           "key": "b",
           "label": "Bosnia-Herzegovina",
-          "p": 0.19588462735819218
+          "p": 0.17075192344845735
         }
       ],
       "headline": "United States are clear favourites to beat Bosnia-Herzegovina, mostly on cleaner attacking play.",
@@ -292,25 +292,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.5789460551613996,
-        "draw": 0.10209478948282237,
-        "away": 0.31895915535577807
+        "home": 0.5046651890193434,
+        "draw": 0.21729926519530884,
+        "away": 0.27803554578534784
       },
       "outcomes": [
         {
           "key": "a",
           "label": "United States",
-          "p": 0.5789460551613996
+          "p": 0.5046651890193434
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.10209478948282237
+          "p": 0.21729926519530884
         },
         {
           "key": "b",
           "label": "Bosnia-Herzegovina",
-          "p": 0.31895915535577807
+          "p": 0.27803554578534784
         }
       ],
       "headline": "United States is the clear favourite (58%) — its passing play is the harder one to break down.",
@@ -338,25 +338,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.4921966600536947,
-        "draw": 0.2672457059815419,
-        "away": 0.2405576339647634
+        "home": 0.4290460540601481,
+        "draw": 0.36126072369131457,
+        "away": 0.20969322224853734
       },
       "outcomes": [
         {
           "key": "a",
           "label": "United States",
-          "p": 0.4921966600536947
+          "p": 0.4290460540601481
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2672457059815419
+          "p": 0.36126072369131457
         },
         {
           "key": "b",
           "label": "Bosnia-Herzegovina",
-          "p": 0.2405576339647634
+          "p": 0.20969322224853734
         }
       ],
       "headline": "Pulling every angle together, United States is narrowly the side to back here, at about a 49% chance to win.",
@@ -379,28 +379,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.5501230053620605,
-        "draw": 0.22926971534560833,
-        "away": 0.22060727929233118
+        "home": 0.47954024042453475,
+        "draw": 0.32815718956819606,
+        "away": 0.19230257000726922
       },
       "outcomes": [
         {
           "key": "a",
           "label": "United States",
-          "p": 0.5501230053620605
+          "p": 0.47954024042453475
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.22926971534560833
+          "p": 0.32815718956819606
         },
         {
           "key": "b",
           "label": "Bosnia-Herzegovina",
-          "p": 0.22060727929233118
+          "p": 0.19230257000726922
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, United States is the call here at about 55%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, United States is the call here at about 48%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -409,11 +409,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by 0 points.",
-          "contributionPp": 0
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by -7.1 points.",
+          "contributionPp": -7.1
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }

@@ -9,9 +9,9 @@
       "teamB": "Japan",
       "prediction": {
         "probs": {
-          "home": 0.555665967272923,
-          "draw": 0.17549030811517566,
-          "away": 0.2688437246119015
+          "home": 0.4733670888801559,
+          "draw": 0.2976072396219029,
+          "away": 0.22902567149794106
         },
         "rationale": {
           "headline": "Brazil is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
@@ -42,9 +42,9 @@
       "teamB": "Paraguay",
       "prediction": {
         "probs": {
-          "home": 0.5190739984394597,
-          "draw": 0.20827606618884037,
-          "away": 0.27264993537169996
+          "home": 0.44551431208484515,
+          "draw": 0.32047387310207365,
+          "away": 0.23401181481308111
         },
         "rationale": {
           "headline": "Germany is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -75,9 +75,9 @@
       "teamB": "Morocco",
       "prediction": {
         "probs": {
-          "home": 0.4239097249028562,
-          "draw": 0.20241948990995473,
-          "away": 0.37367078518718905
+          "home": 0.37527645946209365,
+          "draw": 0.2939223320928675,
+          "away": 0.3308012084450389
         },
         "rationale": {
           "headline": "Netherlands is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
@@ -108,9 +108,9 @@
       "teamB": "Norway",
       "prediction": {
         "probs": {
-          "home": 0.3099273607763254,
-          "draw": 0.2311334144854312,
-          "away": 0.4589392247382434
+          "home": 0.28857402804434734,
+          "draw": 0.2841066788847665,
+          "away": 0.42731929307088623
         },
         "rationale": {
           "headline": "Norway is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -141,9 +141,9 @@
       "teamB": "Sweden",
       "prediction": {
         "probs": {
-          "home": 0.40742027952578164,
-          "draw": 0.20101522198874416,
-          "away": 0.39156449848547425
+          "home": 0.38305853745654117,
+          "draw": 0.24879060789200727,
+          "away": 0.3681508546514516
         },
         "rationale": {
           "headline": "France and Sweden look evenly matched, with no side meaningfully on top.",
@@ -174,9 +174,9 @@
       "teamB": "Ecuador",
       "prediction": {
         "probs": {
-          "home": 0.33256145501395507,
-          "draw": 0.19980221812551396,
-          "away": 0.467636326860531
+          "home": 0.28157864234595603,
+          "draw": 0.3224752849995549,
+          "away": 0.3959460726544891
         },
         "rationale": {
           "headline": "Ecuador is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -207,9 +207,9 @@
       "teamB": "Senegal",
       "prediction": {
         "probs": {
-          "home": 0.4040934679757825,
-          "draw": 0.19412492401176476,
-          "away": 0.4017816080124527
+          "home": 0.33764038949870717,
+          "draw": 0.326650896123184,
+          "away": 0.33570871437810884
         },
         "rationale": {
           "headline": "Belgium and Senegal look evenly matched, with no side meaningfully on top.",
@@ -240,9 +240,9 @@
       "teamB": "DR Congo",
       "prediction": {
         "probs": {
-          "home": 0.5329856580845507,
-          "draw": 0.19179443290440923,
-          "away": 0.2752199090110402
+          "home": 0.5004163078281536,
+          "draw": 0.2411817471681835,
+          "away": 0.25840194500366287
         },
         "rationale": {
           "headline": "England is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
@@ -273,9 +273,9 @@
       "teamB": "Bosnia-Herzegovina",
       "prediction": {
         "probs": {
-          "home": 0.4082283320177586,
-          "draw": 0.3318465740739791,
-          "away": 0.25992509390826235
+          "home": 0.3558511652408775,
+          "draw": 0.41757306750302725,
+          "away": 0.2265757672560953
         },
         "rationale": {
           "headline": "United States is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -306,9 +306,9 @@
       "teamB": "Algeria",
       "prediction": {
         "probs": {
-          "home": 0.4616175326017593,
-          "draw": 0.2083204016005722,
-          "away": 0.33006206579766856
+          "home": 0.41087713283705063,
+          "draw": 0.29534079504608285,
+          "away": 0.29378207211686647
         },
         "rationale": {
           "headline": "Switzerland is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -339,9 +339,9 @@
       "teamB": "Austria",
       "prediction": {
         "probs": {
-          "home": 0.45488591473181733,
-          "draw": 0.17519134982866674,
-          "away": 0.36992273543951587
+          "home": 0.4328315052712141,
+          "draw": 0.21518086611925258,
+          "away": 0.3519876286095333
         },
         "rationale": {
           "headline": "Spain is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
@@ -372,9 +372,9 @@
       "teamB": "Croatia",
       "prediction": {
         "probs": {
-          "home": 0.3955756530784938,
-          "draw": 0.2111705367446182,
-          "away": 0.3932538101768881
+          "home": 0.3359565807079877,
+          "draw": 0.33005874559117765,
+          "away": 0.3339846737008348
         },
         "rationale": {
           "headline": "Portugal and Croatia look evenly matched, with no side meaningfully on top.",
@@ -405,9 +405,9 @@
       "teamB": "Cabo Verde",
       "prediction": {
         "probs": {
-          "home": 0.5127790965319629,
-          "draw": 0.20716172831914834,
-          "away": 0.28005917514888884
+          "home": 0.474063126420049,
+          "draw": 0.2670227933227292,
+          "away": 0.25891408025722185
         },
         "rationale": {
           "headline": "Argentina is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -438,9 +438,9 @@
       "teamB": "Egypt",
       "prediction": {
         "probs": {
-          "home": 0.2752852067889202,
-          "draw": 0.2915796876950881,
-          "away": 0.43313510551599166
+          "home": 0.22744926433640178,
+          "draw": 0.4146809385283633,
+          "away": 0.3578697971352349
         },
         "rationale": {
           "headline": "Egypt is the favourite, expected to generate the better scoring chances over 90 minutes.",
@@ -471,9 +471,9 @@
       "teamB": "Ghana",
       "prediction": {
         "probs": {
-          "home": 0.455560912216727,
-          "draw": 0.24084492864095872,
-          "away": 0.3035941591423143
+          "home": 0.4205557759995021,
+          "draw": 0.29917813056913006,
+          "away": 0.2802660934313677
         },
         "rationale": {
           "headline": "Colombia is the favourite, expected to generate the better scoring chances over 90 minutes.",

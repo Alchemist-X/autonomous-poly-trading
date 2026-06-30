@@ -11,25 +11,25 @@
       "name": "Dixon-Coles (Bayesian-shrunk)",
       "family": "statistical",
       "probs": {
-        "home": 0.7958370767997206,
-        "draw": 0.1611073696753434,
-        "away": 0.043055553524935945
+        "home": 0.7572522004884407,
+        "draw": 0.20177972501430805,
+        "away": 0.040968074497251206
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Spain",
-          "p": 0.7958370767997206
+          "p": 0.7572522004884407
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.1611073696753434
+          "p": 0.20177972501430805
         },
         {
           "key": "b",
           "label": "Austria",
-          "p": 0.043055553524935945
+          "p": 0.040968074497251206
         }
       ],
       "headline": "Spain are a clear favourite to beat Austria (79.6% to win).",
@@ -57,25 +57,25 @@
       "name": "xG-corrected Elo",
       "family": "elo",
       "probs": {
-        "home": 0.7063120249771766,
-        "draw": 0.18970469889045588,
-        "away": 0.10398327613236741
+        "home": 0.6720676263239931,
+        "draw": 0.2289905588740706,
+        "away": 0.0989418148019364
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Spain",
-          "p": 0.7063120249771766
+          "p": 0.6720676263239931
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.18970469889045588
+          "p": 0.2289905588740706
         },
         {
           "key": "b",
           "label": "Austria",
-          "p": 0.10398327613236741
+          "p": 0.0989418148019364
         }
       ],
       "headline": "Spain are the clear favourite to beat Austria, winning roughly 71 times out of 100 to Austria's 10.",
@@ -103,25 +103,25 @@
       "name": "PRODEGY split attack/defence Elo",
       "family": "elo",
       "probs": {
-        "home": 0.45488591473181733,
-        "draw": 0.17519134982866674,
-        "away": 0.36992273543951587
+        "home": 0.4328315052712141,
+        "draw": 0.21518086611925258,
+        "away": 0.3519876286095333
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Spain",
-          "p": 0.45488591473181733
+          "p": 0.4328315052712141
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.17519134982866674
+          "p": 0.21518086611925258
         },
         {
           "key": "b",
           "label": "Austria",
-          "p": 0.36992273543951587
+          "p": 0.3519876286095333
         }
       ],
       "headline": "Spain is narrowly ahead, expected to generate the better scoring chances over 90 minutes.",
@@ -149,25 +149,25 @@
       "name": "Physical-decay dynamic-K Elo",
       "family": "elo",
       "probs": {
-        "home": 0.6955210845370281,
-        "draw": 0.1940216833340527,
-        "away": 0.11045723212891917
+        "home": 0.6617998672161842,
+        "draw": 0.2330982412938616,
+        "away": 0.10510189148995414
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Spain",
-          "p": 0.6955210845370281
+          "p": 0.6617998672161842
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.1940216833340527
+          "p": 0.2330982412938616
         },
         {
           "key": "b",
           "label": "Austria",
-          "p": 0.11045723212891917
+          "p": 0.10510189148995414
         }
       ],
       "headline": "Spain is clearly the stronger side here with about a 70% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
@@ -190,25 +190,25 @@
       "name": "Tactical style-clash mElo",
       "family": "elo",
       "probs": {
-        "home": 0.5247690460975164,
-        "draw": 0.27531383006575394,
-        "away": 0.19991712383672955
+        "home": 0.49932646579316026,
+        "draw": 0.31044906948416684,
+        "away": 0.1902244647226729
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Spain",
-          "p": 0.5247690460975164
+          "p": 0.49932646579316026
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.27531383006575394
+          "p": 0.31044906948416684
         },
         {
           "key": "b",
           "label": "Austria",
-          "p": 0.19991712383672955
+          "p": 0.1902244647226729
         }
       ],
       "headline": "Spain is the slight favourite — its game style matches up well against Austria.",
@@ -236,25 +236,25 @@
       "name": "Line-breaks & offers efficiency (gradient-boosted)",
       "family": "ml",
       "probs": {
-        "home": 0.6844727368351972,
-        "draw": 0.2745630519649502,
-        "away": 0.04096421119985254
+        "home": 0.6512871808223606,
+        "draw": 0.30973469164794143,
+        "away": 0.038978127529697995
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Spain",
-          "p": 0.6844727368351972
+          "p": 0.6512871808223606
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2745630519649502
+          "p": 0.30973469164794143
         },
         {
           "key": "b",
           "label": "Austria",
-          "p": 0.04096421119985254
+          "p": 0.038978127529697995
         }
       ],
       "headline": "Spain are clear favourites to beat Austria, mostly on cleaner attacking play.",
@@ -287,25 +287,25 @@
       "name": "Passing-network structure (random forest)",
       "family": "ml",
       "probs": {
-        "home": 0.39746603548584325,
-        "draw": 0.5610803472879745,
-        "away": 0.041453617226182286
+        "home": 0.37819553620371993,
+        "draw": 0.5823606583016137,
+        "away": 0.03944380549466639
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Spain",
-          "p": 0.39746603548584325
+          "p": 0.37819553620371993
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.5610803472879745
+          "p": 0.5823606583016137
         },
         {
           "key": "b",
           "label": "Austria",
-          "p": 0.041453617226182286
+          "p": 0.03944380549466639
         }
       ],
       "headline": "Spain and Austria look evenly matched on how they build play, with a 40% lean to Spain.",
@@ -333,25 +333,25 @@
       "name": "Stacked Ensemble",
       "family": "ensemble",
       "probs": {
-        "home": 0.4849595994880483,
-        "draw": 0.2817914065664989,
-        "away": 0.23324899394545276
+        "home": 0.4614471159562924,
+        "draw": 0.31661259114207496,
+        "away": 0.2219402929016326
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Spain",
-          "p": 0.4849595994880483
+          "p": 0.4614471159562924
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.2817914065664989
+          "p": 0.31661259114207496
         },
         {
           "key": "b",
           "label": "Austria",
-          "p": 0.23324899394545276
+          "p": 0.2219402929016326
         }
       ],
       "headline": "Pulling every angle together, Spain is narrowly the side to back here, at about a 48% chance to win.",
@@ -374,28 +374,28 @@
       "name": "Multi-calibrated 8-in-1",
       "family": "ensemble",
       "probs": {
-        "home": 0.7928281516715217,
-        "draw": 0.1602236428237996,
-        "away": 0.04694820550467869
+        "home": 0.754389158239145,
+        "draw": 0.20093884423296357,
+        "away": 0.04467199752789143
       },
       "outcomes": [
         {
           "key": "a",
           "label": "Spain",
-          "p": 0.7928281516715217
+          "p": 0.754389158239145
         },
         {
           "key": "draw",
           "label": "Draw",
-          "p": 0.1602236428237996
+          "p": 0.20093884423296357
         },
         {
           "key": "b",
           "label": "Austria",
-          "p": 0.04694820550467869
+          "p": 0.04467199752789143
         }
       ],
-      "headline": "Blending all 8 models and correcting for known group-stage biases, Spain is the call here at about 79%.",
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Spain is the call here at about 75%.",
       "drivers": [
         {
           "label": "Consensus of all models",
@@ -404,11 +404,11 @@
         },
         {
           "label": "Bias correction",
-          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +20 points.",
-          "contributionPp": 20
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +16.1 points.",
+          "contributionPp": 16.1
         }
       ],
-      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
     }
   ]
 }
