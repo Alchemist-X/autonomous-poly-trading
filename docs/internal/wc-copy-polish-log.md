@@ -21,3 +21,10 @@ Goal: maximum information density + zero confusion for a first-time visitor.
   1. The methodology page is only reachable via the ⓘ tooltip (which a visitor may never open). Consider a subtle always-visible "怎么预测的? →" link from the knockout-list intro straight to `/how-it-works`.
   2. The 9-model comparison table on mobile — density vs readability (still pending from iter 1).
   3. Detail-page evidence-card sentences — tighten any wordy ones.
+
+## 2026-06-30 ~13:25 HKT — iteration 3
+- **Shipped (PR #52):** de-leaked the knockout **detail page** for zh. The per-model rationale prose (headline + method note) is generated English-only, and 7 of the 8 displayed top-driver labels were unmapped — so a zh visitor saw "United States are a slight favourite…" and "Attack vs defence". Fix: render the English rationale prose only on `en` (zh already has the localized group header + driver line carrying the verdict + reason), and map every displayed top-driver label to an i18n key (攻防对比 / 机会创造状态 / 体能负荷 / 整体质量 / 突破防线 / 传球结构 / 模型一致度). Verified live: zh fully localized, en unchanged.
+- **Next direction (iteration 4):**
+  1. **Bilingual per-model rationale (bigger, engine-level):** the rich per-model reasoning sentence is hidden on zh (only the driver line remains). To give zh the same density as en, the engine would need to emit Chinese headline/methodNote and the archive be regenerated — flag for the user (touches the forecasting pipeline, market-blind regen).
+  2. Still pending: an always-visible "怎么预测的? →" link from the knockout-list intro to /how-it-works (currently only via the ⓘ tooltip).
+  3. The 9-model comparison table on the LIST card — mobile density (still unexamined).
