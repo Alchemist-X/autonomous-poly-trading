@@ -35,3 +35,11 @@ Goal: maximum information density + zero confusion for a first-time visitor.
   1. The list-card 9-model rows have mini-bars on **desktop** but they look absent/hidden on **mobile** (≤390px) — verify, and if so add a compact bar so model lean is scannable on phones too.
   2. Bilingual per-model rationale (engine-level; still flagged for the user — gives zh the per-model reasoning prose currently hidden).
   3. Intro paragraph tightening (pending from iter 1) — 4 sentences, could be denser.
+
+## 2026-06-30 ~14:50 HKT — iteration 5
+- **Shipped (PR #54):** tightened the knockout intro — it restated the hero subtitle right above it (32-team / 90-min W/D/L / 8 models + blend) and the draw parenthetical was dense. Now leads with the concrete market-blind claim, clarifies the 90-min-draw vs ET/penalty-advance nuance, drops the hero-redundant framing. 3 locales; copy-only. Verified live.
+- **Checked + closed:** the list-card per-model bar is *intentionally* hidden on mobile (CSS comment: long model names + bar + numbers don't fit ≤640px) — re-adding it is a dead end, not a bug.
+- **Next direction (iteration 6) — note: the easy copy/layout wins are mostly done; the pages are in good shape. Remaining candidates are thinner:**
+  1. **Bilingual per-model rationale (engine-level; needs user go-ahead)** — the only sizeable remaining gap: zh detail rows lack the per-model reasoning prose (en-only generation). Biggest quality lift but out of loop scope.
+  2. Detail-page evidence-card read sentences — scan for any wordy ones to tighten (small).
+  3. Consider whether the localized model *names* (English on zh, e.g. "PRODEGY split attack/defence Elo") warrant short zh labels in the tables — medium change, debatable (names are semi-canonical).
