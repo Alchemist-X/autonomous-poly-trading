@@ -47,18 +47,25 @@ export function Fifa8ModelGuide({
 
   return (
     <div className={styles.kgWrap}>
-      <button
-        type="button"
-        className={styles.kgTrigger}
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-controls={panelId}
-      >
-        <span className={styles.kgTriggerIcon} aria-hidden>
-          ⓘ
-        </span>
-        {open ? t(locale, "kgHide") : t(locale, "kgTrigger")}
-      </button>
+      <div className={styles.kgBar}>
+        <button
+          type="button"
+          className={styles.kgTrigger}
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls={panelId}
+        >
+          <span className={styles.kgTriggerIcon} aria-hidden>
+            ⓘ
+          </span>
+          {open ? t(locale, "kgHide") : t(locale, "kgTrigger")}
+        </button>
+        {/* Always-visible deep link — the full illustrated methodology page,
+            so it is reachable in one click without opening the quick guide. */}
+        <a className={styles.kgMethodLink} href={withLocale("/world-cup/knockout/how-it-works", locale)}>
+          {t(locale, "kgFullMethod")}
+        </a>
+      </div>
 
       {open ? (
         <div id={panelId} className={styles.kgPanel}>
@@ -78,9 +85,6 @@ export function Fifa8ModelGuide({
             })}
           </ul>
           <p className={styles.kgFooter}>{t(locale, "kgFooter")}</p>
-          <a className={styles.kgMethodLink} href={withLocale("/world-cup/knockout/how-it-works", locale)}>
-            {t(locale, "kgFullMethod")}
-          </a>
         </div>
       ) : null}
     </div>

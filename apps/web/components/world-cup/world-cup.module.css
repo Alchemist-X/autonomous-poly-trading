@@ -2786,6 +2786,14 @@
   margin: 0 0 22px;
 }
 
+/* Row holding the quick-guide toggle + the always-visible methodology deep link. */
+.kgBar {
+  display: flex;
+  align-items: center;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+}
+
 .kgTrigger {
   display: inline-flex;
   align-items: center;
@@ -2886,7 +2894,7 @@
 
 .kgMethodLink {
   display: inline-block;
-  margin: 12px 0 0;
+  margin: 0;
   font-size: 13px;
   font-weight: 700;
   color: #1d4ed8;
