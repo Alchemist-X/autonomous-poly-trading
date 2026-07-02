@@ -148,8 +148,10 @@ export function renderReport(state: ForecastState): string {
   lines.push(`- **Framing confidence**: ${state.framing.framingConfidence}`);
   lines.push(`- **Rounds run**: ${state.round}`);
   lines.push(`- **Status**: ${state.status}`);
+  // Internal heuristic band — kept in the audit trail, never labeled a
+  // confidence interval (user decision 2026-07-02: no CI claims anywhere).
   lines.push(
-    `- **Current P(YES)**: **${pct(state.currentProb)}**  (80% band ${pct(
+    `- **Current P(YES)**: **${pct(state.currentProb)}**  (internal band ${pct(
       state.credibleInterval[0]
     )} – ${pct(state.credibleInterval[1])})`
   );

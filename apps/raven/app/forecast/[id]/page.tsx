@@ -172,11 +172,6 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
     cur <= prior
       ? "linear-gradient(90deg,color-mix(in srgb,var(--accent) 38%,transparent),transparent)"
       : "linear-gradient(270deg,color-mix(in srgb,var(--accent) 38%,transparent),transparent)";
-  const ciMatch = /(\d+(?:\.\d+)?%)\s*[–—-]\s*(\d+(?:\.\d+)?%)/.exec(meta.ci);
-  const ciTip = ciMatch
-    ? `An 80% confidence interval — Raven is 80% sure the true probability sits between ${ciMatch[1]} and ${ciMatch[2]}.`
-    : `An 80% confidence interval — Raven is 80% sure the true probability sits inside ${meta.ci}.`;
-
   const confFill = CONF_FILL[meta.confidence];
   const confColor = `var(--cred-${credWord(meta.confidence)})`;
 
@@ -357,27 +352,10 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                     color: "var(--muted)"
                   }}
                 >
-                  <span>
-                    <span className="term" tabIndex={0}>
-                      80% CI {meta.ci}
-                      <span
-                        className="term-tip"
-                        style={{
-                          background: "var(--bg2)",
-                          border: "1px solid var(--line2)",
-                          borderRadius: 9,
-                          padding: "9px 11px",
-                          fontFamily: "var(--fd)",
-                          fontSize: 11.5,
-                          lineHeight: 1.45,
-                          color: "var(--muted)",
-                          boxShadow: "0 16px 40px -16px var(--shadow)"
-                        }}
-                      >
-                        {ciTip}
-                      </span>
-                    </span>
-                  </span>
+                  {/* The engine's interval is an uncalibrated heuristic — deliberately
+                      not shown (user decision 2026-07-02) until the scoring loop can
+                      back a real coverage claim. */}
+                  <span />
                   <span style={{ color: "var(--faint)" }}>
                     started as a <span style={{ color: "var(--muted)" }}>{meta.prior}</span> prior
                   </span>

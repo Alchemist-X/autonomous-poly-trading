@@ -76,31 +76,6 @@
   padding-right: 2px;
 }
 
-/* --- CI term tooltip --- */
-.rv-report .term {
-  position: relative;
-  cursor: help;
-  border-bottom: 1px dotted currentColor;
-}
-.rv-report .term-tip {
-  position: absolute;
-  left: 0;
-  bottom: calc(100% + 8px);
-  width: 230px;
-  z-index: 40;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(5px);
-  transition: 0.16s;
-  pointer-events: none;
-}
-.rv-report .term:hover .term-tip,
-.rv-report .term:focus-within .term-tip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
 /* --- resolution & framing <details> --- */
 .rv-report details.rf > summary {
   cursor: pointer;

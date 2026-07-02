@@ -40,7 +40,7 @@ One-click publish: frozen static dossier at forecasting-agent.com/f/\<slug\> wit
 ## Continuous (condition-triggered)
 
 - **Calibration backfit** (at N≥~50 resolutions): zero-LLM replay of persisted ledgers to fit the hand-tuned bayes constants; report-only, constant changes require user confirmation + archived fit report.
-- **Ensemble disagreement CI**: opt-in for high-stakes questions only (3× cost).
+- **Ensemble disagreement spread**: opt-in for high-stakes questions only (3× cost); internal/calibration use — no interval is shown to users until coverage is calibrated (user decision 2026-07-02).
 - **Fermi decomposition**: cut; keep the one-line cheap version (audit flags conjunctive questions in framingCaveats).
 
 ## Explicitly cut (audit verdicts)
