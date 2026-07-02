@@ -11,12 +11,18 @@ export function WcHero({
   locale,
   subKey,
   wide,
-  aside
+  aside,
+  metaKey,
+  predictedAt
 }: {
   locale: Locale;
   subKey: StrKey;
   wide?: boolean;
   aside?: ReactNode;
+  // Per-tab overrides: the knockout tab's forecast was locked on a different date
+  // and uses a different method line than the group-stage default.
+  metaKey?: StrKey;
+  predictedAt?: string;
 }) {
   return (
     <section className={styles.hero}>
@@ -25,7 +31,7 @@ export function WcHero({
         {t(locale, subKey)}
       </p>
       <p className={styles.heroMeta}>
-        {t(locale, "heroMeta")} {getGeneratedAt().slice(0, 16).replace("T", " ")} UTC
+        {t(locale, metaKey ?? "heroMeta")} {(predictedAt ?? getGeneratedAt()).slice(0, 10)}
       </p>
       <div className={styles.tabRow}>
         <TabNav />

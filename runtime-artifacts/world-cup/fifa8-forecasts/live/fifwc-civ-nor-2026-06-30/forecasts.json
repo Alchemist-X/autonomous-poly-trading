@@ -1,0 +1,414 @@
+{
+  "fixtureId": "fifwc-civ-nor-2026-06-30",
+  "teamA": "Côte d'Ivoire",
+  "teamB": "Norway",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.3170909131708718,
+        "draw": 0.3441047434067327,
+        "away": 0.3388043434223955
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Côte d'Ivoire",
+          "p": 0.3170909131708718
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.3441047434067327
+        },
+        {
+          "key": "b",
+          "label": "Norway",
+          "p": 0.3388043434223955
+        }
+      ],
+      "headline": "Norway are narrowly ahead to beat Côte d'Ivoire (36.4% to win), though a tight low-scoring draw is very much in play (29.6%).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Norway's attack is projected for about 1.4 goals against Côte d'Ivoire's defence, versus roughly 1.3 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": -2.3
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "Norway carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": -2.9
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 29.6%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.16066514283529243,
+        "draw": 0.27893980197255797,
+        "away": 0.5603950551921497
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Côte d'Ivoire",
+          "p": 0.16066514283529243
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.27893980197255797
+        },
+        {
+          "key": "b",
+          "label": "Norway",
+          "p": 0.5603950551921497
+        }
+      ],
+      "headline": "Norway are the clear favourite to beat Côte d'Ivoire, winning roughly 60 times out of 100 to Côte d'Ivoire's 17.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage Norway created 0.4 more good chances per game than they gave up, versus 0.1 for Côte d'Ivoire — Norway simply made better chances more often.",
+          "contributionPp": -2.9
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "Norway are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": -6.9
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that Côte d'Ivoire would need a clear upset to advance.",
+          "contributionPp": -3.4
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.28857402804434734,
+        "draw": 0.2841066788847665,
+        "away": 0.42731929307088623
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Côte d'Ivoire",
+          "p": 0.28857402804434734
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2841066788847665
+        },
+        {
+          "key": "b",
+          "label": "Norway",
+          "p": 0.42731929307088623
+        }
+      ],
+      "headline": "Norway is the favourite, expected to generate the better scoring chances over 90 minutes.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Côte d'Ivoire has been creating about 1.1 goals of chances a game; Norway's defence usually allows about 1. That points to roughly 1.4 goals for Côte d'Ivoire.",
+          "contributionPp": 3.4
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "Norway has been creating about 1.9 goals of chances a game; Côte d'Ivoire's defence usually allows about 1.5. That points to roughly 1.8 goals for Norway.",
+          "contributionPp": -19.8
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, Côte d'Ivoire projects to outscore Norway by about -0.3 goals on the night.",
+          "contributionPp": -8.3
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.1693508098630481,
+        "draw": 0.2822265933543356,
+        "away": 0.5484225967826163
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Côte d'Ivoire",
+          "p": 0.1693508098630481
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2822265933543356
+        },
+        {
+          "key": "b",
+          "label": "Norway",
+          "p": 0.5484225967826163
+        }
+      ],
+      "headline": "Norway is clearly the stronger side here with about a 59% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "Norway ran a heavier high-intensity workload in the group stage than Côte d'Ivoire, leaving it more likely to tire and fade as this match wears on.",
+          "contributionPp": 0.2
+        },
+        {
+          "label": "Form and strength",
+          "detail": "Norway carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": -10.3
+        },
+        {
+          "label": "Rest edge",
+          "detail": "Côte d'Ivoire comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+          "contributionPp": 0.1
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.17155866461242567,
+        "draw": 0.31995144169026635,
+        "away": 0.508489893697308
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Côte d'Ivoire",
+          "p": 0.17155866461242567
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.31995144169026635
+        },
+        {
+          "key": "b",
+          "label": "Norway",
+          "p": 0.508489893697308
+        }
+      ],
+      "headline": "Norway is the slight favourite — its game style matches up well against Côte d'Ivoire.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "Norway has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": -25.8
+        },
+        {
+          "label": "Style matchup",
+          "detail": "Côte d'Ivoire leans on sitting in a deep block while Norway leans on sitting in a deep block; that clash tilts the game toward Côte d'Ivoire, who is the lower-rated side here.",
+          "contributionPp": 1.3
+        },
+        {
+          "label": "How even it is",
+          "detail": "Norway controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0.3219099202383274,
+        "draw": 0.41436345034997746,
+        "away": 0.2637266294116952
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Côte d'Ivoire",
+          "p": 0.3219099202383274
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.41436345034997746
+        },
+        {
+          "key": "b",
+          "label": "Norway",
+          "p": 0.2637266294116952
+        }
+      ],
+      "headline": "Côte d'Ivoire are narrow favourites to beat Norway, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "Côte d'Ivoire completed line-breaking passes more reliably, slicing through Norway's lines more often.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Converting chances",
+          "detail": "Côte d'Ivoire turned more of its forward runs into real scoring looks than Norway did.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "Norway created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": -1
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.5010105034483616,
+        "draw": 0.13297717454652058,
+        "away": 0.3660123220051178
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Côte d'Ivoire",
+          "p": 0.5010105034483616
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.13297717454652058
+        },
+        {
+          "key": "b",
+          "label": "Norway",
+          "p": 0.3660123220051178
+        }
+      ],
+      "headline": "Côte d'Ivoire is the slight edge (54%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "Côte d'Ivoire spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+          "contributionPp": 0
+        },
+        {
+          "label": "Ball control",
+          "detail": "Côte d'Ivoire keeps the ball more (48% vs 48%), dictating the tempo of build-up.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "Norway has created the better chances on average (1.26 vs 1.71 expected goals a game).",
+          "contributionPp": -8.063051866481366
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.42754778088033296,
+        "draw": 0.3267351306766598,
+        "away": 0.24571708844300727
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Côte d'Ivoire",
+          "p": 0.42754778088033296
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.3267351306766598
+        },
+        {
+          "key": "b",
+          "label": "Norway",
+          "p": 0.24571708844300727
+        }
+      ],
+      "headline": "Pulling every angle together, Côte d'Ivoire is narrowly the side to back here, at about a 46% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "71% of the underlying views lean Norway, so the blended call sides with Côte d'Ivoire with confidence.",
+          "contributionPp": 19.5
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — Côte d'Ivoire edges it, but the result is close to a toss-up.",
+          "contributionPp": 12.6
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Côte d'Ivoire win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.2947134703866259,
+        "draw": 0.29792562686022717,
+        "away": 0.40736090275314696
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Côte d'Ivoire",
+          "p": 0.2947134703866259
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.29792562686022717
+        },
+        {
+          "key": "b",
+          "label": "Norway",
+          "p": 0.40736090275314696
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Norway is the call here at about 41%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Norway at 44%.",
+          "contributionPp": -1.7
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by -2.2 points.",
+          "contributionPp": -2.2
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

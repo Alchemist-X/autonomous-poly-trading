@@ -1,0 +1,535 @@
+{
+  "id": "dixon-coles-bayes",
+  "name": "Dixon-Coles (Bayesian-shrunk)",
+  "family": "statistical",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-t21-t14-2026-07-04",
+      "teamA": "T21",
+      "teamB": "T14",
+      "prediction": {
+        "probs": {
+          "home": 0.854173804440265,
+          "draw": 0.10910247990484395,
+          "away": 0.036723715654891076
+        },
+        "rationale": {
+          "headline": "T21 are a clear favourite to beat T14 (85.4% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T21's attack is projected for about 2.9 goals against T14's defence, versus roughly 0.5 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 81.7
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T21 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 10.9%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t00-t07-2026-07-05",
+      "teamA": "T00",
+      "teamB": "T07",
+      "prediction": {
+        "probs": {
+          "home": 0.6506053930463568,
+          "draw": 0.21776170892644298,
+          "away": 0.1316328980272003
+        },
+        "rationale": {
+          "headline": "T00 are a clear favourite to beat T07 (65.1% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T00's attack is projected for about 2 goals against T07's defence, versus roughly 0.8 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 51.9
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T00 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 21.8%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t25-t02-2026-07-06",
+      "teamA": "T25",
+      "teamB": "T02",
+      "prediction": {
+        "probs": {
+          "home": 0.6404713405949773,
+          "draw": 0.23680069033119105,
+          "away": 0.1227279690738316
+        },
+        "rationale": {
+          "headline": "T25 are a clear favourite to beat T02 (64% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T25's attack is projected for about 1.7 goals against T02's defence, versus roughly 0.6 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 51.8
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T25 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 23.7%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t12-t43-2026-07-07",
+      "teamA": "T12",
+      "teamB": "T43",
+      "prediction": {
+        "probs": {
+          "home": 0.4362028583518107,
+          "draw": 0.2700958750308892,
+          "away": 0.2937012666173001
+        },
+        "rationale": {
+          "headline": "T12 are narrowly ahead to beat T43 (43.6% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T12's attack is projected for about 1.5 goals against T43's defence, versus roughly 1.2 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 14.3
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T12 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 7.7
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 27%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t30-t23-2026-07-08",
+      "teamA": "T30",
+      "teamB": "T23",
+      "prediction": {
+        "probs": {
+          "home": 0.5771601803636648,
+          "draw": 0.22554477165817965,
+          "away": 0.19729504797815553
+        },
+        "rationale": {
+          "headline": "T30 are a slight favourite to beat T23 (57.7% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T30's attack is projected for about 2 goals against T23's defence, versus roughly 1.1 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 38
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T30 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 22.6%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t06-t28-2026-07-09",
+      "teamA": "T06",
+      "teamB": "T28",
+      "prediction": {
+        "probs": {
+          "home": 0.6196708238096772,
+          "draw": 0.23845859001582437,
+          "away": 0.14187058617449846
+        },
+        "rationale": {
+          "headline": "T06 are a clear favourite to beat T28 (62% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T06's attack is projected for about 1.8 goals against T28's defence, versus roughly 0.7 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 47.8
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T06 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 23.8%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t24-t31-2026-07-04",
+      "teamA": "T24",
+      "teamB": "T31",
+      "prediction": {
+        "probs": {
+          "home": 0.6015993910644708,
+          "draw": 0.24596696583823946,
+          "away": 0.15243364309728977
+        },
+        "rationale": {
+          "headline": "T24 are a clear favourite to beat T31 (60.2% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T24's attack is projected for about 1.7 goals against T31's defence, versus roughly 0.7 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 44.9
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T24 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 24.6%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t33-t27-2026-07-05",
+      "teamA": "T33",
+      "teamB": "T27",
+      "prediction": {
+        "probs": {
+          "home": 0.5332488030131862,
+          "draw": 0.2543011974194227,
+          "away": 0.21244999956739105
+        },
+        "rationale": {
+          "headline": "T33 are a slight favourite to beat T27 (53.3% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T33's attack is projected for about 1.7 goals against T27's defence, versus roughly 1 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 32.1
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T33 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 25.4%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t45-t47-2026-07-06",
+      "teamA": "T45",
+      "teamB": "T47",
+      "prediction": {
+        "probs": {
+          "home": 0.5102912858605716,
+          "draw": 0.27384567083146677,
+          "away": 0.21586304330796158
+        },
+        "rationale": {
+          "headline": "T45 are a slight favourite to beat T47 (51% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T45's attack is projected for about 1.5 goals against T47's defence, versus roughly 0.9 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 29.4
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T45 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 27.4%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t34-t39-2026-07-07",
+      "teamA": "T34",
+      "teamB": "T39",
+      "prediction": {
+        "probs": {
+          "home": 0.566756256599021,
+          "draw": 0.2826840651510099,
+          "away": 0.15055967824996916
+        },
+        "rationale": {
+          "headline": "T34 are a slight favourite to beat T39 (56.7% to win), though a tight low-scoring draw is very much in play (28.3%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T34's attack is projected for about 1.4 goals against T39's defence, versus roughly 0.6 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 41.6
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T34 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 28.3%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t18-t32-2026-07-08",
+      "teamA": "T18",
+      "teamB": "T32",
+      "prediction": {
+        "probs": {
+          "home": 0.4136375359360005,
+          "draw": 0.30027950628259537,
+          "away": 0.2860829577814041
+        },
+        "rationale": {
+          "headline": "T18 are narrowly ahead to beat T32 (41.4% to win), though a tight low-scoring draw is very much in play (30%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T18's attack is projected for about 1.2 goals against T32's defence, versus roughly 1 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 12.8
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T18 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 7.1
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 30%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t16-t29-2026-07-09",
+      "teamA": "T16",
+      "teamB": "T29",
+      "prediction": {
+        "probs": {
+          "home": 0.4875313556536883,
+          "draw": 0.27203113346244123,
+          "away": 0.24043751088387047
+        },
+        "rationale": {
+          "headline": "T16 are a slight favourite to beat T29 (48.8% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T16's attack is projected for about 1.5 goals against T29's defence, versus roughly 1 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 24.7
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T16 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 27.2%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t20-t38-2026-07-04",
+      "teamA": "T20",
+      "teamB": "T38",
+      "prediction": {
+        "probs": {
+          "home": 0.3672058141601994,
+          "draw": 0.2801193044405978,
+          "away": 0.35267488139920283
+        },
+        "rationale": {
+          "headline": "T20 are narrowly ahead to beat T38 (36.7% to win), though a tight low-scoring draw is very much in play (28%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T20's attack is projected for about 1.3 goals against T38's defence, versus roughly 1.3 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 1.5
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T20 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 2.6
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 28%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t03-t46-2026-07-05",
+      "teamA": "T03",
+      "teamB": "T46",
+      "prediction": {
+        "probs": {
+          "home": 0.5475343643158237,
+          "draw": 0.2536219101907254,
+          "away": 0.19884372549345103
+        },
+        "rationale": {
+          "headline": "T03 are a slight favourite to beat T46 (54.8% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T03's attack is projected for about 1.7 goals against T46's defence, versus roughly 0.9 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 34.9
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T03 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 25.4%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t05-t37-2026-07-06",
+      "teamA": "T05",
+      "teamB": "T37",
+      "prediction": {
+        "probs": {
+          "home": 0.37311343330355096,
+          "draw": 0.2908699702175286,
+          "away": 0.3360165964789205
+        },
+        "rationale": {
+          "headline": "T05 are narrowly ahead to beat T37 (37.3% to win), though a tight low-scoring draw is very much in play (29.1%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T05's attack is projected for about 1.2 goals against T37's defence, versus roughly 1.2 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 3.7
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T05 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 3.5
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 29.1%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t17-t11-2026-07-07",
+      "teamA": "T17",
+      "teamB": "T11",
+      "prediction": {
+        "probs": {
+          "home": 0.40442820337580504,
+          "draw": 0.27928092046352787,
+          "away": 0.3162908761606671
+        },
+        "rationale": {
+          "headline": "T17 are narrowly ahead to beat T11 (40.4% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "T17's attack is projected for about 1.4 goals against T11's defence, versus roughly 1.2 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 8.8
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "T17 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 5.5
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 27.9%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    }
+  ]
+}

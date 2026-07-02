@@ -186,6 +186,12 @@ importers:
         specifier: 0.31.9
         version: 0.31.9
 
+  packages/fifa-models:
+    dependencies:
+      '@autopoly/sports-model':
+        specifier: workspace:*
+        version: link:../sports-model
+
   packages/norns: {}
 
   packages/raven-ui:

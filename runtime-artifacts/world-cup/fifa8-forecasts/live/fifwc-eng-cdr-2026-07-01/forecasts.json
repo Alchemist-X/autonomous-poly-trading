@@ -1,0 +1,419 @@
+{
+  "fixtureId": "fifwc-eng-cdr-2026-07-01",
+  "teamA": "England",
+  "teamB": "DR Congo",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.6303815035753155,
+        "draw": 0.2799550385874899,
+        "away": 0.08966345783719464
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "England",
+          "p": 0.6303815035753155
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2799550385874899
+        },
+        {
+          "key": "b",
+          "label": "DR Congo",
+          "p": 0.08966345783719464
+        }
+      ],
+      "headline": "England are a clear favourite to beat DR Congo (67.1% to win).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "England's attack is projected for about 1.9 goals against DR Congo's defence, versus roughly 0.6 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": 57.6
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "England carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 23.3%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.6814916433481714,
+        "draw": 0.23153131533930169,
+        "away": 0.0869770413125269
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "England",
+          "p": 0.6814916433481714
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.23153131533930169
+        },
+        {
+          "key": "b",
+          "label": "DR Congo",
+          "p": 0.0869770413125269
+        }
+      ],
+      "headline": "England are the clear favourite to beat DR Congo, winning roughly 73 times out of 100 to DR Congo's 9.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage England created 1.6 more good chances per game than they gave up, versus 0.3 for DR Congo — England simply made better chances more often.",
+          "contributionPp": 8.1
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "England are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that DR Congo would need a clear upset to advance.",
+          "contributionPp": 4
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.5004163078281536,
+        "draw": 0.2411817471681835,
+        "away": 0.25840194500366287
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "England",
+          "p": 0.5004163078281536
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2411817471681835
+        },
+        {
+          "key": "b",
+          "label": "DR Congo",
+          "p": 0.25840194500366287
+        }
+      ],
+      "headline": "England is clearly favoured, expected to generate the better scoring chances over 90 minutes.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "England has been creating about 2.3 goals of chances a game; DR Congo's defence usually allows about 1.2. That points to roughly 2.4 goals for England.",
+          "contributionPp": 39.9
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "DR Congo has been creating about 1.1 goals of chances a game; England's defence usually allows about 0.7. That points to roughly 1.8 goals for DR Congo.",
+          "contributionPp": -19.1
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, England projects to outscore DR Congo by about 0.7 goals on the night.",
+          "contributionPp": 15.7
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.6726457302527302,
+        "draw": 0.23529658288390082,
+        "away": 0.09205768686336895
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "England",
+          "p": 0.6726457302527302
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.23529658288390082
+        },
+        {
+          "key": "b",
+          "label": "DR Congo",
+          "p": 0.09205768686336895
+        }
+      ],
+      "headline": "England is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "England ran a heavier high-intensity workload in the group stage than DR Congo, leaving it more likely to tire and fade as this match wears on.",
+          "contributionPp": -0.5
+        },
+        {
+          "label": "Form and strength",
+          "detail": "England carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": 17.7
+        },
+        {
+          "label": "Rest edge",
+          "detail": "DR Congo comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+          "contributionPp": -0.3
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.5397735448991979,
+        "draw": 0.30619752535097433,
+        "away": 0.15402892974982782
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "England",
+          "p": 0.5397735448991979
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.30619752535097433
+        },
+        {
+          "key": "b",
+          "label": "DR Congo",
+          "p": 0.15402892974982782
+        }
+      ],
+      "headline": "England is the slight favourite — its game style matches up well against DR Congo.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "England has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": 26.7
+        },
+        {
+          "label": "Style matchup",
+          "detail": "England leans on keeping the ball while DR Congo leans on sitting in a deep block; that clash tilts the game toward England.",
+          "contributionPp": 1.5
+        },
+        {
+          "label": "How even it is",
+          "detail": "England controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0.49282326791323144,
+        "draw": 0.46337365442175726,
+        "away": 0.04380307766501128
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "England",
+          "p": 0.49282326791323144
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.46337365442175726
+        },
+        {
+          "key": "b",
+          "label": "DR Congo",
+          "p": 0.04380307766501128
+        }
+      ],
+      "headline": "England are clear favourites to beat DR Congo, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "England completed line-breaking passes more reliably, slicing through DR Congo's lines more often.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Converting chances",
+          "detail": "England turned more of its forward runs into real scoring looks than DR Congo did.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "England created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": 18.3
+        },
+        {
+          "label": "Controlling the ball",
+          "detail": "England held possession noticeably more, keeping DR Congo chasing the game.",
+          "contributionPp": 1.7
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.6670801288838211,
+        "draw": 0.2814986959587168,
+        "away": 0.05142117515746215
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "England",
+          "p": 0.6670801288838211
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2814986959587168
+        },
+        {
+          "key": "b",
+          "label": "DR Congo",
+          "p": 0.05142117515746215
+        }
+      ],
+      "headline": "England is the clear favourite (71%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "England spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+          "contributionPp": 0
+        },
+        {
+          "label": "Ball control",
+          "detail": "England keeps the ball more (55% vs 44%), dictating the tempo of build-up.",
+          "contributionPp": 1.6974999999999993
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "England has created the better chances on average (2.07 vs 1.09 expected goals a game).",
+          "contributionPp": 17.53951910885573
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.4582930079232805,
+        "draw": 0.32335024808623547,
+        "away": 0.21835674399048405
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "England",
+          "p": 0.4582930079232805
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.32335024808623547
+        },
+        {
+          "key": "b",
+          "label": "DR Congo",
+          "p": 0.21835674399048405
+        }
+      ],
+      "headline": "Pulling every angle together, England is narrowly the side to back here, at about a 49% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "100% of the underlying views lean England, so the blended call sides with England with confidence.",
+          "contributionPp": 25.6
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — England edges it, but the result is close to a toss-up.",
+          "contributionPp": 15.5
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(England win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.5803631418279878,
+        "draw": 0.29529810097457,
+        "away": 0.12433875719744233
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "England",
+          "p": 0.5803631418279878
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.29529810097457
+        },
+        {
+          "key": "b",
+          "label": "DR Congo",
+          "p": 0.12433875719744233
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, England is the call here at about 58%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours England at 62%.",
+          "contributionPp": 28.5
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by -3.8 points.",
+          "contributionPp": -3.8
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

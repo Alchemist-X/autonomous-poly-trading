@@ -48,7 +48,7 @@ export default async function ForecastReportPage({
           {useEn ? "中文版" : "English"}
         </Link>
         {" · "}
-        {t(locale, "forecastTime")} {forecast.generated_at.slice(0, 16).replace("T", " ")} UTC
+        {t(locale, "forecastTime")} {forecast.generated_at.slice(0, 10)}
       </p>
       <article className={styles.reportProse} dangerouslySetInnerHTML={{ __html: html }} />
     </div>

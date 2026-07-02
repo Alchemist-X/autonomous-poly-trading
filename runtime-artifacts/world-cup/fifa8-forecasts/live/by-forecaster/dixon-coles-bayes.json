@@ -1,0 +1,502 @@
+{
+  "id": "dixon-coles-bayes",
+  "name": "Dixon-Coles (Bayesian-shrunk)",
+  "family": "statistical",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.4428657635166988,
+          "draw": 0.41490021467079435,
+          "away": 0.14223402181250683
+        },
+        "rationale": {
+          "headline": "Brazil are a slight favourite to beat Japan (52% to win), though a tight low-scoring draw is very much in play (31.3%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Brazil's attack is projected for about 1.4 goals against Japan's defence, versus roughly 0.7 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 35.3
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Brazil carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 31.3%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.479084383361718,
+          "draw": 0.3763647959614196,
+          "away": 0.14455082067686245
+        },
+        "rationale": {
+          "headline": "Germany are a slight favourite to beat Paraguay (55.8% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Germany's attack is projected for about 1.7 goals against Paraguay's defence, versus roughly 0.8 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 39
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Germany carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 27.3%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.34266624163388726,
+          "draw": 0.3921744724564031,
+          "away": 0.26515928590970955
+        },
+        "rationale": {
+          "headline": "Netherlands are narrowly ahead to beat Morocco (38.7% to win), though a tight low-scoring draw is very much in play (31.3%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Netherlands's attack is projected for about 1.3 goals against Morocco's defence, versus roughly 1.1 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 8.8
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Netherlands carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 5.5
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 31.3%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.3170909131708718,
+          "draw": 0.3441047434067327,
+          "away": 0.3388043434223955
+        },
+        "rationale": {
+          "headline": "Norway are narrowly ahead to beat Côte d'Ivoire (36.4% to win), though a tight low-scoring draw is very much in play (29.6%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Norway's attack is projected for about 1.4 goals against Côte d'Ivoire's defence, versus roughly 1.3 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": -2.3
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Norway carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": -2.9
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 29.6%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.6858927096335931,
+          "draw": 0.23842427174694508,
+          "away": 0.07568301861946189
+        },
+        "rationale": {
+          "headline": "France are a clear favourite to beat Sweden (73% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "France's attack is projected for about 2.3 goals against Sweden's defence, versus roughly 0.7 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 64.9
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "France carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 19%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.2820821134319759,
+          "draw": 0.4680453583480467,
+          "away": 0.24987252821997735
+        },
+        "rationale": {
+          "headline": "Mexico are narrowly ahead to beat Ecuador (33.3% to win), though a tight low-scoring draw is very much in play (37.2%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Mexico's attack is projected for about 0.9 goals against Ecuador's defence, versus roughly 0.9 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 3.8
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Mexico carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 3.5
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 37.2%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.45535748143463706,
+          "draw": 0.3824903951599937,
+          "away": 0.16215212340536925
+        },
+        "rationale": {
+          "headline": "Belgium are a slight favourite to beat Senegal (54.5% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Belgium's attack is projected for about 1.8 goals against Senegal's defence, versus roughly 1 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 35.1
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Belgium carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 26.1%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.6303815035753155,
+          "draw": 0.2799550385874899,
+          "away": 0.08966345783719464
+        },
+        "rationale": {
+          "headline": "England are a clear favourite to beat DR Congo (67.1% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "England's attack is projected for about 1.9 goals against DR Congo's defence, versus roughly 0.6 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 57.6
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "England carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 23.3%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.5099344087047315,
+          "draw": 0.3562133999032684,
+          "away": 0.13385219139200016
+        },
+        "rationale": {
+          "headline": "United States are a slight favourite to beat Bosnia-Herzegovina (58.5% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "United States's attack is projected for about 1.8 goals against Bosnia-Herzegovina's defence, versus roughly 0.8 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 43.1
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "United States carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 26.1%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.5535085938638294,
+          "draw": 0.31307425505829767,
+          "away": 0.13341715107787291
+        },
+        "rationale": {
+          "headline": "Switzerland are a clear favourite to beat Algeria (62.2% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Switzerland's attack is projected for about 2.1 goals against Algeria's defence, versus roughly 1 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 47.2
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Switzerland carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 22.8%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.7572522004884407,
+          "draw": 0.20177972501430805,
+          "away": 0.040968074497251206
+        },
+        "rationale": {
+          "headline": "Spain are a clear favourite to beat Austria (79.6% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Spain's attack is projected for about 2.4 goals against Austria's defence, versus roughly 0.4 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 75.3
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Spain carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 16.1%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.45820179644141457,
+          "draw": 0.4125825553280348,
+          "away": 0.1292156482305507
+        },
+        "rationale": {
+          "headline": "Portugal are a slight favourite to beat Croatia (54% to win), though a tight low-scoring draw is very much in play (30.8%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Portugal's attack is projected for about 1.4 goals against Croatia's defence, versus roughly 0.6 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 38.7
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Portugal carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 30.8%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.7029652972551682,
+          "draw": 0.2534737409542588,
+          "away": 0.043560961790573026
+        },
+        "rationale": {
+          "headline": "Argentina are a clear favourite to beat Cabo Verde (76% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Argentina's attack is projected for about 2 goals against Cabo Verde's defence, versus roughly 0.4 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 71.3
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Argentina carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 19.3%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0.2816240769181045,
+          "draw": 0.4729146234382765,
+          "away": 0.24546129964361907
+        },
+        "rationale": {
+          "headline": "Australia are narrowly ahead to beat Egypt (34.1% to win), though a tight low-scoring draw is very much in play (36.2%).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Australia's attack is projected for about 1 goals against Egypt's defence, versus roughly 0.9 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 4.4
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Australia carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 3.8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 36.2%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.6322207892155699,
+          "draw": 0.3024681139289097,
+          "away": 0.06531109685552038
+        },
+        "rationale": {
+          "headline": "Colombia are a clear favourite to beat Ghana (68.5% to win).",
+          "drivers": [
+            {
+              "label": "Attack vs defence",
+              "detail": "Colombia's attack is projected for about 1.7 goals against Ghana's defence, versus roughly 0.4 the other way — the scoring gap is what tilts the call.",
+              "contributionPp": 61.4
+            },
+            {
+              "label": "Goal-creation strength",
+              "detail": "Colombia carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Low-scoring caution",
+              "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 24.4%.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+        }
+      }
+    }
+  ]
+}

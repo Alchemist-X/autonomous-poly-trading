@@ -1,0 +1,92 @@
+[
+  {
+    "id": "linebreak-gbm",
+    "name": "Line-breaks & offers efficiency (gradient-boosted)",
+    "logLoss": 0.2168783950514461,
+    "brier": 0.07730236477221744,
+    "rps": 0.027946485529982093,
+    "accuracy": 1,
+    "ece": 0.1863844181607683,
+    "n": 72
+  },
+  {
+    "id": "passnet-rf",
+    "name": "Passing-network structure (random forest)",
+    "logLoss": 0.41058698654506365,
+    "brier": 0.20041709343998387,
+    "rps": 0.07085369373617939,
+    "accuracy": 0.9583333333333334,
+    "ece": 0.2762951295463093,
+    "n": 72
+  },
+  {
+    "id": "multicalibrated",
+    "name": "Multi-calibrated 8-in-1",
+    "logLoss": 0.6125436766768312,
+    "brier": 0.3377195517331937,
+    "rps": 0.11315058929525423,
+    "accuracy": 0.8333333333333334,
+    "ece": 0.24531026729524674,
+    "n": 72
+  },
+  {
+    "id": "tactical-melo",
+    "name": "Tactical style-clash mElo",
+    "logLoss": 0.6300894260705068,
+    "brier": 0.3579442674432022,
+    "rps": 0.10350963188682595,
+    "accuracy": 0.7222222222222222,
+    "ece": 0.13608016274925108,
+    "n": 72
+  },
+  {
+    "id": "fatigue-elo",
+    "name": "Physical-decay dynamic-K Elo",
+    "logLoss": 0.8849628301742902,
+    "brier": 0.517779610782661,
+    "rps": 0.17500841629761993,
+    "accuracy": 0.6111111111111112,
+    "ece": 0.06500088510871894,
+    "n": 72
+  },
+  {
+    "id": "xg-elo",
+    "name": "xG-corrected Elo",
+    "logLoss": 0.9232051878896035,
+    "brier": 0.5452174254960086,
+    "rps": 0.1881908622069097,
+    "accuracy": 0.5833333333333334,
+    "ece": 0.053229978254835934,
+    "n": 72
+  },
+  {
+    "id": "dixon-coles-bayes",
+    "name": "Dixon-Coles (Bayesian-shrunk)",
+    "logLoss": 0.9233880259563656,
+    "brier": 0.5411390820947852,
+    "rps": 0.1878765676942908,
+    "accuracy": 0.5555555555555556,
+    "ece": 0.10595803912084029,
+    "n": 72
+  },
+  {
+    "id": "stacked-ensemble",
+    "name": "Stacked Ensemble",
+    "logLoss": 0.984864242264953,
+    "brier": 0.5888635874191539,
+    "rps": 0.21305786767210988,
+    "accuracy": 0.4305555555555556,
+    "ece": 0.18726236264650226,
+    "n": 72
+  },
+  {
+    "id": "prodegy",
+    "name": "PRODEGY split attack/defence Elo",
+    "logLoss": 1.1327880173484943,
+    "brier": 0.6855918117164805,
+    "rps": 0.23911705848092357,
+    "accuracy": 0.4444444444444444,
+    "ece": 0.10561879725615464,
+    "n": 72
+  }
+]

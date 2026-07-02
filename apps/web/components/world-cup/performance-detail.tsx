@@ -3,9 +3,10 @@ import { resolveTeam } from "../../lib/world-cup/team-meta";
 import { t, teamLabel, type Locale } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
 
-// 预测效果 / track-record detail: four headline metrics + a per-match read of our
-// win/draw/loss probabilities vs the market at forecast time, with the mock trade
-// on each of the three markets. Percentages only — no money is shown.
+// 预测效果 / track-record detail: four headline metrics, one plain-language
+// betting rule, then the full per-match read (collapsed by default) of our
+// win/draw/loss probabilities vs the market at forecast time. Percentages only —
+// no money is shown.
 
 const SEG_CLASS = [styles.perfSegA, styles.perfSegD, styles.perfSegB] as const;
 const WIDX: Record<LegKey, number> = { a: 0, draw: 1, b: 2 };
@@ -42,15 +43,17 @@ function LegChip({ leg, locale }: { leg: PerfLeg; locale: Locale }) {
 function MatchRow({ m, locale }: { m: PerfMatch; locale: Locale }) {
   const home = resolveTeam(m.homeEn);
   const away = resolveTeam(m.awayEn);
-  const score = m.score ? m.score.replace("-", " – ") : "—";
+  // Most fixtures carry an exact score; a few settle winner-only (the exact-score
+  // feed had no result). Show the outcome (主胜/平/客胜) rather than an empty dash.
+  const score = m.score ? m.score.replace("-", " – ") : legName(m.winner, locale);
   return (
     <div className={styles.perfMatch}>
       <div className={styles.perfMatchHead}>
-        <span className={m.winner === "a" ? styles.perfTeamWin : undefined}>
+        <span className={`${styles.perfTeamHome} ${m.winner === "a" ? styles.perfTeamWin : ""}`}>
           {home.flag} {teamLabel(home, locale)}
         </span>
-        <span className={styles.perfScore}>{score}</span>
-        <span className={m.winner === "b" ? styles.perfTeamWin : undefined}>
+        <span className={`${styles.perfScore} ${m.score ? "" : styles.perfScoreOutcome}`}>{score}</span>
+        <span className={`${styles.perfTeamAway} ${m.winner === "b" ? styles.perfTeamWin : ""}`}>
           {teamLabel(away, locale)} {away.flag}
         </span>
       </div>
@@ -69,12 +72,21 @@ function MatchRow({ m, locale }: { m: PerfMatch; locale: Locale }) {
   );
 }
 
+// A match's mock return = the sum of its bet legs (skipped legs contribute 0).
+// Used to surface our biggest calls first.
+function matchReturn(m: PerfMatch): number {
+  return m.legs.reduce((sum, l) => sum + (l.retPct ?? 0), 0);
+}
+
 export function PerformanceDetail({ locale }: { locale: Locale }) {
   const { agg, matches, bins } = getPerformance();
   const sign = (n: number) => `${n >= 0 ? "+" : "−"}${Math.abs(n)}%`;
+  const ranked = [...matches].sort((a, b) => matchReturn(b) - matchReturn(a));
+  const topMatches = ranked.slice(0, 3);
+  const restMatches = ranked.slice(3);
   const cards = [
-    { label: t(locale, "perfHitRate"), value: `${agg.bestPickPct}%`, sub: `${agg.bestPickHit}/${agg.settled} · ${t(locale, "perfHitRateNote")}`, cls: styles.perfNeutral },
-    { label: t(locale, "perfPnl"), value: sign(agg.roiPct), sub: t(locale, "perfPnlNote"), cls: agg.roiPct >= 0 ? styles.perfPos : styles.perfNeg },
+    { label: t(locale, "perfHitRate"), value: `${agg.bestPickPct}%`, sub: `${agg.bestPickHit} / ${agg.settled} ${t(locale, "perfHitRateNote")}`, cls: styles.perfNeutral },
+    { label: t(locale, "perfPnl"), value: sign(agg.roiPct), sub: `${agg.bets} ${t(locale, "perfBetsWord")}`, cls: agg.roiPct >= 0 ? styles.perfPos : styles.perfNeg },
     { label: t(locale, "perfSkill"), value: sign(agg.bssPct), sub: t(locale, "perfSkillNote"), cls: agg.bssPct >= 0 ? styles.perfPos : styles.perfNeg },
     { label: t(locale, "perfEce"), value: `${agg.ecePct}%`, sub: t(locale, "perfEceNote"), cls: styles.perfNeutral }
   ];
@@ -90,13 +102,30 @@ export function PerformanceDetail({ locale }: { locale: Locale }) {
         ))}
       </div>
 
-      <p className={styles.perfLegend}>{t(locale, "perfLegendNote")}</p>
+      <div className={styles.perfRule}>
+        <p className={styles.perfRuleLine}>{t(locale, "perfRule")}</p>
+        <p className={styles.perfRuleTerms}>{t(locale, "perfRuleTerms")}</p>
+      </div>
 
+      <p className={styles.perfTopLabel}>{t(locale, "perfTopLabel")}</p>
+      <p className={styles.perfLegend}>{t(locale, "perfLegendNote")}</p>
       <div className={styles.perfList}>
-        {matches.map((m) => (
+        {topMatches.map((m) => (
           <MatchRow key={m.slug} m={m} locale={locale} />
         ))}
       </div>
+      {restMatches.length > 0 ? (
+        <details className={styles.perfAll}>
+          <summary className={styles.perfAllSummary}>
+            {t(locale, "perfShowRest").replace("{n}", String(restMatches.length))}
+          </summary>
+          <div className={styles.perfList}>
+            {restMatches.map((m) => (
+              <MatchRow key={m.slug} m={m} locale={locale} />
+            ))}
+          </div>
+        </details>
+      ) : null}
 
       <h2 className={styles.perfCalibTitle}>{t(locale, "perfCalibTitle")}</h2>
       <p className={styles.perfCalibNote}>{t(locale, "perfCalibNote")}</p>

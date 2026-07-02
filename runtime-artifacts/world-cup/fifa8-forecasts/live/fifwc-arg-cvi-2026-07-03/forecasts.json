@@ -1,0 +1,414 @@
+{
+  "fixtureId": "fifwc-arg-cvi-2026-07-03",
+  "teamA": "Argentina",
+  "teamB": "Cabo Verde",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.7029652972551682,
+        "draw": 0.2534737409542588,
+        "away": 0.043560961790573026
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Argentina",
+          "p": 0.7029652972551682
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2534737409542588
+        },
+        {
+          "key": "b",
+          "label": "Cabo Verde",
+          "p": 0.043560961790573026
+        }
+      ],
+      "headline": "Argentina are a clear favourite to beat Cabo Verde (76% to win).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Argentina's attack is projected for about 2 goals against Cabo Verde's defence, versus roughly 0.4 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": 71.3
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "Argentina carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 19.3%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=-0.1 (league baseline 1.5 goals/side, goal scale 1); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.7727576559318452,
+        "draw": 0.19162836614205522,
+        "away": 0.03561397792609946
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Argentina",
+          "p": 0.7727576559318452
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.19162836614205522
+        },
+        {
+          "key": "b",
+          "label": "Cabo Verde",
+          "p": 0.03561397792609946
+        }
+      ],
+      "headline": "Argentina are the clear favourite to beat Cabo Verde, winning roughly 84 times out of 100 to Cabo Verde's 4.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage Argentina created 1.5 more good chances per game than they gave up, versus 0.9 for Cabo Verde — Argentina simply made better chances more often.",
+          "contributionPp": 12
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "Argentina are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that Cabo Verde would need a clear upset to advance.",
+          "contributionPp": 4
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.474063126420049,
+        "draw": 0.2670227933227292,
+        "away": 0.25891408025722185
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Argentina",
+          "p": 0.474063126420049
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2670227933227292
+        },
+        {
+          "key": "b",
+          "label": "Cabo Verde",
+          "p": 0.25891408025722185
+        }
+      ],
+      "headline": "Argentina is the favourite, expected to generate the better scoring chances over 90 minutes.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "Argentina has been creating about 2.6 goals of chances a game; Cabo Verde's defence usually allows about 1.8. That points to roughly 2.2 goals for Argentina.",
+          "contributionPp": 33.2
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "Cabo Verde has been creating about 0.8 goals of chances a game; Argentina's defence usually allows about 0.5. That points to roughly 1.6 goals for Cabo Verde.",
+          "contributionPp": -10.4
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, Argentina projects to outscore Cabo Verde by about 0.6 goals on the night.",
+          "contributionPp": 13.6
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.7690958898437462,
+        "draw": 0.19378138831647385,
+        "away": 0.03712272183977996
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Argentina",
+          "p": 0.7690958898437462
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.19378138831647385
+        },
+        {
+          "key": "b",
+          "label": "Cabo Verde",
+          "p": 0.03712272183977996
+        }
+      ],
+      "headline": "Argentina is clearly the stronger side here with about a 83% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "Argentina and Cabo Verde ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Form and strength",
+          "detail": "Argentina carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": 26.3
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.7715737953484875,
+        "draw": 0.2004298473358837,
+        "away": 0.027996357315628908
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Argentina",
+          "p": 0.7715737953484875
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2004298473358837
+        },
+        {
+          "key": "b",
+          "label": "Cabo Verde",
+          "p": 0.027996357315628908
+        }
+      ],
+      "headline": "Argentina is the clear favourite — its game style matches up well against Cabo Verde.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "Argentina has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": 46.9
+        },
+        {
+          "label": "Style matchup",
+          "detail": "Argentina leans on sitting in a deep block while Cabo Verde leans on sitting in a deep block; that clash tilts the game toward Cabo Verde, who is the lower-rated side here.",
+          "contributionPp": -3.4
+        },
+        {
+          "label": "How even it is",
+          "detail": "Argentina controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0.6974459455994002,
+        "draw": 0.2599317217709935,
+        "away": 0.042622332629606234
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Argentina",
+          "p": 0.6974459455994002
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2599317217709935
+        },
+        {
+          "key": "b",
+          "label": "Cabo Verde",
+          "p": 0.042622332629606234
+        }
+      ],
+      "headline": "Argentina are clear favourites to beat Cabo Verde, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "Argentina completed line-breaking passes more reliably, slicing through Cabo Verde's lines more often.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Converting chances",
+          "detail": "Argentina turned more of its forward runs into real scoring looks than Cabo Verde did.",
+          "contributionPp": 0
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "Argentina created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": 24.9
+        },
+        {
+          "label": "Controlling the ball",
+          "detail": "Argentina held possession noticeably more, keeping Cabo Verde chasing the game.",
+          "contributionPp": 1.3
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.517502915480484,
+        "draw": 0.362605797555724,
+        "away": 0.11989128696379193
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Argentina",
+          "p": 0.517502915480484
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.362605797555724
+        },
+        {
+          "key": "b",
+          "label": "Cabo Verde",
+          "p": 0.11989128696379193
+        }
+      ],
+      "headline": "Argentina is the clear favourite (56%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "Argentina spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+          "contributionPp": 0
+        },
+        {
+          "label": "Ball control",
+          "detail": "Argentina keeps the ball more (52% vs 43%), dictating the tempo of build-up.",
+          "contributionPp": 1.3399999999999983
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "Argentina has created the better chances on average (2.22 vs 0.89 expected goals a game).",
+          "contributionPp": 23.967541132660266
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.4653970505813047,
+        "draw": 0.32695105762879617,
+        "away": 0.2076518917898991
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Argentina",
+          "p": 0.4653970505813047
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.32695105762879617
+        },
+        {
+          "key": "b",
+          "label": "Cabo Verde",
+          "p": 0.2076518917898991
+        }
+      ],
+      "headline": "Pulling every angle together, Argentina is narrowly the side to back here, at about a 50% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "100% of the underlying views lean Argentina, so the blended call sides with Argentina with confidence.",
+          "contributionPp": 27.9
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — Argentina edges it, but the result is close to a toss-up.",
+          "contributionPp": 17
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Argentina win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.6463502095575607,
+        "draw": 0.2569780891283643,
+        "away": 0.09667170131407507
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "Argentina",
+          "p": 0.6463502095575607
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2569780891283643
+        },
+        {
+          "key": "b",
+          "label": "Cabo Verde",
+          "p": 0.09667170131407507
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, Argentina is the call here at about 65%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Argentina at 70%.",
+          "contributionPp": 36.6
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by -5.3 points.",
+          "contributionPp": -5.3
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

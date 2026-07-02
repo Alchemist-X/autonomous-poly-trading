@@ -1,17 +1,54 @@
 {
- "generatedAt": "2026-06-20T10:02:09.199Z",
+ "generatedAt": "2026-06-29T01:55:31.346Z",
  "agg": {
-  "settled": 32,
-  "bestPickHit": 16,
-  "bestPickPct": 50,
-  "roiPct": 27.3,
-  "bets": 55,
-  "wins": 21,
-  "skips": 41,
-  "bssPct": -10.2,
-  "ecePct": 14.6
+  "settled": 72,
+  "bestPickHit": 46,
+  "bestPickPct": 64,
+  "roiPct": -10.7,
+  "bets": 132,
+  "wins": 49,
+  "skips": 84,
+  "bssPct": -7.7,
+  "ecePct": 6.7
  },
  "matches": [
+  {
+   "slug": "fifwc-alg-aut-2026-06-27",
+   "homeEn": "Algeria",
+   "awayEn": "Austria",
+   "score": "3-3",
+   "winner": "draw",
+   "our": [
+    0.33,
+    0.26,
+    0.41
+   ],
+   "mkt": [
+    0.25,
+    0.31,
+    0.44
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 80.2,
+     "win": true
+    }
+   ]
+  },
   {
    "slug": "fifwc-arg-alg-2026-06-16",
    "homeEn": "Argentina",
@@ -34,6 +71,43 @@
      "side": "skip",
      "retPct": null,
      "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-arg-aut-2026-06-22",
+   "homeEn": "Argentina",
+   "awayEn": "Austria",
+   "score": "2-0",
+   "winner": "a",
+   "our": [
+    0.65,
+    0.22,
+    0.14
+   ],
+   "mkt": [
+    0.6,
+    0.23,
+    0.16
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": 65.3,
+     "win": true
     },
     {
      "leg": "draw",
@@ -156,6 +230,80 @@
      "leg": "b",
      "side": "skip",
      "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-bel-irn-2026-06-21",
+   "homeEn": "Belgium",
+   "awayEn": "IR Iran",
+   "score": "0-0",
+   "winner": "draw",
+   "our": [
+    0.52,
+    0.24,
+    0.24
+   ],
+   "mkt": [
+    0.7,
+    0.19,
+    0.1
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": 239,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": 412.8,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-bih-qat-2026-06-24",
+   "homeEn": "Bosnia-Herzegovina",
+   "awayEn": "Qatar",
+   "score": "3-1",
+   "winner": "a",
+   "our": [
+    0.54,
+    0.25,
+    0.22
+   ],
+   "mkt": [
+    0.59,
+    0.25,
+    0.16
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
      "win": false
     }
    ]
@@ -309,11 +457,48 @@
    ]
   },
   {
+   "slug": "fifwc-cdr-uzb-2026-06-27",
+   "homeEn": "DR Congo",
+   "awayEn": "Uzbekistan",
+   "score": "3-1",
+   "winner": "a",
+   "our": [
+    0.31,
+    0.26,
+    0.43
+   ],
+   "mkt": [
+    0.4,
+    0.28,
+    0.32
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
    "slug": "fifwc-che-bih-2026-06-18",
    "homeEn": "Switzerland",
    "awayEn": "Bosnia-Herzegovina",
-   "score": null,
-   "winner": "b",
+   "score": "4-1",
+   "winner": "a",
    "our": [
     0.65,
     0.23,
@@ -328,6 +513,43 @@
     {
      "leg": "a",
      "side": "yes",
+     "retPct": 65.3,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 19.8,
+     "win": true
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-che-can-2026-06-24",
+   "homeEn": "Switzerland",
+   "awayEn": "Canada",
+   "score": "2-1",
+   "winner": "a",
+   "our": [
+    0.4,
+    0.26,
+    0.33
+   ],
+   "mkt": [
+    0.44,
+    0.28,
+    0.27
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
      "retPct": -100,
      "win": false
     },
@@ -339,7 +561,7 @@
     },
     {
      "leg": "b",
-     "side": "no",
+     "side": "yes",
      "retPct": -100,
      "win": false
     }
@@ -383,6 +605,154 @@
    ]
   },
   {
+   "slug": "fifwc-col-cdr-2026-06-23",
+   "homeEn": "Colombia",
+   "awayEn": "DR Congo",
+   "score": "1-0",
+   "winner": "a",
+   "our": [
+    0.72,
+    0.18,
+    0.1
+   ],
+   "mkt": [
+    0.66,
+    0.21,
+    0.12
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": 50.4,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": 27.4,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-col-prt-2026-06-27",
+   "homeEn": "Colombia",
+   "awayEn": "Portugal",
+   "score": "0-0",
+   "winner": "draw",
+   "our": [
+    0.36,
+    0.27,
+    0.37
+   ],
+   "mkt": [
+    0.27,
+    0.28,
+    0.45
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 83.5,
+     "win": true
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-cvi-ksa-2026-06-26",
+   "homeEn": "Cabo Verde",
+   "awayEn": "Saudi Arabia",
+   "score": "0-0",
+   "winner": "draw",
+   "our": [
+    0.36,
+    0.26,
+    0.38
+   ],
+   "mkt": [
+    0.37,
+    0.28,
+    0.35
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-cze-mex-2026-06-24",
+   "homeEn": "Czechia",
+   "awayEn": "Mexico",
+   "score": "0-3",
+   "winner": "b",
+   "our": [
+    0.14,
+    0.22,
+    0.64
+   ],
+   "mkt": [
+    0.2,
+    0.26,
+    0.54
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": 25.8,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": 36.1,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": 83.5,
+     "win": true
+    }
+   ]
+  },
+  {
    "slug": "fifwc-cze-rsa-2026-06-18",
    "homeEn": "Czechia",
    "awayEn": "South Africa",
@@ -420,11 +790,159 @@
    ]
   },
   {
+   "slug": "fifwc-ecu-ger-2026-06-25",
+   "homeEn": "Ecuador",
+   "awayEn": "Germany",
+   "score": "2-1",
+   "winner": "a",
+   "our": [
+    0.39,
+    0.27,
+    0.34
+   ],
+   "mkt": [
+    0.2,
+    0.25,
+    0.55
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": 387.8,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 129.9,
+     "win": true
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-ecu-kor-2026-06-20",
+   "homeEn": "Ecuador",
+   "awayEn": "Curaçao",
+   "score": "0-0",
+   "winner": "draw",
+   "our": [
+    0.84,
+    0.12,
+    0.04
+   ],
+   "mkt": [
+    0.81,
+    0.13,
+    0.06
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-egy-irn-2026-06-26",
+   "homeEn": "Egypt",
+   "awayEn": "IR Iran",
+   "score": "1-1",
+   "winner": "draw",
+   "our": [
+    0.3,
+    0.27,
+    0.43
+   ],
+   "mkt": [
+    0.43,
+    0.31,
+    0.26
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": 77,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-eng-gha-2026-06-23",
+   "homeEn": "England",
+   "awayEn": "Ghana",
+   "score": "0-0",
+   "winner": "draw",
+   "our": [
+    0.85,
+    0.12,
+    0.04
+   ],
+   "mkt": [
+    0.74,
+    0.17,
+    0.1
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 10.5,
+     "win": true
+    }
+   ]
+  },
+  {
    "slug": "fifwc-eng-hrv-2026-06-17",
    "homeEn": "England",
    "awayEn": "Croatia",
-   "score": null,
-   "winner": "b",
+   "score": "4-2",
+   "winner": "a",
    "our": [
     0.52,
     0.24,
@@ -439,8 +957,8 @@
     {
      "leg": "a",
      "side": "no",
-     "retPct": 129.9,
-     "win": true
+     "retPct": -100,
+     "win": false
     },
     {
      "leg": "draw",
@@ -451,8 +969,8 @@
     {
      "leg": "b",
      "side": "yes",
-     "retPct": 412.8,
-     "win": true
+     "retPct": -100,
+     "win": false
     }
    ]
   },
@@ -484,6 +1002,80 @@
      "side": "yes",
      "retPct": 1392.5,
      "win": true
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-esp-ksa-2026-06-21",
+   "homeEn": "Spain",
+   "awayEn": "Saudi Arabia",
+   "score": "4-0",
+   "winner": "a",
+   "our": [
+    0.84,
+    0.13,
+    0.03
+   ],
+   "mkt": [
+    0.88,
+    0.09,
+    0.04
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-fra-irq-2026-06-22",
+   "homeEn": "France",
+   "awayEn": "Iraq",
+   "score": "3-0",
+   "winner": "a",
+   "our": [
+    0.78,
+    0.16,
+    0.07
+   ],
+   "mkt": [
+    0.86,
+    0.1,
+    0.04
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
     },
     {
      "leg": "b",
@@ -526,6 +1118,43 @@
      "leg": "b",
      "side": "yes",
      "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-ger-civ-2026-06-20",
+   "homeEn": "Germany",
+   "awayEn": "Côte d'Ivoire",
+   "score": "2-1",
+   "winner": "a",
+   "our": [
+    0.64,
+    0.22,
+    0.15
+   ],
+   "mkt": [
+    0.62,
+    0.2,
+    0.17
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
      "win": false
     }
    ]
@@ -642,6 +1271,43 @@
    ]
   },
   {
+   "slug": "fifwc-hrv-gha-2026-06-27",
+   "homeEn": "Croatia",
+   "awayEn": "Ghana",
+   "score": "2-1",
+   "winner": "a",
+   "our": [
+    0.75,
+    0.19,
+    0.07
+   ],
+   "mkt": [
+    0.59,
+    0.25,
+    0.15
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": 68.1,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": 34.2,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 18.3,
+     "win": true
+    }
+   ]
+  },
+  {
    "slug": "fifwc-irn-nzl-2026-06-15",
    "homeEn": "IR Iran",
    "awayEn": "New Zealand",
@@ -693,6 +1359,154 @@
     0.05,
     0.13,
     0.81
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-jor-alg-2026-06-22",
+   "homeEn": "Jordan",
+   "awayEn": "Algeria",
+   "score": "1-2",
+   "winner": "b",
+   "our": [
+    0.26,
+    0.25,
+    0.49
+   ],
+   "mkt": [
+    0.14,
+    0.2,
+    0.65
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-jor-arg-2026-06-27",
+   "homeEn": "Jordan",
+   "awayEn": "Argentina",
+   "score": "1-3",
+   "winner": "b",
+   "our": [
+    0.07,
+    0.18,
+    0.75
+   ],
+   "mkt": [
+    0.07,
+    0.11,
+    0.82
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-jpn-swe-2026-06-25",
+   "homeEn": "Japan",
+   "awayEn": "Sweden",
+   "score": "1-1",
+   "winner": "draw",
+   "our": [
+    0.55,
+    0.24,
+    0.21
+   ],
+   "mkt": [
+    0.47,
+    0.27,
+    0.26
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 37,
+     "win": true
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-kor-civ-2026-06-25",
+   "homeEn": "Curaçao",
+   "awayEn": "Côte d'Ivoire",
+   "score": "0-2",
+   "winner": "b",
+   "our": [
+    0.13,
+    0.2,
+    0.67
+   ],
+   "mkt": [
+    0.07,
+    0.14,
+    0.78
    ],
    "legs": [
     {
@@ -785,6 +1599,43 @@
      "leg": "b",
      "side": "skip",
      "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-mar-hai-2026-06-24",
+   "homeEn": "Morocco",
+   "awayEn": "Haiti",
+   "score": "4-2",
+   "winner": "a",
+   "our": [
+    0.63,
+    0.22,
+    0.15
+   ],
+   "mkt": [
+    0.73,
+    0.17,
+    0.09
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
      "win": false
     }
    ]
@@ -901,6 +1752,302 @@
    ]
   },
   {
+   "slug": "fifwc-nld-swe-2026-06-20",
+   "homeEn": "Netherlands",
+   "awayEn": "Sweden",
+   "score": "5-1",
+   "winner": "a",
+   "our": [
+    0.59,
+    0.24,
+    0.18
+   ],
+   "mkt": [
+    0.59,
+    0.23,
+    0.17
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-nor-fra-2026-06-26",
+   "homeEn": "Norway",
+   "awayEn": "France",
+   "score": "1-4",
+   "winner": "b",
+   "our": [
+    0.24,
+    0.25,
+    0.51
+   ],
+   "mkt": [
+    0.23,
+    0.26,
+    0.51
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-nor-sen-2026-06-22",
+   "homeEn": "Norway",
+   "awayEn": "Senegal",
+   "score": "3-2",
+   "winner": "a",
+   "our": [
+    0.41,
+    0.26,
+    0.33
+   ],
+   "mkt": [
+    0.44,
+    0.27,
+    0.28
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-nzl-bel-2026-06-26",
+   "homeEn": "New Zealand",
+   "awayEn": "Belgium",
+   "score": "1-5",
+   "winner": "b",
+   "our": [
+    0.12,
+    0.21,
+    0.68
+   ],
+   "mkt": [
+    0.09,
+    0.16,
+    0.76
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-nzl-egy-2026-06-21",
+   "homeEn": "New Zealand",
+   "awayEn": "Egypt",
+   "score": "1-3",
+   "winner": "b",
+   "our": [
+    0.23,
+    0.24,
+    0.54
+   ],
+   "mkt": [
+    0.2,
+    0.25,
+    0.56
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-pan-eng-2026-06-27",
+   "homeEn": "Panama",
+   "awayEn": "England",
+   "score": "0-2",
+   "winner": "b",
+   "our": [
+    0.12,
+    0.22,
+    0.66
+   ],
+   "mkt": [
+    0.09,
+    0.15,
+    0.75
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-pan-hrv-2026-06-23",
+   "homeEn": "Panama",
+   "awayEn": "Croatia",
+   "score": "0-1",
+   "winner": "b",
+   "our": [
+    0.22,
+    0.24,
+    0.55
+   ],
+   "mkt": [
+    0.14,
+    0.24,
+    0.63
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-par-aus-2026-06-25",
+   "homeEn": "Paraguay",
+   "awayEn": "Australia",
+   "score": "0-0",
+   "winner": "draw",
+   "our": [
+    0.41,
+    0.27,
+    0.32
+   ],
+   "mkt": [
+    0.44,
+    0.3,
+    0.26
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": 83.5,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
    "slug": "fifwc-prt-cdr-2026-06-17",
    "homeEn": "Portugal",
    "awayEn": "DR Congo",
@@ -933,6 +2080,43 @@
      "leg": "b",
      "side": "skip",
      "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-prt-uzb-2026-06-23",
+   "homeEn": "Portugal",
+   "awayEn": "Uzbekistan",
+   "score": "5-0",
+   "winner": "a",
+   "our": [
+    0.68,
+    0.2,
+    0.13
+   ],
+   "mkt": [
+    0.78,
+    0.14,
+    0.07
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
      "win": false
     }
    ]
@@ -975,6 +2159,80 @@
    ]
   },
   {
+   "slug": "fifwc-rsa-kr-2026-06-24",
+   "homeEn": "South Africa",
+   "awayEn": "Korea Republic",
+   "score": "1-0",
+   "winner": "a",
+   "our": [
+    0.17,
+    0.23,
+    0.61
+   ],
+   "mkt": [
+    0.22,
+    0.28,
+    0.5
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": 38.9,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-sco-bra-2026-06-24",
+   "homeEn": "Scotland",
+   "awayEn": "Brazil",
+   "score": "0-3",
+   "winner": "b",
+   "our": [
+    0.16,
+    0.23,
+    0.61
+   ],
+   "mkt": [
+    0.14,
+    0.19,
+    0.66
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
    "slug": "fifwc-sco-mar-2026-06-19",
    "homeEn": "Scotland",
    "awayEn": "Morocco",
@@ -1007,6 +2265,43 @@
      "leg": "b",
      "side": "no",
      "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-sen-irq-2026-06-26",
+   "homeEn": "Senegal",
+   "awayEn": "Iraq",
+   "score": "5-0",
+   "winner": "a",
+   "our": [
+    0.65,
+    0.22,
+    0.13
+   ],
+   "mkt": [
+    0.69,
+    0.2,
+    0.1
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
      "win": false
     }
    ]
@@ -1049,6 +2344,80 @@
    ]
   },
   {
+   "slug": "fifwc-tun-jpn-2026-06-21",
+   "homeEn": "Tunisia",
+   "awayEn": "Japan",
+   "score": "0-4",
+   "winner": "b",
+   "our": [
+    0.12,
+    0.21,
+    0.67
+   ],
+   "mkt": [
+    0.16,
+    0.26,
+    0.57
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": 19.8,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": 36.1,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": 73.9,
+     "win": true
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-tun-nld-2026-06-25",
+   "homeEn": "Tunisia",
+   "awayEn": "Netherlands",
+   "score": "1-3",
+   "winner": "b",
+   "our": [
+    0.09,
+    0.18,
+    0.73
+   ],
+   "mkt": [
+    0.13,
+    0.22,
+    0.65
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": 15.6,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "no",
+     "retPct": 29,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": 50.4,
+     "win": true
+    }
+   ]
+  },
+  {
    "slug": "fifwc-tur-par-2026-06-19",
    "homeEn": "Türkiye",
    "awayEn": "Paraguay",
@@ -1076,6 +2445,117 @@
      "side": "no",
      "retPct": 43.9,
      "win": true
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-tur-usa-2026-06-25",
+   "homeEn": "Türkiye",
+   "awayEn": "United States",
+   "score": "3-2",
+   "winner": "a",
+   "our": [
+    0.45,
+    0.26,
+    0.29
+   ],
+   "mkt": [
+    0.37,
+    0.26,
+    0.38
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": 166.7,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 62.6,
+     "win": true
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-ury-cvi-2026-06-21",
+   "homeEn": "Uruguay",
+   "awayEn": "Cabo Verde",
+   "score": "2-2",
+   "winner": "draw",
+   "our": [
+    0.68,
+    0.2,
+    0.12
+   ],
+   "mkt": [
+    0.68,
+    0.21,
+    0.12
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-ury-esp-2026-06-26",
+   "homeEn": "Uruguay",
+   "awayEn": "Spain",
+   "score": "0-1",
+   "winner": "b",
+   "our": [
+    0.15,
+    0.23,
+    0.62
+   ],
+   "mkt": [
+    0.17,
+    0.24,
+    0.59
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
     },
     {
      "leg": "b",
@@ -1201,64 +2681,64 @@
   {
    "lo": 0,
    "hi": 0.1,
-   "n": 6,
-   "predPct": 5,
+   "n": 13,
+   "predPct": 6,
    "obsPct": 0
   },
   {
    "lo": 0.1,
    "hi": 0.2,
-   "n": 24,
-   "predPct": 16,
-   "obsPct": 25
+   "n": 49,
+   "predPct": 15,
+   "obsPct": 16
   },
   {
    "lo": 0.2,
    "hi": 0.3,
-   "n": 29,
+   "n": 68,
    "predPct": 24,
-   "obsPct": 34
+   "obsPct": 25
   },
   {
    "lo": 0.3,
    "hi": 0.4,
-   "n": 7,
+   "n": 19,
    "predPct": 35,
-   "obsPct": 14
+   "obsPct": 16
   },
   {
    "lo": 0.4,
    "hi": 0.5,
-   "n": 5,
-   "predPct": 44,
-   "obsPct": 80
+   "n": 13,
+   "predPct": 43,
+   "obsPct": 62
   },
   {
    "lo": 0.5,
    "hi": 0.6,
-   "n": 9,
-   "predPct": 56,
-   "obsPct": 33
+   "n": 16,
+   "predPct": 55,
+   "obsPct": 56
   },
   {
    "lo": 0.6,
    "hi": 0.7,
-   "n": 8,
-   "predPct": 64,
-   "obsPct": 50
+   "n": 22,
+   "predPct": 65,
+   "obsPct": 77
   },
   {
    "lo": 0.7,
    "hi": 0.8,
-   "n": 5,
-   "predPct": 73,
-   "obsPct": 60
+   "n": 10,
+   "predPct": 74,
+   "obsPct": 80
   },
   {
    "lo": 0.8,
    "hi": 0.9,
-   "n": 3,
-   "predPct": 83,
+   "n": 6,
+   "predPct": 84,
    "obsPct": 33
   }
  ]

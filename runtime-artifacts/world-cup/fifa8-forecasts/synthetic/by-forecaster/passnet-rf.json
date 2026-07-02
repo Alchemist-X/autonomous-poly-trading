@@ -1,0 +1,535 @@
+{
+  "id": "passnet-rf",
+  "name": "Passing-network structure (random forest)",
+  "family": "ml",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-t21-t14-2026-07-04",
+      "teamA": "T21",
+      "teamB": "T14",
+      "prediction": {
+        "probs": {
+          "home": 0.9039469066717873,
+          "draw": 0.09424695486647283,
+          "away": 0.0018061384617400272
+        },
+        "rationale": {
+          "headline": "T21 is the clear favourite (90%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T21 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.9432711256296167
+            },
+            {
+              "label": "Ball control",
+              "detail": "T21 keeps the ball more (63% vs 40%), dictating the tempo of build-up.",
+              "contributionPp": 3.3810395228716783
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T21 has created the better chances on average (2.19 vs 0.69 expected goals a game).",
+              "contributionPp": 27.038063964329098
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t00-t07-2026-07-05",
+      "teamA": "T00",
+      "teamB": "T07",
+      "prediction": {
+        "probs": {
+          "home": 0.5870907163507674,
+          "draw": 0.4111603356798721,
+          "away": 0.0017489479693606363
+        },
+        "rationale": {
+          "headline": "T00 is the clear favourite (59%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T00 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.35855819251191434
+            },
+            {
+              "label": "Ball control",
+              "detail": "T00 keeps the ball more (62% vs 45%), dictating the tempo of build-up.",
+              "contributionPp": 2.552208650522818
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T00 has created the better chances on average (1.89 vs 0.89 expected goals a game).",
+              "contributionPp": 18.063020142188915
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t25-t02-2026-07-06",
+      "teamA": "T25",
+      "teamB": "T02",
+      "prediction": {
+        "probs": {
+          "home": 0.5803462879024812,
+          "draw": 0.4178761969466822,
+          "away": 0.001777515150836625
+        },
+        "rationale": {
+          "headline": "T25 is the clear favourite (58%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T25 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.29500202648073603
+            },
+            {
+              "label": "Ball control",
+              "detail": "T25 keeps the ball more (61% vs 44%), dictating the tempo of build-up.",
+              "contributionPp": 2.5026486162451795
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T25 has created the better chances on average (1.74 vs 0.91 expected goals a game).",
+              "contributionPp": 14.937047578853766
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t12-t43-2026-07-07",
+      "teamA": "T12",
+      "teamB": "T43",
+      "prediction": {
+        "probs": {
+          "home": 0.5803462879024812,
+          "draw": 0.4178761969466822,
+          "away": 0.001777515150836625
+        },
+        "rationale": {
+          "headline": "T12 is the clear favourite (58%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T12 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.31791826483654617
+            },
+            {
+              "label": "Ball control",
+              "detail": "T12 keeps the ball more (61% vs 45%), dictating the tempo of build-up.",
+              "contributionPp": 2.290641868754897
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T12 has created the better chances on average (1.67 vs 0.98 expected goals a game).",
+              "contributionPp": 12.51965368930381
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t30-t23-2026-07-08",
+      "teamA": "T30",
+      "teamB": "T23",
+      "prediction": {
+        "probs": {
+          "home": 0.5865674574371691,
+          "draw": 0.3726985861764787,
+          "away": 0.04073395638635223
+        },
+        "rationale": {
+          "headline": "T30 is the clear favourite (59%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T30 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.1804131901610262
+            },
+            {
+              "label": "Ball control",
+              "detail": "T30 keeps the ball more (59% vs 47%), dictating the tempo of build-up.",
+              "contributionPp": 1.8810489297384196
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T30 has created the better chances on average (1.68 vs 0.98 expected goals a game).",
+              "contributionPp": 12.451171553605139
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t06-t28-2026-07-09",
+      "teamA": "T06",
+      "teamB": "T28",
+      "prediction": {
+        "probs": {
+          "home": 0.6451752752973067,
+          "draw": 0.3532457117985228,
+          "away": 0.0015790129041705868
+        },
+        "rationale": {
+          "headline": "T06 is the clear favourite (65%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T06 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.38145066018486373
+            },
+            {
+              "label": "Ball control",
+              "detail": "T06 keeps the ball more (59% vs 48%), dictating the tempo of build-up.",
+              "contributionPp": 1.7737958214037681
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T06 has created the better chances on average (1.65 vs 1.01 expected goals a game).",
+              "contributionPp": 11.564398129752092
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t24-t31-2026-07-04",
+      "teamA": "T24",
+      "teamB": "T31",
+      "prediction": {
+        "probs": {
+          "home": 0.5870907163507674,
+          "draw": 0.4111603356798721,
+          "away": 0.0017489479693606363
+        },
+        "rationale": {
+          "headline": "T24 is the clear favourite (59%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T24 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.34453107188894183
+            },
+            {
+              "label": "Ball control",
+              "detail": "T24 keeps the ball more (59% vs 48%), dictating the tempo of build-up.",
+              "contributionPp": 1.6936904793049432
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T24 has created the better chances on average (1.64 vs 1.04 expected goals a game).",
+              "contributionPp": 10.924007440570954
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t33-t27-2026-07-05",
+      "teamA": "T33",
+      "teamB": "T27",
+      "prediction": {
+        "probs": {
+          "home": 0.5245249002736335,
+          "draw": 0.4740557001809222,
+          "away": 0.001419399545444506
+        },
+        "rationale": {
+          "headline": "T33 is the slight edge (52%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T33 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.44674169906033345
+            },
+            {
+              "label": "Ball control",
+              "detail": "T33 keeps the ball more (56% vs 48%), dictating the tempo of build-up.",
+              "contributionPp": 1.250154955302372
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T33 has created the better chances on average (1.61 vs 1.05 expected goals a game).",
+              "contributionPp": 10.029968949295542
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t45-t47-2026-07-06",
+      "teamA": "T45",
+      "teamB": "T47",
+      "prediction": {
+        "probs": {
+          "home": 0.7807373732718401,
+          "draw": 0.2175449838746154,
+          "away": 0.0017176428535446374
+        },
+        "rationale": {
+          "headline": "T45 is the clear favourite (78%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T45 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.49992023613739933
+            },
+            {
+              "label": "Ball control",
+              "detail": "T45 keeps the ball more (60% vs 47%), dictating the tempo of build-up.",
+              "contributionPp": 1.9260314017831262
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T45 has created the better chances on average (1.60 vs 1.07 expected goals a game).",
+              "contributionPp": 9.517657715805612
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t34-t39-2026-07-07",
+      "teamA": "T34",
+      "teamB": "T39",
+      "prediction": {
+        "probs": {
+          "home": 0.7891598467059335,
+          "draw": 0.18373803547913461,
+          "away": 0.027102117814931857
+        },
+        "rationale": {
+          "headline": "T34 is the clear favourite (79%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T34 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.07599719314551612
+            },
+            {
+              "label": "Ball control",
+              "detail": "T34 keeps the ball more (57% vs 49%), dictating the tempo of build-up.",
+              "contributionPp": 1.1791342943198309
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T34 has created the better chances on average (1.58 vs 1.13 expected goals a game).",
+              "contributionPp": 8.04044614080775
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t18-t32-2026-07-08",
+      "teamA": "T18",
+      "teamB": "T32",
+      "prediction": {
+        "probs": {
+          "home": 0.804670258772009,
+          "draw": 0.17793054319322843,
+          "away": 0.01739919803476255
+        },
+        "rationale": {
+          "headline": "T18 is the clear favourite (80%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T32 builds through more players, but T18's other strengths outweigh it here.",
+              "contributionPp": 0.01614617575770838
+            },
+            {
+              "label": "Ball control",
+              "detail": "T18 keeps the ball more (57% vs 51%), dictating the tempo of build-up.",
+              "contributionPp": 0.9240481270752695
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T18 has created the better chances on average (1.57 vs 1.18 expected goals a game).",
+              "contributionPp": 7.163699405865555
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t16-t29-2026-07-09",
+      "teamA": "T16",
+      "teamB": "T29",
+      "prediction": {
+        "probs": {
+          "home": 0.7366660048960563,
+          "draw": 0.21698584580036048,
+          "away": 0.046348149303583344
+        },
+        "rationale": {
+          "headline": "T16 is the clear favourite (74%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T29 builds through more players, but T16's other strengths outweigh it here.",
+              "contributionPp": 0.12732888097694994
+            },
+            {
+              "label": "Ball control",
+              "detail": "T16 keeps the ball more (58% vs 51%), dictating the tempo of build-up.",
+              "contributionPp": 1.075720125859018
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T16 has created the better chances on average (1.54 vs 1.17 expected goals a game).",
+              "contributionPp": 6.634410616160469
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t20-t38-2026-07-04",
+      "teamA": "T20",
+      "teamB": "T38",
+      "prediction": {
+        "probs": {
+          "home": 0.7458089989106276,
+          "draw": 0.1642924848974817,
+          "away": 0.08989851619189083
+        },
+        "rationale": {
+          "headline": "T20 is the clear favourite (75%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T38 builds through more players, but T20's other strengths outweigh it here.",
+              "contributionPp": 0.34325312674006536
+            },
+            {
+              "label": "Ball control",
+              "detail": "T20 keeps the ball more (55% vs 51%), dictating the tempo of build-up.",
+              "contributionPp": 0.518120930982349
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T20 has created the better chances on average (1.47 vs 1.19 expected goals a game).",
+              "contributionPp": 5.06233540893089
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t03-t46-2026-07-05",
+      "teamA": "T03",
+      "teamB": "T46",
+      "prediction": {
+        "probs": {
+          "home": 0.6935179277005085,
+          "draw": 0.19918252221515712,
+          "away": 0.10729955008433441
+        },
+        "rationale": {
+          "headline": "T03 is the clear favourite (69%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T03 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": 0.13421202176628766
+            },
+            {
+              "label": "Ball control",
+              "detail": "T03 keeps the ball more (55% vs 51%), dictating the tempo of build-up.",
+              "contributionPp": 0.5236121541817905
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T03 has created the better chances on average (1.43 vs 1.19 expected goals a game).",
+              "contributionPp": 4.430000055099058
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t05-t37-2026-07-06",
+      "teamA": "T05",
+      "teamB": "T37",
+      "prediction": {
+        "probs": {
+          "home": 0.7016930208608881,
+          "draw": 0.2276555097307248,
+          "away": 0.07065146940838703
+        },
+        "rationale": {
+          "headline": "T05 is the clear favourite (70%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T37 builds through more players, but T05's other strengths outweigh it here.",
+              "contributionPp": 0.2376290928720266
+            },
+            {
+              "label": "Ball control",
+              "detail": "T05 keeps the ball more (56% vs 50%), dictating the tempo of build-up.",
+              "contributionPp": 0.8265687888576764
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T05 has created the better chances on average (1.42 vs 1.18 expected goals a game).",
+              "contributionPp": 4.406127363455994
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t17-t11-2026-07-07",
+      "teamA": "T17",
+      "teamB": "T11",
+      "prediction": {
+        "probs": {
+          "home": 0.25280838385098947,
+          "draw": 0.2706400690865237,
+          "away": 0.4765515470624868
+        },
+        "rationale": {
+          "headline": "T11 is the slight edge (48%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "T11 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+              "contributionPp": -0.10474070431347426
+            },
+            {
+              "label": "Ball control",
+              "detail": "T17 keeps the ball more (53% vs 53%), dictating the tempo of build-up.",
+              "contributionPp": 0.03959143004491032
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "T17 has created the better chances on average (1.31 vs 1.27 expected goals a game).",
+              "contributionPp": 0.5996744423300795
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    }
+  ]
+}
