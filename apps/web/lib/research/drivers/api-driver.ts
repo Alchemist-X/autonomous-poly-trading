@@ -78,21 +78,32 @@ function resolveApiConfig(tier: NornTier): ApiConfig {
 }
 
 function buildResearchPrompt(eventText: string, locale: ConsoleLocale): string {
+  // C-end console prompt: decision-first, jargon-free (no 节点/贝叶斯/置信区间
+  // wording in user-visible narration), calibrated. The reasoning order is the
+  // model's to choose — only the output surface is constrained.
   if (locale === "zh") {
     return [
-      "你是一个事件概率研究助手。针对下面的问题，按 Forecasting Engine 流程逐步分析：",
+      "你是一名事件概率分析师。研究下面的问题，落到一个具体概率：",
       `问题：${eventText}`,
       "",
-      "请输出简洁的分步推理（理清定义 → 条件拆解 → 证据 → 权重 → 条件概率模型 → 贝叶斯更新 → 结论），",
-      "每步 1-2 句中文，便于在流式 UI 中逐行展示。先不要下任何交易结论。"
+      "输出面向普通用户的流式界面，逐行展示。要求：",
+      "- 第一行先给初步判断：方向 + 粗略概率，标注“初步”。最后一行给最终概率和概率区间。",
+      "- 中间每行一步、每步 1-2 句中文；推理路径由你决定（定义 → 拆解 → 证据 → 更新是可用的支架，不是硬性流程）。",
+      "- 用普通人能懂的话：不要出现“节点、贝叶斯、置信区间、先验、后验、edge”这类术语；说“环节”“结合证据更新判断”“概率区间”即可。",
+      "- 每步至少带一个具体信息（数字、日期、来源名）；不确定性用概率区间表达，不用“可能/或许”堆叠。",
+      "- 概率必须如实反映证据强度——不要为了语气有力而收窄区间。不要给交易建议。"
     ].join("\n");
   }
   return [
-    "You are an event-probability research assistant. Analyze the question below step by step, following the Forecasting Engine pipeline:",
+    "You are an event-probability analyst. Research the question below and land on a specific probability:",
     `Question: ${eventText}`,
     "",
-    "Output concise step-by-step reasoning (frame the definition → decompose conditions → evidence → weighting → conditional-probability model → Bayesian update → conclusion),",
-    "1-2 sentences per step in English, suitable for line-by-line display in a streaming UI. Do not draw any trading conclusion yet."
+    "The output feeds a consumer-facing streaming UI, displayed line by line. Requirements:",
+    "- First line: a preliminary verdict — direction + rough probability, labeled \"preliminary\". Last line: the final probability with a probability range.",
+    "- One step per line, 1-2 sentences each; the reasoning path is yours to choose (definition → decomposition → evidence → update is an available scaffold, not a mandated flow).",
+    "- Plain language a non-specialist understands: never use \"node\", \"Bayesian\", \"credible interval\", \"prior\", \"posterior\", or \"edge\"; say \"step\", \"updating on the evidence\", \"probability range\" instead.",
+    "- Every step carries at least one specific (number, date, source name); express uncertainty as a probability range, not stacked hedge words.",
+    "- The probability must reflect actual evidence strength — never narrow the range for punchier wording. Do not give trading advice."
   ].join("\n");
 }
 
@@ -193,11 +204,16 @@ function extractDelta(provider: ApiProvider, data: string): string {
 }
 
 function splitNarration(text: string): string[] {
-  return text
+  const lines = text
     .split(/\n+/)
     .map((line) => line.replace(/^[-*\d.\s]+/, "").trim())
-    .filter((line) => line.length > 0)
-    .slice(0, 8);
+    .filter((line) => line.length > 0);
+  if (lines.length <= 8) {
+    return lines;
+  }
+  // The prompt puts the final probability + range on the LAST line — always
+  // keep it instead of truncating to the first 8 steps.
+  return [...lines.slice(0, 7), lines[lines.length - 1]!];
 }
 
 export const apiDriver: ResearchDriver = {

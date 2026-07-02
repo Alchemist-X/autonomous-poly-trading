@@ -67,7 +67,7 @@ function formatLiquidity(liquidityUsd: number): string {
 
 export function buildPreScreenPrompt(candidates: readonly PulseCandidate[]): string {
   const header = [
-    "Given these market candidates, quickly classify each as TRADE (AI can generate meaningful edge through reasoning, information synthesis, or precedent matching) or SKIP (outcome is too random, depends on insider info, or is already efficiently priced).",
+    "Given these market candidates, quickly classify each as TRADE (research could plausibly produce an information advantage — reasoning, public-data synthesis, or precedent matching) or SKIP (you judge no researchable information advantage exists: pure randomness, insider-only information, or nothing to research). Judge for yourself — do not assume a market is efficiently priced just because it is liquid or popular.",
     "",
     "For each candidate, respond with exactly one line in this format:",
     "TRADE|market_slug|one-line reason",

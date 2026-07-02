@@ -11,6 +11,18 @@ import type { PulseEntryPlan } from "./decision-metadata.js";
 
 type PulseCandidate = RuntimeExecutionContext["pulse"]["candidates"][number];
 
+/**
+ * Minimal candidate shape needed to bind a report section to a market.
+ * PulseCandidate (runtime context) and the archive-JSON candidates both
+ * satisfy it structurally, so the parseability gate can reuse the exact
+ * matching logic the planner runs.
+ */
+export interface PulseSectionMatchCandidate {
+  question: string;
+  url: string;
+  endDate?: string | null;
+}
+
 function normalizeText(text: string) {
   return text.replace(/\s+/g, " ").trim().toLowerCase();
 }
@@ -29,7 +41,7 @@ function extractMatchNumbers(text: string) {
   return [...text.matchAll(/\b\d+(?:\.\d+)?\b/g)].map((match) => match[0]);
 }
 
-function candidateMatchText(candidate: PulseCandidate) {
+function candidateMatchText(candidate: PulseSectionMatchCandidate) {
   const endYear = candidate.endDate ? new Date(candidate.endDate).getUTCFullYear() : null;
   return [
     candidate.question,
@@ -37,7 +49,7 @@ function candidateMatchText(candidate: PulseCandidate) {
   ].join(" ");
 }
 
-function scoreCandidateTitleMatch(sectionTitle: string, candidate: PulseCandidate) {
+function scoreCandidateTitleMatch(sectionTitle: string, candidate: PulseSectionMatchCandidate) {
   const normalizedTitle = normalizeTitleForMatch(sectionTitle);
   const normalizedCandidate = normalizeTitleForMatch(candidateMatchText(candidate));
   if (!normalizedTitle || !normalizedCandidate) {
@@ -64,7 +76,7 @@ function scoreCandidateTitleMatch(sectionTitle: string, candidate: PulseCandidat
   return overlap / titleTokens.length;
 }
 
-function pickBestTitleMatch(sectionTitle: string, candidates: PulseCandidate[]) {
+function pickBestTitleMatch<T extends PulseSectionMatchCandidate>(sectionTitle: string, candidates: readonly T[]) {
   const scored = candidates
     .map((candidate) => ({
       candidate,
@@ -76,16 +88,22 @@ function pickBestTitleMatch(sectionTitle: string, candidates: PulseCandidate[]) 
   if (!best) {
     return null;
   }
+  // An exact question match is unambiguous even when a sibling strike of the
+  // same event scores close behind (e.g. "September" vs "October" variants
+  // overlap on every other token) — only tie against another exact match.
+  if (best.score === 1) {
+    return second?.score === 1 ? null : best.candidate;
+  }
   if (second && best.score - second.score < 0.15) {
     return null;
   }
   return best.candidate;
 }
 
-function resolveCandidateForSection(input: {
+function resolveCandidateForSection<T extends PulseSectionMatchCandidate>(input: {
   title: string;
   link: string | null;
-  candidates: PulseCandidate[];
+  candidates: readonly T[];
 }) {
   const titleMatch = pickBestTitleMatch(input.title, input.candidates);
   if (titleMatch) {
@@ -140,7 +158,7 @@ function normalizeConfidence(raw: string) {
   return "low" as const;
 }
 
-function parseRecommendationSections(markdown: string) {
+export function parseRecommendationSections(markdown: string) {
   const sections: Array<{ title: string; body: string }> = [];
   const matches = [...markdown.matchAll(/^##\s+(?:\d+\.\s+)?(.+)$/gm)];
   for (const [index, match] of matches.entries()) {
@@ -228,8 +246,11 @@ function extractCurrencyValue(value: string | null) {
 
 function extractProbabilities(body: string) {
   const result = new Map<string, { marketProb: number; aiProb: number }>();
-  // Allow any characters (e.g. Chinese annotations) between Yes/No and the next pipe
-  const regex = /^\|\s*(Yes|No)[^|]*\|\s*([0-9.]+)%\s*\|\s*([0-9.]+)%\s*(?:\|.*)?$/gim;
+  // Allow any characters (e.g. Chinese annotations) between Yes/No and the next
+  // pipe, and tolerate markdown bold (**) around the label and the percentages —
+  // real archived reports emphasize the recommended row (`| **No** | **94.5%** |`),
+  // and rejecting that shape silently dropped the trade.
+  const regex = /^\|\s*\**\s*(Yes|No)[^|]*\|\s*\**\s*([0-9.]+)\s*%\s*\**\s*\|\s*\**\s*([0-9.]+)\s*%\s*\**\s*(?:\|.*)?$/gim;
   let match: RegExpExecArray | null;
   while ((match = regex.exec(body)) !== null) {
     result.set(match[1]!.toLowerCase(), {
@@ -264,6 +285,90 @@ const DIRECTION_LABELS = [
   "Current favored side",
   "Favored side"
 ];
+
+export const PULSE_NO_TRADE_MARKER = "NO-TRADE";
+
+// Anchored to its own line (optionally bold), exactly as the render prompt
+// instructs. A prose mention ("this is not a NO-TRADE round") must NOT count,
+// or a malformed report could bypass the fail-closed render gate.
+const NO_TRADE_LINE_REGEX = new RegExp(String.raw`^\s*\**${PULSE_NO_TRADE_MARKER}\**\s*$`, "m");
+
+export function hasPulseNoTradeMarker(markdown: string): boolean {
+  return NO_TRADE_LINE_REGEX.test(markdown);
+}
+
+export interface PulseReportParseability {
+  sectionCount: number;
+  /** Sections with at least one regex-parseable `| Yes/No | market% | ai% |` row. */
+  probabilityRowSectionCount: number;
+  /** Sections that would survive scan-mode extraction: a recognizable direction whose probability row exists. */
+  entryReadySectionCount: number;
+  hasNoTradeMarker: boolean;
+}
+
+/**
+ * Deterministic render-time gate for pulse reports. Reuses the exact extraction
+ * helpers the trading path runs, so a report that fails here is guaranteed to
+ * extract nothing downstream (aiProb silently falls back to marketProb, edge 0,
+ * every plan dropped). Callers decide whether a zero count is fatal:
+ * market-scan reports must either contain one entry-ready section or the
+ * explicit PULSE_NO_TRADE_MARKER; position-review reports degrade to
+ * code-level stale-hold logic and only warrant a warning.
+ */
+export function assessPulseReportParseability(
+  markdown: string,
+  candidates?: readonly PulseSectionMatchCandidate[]
+): PulseReportParseability {
+  const sections = parseRecommendationSections(markdown);
+  let probabilityRowSectionCount = 0;
+  let entryReadySectionCount = 0;
+
+  for (const section of sections) {
+    const probabilities = extractProbabilities(section.body);
+    if (probabilities.size === 0) {
+      continue;
+    }
+    probabilityRowSectionCount += 1;
+
+    const direction = extractTableValue(section.body, DIRECTION_LABELS)
+      ?? extractLabeledValue(section.body, DIRECTION_LABELS);
+    const outcomeLabel = direction ? inferOutcomeLabel(direction) : null;
+    if (!outcomeLabel) {
+      continue;
+    }
+    const row = probabilities.get(outcomeLabel.toLowerCase());
+    if (!row) {
+      continue;
+    }
+    // Mirror the planner's Kelly drop: a recommended side with no positive
+    // edge produces quarterKellyUsd <= 0 and the plan is discarded.
+    if (!(row.aiProb > row.marketProb)) {
+      continue;
+    }
+    // When candidates are supplied, also mirror the planner's section-to-
+    // candidate binding — a perfectly formatted section that matches no
+    // candidate still trades nothing.
+    if (candidates) {
+      const link = extractLabeledValue(section.body, ["链接", "Link"]);
+      const candidate = resolveCandidateForSection({
+        title: section.title,
+        link,
+        candidates
+      });
+      if (!candidate) {
+        continue;
+      }
+    }
+    entryReadySectionCount += 1;
+  }
+
+  return {
+    sectionCount: sections.length,
+    probabilityRowSectionCount,
+    entryReadySectionCount,
+    hasNoTradeMarker: hasPulseNoTradeMarker(markdown)
+  };
+}
 
 export function calculateMonthlyReturn(input: {
   aiProb: number;
@@ -493,9 +598,16 @@ export function buildPulseEntryPlans(input: {
   nowMs?: number;
 }): PulseEntryPlan[] {
   const context = input.context;
+  const positionReviewMode = context.reviewPositionsOnly === true;
+  // An explicit NO-TRADE declaration wins over any leftover formatted
+  // sections: never build new entry plans from a report that declared the
+  // round untradeable (the marker was previously write-only, so a NO-TRADE
+  // report with one well-formed section would still have opened live BUYs).
+  if (!positionReviewMode && hasPulseNoTradeMarker(context.pulse.markdown)) {
+    return [];
+  }
   const sections = parseRecommendationSections(context.pulse.markdown);
   const plans: PulseEntryPlan[] = [];
-  const positionReviewMode = context.reviewPositionsOnly === true;
 
   for (const section of sections) {
     const link = extractLabeledValue(section.body, ["链接", "Link"]);
