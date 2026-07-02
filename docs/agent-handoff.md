@@ -11,6 +11,11 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-07-02 by Claude（**Raven Forecasting Engine 网页 app 全量落地**，分支 `claude/amazing-mcnulty-5c3fca`（基于 `feat/iterative-forecaster`），PR 目标 = `feat/iterative-forecaster`）。
+> 按 claude.design 交付稿（Ask → Research → Verdict 三屏，暖棕 #15120c/#ee7130 + Newsreader/IBM Plex Mono）新建 `apps/raven`（端口 3200，`pnpm raven:dev`）：01 提问并起跑真实引擎；02 直播研究过程——证据卡手绘 KEEP/DOUBT 圈注 + 行内笔记 + 分析师假设队列（**真的会注入引擎下一轮 prompt**，消费后打 `consumedRound`/`doubtsHandled` 戳）；03 决策优先档案页（大数字 + 收敛轴 + 置信表 + 三核心信号 + 反向信号 + 带 [NN] 彩色锚点的叙事摘要 + 编号证据书 + 折叠 framing）。GTA6 demo 档案逐字移植（id `gta6-demo`）。
+> 引擎侧（`scripts/forecast/`）：`agent.ts` provider 分发（`FORECAST_PROVIDER=claude|deepseek`）；DeepSeek 适配器（OpenAI 兼容、无搜索，伪造引用守卫降级为**引用存活检查**，403/429 反爬拒绝算活）；证据新增 source_type/credibility；summary 新增 why_sentence/quip/[NN] 引用；`FORECAST_MIN_ROUNDS`（app 设 2，防对冲轮 1 假收敛）；resume 无轮可跑不再卡 `open`。测试 62/62 绿；`pnpm --filter @autopoly/raven build` 绿；桌面+375px 移动、dark+light 截图自评通过、0 console error。
+> **DeepSeek 测试 key 在 repo 根 `.env.deepseek`（gitignored）**——key 在对话中出现过，按惯例视为已泄漏、建议轮换。run-manager 会自动从该文件回填子进程 env。E2E 已实测：GPT-6 问题 45%→25% 两轮 + 分析师假设被 round 1 消费。英文版 handoff 此条待同步翻译。
+>
 > 最后更新：2026-06-19 by Claude（世界杯新增「预测效果」页 + 市场盲测规则细化）。
 > 新增第 4 个 WC tab `/world-cup/performance`（预测效果）：把盲测预测对比 Polymarket 预测时刻价格打分——最佳预测命中率、Mock PNL（只显示收益率%）、Brier 技巧分（友好名「相对市场水平」）、校准 ECE，外加逐场「我们 vs 市场」概率条 + 三市场各自的模拟下注（押/反押/跳过，%）。
 > 管线：`fetch-baseline-prices.ts` 一次性抓预测时刻 CLOB 价格（固定历史，已 commit `baseline-prices.generated.json`）；`build-performance.ts` 据「预测+结算+价格」重算 `performance.generated.json`，已链入 `wc:results`，随每日结算刷新。改名（zh）：出线名单/对阵 → **夺冠之路**。
