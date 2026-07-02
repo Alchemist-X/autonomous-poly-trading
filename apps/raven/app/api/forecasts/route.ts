@@ -19,7 +19,8 @@ const CreateSchema = z.object({
   question: z.string().trim().min(8, "question too short").max(400, "question too long"),
   maxRounds: z.number().int().min(1).max(6).optional(),
   fresh: z.boolean().optional(),
-  provider: z.enum(["claude", "deepseek"]).optional()
+  provider: z.enum(["claude", "deepseek"]).optional(),
+  language: z.enum(["en", "zh"]).optional()
 });
 
 export async function POST(req: Request) {
@@ -42,7 +43,8 @@ export async function POST(req: Request) {
     const job = startForecast(parsed.data.question, {
       maxRounds: parsed.data.maxRounds,
       fresh: parsed.data.fresh,
-      provider
+      provider,
+      language: parsed.data.language
     });
     return NextResponse.json({ eventId: job.eventId, status: job.status, provider: job.provider });
   } catch (error) {

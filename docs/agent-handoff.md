@@ -11,6 +11,10 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-07-03 by Claude（**Raven 全站中英切换 + 引擎中文输出**，分支 `claude/kind-goodall-e0d263`）。
+> ① **UI i18n**：无依赖自研 locale 层（`apps/raven/lib/i18n/`：LocaleProvider（localStorage 持久化，Provider 挂在 `app/layout.tsx`）+ `useT(entry, vars)` + 判词/置信度/档位映射）；字典按域拆文件防冲突（ui/home/verdict/research-parts，约 170 键）。三屏 + chrome 全量翻译（导航/页脚/计划清单/进度坞/摘要/分析师工作台/证据 pill/判决页全部标签），头部新增「中文/EN」切换。GTA6 demo 内容保持英文（英文档案）。
+> ② **引擎输出语言（opt-in，交易管线不受影响）**：`scripts/forecast/language.ts` — `FORECAST_LANGUAGE=zh` 时向 framing/audit/round/summary 四个 prompt 注入「自由文本字段写简体中文、JSON 键/枚举/URL 保持 ASCII」指令；**默认（不设 env）prompt 逐字节不变**（已验证 + vitest 62/62 绿）。链路：首页 POST 带 `language: locale` → API zod → run-manager 子进程 env。zh 用户新起的 run，推理/证据 takeaway/summary 全中文；已有英文档案不动。
+> 验收：typecheck + build 绿；zh/en × 桌面/375px × 三屏截图自评全过，0 page error。英文版 handoff 待同步翻译。
 > 最后更新：2026-07-02 by Claude（**Raven 研究页 Manus 风格渐进呈现改版**，分支 `claude/kind-goodall-e0d263`，**改动未提交** working tree）。
 > 用户给了两个 Manus share 样例，要求学其「逐步揭示 + 证据强调」但保留 Raven 配色。Screen 02 · Research 改成对话式：① Raven 开场消息（头像 + provider 徽章 + 时间）自述计划，下面挂**实时任务清单**（Frame → Round 1..N → Verdict，虚线连接，✓/脉冲/待办三态，done 步骤带「N sources · 38%→30%」小结）；② **证据卡逐条入场动画**（`use-reveal.ts` 交错队列，只对 run 中新到的条目播动画，终态/加载即全显）；③ **底部固定进度坞**（当前步骤 + N/M + 可展开清单；完成变绿 ✓ + 「Read the dossier」CTA；修复了移动端此前完全看不到进度的问题——顺手把 `.rv-hdr-meta` 移动端隐藏加了 `!important`，原来被行内样式压过没生效）；④ **完成摘要消息**：结论先行（P(YES) + 判词 + whySentence）+ 统计 chips + Manus 式档案附件卡链到 Screen 03；⑤ 证据卡正文改为 **takeaway 加粗引领**（该字段之前研究页根本没渲染）。CoachBar/CompleteCta 已删（文案并入计划消息和进度坞）。新文件：`components/research/plan.tsx` / `progress-dock.tsx` / `use-reveal.ts` / `verdict-digest.tsx`；`research-vm.ts` 加 `buildPlanSteps/planStepNo`。
 > 验收：`pnpm --filter @autopoly/raven build` 绿 + typecheck 绿；demo（运行态）+ 完成态 fixture（临时 state.json，已删）× 桌面/375px 移动 × dark/light 截图自评全过，0 console/page error。**注意本 worktree 3200 被并行会话占用，本地预览用 `.claude/launch.json` 的 `raven-alt`（3211）**。英文版 handoff 此条待同步翻译。

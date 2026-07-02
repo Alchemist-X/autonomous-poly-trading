@@ -8,6 +8,7 @@
 
 import { runAgent } from "./agent";
 import { extractJsonObject } from "./claude-agent";
+import { languageDirective } from "./language";
 import type { AgentRunResult, RunAgentOptions } from "./claude-agent";
 import type { ForecastState, ForecastSummary } from "./types";
 
@@ -55,7 +56,8 @@ OUTPUT only a single JSON object — no prose, no code fence:
   "why_sentence": "ONE complete, self-explaining sentence — the single reason the number landed where it did, naming the decisive evidence; no fragment",
   "quip": "one short dry human aside reacting to the verdict — personality, not advice",
   "confidence_reason": "one line on why confidence is high/medium/low"
-}`;
+}
+${languageDirective()}`;
 }
 
 function strArray(v: unknown): string[] {

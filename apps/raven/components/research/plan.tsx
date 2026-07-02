@@ -5,6 +5,8 @@
 // and PlanList renders the live checklist — steps check off as the run
 // advances, joined by a dashed connector.
 
+import { useT } from "../../lib/i18n";
+import { RS } from "../../lib/i18n/ui";
 import type { PlanStepVM } from "./research-vm";
 
 export function RavenMessage({
@@ -16,8 +18,9 @@ export function RavenMessage({
   time: string | null;
   children: React.ReactNode;
 }) {
+  const t = useT();
   return (
-    <section style={{ marginTop: 24 }} aria-label="Raven's message">
+    <section style={{ marginTop: 24 }} aria-label={t(RS.messageAria)}>
       <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -105,8 +108,9 @@ function StepMarker({ state }: { state: PlanStepVM["state"] }) {
 }
 
 export function PlanList({ steps, compact = false }: { steps: readonly PlanStepVM[]; compact?: boolean }) {
+  const t = useT();
   return (
-    <ol style={{ listStyle: "none", margin: 0, padding: 0 }} aria-label="Run plan">
+    <ol style={{ listStyle: "none", margin: 0, padding: 0 }} aria-label={t(RS.planAria)}>
       {steps.map((s, i) => (
         <li key={s.key} className="pl-row" style={{ display: "grid", gridTemplateColumns: "15px 1fr", columnGap: 11 }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

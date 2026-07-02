@@ -6,11 +6,14 @@
 // progress dock (plan.tsx / progress-dock.tsx).
 
 import Link from "next/link";
+import { useT } from "../../lib/i18n";
+import { RP } from "../../lib/i18n/research-parts";
 import { ShimmerBar } from "./shimmer";
 
 // Shown while the engine is still framing (job running, dossier not yet
 // written): a full-width shimmer skeleton in place of the iteration feed.
 export function FramingBlock() {
+  const t = useT();
   return (
     <div
       style={{
@@ -36,8 +39,9 @@ export function FramingBlock() {
       />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontFamily: "var(--fm)", fontSize: 11, color: "var(--muted)" }}>
-          Now: <b style={{ color: "var(--text)" }}>framing</b> — normalizing the question, pinning resolution
-          criteria, setting a base-rate prior
+          {t(RP.framingNow)}
+          <b style={{ color: "var(--text)" }}>{t(RP.framingBold)}</b>
+          {t(RP.framingRest)}
         </div>
         <ShimmerBar style={{ marginTop: 12 }} />
         <ShimmerBar style={{ marginTop: 6, width: "84%" }} />
@@ -60,6 +64,7 @@ export function NoticeCard({
   inline?: boolean; // rendered inside the feed (above iterations) vs centered
   children: React.ReactNode;
 }) {
+  const t = useT();
   return (
     <div
       style={{
@@ -119,7 +124,7 @@ export function NoticeCard({
             textDecoration: "none"
           }}
         >
-          ← Back to Ask
+          {t(RP.backToAsk)}
         </Link>
       )}
     </div>
@@ -127,10 +132,11 @@ export function NoticeCard({
 }
 
 export function LoadingBlock() {
+  const t = useT();
   return (
-    <div style={{ maxWidth: 640, margin: "48px auto 0" }} role="status" aria-label="Loading the run">
+    <div style={{ maxWidth: 640, margin: "48px auto 0" }} role="status" aria-label={t(RP.loadingAria)}>
       <div style={{ fontFamily: "var(--fm)", fontSize: 11, color: "var(--muted)", marginBottom: 12 }}>
-        Loading the run…
+        {t(RP.loadingText)}
       </div>
       <ShimmerBar />
       <ShimmerBar style={{ marginTop: 6, width: "78%" }} />

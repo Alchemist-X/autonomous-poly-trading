@@ -5,6 +5,8 @@
 // document-attachment card linking to the full dossier (Screen 03).
 
 import Link from "next/link";
+import { confidenceLabel, sourcesLabel, useLocale, useT, verdictLabel } from "../../lib/i18n";
+import { RS } from "../../lib/i18n/ui";
 import type { DossierVM } from "../../lib/vm/types";
 import { arrowFor, dirFor } from "../../lib/vm/format";
 import { RavenMessage } from "./plan";
@@ -32,6 +34,8 @@ function StatChip({ children, className }: { children: React.ReactNode; classNam
 }
 
 export function VerdictDigest({ id, dossier }: { id: string; dossier: DossierVM }) {
+  const t = useT();
+  const { locale } = useLocale();
   const m = dossier.meta;
   const deltaPts =
     dossier.currentProb !== null && dossier.priorProb !== null
@@ -44,7 +48,7 @@ export function VerdictDigest({ id, dossier }: { id: string; dossier: DossierVM 
       <RavenMessage provider={dossier.provider} time={m.duration}>
         <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.6, color: "var(--muted)" }}>
           <b style={{ color: "var(--text)" }}>
-            Forecast complete — P(YES) {m.prob}, {m.verdict.toLowerCase()}.
+            {t(RS.digestLead, { p: m.prob, verdict: locale === "zh" ? verdictLabel(m.verdict, locale) : m.verdict.toLowerCase() })}
           </b>{" "}
           {m.why}
         </p>
@@ -54,14 +58,14 @@ export function VerdictDigest({ id, dossier }: { id: string; dossier: DossierVM 
               <span className={`mv-${dirFor(deltaPts)}`}>
                 {arrowFor(deltaPts)} {Math.abs(deltaPts)}%
               </span>
-              vs the {m.prior} prior
+              {t(RS.chipVsPrior, { prior: m.prior })}
             </StatChip>
           )}
           {/* No credibleInterval chip here: per user decision 2026-07-02 the
               engine's interval is an uncalibrated heuristic and must not be
               presented on user-facing surfaces. */}
-          <StatChip>{m.sources} sources</StatChip>
-          <StatChip>confidence {m.confidence}</StatChip>
+          <StatChip>{sourcesLabel(m.sources, locale)}</StatChip>
+          <StatChip>{t(RS.chipConfidence, { c: confidenceLabel(m.confidence, locale) })}</StatChip>
         </div>
 
         <Link
@@ -107,7 +111,7 @@ export function VerdictDigest({ id, dossier }: { id: string; dossier: DossierVM 
           </span>
           <span style={{ minWidth: 0 }}>
             <span style={{ display: "block", fontFamily: "var(--fd)", fontWeight: 600, fontSize: 15, lineHeight: 1.35 }}>
-              Dossier — {m.question}
+              {t(RS.cardTitle, { q: m.question })}
             </span>
             <span
               style={{
@@ -119,7 +123,7 @@ export function VerdictDigest({ id, dossier }: { id: string; dossier: DossierVM 
                 color: "var(--faint)"
               }}
             >
-              {m.verdict} · P(YES) {m.prob} · evidence book · resolution criteria
+              {t(RS.cardSub, { verdict: verdictLabel(m.verdict, locale), p: m.prob })}
             </span>
             <span
               className="rvd-clamp"
@@ -140,7 +144,7 @@ export function VerdictDigest({ id, dossier }: { id: string; dossier: DossierVM 
               marginTop: 3
             }}
           >
-            READ →
+            {t(RS.cardRead)}
           </span>
         </Link>
       </RavenMessage>

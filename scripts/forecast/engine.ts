@@ -9,6 +9,7 @@
 // computed, not guessed -> persist -> check stop conditions.
 
 import { providerHasWebSearch, runAgent } from "./agent";
+import { languageDirective } from "./language";
 import {
   applyLlrs,
   clamp,
@@ -163,7 +164,8 @@ OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or aft
   "found_new_information": true,
   "notes": "caveats, resolution assumptions, what to check next round"
 }
-If you genuinely found no new relevant information this round, return an empty new_evidence array, an empty reflection array, and set found_new_information to false.`;
+If you genuinely found no new relevant information this round, return an empty new_evidence array, an empty reflection array, and set found_new_information to false.
+${languageDirective()}`;
 }
 
 export function newForecastState(input: {

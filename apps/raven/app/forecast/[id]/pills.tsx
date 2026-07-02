@@ -1,9 +1,13 @@
+"use client";
+
 // Shared evidence chips/pills for the Verdict screen — domain, credibility
 // (shield) and value (violet diamonds). Styles verbatim from the handoff;
 // "core" adds the hero-card letter-spacing, "pop" is the popover-size variant.
 
 import type { CSSProperties } from "react";
 import { ShieldIcon, SrcIcon } from "../../../components/icons";
+import { tierWord, useLocale, useT } from "../../../lib/i18n";
+import { V } from "../../../lib/i18n/verdict";
 import type { DecoratedEvidence } from "./decorate";
 
 type PillVariant = "core" | "row" | "pop";
@@ -36,6 +40,8 @@ export function DomChip({ e }: { e: DecoratedEvidence }) {
 }
 
 export function CredPill({ e, variant = "row" }: { e: DecoratedEvidence; variant?: PillVariant }) {
+  const t = useT();
+  const { locale } = useLocale();
   return (
     <span
       className={`cred-${e.cred} bd-${e.cred}`}
@@ -46,15 +52,17 @@ export function CredPill({ e, variant = "row" }: { e: DecoratedEvidence; variant
         border: "1px solid",
         ...(variant === "core" ? { letterSpacing: ".02em" } : {})
       }}
-      title="How trustworthy the source is"
+      title={t(V.credTooltip)}
     >
       <ShieldIcon />
-      {e.credLabel} credibility
+      {t(V.credPill, { tier: tierWord(e.credLabel, locale) })}
     </span>
   );
 }
 
 export function ValuePill({ e, variant = "row" }: { e: DecoratedEvidence; variant?: PillVariant }) {
+  const t = useT();
+  const { locale } = useLocale();
   return (
     <span
       style={{
@@ -66,10 +74,10 @@ export function ValuePill({ e, variant = "row" }: { e: DecoratedEvidence; varian
         background: "color-mix(in srgb,var(--val) 11%,transparent)",
         ...(variant === "core" ? { letterSpacing: ".02em" } : {})
       }}
-      title="How much this source adds to the forecast"
+      title={t(V.valueTooltip)}
     >
       <span style={{ letterSpacing: 1 }}>{e.valDiamonds}</span>
-      {e.valueLabel} value
+      {t(V.valuePill, { tier: tierWord(e.valueLabel, locale) })}
     </span>
   );
 }

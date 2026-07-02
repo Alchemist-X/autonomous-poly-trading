@@ -10,6 +10,7 @@
 
 import { providerHasWebSearch, runAgent } from "./agent";
 import { extractJsonObject } from "./claude-agent";
+import { languageDirective } from "./language";
 import type { EventFraming } from "./types";
 
 // Provider-aware research line: a search-less provider must not be told to
@@ -39,7 +40,7 @@ Produce:
 - clarification_needed: if forecastable is false, what the user must specify; else "".
 - prior_probability: your PRIOR P(YES) in [0,1] from GENERAL KNOWLEDGE / a reference class ONLY — the base rate BEFORE weighing specific current evidence (e.g. "a named product shipping by a pre-announced date ~0.55", "a specific bilateral ceasefire holding 6 months ~0.3"). Not 0.5 unless the reference class truly is a coin flip.
 - prior_rationale: the reference class and why that base rate.
-
+${languageDirective()}
 OUTPUT only a single JSON object, no prose, no code fence:
 {"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"..."}`;
 }
@@ -58,7 +59,7 @@ PROPOSED FRAME:
 - prior_rationale: ${frame.priorRationale}
 
 Re-derive the frame independently. Return a CORRECTED frame (keep it if already correct), PLUS an honest audit. Be strict: if the resolution bar is ambiguous or unfaithful to the user's intent, fix it and say so in framing_caveats.
-
+${languageDirective()}
 OUTPUT only a single JSON object, no prose, no code fence:
 {"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"...","framing_caveats":"edge cases / ambiguities the user should know, or '' if none","framing_confidence":"high|medium|low"}`;
 }
