@@ -20,7 +20,9 @@ const META = {
   nCounter: "3",
   nNeutral: "1",
   why: "Raven lands at 7% because Rockstar has publicly committed to November 19 — pre-orders are open and the CEO reaffirmed the date on the record — while the two strongest delay signals, the “not content complete” report and the crunch narrative, were both walked back by newer evidence.",
-  confWhy: "Dense, mutually corroborating signals; both delay pillars walked back; a tight 3%–11% band.",
+  // Design-handoff copy edited: interval reference removed (user decision
+  // 2026-07-02 — no confidence-interval claims anywhere in the product).
+  confWhy: "Dense, mutually corroborating signals; both delay pillars walked back by newer evidence.",
   openUnc:
     "The real unknown is the gap between “content-complete / on track” claims and actual ship-readiness. Watch for a fresh Schreier-tier report reversing the consensus, any Rockstar/Take-Two language that hedges the date, or a Trailer 3 / pre-order misfire. The likeliest path to YES now is a quiet de-facto slip — which this question counts even without the word “delay”.",
   resDate: "2026-11-19",

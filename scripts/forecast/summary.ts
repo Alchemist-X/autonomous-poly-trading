@@ -37,7 +37,7 @@ function buildSummaryPrompt(state: ForecastState): string {
 EVENT: ${state.framing.normalizedQuestion}
 RESOLUTION CRITERIA: ${state.framing.resolutionCriteria}
 RESOLUTION DATE: ${state.framing.resolutionDate ?? "(open-ended)"}
-FINAL P(YES): ${pct(state.currentProb)}  (80% band ${pct(state.credibleInterval[0])} – ${pct(state.credibleInterval[1])})
+FINAL P(YES): ${pct(state.currentProb)}
 ROUNDS: ${state.round}; trajectory: ${trajectory || "(none)"}
 
 EVIDENCE LEDGER (every counted source, numbered [NN], with its effect on P(YES)):
