@@ -1,0 +1,108 @@
+/* Screen 02 · Research — layout classes that need media queries or pseudo
+   selectors (inline styles cover everything static). Scoped under
+   .rv-research; tokens/utilities come from globals.css. */
+
+.rv-research {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 34px 60px;
+}
+
+/* Status strip: question + Now line left, provisional number + axis right. */
+.rv-research .rvp-strip {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 30px;
+  align-items: end;
+  padding: 4px 2px 22px;
+  border-bottom: 1px solid var(--line);
+}
+.rv-research .rvp-quant {
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
+}
+.rv-research .rvp-numblock {
+  text-align: right;
+}
+.rv-research .rvp-num {
+  font-family: var(--fd);
+  font-weight: 600;
+  font-size: 58px;
+  line-height: 0.8;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Feed + sticky analyst rail. */
+.rv-research .rvp-grid {
+  display: grid;
+  grid-template-columns: 1fr 330px;
+  gap: 34px;
+  align-items: start;
+  margin-top: 22px;
+}
+.rv-research .rvp-grid > * {
+  min-width: 0;
+}
+.rv-research .rvp-rail {
+  position: sticky;
+  top: 20px;
+}
+
+/* Keyboard/touch affordance: focused annotatable cards get a subtle ring
+   (the design zeroes the default outline on the reasoning card). */
+.rv-research .anno:focus-visible {
+  outline: 1px dashed var(--line2);
+  outline-offset: 3px;
+}
+
+/* Fire-and-forget error toast for annotation persistence. */
+.rv-research-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 60;
+  max-width: min(480px, calc(100vw - 32px));
+  font-family: var(--fm);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--neg);
+  background: var(--bg2);
+  border: 1px solid color-mix(in srgb, var(--neg) 45%, transparent);
+  border-radius: 9px;
+  padding: 9px 14px;
+  box-shadow: 0 18px 50px -18px var(--shadow);
+}
+
+/* Mobile: stack the strip, drop the rail below the feed, shrink the number. */
+@media (max-width: 880px) {
+  .rv-research {
+    padding: 18px 16px 48px;
+  }
+  .rv-research .rvp-strip {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .rv-research .rvp-quant {
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px 22px;
+  }
+  .rv-research .rvp-numblock {
+    text-align: left;
+  }
+  .rv-research .rvp-num {
+    font-size: 44px;
+  }
+  .rv-research .rvp-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .rv-research .rvp-rail {
+    position: static;
+  }
+}

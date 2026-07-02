@@ -1,0 +1,287 @@
+/* Raven Forecasting Engine — design tokens + shared utilities.
+   Source of truth: claude.design handoff "design_handoff_raven_forecasting".
+   Every color routes through these variables; components must not hardcode hex. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #15120c; /* fallback before .rv paints (matches --bg dark) */
+}
+
+.rv {
+  --bg: #15120c;
+  --bg2: #1c1810;
+  --surface: #221b10;
+  --text: #ede5d6;
+  --muted: #a99d87;
+  --faint: #6f6552;
+  --line: #2c261b;
+  --line2: #3b3324;
+  --accent: #ee7130;
+  --accent2: #cf5518;
+  --accent-ink: #1c0d04;
+  --pos: #5fbe93;
+  --neg: #e35648;
+  --cred-high: #4fc6a2;
+  --cred-med: #d9a944;
+  --cred-low: #de8a68;
+  --val: #a896ec;
+  --verified: #56c09a;
+  --shadow: rgba(0, 0, 0, 0.55);
+  --fd: var(--font-newsreader), "Newsreader", Georgia, serif;
+  --fm: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.rv.rv-light {
+  --bg: #f4efe4;
+  --bg2: #fbf7ee;
+  --surface: #ffffff;
+  --text: #211c13;
+  --muted: #6e6452;
+  --faint: #9a907c;
+  --line: #e6ddcc;
+  --line2: #d6cbb4;
+  --accent: #bc4a0e;
+  --accent2: #98380a;
+  --accent-ink: #fff6ec;
+  --pos: #1f9d6c;
+  --neg: #b8412f;
+  --cred-high: #17976f;
+  --cred-med: #9d6f16;
+  --cred-low: #b85a34;
+  --val: #6a4cd0;
+  --verified: #1f9d6c;
+  --shadow: rgba(70, 50, 10, 0.16);
+}
+
+/* --- shared chrome (rv-shell) --- */
+.rv-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 34px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg2);
+}
+.rv-nav {
+  display: flex;
+  gap: 28px;
+  padding: 0 34px;
+  border-bottom: 1px solid var(--line);
+}
+.rv-ftr {
+  padding: 16px 34px 26px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+@media (max-width: 880px) {
+  .rv-hdr {
+    padding: 13px 16px;
+  }
+  .rv-nav {
+    padding: 0 16px;
+    gap: 18px;
+  }
+  .rv-ftr {
+    padding: 14px 16px 20px;
+  }
+}
+@media (max-width: 640px) {
+  .rv-hdr-meta {
+    display: none;
+  }
+  .rv-wordmark {
+    font-size: 15px;
+  }
+}
+
+/* --- nav tab links --- */
+.nvl {
+  font-family: var(--fm);
+  font-weight: 500;
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--faint);
+  padding: 11px 0 9px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+}
+.nvl:hover {
+  color: var(--muted);
+}
+.nvl.on {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* --- direction / side / credibility encodings (Process + Report) --- */
+.mv-down {
+  color: var(--pos);
+}
+.mv-up {
+  color: var(--neg);
+}
+.mv-flat {
+  color: var(--faint);
+}
+.sd-support {
+  background: var(--pos);
+}
+.sd-counter {
+  background: var(--neg);
+}
+.sd-neutral {
+  background: var(--faint);
+}
+.cred-high {
+  color: var(--cred-high);
+}
+.cred-med {
+  color: var(--cred-med);
+}
+.cred-low {
+  color: var(--cred-low);
+}
+.bd-high {
+  border-color: color-mix(in srgb, var(--cred-high) 42%, transparent);
+  background: color-mix(in srgb, var(--cred-high) 13%, transparent);
+}
+.bd-med {
+  border-color: color-mix(in srgb, var(--cred-med) 42%, transparent);
+  background: color-mix(in srgb, var(--cred-med) 13%, transparent);
+}
+.bd-low {
+  border-color: color-mix(in srgb, var(--cred-low) 42%, transparent);
+  background: color-mix(in srgb, var(--cred-low) 13%, transparent);
+}
+.srcic {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ic10 {
+  width: 11px;
+  height: 11px;
+  flex: none;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* --- interactive affordances --- */
+.chip {
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.chip:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.cta {
+  transition: background 0.15s;
+}
+.cta:hover {
+  background: var(--accent2);
+}
+.ghost {
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* --- Process: annotation hover toolbar --- */
+.anno .anno-bar {
+  opacity: 0;
+  transform: translateY(-2px);
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+.anno:hover .anno-bar,
+.anno:focus-within .anno-bar {
+  opacity: 1;
+  transform: translateY(0);
+}
+.abtn {
+  cursor: pointer;
+  background: var(--bg);
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.abtn:hover {
+  border-color: currentColor;
+}
+.stanceb {
+  cursor: pointer;
+  background: none;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+.stanceb:hover {
+  border-color: var(--faint);
+}
+
+/* --- live-run keyframes --- */
+@keyframes rv-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+}
+@keyframes rv-shimmer {
+  0% {
+    background-position: -300px 0;
+  }
+  100% {
+    background-position: 300px 0;
+  }
+}
+@keyframes rv-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -43,6 +43,8 @@
     "wc:gen-tw": "tsx scripts/world-cup/gen-traditional.ts",
     "forecast:event": "tsx scripts/forecast/cli.ts",
     "forecast:viewer": "tsx scripts/forecast/viewer/server.ts",
+    "raven:dev": "pnpm --filter @autopoly/raven dev",
+    "raven:build": "pnpm --filter @autopoly/raven build",
     "db:generate": "pnpm --filter @autopoly/db drizzle-kit generate",
     "db:migrate": "pnpm --filter @autopoly/db drizzle-kit migrate",
     "db:seed": "pnpm --filter @autopoly/db seed",
