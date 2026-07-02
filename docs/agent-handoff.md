@@ -11,6 +11,15 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-07-02 by Claude（**Forecast prompt 评审落地：prompt 只引导思考、harness 保证正确性**，分支 `claude/unruffled-jang-622f35`）。
+> 背景：用户要求 review「一次跑 3 个市场推荐」流程的全部 prompt（评审文档 [`docs/internal/review/2026-06-17-forecast-prompt-review.md`](internal/review/2026-06-17-forecast-prompt-review.md) + 文风方案 [`docs/internal/forecast-house-style.md`](internal/forecast-house-style.md)），随后指示「把改动都实现，prompt 主要用作引导思考，harness 确保正确实现，去掉对 forecasting 有负面影响的限制，合并 main」。
+> ① **确定性闸门（真钱安全）**：`pulse-entry-planner.ts` 新增 `assessPulseReportParseability`/`PULSE_NO_TRADE_MARKER`（导出 `parseRecommendationSections`），`full-pulse.ts` 渲染后 fail-closed 校验——market-scan 报告 0 个 entry-ready 章节且无 `NO-TRADE` 标记→直接抛错（此前概率表解析失败会 `aiProb=marketProb`→edge 0→**静默零交易**）；position-review 降级为响亮警告。5 个新单测。
+> ② **4 个 full-pulse prompt 变体重写**：告知模型 harness 真相（「你的概率是唯一进入交易的数字，代码层重算 Kelly」）；方法论/量化参数降级为「默认值，可写明理由偏离」；删「默认只用已给上下文/极少量补充核验」→ 鼓励自主补充检索；强制章节清单缩减为「程序接口」（链接/方向/概率表/置信度/建议仓位/流动性上限/推理逻辑——即 entry-planner 正则实际解析的字段）+ 校准优先的写法要点（结论先行+区间同句、每句硬信息、kill condition、「简洁≠自信,禁止为行文收窄区间」）；Top 3 改「最多 3 个，不凑数，可 NO-TRADE」。
+> ③ **SKILL.md（vendored zh）**：7 步「不可跳过」→推荐脚手架；贝叶斯更新幅度/edge 分档/排序公式→默认值可偏离；No 扫描配额→先验提醒；保留认知红线（A0 结算源查验/A1.5 溯源）+ 风控硬门槛（流动性 $5k）。⚠️ **上游 repo `Alchemist-X/polymarket-market-pulse` 需同步此改动**，否则 `pnpm vendor:sync` 会覆盖回旧版。
+> ④ **C 端 api-driver prompt**：去黑话（显式禁「节点/贝叶斯/置信区间/先验/后验/edge」）+ 决策优先（首行初步判断、末行最终概率+区间）+ 校准（禁为语气收窄区间）；prescreen SKIP 判据删「already efficiently priced」先验。
+> ⑤ **DeepSeek A/B 实证**（`.env.deepseek` key 在 amazing-mcnulty worktree）：同一 fixture，旧 scan prompt 输出 **0 行可解析概率**（概率写成 0.62 小数+「做多 Yes」→交易正则全 miss，静默零交易实锤）；新 prompt **4/4 行全解析** + 文风达标（首句方向+概率+区间、证据带来源日期、显式 kill condition）。C 端：旧 prompt 冒「贝叶斯」+点估计；新 prompt 零黑话+末行区间 55%–80%。
+> 验证：orchestrator typecheck 绿、全量 vitest 874/877（3 个失败是 main 上既有的 provider-runtime 测试，与本次无关，已 spawn task）、`pnpm --filter @autopoly/web exec next build` 绿。**待办**：house-style 方案第 4/5 步（few-shot 反向校准示例、离线 grep eval）未做;上游 SKILL.md 同步;两份新文档英文版待同步翻译。英文版 handoff 此条待同步翻译。
+>
 > 最后更新：2026-07-02 by Claude（**Raven Forecasting Engine 网页 app 全量落地**，分支 `claude/amazing-mcnulty-5c3fca`（基于 `feat/iterative-forecaster`），PR 目标 = `feat/iterative-forecaster`）。
 > 按 claude.design 交付稿（Ask → Research → Verdict 三屏，暖棕 #15120c/#ee7130 + Newsreader/IBM Plex Mono）新建 `apps/raven`（端口 3200，`pnpm raven:dev`）：01 提问并起跑真实引擎；02 直播研究过程——证据卡手绘 KEEP/DOUBT 圈注 + 行内笔记 + 分析师假设队列（**真的会注入引擎下一轮 prompt**，消费后打 `consumedRound`/`doubtsHandled` 戳）；03 决策优先档案页（大数字 + 收敛轴 + 置信表 + 三核心信号 + 反向信号 + 带 [NN] 彩色锚点的叙事摘要 + 编号证据书 + 折叠 framing）。GTA6 demo 档案逐字移植（id `gta6-demo`）。
 > 引擎侧（`scripts/forecast/`）：`agent.ts` provider 分发（`FORECAST_PROVIDER=claude|deepseek`）；DeepSeek 适配器（OpenAI 兼容、无搜索，伪造引用守卫降级为**引用存活检查**，403/429 反爬拒绝算活）；证据新增 source_type/credibility；summary 新增 why_sentence/quip/[NN] 引用；`FORECAST_MIN_ROUNDS`（app 设 2，防对冲轮 1 假收敛）；resume 无轮可跑不再卡 `open`。测试 62/62 绿；`pnpm --filter @autopoly/raven build` 绿；桌面+375px 移动、dark+light 截图自评通过、0 console error。
