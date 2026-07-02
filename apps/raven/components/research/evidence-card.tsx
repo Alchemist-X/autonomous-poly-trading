@@ -4,6 +4,8 @@
 // with side bar, index, source + credibility + value pills, analysis text,
 // attached "Your note" strips and the inline note composer.
 
+import { tierWord, useLocale, useT } from "../../lib/i18n";
+import { RP } from "../../lib/i18n/research-parts";
 import type { AnalystNote } from "../../lib/server/analyst";
 import { ShieldIcon, SrcIcon } from "../icons";
 import { AnnoBar, MarkOverlay, type Mark } from "./annotation";
@@ -32,11 +34,13 @@ export function EvidenceCard({
   onNoteSubmit: () => void;
   animated?: boolean; // just streamed in — play the entrance animation
 }) {
+  const t = useT();
+  const { locale } = useLocale();
   return (
     <div
       className={`anno${animated ? " rv-reveal" : ""}`}
       tabIndex={0}
-      aria-label={`Evidence ${ev.idx}: ${ev.title}`}
+      aria-label={t(RP.evAria, { idx: ev.idx, title: ev.title })}
       style={{
         position: "relative",
         marginTop: 14,
@@ -87,7 +91,7 @@ export function EvidenceCard({
                   padding: "1px 5px"
                 }}
               >
-                ↻ Revises a prior source
+                {t(RP.evRevises)}
               </span>
             )}
           </div>
@@ -107,7 +111,7 @@ export function EvidenceCard({
             </span>
             <span
               className={`cred-${ev.cred} bd-${ev.cred}`}
-              title="How trustworthy the source is"
+              title={t(RP.evCredTitle)}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -121,10 +125,10 @@ export function EvidenceCard({
               }}
             >
               <ShieldIcon />
-              {ev.credLabel} credibility
+              {t(RP.evCredPill, { tier: tierWord(ev.credLabel, locale) })}
             </span>
             <span
-              title="How much this source adds to the forecast"
+              title={t(RP.evValueTitle)}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -140,7 +144,7 @@ export function EvidenceCard({
               }}
             >
               <span style={{ letterSpacing: 1 }}>{ev.valDiamonds}</span>
-              {ev.valueLabel} value
+              {t(RP.evValuePill, { tier: tierWord(ev.valueLabel, locale) })}
             </span>
           </div>
           <p style={{ margin: "9px 0 0", fontSize: 12.5, lineHeight: 1.55, color: "var(--muted)" }}>
@@ -170,7 +174,7 @@ export function EvidenceCard({
                   whiteSpace: "nowrap"
                 }}
               >
-                Your note
+                {t(RP.evYourNote)}
               </span>
               <span style={{ fontSize: 12.5, lineHeight: 1.45, color: "var(--text)" }}>{n.text}</span>
             </div>
@@ -183,8 +187,8 @@ export function EvidenceCard({
                 onKeyDown={(e) => {
                   if (e.key === "Enter") onNoteSubmit();
                 }}
-                placeholder="Attach a note to this evidence…"
-                aria-label="Attach a note to this evidence"
+                placeholder={t(RP.evNotePlaceholder)}
+                aria-label={t(RP.evNoteAria)}
                 autoFocus
                 style={{
                   flex: 1,
@@ -216,7 +220,7 @@ export function EvidenceCard({
                   borderRadius: 8
                 }}
               >
-                ADD
+                {t(RP.evAdd)}
               </button>
             </div>
           )}

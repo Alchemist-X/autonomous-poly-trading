@@ -3,13 +3,15 @@
 // The sticky right rail: hypothesis composer (textarea + 3-way stance control
 // + queue button) and the queued-notes list with per-note status tags.
 
+import { useT, type Entry } from "../../lib/i18n";
+import { RP } from "../../lib/i18n/research-parts";
 import type { AnalystStance } from "../../lib/server/analyst";
 import type { QueuedVM } from "./research-vm";
 
-const STANCES: Array<{ key: AnalystStance; label: string }> = [
-  { key: "yes", label: "PUSHES YES" },
-  { key: "no", label: "PUSHES NO" },
-  { key: "question", label: "QUESTION" }
+const STANCES: Array<{ key: AnalystStance; label: Entry }> = [
+  { key: "yes", label: RP.stanceYes },
+  { key: "no", label: RP.stanceNo },
+  { key: "question", label: RP.stanceQuestion }
 ];
 
 export function AnalystDesk({
@@ -35,6 +37,7 @@ export function AnalystDesk({
   queued: readonly QueuedVM[];
   onRemove: (noteId: string) => void;
 }) {
+  const t = useT();
   return (
     <div className="rvp-rail">
       <div style={{ background: "var(--bg2)", border: "1px solid var(--line)", borderRadius: 14, padding: "18px 18px 16px" }}>
@@ -48,28 +51,30 @@ export function AnalystDesk({
               color: "var(--accent)"
             }}
           >
-            Analyst desk
+            {t(RP.deskTitle)}
           </div>
           <span style={{ fontFamily: "var(--fm)", fontSize: 9.5, color: "var(--faint)" }}>{markSummary}</span>
         </div>
         <p style={{ margin: "8px 0 0", fontSize: 12.5, lineHeight: 1.5, color: "var(--muted)" }}>
           {complete ? (
             <>
-              Queue a hypothesis or a lead. The run is complete, so notes are{" "}
-              <b style={{ color: "var(--text)" }}>saved with the dossier</b>.
+              {t(RP.deskHelpDonePre)}
+              <b style={{ color: "var(--text)" }}>{t(RP.deskHelpDoneBold)}</b>
+              {t(RP.deskHelpDonePost)}
             </>
           ) : (
             <>
-              Queue a hypothesis or a lead. Raven treats each one as a claim to test in{" "}
-              <b style={{ color: "var(--text)" }}>iteration {nextRound}</b>.
+              {t(RP.deskHelpRunPre)}
+              <b style={{ color: "var(--text)" }}>{t(RP.deskHelpRunBold, { n: nextRound })}</b>
+              {t(RP.deskHelpRunPost)}
             </>
           )}
         </p>
         <textarea
           value={composerText}
           onChange={(e) => onComposerText(e.target.value)}
-          placeholder="e.g. Check retailer supply-chain listings — physical stock timelines would confirm the date better than press."
-          aria-label="Queue a hypothesis or a lead"
+          placeholder={t(RP.deskPlaceholder)}
+          aria-label={t(RP.deskComposerAria)}
           style={{
             width: "100%",
             marginTop: 12,
@@ -86,7 +91,7 @@ export function AnalystDesk({
             padding: "10px 12px"
           }}
         />
-        <div role="radiogroup" aria-label="How this note pushes the forecast" style={{ display: "flex", gap: 6, marginTop: 10 }}>
+        <div role="radiogroup" aria-label={t(RP.deskStanceAria)} style={{ display: "flex", gap: 6, marginTop: 10 }}>
           {STANCES.map((s) => {
             const on = stance === s.key;
             return (
@@ -109,7 +114,7 @@ export function AnalystDesk({
                   padding: "7px 4px"
                 }}
               >
-                {s.label}
+                {t(s.label)}
               </button>
             );
           })}
@@ -134,7 +139,7 @@ export function AnalystDesk({
             borderRadius: 9
           }}
         >
-          {complete ? "Save note for the dossier" : `Queue for iteration ${nextRound}`}
+          {complete ? t(RP.deskSubmitSave) : t(RP.deskSubmitQueue, { n: nextRound })}
         </button>
       </div>
 
@@ -149,7 +154,7 @@ export function AnalystDesk({
             marginBottom: 9
           }}
         >
-          Queued · {String(queued.length).padStart(2, "0")}
+          {t(RP.deskQueuedHeading, { nn: String(queued.length).padStart(2, "0") })}
         </div>
         {queued.length > 0 ? (
           queued.map((n) => (
@@ -193,8 +198,8 @@ export function AnalystDesk({
                 <button
                   type="button"
                   onClick={() => onRemove(n.id)}
-                  title="Remove"
-                  aria-label="Remove this note"
+                  title={t(RP.deskRemoveTitle)}
+                  aria-label={t(RP.deskRemoveAria)}
                   style={{
                     border: "none",
                     background: "none",
@@ -223,7 +228,7 @@ export function AnalystDesk({
               color: "var(--faint)"
             }}
           >
-            Nothing queued yet. Your circles, strikes and notes land here — and in Raven's next research round.
+            {t(RP.deskQueuedEmpty)}
           </div>
         )}
       </div>

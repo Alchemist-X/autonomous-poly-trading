@@ -6,6 +6,8 @@
 // Finished rounds fold to a one-line receipt (Manus-style) while a newer
 // round is running; click the receipt to expand.
 
+import { sourcesLabel, useLocale, useT } from "../../lib/i18n";
+import { RS } from "../../lib/i18n/ui";
 import type { AnalystNote } from "../../lib/server/analyst";
 import { AnnoBar, MarkOverlay, type Mark } from "./annotation";
 import { EvidenceCard } from "./evidence-card";
@@ -29,9 +31,11 @@ function FoldChevron({ open }: { open: boolean }) {
 
 // One-line receipt for a folded (completed) iteration.
 function FoldedRow({ block, onToggle }: { block: BlockVM; onToggle?: () => void }) {
+  const t = useT();
+  const { locale } = useLocale();
   const n = block.evidence.length;
   return (
-    <section style={{ marginTop: 18 }} aria-label={`Iteration ${block.n} (folded)`}>
+    <section style={{ marginTop: 18 }} aria-label={t(RS.foldedAria, { n: block.n })}>
       <button
         type="button"
         className="rvp-fold"
@@ -61,7 +65,7 @@ function FoldedRow({ block, onToggle }: { block: BlockVM; onToggle?: () => void 
             color: "var(--faint)"
           }}
         >
-          Iteration
+          {t(RS.iterationWord)}
         </span>
         <span style={{ fontFamily: "var(--fd)", fontWeight: 600, fontSize: 15, color: "var(--accent)" }}>{block.n}</span>
         <span
@@ -75,7 +79,7 @@ function FoldedRow({ block, onToggle }: { block: BlockVM; onToggle?: () => void 
             minWidth: 0
           }}
         >
-          {block.status} · {n} source{n === 1 ? "" : "s"}
+          {block.status} · {sourcesLabel(n, locale)}
         </span>
         <span
           className={`mv-${block.moveDir}`}
@@ -94,9 +98,10 @@ function FoldedRow({ block, onToggle }: { block: BlockVM; onToggle?: () => void 
 // Small "already read" rows shown above the live shimmer — the trail of
 // sources the engine visited this round (Manus-style activity lines).
 function ReadTrail({ reads }: { reads: readonly ReadingVM[] }) {
+  const t = useT();
   if (reads.length === 0) return null;
   return (
-    <div style={{ marginTop: 12, display: "grid", gap: 6 }} aria-label="Sources visited this round">
+    <div style={{ marginTop: 12, display: "grid", gap: 6 }} aria-label={t(RS.trailAria)}>
       {reads.map((r, i) => (
         <div
           key={`${r.domain}-${i}`}
@@ -104,7 +109,7 @@ function ReadTrail({ reads }: { reads: readonly ReadingVM[] }) {
         >
           <CheckCircle size={11} />
           <span>
-            Read <b style={{ color: "var(--muted)", fontWeight: 600 }}>{r.domain}</b>
+            {t(RS.readWord)} <b style={{ color: "var(--muted)", fontWeight: 600 }}>{r.domain}</b>
           </span>
         </div>
       ))}
@@ -141,13 +146,14 @@ export function IterationBlock({
   onToggleCollapse?: () => void;
   recentReads?: readonly ReadingVM[]; // sources visited so far this round (live block only)
 }) {
+  const t = useT();
   const rMark = marks[block.reasoningId];
   if (collapsed) return <FoldedRow block={block} onToggle={onToggleCollapse} />;
   return (
     <section
       className={animatedIds?.has(`it${block.n}`) ? "rv-reveal" : undefined}
       style={{ marginTop: 26 }}
-      aria-label={`Iteration ${block.n}`}
+      aria-label={`${t(RS.iterationWord)} ${block.n}`}
     >
       <div
         style={{
@@ -167,7 +173,7 @@ export function IterationBlock({
             color: "var(--faint)"
           }}
         >
-          Iteration
+          {t(RS.iterationWord)}
         </span>
         <span style={{ fontFamily: "var(--fd)", fontWeight: 600, fontSize: 20, color: "var(--accent)" }}>
           {block.n}
@@ -185,7 +191,7 @@ export function IterationBlock({
             className="rvp-fold"
             onClick={onToggleCollapse}
             aria-expanded={true}
-            aria-label={`Fold iteration ${block.n}`}
+            aria-label={t(RS.foldAria, { n: block.n })}
             style={{
               background: "none",
               border: "none",
@@ -203,7 +209,7 @@ export function IterationBlock({
       <div
         className="anno"
         tabIndex={0}
-        aria-label={`Raven's reasoning — iteration ${block.n}`}
+        aria-label={`${t(RS.reasoningLabel)} — ${block.n}`}
         style={{ position: "relative", marginTop: 12, padding: "11px 13px", borderRadius: 10, outline: "none" }}
       >
         {rMark && <MarkOverlay mark={rMark} variant="note" />}
@@ -223,11 +229,11 @@ export function IterationBlock({
               color: "var(--faint)"
             }}
           >
-            Raven's reasoning
+            {t(RS.reasoningLabel)}
           </span>
           {block.analystFolded > 0 && (
             <span
-              title="Your queued notes were injected into this round's research prompt"
+              title={t(RS.pushbackTitle)}
               style={{
                 fontFamily: "var(--fm)",
                 fontSize: 8.5,
@@ -241,7 +247,7 @@ export function IterationBlock({
                 padding: "1px 6px"
               }}
             >
-              ↳ analyst pushback folded in ({block.analystFolded})
+              {t(RS.pushbackChip, { n: block.analystFolded })}
             </span>
           )}
         </div>
@@ -292,7 +298,7 @@ export function IterationBlock({
             <div style={{ fontFamily: "var(--fm)", fontSize: 11, color: "var(--muted)" }}>
               {block.reading.domain ? (
                 <>
-                  Reading <b style={{ color: "var(--text)" }}>{block.reading.domain}</b>
+                  {t(RS.readingWord)} <b style={{ color: "var(--text)" }}>{block.reading.domain}</b>
                   {block.reading.text}
                 </>
               ) : (

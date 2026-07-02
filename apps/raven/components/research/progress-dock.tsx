@@ -6,6 +6,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useT } from "../../lib/i18n";
+import { RS } from "../../lib/i18n/ui";
 import { PlanList } from "./plan";
 import { planStepNo, type PlanStepVM } from "./research-vm";
 
@@ -47,6 +49,7 @@ export function ProgressDock({
   ctaHref: string | null; // dossier link, shown when the run is complete
   elapsed?: string | null; // live run clock, e.g. "05m 12s"
 }) {
+  const t = useT();
   const [expanded, setExpanded] = useState(false);
   const stepNo = planStepNo(steps);
 
@@ -99,14 +102,14 @@ export function ProgressDock({
               padding: "7px 12px"
             }}
           >
-            Read the dossier →
+            {t(RS.dockCta)}
           </Link>
         )}
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
           aria-expanded={expanded}
-          aria-label={expanded ? "Hide the run plan" : "Show the run plan"}
+          aria-label={expanded ? t(RS.dockHidePlan) : t(RS.dockShowPlan)}
           style={{
             flex: "none",
             cursor: "pointer",
