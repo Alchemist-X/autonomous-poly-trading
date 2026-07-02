@@ -11,6 +11,9 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-07-02 by Claude（**修复 main 上 3 个 provider-runtime 测试失败**，分支 `claude/jovial-swanson-f6d92f`，即上一条 spawn 的 task）。
+> 诊断：是**测试**漂移而非实现——`provider-runtime.test.ts` 把 `skillRootDir` 指向 `vendor/repos/all-polymarket-skill`（gitignored，只有跑过 `pnpm vendor:sync` 的机器才有），clean checkout 上 `resolveSkillDescriptors` 找不到 SKILL.md 直接抛错。实现侧校验是对的（live 路径需要 skill 文件真实存在），replay 唯一生产调用方 `trial-recommend.ts` 也总在已 sync 的机器上跑。修法：测试改为在各自 temp dir 里搭 5 个 stub skill 目录（zh 命名规则同 `skillDirectoryName`）+ SKILL.md，彻底不依赖 vendor 状态。验证：该文件 4/4、全量 vitest 884/884、orchestrator tsc 绿。英文版 handoff 此条待同步翻译。
+>
 > 最后更新：2026-07-02 by Claude（**Forecast prompt 评审落地：prompt 只引导思考、harness 保证正确性**，分支 `claude/unruffled-jang-622f35`）。
 > 背景：用户要求 review「一次跑 3 个市场推荐」流程的全部 prompt（评审文档 [`docs/internal/review/2026-06-17-forecast-prompt-review.md`](internal/review/2026-06-17-forecast-prompt-review.md) + 文风方案 [`docs/internal/forecast-house-style.md`](internal/forecast-house-style.md)），随后指示「把改动都实现，prompt 主要用作引导思考，harness 确保正确实现，去掉对 forecasting 有负面影响的限制，合并 main」。
 > ① **确定性闸门（真钱安全）**：`pulse-entry-planner.ts` 新增 `assessPulseReportParseability`/`PULSE_NO_TRADE_MARKER`（导出 `parseRecommendationSections`），`full-pulse.ts` 渲染后 fail-closed 校验——market-scan 报告 0 个 entry-ready 章节且无 `NO-TRADE` 标记→直接抛错（此前概率表解析失败会 `aiProb=marketProb`→edge 0→**静默零交易**）；position-review 降级为响亮警告。5 个新单测。
