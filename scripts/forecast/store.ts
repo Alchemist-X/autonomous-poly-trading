@@ -8,9 +8,9 @@
 // committed state (the persist-after-each-transition discipline from rough-loop).
 
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { mkdirSync, readFileSync, renameSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
-import type { ForecastState } from "./types";
+import type { AnalystNote, AnalystState, ForecastState } from "./types";
 
 export function forecastsRoot(): string {
   const root = process.env.ARTIFACT_STORAGE_ROOT
@@ -46,12 +46,83 @@ export function loadState(eventId: string): ForecastState | null {
   }
 }
 
+// Atomic write: write to <file>.tmp then rename, so a crash (or a concurrent
+// reader — the app polls state.json) can never observe a truncated JSON.
+function writeFileAtomic(file: string, data: string): void {
+  const tmp = `${file}.tmp`;
+  writeFileSync(tmp, data, "utf8");
+  renameSync(tmp, file);
+}
+
 export function saveState(state: ForecastState): string {
   const dir = eventDir(state.eventId);
   mkdirSync(dir, { recursive: true });
   const file = path.join(dir, "state.json");
-  writeFileSync(file, JSON.stringify(state, null, 2), "utf8");
+  writeFileAtomic(file, JSON.stringify(state, null, 2));
   return file;
+}
+
+// ---- Analyst-in-the-loop state (analyst.json, written by the app / a human). ----
+
+export function analystPath(eventId: string): string {
+  return path.join(eventDir(eventId), "analyst.json");
+}
+
+const ANALYST_STANCES = new Set(["yes", "no", "question"]);
+const ANALYST_MARKS = new Set(["keep", "doubt"]);
+
+// The analyst file is an external input, so it is normalized defensively:
+// missing/corrupt file => empty state; malformed notes and unknown marks are
+// dropped rather than crashing a round.
+export function loadAnalyst(eventId: string): AnalystState {
+  const empty: AnalystState = { notes: [], marks: {} };
+  const file = analystPath(eventId);
+  if (!existsSync(file)) return empty;
+  let raw: unknown;
+  try {
+    raw = JSON.parse(readFileSync(file, "utf8"));
+  } catch {
+    return empty;
+  }
+  if (!raw || typeof raw !== "object") return empty;
+  const o = raw as Record<string, unknown>;
+  const notes: AnalystNote[] = (Array.isArray(o.notes) ? o.notes : [])
+    .map((n) => n as Record<string, unknown>)
+    .filter(
+      (n) =>
+        typeof n.id === "string" &&
+        n.id.trim() &&
+        typeof n.text === "string" &&
+        n.text.trim() &&
+        ANALYST_STANCES.has(n.stance as string)
+    )
+    .map((n) => ({
+      id: n.id as string,
+      text: n.text as string,
+      stance: n.stance as AnalystNote["stance"],
+      targetId: typeof n.targetId === "string" && n.targetId ? n.targetId : null,
+      createdAtUtc: typeof n.createdAtUtc === "string" ? n.createdAtUtc : "",
+      consumedRound:
+        typeof n.consumedRound === "number" && Number.isFinite(n.consumedRound) ? n.consumedRound : null,
+    }));
+  const marks: AnalystState["marks"] = {};
+  if (o.marks && typeof o.marks === "object" && !Array.isArray(o.marks)) {
+    for (const [k, v] of Object.entries(o.marks as Record<string, unknown>)) {
+      if (ANALYST_MARKS.has(v as string)) marks[k] = v as AnalystState["marks"][string];
+    }
+  }
+  const doubtsHandled: Record<string, number> = {};
+  if (o.doubtsHandled && typeof o.doubtsHandled === "object" && !Array.isArray(o.doubtsHandled)) {
+    for (const [k, v] of Object.entries(o.doubtsHandled as Record<string, unknown>)) {
+      if (typeof v === "number" && Number.isFinite(v)) doubtsHandled[k] = v;
+    }
+  }
+  return { notes, marks, doubtsHandled };
+}
+
+export function saveAnalyst(eventId: string, a: AnalystState): void {
+  mkdirSync(eventDir(eventId), { recursive: true });
+  writeFileAtomic(analystPath(eventId), JSON.stringify(a, null, 2));
 }
 
 const pct = (p: number): string => `${(p * 100).toFixed(1)}%`;

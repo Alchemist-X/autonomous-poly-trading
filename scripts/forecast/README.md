@@ -39,9 +39,28 @@ over.
 Flags: `--resolution` (optional override), `--max-rounds N`, `--model <id>`,
 `--fresh`.
 
-Env: `ANTHROPIC_API_KEY` (required), `ANTHROPIC_BASE_URL`, `FORECAST_MAX_ROUNDS`,
-`FORECAST_MODEL`, `FORECAST_ALLOWED_TOOLS` (default `"WebSearch WebFetch"`),
-`FORECAST_AGENT_TIMEOUT_MS`.
+Env: `ANTHROPIC_API_KEY` (required for the claude provider), `ANTHROPIC_BASE_URL`,
+`FORECAST_MAX_ROUNDS`, `FORECAST_MIN_ROUNDS` (convergence cannot stop the loop
+before this many rounds; default 1), `FORECAST_MODEL`, `FORECAST_ALLOWED_TOOLS`
+(default `"WebSearch WebFetch"`), `FORECAST_AGENT_TIMEOUT_MS`, `ARTIFACT_STORAGE_ROOT`.
+
+## Providers
+
+Every model call goes through the dispatch in `agent.ts`; the backend is chosen
+by env (never hardcode keys):
+
+- `FORECAST_PROVIDER=claude|deepseek` — default `claude` (Claude Code CLI with
+  real WebSearch; the fabrication guard reconciles citations against the actual
+  search trace).
+- `deepseek` — OpenAI-compatible HTTP (`deepseek-agent.ts`), **no web access**:
+  the round prompt is reworded (own-knowledge research, no URL fabrication) and
+  the fabrication guard degrades to a *citation liveness* check (a cited URL is
+  "verified" unless it provably does not exist — 404/410 or unreachable host;
+  anti-bot refusals like 403/429 count as live — weaker than trace membership).
+  Requires `DEEPSEEK_API_KEY`; optional `DEEPSEEK_BASE_URL` (default
+  `https://api.deepseek.com`), `FORECAST_DEEPSEEK_MODEL` (default
+  `deepseek-chat`), and `DEEPSEEK_PRICE_IN_PER_MTOK` / `DEEPSEEK_PRICE_OUT_PER_MTOK`
+  (both set => per-round `costUsd` is computed from token usage; else `null`).
 
 ## Output
 

@@ -157,6 +157,7 @@ export function extractJsonObject(text: string): unknown | null {
 const STANCES = new Set(["supports_yes", "supports_no", "neutral"]);
 const STRENGTHS = new Set(["weak", "moderate", "strong"]);
 const CONFIDENCES = new Set(["low", "medium", "high"]);
+const SOURCE_TYPES = new Set(["official", "press", "insider"]);
 
 // Fail-closed validation: a malformed round throws rather than silently
 // degrading to a guessed number.
@@ -183,6 +184,14 @@ export function validateRoundOutput(raw: unknown): AgentRoundOutput {
       llr: ev.llr,
       rationale: typeof ev.rationale === "string" ? ev.rationale : "",
       cluster_id: typeof ev.cluster_id === "string" ? ev.cluster_id : "",
+      // Lenient with defaults (never throw): these enrich the evidence display
+      // but must not fail a round when a model omits or mangles them.
+      source_type: SOURCE_TYPES.has(ev.source_type as string)
+        ? (ev.source_type as AgentRoundOutput["new_evidence"][number]["source_type"])
+        : "press",
+      credibility: CONFIDENCES.has(ev.credibility as string)
+        ? (ev.credibility as AgentRoundOutput["new_evidence"][number]["credibility"])
+        : "medium",
     };
   });
   const prob = Number(o.agent_holistic_probability);

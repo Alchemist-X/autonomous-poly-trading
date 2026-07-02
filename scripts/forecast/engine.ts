@@ -2,11 +2,13 @@
 //
 // One forecast = a binary event whose P(YES) is maintained across rounds. Each
 // round: build a PRIOR-AWARE prompt (carry the current probability + the list of
-// already-counted sources) -> run the agent with WebSearch -> validate (fail
+// already-counted sources + any pending analyst input) -> run the agent (via the
+// provider dispatch; WebSearch only when the provider has it) -> validate (fail
 // closed) -> dedupe new sources by canonical URL -> thread their LLRs through a
 // Bayesian log-odds update so each source's percentage-point contribution is
 // computed, not guessed -> persist -> check stop conditions.
 
+import { providerHasWebSearch, runAgent } from "./agent";
 import {
   applyLlrs,
   clamp,
@@ -17,12 +19,14 @@ import {
   credibleInterval,
   effectiveLlr,
 } from "./bayes";
-import { runAgentRaw, validateRoundOutput } from "./claude-agent";
-import { saveState, writeReport } from "./store";
+import { validateRoundOutput } from "./claude-agent";
+import type { AgentRunResult, RunAgentOptions } from "./claude-agent";
+import { loadAnalyst, saveAnalyst, saveState, writeReport } from "./store";
 import { summarizeForecast } from "./summary";
 import { canonicalizeUrl } from "./url";
 import type {
   AgentRoundOutput,
+  AnalystState,
   EventFraming,
   ForecastState,
   LedgerEntry,
@@ -33,17 +37,30 @@ import type {
 
 export interface RunForecastOptions {
   maxRounds?: number;
+  minRounds?: number; // convergence cannot stop the loop before this many rounds (env FORECAST_MIN_ROUNDS, default 1)
   convergenceEpsilon?: number; // stop if a round with new evidence moves prob by less than this
   model?: string;
   onLog?: (msg: string) => void;
   onRoundComplete?: (state: ForecastState, round: RoundRecord) => void;
+  // DI seam for loop-level tests and in-process embedding: replaces the
+  // provider-dispatched runAgent for every model call in the loop.
+  runAgentFn?: (prompt: string, opts: RunAgentOptions) => Promise<AgentRunResult>;
 }
 
 function nowUtc(): string {
   return new Date().toISOString();
 }
 
-function buildPrompt(state: ForecastState, roundNo: number, maxRounds: number): string {
+// Exported (pure) so the prompt contract can be unit-tested and so the app can
+// preview exactly what a round will see. extras.hasWebSearch reworks the
+// research instructions for a search-less provider; extras.analyst injects
+// pending analyst notes / doubt marks as leads to investigate.
+export function buildPrompt(
+  state: ForecastState,
+  roundNo: number,
+  maxRounds: number,
+  extras: { hasWebSearch: boolean; analyst: AnalystState | null }
+): string {
   const counted =
     state.evidenceLedger.length === 0
       ? "(none yet — this is the first round)"
@@ -54,7 +71,47 @@ function buildPrompt(state: ForecastState, roundNo: number, maxRounds: number): 
           )
           .join("\n");
 
-  return `You are a forecasting research agent. You estimate the probability that a specific BINARY (yes/no) event will happen, using live web research, and you attribute every probability change to a cited source.
+  // Analyst-in-the-loop: unconsumed notes become leads (never established
+  // fact); "doubt" marks ask the agent to re-examine specific prior sources via
+  // the reflection mechanism. Rendered only when there is anything to inject.
+  const ledgerById = new Map(state.evidenceLedger.map((e) => [e.id, e]));
+  const pendingNotes = extras.analyst?.notes.filter((n) => n.consumedRound == null) ?? [];
+  const handledDoubts = extras.analyst?.doubtsHandled ?? {};
+  const doubted = Object.entries(extras.analyst?.marks ?? {})
+    .filter(([id, mark]) => mark === "doubt" && handledDoubts[id] == null)
+    .map(([id]) => ledgerById.get(id))
+    .filter((e): e is LedgerEntry => e !== undefined);
+  let analystSection = "";
+  if (pendingNotes.length || doubted.length) {
+    const stanceTag = (s: string): string =>
+      s === "yes" ? "[PUSHES YES]" : s === "no" ? "[PUSHES NO]" : "[OPEN QUESTION]";
+    const lines: string[] = [
+      "",
+      "ANALYST INPUT — a human analyst reviewing this run left the following. Treat each item as a hypothesis or lead to INVESTIGATE this round — not as established fact. If a lead pans out, include it as evidence with a real source; if it does not, say so in round_summary.",
+    ];
+    for (const n of pendingNotes) {
+      const target = n.targetId ? ledgerById.get(n.targetId) : undefined;
+      lines.push(`- ${stanceTag(n.stance)}${target ? ` (re: ${target.url})` : ""} ${n.text}`);
+    }
+    if (doubted.length) {
+      lines.push(
+        "The analyst DOUBTS these prior sources — re-examine them; if the doubt is justified, walk them back with a reflection entry (cite a new source):"
+      );
+      for (const e of doubted) lines.push(`- ${e.url} — ${e.claim}`);
+    }
+    analystSection = lines.join("\n") + "\n";
+  }
+
+  // Research instructions are provider-aware: a search-less provider must never
+  // be told to WebSearch, and must not fabricate URLs to satisfy the cite rule.
+  const research = extras.hasWebSearch
+    ? "1. Use WebSearch to find NEW, relevant, recent evidence about whether this event will happen. Do not re-count any source already listed above.\n2. DISCONFIRMATION (required): run at least ONE search aimed at FALSIFYING the current lean — if P(YES) above is >50%, search for the strongest reasons it will NOT happen; if <50%, search for the strongest reasons it WILL. Report what you find even if it is weak or comes up empty (say so in round_summary). Do not only look for evidence that confirms the current estimate."
+    : "1. You have NO web access. Use your own knowledge (respecting its cutoff) to surface NEW, relevant evidence about whether this event will happen. Do not re-count any source already listed above.\n2. DISCONFIRMATION (required): argue the strongest case against the current lean — if P(YES) above is >50%, the strongest reasons it will NOT happen; if <50%, the strongest reasons it WILL — and include it as evidence if it holds up. Report the attempt even if it comes up empty (say so in round_summary). Do not only reason toward what confirms the current estimate.";
+  const citeRule = extras.hasWebSearch
+    ? "8. Only cite source_url values you actually retrieved via WebSearch."
+    : "8. Only cite source_url values you are confident actually exist — never fabricate or guess URLs; prefer canonical, stable URLs. If you cannot name a real URL for a claim, drop the claim.";
+
+  return `You are a forecasting research agent. You estimate the probability that a specific BINARY (yes/no) event will happen, ${extras.hasWebSearch ? "using live web research" : "using your own knowledge (no web access)"}, and you attribute every probability change to a cited source.
 
 EVENT: ${state.framing.normalizedQuestion}
 RESOLUTION CRITERIA: ${state.framing.resolutionCriteria}
@@ -65,16 +122,16 @@ ROUND: ${roundNo} of ${maxRounds}
 
 SOURCES ALREADY COUNTED IN PREVIOUS ROUNDS — do NOT re-use or re-count these URLs; you must find NEW information:
 ${counted}
-
+${analystSection}
 YOUR TASK THIS ROUND:
-1. Use WebSearch to find NEW, relevant, recent evidence about whether this event will happen. Do not re-count any source already listed above.
-2. DISCONFIRMATION (required): run at least ONE search aimed at FALSIFYING the current lean — if P(YES) above is >50%, search for the strongest reasons it will NOT happen; if <50%, search for the strongest reasons it WILL. Report what you find even if it is weak or comes up empty (say so in round_summary). Do not only look for evidence that confirms the current estimate.
+${research}
 3. For each NEW source, decide whether it makes YES more likely (supports_yes), less likely (supports_no), or neutral, and how strongly.
 4. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Be conservative — a single web article is rarely "strong".
-5. Group correlated sources with cluster_id: give sources that trace to the SAME underlying story, wire report, poll, or primary actor the SAME cluster_id string; give genuinely independent sources DIFFERENT cluster_ids. (Five outlets re-reporting one announcement are one cluster, not five.)
-6. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
-7. Only cite source_url values you actually retrieved via WebSearch.
-8. REFLECTION (optional): each prior source above shows its [stance, ±pp effect]. If this round's research shows a PRIOR source was wrong, stale, or double-counted, add a reflection entry: its target_url, a signed llr_adjustment (the CHANGE to its weight — NEGATIVE to walk it back toward NO, POSITIVE toward YES), a reason, and a new_source_url citing the NEW information that justifies the change. Only adjust a prior source when you have a NEW cited reason; do not re-litigate the whole estimate. Leave reflection empty ([]) if nothing prior needs correcting.
+5. Tag each source's provenance and reliability: "source_type" — "official" (primary/company/government/regulator statements), "press" (journalism), or "insider" (leakers, analysts, industry chatter) — and "credibility" ("high" | "medium" | "low"): how reliable this specific source is for this claim (track record, primacy), independent of how much it moves the number.
+6. Group correlated sources with cluster_id: give sources that trace to the SAME underlying story, wire report, poll, or primary actor the SAME cluster_id string; give genuinely independent sources DIFFERENT cluster_ids. (Five outlets re-reporting one announcement are one cluster, not five.)
+7. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
+${citeRule}
+9. REFLECTION (optional): each prior source above shows its [stance, ±pp effect]. If this round's research shows a PRIOR source was wrong, stale, or double-counted, add a reflection entry: its target_url, a signed llr_adjustment (the CHANGE to its weight — NEGATIVE to walk it back toward NO, POSITIVE toward YES), a reason, and a new_source_url citing the NEW information that justifies the change. Only adjust a prior source when you have a NEW cited reason; do not re-litigate the whole estimate. Leave reflection empty ([]) if nothing prior needs correcting.
 
 OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or after, no markdown code fence — of EXACTLY this shape:
 {
@@ -86,6 +143,8 @@ OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or aft
       "source_title": "page or site title",
       "stance": "supports_yes" | "supports_no" | "neutral",
       "strength": "weak" | "moderate" | "strong",
+      "source_type": "official" | "press" | "insider",
+      "credibility": "high" | "medium" | "low",
       "llr": -1.5,
       "cluster_id": "okc-sweep",
       "rationale": "why this moves the probability and by how much"
@@ -142,9 +201,27 @@ async function runOneRound(
   opts: RunForecastOptions
 ): Promise<RoundRecord> {
   const log = opts.onLog ?? (() => {});
-  const prompt = buildPrompt(state, roundNo, maxRounds);
+
+  // Analyst-in-the-loop: pending (unconsumed) notes and not-yet-handled doubt
+  // marks are injected into this round's prompt as leads; consumed/handled ids
+  // are stamped after success so the same input is never injected twice (a
+  // doubt re-injected every round would let the agent walk the same source
+  // back repeatedly — reflections are not URL-deduped).
+  const analyst = loadAnalyst(state.eventId);
+  const pendingNotes = analyst.notes.filter((n) => n.consumedRound == null);
+  const doubtsHandled = analyst.doubtsHandled ?? {};
+  const ledgerIds = new Set(state.evidenceLedger.map((e) => e.id));
+  const pendingDoubtIds = Object.entries(analyst.marks)
+    .filter(([id, mark]) => mark === "doubt" && doubtsHandled[id] == null && ledgerIds.has(id))
+    .map(([id]) => id);
+  const hasAnalystInput = pendingNotes.length > 0 || pendingDoubtIds.length > 0;
+  const prompt = buildPrompt(state, roundNo, maxRounds, {
+    hasWebSearch: providerHasWebSearch(),
+    analyst: hasAnalystInput ? analyst : null,
+  });
 
   // Run the agent, validating fail-closed with one retry on a parse/schema miss.
+  const callAgent = opts.runAgentFn ?? runAgent;
   const validate = (r: { jsonObject: unknown | null }): AgentRoundOutput | null => {
     try {
       return validateRoundOutput(r.jsonObject);
@@ -152,11 +229,11 @@ async function runOneRound(
       return null;
     }
   };
-  let result = await runAgentRaw(prompt, { model: opts.model });
+  let result = await callAgent(prompt, { model: opts.model });
   let out = validate(result);
   if (!out) {
     log(`  ⚠ round ${roundNo}: agent output failed validation; retrying once…`);
-    result = await runAgentRaw(prompt, { model: opts.model });
+    result = await callAgent(prompt, { model: opts.model });
     out = validate(result);
   }
   if (!out) {
@@ -242,6 +319,9 @@ async function runOneRound(
       clusterId: "__reflection",
       clusterFactor: 1,
       kind: "reflection",
+      // The new source's own metadata isn't collected for reflections.
+      sourceType: "press",
+      credibility: "medium",
     });
     newLedger.push({
       id: `${state.eventId}-r${roundNo}-refl-${i}`,
@@ -262,6 +342,9 @@ async function runOneRound(
       retrievedAtUtc: ts,
       firstSeenRound: roundNo,
       verifiedInSearchTrace: verified,
+      // The new source's own metadata isn't collected for reflections.
+      sourceType: "press",
+      credibility: "medium",
     });
   });
 
@@ -281,6 +364,8 @@ async function runOneRound(
       clusterId: ev.cluster_id || `__solo_${i}`,
       clusterFactor: factors[i],
       kind: "evidence",
+      sourceType: ev.source_type,
+      credibility: ev.credibility,
     });
     newLedger.push({
       id: `${state.eventId}-r${roundNo}-${i}`,
@@ -301,6 +386,8 @@ async function runOneRound(
       retrievedAtUtc: ts,
       firstSeenRound: roundNo,
       verifiedInSearchTrace: verified,
+      sourceType: ev.source_type,
+      credibility: ev.credibility,
     });
   });
 
@@ -351,6 +438,28 @@ async function runOneRound(
     searchResultUrlCount: result.searchResultUrls.size,
     costUsd: result.costUsd,
   };
+
+  // Stamp consumed analyst input (success path only). Re-read fresh: the app may
+  // have appended notes while the round ran — only the ids actually injected are
+  // stamped, anything newer stays pending for the next round. Doubt marks stay
+  // visible in the UI but get a doubtsHandled stamp so they inject only once.
+  if (pendingNotes.length > 0 || pendingDoubtIds.length > 0) {
+    const injectedIds = new Set(pendingNotes.map((n) => n.id));
+    const fresh = loadAnalyst(state.eventId);
+    const freshHandled = { ...(fresh.doubtsHandled ?? {}) };
+    for (const id of pendingDoubtIds) {
+      if (fresh.marks[id] === "doubt" && freshHandled[id] == null) freshHandled[id] = roundNo;
+    }
+    saveAnalyst(state.eventId, {
+      ...fresh,
+      notes: fresh.notes.map((n) =>
+        injectedIds.has(n.id) && n.consumedRound == null ? { ...n, consumedRound: roundNo } : n
+      ),
+      doubtsHandled: freshHandled,
+    });
+    if (pendingNotes.length > 0) record.analystConsumedIds = pendingNotes.map((n) => n.id);
+  }
+
   state.roundHistory.push(record);
   return record;
 }
@@ -364,9 +473,15 @@ export async function runForecast(
   // so 3 captures ~all the signal at ~1/2 the cost of higher caps.
   const maxRounds = opts.maxRounds ?? (Number(process.env.FORECAST_MAX_ROUNDS) || 3);
   const epsilon = opts.convergenceEpsilon ?? 0.01;
+  // A single round with offsetting evidence can net ~0pp; before minRounds have
+  // run, that is treated as "balanced so far", not convergence — the next
+  // round's disconfirmation pass still gets its chance to break the tie.
+  // Default 1 preserves the original stop behavior.
+  const minRounds = opts.minRounds ?? (Number(process.env.FORECAST_MIN_ROUNDS) || 1);
   const log = opts.onLog ?? (() => {});
 
   const startRound = state.round + 1;
+  let roundsRan = 0;
   for (let roundNo = startRound; roundNo <= maxRounds; roundNo++) {
     log(`\n▶ Round ${roundNo}/${maxRounds} — prior P(YES) = ${(state.currentProb * 100).toFixed(1)}%`);
     let record: RoundRecord;
@@ -381,6 +496,7 @@ export async function runForecast(
     }
 
     // Persist after EVERY round before deciding to stop (crash-resumable).
+    roundsRan++;
     saveState(state);
     writeReport(state);
     opts.onRoundComplete?.(state, record);
@@ -399,7 +515,7 @@ export async function runForecast(
       log(`  ■ no new evidence — stopping.`);
       break;
     }
-    if (Math.abs(record.postProb - record.priorProb) < epsilon) {
+    if (Math.abs(record.postProb - record.priorProb) < epsilon && roundNo >= minRounds) {
       state.status = "converged";
       log(`  ■ converged (move < ${(epsilon * 100).toFixed(1)}pp) — stopping.`);
       break;
@@ -410,11 +526,21 @@ export async function runForecast(
     }
   }
 
+  // A resume with no rounds left (state.round already >= maxRounds) must not be
+  // left "open" — the CLI resets status on resume, and an open state reads as
+  // "still running" to every consumer forever.
+  if (state.status === "open" && roundsRan === 0) {
+    state.status = "max_rounds";
+    log(`  ■ already at ${state.round}/${maxRounds} rounds — nothing to do.`);
+  }
+
   // Final whole-forecast synthesis (explains the number; never re-decides it).
-  if (state.roundHistory.length > 0 && state.status !== "aborted") {
+  // Skipped when no new round ran and a summary already exists (a no-op resume
+  // must not re-spend an LLM call rewriting the same summary).
+  if (state.roundHistory.length > 0 && state.status !== "aborted" && (roundsRan > 0 || !state.summary)) {
     log(`\n▶ Writing final summary…`);
     try {
-      state.summary = await summarizeForecast(state, { model: opts.model });
+      state.summary = await summarizeForecast(state, { model: opts.model, runAgentFn: opts.runAgentFn });
     } catch (err) {
       log(`  ⚠ summary generation failed (non-fatal): ${err instanceof Error ? err.message : String(err)}`);
     }

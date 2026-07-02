@@ -11,9 +11,10 @@
 // Re-running the same prompt resumes the existing forecast (adds rounds);
 // --fresh starts over. --resolution pins the resolution (the framer keeps it).
 
+import { providerName } from "./agent";
 import { runForecast, newForecastState } from "./engine";
 import { frameEvent } from "./framing";
-import { eventDir, loadState, makeEventId } from "./store";
+import { eventDir, loadState, makeEventId, saveState } from "./store";
 import type { ForecastState } from "./types";
 
 interface CliArgs {
@@ -53,10 +54,17 @@ async function main(): Promise<void> {
     console.error('Usage: pnpm forecast:event -- "<event prompt>" [--resolution ...] [--max-rounds N] [--model X] [--fresh]');
     process.exit(1);
   }
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("ANTHROPIC_API_KEY is required (also set ANTHROPIC_BASE_URL for the custom endpoint).");
+  // Provider-aware key guard: each backend names exactly the env var it needs.
+  const provider = providerName();
+  if (provider === "claude" && !process.env.ANTHROPIC_API_KEY) {
+    console.error("ANTHROPIC_API_KEY is required for the claude provider (also set ANTHROPIC_BASE_URL for the custom endpoint).");
     process.exit(1);
   }
+  if (provider === "deepseek" && !process.env.DEEPSEEK_API_KEY) {
+    console.error("DEEPSEEK_API_KEY is required for the deepseek provider (FORECAST_PROVIDER=deepseek).");
+    process.exit(1);
+  }
+  console.log(`provider: ${provider}`);
 
   const eventId = makeEventId(args.question);
   let state: ForecastState | null = args.fresh ? null : loadState(eventId);
@@ -64,6 +72,7 @@ async function main(): Promise<void> {
   if (state) {
     console.log(`↻ Resuming forecast \`${eventId}\` (already ran ${state.round} round(s), P(YES)=${pct(state.currentProb)})`);
     state.status = "open";
+    if (!state.provider) state.provider = provider;
   } else {
     // Round 0 — frame the prompt before any forecasting.
     console.log(`✦ New forecast \`${eventId}\``);
@@ -89,6 +98,10 @@ async function main(): Promise<void> {
       process.exit(2);
     }
     state = newForecastState({ eventId, eventText: args.question, framing });
+    state.provider = provider;
+    // Persist immediately: the framed question + prior are real progress a
+    // watching UI can show while round 1 (minutes) runs.
+    saveState(state);
   }
 
   const final = await runForecast(state, {

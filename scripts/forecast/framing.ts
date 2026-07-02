@@ -8,17 +8,26 @@
 // silently corrupts every downstream round (P0-1), a second, independent
 // skeptical pass audits the frame and may correct it.
 
-import { extractJsonObject, runAgentRaw } from "./claude-agent";
+import { providerHasWebSearch, runAgent } from "./agent";
+import { extractJsonObject } from "./claude-agent";
 import type { EventFraming } from "./types";
 
-function buildFramingPrompt(question: string, userResolution: string | null): string {
+// Provider-aware research line: a search-less provider must not be told to
+// WebSearch — it frames from its own knowledge and states uncertainty honestly.
+const NO_WEB_LINE =
+  "You have no web access; use your own knowledge and state uncertainty honestly in assumptions/framingCaveats.";
+
+function buildFramingPrompt(question: string, userResolution: string | null, hasWebSearch: boolean): string {
   const pinned = userResolution
     ? `\nUSER-SPECIFIED RESOLUTION (authoritative — keep it, do not override; only fill in the date/source/assumptions around it):\n"${userResolution}"\n`
     : "";
+  const research = hasWebSearch
+    ? "You MAY use WebSearch to look up dates, definitions, or context needed to frame this well."
+    : NO_WEB_LINE;
   return `You are a forecasting question editor. The user gave a rough description of a future event they want a probability for. BEFORE any forecasting, turn it into a precise, well-posed BINARY (yes/no) question with explicit resolution, and state a base-rate prior.
 
 USER PROMPT: "${question}"${pinned}
-You MAY use WebSearch to look up dates, definitions, or context needed to frame this well. Do not estimate the full evidence-based probability yet — only frame the question and give a BASE-RATE prior.
+${research} Do not estimate the full evidence-based probability yet — only frame the question and give a BASE-RATE prior.
 
 Produce:
 - normalized_question: a crisp question answerable strictly YES or NO.
@@ -35,8 +44,9 @@ OUTPUT only a single JSON object, no prose, no code fence:
 {"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"..."}`;
 }
 
-function buildAuditPrompt(question: string, frame: EventFraming): string {
-  return `You are a SKEPTICAL forecasting-question auditor. Another editor framed a user's prompt into a binary question. Your job is to catch errors that would make the whole forecast quantify the WRONG question: an ambiguous or drifted YES/NO bar, an inverted edge case, a wrong resolution date, a mis-judged forecastable verdict, or a base-rate prior that ignores the reference class. You MAY WebSearch to check dates/definitions.
+function buildAuditPrompt(question: string, frame: EventFraming, hasWebSearch: boolean): string {
+  const research = hasWebSearch ? "You MAY WebSearch to check dates/definitions." : NO_WEB_LINE;
+  return `You are a SKEPTICAL forecasting-question auditor. Another editor framed a user's prompt into a binary question. Your job is to catch errors that would make the whole forecast quantify the WRONG question: an ambiguous or drifted YES/NO bar, an inverted edge case, a wrong resolution date, a mis-judged forecastable verdict, or a base-rate prior that ignores the reference class. ${research}
 
 ORIGINAL USER PROMPT: "${question}"
 PROPOSED FRAME:
@@ -111,11 +121,11 @@ async function runValidated<T>(
   validate: (raw: unknown) => T,
   model?: string
 ): Promise<{ value: T; searchQueries: string[]; costUsd: number | null }> {
-  let res = await runAgentRaw(prompt, { model });
+  let res = await runAgent(prompt, { model });
   try {
     return { value: validate(res.jsonObject ?? extractJsonObject(res.rawFinalText)), searchQueries: res.searchQueries, costUsd: res.costUsd };
   } catch {
-    res = await runAgentRaw(prompt, { model });
+    res = await runAgent(prompt, { model });
     return { value: validate(res.jsonObject ?? extractJsonObject(res.rawFinalText)), searchQueries: res.searchQueries, costUsd: res.costUsd };
   }
 }
@@ -124,10 +134,11 @@ export async function frameEvent(
   question: string,
   opts: { userResolution?: string | null; model?: string } = {}
 ): Promise<FrameResult> {
+  const hasWebSearch = providerHasWebSearch();
   // Pass 1: frame + base-rate prior.
-  const first = await runValidated(buildFramingPrompt(question, opts.userResolution ?? null), validateFraming, opts.model);
+  const first = await runValidated(buildFramingPrompt(question, opts.userResolution ?? null, hasWebSearch), validateFraming, opts.model);
   // Pass 2 (P0-1): independent skeptical audit; its corrected frame is authoritative.
-  const audited = await runValidated(buildAuditPrompt(question, first.value), validateAudit, opts.model);
+  const audited = await runValidated(buildAuditPrompt(question, first.value, hasWebSearch), validateAudit, opts.model);
   return {
     framing: audited.value,
     searchQueries: [...first.searchQueries, ...audited.searchQueries],

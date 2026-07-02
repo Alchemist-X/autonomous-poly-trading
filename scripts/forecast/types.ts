@@ -10,6 +10,10 @@
 export type Stance = "supports_yes" | "supports_no" | "neutral";
 export type Strength = "weak" | "moderate" | "strong";
 export type Confidence = "low" | "medium" | "high";
+// Provenance class of a cited source: official = primary/company/government/
+// regulator statements; press = journalism; insider = leakers, analysts,
+// industry chatter.
+export type SourceType = "official" | "press" | "insider";
 
 // ---- The structured frame the agent writes BEFORE forecasting (Round 0). ----
 // A free-text user prompt is not a well-posed forecastable event; this step
@@ -44,6 +48,8 @@ export interface AgentEvidence {
   llr: number; // signed log-likelihood ratio in nats; + favors YES, - favors NO
   rationale: string; // why this moves the probability and by how much
   cluster_id: string; // P0-3: same id => sources share one underlying story/poll/origin
+  source_type: SourceType; // provenance class (validator defaults to "press")
+  credibility: Confidence; // reliability of this source for this claim (validator defaults to "medium")
 }
 
 // (a) Reflection: an adjustment to a PRIOR-round source, proposed when this
@@ -89,6 +95,8 @@ export interface LedgerEntry {
   retrievedAtUtc: string;
   firstSeenRound: number;
   verifiedInSearchTrace: boolean; // was this URL actually returned by the agent's WebSearch?
+  sourceType: SourceType; // provenance class of the cited source
+  credibility: Confidence; // reliability of this source for this claim
 }
 
 export interface PerSourceUpdate {
@@ -102,6 +110,8 @@ export interface PerSourceUpdate {
   clusterId: string;
   clusterFactor: number; // <1 means damped as a correlated same-cluster source
   kind: "evidence" | "reflection"; // (a) reflection = a correction to a prior source
+  sourceType: SourceType; // provenance class of the cited source
+  credibility: Confidence; // reliability of this source for this claim
 }
 
 // (b) Computed decomposition of why a round's probability moved: net, the split
@@ -134,6 +144,7 @@ export interface RoundRecord {
   searchQueries: string[];
   searchResultUrlCount: number;
   costUsd: number | null;
+  analystConsumedIds?: string[]; // ids of analyst notes consumed (injected) this round
 }
 
 export type ForecastStatus =
@@ -153,6 +164,9 @@ export interface ForecastSummary {
   keyFactorsNo: string[]; // strongest factors pushing toward NO
   mainUncertainties: string; // what is unresolved / could move it before resolution
   calibrationNote: string; // optional: if the agent thinks the number is mis-calibrated, why (no new number)
+  whySentence?: string; // ONE self-explaining sentence: the single reason the number landed here
+  quip?: string; // one short dry human aside reacting to the verdict
+  confidenceReason?: string; // one line on why confidence is high/medium/low
 }
 
 export interface ForecastState {
@@ -168,4 +182,30 @@ export interface ForecastState {
   evidenceLedger: LedgerEntry[];
   roundHistory: RoundRecord[];
   summary: ForecastSummary | null; // final whole-forecast synthesis (after the last round)
+  provider?: string; // which LLM provider produced this run ("claude" | "deepseek")
+}
+
+// ---- Analyst-in-the-loop (written by the app / a human, read by the engine). ----
+// Notes are leads for the NEXT round: the engine injects every unconsumed note
+// into the round prompt as a hypothesis to INVESTIGATE (never as established
+// fact) and stamps consumedRound once injected. Marks let the analyst flag
+// specific ledger entries: "doubt" asks the agent to re-examine that source via
+// the reflection mechanism; "keep" is a passive endorsement (UI-only).
+export type AnalystStance = "yes" | "no" | "question";
+export type AnalystMark = "keep" | "doubt";
+export interface AnalystNote {
+  id: string; // server/app-assigned, e.g. note-<epoch>-<rand4>
+  text: string;
+  stance: AnalystStance; // pushes-yes / pushes-no / open question
+  targetId: string | null; // LedgerEntry.id when the note is attached to one piece of evidence
+  createdAtUtc: string;
+  consumedRound: number | null; // set by the engine when injected into a round
+}
+export interface AnalystState {
+  notes: AnalystNote[];
+  marks: Record<string, AnalystMark>; // key = LedgerEntry.id (or reasoning id `round-<n>`)
+  // Engine-side stamp: LedgerEntry.id -> the round that already injected this
+  // doubt into a prompt. Marks stay (they drive the UI); the stamp stops the
+  // same doubt from being re-injected — and re-walked-back — every later round.
+  doubtsHandled?: Record<string, number>;
 }
