@@ -6,6 +6,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@autopoly/web", "dev"],
       "port": 3000
+    },
+    {
+      "name": "raven",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@autopoly/raven", "dev"],
+      "port": 3200
     }
   ]
 }

@@ -1,0 +1,21 @@
+services:
+  raven:
+    build:
+      context: ../..
+      dockerfile: deploy/raven/Dockerfile
+    restart: unless-stopped
+    # Bind to localhost only — TLS + hostname routing belong to the reverse
+    # proxy (see Caddyfile.example).
+    ports:
+      - "127.0.0.1:3200:3200"
+    env_file: .env
+    volumes:
+      # Forecast dossiers + analyst annotations (the product's data).
+      - raven-artifacts:/app/runtime-artifacts
+      # claude CLI state (kept across restarts; harmless if unused).
+      - claude-config:/root/.claude
+    mem_limit: 2g
+
+volumes:
+  raven-artifacts:
+  claude-config:

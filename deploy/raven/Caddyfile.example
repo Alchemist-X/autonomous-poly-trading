@@ -1,0 +1,4 @@
+# Reverse proxy with automatic HTTPS (install caddy, drop this in /etc/caddy/Caddyfile).
+raven.example.com {
+    reverse_proxy 127.0.0.1:3200
+}

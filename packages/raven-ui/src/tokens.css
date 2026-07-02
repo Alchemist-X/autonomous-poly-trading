@@ -1,0 +1,39 @@
+/* Predict Raven design tokens. Dark is the default (also on [data-raven-theme="dark"]);
+   wrap in <RavenTheme theme="light"> (sets [data-raven-theme="light"]) to switch.
+   All component styling references these --rv-* variables. */
+:root,
+[data-raven-theme="dark"] {
+  --rv-bg: #0C0B0E;
+  --rv-bg2: #141318;
+  --rv-bg3: #1C1A22;
+  --rv-line: rgba(255, 255, 255, 0.09);
+  --rv-ink: #ECE7DE;
+  --rv-ink2: #9A95A3;
+  --rv-ink3: #5E5A68;
+  --rv-grid: rgba(255, 255, 255, 0.055);
+  --rv-orange: #E0703C;
+  --rv-yes: #46C49A;
+  --rv-no: #E5645D;
+  --rv-warn: #E0A93C;
+  --rv-glow: rgba(224, 112, 60, 0.13);
+
+  --rv-font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --rv-font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --rv-font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+}
+
+[data-raven-theme="light"] {
+  --rv-bg: #F4F1EA;
+  --rv-bg2: #FBF9F4;
+  --rv-bg3: #FFFFFF;
+  --rv-line: rgba(20, 18, 24, 0.10);
+  --rv-ink: #1A1820;
+  --rv-ink2: #5C5766;
+  --rv-ink3: #A39DAB;
+  --rv-grid: rgba(20, 18, 24, 0.06);
+  --rv-orange: #E0703C;
+  --rv-yes: #1E9E73;
+  --rv-no: #CB463F;
+  --rv-warn: #B7791F;
+  --rv-glow: rgba(200, 90, 41, 0.12);
+}

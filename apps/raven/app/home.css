@@ -1,0 +1,29 @@
+/* Screen 01 · Ask — home-only layout + responsive rules (scoped .rv-home). */
+
+.rv-home {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 24px 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rv-home-steps {
+  position: relative;
+  width: min(880px, 92vw);
+  margin-top: 52px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 880px) {
+  .rv-home {
+    padding: 44px 18px;
+  }
+  .rv-home-steps {
+    grid-template-columns: 1fr;
+  }
+}

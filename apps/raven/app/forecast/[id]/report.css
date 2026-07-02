@@ -1,0 +1,203 @@
+/* Screen 03 · Verdict — report-only styles, scoped under .rv-report.
+   Hover/pseudo/target/responsive rules live here; everything static stays
+   inline in the components (design-handoff idiom). */
+
+.rv-report {
+  width: 100%;
+}
+
+/* --- inline evidence highlights (summary + counter callout) --- */
+.rv-report .hs {
+  color: var(--text);
+  text-decoration: none;
+  background: color-mix(in srgb, var(--accent) 17%, transparent);
+  border-bottom: 2px solid var(--accent);
+  padding: 0 3px;
+  transition: background 0.15s;
+}
+.rv-report .hs:hover {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.rv-report .hc {
+  color: var(--text);
+  text-decoration: none;
+  background: color-mix(in srgb, var(--neg) 15%, transparent);
+  border-bottom: 2px solid var(--neg);
+  padding: 0 3px;
+  transition: background 0.15s;
+}
+.rv-report .hc:hover {
+  background: color-mix(in srgb, var(--neg) 28%, transparent);
+}
+
+.rv-report .lnk {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.rv-report .lnk:hover {
+  border-bottom-color: currentColor;
+}
+
+/* --- evidence rows + hover preview popover --- */
+.rv-report .ev {
+  outline: none;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 15px;
+}
+.rv-report .ev:hover,
+.rv-report .ev:focus-within {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+.rv-report .ev:target {
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+}
+.rv-report .ev-pop {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(7px);
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease,
+    visibility 0.16s;
+  pointer-events: none;
+}
+.rv-report .ev:hover .ev-pop,
+.rv-report .ev:focus-within .ev-pop {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.rv-report .ev-right {
+  text-align: right;
+  white-space: nowrap;
+  padding-right: 2px;
+}
+
+/* --- CI term tooltip --- */
+.rv-report .term {
+  position: relative;
+  cursor: help;
+  border-bottom: 1px dotted currentColor;
+}
+.rv-report .term-tip {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  width: 230px;
+  z-index: 40;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(5px);
+  transition: 0.16s;
+  pointer-events: none;
+}
+.rv-report .term:hover .term-tip,
+.rv-report .term:focus-within .term-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* --- resolution & framing <details> --- */
+.rv-report details.rf > summary {
+  cursor: pointer;
+  list-style: none;
+}
+.rv-report details.rf > summary::-webkit-details-marker {
+  display: none;
+}
+.rv-report details.rf[open] .rf-chev {
+  transform: rotate(90deg);
+}
+
+/* --- layout blocks (desktop values here so mobile can override) --- */
+.rv-report .rp-hero {
+  display: grid;
+  grid-template-columns: 1.32fr 1fr;
+}
+.rv-report .rp-hero-left {
+  padding: 34px 28px 26px 34px;
+  border-right: 1px solid var(--line);
+}
+.rv-report .rp-hero-right {
+  padding: 30px 28px 24px;
+  background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+}
+.rv-report .rp-prob {
+  font-size: 116px;
+}
+.rv-report .rp-summary {
+  padding: 28px 34px 24px;
+}
+.rv-report .rp-book {
+  padding: 24px 34px 10px;
+}
+.rv-report .rp-banner {
+  margin: 18px 34px 0;
+}
+.rv-report .rf-sum {
+  padding: 16px 34px;
+}
+.rv-report .rf-body {
+  padding: 6px 34px 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 40px;
+}
+
+/* touch devices can't hover — rows read fine without the preview */
+@media (hover: none) {
+  .rv-report .ev-pop {
+    display: none;
+  }
+}
+
+/* --- mobile (≤880px): single column, smaller number, tighter paddings --- */
+@media (max-width: 880px) {
+  .rv-report .rp-hero {
+    grid-template-columns: 1fr;
+  }
+  .rv-report .rp-hero-left {
+    padding: 22px 18px 20px;
+    border-right: none;
+  }
+  .rv-report .rp-hero-right {
+    padding: 20px 18px;
+  }
+  .rv-report .rp-prob {
+    font-size: 72px;
+  }
+  .rv-report .rp-summary {
+    padding: 22px 18px 20px;
+  }
+  .rv-report .rp-book {
+    padding: 20px 18px 10px;
+  }
+  .rv-report .rp-banner {
+    margin: 14px 18px 0;
+  }
+  .rv-report .rf-sum {
+    padding: 16px 18px;
+  }
+  .rv-report .rf-body {
+    padding: 6px 18px 26px;
+    grid-template-columns: 1fr;
+  }
+  .rv-report .ev {
+    grid-template-columns: auto 1fr;
+  }
+  .rv-report .ev-right {
+    grid-column: 2;
+    text-align: left;
+    padding-right: 0;
+    margin-top: 2px;
+  }
+  .rv-report .ev-pop {
+    display: none;
+  }
+}

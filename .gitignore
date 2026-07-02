@@ -65,3 +65,15 @@ e2e/e2e/
 
 # --- Deploy adapters (auto-generated on link) ---
 .vercel
+
+# design-sync
+.design-sync/sb-reference/
+.design-sync/learnings/
+.design-sync/.cache/
+.design-sync/node_modules
+.ds-sync/
+ds-bundle/
+
+# forecast engine design-handoff bundle (not versioned)
+forecast-engine-handoff/
+forecast-engine-handoff.zip
