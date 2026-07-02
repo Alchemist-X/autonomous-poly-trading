@@ -57,6 +57,37 @@ sudo systemctl reload caddy
 | 备份档案 | 卷 `raven-artifacts`（`docker volume inspect` 找路径） |
 | 换访问码 | 改 `.env` 后 `docker compose up -d` |
 
+## Forecast API + MCP（第二个服务，端口 8787）
+
+compose 里的 `forecast-api` 服务把同一个预测引擎抽象成对外 API：**POST 一个问题 → 拿到事件概率 + 分析思路 + 证据清单**，三种形态：JSON、纯文字、PDF 档案。与 raven app 共享档案卷——API 发起的预测在网页上也能看到（反之亦然）。
+
+鉴权：`Authorization: Bearer <FORECAST_API_TOKEN>`（或 `x-api-key` / `?token=`；未设时回落到 `RAVEN_ACCESS_TOKEN`）。
+
+```bash
+BASE=http://<服务器IP>:8787; TOKEN=<FORECAST_API_TOKEN>
+
+# 发起预测（几分钟；加 "wait":true 则阻塞到出结果）
+curl -X POST $BASE/v1/forecasts -H "Authorization: Bearer $TOKEN" \
+  -H 'content-type: application/json' \
+  -d '{"question":"Will the Fed cut rates before September 2026?"}'
+# → {"forecast":{"id":"<id>","status":"running",...}}
+
+curl -H "Authorization: Bearer $TOKEN" $BASE/v1/forecasts/<id>        # JSON 答案
+curl -H "Authorization: Bearer $TOKEN" $BASE/v1/forecasts/<id>/text   # 纯文字答案
+curl -OJ -H "Authorization: Bearer $TOKEN" $BASE/v1/forecasts/<id>/pdf # PDF 档案
+```
+
+**MCP 接入**（同一端口 `/mcp`，streamable HTTP，工具：`forecast_start` / `forecast_status` / `forecast_result`）：
+
+```bash
+claude mcp add --transport http raven-forecast http://<服务器IP>:8787/mcp \
+  --header "Authorization: Bearer <FORECAST_API_TOKEN>"
+```
+
+限流：并发 run 上限 `FORECAST_API_MAX_CONCURRENT`（默认 2），超出返回 429。PDF 由容器内 headless Chromium 渲染并缓存在事件目录（`answer.pdf`）。
+
+**公网暴露**：仓库 compose 只绑 `127.0.0.1:8787`。要对外提供服务，在服务器上加一个 `docker-compose.override.yml` 把端口改绑公网（`ports: !override ["8787:8787"]`）+ 云防火墙放行 8787；有域名后建议改走 Caddy 反代（见 `Caddyfile.example` 的模式）。⚠️ 未配 TLS 前 token 走 HTTP 明文——只发给你信任的调用方，泄漏就轮换。
+
 ## 成本与安全
 
 - **订阅模式**：run 消耗你订阅的用量窗口（Max 5 小时滚动窗），无额外账单；一个联网 run 通常几分钟。**token 等同你的账号身份，只放在这台你信任的服务器上。**

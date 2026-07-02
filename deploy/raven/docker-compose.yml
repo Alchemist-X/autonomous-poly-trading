@@ -3,6 +3,9 @@ services:
     build:
       context: ../..
       dockerfile: deploy/raven/Dockerfile
+    # Shared image: forecast-api runs the same build with a different command,
+    # so the workspace is only built once.
+    image: raven-suite
     restart: unless-stopped
     # Bind to localhost only — TLS + hostname routing belong to the reverse
     # proxy (see Caddyfile.example).
@@ -15,6 +18,25 @@ services:
       # claude CLI state (kept across restarts; harmless if unused).
       - claude-config:/root/.claude
     mem_limit: 2g
+
+  # Forecast API + MCP: POST a question, get probability + reasoning +
+  # evidence back as JSON / plain text / PDF. Shares the artifacts volume, so
+  # API-created forecasts also show up in the raven web app (and vice versa).
+  forecast-api:
+    image: raven-suite
+    depends_on:
+      - raven
+    restart: unless-stopped
+    command: ["pnpm", "--filter", "@autopoly/forecast-api", "start"]
+    ports:
+      - "127.0.0.1:8787:8787"
+    env_file: .env
+    volumes:
+      - raven-artifacts:/app/runtime-artifacts
+      - claude-config:/root/.claude
+    # Engine children (tsx + claude CLI) plus a serialized Chromium PDF render
+    # share this cgroup; 4g keeps two concurrent runs + one render safe.
+    mem_limit: 4g
 
 volumes:
   raven-artifacts:
