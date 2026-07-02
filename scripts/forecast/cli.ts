@@ -54,17 +54,22 @@ async function main(): Promise<void> {
     console.error('Usage: pnpm forecast:event -- "<event prompt>" [--resolution ...] [--max-rounds N] [--model X] [--fresh]');
     process.exit(1);
   }
-  // Provider-aware key guard: each backend names exactly the env var it needs.
+  // Provider-aware key guard. The claude provider accepts three auth paths and
+  // the CLI itself is the authority on them — we only report which one is in
+  // play: ANTHROPIC_API_KEY (API billing), CLAUDE_CODE_OAUTH_TOKEN (subscription
+  // token from `claude setup-token`, the headless-server path), or the CLI's
+  // stored interactive login (assumed when neither var is set).
   const provider = providerName();
-  if (provider === "claude" && !process.env.ANTHROPIC_API_KEY) {
-    console.error("ANTHROPIC_API_KEY is required for the claude provider (also set ANTHROPIC_BASE_URL for the custom endpoint).");
-    process.exit(1);
-  }
   if (provider === "deepseek" && !process.env.DEEPSEEK_API_KEY) {
     console.error("DEEPSEEK_API_KEY is required for the deepseek provider (FORECAST_PROVIDER=deepseek).");
     process.exit(1);
   }
-  console.log(`provider: ${provider}`);
+  const claudeAuth = process.env.ANTHROPIC_API_KEY
+    ? "api-key"
+    : process.env.CLAUDE_CODE_OAUTH_TOKEN
+      ? "subscription-token"
+      : "cli-login";
+  console.log(`provider: ${provider}${provider === "claude" ? ` (auth: ${claudeAuth})` : ""}`);
 
   const eventId = makeEventId(args.question);
   let state: ForecastState | null = args.fresh ? null : loadState(eventId);

@@ -54,7 +54,12 @@ export function pickProvider(requested?: string): string {
 
 export function providerKeyAvailable(provider: string): boolean {
   const env = buildEnv(provider);
-  return provider === "deepseek" ? Boolean(env.DEEPSEEK_API_KEY) : Boolean(env.ANTHROPIC_API_KEY);
+  if (provider === "deepseek") return Boolean(env.DEEPSEEK_API_KEY);
+  // The claude provider has three auth paths (ANTHROPIC_API_KEY, subscription
+  // CLAUDE_CODE_OAUTH_TOKEN, or the CLI's stored login) — the last one is not
+  // detectable from env, so never block here; an unauthenticated CLI surfaces
+  // its own clear error in the job log.
+  return true;
 }
 
 export interface StartOptions {

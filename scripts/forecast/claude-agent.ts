@@ -236,11 +236,12 @@ export interface RunAgentOptions {
 }
 
 export async function runAgentRaw(prompt: string, opts: RunAgentOptions = {}): Promise<AgentRunResult> {
+  // Auth is whatever the claude CLI can resolve from the inherited env, in its
+  // own precedence: ANTHROPIC_API_KEY (API billing), CLAUDE_CODE_OAUTH_TOKEN
+  // (long-lived subscription token from `claude setup-token` — the headless-
+  // server path), or the CLI's stored interactive login. No key is required
+  // here; an unauthenticated CLI fails the run with its own clear error.
   const baseUrl = process.env.ANTHROPIC_BASE_URL;
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    throw new Error("ANTHROPIC_API_KEY is required (set ANTHROPIC_BASE_URL + ANTHROPIC_API_KEY).");
-  }
   const allowedTools = opts.allowedTools ?? process.env.FORECAST_ALLOWED_TOOLS ?? "WebSearch WebFetch";
   const model = opts.model ?? process.env.FORECAST_MODEL ?? "";
   const args = ["--print", "--output-format", "stream-json", "--verbose", "--allowedTools", allowedTools];
@@ -252,7 +253,6 @@ export async function runAgentRaw(prompt: string, opts: RunAgentOptions = {}): P
       env: {
         ...process.env,
         ...(baseUrl ? { ANTHROPIC_BASE_URL: baseUrl } : {}),
-        ANTHROPIC_API_KEY: apiKey,
       },
     });
     let stdout = "";

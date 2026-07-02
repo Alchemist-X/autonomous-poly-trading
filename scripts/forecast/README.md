@@ -39,7 +39,8 @@ over.
 Flags: `--resolution` (optional override), `--max-rounds N`, `--model <id>`,
 `--fresh`.
 
-Env: `ANTHROPIC_API_KEY` (required for the claude provider), `ANTHROPIC_BASE_URL`,
+Env: `ANTHROPIC_API_KEY` / `CLAUDE_CODE_OAUTH_TOKEN` (claude provider auth — optional
+when the CLI is already logged in; see Providers), `ANTHROPIC_BASE_URL`,
 `FORECAST_MAX_ROUNDS`, `FORECAST_MIN_ROUNDS` (convergence cannot stop the loop
 before this many rounds; default 1), `FORECAST_MODEL`, `FORECAST_ALLOWED_TOOLS`
 (default `"WebSearch WebFetch"`), `FORECAST_AGENT_TIMEOUT_MS`, `ARTIFACT_STORAGE_ROOT`.
@@ -51,7 +52,10 @@ by env (never hardcode keys):
 
 - `FORECAST_PROVIDER=claude|deepseek` — default `claude` (Claude Code CLI with
   real WebSearch; the fabrication guard reconciles citations against the actual
-  search trace).
+  search trace). Auth, in the CLI's own precedence: `ANTHROPIC_API_KEY` (API
+  billing), `CLAUDE_CODE_OAUTH_TOKEN` (long-lived subscription token from
+  `claude setup-token` — the headless-server path), or the CLI's stored
+  interactive login. No env var is required when the CLI is already logged in.
 - `deepseek` — OpenAI-compatible HTTP (`deepseek-agent.ts`), **no web access**:
   the round prompt is reworded (own-knowledge research, no URL fabrication) and
   the fabrication guard degrades to a *citation liveness* check (a cited URL is
