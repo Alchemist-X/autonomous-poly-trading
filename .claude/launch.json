@@ -12,6 +12,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@autopoly/raven", "dev"],
       "port": 3200
+    },
+    {
+      "name": "raven-alt",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@autopoly/raven", "exec", "next", "dev", "-p", "3211"],
+      "port": 3211
     }
   ]
 }

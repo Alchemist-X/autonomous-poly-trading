@@ -1,45 +1,12 @@
 "use client";
 
-// Non-feed states of the Research screen: the coach hint bar, the framing
-// skeleton, the completion CTA, terminal notice cards (aborted / vague /
-// not found) and the initial loading shimmer.
+// Non-feed states of the Research screen: the framing skeleton, terminal
+// notice cards (aborted / vague / not found) and the initial loading shimmer.
+// The coach hint + completion CTA moved into the plan message and the
+// progress dock (plan.tsx / progress-dock.tsx).
 
 import Link from "next/link";
 import { ShimmerBar } from "./shimmer";
-
-export function CoachBar({ nextRound }: { nextRound: number }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        gap: 12,
-        alignItems: "center",
-        padding: "12px 15px",
-        border: "1px dashed var(--line2)",
-        borderRadius: 11,
-        background: "color-mix(in srgb,var(--accent) 5%,transparent)"
-      }}
-    >
-      <svg viewBox="0 0 40 26" style={{ width: 34, height: 22, flex: "none", overflow: "visible" }} aria-hidden="true">
-        <ellipse
-          cx="20"
-          cy="13"
-          rx="17"
-          ry="9.5"
-          fill="none"
-          stroke="var(--accent)"
-          strokeWidth="2"
-          transform="rotate(-4 20 13)"
-          strokeLinecap="round"
-        />
-      </svg>
-      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: "var(--muted)" }}>
-        You can push back mid-run: <b style={{ color: "var(--text)" }}>circle what holds up, strike what you doubt</b>,
-        or queue your own hypothesis. Raven folds analyst pushback into iteration {nextRound}.
-      </p>
-    </div>
-  );
-}
 
 // Shown while the engine is still framing (job running, dossier not yet
 // written): a full-width shimmer skeleton in place of the iteration feed.
@@ -77,42 +44,6 @@ export function FramingBlock() {
         <ShimmerBar style={{ marginTop: 6, width: "62%" }} />
       </div>
     </div>
-  );
-}
-
-export function CompleteCta({ id }: { id: string }) {
-  return (
-    <Link
-      href={`/forecast/${id}`}
-      className="cta"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 12,
-        marginTop: 26,
-        background: "var(--accent)",
-        color: "var(--accent-ink)",
-        borderRadius: 13,
-        padding: "18px 20px",
-        textDecoration: "none"
-      }}
-    >
-      <span
-        style={{
-          fontFamily: "var(--fm)",
-          fontWeight: 600,
-          fontSize: 11.5,
-          letterSpacing: ".1em",
-          textTransform: "uppercase"
-        }}
-      >
-        Read the dossier
-      </span>
-      <span aria-hidden="true" style={{ fontFamily: "var(--fm)", fontWeight: 600, fontSize: 15, lineHeight: 1 }}>
-        →
-      </span>
-    </Link>
   );
 }
 
