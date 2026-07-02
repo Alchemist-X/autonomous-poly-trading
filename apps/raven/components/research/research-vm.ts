@@ -35,6 +35,7 @@ export interface BlockVM {
   note: string;
   evidence: EvidenceRowVM[];
   reading: ReadingVM | null;
+  analystFolded: number; // analyst notes injected into this round's prompt
 }
 
 export function decorateEvidence(e: EvidenceVM, index0: number): EvidenceRowVM {
@@ -65,6 +66,12 @@ export const DEMO_READING: ReadingVM = {
   text: ' — checking whether "content complete" reports supersede the January flag…'
 };
 
+// Sources already visited in the frozen demo round (renders the read-trail).
+export const DEMO_TRAIL: ReadingVM[] = [
+  { domain: "gamesindustry.biz", text: "" },
+  { domain: "resetera.com", text: "" }
+];
+
 export function buildDemoBlocks(demo: DossierVM): BlockVM[] {
   const it1 = demo.iterations[0];
   const it2 = demo.iterations[1];
@@ -78,7 +85,8 @@ export function buildDemoBlocks(demo: DossierVM): BlockVM[] {
       moveDir: "down",
       note: it1.note,
       evidence: it1.evidence.map((e, i) => decorateEvidence(e, i)),
-      reading: null
+      reading: null,
+      analystFolded: it1.analystFolded ?? 0
     },
     {
       n: "02",
@@ -88,7 +96,8 @@ export function buildDemoBlocks(demo: DossierVM): BlockVM[] {
       moveDir: "down",
       note: DEMO_IT2_NOTE,
       evidence: it2.evidence.slice(0, 2).map((e, i) => decorateEvidence(e, i + 5)),
-      reading: DEMO_READING
+      reading: DEMO_READING,
+      analystFolded: it2.analystFolded ?? 0
     }
   ];
 }
@@ -110,7 +119,8 @@ export function buildLiveBlocks(iterations: IterationVM[], running: boolean, rea
       moveDir: it.netDir,
       note: it.note,
       evidence,
-      reading: isRunning ? reading : null
+      reading: isRunning ? reading : null,
+      analystFolded: it.analystFolded ?? 0
     };
   });
 }
@@ -126,6 +136,75 @@ export function readingFromJob(job: Pick<JobX, "log" | "provider"> | null): Read
 
 export function nextRoundFor(shownIterations: number, maxRounds: number): number {
   return Math.min(shownIterations + 1, Math.max(1, maxRounds));
+}
+
+// --- run plan (Manus-style checklist) ---
+
+export type PlanStepState = "done" | "active" | "pending";
+
+export interface PlanStepVM {
+  key: string;
+  label: string;
+  sub: string | null;
+  state: PlanStepState;
+}
+
+// Derive the checklist from the run state: one framing step, one step per
+// research round (all announced up front while running, executed-only once
+// terminal — the engine may converge early), and one verdict step.
+export function buildPlanSteps(args: {
+  framing: boolean;
+  blocks: readonly BlockVM[];
+  maxRounds: number;
+  running: boolean;
+  complete: boolean;
+  prior: string | null;
+}): PlanStepVM[] {
+  const { framing, blocks, maxRounds, running, complete, prior } = args;
+  const frameActive = framing || (running && blocks.length === 0);
+  const steps: PlanStepVM[] = [
+    {
+      key: "frame",
+      label: "Frame the question",
+      sub: !frameActive && prior ? `checkable yes/no · prior ${prior}` : "resolution criteria + base-rate prior",
+      state: frameActive ? "active" : "done"
+    }
+  ];
+  const roundCount = running || framing ? Math.max(1, maxRounds) : Math.max(1, blocks.length);
+  for (let k = 1; k <= roundCount; k++) {
+    const block = blocks[k - 1];
+    if (!block) {
+      steps.push({
+        key: `round-${k}`,
+        label: `Research round ${k}`,
+        sub: k === 1 ? "gather the first evidence" : "hunt for evidence that cuts the other way",
+        state: "pending"
+      });
+      continue;
+    }
+    const live = running && k === blocks.length;
+    const span = block.status.replace(/^(complete|running) · /, "");
+    const n = block.evidence.length;
+    steps.push({
+      key: `round-${k}`,
+      label: `Research round ${k}`,
+      sub: live ? `gathering evidence · ${span}` : `${n} source${n === 1 ? "" : "s"} · ${span}`,
+      state: live ? "active" : "done"
+    });
+  }
+  steps.push({
+    key: "verdict",
+    label: "Weigh signals, deliver the verdict",
+    sub: complete ? "dossier ready" : "P(YES) + confidence + open risks",
+    state: complete ? "done" : "pending"
+  });
+  return steps;
+}
+
+// The dock's 1-based "step N of M" counter: finished steps plus the active one.
+export function planStepNo(steps: readonly PlanStepVM[]): number {
+  const done = steps.filter((s) => s.state === "done").length;
+  return Math.min(steps.length, Math.max(1, done + (steps.some((s) => s.state === "active") ? 1 : 0)));
 }
 
 // Axis scale: at least 0–40%, widened in 10-point steps so both dots fit.

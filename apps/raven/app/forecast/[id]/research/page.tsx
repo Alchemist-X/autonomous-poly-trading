@@ -6,30 +6,31 @@
 // demo snapshot ("gta6-demo") and live engine runs via useForecast polling.
 
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { RvShell } from "../../../../components/chrome/rv-shell";
 import { IconDefs } from "../../../../components/icons";
 import { AnalystDesk } from "../../../../components/research/analyst-desk";
 import { IterationBlock } from "../../../../components/research/iteration-block";
+import { PlanList, RavenMessage } from "../../../../components/research/plan";
+import { ProgressDock, type DockTone } from "../../../../components/research/progress-dock";
 import {
   buildDemoBlocks,
   buildLiveBlocks,
+  buildPlanSteps,
   buildQueued,
   DEMO_NOW,
+  DEMO_TRAIL,
   nextRoundFor,
   readingFromJob,
   type BlockVM,
-  type JobX
+  type JobX,
+  type ReadingVM
 } from "../../../../components/research/research-vm";
-import {
-  CoachBar,
-  CompleteCta,
-  FramingBlock,
-  LoadingBlock,
-  NoticeCard
-} from "../../../../components/research/state-cards";
+import { FramingBlock, LoadingBlock, NoticeCard } from "../../../../components/research/state-cards";
 import { StatusStrip, type NowLine, type QuantVM } from "../../../../components/research/status-strip";
 import { useAnnotations } from "../../../../components/research/use-annotations";
+import { useStaggeredReveal } from "../../../../components/research/use-reveal";
+import { VerdictDigest } from "../../../../components/research/verdict-digest";
 import { useForecast } from "../../../../lib/client/use-forecast";
 import { GTA6_DEMO, GTA6_DEMO_ID } from "../../../../lib/demo/gta6";
 import type { AnalystStance } from "../../../../lib/server/analyst";
@@ -101,7 +102,8 @@ export default function ResearchPage() {
           moveDir: "flat",
           note: `Question framed — starting from a ${p} base-rate prior. Round 1 is gathering its first evidence.`,
           evidence: [],
-          reading: readingFromJob(job)
+          reading: readingFromJob(job),
+          analystFolded: 0
         }
       ];
     }
@@ -112,6 +114,85 @@ export default function ResearchPage() {
   const nextRound = nextRoundFor(blocks.length, maxRounds);
   const complete = !isDemo && !running && dossier?.status === "complete";
   const aborted = !isDemo && !running && (job?.status === "error" || dossier?.status === "failed");
+
+  // --- Manus-style plan checklist + progressive reveal ---
+  const prior = dossier?.meta.prior ?? null;
+  const planSteps = useMemo(
+    () => buildPlanSteps({ framing, blocks, maxRounds, running, complete, prior }),
+    [framing, blocks, maxRounds, running, complete, prior]
+  );
+  const revealIds = useMemo(() => blocks.flatMap((b) => [`it${b.n}`, ...b.evidence.map((e) => e.id)]), [blocks]);
+  const { visible, animated } = useStaggeredReveal(revealIds, !isDemo && running);
+
+  // Fold completed rounds to one-line receipts while a newer round is live
+  // (Manus-style: attention stays on the active step). Manual toggles win;
+  // terminal runs default to everything expanded for review/annotation.
+  const [foldOverride, setFoldOverride] = useState<Record<string, boolean>>({});
+  const foldedFor = (blockN: string, index: number): boolean =>
+    foldOverride[blockN] ?? (running && index < blocks.length - 1);
+  const toggleFold = (blockN: string, index: number) =>
+    setFoldOverride((cur) => ({ ...cur, [blockN]: !foldedFor(blockN, index) }));
+
+  // Trail of sources the engine visited this round — accumulated client-side
+  // from the polled job log (the log only exposes the latest line).
+  const [trail, setTrail] = useState<ReadingVM[]>([]);
+  const trailRound = useRef(0);
+  useEffect(() => {
+    if (isDemo || !running) return;
+    if (trailRound.current !== blocks.length) {
+      trailRound.current = blocks.length;
+      setTrail([]);
+      return;
+    }
+    const r = readingFromJob(job);
+    if (!r.domain) return;
+    setTrail((cur) => {
+      const last = cur[cur.length - 1];
+      if (last?.domain === r.domain) return cur;
+      return [...cur.slice(-3), r];
+    });
+  }, [isDemo, running, job, blocks.length]);
+  const liveReads = isDemo ? DEMO_TRAIL : trail;
+
+  // Gentle auto-follow: when new items stream in and the reader is already
+  // near the bottom, keep the newest content in view (never fight a reader
+  // who has scrolled up to annotate).
+  const revealedCount = visible.size;
+  const prevRevealed = useRef(0);
+  useEffect(() => {
+    if (isDemo || !running) return;
+    if (revealedCount <= prevRevealed.current) {
+      prevRevealed.current = revealedCount;
+      return;
+    }
+    prevRevealed.current = revealedCount;
+    const nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 320;
+    if (nearBottom) window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  }, [revealedCount, isDemo, running]);
+
+  const startedIso = job?.startedAtUtc ?? dossier?.startedAtUtc ?? null;
+  const startedAt = isDemo
+    ? "replay"
+    : startedIso
+      ? new Date(startedIso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      : null;
+  const providerLabel = isDemo ? "demo" : (job?.provider ?? dossier?.provider ?? null);
+
+  const activeStep = planSteps.find((s) => s.state === "active");
+  let dockTone: DockTone = "live";
+  let dockLabel = activeStep ? `${activeStep.label}${activeStep.sub ? ` — ${activeStep.sub}` : ""}` : "Working…";
+  if (complete && dossier) {
+    dockTone = "complete";
+    dockLabel = `Forecast complete — P(YES) ${dossier.meta.prob}`;
+  } else if (aborted) {
+    dockTone = "error";
+    dockLabel = "Run aborted — partial evidence kept";
+  }
+  const dockElapsed = isDemo
+    ? demoElapsed(now, demoT0)
+    : running && job
+      ? formatElapsed(job.startedAtUtc, now ?? Date.parse(job.startedAtUtc))
+      : null;
 
   // --- header status (pulsing dot + mono text) ---
   const sourcesShown = blocks.reduce((acc, b) => acc + b.evidence.length, 0);
@@ -272,11 +353,21 @@ export default function ResearchPage() {
   return (
     <RvShell active="research" forecastId={id} showFooter={false} headerRight={headerRight}>
       <IconDefs />
-      <div className="rv-research">
+      <div className="rv-research has-dock">
         <StatusStrip question={question} now={nowLine} quant={quant} />
         <div className="rvp-grid">
           <div>
-            <CoachBar nextRound={nextRound} />
+            <RavenMessage provider={providerLabel} time={startedAt}>
+              <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.6, color: "var(--muted)" }}>
+                On it. I&apos;ll pin this down to a checkable yes-or-no question with a base-rate prior, then research
+                it in up to {maxRounds} rounds — each round deliberately hunts for evidence that cuts against the
+                current lean. <b style={{ color: "var(--text)" }}>Circle what holds up, strike what you doubt</b>, or
+                queue a hypothesis; I fold analyst pushback into the next round.
+              </p>
+              <div style={{ marginTop: 15 }}>
+                <PlanList steps={planSteps} />
+              </div>
+            </RavenMessage>
             {aborted && (
               <NoticeCard tone="error" title="The run aborted" inline log={job?.status === "error" ? job.log.slice(-6) : undefined}>
                 The engine stopped before this run finished. Everything it gathered so far is shown below.
@@ -285,22 +376,28 @@ export default function ResearchPage() {
             {framing ? (
               <FramingBlock />
             ) : (
-              blocks.map((block) => (
-                <IterationBlock
-                  key={block.n}
-                  block={block}
-                  marks={ann.marks}
-                  onMark={ann.toggleMark}
-                  notes={ann.notes}
-                  noteFor={noteFor}
-                  onToggleNote={onToggleNote}
-                  noteDraft={noteDraft}
-                  onNoteDraft={setNoteDraft}
-                  onNoteSubmit={onNoteSubmit}
-                />
-              ))
+              blocks.map((block, i) =>
+                visible.has(`it${block.n}`) ? (
+                  <IterationBlock
+                    key={block.n}
+                    block={{ ...block, evidence: block.evidence.filter((ev) => visible.has(ev.id)) }}
+                    animatedIds={animated}
+                    collapsed={foldedFor(block.n, i)}
+                    onToggleCollapse={() => toggleFold(block.n, i)}
+                    recentReads={liveReads}
+                    marks={ann.marks}
+                    onMark={ann.toggleMark}
+                    notes={ann.notes}
+                    noteFor={noteFor}
+                    onToggleNote={onToggleNote}
+                    noteDraft={noteDraft}
+                    onNoteDraft={setNoteDraft}
+                    onNoteSubmit={onNoteSubmit}
+                  />
+                ) : null
+              )
             )}
-            {complete && <CompleteCta id={id} />}
+            {complete && dossier && <VerdictDigest id={id} dossier={dossier} />}
           </div>
           <AnalystDesk
             markSummary={markSummary}
@@ -316,6 +413,13 @@ export default function ResearchPage() {
           />
         </div>
       </div>
+      <ProgressDock
+        tone={dockTone}
+        label={dockLabel}
+        steps={planSteps}
+        ctaHref={complete ? `/forecast/${id}` : null}
+        elapsed={dockElapsed}
+      />
       {toast && (
         <div className="rv-research-toast" role="alert">
           {toast}

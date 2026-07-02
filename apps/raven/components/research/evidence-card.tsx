@@ -18,7 +18,8 @@ export function EvidenceCard({
   onToggleNote,
   noteDraft,
   onNoteDraft,
-  onNoteSubmit
+  onNoteSubmit,
+  animated = false
 }: {
   ev: EvidenceRowVM;
   mark: Mark | undefined;
@@ -29,10 +30,11 @@ export function EvidenceCard({
   noteDraft: string;
   onNoteDraft: (value: string) => void;
   onNoteSubmit: () => void;
+  animated?: boolean; // just streamed in — play the entrance animation
 }) {
   return (
     <div
-      className="anno"
+      className={`anno${animated ? " rv-reveal" : ""}`}
       tabIndex={0}
       aria-label={`Evidence ${ev.idx}: ${ev.title}`}
       style={{
@@ -141,7 +143,9 @@ export function EvidenceCard({
               {ev.valueLabel} value
             </span>
           </div>
-          <p style={{ margin: "9px 0 0", fontSize: 12.5, lineHeight: 1.55, color: "var(--muted)" }}>{ev.analysis}</p>
+          <p style={{ margin: "9px 0 0", fontSize: 12.5, lineHeight: 1.55, color: "var(--muted)" }}>
+            <b style={{ color: "var(--text)", fontWeight: 600 }}>{ev.takeaway}</b> {ev.analysis}
+          </p>
           {notes.map((n) => (
             <div
               key={n.id}
