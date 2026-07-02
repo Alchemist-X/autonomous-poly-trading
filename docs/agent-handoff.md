@@ -11,6 +11,14 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-07-03 by Claude（**Forecast API + MCP 服务上线 GCP 东京 VM**，分支 `claude/bold-shamir-7903ab`，PR #65）。
+> 用户指令：把 forecasting agent 抽象成任何人可调用的 hosted API（答案 = 事件概率 + 分析思路 + 证据），交付 PDF + 纯文字两种形态，托管在 Google VPS，并做成 MCP。
+> ① **新服务 `services/forecast-api`**（raw node:http 零框架，~10 个小文件）：`POST /v1/forecasts {question}` spawn 现有引擎（与 apps/raven run-manager 同款接缝：`tsx scripts/forecast/cli.ts` + 读 state.json）；`GET /v1/forecasts/:id` = JSON、`/text` = 纯文字、`/pdf` = A4 档案（headless Chromium，pulse-decision-report 同管线，按 state 版本缓存于事件目录 answer.pdf）；`POST /mcp` = 无状态 streamable-HTTP MCP（工具 forecast_start/forecast_status/forecast_result）。token 门（Bearer/x-api-key/?token=，`FORECAST_API_TOKEN` 空值回落 `RAVEN_ACCESS_TOKEN`）；并发 run 上限默认 2（429）；**内部 credibleInterval 全表面不出现**（含 jobLogTail 消毒）。vitest 22/22 + typecheck 绿。
+> ② **对抗式评审后加固**（4 lens × 逐条验证）：空 token 回落用 `||`；跨容器状态判定按 recency（旧 error job 不再压住新完成的 state）；PDF 缓存 utimesSync 回写 state 版本防竞态；spawn 前 `.engine-lock` 盖住 framing 窗口防双跑；同问题重发不吃 429；MCP 链接按 Host 派生；错误日志脱敏 ?token=。
+> ③ **部署**：deploy/raven compose 加第二个服务共享镜像 `raven-suite` + artifacts 卷（API 发起的 run 网页也能看到）；Dockerfile 预烤 playwright chromium 层；服务器 override 绑 `0.0.0.0:8787`；GCP 防火墙规则 `allow-forecast-api`（tcp:8787，tag `forecast-api` 已加到实例）。**API base = http://34.85.97.32:8787**，token 在 VM `~/predict-raven/deploy/raven/.env` 的 `FORECAST_API_TOKEN`（对话中出现过，视为已泄漏，介意就轮换）。MCP 接入：`claude mcp add --transport http raven-forecast http://34.85.97.32:8787/mcp --header "Authorization: Bearer <token>"`。
+> ④ **部署方式踩坑**：VM `~/predict-raven` 不是 git repo（tar 部署）。**不能覆盖式解包**——旧树是 feat 分支产物，残留 main 没有的文件会混进 Docker build context 导致构建失败；正确姿势 = mv 旧树备份 → 干净解包 → 只回拷 `.env` + `docker-compose.override.yml`（备份留在 `~/predict-raven.pre-forecast-api.bak`）。
+> ⑤ 公网验收：healthz/401/MCP 握手/真实 claude run（BTC $200k before 2027 题）全过；无 TLS（同 raven，有域名后再上 Caddy）。README（CN/EN）已写 API+MCP 用法与公网暴露注意。**待办**：英文版 handoff 此条待同步翻译；`.engine-lock` 只在 API 侧写（raven app 侧 framing 窗口仍有小概率双跑）。
+>
 > 最后更新：2026-07-02 by Claude（**Forecast prompt 评审落地：prompt 只引导思考、harness 保证正确性**，分支 `claude/unruffled-jang-622f35`）。
 > 背景：用户要求 review「一次跑 3 个市场推荐」流程的全部 prompt（评审文档 [`docs/internal/review/2026-06-17-forecast-prompt-review.md`](internal/review/2026-06-17-forecast-prompt-review.md) + 文风方案 [`docs/internal/forecast-house-style.md`](internal/forecast-house-style.md)），随后指示「把改动都实现，prompt 主要用作引导思考，harness 确保正确实现，去掉对 forecasting 有负面影响的限制，合并 main」。
 > ① **确定性闸门（真钱安全）**：`pulse-entry-planner.ts` 新增 `assessPulseReportParseability`/`PULSE_NO_TRADE_MARKER`（导出 `parseRecommendationSections`），`full-pulse.ts` 渲染后 fail-closed 校验——market-scan 报告 0 个 entry-ready 章节且无 `NO-TRADE` 标记→直接抛错（此前概率表解析失败会 `aiProb=marketProb`→edge 0→**静默零交易**）；position-review 降级为响亮警告。5 个新单测。
