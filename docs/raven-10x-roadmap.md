@@ -165,6 +165,20 @@
 - **Analyst 影响台账**（4/10）：打磨演示时刻而非改变产品本质；记分上线后作为 dossier 小节重议
 - **基率库**（5/10）：人工维护 20-30 个参照类对 solo 运营者是真实负担；等已结算语料能自动播种再说
 
+## 停车场 — 回收的埋没资产（2026-07-03 分支扫描，用户指示存档）
+
+三个已有可观实现、等产品立项的方向（按现成度排序）：
+
+| 项 | 现状 | 重启入口 |
+| --- | --- | --- |
+| **Raven Managed 代客交易** | 代码完成度最高的搁置产品线：Privy 登录 + Safe 推导 + builder code + 风险分层 + paper-mode 端到端（65 测试绿），Phase 3a 全部完成，2026-05 起卡在 dogfood 启动 | `apps/raven-managed` + `services/managed-trading`；四个启动选项见 [`agent-handoff.md`](agent-handoff.md) 的 dogfood 节 |
+| **常驻自主 agent（订阅式预测/持仓管家）** | `raven-agent-loop` 纯库已合入 orchestrator（issue #6 / PR #20，刻意 no-live-money）；配合 forecast-api + 每日配额，"存一个问题每天自动重跑、变了推送"只差一层调度 | `services/orchestrator/src/runtime/raven-agent-loop.ts`；产品形态未立项 |
+| **结构化外部信息源层（World Monitor）** | `packages/market-intelligence` 已在 main（issue #21/#25 三阶段路线）：World Monitor 客户端 618 行 + 市场标签库 402 行 + pace strategy，全部未接线。引擎证据目前全靠 WebSearch——结构化信息源是预测质量的差异化 lever | `packages/market-intelligence/`（Python，独立可跑）；接入点 = 引擎 round prompt 的证据源扩展 |
+
+**对"明确砍掉的"两条的现实修正**（用户指令推翻，记录避免困惑）：
+- ~~Forecast API v1~~：2026-07-02 用户直接指令建成并部署（`services/forecast-api`，HTTP + MCP + PDF，东京 VM :8787）——砍掉理由"solo 场景进程内调用就够"被"任何人可调用的 hosted 服务"这一产品目标取代。
+- ~~SQLite 台账（不加原生依赖）~~：精神保留——2026-07-03 邀请码存储按用户指令上了 VPS，但实现选了零依赖的文件事件日志而非 SQLite/Postgres，Docker 镜像仍无新原生依赖。
+
 ## 需要你拍板的两件事
 
 1. **世界杯接续**（审计指出的盲点）：公开站的内容引擎（87 个盲测预测、每日结算）~3 周后随小组赛枯竭。/track-record 是记分牌不是内容管线——下一个公开盲测流选什么域（宏观/科技发布/体育季/扫描器精选）、什么节奏、是否先于交易公开？

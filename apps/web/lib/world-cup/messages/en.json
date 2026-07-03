@@ -103,13 +103,6 @@
   "peCtaSignin": "Sign in to run",
   "peCtaInvite": "Enter invite code",
   "peSeeFirst": "See our forecasts first",
-  "betaButton": "Beta test",
-  "betaTitle": "Beta access",
-  "betaDesc": "Enter the beta password to open the Forecasting Engine console.",
-  "betaPlaceholder": "Beta password",
-  "betaEnter": "Enter",
-  "betaCancel": "Cancel",
-  "betaWrong": "Wrong password — try again.",
   "peStep1Title": "Pick a question",
   "peStep1Copy": "Any match, group winner, or title odds. Just ask.",
   "peStep1Tag": "Input",
@@ -178,14 +171,11 @@
   "kgMulticalibrated": "The published pick. It pools all eight models into one consensus, then applies a small bias correction learned on the group stage, bounded so it stays close to the consensus. Always market-blind.",
   "knHeroMeta": "Eight models + a calibrated blend, market-blind · forecast locked",
   "kndPredictedAt": "Forecast locked {date} — before any Round-of-32 match kicked off.",
-
   "kgFullMethod": "Full methodology: from data to forecast →",
-
   "mthBack": "← Back to knockout predictions",
   "mthEyebrow": "How it works",
   "mthTitle": "How eight models forecast a match from FIFA data",
   "mthIntro": "Every knockout tie is rated by eight statistical and machine-learning models, plus a calibrated blend — reading only the football the teams played in the group stage. No betting lines, no market prices. The published number is the chance of each 90-minute result: a win, a draw, or a loss.",
-
   "mthPipelineTitle": "The pipeline, end to end",
   "mthPipelineLead": "Here is the whole chain, from a raw FIFA match report to the published call. Each stage feeds the next; nothing along the way reads a price.",
   "mthPipelineCaption": "From FIFA's post-match report to one published win/draw/loss — every stage is market-blind.",
@@ -206,11 +196,9 @@
   "mthStage7Cap": "Pool the eight, correct known bias, calibrate the draw for knockouts.",
   "mthStage8": "Published: 90-minute win/draw/loss",
   "mthStage8Cap": "One number per outcome, shown on the match's page.",
-
   "mthSourceTitle": "Where the data comes from",
   "mthSourceP1": "After every match, FIFA publishes a Post-Match Summary Report — around fifty pages of detailed analysis. We read the text on two of those pages: the Key Statistics page and the Phases of Play page. That is the entire source.",
   "mthSourceP2": "We read only on-pitch football: goals, shots, possession, pressing, running distance and the like. We never read a price, an odds line or any betting data — the prediction is generated blind to the market, by design.",
-
   "mthFieldsTitle": "What we read, and what each number means",
   "mthFieldsIntro": "Nine numbers per team come off those pages. Here is each one in plain language, with an example value.",
   "mthFieldExample": "Example",
@@ -233,7 +221,6 @@
   "mthFieldMatches": "Matches observed",
   "mthFieldMatchesMeaning": "How many group games we have data for — three, the full group stage.",
   "mthXgNote": "“Expected goals” (xG) is a shot-quality estimate: it scores how many goals the chances a team created — or allowed — were really worth, rather than just counting the goals that happened to go in.",
-
   "mthProfileTitle": "From three matches to a team profile",
   "mthProfileP1": "A team plays only three group games, so any single number is noisy — one freak result can flatter or bury a side. To settle it, we average the three games and then gently pull each number toward a sensible prior. Statisticians call this Bayesian shrinkage: it trusts the data, but not blindly, so one wild game can't dominate.",
   "mthProfileGame1": "Group game 1",
@@ -241,7 +228,6 @@
   "mthProfileGame3": "Group game 3",
   "mthProfileOut": "Team profile",
   "mthProfileP2": "The result is the team profile — the steady, de-noised picture of each side that every model reads from. From here on, the eight models all work off the same two profiles.",
-
   "mthModelsTitle": "Eight models, eight ways to read the same match",
   "mthModelsIntro": "Each model looks at the two profiles through a different lens and turns them into a win/draw/loss. None of them is the final word; their disagreement is the point. Here is what each one leans on and how it decides.",
   "mthModel1Name": "Dixon-Coles (Bayesian shrinkage)",
@@ -260,7 +246,6 @@
   "mthModel7Desc": "A random forest — another machine-learning method, an average of many independent decision trees — trained on passing-structure and style features like possession and build-up shape. It is a different statistical lens on the same question, and where it disagrees with the gradient-boosted model is itself informative.",
   "mthModel8Name": "Stacked ensemble",
   "mthModel8Desc": "A meta-model that never looks at the pitch at all. Its only job is to learn, from how the seven other models performed across the group stage, how much to trust each one — then weight and combine their views into a single read. It is a model of the models.",
-
   "mthFinalTitle": "From eight reads to one published call",
   "mthFinalP1": "The eight views are first pooled into one consensus. Then a small bias correction, learned on the group stage, nudges it where the models were collectively off. Finally a knockout draw calibration applies: knockout matches end level after 90 minutes far more often than group games — about 31% of the time at Qatar 2022 — so on genuinely even ties we lift the draw toward that historical rate. Lopsided ties barely move, and the favourite is always preserved.",
   "mthFinalStep1": "Pool the eight models",
@@ -268,6 +253,5 @@
   "mthFinalStep3": "Knockout draw calibration",
   "mthFinalStep4": "Published 90-min call",
   "mthFinalP2": "The result is the published “Multi-calibrated 8-in-1” win/draw/loss. Every match shows all nine views — the eight models and the blend — side by side on its own page, and we score them in the open as matches finish, so anyone can check the record.",
-
   "mthFooterBlind": "Market-blind by design: every step above reads only group-stage FIFA football stats and team strength. No betting line, no odds and no market price are ever read to form a prediction."
 }
