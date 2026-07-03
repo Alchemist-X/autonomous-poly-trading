@@ -23,7 +23,8 @@ const CreateSchema = z.object({
   maxRounds: z.number().int().min(1).max(6).optional(),
   fresh: z.boolean().optional(),
   provider: z.enum(["claude", "deepseek"]).optional(),
-  invite: z.string().optional()
+  invite: z.string().optional(),
+  language: z.enum(["en", "zh"]).optional()
 });
 
 export async function POST(req: Request) {
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
       maxRounds: parsed.data.maxRounds,
       fresh: parsed.data.fresh,
       provider,
+      language: parsed.data.language,
       quota: {
         service: "raven-web",
         limit: dailyQuotaLimit(),

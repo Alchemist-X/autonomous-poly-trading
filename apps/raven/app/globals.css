@@ -95,7 +95,9 @@ body {
 }
 @media (max-width: 640px) {
   .rv-hdr-meta {
-    display: none;
+    /* !important: the research header builds this span with an inline
+       display:flex, which would otherwise defeat the mobile hide. */
+    display: none !important;
   }
   .rv-wordmark {
     font-size: 15px;
@@ -277,6 +279,23 @@ body {
   50% {
     opacity: 0.25;
   }
+}
+/* Progressive-reveal entrance for feed items that arrive mid-run. */
+@keyframes rv-in {
+  0% {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rv-reveal {
+  animation: rv-in 0.55s cubic-bezier(0.22, 0.7, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

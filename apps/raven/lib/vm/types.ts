@@ -34,6 +34,7 @@ export interface IterationVM {
   netDir: NetDir;
   note: string; // Raven's reasoning for the round
   evidence: EvidenceVM[];
+  analystFolded?: number; // analyst notes the engine injected into this round
 }
 
 export interface DossierMeta {

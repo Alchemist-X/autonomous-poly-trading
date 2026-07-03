@@ -2,28 +2,32 @@
 
 // Shared chrome for all three screens: the .rv theme root, header bar,
 // three-step tab nav, and footer — layout and copy from the design handoff.
+// Also mounts the LocaleProvider and the 中文/EN toggle (persisted like the
+// theme choice).
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { useLocale, useT } from "../../lib/i18n";
+import { CHROME } from "../../lib/i18n/ui";
 import { GTA6_DEMO_ID } from "../../lib/demo/gta6";
 
 type Screen = "ask" | "research" | "verdict";
 
 const THEME_KEY = "raven-theme";
 
-export function RvShell({
-  active,
-  forecastId,
-  headerRight,
-  showFooter = true,
-  children
-}: {
+interface ShellProps {
   active: Screen;
   forecastId?: string;
   headerRight?: React.ReactNode;
   showFooter?: boolean;
   children: React.ReactNode;
-}) {
+}
+
+// LocaleProvider is mounted once in app/layout.tsx so page components outside
+// this shell's subtree share the same locale context.
+export function RvShell({ active, forecastId, headerRight, showFooter = true, children }: ShellProps) {
+  const t = useT();
+  const { locale, setLocale } = useLocale();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   useEffect(() => {
     try {
@@ -34,8 +38,8 @@ export function RvShell({
     }
   }, []);
   const toggleTheme = useCallback(() => {
-    setTheme((t) => {
-      const next = t === "dark" ? "light" : "dark";
+    setTheme((cur) => {
+      const next = cur === "dark" ? "light" : "dark";
       try {
         localStorage.setItem(THEME_KEY, next);
       } catch {
@@ -47,9 +51,9 @@ export function RvShell({
 
   const fid = forecastId ?? GTA6_DEMO_ID;
   const tabs: Array<{ key: Screen; label: string; href: string }> = [
-    { key: "ask", label: "01 · Ask", href: "/" },
-    { key: "research", label: "02 · Research", href: `/forecast/${fid}/research` },
-    { key: "verdict", label: "03 · Verdict", href: `/forecast/${fid}` }
+    { key: "ask", label: t(CHROME.navAsk), href: "/" },
+    { key: "research", label: t(CHROME.navResearch), href: `/forecast/${fid}/research` },
+    { key: "verdict", label: t(CHROME.navVerdict), href: `/forecast/${fid}` }
   ];
 
   return (
@@ -92,8 +96,8 @@ export function RvShell({
           {headerRight}
           <button
             type="button"
-            onClick={toggleTheme}
-            title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+            onClick={() => setLocale(locale === "zh" ? "en" : "zh")}
+            title={t(CHROME.langSwitchTitle)}
             style={{
               cursor: "pointer",
               background: "none",
@@ -106,15 +110,33 @@ export function RvShell({
               padding: "4px 10px"
             }}
           >
-            {theme === "dark" ? "LIGHT" : "DARK"}
+            {t(CHROME.langSwitch)}
+          </button>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            title={theme === "dark" ? t(CHROME.themeToLight) : t(CHROME.themeToDark)}
+            style={{
+              cursor: "pointer",
+              background: "none",
+              border: "1px solid var(--line2)",
+              borderRadius: 20,
+              color: "var(--faint)",
+              fontFamily: "var(--fm)",
+              fontSize: 9,
+              letterSpacing: ".1em",
+              padding: "4px 10px"
+            }}
+          >
+            {theme === "dark" ? t(CHROME.themeLight) : t(CHROME.themeDark)}
           </button>
         </div>
       </header>
 
       <nav className="rv-nav">
-        {tabs.map((t) => (
-          <Link key={t.key} href={t.href} className={`nvl${t.key === active ? " on" : ""}`}>
-            {t.label}
+        {tabs.map((tab) => (
+          <Link key={tab.key} href={tab.href} className={`nvl${tab.key === active ? " on" : ""}`}>
+            {tab.label}
           </Link>
         ))}
       </nav>
@@ -124,10 +146,10 @@ export function RvShell({
       {showFooter && (
         <footer className="rv-ftr">
           <span style={{ fontFamily: "var(--fm)", fontSize: 10, color: "var(--faint)" }}>
-            Raven is a research instrument — probabilities with sources, not advice.
+            {t(CHROME.footerInstrument)}
           </span>
           <span style={{ fontFamily: "var(--fm)", fontSize: 10, color: "var(--faint)" }}>
-            No prediction-market or betting data is used as evidence.
+            {t(CHROME.footerMarketBlind)}
           </span>
         </footer>
       )}

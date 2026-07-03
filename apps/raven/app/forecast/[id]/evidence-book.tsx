@@ -1,17 +1,23 @@
+"use client";
+
 // "The evidence, in order" book — per-iteration headers, globally numbered
 // evidence rows (#ev-NN anchors) and the CSS-only hover preview popover.
 // Layout and copy verbatim from the design handoff ("Raven Report.dc.html").
 
 import { ArrowIcon, ShieldIcon, SrcIcon } from "../../../components/icons";
+import { sourcesLabel, useLocale, useT } from "../../../lib/i18n";
+import { SRC_TYPE_LABELS, V } from "../../../lib/i18n/verdict";
 import type { DossierMeta } from "../../../lib/vm/types";
 import { netArrowFor, type DecoratedEvidence, type DecoratedIteration } from "./decorate";
 import { CredPill, DomChip, ValuePill } from "./pills";
 
 export function EvidenceBook({ iterations, meta }: { iterations: DecoratedIteration[]; meta: DossierMeta }) {
+  const t = useT();
+  const { locale } = useLocale();
   const legend = [
-    { n: meta.nSupport, label: "supporting", color: "var(--pos)" },
-    { n: meta.nCounter, label: "counter", color: "var(--neg)" },
-    { n: meta.nNeutral, label: "neutral", color: "var(--faint)" }
+    { n: meta.nSupport, label: V.legendSupporting, color: "var(--pos)" },
+    { n: meta.nCounter, label: V.legendCounter, color: "var(--neg)" },
+    { n: meta.nNeutral, label: V.legendNeutral, color: "var(--faint)" }
   ];
   return (
     <div className="rp-book" style={{ borderTop: "1px solid var(--line)", background: "var(--bg2)" }}>
@@ -34,16 +40,16 @@ export function EvidenceBook({ iterations, meta }: { iterations: DecoratedIterat
             color: "var(--faint)"
           }}
         >
-          The evidence, in order — {meta.sources} sources
+          {t(V.evidenceInOrder, { src: sourcesLabel(meta.sources, locale) })}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14, fontFamily: "var(--fm)", fontSize: 10.5 }}>
           {legend.map((l) => (
             <span
-              key={l.label}
+              key={l.label.en}
               style={{ display: "inline-flex", alignItems: "center", gap: 5, color: "var(--muted)" }}
             >
               <span style={{ width: 9, height: 3, borderRadius: 2, background: l.color }} />
-              {l.n} {l.label}
+              {l.n} {t(l.label)}
             </span>
           ))}
         </div>
@@ -69,7 +75,7 @@ export function EvidenceBook({ iterations, meta }: { iterations: DecoratedIterat
                 color: "var(--faint)"
               }}
             >
-              Iteration
+              {t(V.iteration)}
             </span>
             <span style={{ fontFamily: "var(--fd)", fontWeight: 600, fontSize: 20, color: "var(--accent)" }}>
               {it.n}
@@ -97,6 +103,7 @@ export function EvidenceBook({ iterations, meta }: { iterations: DecoratedIterat
 }
 
 function EvidenceRow({ e }: { e: DecoratedEvidence }) {
+  const t = useT();
   return (
     <div
       className="ev"
@@ -113,7 +120,7 @@ function EvidenceRow({ e }: { e: DecoratedEvidence }) {
         <span
           className={`sd-${e.side}`}
           style={{ width: 3, alignSelf: "stretch", borderRadius: 2, opacity: 0.85 }}
-          title={e.sideLabel}
+          title={t(e.sideLabel)}
         />
         <span
           style={{
@@ -147,7 +154,7 @@ function EvidenceRow({ e }: { e: DecoratedEvidence }) {
                 padding: "1px 5px"
               }}
             >
-              ↻ Revises a prior source
+              {t(V.revisesPrior)}
             </span>
           ) : null}
         </div>
@@ -168,7 +175,7 @@ function EvidenceRow({ e }: { e: DecoratedEvidence }) {
               }}
             >
               <SrcIcon type="official" className="ic10" />
-              Verified
+              {t(V.verified)}
             </span>
           ) : (
             <span
@@ -185,7 +192,7 @@ function EvidenceRow({ e }: { e: DecoratedEvidence }) {
               }}
             >
               <ShieldIcon />
-              Unverified
+              {t(V.unverified)}
             </span>
           )}
           <span style={{ width: 1, height: 11, background: "var(--line2)" }} />
@@ -212,6 +219,7 @@ function EvidenceRow({ e }: { e: DecoratedEvidence }) {
 }
 
 function EvidencePopover({ e }: { e: DecoratedEvidence }) {
+  const t = useT();
   const openStyle = {
     textDecoration: "none",
     display: "inline-flex",
@@ -248,7 +256,7 @@ function EvidencePopover({ e }: { e: DecoratedEvidence }) {
             color: "var(--accent)"
           }}
         >
-          Preview
+          {t(V.preview)}
         </span>
         <CredPill e={e} variant="pop" />
       </div>
@@ -289,15 +297,15 @@ function EvidencePopover({ e }: { e: DecoratedEvidence }) {
           }}
         >
           <SrcIcon type={e.srcType} />
-          {e.srcLabel}
+          {t(SRC_TYPE_LABELS[e.srcType])}
         </span>
         {e.url ? (
           <a href={e.url} target="_blank" rel="noopener noreferrer" style={openStyle}>
-            Open {e.dom} <ArrowIcon style={{ width: 10, height: 10 }} />
+            {t(V.openSource, { dom: e.dom })} <ArrowIcon style={{ width: 10, height: 10 }} />
           </a>
         ) : (
           <span style={openStyle}>
-            Open {e.dom} <ArrowIcon style={{ width: 10, height: 10 }} />
+            {t(V.openSource, { dom: e.dom })} <ArrowIcon style={{ width: 10, height: 10 }} />
           </span>
         )}
       </div>

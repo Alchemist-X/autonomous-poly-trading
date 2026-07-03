@@ -47,6 +47,20 @@ One-click publish: frozen static dossier at forecasting-agent.com/f/\<slug\> wit
 
 Scoped API keys / multi-user (2/10) · API v1 + HMAC webhooks (4/10) · SQLite ledger (4/10 — nightly script suffices) · Analyst impact ledger (4/10 — revisit post-scoring) · Base-rate library (5/10 — revisit when the resolved corpus can seed it).
 
+## Parking lot — reclaimed buried assets (2026-07-03 branch sweep, archived on user instruction)
+
+Three directions with substantial existing implementation, awaiting a product decision (ordered by readiness):
+
+| Item | Status | Restart entry |
+| --- | --- | --- |
+| **Raven Managed (managed trading)** | The most code-complete parked product line: Privy login + Safe derivation + builder code + risk tiers + paper-mode end-to-end (65 tests green); Phase 3a fully done, stalled at dogfood since 2026-05 | `apps/raven-managed` + `services/managed-trading`; four launch options in [`agent-handoff.md`](../agent-handoff.md)'s dogfood section |
+| **Resident autonomous agent (subscription forecasts / position steward)** | `raven-agent-loop` pure lib merged into the orchestrator (issue #6 / PR #20, deliberately no-live-money); combined with forecast-api + daily quotas, "save a question, auto re-run daily, push on change" is one scheduler away | `services/orchestrator/src/runtime/raven-agent-loop.ts`; product shape not yet scoped |
+| **Structured external information layer (World Monitor)** | `packages/market-intelligence` is on main (issue #21/#25 three-phase route): 618-line World Monitor client + 402-line market tag library + pace strategy, all unwired. Engine evidence currently relies on WebSearch alone — a structured source layer is a real forecast-quality lever | `packages/market-intelligence/` (Python, runs standalone); integration point = evidence-source extension of the engine's round prompt |
+
+**Reality corrections to two "explicitly cut" items** (overridden by user instruction; recorded to avoid confusion):
+- ~~Forecast API v1~~: built and deployed on direct user instruction 2026-07-02 (`services/forecast-api`, HTTP + MCP + PDF, Tokyo VM :8787) — the cut rationale ("in-process calls suffice for solo") was superseded by the product goal "a hosted service anyone can call".
+- ~~SQLite ledger (no native deps)~~: spirit preserved — invite-code storage moved to the VPS on user instruction 2026-07-03, but implemented as a zero-dependency file event log rather than SQLite/Postgres; the Docker image still gains no native dependency.
+
 ## Two user decisions needed
 
 1. **World Cup succession**: the public site's content engine (87 blind forecasts, daily resolutions) dries up in ~3 weeks. Which public blind-forecast stream replaces it (macro / tech launches / sports seasons / scanner picks), at what cadence?
