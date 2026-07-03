@@ -25,6 +25,7 @@ export interface RestingLimit {
 export interface PaperPosition {
   id: string; // slug:outcomeIndex
   slug: string;
+  eventSlug: string; // Gamma parent event — for single-event exposure caps
   conditionId: string;
   question: string;
   outcomeIndex: number;
@@ -62,7 +63,12 @@ export function loadPortfolio(): Portfolio {
     return {
       ...existing,
       // Back-compat for books created before fee params lived on positions.
-      positions: existing.positions.map((p) => ({ ...p, fees: p.fees ?? DEFAULT_FEES, entryFeePerShare: p.entryFeePerShare ?? 0 }))
+      positions: existing.positions.map((p) => ({
+        ...p,
+        fees: p.fees ?? DEFAULT_FEES,
+        entryFeePerShare: p.entryFeePerShare ?? 0,
+        eventSlug: p.eventSlug ?? p.slug
+      }))
     };
   }
   const bankroll = loadPaperConfig().bankrollUsd;

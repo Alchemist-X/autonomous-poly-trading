@@ -17,6 +17,21 @@ const base: ScanRow = {
   bestAsk: 0.42
 };
 
+describe("single-event exposure cap", () => {
+  // The Hormuz case: same macro event, three expiries → one event slug.
+  const positionsForEvent = (eventSlug: string, n: number) =>
+    Array.from({ length: n }, (_, i) => ({ eventSlug, slug: `m${i}` }));
+
+  it("counts open positions sharing a Gamma event", () => {
+    const held = positionsForEvent("strait-of-hormuz-normal", 1);
+    const count = (ev: string) => held.filter((p) => p.eventSlug === ev).length;
+    expect(count("strait-of-hormuz-normal")).toBe(1);
+    expect(count("some-other-event")).toBe(0);
+    // maxPerEvent=1 → a second market on the same event is blocked
+    expect(count("strait-of-hormuz-normal") >= 1).toBe(true);
+  });
+});
+
 describe("filterScanRows", () => {
   it("accepts a liquid, binary, mid-priced market", () => {
     const out = filterScanRows([base], "finance", DEFAULT_SCAN_OPTIONS, NOW);

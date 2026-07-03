@@ -25,6 +25,9 @@ export interface PaperConfig {
   entryEdgePp: number;
   entryNotionalUsd: number;
   maxPositions: number;
+  // Cap open positions sharing one Gamma event (e.g. the same macro question
+  // at different expiries) — prevents stacking one underlying bet.
+  maxPerEvent: number;
   // LLM evaluation runs per cycle are capped to bound cost.
   maxEvalsPerCycle: number;
   // Engine rounds per evaluation (state resumes, so belief accumulates).
@@ -65,6 +68,7 @@ export function loadPaperConfig(env: NodeJS.ProcessEnv = process.env): PaperConf
     entryEdgePp: num("PAPER_ENTRY_EDGE_PP", 8, 0.5),
     entryNotionalUsd: num("PAPER_ENTRY_NOTIONAL_USD", 50, 1),
     maxPositions: num("PAPER_MAX_POSITIONS", 10, 1),
+    maxPerEvent: num("PAPER_MAX_PER_EVENT", 1, 1),
     maxEvalsPerCycle: num("PAPER_MAX_EVALS_PER_CYCLE", 12, 1),
     evalMaxRounds: num("PAPER_EVAL_MAX_ROUNDS", 1, 1),
     evalProvider: env.PAPER_EVAL_PROVIDER?.trim() === "deepseek" ? "deepseek" : "claude",

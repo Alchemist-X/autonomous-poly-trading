@@ -91,6 +91,7 @@ describe("portfolio accounting", () => {
   const pos: PaperPosition = {
     id: "m:0",
     slug: "m",
+    eventSlug: "m",
     conditionId: "c",
     question: "q",
     outcomeIndex: 0,

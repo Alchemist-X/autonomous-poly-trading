@@ -27,6 +27,10 @@ export interface MarketInfo {
   outcomePrices: number[] | null; // settlement prices once resolved
   resolvedOutcomeIndex: number | null;
   resolution: ResolutionState;
+  // Parent event slug (Gamma groups related markets — e.g. the same macro
+  // question at different expiries — under one event). Used to cap exposure to
+  // a single underlying bet. Falls back to the market slug when absent.
+  eventSlug: string;
 }
 
 export interface BookLevel {
@@ -79,6 +83,7 @@ interface GammaMarket {
   outcomes?: unknown;
   outcomePrices?: unknown;
   clobTokenIds?: unknown;
+  events?: Array<{ slug?: string; id?: string }>;
 }
 
 // Terminal settlement detection: winner needs a >0.99 leg; a ~50/50 close is
@@ -120,7 +125,8 @@ export async function fetchMarket(slug: string): Promise<MarketInfo> {
     tokenIds,
     outcomePrices,
     resolvedOutcomeIndex: winner,
-    resolution: state
+    resolution: state,
+    eventSlug: m.events?.[0]?.slug ?? m.events?.[0]?.id ?? m.slug ?? slug
   };
 }
 

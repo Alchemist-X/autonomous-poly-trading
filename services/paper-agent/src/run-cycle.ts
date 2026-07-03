@@ -300,6 +300,14 @@ async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: 
     try {
       const market = await fetchMarket(slug);
       if (market.closed || !isYesNoMarket(market.outcomes) || market.tokenIds.length !== 2) continue;
+      // Single-event exposure cap: don't stack the same underlying bet (e.g.
+      // one macro question at several expiries). Checked BEFORE spending an
+      // evaluation so it also saves LLM budget.
+      const eventCount = next.positions.filter((p) => p.eventSlug === market.eventSlug).length;
+      if (eventCount >= cfg.maxPerEvent) {
+        appendLedger({ type: "entry_skipped", slug, reason: "event_cap", eventSlug: market.eventSlug, held: eventCount });
+        continue;
+      }
       const fees = (await fetchMarketFees(market.conditionId)) ?? DEFAULT_FEES;
       // Entry budget must cover notional + fee.
       const budget = cfg.entryNotionalUsd;
@@ -328,6 +336,7 @@ async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: 
       const pos: PaperPosition = {
         id: positionId(slug, entry.outcomeIndex),
         slug,
+        eventSlug: market.eventSlug,
         conditionId: market.conditionId,
         question: market.question,
         outcomeIndex: entry.outcomeIndex,

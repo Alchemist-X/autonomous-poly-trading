@@ -36,6 +36,7 @@ async function cmdBuy(slug: string, sideRaw: string, usdRaw: string): Promise<vo
   const pos: PaperPosition = {
     id,
     slug,
+    eventSlug: market.eventSlug,
     conditionId: market.conditionId,
     question: market.question,
     outcomeIndex: side,
