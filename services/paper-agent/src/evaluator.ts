@@ -101,6 +101,10 @@ export async function evaluateMarket(market: MarketInfo, roundsPerEval: number, 
     FORECAST_MIN_ROUNDS: "1",
     ARTIFACT_STORAGE_ROOT: engineRoot()
   };
+  // Web research ON by default for evaluations (DeepSeek/Kimi function-calling
+  // loop; keyless DuckDuckGo backend unless TAVILY_API_KEY is set). Opt out
+  // with FORECAST_WEB_SEARCH=0.
+  if (!env.FORECAST_WEB_SEARCH) env.FORECAST_WEB_SEARCH = "1";
   // Backfill the key from the repo-root .env.deepseek in local dev.
   const envFile = path.join(root, ".env.deepseek");
   if (!env.DEEPSEEK_API_KEY && existsSync(envFile)) {
