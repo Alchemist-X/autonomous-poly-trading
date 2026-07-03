@@ -79,7 +79,8 @@ function toIteration(round: RoundRecord, ledger: LedgerX[], leanYes: boolean): I
     net: `${Math.abs(net)}%`,
     netDir: dirFor(net),
     note: cleanPct(round.reasoning),
-    evidence: ledger.filter((e) => e.firstSeenRound === round.round).map((e) => toEvidence(e, leanYes))
+    evidence: ledger.filter((e) => e.firstSeenRound === round.round).map((e) => toEvidence(e, leanYes)),
+    analystFolded: round.analystConsumedIds?.length ?? 0
   };
 }
 

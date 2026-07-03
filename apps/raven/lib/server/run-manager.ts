@@ -32,13 +32,16 @@ export function getJob(eventId: string): Job | null {
 // Build the child env: process env, backfilled from the repo-root .env.deepseek
 // (gitignored, local testing only) so `pnpm --filter @autopoly/raven dev` works
 // without exporting keys by hand. Secrets never touch the client or the repo.
-function buildEnv(provider: string): NodeJS.ProcessEnv {
+function buildEnv(provider: string, language?: string): NodeJS.ProcessEnv {
   const fromFile = readEnvFile(path.join(repoRoot(), ".env.deepseek"));
   const env: NodeJS.ProcessEnv = { ...process.env };
   for (const [k, v] of Object.entries(fromFile)) {
     if (!env[k]) env[k] = v;
   }
   env.FORECAST_PROVIDER = provider;
+  // Per-run output language for the engine's user-facing prose (opt-in "zh";
+  // absent = English, so trading-pipeline callers are untouched).
+  if (language === "zh") env.FORECAST_LANGUAGE = "zh";
   // App runs favor richer dossiers: a balanced round 1 (net ~0pp) must not
   // count as convergence before the round-2 disconfirmation pass has run.
   if (!env.FORECAST_MIN_ROUNDS) env.FORECAST_MIN_ROUNDS = "2";
@@ -72,6 +75,7 @@ export interface StartOptions {
   // exhausted — so an invite code is validated AND metered exactly when it
   // unlocks a run, never while free quota remains.
   quota?: { service: string; limit: number; authorizeBypass?: () => boolean };
+  language?: "en" | "zh";
 }
 
 // An "open" state whose file changed recently means an engine process is (very
@@ -130,7 +134,7 @@ export function startForecast(question: string, opts: StartOptions = {}): Job {
 
   const child = spawn(path.join(root, "node_modules/.bin/tsx"), args, {
     cwd: root,
-    env: buildEnv(provider)
+    env: buildEnv(provider, opts.language)
   });
   const onData = (buf: Buffer) => {
     for (const line of buf.toString().split("\n")) {

@@ -12,6 +12,8 @@ import type { CSSProperties, ReactNode } from "react";
 import { RvShell } from "../../../components/chrome/rv-shell";
 import { ArrowIcon, IconDefs } from "../../../components/icons";
 import { useForecast } from "../../../lib/client/use-forecast";
+import { confidenceLabel, sourcesLabel, useLocale, useT, verdictLabel } from "../../../lib/i18n";
+import { rankEntry, STATUS_LABELS, V } from "../../../lib/i18n/verdict";
 import { cap, credWord } from "../../../lib/vm/format";
 import type { DossierVM } from "../../../lib/vm/types";
 import { decorateDossier, percentOf, roundUpTen } from "./decorate";
@@ -61,6 +63,7 @@ function CenterNote({ children }: { children: ReactNode }) {
 }
 
 function NotFound() {
+  const t = useT();
   return (
     <CenterNote>
       <div
@@ -72,10 +75,10 @@ function NotFound() {
           color: "var(--muted)"
         }}
       >
-        Forecast not found
+        {t(V.notFound)}
       </div>
       <Link href="/" style={{ fontFamily: "var(--fm)", fontSize: 11, color: "var(--accent)", textDecoration: "none" }}>
-        ← Back to 01 · Ask
+        {t(V.backToAsk)}
       </Link>
     </CenterNote>
   );
@@ -85,6 +88,7 @@ export default function ReportPage() {
   const params = useParams<{ id: string }>();
   const id = params?.id ?? "";
   const { data, error } = useForecast(id);
+  const t = useT();
 
   if (!data) {
     const notFound = error === "not found" || error === "invalid id";
@@ -95,10 +99,12 @@ export default function ReportPage() {
         ) : (
           <CenterNote>
             <div style={{ fontFamily: "var(--fm)", fontSize: 11, letterSpacing: ".08em", color: "var(--muted)" }}>
-              Loading dossier…
+              {t(V.loadingDossier)}
             </div>
             {error ? (
-              <div style={{ fontFamily: "var(--fm)", fontSize: 10, color: "var(--faint)" }}>{error} — retrying</div>
+              <div style={{ fontFamily: "var(--fm)", fontSize: 10, color: "var(--faint)" }}>
+                {t(V.retrying, { err: error })}
+              </div>
             ) : null}
           </CenterNote>
         )}
@@ -134,9 +140,9 @@ export default function ReportPage() {
                 }}
               />
               <span>
-                This forecast is still running —{" "}
+                {t(V.stillRunning)}{" "}
                 <Link href={`/forecast/${id}/research`} style={{ color: "var(--accent)" }}>
-                  watch it live
+                  {t(V.watchLive)}
                 </Link>
               </span>
             </div>
@@ -155,6 +161,8 @@ export default function ReportPage() {
 }
 
 function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
+  const t = useT();
+  const { locale } = useLocale();
   const meta = dossier.meta;
   const { iterations, byIdx, core, counter } = decorateDossier(dossier);
 
@@ -184,7 +192,8 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
           className="rv-hdr-meta"
           style={{ fontFamily: "var(--fm)", fontSize: 10, letterSpacing: ".05em", color: "var(--muted)" }}
         >
-          {dossier.status.toUpperCase()} · {meta.duration} · {meta.sources} SOURCES
+          {t(STATUS_LABELS[dossier.status]).toUpperCase()} · {meta.duration} ·{" "}
+          {sourcesLabel(meta.sources, locale).toUpperCase()}
         </span>
       }
     >
@@ -220,9 +229,9 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                 }}
               />
               <span>
-                This forecast is still running —{" "}
+                {t(V.stillRunning)}{" "}
                 <Link href={`/forecast/${id}/research`} className="lnk" style={{ color: "var(--accent)" }}>
-                  watch it live
+                  {t(V.watchLive)}
                 </Link>
               </span>
             </div>
@@ -241,7 +250,7 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                 color: "var(--neg)"
               }}
             >
-              This run aborted — the dossier below is partial.
+              {t(V.runAborted)}
             </div>
           ) : null}
 
@@ -269,7 +278,7 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                 </div>
                 <div style={{ paddingBottom: 9 }}>
                   <div style={{ fontFamily: "var(--fd)", fontStyle: "italic", fontWeight: 500, fontSize: 27, lineHeight: 1 }}>
-                    {meta.verdict}
+                    {verdictLabel(meta.verdict, locale)}
                   </div>
                   {meta.quip ? (
                     <div style={{ fontSize: 14, lineHeight: 1.4, color: "var(--muted)", marginTop: 7, maxWidth: "22ch" }}>
@@ -357,7 +366,9 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                       back a real coverage claim. */}
                   <span />
                   <span style={{ color: "var(--faint)" }}>
-                    started as a <span style={{ color: "var(--muted)" }}>{meta.prior}</span> prior
+                    {t(V.priorNotePre)}
+                    <span style={{ color: "var(--muted)" }}>{meta.prior}</span>
+                    {t(V.priorNotePost)}
                   </span>
                 </div>
               </div>
@@ -381,9 +392,14 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                     color: "var(--faint)"
                   }}
                 >
-                  Confidence
+                  {t(V.confidence)}
                 </div>
-                <div style={{ display: "flex", gap: 3 }} title={`Overall confidence in this inference: ${cap(meta.confidence)}`}>
+                <div
+                  style={{ display: "flex", gap: 3 }}
+                  title={t(V.confTooltip, {
+                    conf: locale === "zh" ? confidenceLabel(meta.confidence, locale) : cap(meta.confidence)
+                  })}
+                >
                   {[0, 1, 2].map((i) => (
                     <span
                       key={i}
@@ -397,7 +413,7 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                   ))}
                 </div>
                 <span style={{ fontFamily: "var(--fm)", fontSize: 11, fontWeight: 600, color: confColor }}>
-                  {meta.confidence.toUpperCase()}
+                  {confidenceLabel(meta.confidence, locale).toUpperCase()}
                 </span>
                 <span
                   style={{
@@ -416,7 +432,7 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
 
             {/* hero right */}
             <div className="rp-hero-right">
-              <div style={{ ...KICKER_ACCENT, marginBottom: 9 }}>The why</div>
+              <div style={{ ...KICKER_ACCENT, marginBottom: 9 }}>{t(V.theWhy)}</div>
               <p style={{ margin: "0 0 20px", fontFamily: "var(--fd)", fontSize: 16, lineHeight: 1.46 }}>{meta.why}</p>
 
               <div
@@ -429,7 +445,7 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                   marginBottom: 11
                 }}
               >
-                Three core signals
+                {t(V.coreSignals)}
               </div>
               {core.map((c) => (
                 <a
@@ -460,7 +476,7 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                         borderRadius: 4
                       }}
                     >
-                      {c.rank}
+                      {t(rankEntry(c.rank))}
                     </span>
                     <span
                       className={`mv-${c.dir}`}
@@ -499,7 +515,7 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                           color: "var(--neg)"
                         }}
                       >
-                        Strongest counter-signal
+                        {t(V.strongestCounter)}
                       </span>
                       <span
                         className={`mv-${counter.dir}`}
@@ -534,7 +550,7 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
 
           {/* summary */}
           <div className="rp-summary" style={{ borderTop: "1px solid var(--line)" }}>
-            <div style={{ ...KICKER_ACCENT, marginBottom: 12 }}>Raven's summary</div>
+            <div style={{ ...KICKER_ACCENT, marginBottom: 12 }}>{t(V.ravensSummary)}</div>
             {dossier.summaryParagraphs.map((p, i) => {
               const dropCap = i === 0 && /^[A-Za-z]/.test(p);
               const body = dropCap ? p.slice(1) : p;
@@ -584,7 +600,7 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                   paddingTop: 2
                 }}
               >
-                Open risk
+                {t(V.openRisk)}
               </span>
               <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "var(--muted)" }}>{meta.openUnc}</p>
             </div>
@@ -609,30 +625,35 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
               }}
             >
               <ArrowIcon className="rf-chev srcic" style={{ transition: "transform .18s", width: 12, height: 12 }} />
-              Resolution &amp; framing
+              {t(V.resolutionFraming)}
               <span style={{ marginLeft: "auto", textTransform: "none", letterSpacing: 0, color: "var(--faint)", fontSize: 11 }}>
-                Normalized question · criteria · prior · assumptions
+                {t(V.resolutionHint)}
               </span>
             </summary>
             <div className="rf-body">
               <div style={{ gridColumn: "1 / -1" }}>
-                <div style={{ ...RF_KICKER, color: "var(--accent)" }}>Normalized question</div>
+                <div style={{ ...RF_KICKER, color: "var(--accent)" }}>{t(V.normalizedQuestion)}</div>
                 <p style={{ margin: 0, fontFamily: "var(--fd)", fontSize: 15, lineHeight: 1.5 }}>{meta.normQ}</p>
               </div>
               <div>
-                <div style={RF_KICKER}>Resolution criteria{meta.resDate ? ` · ${meta.resDate}` : ""}</div>
+                <div style={RF_KICKER}>
+                  {t(V.resolutionCriteria)}
+                  {meta.resDate ? ` · ${meta.resDate}` : ""}
+                </div>
                 <p style={RF_BODY}>{meta.criteria}</p>
               </div>
               <div>
-                <div style={RF_KICKER}>Prior · {meta.prior}</div>
+                <div style={RF_KICKER}>
+                  {t(V.prior)} · {meta.prior}
+                </div>
                 <p style={RF_BODY}>{meta.priorWhy}</p>
               </div>
               <div>
-                <div style={RF_KICKER}>Assumptions</div>
+                <div style={RF_KICKER}>{t(V.assumptions)}</div>
                 <p style={RF_BODY}>{meta.assumptions}</p>
               </div>
               <div>
-                <div style={RF_KICKER}>Settlement source</div>
+                <div style={RF_KICKER}>{t(V.settlementSource)}</div>
                 <p style={RF_BODY}>{meta.settlement}</p>
               </div>
             </div>

@@ -5,6 +5,8 @@
 // Layout classes (rvp-strip / rvp-quant / rvp-numblock / rvp-num) live in
 // research.css so the mobile breakpoint can restack them.
 
+import { useT } from "../../lib/i18n";
+import { RP } from "../../lib/i18n/research-parts";
 import { arrowFor, dirFor } from "../../lib/vm/format";
 import { axisScaleFor } from "./research-vm";
 
@@ -28,6 +30,7 @@ export function StatusStrip({
   now: NowLine | null;
   quant: QuantVM | null;
 }) {
+  const t = useT();
   return (
     <div className="rvp-strip">
       <div>
@@ -57,7 +60,8 @@ export function StatusStrip({
               }}
             />
             <span>
-              Now: <b style={{ color: "var(--text)" }}>{now.bold}</b>
+              {t(RP.stripNow)}
+              <b style={{ color: "var(--text)" }}>{now.bold}</b>
               {now.rest}
             </span>
           </div>
@@ -69,6 +73,7 @@ export function StatusStrip({
 }
 
 function QuantBlock({ quant }: { quant: QuantVM }) {
+  const t = useT();
   const { nowPct, priorPct, label } = quant;
   const d = nowPct - priorPct;
   const scale = axisScaleFor(priorPct, nowPct);
@@ -103,7 +108,7 @@ function QuantBlock({ quant }: { quant: QuantVM }) {
           </span>
         </div>
         <div style={{ fontFamily: "var(--fm)", fontSize: 10, color: "var(--faint)", marginTop: 6 }}>
-          from the {priorPct}% prior
+          {t(RP.stripFromPrior, { prior: priorPct })}
         </div>
       </div>
       <div style={{ width: 190, paddingBottom: 4, flex: "none" }}>
@@ -177,8 +182,8 @@ function QuantBlock({ quant }: { quant: QuantVM }) {
             marginTop: 6
           }}
         >
-          <span style={{ color: "var(--accent)" }}>now {nowPct}%</span>
-          <span>prior {priorPct}%</span>
+          <span style={{ color: "var(--accent)" }}>{t(RP.stripAxisNow, { n: nowPct })}</span>
+          <span>{t(RP.stripAxisPrior, { n: priorPct })}</span>
         </div>
       </div>
     </div>
