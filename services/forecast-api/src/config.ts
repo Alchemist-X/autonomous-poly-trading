@@ -9,13 +9,17 @@ export interface ServiceConfig {
   maxConcurrentRuns: number;
   waitTimeoutMs: number;
   publicBaseUrl: string | null;
+  dailyQuota: number;
+  inviteCode: string;
 }
 
-function readNumber(name: string, fallback: number): number {
-  const raw = process.env[name];
+function readNumber(name: string, fallback: number, min = 1): number {
+  // A set-but-blank line (`VAR=` in .env) means "unset", never 0 — the two
+  // surfaces must parse the shared .env identically.
+  const raw = process.env[name]?.trim();
   if (!raw) return fallback;
   const n = Number(raw);
-  return Number.isFinite(n) && n > 0 ? n : fallback;
+  return Number.isFinite(n) && n >= min ? n : fallback;
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServiceConfig {
@@ -27,6 +31,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServiceConfig 
     token: env.FORECAST_API_TOKEN || env.RAVEN_ACCESS_TOKEN || null,
     maxConcurrentRuns: readNumber("FORECAST_API_MAX_CONCURRENT", 2),
     waitTimeoutMs: readNumber("FORECAST_API_WAIT_TIMEOUT_MS", 20 * 60_000),
-    publicBaseUrl: env.FORECAST_API_PUBLIC_URL?.replace(/\/+$/, "") ?? null
+    publicBaseUrl: env.FORECAST_API_PUBLIC_URL?.replace(/\/+$/, "") ?? null,
+    // Daily engine-run quota (min 0 — zero means every start needs the invite
+    // code, which is also how tests exercise the gate).
+    dailyQuota: readNumber("FORECAST_DAILY_QUOTA", 20, 0),
+    inviteCode: env.FORECAST_INVITE_CODE || "raven-labs"
   };
 }

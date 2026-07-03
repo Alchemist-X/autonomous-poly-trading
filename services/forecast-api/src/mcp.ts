@@ -10,7 +10,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import { buildAnswer } from "./answer";
+import { tokenEquals } from "./auth";
 import type { ServiceConfig } from "./config";
+import { QuotaExceededError } from "./quota";
 import { isSafeEventId, loadState, stateMtimeMs } from "./repo";
 import { getJob, RunLimitError, startForecast } from "./run-manager";
 import { renderText } from "./render-text";
@@ -49,15 +51,29 @@ export function buildMcpServer(config: ServiceConfig, baseUrl: string): McpServe
       inputSchema: {
         question: z.string().trim().min(8).max(400).describe("The event question, ideally with a deadline and a clear yes/no bar"),
         max_rounds: z.number().int().min(1).max(6).optional().describe("Research rounds (default 3; more = deeper + slower)"),
-        fresh: z.boolean().optional().describe("Discard any earlier run of the same question and start over")
+        fresh: z.boolean().optional().describe("Discard any earlier run of the same question and start over"),
+        invite_code: z.string().optional().describe("Invite code — required only after the service's daily free quota is used up")
       }
     },
-    async ({ question, max_rounds, fresh }) => {
+    async ({ question, max_rounds, fresh, invite_code }) => {
+      const inviteOk = Boolean(invite_code?.trim()) && tokenEquals(invite_code!.trim(), config.inviteCode);
       let job;
       try {
-        job = startForecast(question, { maxRounds: max_rounds, fresh, maxConcurrent: config.maxConcurrentRuns });
+        job = startForecast(question, {
+          maxRounds: max_rounds,
+          fresh,
+          maxConcurrent: config.maxConcurrentRuns,
+          quota: { service: "forecast-api", limit: config.dailyQuota, bypass: inviteOk }
+        });
       } catch (error) {
         if (error instanceof RunLimitError) return errorContent(error.message + " Retry in a few minutes.");
+        if (error instanceof QuotaExceededError) {
+          return errorContent(
+            invite_code && !inviteOk
+              ? "invite code not recognized — check it and call forecast_start again."
+              : error.message + " Call forecast_start again with the invite_code argument."
+          );
+        }
         throw error;
       }
       return jsonContent({

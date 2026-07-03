@@ -14,11 +14,12 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { z } from "zod";
 import { buildAnswer, verdictFor, pct } from "./answer";
-import { isAuthorized } from "./auth";
+import { isAuthorized, tokenEquals } from "./auth";
 import type { ServiceConfig } from "./config";
 import { log } from "./log";
 import { handleMcpRequest } from "./mcp";
 import { ensurePdf } from "./pdf";
+import { QuotaExceededError } from "./quota";
 import { renderHtml } from "./render-html";
 import { renderText } from "./render-text";
 import { isSafeEventId, listStates, loadState, stateMtimeMs } from "./repo";
@@ -31,7 +32,8 @@ const StartBody = z.object({
   maxRounds: z.number().int().min(1).max(6).optional(),
   fresh: z.boolean().optional(),
   provider: z.enum(["claude", "deepseek"]).optional(),
-  wait: z.boolean().optional()
+  wait: z.boolean().optional(),
+  invite: z.string().optional()
 });
 
 function sendJson(res: ServerResponse, status: number, body: unknown): void {
@@ -102,13 +104,31 @@ async function handleStart(
     });
     return;
   }
-  const { question, maxRounds, fresh, provider, wait } = parsed.data;
+  const { question, maxRounds, fresh, provider, wait, invite } = parsed.data;
+  const headerInvite = req.headers["x-invite-code"];
+  // Prefer a non-empty body field, else the header — an empty body value must
+  // not mask a valid header.
+  const presentedInvite = invite?.trim() || (typeof headerInvite === "string" ? headerInvite.trim() : "");
+  const inviteOk = presentedInvite !== "" && tokenEquals(presentedInvite, config.inviteCode);
   let job;
   try {
-    job = startForecast(question, { maxRounds, fresh, provider, maxConcurrent: config.maxConcurrentRuns });
+    job = startForecast(question, {
+      maxRounds,
+      fresh,
+      provider,
+      maxConcurrent: config.maxConcurrentRuns,
+      quota: { service: "forecast-api", limit: config.dailyQuota, bypass: inviteOk }
+    });
   } catch (error) {
     if (error instanceof RunLimitError) {
       sendJson(res, 429, { error: error.message });
+      return;
+    }
+    if (error instanceof QuotaExceededError) {
+      sendJson(res, 429, {
+        error: presentedInvite && !inviteOk ? "invite code not recognized — check it and try again" : error.message,
+        hint: 'resend with the invite code: header "x-invite-code: <code>" or "invite" in the JSON body'
+      });
       return;
     }
     throw error;

@@ -55,6 +55,8 @@ claude mcp add --transport http raven-forecast http://<server-ip>:8787/mcp \
 
 Rate limiting: `FORECAST_API_MAX_CONCURRENT` parallel runs (default 2), 429 beyond that. PDFs are rendered by headless Chromium inside the container and cached in the event dir (`answer.pdf`).
 
+**Daily quota + invite code:** the web app and the API **each** get at most `FORECAST_DAILY_QUOTA` (default 20) engine runs per UTC day — only actual run starts count; polling and result reads are free. Beyond that a request must carry the invite code (`FORECAST_INVITE_CODE`, default `raven-labs`): web — an input appears under the ask bar (remembered in localStorage); API — `x-invite-code: <code>` header or an `"invite"` body field; MCP — the `invite_code` argument of `forecast_start`. Counters live in `runtime-artifacts/quota/` and survive restarts.
+
 **Public exposure:** the repo compose binds `127.0.0.1:8787` only. To serve externally, add a server-side `docker-compose.override.yml` re-binding the port publicly (`ports: !override ["8787:8787"]`) plus a cloud firewall rule for 8787; once you have a domain, prefer a Caddy reverse proxy (see the `Caddyfile.example` pattern). ⚠️ Until TLS is set up the token travels over plaintext HTTP — share it only with callers you trust, rotate on leak.
 
 ## Cost & security

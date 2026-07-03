@@ -6,6 +6,7 @@
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { QuotaExceededError, tryConsumeQuota } from "./quota";
 import { eventDir, loadState, makeEventId, readEnvFile, repoRoot } from "./repo";
 
 export type JobStatus = "running" | "done" | "error" | "unforecastable";
@@ -73,6 +74,10 @@ export interface StartOptions {
   fresh?: boolean;
   provider?: string;
   maxConcurrent?: number;
+  // Daily-quota gate: consumed only on an actual spawn (reattach/idempotent
+  // paths are free); bypass=true (a valid invite code) skips both check and
+  // consumption.
+  quota?: { service: string; limit: number; bypass: boolean };
 }
 
 // An "open" state (or spawn lock) whose file changed recently means an engine
@@ -129,6 +134,11 @@ export function startForecast(question: string, opts: StartOptions = {}): Job {
 
   if (opts.maxConcurrent && runningJobCount() >= opts.maxConcurrent) {
     throw new RunLimitError(opts.maxConcurrent);
+  }
+  // Last gate before money is spent — after every no-spawn shortcut above, so
+  // a 429 for concurrency never burns a quota unit.
+  if (opts.quota && !opts.quota.bypass && !tryConsumeQuota(opts.quota.service, opts.quota.limit)) {
+    throw new QuotaExceededError(opts.quota.limit);
   }
 
   const provider = pickProvider(opts.provider);

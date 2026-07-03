@@ -5,6 +5,7 @@
 
 import { spawn } from "node:child_process";
 import path from "node:path";
+import { QuotaExceededError, tryConsumeQuota } from "./quota";
 import { loadState, makeEventId, readEnvFile, repoRoot } from "./repo";
 
 export type JobStatus = "running" | "done" | "error" | "unforecastable";
@@ -66,6 +67,9 @@ export interface StartOptions {
   maxRounds?: number;
   fresh?: boolean;
   provider?: string;
+  // Daily-quota gate: consumed only on an actual spawn (reattach paths are
+  // free); bypass=true (a valid invite code) skips both check and consumption.
+  quota?: { service: string; limit: number; bypass: boolean };
 }
 
 // An "open" state whose file changed recently means an engine process is (very
@@ -95,6 +99,11 @@ export function startForecast(question: string, opts: StartOptions = {}): Job {
       maxRounds: opts.maxRounds && Number.isFinite(opts.maxRounds) ? opts.maxRounds : 3,
       provider: (onDisk as { provider?: string }).provider ?? pickProvider(opts.provider)
     };
+  }
+
+  // Last gate before money is spent — after every no-spawn shortcut above.
+  if (opts.quota && !opts.quota.bypass && !tryConsumeQuota(opts.quota.service, opts.quota.limit)) {
+    throw new QuotaExceededError(opts.quota.limit);
   }
 
   const provider = pickProvider(opts.provider);

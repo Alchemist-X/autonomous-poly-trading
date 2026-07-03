@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { listRuns } from "../../../lib/server/dossier";
+import { dailyQuotaLimit, inviteCodeOk, QuotaExceededError } from "../../../lib/server/quota";
 import { pickProvider, providerKeyAvailable, startForecast } from "../../../lib/server/run-manager";
 
 export const runtime = "nodejs";
@@ -19,7 +20,8 @@ const CreateSchema = z.object({
   question: z.string().trim().min(8, "question too short").max(400, "question too long"),
   maxRounds: z.number().int().min(1).max(6).optional(),
   fresh: z.boolean().optional(),
-  provider: z.enum(["claude", "deepseek"]).optional()
+  provider: z.enum(["claude", "deepseek"]).optional(),
+  invite: z.string().optional()
 });
 
 export async function POST(req: Request) {
@@ -38,14 +40,26 @@ export async function POST(req: Request) {
     const missing = provider === "deepseek" ? "DEEPSEEK_API_KEY" : "ANTHROPIC_API_KEY";
     return NextResponse.json({ error: `server is missing ${missing} for provider "${provider}"` }, { status: 500 });
   }
+  const invite = parsed.data.invite?.trim() ?? "";
+  const inviteOk = inviteCodeOk(invite);
   try {
     const job = startForecast(parsed.data.question, {
       maxRounds: parsed.data.maxRounds,
       fresh: parsed.data.fresh,
-      provider
+      provider,
+      quota: { service: "raven-web", limit: dailyQuotaLimit(), bypass: inviteOk }
     });
     return NextResponse.json({ eventId: job.eventId, status: job.status, provider: job.provider });
   } catch (error) {
+    if (error instanceof QuotaExceededError) {
+      return NextResponse.json(
+        {
+          error: "quota_exceeded",
+          message: invite && !inviteOk ? "invite code not recognized — check it and try again" : error.message
+        },
+        { status: 429 }
+      );
+    }
     console.error("starting forecast failed:", error);
     return NextResponse.json({ error: "failed to start forecast" }, { status: 500 });
   }

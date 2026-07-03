@@ -91,6 +91,19 @@ export default function HomePage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [latest, setLatest] = useState<LatestCard>(DEMO_CARD);
   const [liveRuns, setLiveRuns] = useState<LiveRun[]>([]);
+  // Daily-quota gate: revealed only when the server answers 429 quota_exceeded;
+  // an accepted code is remembered so tomorrow's visits keep working.
+  const [inviteNeeded, setInviteNeeded] = useState(false);
+  const [invite, setInvite] = useState("");
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("raven-invite");
+      if (saved) setInvite(saved);
+    } catch {
+      // storage blocked (e.g. "block all cookies") — the input still works
+    }
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -129,14 +142,32 @@ export default function HomePage() {
     setSubmitting(true);
     setSubmitError(null);
     try {
+      const inviteCode = invite.trim();
       const res = await fetch("/api/forecasts", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question })
+        body: JSON.stringify({ question, ...(inviteCode ? { invite: inviteCode } : {}) })
       });
-      const body = (await res.json().catch(() => null)) as { eventId?: string; error?: string } | null;
+      const body = (await res.json().catch(() => null)) as {
+        eventId?: string;
+        error?: string;
+        message?: string;
+      } | null;
+      if (res.status === 429 && body?.error === "quota_exceeded") {
+        setInviteNeeded(true);
+        throw new Error(body.message ?? "daily free quota reached — enter an invite code to continue");
+      }
       if (!res.ok || !body?.eventId) {
         throw new Error(body?.error ?? `request failed (${res.status})`);
+      }
+      // Persist only a code that actually unlocked a gated request — saving
+      // unvalidated input would pre-fill garbage on later visits.
+      if (inviteCode && inviteNeeded) {
+        try {
+          window.localStorage.setItem("raven-invite", inviteCode);
+        } catch {
+          // storage blocked — the run still starts
+        }
       }
       router.push(`/forecast/${body.eventId}/research`);
     } catch (err) {
@@ -293,6 +324,57 @@ export default function HomePage() {
             }}
           >
             {submitError}
+          </div>
+        ) : null}
+        {inviteNeeded ? (
+          <div
+            style={{
+              position: "relative",
+              width: "min(720px,92vw)",
+              marginTop: 10,
+              display: "flex",
+              gap: 10,
+              alignItems: "center",
+              flexWrap: "wrap",
+              background: "var(--surface)",
+              border: "1px solid var(--line2)",
+              borderRadius: 10,
+              padding: "10px 14px"
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--fm)",
+                fontSize: 10.5,
+                letterSpacing: ".06em",
+                textTransform: "uppercase",
+                color: "var(--muted)"
+              }}
+            >
+              Invite code
+            </span>
+            <input
+              value={invite}
+              onChange={(e) => setInvite(e.target.value)}
+              placeholder="e.g. raven-…"
+              aria-label="Invite code"
+              autoComplete="off"
+              style={{
+                flex: 1,
+                minWidth: 140,
+                background: "none",
+                border: "none",
+                outline: "none",
+                color: "var(--text)",
+                fontFamily: "var(--fm)",
+                fontSize: 13,
+                padding: "6px 0",
+                letterSpacing: ".04em"
+              }}
+            />
+            <span style={{ fontFamily: "var(--fm)", fontSize: 10, color: "var(--faint)", letterSpacing: ".03em" }}>
+              then press “Forecast it” again
+            </span>
           </div>
         ) : null}
 
