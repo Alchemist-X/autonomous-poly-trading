@@ -38,6 +38,23 @@ services:
     # share this cgroup; 4g keeps two concurrent runs + one render safe.
     mem_limit: 4g
 
+  # Autonomous PAPER trading agent (simulated fills only — no keys, no signer,
+  # no order endpoints). Evaluates positions 3×/day through isolated DeepSeek/
+  # Kimi engine runs; shares the artifacts volume so its forecast dossiers are
+  # also visible in the raven app.
+  paper-agent:
+    image: raven-suite
+    depends_on:
+      - raven
+    restart: unless-stopped
+    command: ["pnpm", "--filter", "@autopoly/paper-agent", "start"]
+    env_file: .env
+    volumes:
+      - raven-artifacts:/app/runtime-artifacts
+      # claude CLI state — the evaluator can run the claude provider too.
+      - claude-config:/root/.claude
+    mem_limit: 2g
+
 volumes:
   raven-artifacts:
   claude-config:

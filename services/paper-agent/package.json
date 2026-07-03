@@ -1,0 +1,19 @@
+{
+  "name": "@autopoly/paper-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Autonomous PAPER-ONLY Polymarket agent: fee-accounted simulated fills, scheduled position re-evaluation through an isolated LLM forecaster, hybrid limit+market exits, and a self-reflection ledger. Never places real orders.",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "paper": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "tsx": "4.20.6"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

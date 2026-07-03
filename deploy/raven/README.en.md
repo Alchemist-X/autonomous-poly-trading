@@ -67,6 +67,27 @@ docker exec raven-forecast-api-1 pnpm --filter @autopoly/forecast-api invite rev
 
 **Public exposure:** the repo compose binds `127.0.0.1:8787` only. To serve externally, add a server-side `docker-compose.override.yml` re-binding the port publicly (`ports: !override ["8787:8787"]`) plus a cloud firewall rule for 8787; once you have a domain, prefer a Caddy reverse proxy (see the `Caddyfile.example` pattern). ⚠️ Until TLS is set up the token travels over plaintext HTTP — share it only with callers you trust, rotate on leak.
 
+## Paper Trading Agent (third service, simulation only)
+
+The `paper-agent` service is a fully autonomous, **simulation-only** Polymarket agent: no keys, no signer, no order endpoint exists in its code — it only reads public market data (Gamma / CLOB books) and simulates fills against the live book with fee accounting (the repo's calibrated category fee model).
+
+**Logic (phase 1):**
+1. Three times a day (`PAPER_EVAL_TIMES_UTC`, default UTC 00:10/08:10/16:10) every position is re-assessed by an **isolated process** running the DeepSeek (or Kimi) iterative forecast engine — the prompt carries only the market question and resolution criteria, **never our position, entry price, or the market price** — producing an independent probability. **Web research is ON by default for evaluations** (a function-calling tool loop with a keyless DuckDuckGo backend; set `TAVILY_API_KEY` to upgrade reliability, `FORECAST_WEB_SEARCH=0` to disable); citations are verified against the real search trace;
+2. The harness compares belief vs executable price: **net edge of holding (exit fees in) < threshold → close**; the stop-loss (default −35%) outranks the model view;
+3. Exits use the **hybrid strategy**: 50% market (taker fee) + 50% resting limit (maker-free, TTL falls back to market); stop-loss is the exception — 100% market;
+4. After the last daily cycle a **reflection report** is written (`runtime-artifacts/paper-agent/reports/`): per-exit sell-vs-hold counterfactual, Brier calibration, fee drag, and limit-vs-market execution quality.
+
+Commands (prefix with `sudo docker exec raven-paper-agent-1` on the VM):
+
+```bash
+pnpm --filter @autopoly/paper-agent paper status
+pnpm --filter @autopoly/paper-agent paper buy -- <slug> YES 50
+pnpm --filter @autopoly/paper-agent paper cycle
+pnpm --filter @autopoly/paper-agent paper reflect
+```
+
+Optional auto-entries: list market slugs (one per line) in the file `PAPER_WATCHLIST` points at; fee-adjusted edge ≥ `PAPER_ENTRY_EDGE_PP` (default 8pp) triggers a simulated market entry. The book lives in `runtime-artifacts/paper-agent/` (portfolio.json + ledger.jsonl); evaluation dossiers are shared with the raven web app.
+
 ## Cost & security
 
 - Subscription mode consumes your plan's usage window (no extra bill); a web-research run takes minutes. **The OAuth token acts as your account — keep it on trusted servers only.**
