@@ -11,12 +11,15 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-03 by Claude（**仓库复杂度三阶段重构计划 + Stage 1 全量执行 + 合并 PR #65/#67**，分支 `claude/determined-murdock-1b1027`）。
+> 最后更新：2026-07-03 by Claude（**仓库复杂度三阶段重构计划 + Stage 1 全量执行 + 合并 PR #65/#67/#61**，分支 `claude/determined-murdock-1b1027`）。
 > 用户反馈"整仓复杂度太大"→ 10 路并行诊断（~84k 行）→ 计划落盘 [`docs/internal/plan/2026-07-03-repo-complexity-refactor-3stage.md`](internal/plan/2026-07-03-repo-complexity-refactor-3stage.md)（三阶段 + 8 项用户拍板决策全记录）→ **Stage 1 已完成**：
 > ① **门禁**：首个真 CI `.github/workflows/ci.yml`（build/typecheck/test；**依赖 PR #61 先合否则 provider-runtime 3 个 vendor 测试红**）；`scripts/tsconfig.json` + `pnpm typecheck:scripts`——scripts 1.26 万行首次有 tsc 检查（存量基线 14 错，CI 非阻塞，**`live-test.ts:125` `Cannot find name 'db'` 疑似真 bug**，Stage 2 清零后转阻塞）；三语 i18n key 一致性 vitest。
 > ② **删除 ~1.5 万行**（每项 grep 留证）：web lib/research 孤儿簇 2446 + public-run-pulse 757 + market-impact 1333 + globals.css 1519 + 生成 JSON 1.2MB；sports-model 7 零引用模块 + eval runner 2103；orchestrator raven-agent-loop 1004；position-monitor / forecast viewer / generate-wallet-envs / v2-smoke / e2e 整目录（workspace 死条目一并清）/ deploy/hostinger；executor okx `.js` shim；managed-trading clob-client v1 依赖。**用户决定保留**：raven-managed+managed-trading 线（待未来开发）、/api/prediction-engine/run + auth 链。
 > ③ **减构建**：apps/web prebuild 3 包→1 包（只剩 db），新 worktree 上手变快。④ **对齐**：AGENTS.md 与 CLAUDE.md 逐字节同步（原盲测政策/构建命令两处漂移已消）；settings.local.json 移出 git；dev-reference.md 仓库树重写（原为 autonomous-poly-trading 时代幽灵树）；world-cup 4 个一次性脚本入 archive/。
-> 验收：`pnpm -r build` 全绿（web 331 页）、`pnpm -r typecheck` 绿、`pnpm test` 759/762（3 失败=PR #61 既有 vendor 问题）、8 张桌面/移动截图 0 pageerror。**Stage 2 kickoff（同分支后续）**：修 live-test `db` 真 bug（门禁 14→13）、openclaw 命令模板三处→一常量、命名冻结策略入文档。**合并动作（2026-07-03，用户指令"先合 65/67"）**：#65（forecast-api）+ #67（paper-agent）已解冲突验证后合入 main（都用 merge commit 保 #67 栈序；apps/raven 的 invite/quota × language 冲突取并集，均 build/typecheck/test 绿）。**下一步**：#61 需 rebase（自身已与 main 冲突）；本分支 #68 Stage 2/3 续做。英文版 handoff 此条待同步翻译。
+> 验收：`pnpm -r build` 全绿（web 331 页）、`pnpm -r typecheck` 绿、`pnpm test` 759/762（3 失败=PR #61 既有 vendor 问题）、8 张桌面/移动截图 0 pageerror。**Stage 2 kickoff（同分支后续）**：修 live-test `db` 真 bug（门禁 14→13）、openclaw 命令模板三处→一常量、命名冻结策略入文档。**合并动作（2026-07-03，用户指令"先合 65/67"）**：#65（forecast-api）+ #67（paper-agent）已解冲突验证后合入 main（都用 merge commit 保 #67 栈序；apps/raven 的 invite/quota × language 冲突取并集，均 build/typecheck/test 绿）。**下一步**：#61（provider-runtime 测试 hermetic 化）已合入 main → **主干 CI 转绿（954/954）**；本分支 #68 待合 + Stage 2/3 续做。英文版 handoff 此条待同步翻译。
+>
+> 最后更新：2026-07-02 by Claude（**修复 main 上 3 个 provider-runtime 测试失败**，分支 `claude/jovial-swanson-f6d92f`，即上一条 spawn 的 task）。
+> 诊断：是**测试**漂移而非实现——`provider-runtime.test.ts` 把 `skillRootDir` 指向 `vendor/repos/all-polymarket-skill`（gitignored，只有跑过 `pnpm vendor:sync` 的机器才有），clean checkout 上 `resolveSkillDescriptors` 找不到 SKILL.md 直接抛错。实现侧校验是对的（live 路径需要 skill 文件真实存在），replay 唯一生产调用方 `trial-recommend.ts` 也总在已 sync 的机器上跑。修法：测试改为在各自 temp dir 里搭 5 个 stub skill 目录（zh 命名规则同 `skillDirectoryName`）+ SKILL.md，彻底不依赖 vendor 状态。验证：该文件 4/4、全量 vitest 884/884、orchestrator tsc 绿。英文版 handoff 此条待同步翻译。
 >
 > 最后更新：2026-07-03 by Claude（**全自主 Polymarket 纸面交易 agent 第一期上线 VPS**，分支 `feat/paper-polymarket-agent`，PR #67，栈在 #65 上）。
 > 用户指令：VPS 上部署全自主 Polymarket agent，第一期纯测试盘——记手续费模拟成交、每日 3 次重点评估持仓（DeepSeek/Kimi 独立进程隔离出概率）、概率与市价有差值就平仓、混合 50/50（限价+市价）对冲手续费摩擦、要有回测/反思。
