@@ -59,6 +59,10 @@ export type AgentDecisionStrategy = (typeof agentDecisionStrategies)[number];
 export const skillLocales = ["en", "zh"] as const;
 export type SkillLocale = (typeof skillLocales)[number];
 
+export function isChineseLocale(locale: SkillLocale): boolean {
+  return locale === "zh";
+}
+
 export const pulseSourceRepos = ["all-polymarket-skill", "polymarket-market-pulse"] as const;
 export type PulseSourceRepo = (typeof pulseSourceRepos)[number];
 export const pulseTimeoutModes = ["default", "unbounded"] as const;

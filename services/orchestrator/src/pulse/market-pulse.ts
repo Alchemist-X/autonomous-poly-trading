@@ -4,6 +4,7 @@ import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import type { RunMode } from "@autopoly/contracts";
+import { isChineseLocale } from "../config.js";
 import type { AgentRuntimeProvider, OrchestratorConfig, SkillLocale } from "../config.js";
 import { buildArtifactRelativePath } from "../lib/artifacts.js";
 import type { ProgressReporter } from "../lib/terminal-progress.js";
@@ -159,10 +160,6 @@ export interface PulseSnapshot {
   candidates: PulseCandidate[];
   riskFlags: string[];
   tradeable: boolean;
-}
-
-function isChineseLocale(locale: SkillLocale): boolean {
-  return locale === "zh";
 }
 
 function toPulseTag(tag: NonNullable<RawPulseMarket["tags"]>[number]): PulseTag | null {
