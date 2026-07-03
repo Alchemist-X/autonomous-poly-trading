@@ -6,6 +6,7 @@
 
 import { spawn } from "node:child_process";
 import path from "node:path";
+import { QuotaExceededError, tryConsumeQuota } from "./quota";
 import { loadState, makeEventId, readEnvFile, repoRoot } from "./repo";
 
 export type JobStatus = "running" | "done" | "error" | "unforecastable";
@@ -70,6 +71,11 @@ export interface StartOptions {
   maxRounds?: number;
   fresh?: boolean;
   provider?: string;
+  // Daily-quota gate: consumed only on an actual spawn (reattach paths are
+  // free). authorizeBypass is called lazily — only when the free quota is
+  // exhausted — so an invite code is validated AND metered exactly when it
+  // unlocks a run, never while free quota remains.
+  quota?: { service: string; limit: number; authorizeBypass?: () => boolean };
   language?: "en" | "zh";
 }
 
@@ -100,6 +106,13 @@ export function startForecast(question: string, opts: StartOptions = {}): Job {
       maxRounds: opts.maxRounds && Number.isFinite(opts.maxRounds) ? opts.maxRounds : 3,
       provider: (onDisk as { provider?: string }).provider ?? pickProvider(opts.provider)
     };
+  }
+
+  // Last gate before money is spent — after every no-spawn shortcut above.
+  if (opts.quota && !tryConsumeQuota(opts.quota.service, opts.quota.limit)) {
+    if (!(opts.quota.authorizeBypass?.() ?? false)) {
+      throw new QuotaExceededError(opts.quota.limit);
+    }
   }
 
   const provider = pickProvider(opts.provider);
