@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,7 +24,30 @@ describe("provider runtime defaults", () => {
   });
 });
 
-function createConfig(repoRoot: string, artifactStorageRoot: string): OrchestratorConfig {
+// resolveProviderSkillSettings requires every skill's SKILL.md to exist on disk,
+// and the real vendor/repos mirrors are gitignored (populated only by `pnpm vendor:sync`),
+// so tests build a stub skill root instead of depending on synced vendor state.
+const SKILL_DIR_NAMES = [
+  "polymarket-market-pulse-zh",
+  "portfolio-review-polymarket-zh",
+  "poly-position-monitor-zh",
+  "poly-resolution-tracking-zh",
+  "api-trade-polymarket"
+];
+
+async function createSkillRoot(tempDir: string): Promise<string> {
+  const skillRootDir = path.join(tempDir, "skills");
+  await Promise.all(
+    SKILL_DIR_NAMES.map(async (dirName) => {
+      const skillDir = path.join(skillRootDir, dirName);
+      await mkdir(skillDir, { recursive: true });
+      await writeFile(path.join(skillDir, "SKILL.md"), `# ${dirName}\n`, "utf8");
+    })
+  );
+  return skillRootDir;
+}
+
+function createConfig(repoRoot: string, artifactStorageRoot: string, skillRootDir: string): OrchestratorConfig {
   return {
     repoRoot,
     port: 4001,
@@ -53,7 +76,7 @@ function createConfig(repoRoot: string, artifactStorageRoot: string): Orchestrat
     pulseAiPrescreen: false,
     pulse: {
       sourceRepo: "all-polymarket-skill",
-      sourceRepoDir: path.join(repoRoot, "vendor", "repos", "all-polymarket-skill"),
+      sourceRepoDir: skillRootDir,
       pages: 5,
       eventsPerPage: 50,
       minFetchedMarkets: 5000,
@@ -75,14 +98,14 @@ function createConfig(repoRoot: string, artifactStorageRoot: string): Orchestrat
       codex: {
         command: "",
         model: "",
-        skillRootDir: path.join(repoRoot, "vendor", "repos", "all-polymarket-skill"),
+        skillRootDir,
         skillLocale: "zh",
         skills: "polymarket-market-pulse,portfolio-review-polymarket,poly-position-monitor,poly-resolution-tracking,api-trade-polymarket"
       },
       openclaw: {
         command: "",
         model: "",
-        skillRootDir: path.join(repoRoot, "vendor", "repos", "all-polymarket-skill"),
+        skillRootDir,
         skillLocale: "zh",
         skills: "polymarket-market-pulse"
       }
@@ -203,13 +226,14 @@ describe("provider runtime", () => {
   it("replays supported wrapper-key outputs and normalizes local source paths", async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), "provider-runtime-test-"));
     try {
+      const skillRootDir = await createSkillRoot(tempDir);
       const outputPath = path.join(tempDir, "provider-output.json");
       await writeFile(outputPath, JSON.stringify({
         result: createReplayDecisionSet(REPO_ROOT)
       }), "utf8");
 
       const result = await resumeRuntimeExecutionFromOutputFile({
-        config: createConfig(REPO_ROOT, tempDir),
+        config: createConfig(REPO_ROOT, tempDir, skillRootDir),
         provider: "codex",
         context: createContext(tempDir),
         outputPath
@@ -227,6 +251,7 @@ describe("provider runtime", () => {
   it("rejects empty decisions when pulse candidates exist", async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), "provider-runtime-empty-test-"));
     try {
+      const skillRootDir = await createSkillRoot(tempDir);
       const outputPath = path.join(tempDir, "provider-output.json");
       await writeFile(outputPath, JSON.stringify({
         ...createReplayDecisionSet(REPO_ROOT),
@@ -235,7 +260,7 @@ describe("provider runtime", () => {
 
       await expect(() =>
         resumeRuntimeExecutionFromOutputFile({
-          config: createConfig(REPO_ROOT, tempDir),
+          config: createConfig(REPO_ROOT, tempDir, skillRootDir),
           provider: "codex",
           context: createContext(tempDir, {
             candidates: [createPulseCandidate()]
@@ -251,6 +276,7 @@ describe("provider runtime", () => {
   it("surfaces actionable wrapper-key validation failures during replay", async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), "provider-runtime-invalid-test-"));
     try {
+      const skillRootDir = await createSkillRoot(tempDir);
       const outputPath = path.join(tempDir, "provider-output.json");
       await writeFile(outputPath, JSON.stringify({
         result: {
@@ -261,7 +287,7 @@ describe("provider runtime", () => {
       }), "utf8");
 
       const error = await resumeRuntimeExecutionFromOutputFile({
-        config: createConfig(REPO_ROOT, tempDir),
+        config: createConfig(REPO_ROOT, tempDir, skillRootDir),
         provider: "codex",
         context: createContext(tempDir),
         outputPath

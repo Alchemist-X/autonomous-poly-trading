@@ -11,6 +11,9 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-07-02 by Claude（**修复 main 上 3 个 provider-runtime 测试失败**，分支 `claude/jovial-swanson-f6d92f`，即上一条 spawn 的 task）。
+> 诊断：是**测试**漂移而非实现——`provider-runtime.test.ts` 把 `skillRootDir` 指向 `vendor/repos/all-polymarket-skill`（gitignored，只有跑过 `pnpm vendor:sync` 的机器才有），clean checkout 上 `resolveSkillDescriptors` 找不到 SKILL.md 直接抛错。实现侧校验是对的（live 路径需要 skill 文件真实存在），replay 唯一生产调用方 `trial-recommend.ts` 也总在已 sync 的机器上跑。修法：测试改为在各自 temp dir 里搭 5 个 stub skill 目录（zh 命名规则同 `skillDirectoryName`）+ SKILL.md，彻底不依赖 vendor 状态。验证：该文件 4/4、全量 vitest 884/884、orchestrator tsc 绿。英文版 handoff 此条待同步翻译。
+>
 > 最后更新：2026-07-03 by Claude（**全自主 Polymarket 纸面交易 agent 第一期上线 VPS**，分支 `feat/paper-polymarket-agent`，PR #67，栈在 #65 上）。
 > 用户指令：VPS 上部署全自主 Polymarket agent，第一期纯测试盘——记手续费模拟成交、每日 3 次重点评估持仓（DeepSeek/Kimi 独立进程隔离出概率）、概率与市价有差值就平仓、混合 50/50（限价+市价）对冲手续费摩擦、要有回测/反思。
 > ① **`services/paper-agent`**（第三个 compose 服务，共享镜像/卷；**零私钥零签名器零下单端点**，唯一网络面 = Gamma/CLOB 公开 GET）：模拟成交按真实盘口逐档 walk（真滑点）；**费率用 CLOB 逐市场实时元数据**（taker/maker bps + tick size，入场时存仓位、退出时刷新）；入场费计入成本基（现金与已实现 PnL 可对账）。
