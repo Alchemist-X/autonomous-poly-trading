@@ -37,7 +37,12 @@ export interface MatchResult {
   readonly source: "exact_score" | "moneyline" | "espn" | "verified" | null;
 }
 
-interface GammaMarket {
+// Settlement primitives below (Gamma types, parseJsonArray, isResolvedYes,
+// isDrawLeg, normTeam, nameMatchesKey) are the shared core reused by the
+// knockout reader (fifa8-results.ts). The two readers differ only in how they
+// LOCATE the event (group = slug-direct, knockout = team-name search) and how
+// they ORIENT a/b (group = home-first by slug position, knockout = by name).
+export interface GammaMarket {
   readonly question?: string;
   readonly groupItemTitle?: string;
   readonly outcomes?: string;
@@ -48,14 +53,14 @@ interface GammaMarket {
   readonly endDate?: string;
 }
 
-interface GammaEvent {
+export interface GammaEvent {
   readonly slug?: string;
   readonly title?: string;
   readonly closed?: boolean;
   readonly markets?: readonly GammaMarket[];
 }
 
-function parseJsonArray(raw: string | undefined): string[] {
+export function parseJsonArray(raw: string | undefined): string[] {
   if (!raw) return [];
   try {
     const parsed: unknown = JSON.parse(raw);
@@ -68,7 +73,7 @@ function parseJsonArray(raw: string | undefined): string[] {
 // A binary Yes/No market is "settled YES" when UMA has resolved it and the
 // first (Yes) leg paid out 1. We read outcomePrices ONLY as the settlement bit
 // (1 vs 0); the numeric value is never stored or surfaced.
-function isResolvedYes(m: GammaMarket): boolean {
+export function isResolvedYes(m: GammaMarket): boolean {
   if (m.umaResolutionStatus !== "resolved" || !m.closed) return false;
   const prices = parseJsonArray(m.outcomePrices);
   return prices.length > 0 && Math.round(Number(prices[0])) === 1;
@@ -125,19 +130,27 @@ function resultFromExactScore(slug: string, ev: GammaEvent): MatchResult | null 
   };
 }
 
-function isDrawLeg(m: GammaMarket): boolean {
+export function isDrawLeg(m: GammaMarket): boolean {
   return /^draw\b/i.test(m.groupItemTitle ?? "") || /end in a draw/i.test(m.question ?? "");
 }
 
 // Accent-/punctuation-insensitive team key; also drops the connector "and" so
 // "Bosnia and Herzegovina" == "Bosnia-Herzegovina".
-function normTeam(s: string): string {
+export function normTeam(s: string): string {
   return s
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
     .replace(/\band\b/g, "")
     .replace(/[^a-z0-9]/g, "");
+}
+
+// True when `name` (raw) matches a pre-normalized team `key`, tolerant of one
+// being a substring of the other (e.g. "korea" ⊂ "korearepublic").
+export function nameMatchesKey(name: string, key: string): boolean {
+  const x = normTeam(name);
+  if (!x || !key) return false;
+  return x === key || (x.length >= 3 && key.includes(x)) || (key.length >= 3 && x.includes(key));
 }
 
 // The draw leg names the fixture as "(Home vs. Away)" (home first, reliably) —
@@ -156,12 +169,8 @@ function orientationFromDraw(markets: readonly GammaMarket[]): { home: string; a
 function sideForTeam(wonTitle: string, home: string, away: string): Winner | null {
   const w = normTeam(wonTitle);
   if (!w) return null;
-  const hit = (name: string): boolean => {
-    const x = normTeam(name);
-    return x.length > 0 && (x === w || (x.length >= 3 && w.includes(x)) || (w.length >= 3 && x.includes(w)));
-  };
-  const onHome = hit(home);
-  const onAway = hit(away);
+  const onHome = nameMatchesKey(home, w);
+  const onAway = nameMatchesKey(away, w);
   if (onHome && !onAway) return "a";
   if (onAway && !onHome) return "b";
   return null;
