@@ -81,15 +81,24 @@ export function evaluationQuestion(market: MarketInfo): string {
   return market.question.trim();
 }
 
-export async function evaluateMarket(market: MarketInfo, roundsPerEval: number, timeoutMs = 15 * 60_000): Promise<Evaluation> {
+export interface EvaluateOptions {
+  roundsPerEval: number;
+  provider: "claude" | "deepseek";
+  timeoutMs?: number;
+}
+
+export async function evaluateMarket(market: MarketInfo, opts: EvaluateOptions): Promise<Evaluation> {
   const question = evaluationQuestion(market);
   const eventId = makeEventId(question);
   const root = repoRoot();
+  // Claude runs (framing + researched round + summary) take longer than the
+  // OpenAI-compatible path — give them more headroom before the SIGKILL.
+  const timeoutMs = opts.timeoutMs ?? (opts.provider === "claude" ? 25 * 60_000 : 15 * 60_000);
 
   // TOTAL-cap fix: allow `roundsPerEval` NEW rounds on top of what the
   // resumed dossier has already completed.
   const priorRounds = readState(eventId)?.round ?? 0;
-  const totalRounds = priorRounds + roundsPerEval;
+  const totalRounds = priorRounds + opts.roundsPerEval;
 
   const args = [path.join(root, "scripts/forecast/cli.ts"), question, "--max-rounds", String(totalRounds)];
   const resolution = market.description?.trim();
@@ -97,14 +106,14 @@ export async function evaluateMarket(market: MarketInfo, roundsPerEval: number, 
 
   const env: NodeJS.ProcessEnv = {
     ...process.env,
-    FORECAST_PROVIDER: "deepseek",
+    FORECAST_PROVIDER: opts.provider,
     FORECAST_MIN_ROUNDS: "1",
     ARTIFACT_STORAGE_ROOT: engineRoot()
   };
-  // Web research ON by default for evaluations (DeepSeek/Kimi function-calling
-  // loop; keyless DuckDuckGo backend unless TAVILY_API_KEY is set). Opt out
-  // with FORECAST_WEB_SEARCH=0.
-  if (!env.FORECAST_WEB_SEARCH) env.FORECAST_WEB_SEARCH = "1";
+  // For the OpenAI-compatible path, web research is ON by default (function-
+  // calling loop; keyless DuckDuckGo unless TAVILY_API_KEY). Opt out with
+  // FORECAST_WEB_SEARCH=0. The claude provider has native WebSearch.
+  if (opts.provider === "deepseek" && !env.FORECAST_WEB_SEARCH) env.FORECAST_WEB_SEARCH = "1";
   // Backfill the key from the repo-root .env.deepseek in local dev.
   const envFile = path.join(root, ".env.deepseek");
   if (!env.DEEPSEEK_API_KEY && existsSync(envFile)) {

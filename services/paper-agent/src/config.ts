@@ -29,6 +29,16 @@ export interface PaperConfig {
   maxEvalsPerCycle: number;
   // Engine rounds per evaluation (state resumes, so belief accumulates).
   evalMaxRounds: number;
+  // Which engine provider evaluates positions. "claude" = Claude Code CLI
+  // with native WebSearch (subscription quota); "deepseek" = OpenAI-compatible
+  // endpoint (DeepSeek/Kimi) with the function-calling research loop.
+  evalProvider: "claude" | "deepseek";
+  // Market universe: when set, each cycle auto-scans these Gamma tag
+  // categories for entry candidates (merged with the watchlist file).
+  categories: string[];
+  scanMinLiquidityUsd: number;
+  scanMinVolume24hUsd: number;
+  scanPerCategory: number;
 }
 
 function num(name: string, fallback: number, min = 0): number {
@@ -56,6 +66,14 @@ export function loadPaperConfig(env: NodeJS.ProcessEnv = process.env): PaperConf
     entryNotionalUsd: num("PAPER_ENTRY_NOTIONAL_USD", 50, 1),
     maxPositions: num("PAPER_MAX_POSITIONS", 10, 1),
     maxEvalsPerCycle: num("PAPER_MAX_EVALS_PER_CYCLE", 12, 1),
-    evalMaxRounds: num("PAPER_EVAL_MAX_ROUNDS", 1, 1)
+    evalMaxRounds: num("PAPER_EVAL_MAX_ROUNDS", 1, 1),
+    evalProvider: env.PAPER_EVAL_PROVIDER?.trim() === "deepseek" ? "deepseek" : "claude",
+    categories: (env.PAPER_CATEGORIES ?? "")
+      .split(",")
+      .map((c) => c.trim().toLowerCase())
+      .filter(Boolean),
+    scanMinLiquidityUsd: num("PAPER_SCAN_MIN_LIQUIDITY_USD", 5000, 0),
+    scanMinVolume24hUsd: num("PAPER_SCAN_MIN_VOLUME24H_USD", 10000, 0),
+    scanPerCategory: num("PAPER_SCAN_PER_CATEGORY", 8, 1)
   };
 }

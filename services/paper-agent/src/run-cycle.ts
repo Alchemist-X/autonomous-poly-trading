@@ -18,6 +18,7 @@ import { limitSellFilled, simulateMarketBuy, simulateMarketSell } from "./book-s
 import type { PaperConfig } from "./config";
 import { evaluateMarket, isYesNoMarket, makeEventId, probForOutcome } from "./evaluator";
 import { fetchMarketFees, DEFAULT_FEES } from "./fees";
+import { scanMarkets, DEFAULT_SCAN_OPTIONS } from "./market-scan";
 import { log } from "./log";
 import {
   applyBuy,
@@ -180,7 +181,7 @@ export async function runEvaluationCycle(cfg: PaperConfig): Promise<void> {
         continue;
       }
       evals += 1;
-      const evaluation = await evaluateMarket(market, cfg.evalMaxRounds);
+      const evaluation = await evaluateMarket(market, { roundsPerEval: cfg.evalMaxRounds, provider: cfg.evalProvider });
       if (evaluation.unforecastable) {
         appendLedger({ type: "evaluation_unforecastable", positionId: posId, slug: pos.slug, forecastId: evaluation.forecastId });
         continue;
@@ -244,7 +245,7 @@ export async function runEvaluationCycle(cfg: PaperConfig): Promise<void> {
     }
   }
 
-  if (cfg.watchlistPath) {
+  if (cfg.watchlistPath || cfg.categories.length) {
     try {
       portfolio = await scanWatchlist(cfg, portfolio, evals);
     } catch (error) {
@@ -264,11 +265,31 @@ export async function runEvaluationCycle(cfg: PaperConfig): Promise<void> {
 // ---- Watchlist entries ---------------------------------------------------------
 
 async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: number): Promise<Portfolio> {
-  if (!cfg.watchlistPath || !existsSync(cfg.watchlistPath)) return portfolio;
-  const slugs = readFileSync(cfg.watchlistPath, "utf8")
-    .split("\n")
-    .map((l) => l.trim())
-    .filter((l) => l && !l.startsWith("#"));
+  const slugs: string[] = [];
+  if (cfg.watchlistPath && existsSync(cfg.watchlistPath)) {
+    for (const l of readFileSync(cfg.watchlistPath, "utf8").split("\n")) {
+      const t = l.trim();
+      if (t && !t.startsWith("#")) slugs.push(t);
+    }
+  }
+  // Auto-discovered universe: configured categories via Gamma tag scan
+  // (liquidity/volume gates mirror the repo's risk floors).
+  if (cfg.categories.length) {
+    const scanned = await scanMarkets(cfg.categories, {
+      ...DEFAULT_SCAN_OPTIONS,
+      minLiquidityUsd: cfg.scanMinLiquidityUsd,
+      minVolume24hUsd: cfg.scanMinVolume24hUsd,
+      perCategory: cfg.scanPerCategory
+    });
+    appendLedger({
+      type: "market_scan",
+      categories: cfg.categories,
+      found: scanned.length,
+      top: scanned.slice(0, 10).map((c) => `${c.category}:${c.slug}`)
+    });
+    for (const c of scanned) if (!slugs.includes(c.slug)) slugs.push(c.slug);
+  }
+  if (!slugs.length) return portfolio;
   let evals = evalsUsed;
   let next = portfolio;
 
@@ -284,7 +305,7 @@ async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: 
       const budget = cfg.entryNotionalUsd;
       if (next.cashUsd < budget) break;
       evals += 1;
-      const evaluation = await evaluateMarket(market, cfg.evalMaxRounds);
+      const evaluation = await evaluateMarket(market, { roundsPerEval: cfg.evalMaxRounds, provider: cfg.evalProvider });
       if (evaluation.unforecastable) continue;
       const yesBook = await fetchBook(market.tokenIds[0]!);
       const noBook = await fetchBook(market.tokenIds[1]!);
