@@ -1,8 +1,15 @@
 // The paper book: cash + open positions + resting exit limit orders.
 // Persisted atomically to portfolio.json; every mutation returns a new object
 // (no in-place state) and the caller persists + ledgers it.
+//
+// Accounting invariants (adversarial review 2026-07-03):
+// - Entry fees are part of the cost basis (entryFeePerShare survives partial
+//   sells), so realizedPnl reconciles with cash: cash − bankroll = realized
+//   for a fully-closed book.
+// - Voided markets refund at $0.50/share.
 
 import { loadPaperConfig } from "./config";
+import { DEFAULT_FEES, type MarketFeeParams } from "./fees";
 import { portfolioPath, readJson, writeJsonAtomic } from "./store";
 
 export interface RestingLimit {
@@ -20,19 +27,18 @@ export interface PaperPosition {
   slug: string;
   conditionId: string;
   question: string;
-  category: string;
-  negRisk: boolean;
   outcomeIndex: number;
   outcomeLabel: string;
   tokenId: string;
   shares: number;
   avgEntryPrice: number;
-  entryFeeUsd: number;
+  entryFeePerShare: number;
   openedAtUtc: string;
-  // Last evaluation snapshot (for the ledger/UI; decisions always re-derive).
+  // Live fee/tick params captured at entry, refreshed best-effort at exits.
+  fees: MarketFeeParams;
   lastEval?: {
     ts: string;
-    agentProb: number; // P(this outcome)
+    agentProb: number;
     mark: number | null;
     netEdgePp: number | null;
     decision: string;
@@ -52,7 +58,13 @@ export interface Portfolio {
 
 export function loadPortfolio(): Portfolio {
   const existing = readJson<Portfolio>(portfolioPath());
-  if (existing) return existing;
+  if (existing) {
+    return {
+      ...existing,
+      // Back-compat for books created before fee params lived on positions.
+      positions: existing.positions.map((p) => ({ ...p, fees: p.fees ?? DEFAULT_FEES, entryFeePerShare: p.entryFeePerShare ?? 0 }))
+    };
+  }
   const bankroll = loadPaperConfig().bankrollUsd;
   return {
     createdAtUtc: new Date().toISOString(),
@@ -78,19 +90,13 @@ export function findPosition(p: Portfolio, id: string): PaperPosition | null {
 }
 
 // Apply a (partial) sell fill: cash in proceeds minus fee, realize PnL on the
-// sold slice, shrink or drop the position.
-export function applySell(
-  p: Portfolio,
-  id: string,
-  shares: number,
-  avgPrice: number,
-  feeUsd: number
-): Portfolio {
+// sold slice (entry fee included in the basis), shrink or drop the position.
+export function applySell(p: Portfolio, id: string, shares: number, avgPrice: number, feeUsd: number): Portfolio {
   const pos = findPosition(p, id);
   if (!pos || shares <= 0) return p;
   const sold = Math.min(shares, pos.shares);
   const proceeds = sold * avgPrice - feeUsd;
-  const costBasis = sold * pos.avgEntryPrice;
+  const costBasis = sold * (pos.avgEntryPrice + pos.entryFeePerShare);
   const remaining = pos.shares - sold;
   return {
     ...p,
@@ -114,12 +120,15 @@ export function applyBuy(p: Portfolio, position: PaperPosition, notionalUsd: num
   };
 }
 
-// Settlement at resolution: winners redeem at $1 (no fee), losers at $0.
-export function applyResolution(p: Portfolio, id: string, won: boolean): Portfolio {
+export type SettlementKind = "won" | "lost" | "voided";
+
+// Settlement: winners redeem at $1, losers at $0, voided markets at $0.50.
+export function applySettlement(p: Portfolio, id: string, kind: SettlementKind): Portfolio {
   const pos = findPosition(p, id);
   if (!pos) return p;
-  const proceeds = won ? pos.shares : 0;
-  const costBasis = pos.shares * pos.avgEntryPrice;
+  const perShare = kind === "won" ? 1 : kind === "voided" ? 0.5 : 0;
+  const proceeds = pos.shares * perShare;
+  const costBasis = pos.shares * (pos.avgEntryPrice + pos.entryFeePerShare);
   return {
     ...p,
     cashUsd: p.cashUsd + proceeds,

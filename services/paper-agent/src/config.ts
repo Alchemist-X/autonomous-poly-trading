@@ -29,9 +29,6 @@ export interface PaperConfig {
   maxEvalsPerCycle: number;
   // Engine rounds per evaluation (state resumes, so belief accumulates).
   evalMaxRounds: number;
-  // Maker fills are assumed fee-free (Polymarket charges takers); override to
-  // model a maker fee as a fraction of the taker fee.
-  makerFeeFactor: number;
 }
 
 function num(name: string, fallback: number, min = 0): number {
@@ -59,7 +56,6 @@ export function loadPaperConfig(env: NodeJS.ProcessEnv = process.env): PaperConf
     entryNotionalUsd: num("PAPER_ENTRY_NOTIONAL_USD", 50, 1),
     maxPositions: num("PAPER_MAX_POSITIONS", 10, 1),
     maxEvalsPerCycle: num("PAPER_MAX_EVALS_PER_CYCLE", 12, 1),
-    evalMaxRounds: num("PAPER_EVAL_MAX_ROUNDS", 1, 1),
-    makerFeeFactor: num("PAPER_MAKER_FEE_FACTOR", 0)
+    evalMaxRounds: num("PAPER_EVAL_MAX_ROUNDS", 1, 1)
   };
 }

@@ -4,6 +4,15 @@
 // never our position, entry price, PnL, or the current market price. The
 // harness (this file's caller) is the only place beliefs meet prices.
 //
+// Isolation details (adversarial review 2026-07-03):
+// - Dossiers live in the paper agent's OWN namespace
+//   (<artifacts>/paper-agent/engine/forecasts/...), never shared with the
+//   raven app / forecast-api dossiers, so resumes can't inherit stale state
+//   from other surfaces and concurrent engine runs can't clobber each other.
+// - The engine's --max-rounds is a TOTAL cap; since evaluations RESUME the
+//   same dossier, each cycle passes (completed rounds + evalMaxRounds) so
+//   every evaluation actually researches fresh rounds instead of no-oping.
+//
 // Provider: DeepSeek by default; Kimi/Moonshot works through the same
 // OpenAI-compatible adapter (DEEPSEEK_BASE_URL=https://api.moonshot.cn/v1 +
 // FORECAST_DEEPSEEK_MODEL=<kimi model> + DEEPSEEK_API_KEY=<moonshot key>).
@@ -16,7 +25,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { log } from "./log";
 import type { MarketInfo } from "./polymarket";
-import { repoRoot } from "./store";
+import { paperRoot, repoRoot } from "./store";
 
 export interface Evaluation {
   forecastId: string;
@@ -24,6 +33,7 @@ export interface Evaluation {
   rounds: number;
   status: string;
   evidenceCount: number;
+  unforecastable: boolean;
 }
 
 // Mirror of scripts/forecast/store.ts makeEventId (same contract as the other
@@ -41,10 +51,13 @@ export function makeEventId(question: string): string {
   return `${slug || "event"}-${hash}`;
 }
 
-function forecastsRoot(): string {
-  return process.env.ARTIFACT_STORAGE_ROOT
-    ? path.join(process.env.ARTIFACT_STORAGE_ROOT, "forecasts")
-    : path.join(repoRoot(), "runtime-artifacts", "forecasts");
+// The paper agent's private engine artifact root (isolated dossier namespace).
+export function engineRoot(): string {
+  return path.join(paperRoot(), "engine");
+}
+
+function stateFileFor(eventId: string): string {
+  return path.join(engineRoot(), "forecasts", eventId, "state.json");
 }
 
 interface EngineState {
@@ -54,21 +67,40 @@ interface EngineState {
   evidenceLedger?: unknown[];
 }
 
-// The engine question is the market question verbatim; --resolution pins the
-// market's own resolution text so the frame can't drift from what settles.
+function readState(eventId: string): EngineState | null {
+  const file = stateFileFor(eventId);
+  if (!existsSync(file)) return null;
+  try {
+    return JSON.parse(readFileSync(file, "utf8")) as EngineState;
+  } catch {
+    return null;
+  }
+}
+
 export function evaluationQuestion(market: MarketInfo): string {
   return market.question.trim();
 }
 
-export async function evaluateMarket(market: MarketInfo, maxRounds: number, timeoutMs = 15 * 60_000): Promise<Evaluation> {
+export async function evaluateMarket(market: MarketInfo, roundsPerEval: number, timeoutMs = 15 * 60_000): Promise<Evaluation> {
   const question = evaluationQuestion(market);
   const eventId = makeEventId(question);
   const root = repoRoot();
-  const args = [path.join(root, "scripts/forecast/cli.ts"), question, "--max-rounds", String(maxRounds)];
+
+  // TOTAL-cap fix: allow `roundsPerEval` NEW rounds on top of what the
+  // resumed dossier has already completed.
+  const priorRounds = readState(eventId)?.round ?? 0;
+  const totalRounds = priorRounds + roundsPerEval;
+
+  const args = [path.join(root, "scripts/forecast/cli.ts"), question, "--max-rounds", String(totalRounds)];
   const resolution = market.description?.trim();
   if (resolution) args.push("--resolution", resolution.slice(0, 1500));
 
-  const env: NodeJS.ProcessEnv = { ...process.env, FORECAST_PROVIDER: "deepseek", FORECAST_MIN_ROUNDS: "1" };
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    FORECAST_PROVIDER: "deepseek",
+    FORECAST_MIN_ROUNDS: "1",
+    ARTIFACT_STORAGE_ROOT: engineRoot()
+  };
   // Backfill the key from the repo-root .env.deepseek in local dev.
   const envFile = path.join(root, ".env.deepseek");
   if (!env.DEEPSEEK_API_KEY && existsSync(envFile)) {
@@ -78,7 +110,7 @@ export async function evaluateMarket(market: MarketInfo, maxRounds: number, time
     }
   }
 
-  await new Promise<void>((resolve, reject) => {
+  const exitCode = await new Promise<number>((resolve, reject) => {
     const child = spawn(path.join(root, "node_modules/.bin/tsx"), args, { cwd: root, env });
     const killer = setTimeout(() => {
       child.kill("SIGKILL");
@@ -96,28 +128,37 @@ export async function evaluateMarket(market: MarketInfo, maxRounds: number, time
     });
     child.on("close", (code) => {
       clearTimeout(killer);
-      // exit 0 = done; exit 2 = unforecastable — surface both; others = error.
-      if (code === 0 || code === 2) resolve();
+      if (code === 0 || code === 2) resolve(code);
       else reject(new Error(`engine exited ${code} for ${eventId}: …${tail.slice(-300)}`));
     });
   });
 
-  const stateFile = path.join(forecastsRoot(), eventId, "state.json");
-  if (!existsSync(stateFile)) throw new Error(`engine produced no state for ${eventId} (unforecastable prompt?)`);
-  const state = JSON.parse(readFileSync(stateFile, "utf8")) as EngineState;
-  if (typeof state.currentProb !== "number") throw new Error(`state for ${eventId} has no probability`);
-  log.info(`evaluated ${market.slug} → P(YES)=${(state.currentProb * 100).toFixed(1)}% (round ${state.round ?? "?"})`);
+  if (exitCode === 2) {
+    // Framing judged the prompt unforecastable — surface it; the caller holds
+    // and ledgers rather than trading on a number that doesn't exist.
+    return { forecastId: eventId, probYes: NaN, rounds: 0, status: "unforecastable", evidenceCount: 0, unforecastable: true };
+  }
+
+  const state = readState(eventId);
+  if (!state || typeof state.currentProb !== "number") throw new Error(`engine produced no probability for ${eventId}`);
+  log.info(`evaluated ${market.slug} → P(YES)=${(state.currentProb * 100).toFixed(1)}% (rounds ${state.round ?? "?"}/${totalRounds})`);
   return {
     forecastId: eventId,
     probYes: state.currentProb,
     rounds: state.round ?? 0,
     status: state.status ?? "unknown",
-    evidenceCount: state.evidenceLedger?.length ?? 0
+    evidenceCount: state.evidenceLedger?.length ?? 0,
+    unforecastable: false
   };
 }
 
-// P(this outcome): YES-token holders use P(YES) directly; the other side is
-// the complement. (Binary markets only in phase 1 — guarded at entry.)
+// P(this outcome): index 0 is the market question's YES side; the other side
+// is the complement. Entry points guard that outcome labels are actually
+// Yes/No so this mapping cannot silently invert on exotic label pairs.
 export function probForOutcome(probYes: number, outcomeIndex: number): number {
   return outcomeIndex === 0 ? probYes : 1 - probYes;
+}
+
+export function isYesNoMarket(outcomes: string[]): boolean {
+  return outcomes.length === 2 && outcomes[0]?.trim().toLowerCase() === "yes" && outcomes[1]?.trim().toLowerCase() === "no";
 }

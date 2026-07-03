@@ -4,12 +4,13 @@
 // Exit rule (user 2026-07-03 + standing repo rule): recompute the held side's
 // fair probability with the isolated evaluator; if the net edge of HOLDING
 // versus exiting now (fees included) is below the threshold, close. Stop-loss
-// outranks the model view. Execution is the 50/50 hybrid: half taker now,
-// half resting maker limit (fee friction is exactly why the split exists).
+// outranks the model view (and is ALSO checked without any model in the fast
+// tick — see run-cycle). Execution is the 50/50 hybrid: half taker now, half
+// resting maker limit (fee friction is exactly why the split exists);
+// stop-loss exits go 100% market.
 
 import type { PaperConfig } from "./config";
-import type { FeeParams } from "./fees";
-import { takerFeeUsd } from "./fees";
+import { takerFeeUsd, type MarketFeeParams } from "./fees";
 import type { OrderBook } from "./polymarket";
 import { bestBid } from "./polymarket";
 
@@ -20,7 +21,6 @@ export interface ExitDecision {
   reason: ExitReason;
   agentProb: number;
   mark: number | null;
-  // EV per share of holding to resolution vs selling now (fees in), in pp.
   netEdgePp: number | null;
   detail: string;
 }
@@ -31,14 +31,19 @@ export interface ExitDecision {
 export function holdNetEdgePp(
   agentProb: number,
   book: OrderBook,
-  shares: number,
-  fees: FeeParams
+  fees: MarketFeeParams
 ): { edgePp: number; mark: number } | null {
   const bid = bestBid(book);
-  if (bid === null || shares <= 0) return null;
-  const perShareFee = takerFeeUsd(shares, bid, fees) / shares;
+  if (bid === null) return null;
+  const perShareFee = takerFeeUsd(1, bid, fees);
   const exitNetPerShare = bid - perShareFee;
   return { edgePp: (agentProb - exitNetPerShare) * 100, mark: bid };
+}
+
+// Model-free stop-loss check — usable from the fast tick without an LLM.
+export function stopLossBreached(cfg: PaperConfig, avgEntryPrice: number, book: OrderBook): boolean {
+  const bid = bestBid(book);
+  return bid !== null && bid <= avgEntryPrice * (1 - cfg.stopLossPct);
 }
 
 export function decideExit(
@@ -46,10 +51,9 @@ export function decideExit(
   agentProb: number,
   avgEntryPrice: number,
   book: OrderBook,
-  shares: number,
-  fees: FeeParams
+  fees: MarketFeeParams
 ): ExitDecision {
-  const edge = holdNetEdgePp(agentProb, book, shares, fees);
+  const edge = holdNetEdgePp(agentProb, book, fees);
   if (!edge) {
     return {
       action: "hold",
@@ -60,8 +64,7 @@ export function decideExit(
       detail: "no bids on the book — nothing to exit into; holding by necessity"
     };
   }
-  // Stop-loss first (standing rule: it outranks the model view).
-  if (edge.mark <= avgEntryPrice * (1 - cfg.stopLossPct)) {
+  if (stopLossBreached(cfg, avgEntryPrice, book)) {
     return {
       action: "exit",
       reason: "stop_loss",
@@ -97,28 +100,25 @@ export interface HybridPlan {
   limitPrice: number;
 }
 
-// Split an exit into the taker half and a maker limit. The limit price asks
-// for the better of (fair value, one tick inside the ask) but never below the
-// current bid — a resting order priced under the bid would be instantly
-// marketable, defeating the maker intent.
-export function planHybridExit(
-  cfg: PaperConfig,
-  shares: number,
-  agentProb: number,
-  book: OrderBook
-): HybridPlan {
-  const marketShares = shares * cfg.hybridMarketRatio;
-  const limitShares = shares - marketShares;
-  const bid = book.bids[0]?.price ?? 0.01;
-  const ask = book.asks[0]?.price ?? 0.99;
-  const tick = 0.01;
-  const insideAsk = Math.max(bid, ask - tick);
-  const limitPrice = clampPrice(Math.max(agentProb, Math.min(insideAsk, 0.99), bid + tick));
-  return { marketShares, limitShares, limitPrice };
+function roundToTick(p: number, tick: number): number {
+  const inv = Math.round(1 / tick);
+  return Math.round(p * inv) / inv;
 }
 
-function clampPrice(p: number): number {
-  return Math.min(0.99, Math.max(0.01, Math.round(p * 100) / 100));
+// Split an exit into the taker half and a maker limit. The limit asks for the
+// better of (fair value, one tick inside the ask) but always at least one
+// tick ABOVE the bid — a resting order priced at/under the bid would be
+// instantly marketable, defeating the maker intent. Tick size comes from the
+// market's live metadata (0.001 on most books today).
+export function planHybridExit(cfg: PaperConfig, shares: number, agentProb: number, book: OrderBook, tick: number): HybridPlan {
+  const marketShares = shares * cfg.hybridMarketRatio;
+  const limitShares = shares - marketShares;
+  const bid = book.bids[0]?.price ?? tick;
+  const ask = book.asks[0]?.price ?? 1 - tick;
+  const insideAsk = Math.max(bid + tick, ask - tick);
+  const raw = Math.max(agentProb, Math.min(insideAsk, 1 - tick), bid + tick);
+  const limitPrice = Math.min(1 - tick, Math.max(bid + tick, roundToTick(raw, tick)));
+  return { marketShares, limitShares, limitPrice };
 }
 
 export interface EntryDecision {
@@ -135,7 +135,7 @@ export function decideEntry(
   probYes: number,
   yesBook: OrderBook,
   noBook: OrderBook,
-  fees: FeeParams
+  fees: MarketFeeParams
 ): EntryDecision {
   const sides: Array<{ idx: number; prob: number; book: OrderBook }> = [
     { idx: 0, prob: probYes, book: yesBook },

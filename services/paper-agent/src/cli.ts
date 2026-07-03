@@ -8,7 +8,8 @@
 
 import { simulateMarketBuy } from "./book-sim";
 import { loadPaperConfig } from "./config";
-import { feeParamsFor } from "./fees";
+import { isYesNoMarket } from "./evaluator";
+import { DEFAULT_FEES, fetchMarketFees } from "./fees";
 import { applyBuy, loadPortfolio, positionId, savePortfolio, type PaperPosition } from "./portfolio";
 import { fetchBook, fetchMarket } from "./polymarket";
 import { writeReflectionReport } from "./reflect";
@@ -21,15 +22,15 @@ async function cmdBuy(slug: string, sideRaw: string, usdRaw: string): Promise<vo
   if (!Number.isFinite(usd) || usd <= 0) throw new Error(`bad notional: ${usdRaw}`);
   const market = await fetchMarket(slug);
   if (market.closed) throw new Error(`market ${slug} is closed`);
-  if (market.outcomes.length !== 2 || market.tokenIds.length !== 2) {
-    throw new Error(`phase 1 supports binary markets only (got ${market.outcomes.length} outcomes)`);
+  if (!isYesNoMarket(market.outcomes) || market.tokenIds.length !== 2) {
+    throw new Error(`phase 1 supports Yes/No binary markets only (got outcomes: ${market.outcomes.join("/")})`);
   }
   const portfolio = loadPortfolio();
   const id = positionId(slug, side);
   if (portfolio.positions.some((p) => p.id === id)) throw new Error(`position ${id} already open`);
   if (portfolio.cashUsd < usd) throw new Error(`insufficient paper cash (${portfolio.cashUsd.toFixed(2)} < ${usd})`);
   const book = await fetchBook(market.tokenIds[side]!);
-  const fees = feeParamsFor(market.category, market.negRisk);
+  const fees = (await fetchMarketFees(market.conditionId)) ?? DEFAULT_FEES;
   const fill = simulateMarketBuy(book, usd, fees);
   if (fill.shares <= 0) throw new Error("no ask liquidity to fill against");
   const pos: PaperPosition = {
@@ -37,15 +38,14 @@ async function cmdBuy(slug: string, sideRaw: string, usdRaw: string): Promise<vo
     slug,
     conditionId: market.conditionId,
     question: market.question,
-    category: market.category,
-    negRisk: market.negRisk,
     outcomeIndex: side,
     outcomeLabel: market.outcomes[side] ?? (side === 0 ? "Yes" : "No"),
     tokenId: market.tokenIds[side]!,
     shares: fill.shares,
     avgEntryPrice: fill.avgPrice,
-    entryFeeUsd: fill.feeUsd,
-    openedAtUtc: new Date().toISOString()
+    entryFeePerShare: fill.shares > 0 ? fill.feeUsd / fill.shares : 0,
+    openedAtUtc: new Date().toISOString(),
+    fees
   };
   savePortfolio(applyBuy(portfolio, pos, fill.notionalUsd, fill.feeUsd));
   appendLedger({

@@ -2,23 +2,31 @@
 // CLOB order books and price history). This module is the ONLY network
 // surface of the paper agent, and every call is a GET — real order placement
 // is structurally impossible from this service.
+//
+// Hardened per adversarial review 2026-07-03:
+// - Gamma's plain ?slug= query EXCLUDES closed markets; settlement needs the
+//   two-step lookup (plain, then &closed=true).
+// - CLOB /book 404s once a market closes — callers must settle before booking.
+// - All fetches carry a timeout and one retry.
 
 const GAMMA = "https://gamma-api.polymarket.com";
 const CLOB = "https://clob.polymarket.com";
+
+export type ResolutionState = "open" | "resolved" | "voided" | "awaiting";
 
 export interface MarketInfo {
   slug: string;
   conditionId: string;
   question: string;
   description: string;
-  category: string;
   endDateIso: string | null;
   closed: boolean;
   negRisk: boolean;
   outcomes: string[]; // e.g. ["Yes","No"]
   tokenIds: string[]; // aligned with outcomes
-  outcomePrices: number[] | null; // aligned; settlement prices once resolved
-  resolvedOutcomeIndex: number | null; // when closed and prices are 0/1
+  outcomePrices: number[] | null; // settlement prices once resolved
+  resolvedOutcomeIndex: number | null;
+  resolution: ResolutionState;
 }
 
 export interface BookLevel {
@@ -32,9 +40,18 @@ export interface OrderBook {
 }
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url, { headers: { accept: "application/json" } });
-  if (!res.ok) throw new Error(`GET ${url} → ${res.status}`);
-  return (await res.json()) as T;
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(url, { headers: { accept: "application/json" }, signal: AbortSignal.timeout(15_000) });
+      if (!res.ok) throw new Error(`GET ${url} → ${res.status}`);
+      return (await res.json()) as T;
+    } catch (error) {
+      lastError = error;
+      if (attempt === 0) await new Promise((r) => setTimeout(r, 1500));
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
 
 function parseJsonArray(raw: unknown): string[] {
@@ -55,7 +72,7 @@ interface GammaMarket {
   conditionId?: string;
   question?: string;
   description?: string;
-  category?: string;
+  endDateIso?: string;
   endDate?: string;
   closed?: boolean;
   negRisk?: boolean;
@@ -64,32 +81,46 @@ interface GammaMarket {
   clobTokenIds?: unknown;
 }
 
+// Terminal settlement detection: winner needs a >0.99 leg; a ~50/50 close is
+// a VOIDED market (refunds at $0.50); anything else closed = still awaiting
+// UMA resolution.
+function resolutionOf(closed: boolean, prices: number[] | null): { state: ResolutionState; winner: number | null } {
+  if (!closed) return { state: "open", winner: null };
+  if (!prices || !prices.length) return { state: "awaiting", winner: null };
+  const winner = prices.findIndex((p) => p > 0.99);
+  if (winner >= 0) return { state: "resolved", winner };
+  if (prices.length === 2 && prices.every((p) => Math.abs(p - 0.5) < 0.02)) return { state: "voided", winner: null };
+  return { state: "awaiting", winner: null };
+}
+
+// Two-step lookup: the plain slug query only returns OPEN markets; once a
+// market closes it only appears with &closed=true. A miss on both = the
+// market is gone/renamed (caller escalates to the operator).
 export async function fetchMarket(slug: string): Promise<MarketInfo> {
-  const rows = await fetchJson<GammaMarket[]>(`${GAMMA}/markets?slug=${encodeURIComponent(slug)}`);
+  const enc = encodeURIComponent(slug);
+  let rows = await fetchJson<GammaMarket[]>(`${GAMMA}/markets?slug=${enc}`);
+  if (!rows.length) rows = await fetchJson<GammaMarket[]>(`${GAMMA}/markets?slug=${enc}&closed=true`);
   const m = rows[0];
-  if (!m) throw new Error(`no Polymarket market found for slug "${slug}"`);
+  if (!m) throw new Error(`no Polymarket market found for slug "${slug}" (open or closed)`);
   const outcomes = parseJsonArray(m.outcomes);
   const tokenIds = parseJsonArray(m.clobTokenIds);
   const priceStrings = parseJsonArray(m.outcomePrices);
   const outcomePrices = priceStrings.length ? priceStrings.map(Number) : null;
-  let resolvedOutcomeIndex: number | null = null;
-  if (m.closed && outcomePrices && outcomePrices.length) {
-    const winner = outcomePrices.findIndex((p) => p > 0.99);
-    resolvedOutcomeIndex = winner >= 0 ? winner : null;
-  }
+  const closed = Boolean(m.closed);
+  const { state, winner } = resolutionOf(closed, outcomePrices);
   return {
     slug: m.slug ?? slug,
     conditionId: m.conditionId ?? "",
     question: m.question ?? slug,
     description: m.description ?? "",
-    category: m.category ?? "",
-    endDateIso: m.endDate ?? null,
-    closed: Boolean(m.closed),
+    endDateIso: m.endDateIso ?? m.endDate ?? null,
+    closed,
     negRisk: Boolean(m.negRisk),
     outcomes,
     tokenIds,
     outcomePrices,
-    resolvedOutcomeIndex
+    resolvedOutcomeIndex: winner,
+    resolution: state
   };
 }
 

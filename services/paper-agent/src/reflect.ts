@@ -13,7 +13,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { log } from "./log";
 import { loadPortfolio } from "./portfolio";
-import { fetchMarket, fetchPriceHistory } from "./polymarket";
+import { fetchBook, fetchMarket, fetchPriceHistory } from "./polymarket";
 import { readLedger, reportsDir } from "./store";
 
 interface TradeEvent {
@@ -29,7 +29,7 @@ interface TradeEvent {
   limitId?: string;
   reason?: string;
   agentProbOutcome?: number;
-  won?: boolean;
+  kind?: string;
   outcome?: string;
 }
 
@@ -66,16 +66,6 @@ export interface Reflection {
   };
 }
 
-async function tokenIdFor(slug: string, positionId: string): Promise<string | null> {
-  try {
-    const market = await fetchMarket(slug);
-    const idx = Number(positionId.split(":").pop());
-    return market.tokenIds[idx] ?? null;
-  } catch {
-    return null;
-  }
-}
-
 export async function buildReflection(): Promise<Reflection> {
   const ledger = readLedger() as unknown as TradeEvent[];
   const portfolio = loadPortfolio();
@@ -94,19 +84,25 @@ export async function buildReflection(): Promise<Reflection> {
     let priceNow = priceNowCache.get(sell.positionId) ?? null;
     if (!priceNowCache.has(sell.positionId)) {
       priceNow = null;
-      const token = await tokenIdFor(sell.slug, sell.positionId);
-      if (token) {
-        try {
+      const idx = Number(sell.positionId.split(":").pop());
+      try {
+        // Live market state first: covers exits whose market resolved AFTER
+        // we sold (prices-history 404s post-close — review finding).
+        const market = await fetchMarket(sell.slug);
+        if (market.resolution === "resolved") priceNow = market.resolvedOutcomeIndex === idx ? 1 : 0;
+        else if (market.resolution === "voided") priceNow = 0.5;
+        else if (market.tokenIds[idx]) {
           const nowSec = Date.now() / 1000;
-          const hist = await fetchPriceHistory(token, nowSec - 6 * 3600, nowSec);
+          const hist = await fetchPriceHistory(market.tokenIds[idx]!, nowSec - 6 * 3600, nowSec);
           priceNow = hist.length ? hist[hist.length - 1]!.p : null;
-        } catch {
-          priceNow = null;
         }
+      } catch {
+        priceNow = null;
       }
-      // A settled market's ledgered resolution beats a stale price tail.
+      // A ledgered settlement of OUR position is authoritative regardless.
       const res = resolutions.find((r) => r.positionId === sell.positionId);
-      if (res) priceNow = res.won ? 1 : 0;
+      if (res && res.kind !== "voided") priceNow = res.kind === "won" ? 1 : 0;
+      else if (res) priceNow = 0.5;
       priceNowCache.set(sell.positionId, priceNow);
     }
     const proceeds = sell.shares * sell.avgPrice - (sell.feeUsd ?? 0);
@@ -131,12 +127,13 @@ export async function buildReflection(): Promise<Reflection> {
   {
     let sum = 0;
     for (const res of resolutions) {
+      if (res.kind === "voided") continue;
       const evalsFor = evaluations.filter(
         (e) => e.positionId === res.positionId && typeof e.agentProbOutcome === "number" && e.ts < res.ts
       );
       const last = evalsFor[evalsFor.length - 1];
       if (!last) continue;
-      const outcome = res.won ? 1 : 0;
+      const outcome = res.kind === "won" ? 1 : 0;
       sum += Math.pow((last.agentProbOutcome ?? 0) - outcome, 2);
       calN += 1;
     }
@@ -154,19 +151,28 @@ export async function buildReflection(): Promise<Reflection> {
   // 4. Hybrid quality.
   const limitPlaced = ledger.filter((e) => e.type === "limit_placed").length;
   const limitFills = sells.filter((s) => s.style === "limit");
-  const marketExitFills = sells.filter((s) => s.style === "market" && s.reason !== "watchlist_entry");
+  const marketExitFills = sells.filter((s) => s.style === "market" && s.reason === "negative_edge");
+  const limitFillsComparable = limitFills.filter((s) => (s.reason ?? "").startsWith("negative_edge"));
   const avg = (rows: TradeEvent[]): number | null => {
     const tot = rows.reduce((s, r) => s + (r.shares ?? 0), 0);
     if (!tot) return null;
     return rows.reduce((s, r) => s + (r.avgPrice ?? 0) * (r.shares ?? 0), 0) / tot;
   };
-  const avgLimit = avg(limitFills);
+  const avgLimit = avg(limitFillsComparable);
   const avgMarket = avg(marketExitFills);
 
-  // Equity = cash + marked open positions (best-effort marks).
+  // Equity = cash + freshly marked open positions (fall back to the last
+  // eval's mark when the book is unreachable; null only if neither exists).
   let equity: number | null = portfolio.cashUsd;
   for (const pos of portfolio.positions) {
-    const mark = pos.lastEval?.mark ?? null;
+    let mark: number | null = null;
+    try {
+      const book = await fetchBook(pos.tokenId);
+      mark = book.bids[0]?.price ?? null;
+    } catch {
+      mark = null;
+    }
+    mark = mark ?? pos.lastEval?.mark ?? null;
     if (mark === null) {
       equity = null;
       break;
