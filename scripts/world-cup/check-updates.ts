@@ -13,22 +13,10 @@ import {
   fetchAllWorldCupMarkets, WORLD_CUP_TAG_IDS, buildSnapshot, buildIndex,
   diffSnapshots, readSnapshot, writeCache, unionPreservingDropped
 } from "../../packages/sports-data/src/index.js";
+import { stripPrices } from "./lib/market-blind.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const OUT_DIR = path.join(REPO_ROOT, "runtime-artifacts/world-cup/polymarket");
-
-// Market-blind policy (2026-06-11, user decision): cached snapshots must never
-// store market prices — the prediction pipeline reads this cache and must stay
-// unspoiled. Structure/slugs/conditionIds are kept; price fields are nulled.
-function stripPrices<T extends { markets: readonly unknown[] }>(snapshot: T): T {
-  const PRICE_FIELDS = ["outcomePrices", "bestBid", "bestAsk", "lastTradePrice", "spread", "oneDayPriceChange"];
-  const markets = (snapshot.markets as Record<string, unknown>[]).map((m) => ({
-    ...m,
-    ...Object.fromEntries(PRICE_FIELDS.map((f) => [f, null]))
-  }));
-  return { ...snapshot, markets, priceFieldsStripped: { fields: PRICE_FIELDS, reason: "market-blind forecasting" } } as unknown as T;
-}
-
 
 async function main(): Promise<void> {
   const apply = process.argv.includes("--apply");
