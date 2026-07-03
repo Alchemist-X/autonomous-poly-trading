@@ -1,5 +1,6 @@
 import { Contract, Wallet, providers } from "ethers";
 import type { ExecutorConfig } from "../config.js";
+import { gammaFetch } from "./gamma.js";
 import { fetchRemotePositions, type RemotePosition } from "./polymarket-sdk.js";
 
 // ConditionalTokens contract on Polygon
@@ -81,10 +82,7 @@ export async function fetchMarketResolutionStatus(
   conditionId: string | null;
   winnerTokenId: string | null;
 }> {
-  const response = await fetch(
-    `https://gamma-api.polymarket.com/markets?slug=${encodeURIComponent(marketSlug)}`,
-    { headers: { "user-agent": "@autopoly/executor" } }
-  );
+  const response = await gammaFetch(`/markets?slug=${encodeURIComponent(marketSlug)}`);
 
   if (!response.ok) {
     return { resolved: false, conditionId: null, winnerTokenId: null };
