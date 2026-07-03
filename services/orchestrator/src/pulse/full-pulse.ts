@@ -1,11 +1,13 @@
 import { spawn } from "node:child_process";
-import { existsSync, statSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { isChineseLocale } from "../config.js";
 import type { AgentRuntimeProvider, OrchestratorConfig, SkillLocale } from "../config.js";
 import { writeStoredArtifact } from "../lib/artifacts.js";
 import { OPENCLAW_DEFAULT_COMMAND_TEMPLATE } from "../lib/provider-command-templates.js";
+import { formatRemainingTimeoutMs, readOutputSizeBytes, stripCodeFences } from "../lib/provider-output.js";
 import { calculateQuarterKelly } from "../lib/risk.js";
 import { combineTextMetrics, formatTextMetrics, measureText, readTextMetrics } from "../lib/text-metrics.js";
 import type { ProgressReporter } from "../lib/terminal-progress.js";
@@ -84,10 +86,6 @@ type FullPulsePurpose = "market-scan" | "position-review";
 type JsonRecord = Record<string, unknown>;
 const COMMAND_HEARTBEAT_INTERVAL_MS = 5000;
 const DEFAULT_PULSE_DIRECT_RENDER_TIMEOUT_SECONDS = 1200;
-
-function isChineseLocale(locale: SkillLocale): boolean {
-  return locale === "zh";
-}
 
 function asRecord(value: unknown): JsonRecord | null {
   return value && typeof value === "object" && !Array.isArray(value) ? value as JsonRecord : null;
@@ -548,25 +546,6 @@ function buildDeterministicPulseMarkdown(context: FullPulseContext): string {
   ].join("\n");
 }
 
-function readOutputSizeBytes(outputPath: string | undefined): number {
-  if (!outputPath || !existsSync(outputPath)) {
-    return 0;
-  }
-  try {
-    return statSync(outputPath).size;
-  } catch {
-    return 0;
-  }
-}
-
-function formatRemainingTimeoutMs(startedAt: number, timeoutMs: number | null): string {
-  if (timeoutMs == null) {
-    return "disabled";
-  }
-  const remainingMs = Math.max(0, timeoutMs - (Date.now() - startedAt));
-  return `${Math.ceil(remainingMs / 1000)}s`;
-}
-
 function buildCommandHeartbeatDetail(input: {
   stage: string;
   progressDetail?: string;
@@ -588,19 +567,6 @@ function buildCommandHeartbeatDetail(input: {
     .join(" | ");
 }
 
-function stripCodeFences(text: string): string {
-  const trimmed = text.trim();
-  if (!trimmed.startsWith("```")) {
-    return trimmed;
-  }
-
-  const lines = trimmed.split("\n");
-  if (lines.length < 3) {
-    return trimmed;
-  }
-
-  return lines.slice(1, -1).join("\n").trim();
-}
 
 async function runCommand(input: {
   command: string;
