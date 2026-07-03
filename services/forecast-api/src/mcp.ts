@@ -10,10 +10,10 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import { buildAnswer } from "./answer";
-import { tokenEquals } from "./auth";
 import type { ServiceConfig } from "./config";
+import { authorizeInviteUse, describeInviteState, inviteState } from "./invites";
 import { QuotaExceededError } from "./quota";
-import { isSafeEventId, loadState, stateMtimeMs } from "./repo";
+import { isSafeEventId, loadState, makeEventId, stateMtimeMs } from "./repo";
 import { getJob, RunLimitError, startForecast } from "./run-manager";
 import { renderText } from "./render-text";
 
@@ -56,21 +56,27 @@ export function buildMcpServer(config: ServiceConfig, baseUrl: string): McpServe
       }
     },
     async ({ question, max_rounds, fresh, invite_code }) => {
-      const inviteOk = Boolean(invite_code?.trim()) && tokenEquals(invite_code!.trim(), config.inviteCode);
+      const presented = invite_code?.trim() ?? "";
       let job;
       try {
         job = startForecast(question, {
           maxRounds: max_rounds,
           fresh,
           maxConcurrent: config.maxConcurrentRuns,
-          quota: { service: "forecast-api", limit: config.dailyQuota, bypass: inviteOk }
+          quota: {
+            service: "forecast-api",
+            limit: config.dailyQuota,
+            authorizeBypass: presented
+              ? () => authorizeInviteUse(presented, "forecast-api-mcp", makeEventId(question))
+              : undefined
+          }
         });
       } catch (error) {
         if (error instanceof RunLimitError) return errorContent(error.message + " Retry in a few minutes.");
         if (error instanceof QuotaExceededError) {
           return errorContent(
-            invite_code && !inviteOk
-              ? "invite code not recognized — check it and call forecast_start again."
+            presented
+              ? describeInviteState(inviteState(presented)) + " Call forecast_start again with a valid invite_code."
               : error.message + " Call forecast_start again with the invite_code argument."
           );
         }

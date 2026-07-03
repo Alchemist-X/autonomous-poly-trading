@@ -14,15 +14,16 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { z } from "zod";
 import { buildAnswer, verdictFor, pct } from "./answer";
-import { isAuthorized, tokenEquals } from "./auth";
+import { isAuthorized } from "./auth";
 import type { ServiceConfig } from "./config";
+import { authorizeInviteUse, describeInviteState, inviteState } from "./invites";
 import { log } from "./log";
 import { handleMcpRequest } from "./mcp";
 import { ensurePdf } from "./pdf";
 import { QuotaExceededError } from "./quota";
 import { renderHtml } from "./render-html";
 import { renderText } from "./render-text";
-import { isSafeEventId, listStates, loadState, stateMtimeMs } from "./repo";
+import { isSafeEventId, listStates, loadState, makeEventId, stateMtimeMs } from "./repo";
 import { getJob, RunLimitError, startForecast } from "./run-manager";
 
 const MAX_BODY_BYTES = 64 * 1024;
@@ -109,7 +110,6 @@ async function handleStart(
   // Prefer a non-empty body field, else the header — an empty body value must
   // not mask a valid header.
   const presentedInvite = invite?.trim() || (typeof headerInvite === "string" ? headerInvite.trim() : "");
-  const inviteOk = presentedInvite !== "" && tokenEquals(presentedInvite, config.inviteCode);
   let job;
   try {
     job = startForecast(question, {
@@ -117,7 +117,13 @@ async function handleStart(
       fresh,
       provider,
       maxConcurrent: config.maxConcurrentRuns,
-      quota: { service: "forecast-api", limit: config.dailyQuota, bypass: inviteOk }
+      quota: {
+        service: "forecast-api",
+        limit: config.dailyQuota,
+        authorizeBypass: presentedInvite
+          ? () => authorizeInviteUse(presentedInvite, "forecast-api", makeEventId(question))
+          : undefined
+      }
     });
   } catch (error) {
     if (error instanceof RunLimitError) {
@@ -126,7 +132,7 @@ async function handleStart(
     }
     if (error instanceof QuotaExceededError) {
       sendJson(res, 429, {
-        error: presentedInvite && !inviteOk ? "invite code not recognized — check it and try again" : error.message,
+        error: presentedInvite ? describeInviteState(inviteState(presentedInvite)) : error.message,
         hint: 'resend with the invite code: header "x-invite-code: <code>" or "invite" in the JSON body'
       });
       return;

@@ -3,12 +3,16 @@
 
 import { createServer } from "node:http";
 import { loadConfig } from "./config";
+import { ensureSeeded, invitesFile } from "./invites";
 import { log } from "./log";
 import { forecastsRoot } from "./repo";
 import { pickProvider } from "./run-manager";
 import { createRequestHandler } from "./server";
 
 const config = loadConfig();
+// First boot: turn the env-configured code into a real store record so it
+// keeps working; afterwards codes are managed via the invite CLI.
+ensureSeeded(config.inviteCode);
 const server = createServer(createRequestHandler(config));
 
 // Engine runs stream for many minutes; never let node kill a ?wait=true
@@ -23,6 +27,6 @@ server.listen(config.port, config.host, () => {
   if (!config.token) {
     log.warn("token gate is OFF — anyone who can reach this port can start paid engine runs. Set FORECAST_API_TOKEN (or RAVEN_ACCESS_TOKEN) before exposing it.");
   }
-  log.info(`forecasts root: ${forecastsRoot()}`);
+  log.info(`forecasts root: ${forecastsRoot()} · invite store: ${invitesFile()}`);
   log.info(`endpoints: POST /v1/forecasts · GET /v1/forecasts/:id[/text|/pdf] · POST /mcp`);
 });

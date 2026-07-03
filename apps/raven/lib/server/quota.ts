@@ -23,17 +23,6 @@ export function dailyQuotaLimit(): number {
   return Number.isFinite(n) && n >= 0 ? n : 20;
 }
 
-// Constant-time-ish comparison (XOR fold after length check), matching the
-// proxy gate — an invite code is a shared secret, however small.
-export function inviteCodeOk(presented: string | undefined | null): boolean {
-  const expected = process.env.FORECAST_INVITE_CODE || "raven-labs";
-  const given = presented?.trim() ?? "";
-  if (!given || given.length !== expected.length) return false;
-  let diff = 0;
-  for (let i = 0; i < given.length; i++) diff |= given.charCodeAt(i) ^ expected.charCodeAt(i);
-  return diff === 0;
-}
-
 export function quotaDir(): string {
   return path.join(path.dirname(forecastsRoot()), "quota");
 }

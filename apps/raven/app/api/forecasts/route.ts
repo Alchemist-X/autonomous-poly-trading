@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { listRuns } from "../../../lib/server/dossier";
-import { dailyQuotaLimit, inviteCodeOk, QuotaExceededError } from "../../../lib/server/quota";
+import { authorizeInviteUse, describeInviteState, ensureSeeded, inviteState } from "../../../lib/server/invites";
+import { dailyQuotaLimit, QuotaExceededError } from "../../../lib/server/quota";
+import { makeEventId } from "../../../lib/server/repo";
 import { pickProvider, providerKeyAvailable, startForecast } from "../../../lib/server/run-manager";
 
 export const runtime = "nodejs";
@@ -41,13 +43,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `server is missing ${missing} for provider "${provider}"` }, { status: 500 });
   }
   const invite = parsed.data.invite?.trim() ?? "";
-  const inviteOk = inviteCodeOk(invite);
+  // Idempotent: makes sure the env-seeded code exists even if the API
+  // container (which seeds at boot) hasn't started yet.
+  ensureSeeded(process.env.FORECAST_INVITE_CODE || "raven-labs");
   try {
     const job = startForecast(parsed.data.question, {
       maxRounds: parsed.data.maxRounds,
       fresh: parsed.data.fresh,
       provider,
-      quota: { service: "raven-web", limit: dailyQuotaLimit(), bypass: inviteOk }
+      quota: {
+        service: "raven-web",
+        limit: dailyQuotaLimit(),
+        authorizeBypass: invite
+          ? () => authorizeInviteUse(invite, "raven-web", makeEventId(parsed.data.question))
+          : undefined
+      }
     });
     return NextResponse.json({ eventId: job.eventId, status: job.status, provider: job.provider });
   } catch (error) {
@@ -55,7 +65,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           error: "quota_exceeded",
-          message: invite && !inviteOk ? "invite code not recognized — check it and try again" : error.message
+          message: invite ? describeInviteState(inviteState(invite)) : error.message
         },
         { status: 429 }
       );

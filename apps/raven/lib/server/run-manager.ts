@@ -68,8 +68,10 @@ export interface StartOptions {
   fresh?: boolean;
   provider?: string;
   // Daily-quota gate: consumed only on an actual spawn (reattach paths are
-  // free); bypass=true (a valid invite code) skips both check and consumption.
-  quota?: { service: string; limit: number; bypass: boolean };
+  // free). authorizeBypass is called lazily — only when the free quota is
+  // exhausted — so an invite code is validated AND metered exactly when it
+  // unlocks a run, never while free quota remains.
+  quota?: { service: string; limit: number; authorizeBypass?: () => boolean };
 }
 
 // An "open" state whose file changed recently means an engine process is (very
@@ -102,8 +104,10 @@ export function startForecast(question: string, opts: StartOptions = {}): Job {
   }
 
   // Last gate before money is spent — after every no-spawn shortcut above.
-  if (opts.quota && !opts.quota.bypass && !tryConsumeQuota(opts.quota.service, opts.quota.limit)) {
-    throw new QuotaExceededError(opts.quota.limit);
+  if (opts.quota && !tryConsumeQuota(opts.quota.service, opts.quota.limit)) {
+    if (!(opts.quota.authorizeBypass?.() ?? false)) {
+      throw new QuotaExceededError(opts.quota.limit);
+    }
   }
 
   const provider = pickProvider(opts.provider);
