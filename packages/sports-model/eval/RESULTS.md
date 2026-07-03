@@ -1,8 +1,10 @@
 # sports-model 真实数据回测结果
 
+> **注：评测 runner 已于 2026-07-03 随 Stage 1 清理移除（run-eval.ts / data-loader.ts / metrics.ts，复现代码见 git 历史）。**
+
 > 数据:football-data.co.uk,5 联赛 × 4 赛季 = **7,156 场**(可评估 5,984 场,含暖身期过滤)。
 > 方法:walk-forward 严格无未来信息(每场只用开赛前数据)。市场 = Pinnacle/B365 去 vig。
-> 复现:`pnpm tsx packages/sports-model/eval/run-eval.ts` · 报告:`runtime-artifacts/sports/eval/results/eval-report.json`
+> 复现:`pnpm tsx packages/sports-model/eval/run-eval.ts`（runner 已移除,见 git 历史） · 报告:`runtime-artifacts/sports/eval/results/eval-report.json`
 
 ## 核心结论(关于"预测率 > 70%")
 

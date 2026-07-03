@@ -31,6 +31,8 @@ agents.env
 
 # --- Claude Code transient worktrees (multi-GB sub-agent scratch dirs) ---
 .claude/worktrees/
+# personal permission overrides must not be shared via git
+.claude/settings.local.json
 
 # --- Vendor mirrors (synced via pnpm vendor:sync) ---
 vendor/repos

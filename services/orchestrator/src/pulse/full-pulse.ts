@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import type { AgentRuntimeProvider, OrchestratorConfig, SkillLocale } from "../config.js";
 import { writeStoredArtifact } from "../lib/artifacts.js";
+import { OPENCLAW_DEFAULT_COMMAND_TEMPLATE } from "../lib/provider-command-templates.js";
 import { calculateQuarterKelly } from "../lib/risk.js";
 import { combineTextMetrics, formatTextMetrics, measureText, readTextMetrics } from "../lib/text-metrics.js";
 import type { ProgressReporter } from "../lib/terminal-progress.js";
@@ -1028,7 +1029,7 @@ function resolveDefaultProviderCommand(provider: string): string | null {
     case "claude-code":
       return 'cat {{prompt_file}} | claude --print > {{output_file}}';
     case "openclaw":
-      return 'node "{{repo_root}}/scripts/openclaw-agent-command.mjs" --prompt-file "{{prompt_file}}" --output-file "{{output_file}}"';
+      return OPENCLAW_DEFAULT_COMMAND_TEMPLATE;
     default:
       return null;
   }

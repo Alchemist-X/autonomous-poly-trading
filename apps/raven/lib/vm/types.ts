@@ -43,7 +43,6 @@ export interface DossierMeta {
   verdict: string; // "Very unlikely"
   quip: string;
   prior: string; // "38%"
-  ci: string; // "3%–11%"
   duration: string; // "33m 35s"
   sources: string; // "13"
   nSupport: string;

@@ -626,15 +626,6 @@ export async function runResolutionTrackingSnapshot(input: {
   return result;
 }
 
-export async function previewResolutionTrackingSnapshot(input: {
-  config: OrchestratorConfig;
-  eventSlug: string;
-  marketSlug: string;
-  intervalMinutes: number;
-}) {
-  return buildResolutionSnapshot(input);
-}
-
 export async function runResolutionSweep(input: {
   config: OrchestratorConfig;
   intervalMinutes: number;

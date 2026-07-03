@@ -128,15 +128,9 @@ importers:
 
   apps/web:
     dependencies:
-      '@autopoly/contracts':
-        specifier: workspace:*
-        version: link:../../packages/contracts
       '@autopoly/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@autopoly/norns':
-        specifier: workspace:*
-        version: link:../../packages/norns
       next:
         specifier: 16.1.6
         version: 16.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -263,9 +257,6 @@ importers:
       '@polymarket/builder-relayer-client':
         specifier: ^0.0.9
         version: 0.0.9(bufferutil@4.1.0)(utf-8-validate@6.0.6)(zod@3.25.76)
-      '@polymarket/clob-client':
-        specifier: ^5.8.1
-        version: 5.8.1(bufferutil@4.1.0)(typescript@5.9.3)(zod@3.25.76)
       '@polymarket/clob-client-v2':
         specifier: 1.0.6
         version: 1.0.6(bufferutil@4.1.0)(typescript@5.9.3)(zod@3.25.76)
@@ -1476,15 +1467,8 @@ packages:
   '@polymarket/builder-signing-sdk@0.0.8':
     resolution: {integrity: sha512-rZLCFxEdYahl5FiJmhe22RDXysS1ibFJlWz4NT0s3itJRYq3XJzXXHXEZkAQplU+nIS1IlbbKjA4zDQaeCyYtg==}
 
-  '@polymarket/builder-signing-sdk@1.0.0':
-    resolution: {integrity: sha512-LNHc8Ox+2ITM6+VIEH5LH3SVh9ScE2mOUAJI789YfyNqhF4n1cNulk35Hb6IZfy1xtNfcEfNotanPLa/U8dCaw==}
-
   '@polymarket/clob-client-v2@1.0.6':
     resolution: {integrity: sha512-Y6LefFNuxRs95fLq0m9W9EBjoM2w7EVgtsUGLydjlUFVGBeGhHOa8vll6+C6UZVnQEbdWE6i6hYRCwJE/ZVNKQ==}
-    engines: {node: '>=20.10'}
-
-  '@polymarket/clob-client@5.8.1':
-    resolution: {integrity: sha512-beKC4KPc9dYyFV9wFhKiGoA16q5xWz4PjkYcnEs3BzpsOKjGQGRlZQ7KQD4HQKUd3HC5RLQT0lqWHrFyaI+2fQ==}
     engines: {node: '>=20.10'}
 
   '@privy-io/api-base@1.7.0':
@@ -2618,9 +2602,6 @@ packages:
 
   brorand@1.1.0:
     resolution: {integrity: sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==}
-
-  browser-or-node@2.1.1:
-    resolution: {integrity: sha512-8CVjaLJGuSKMVTxJ2DpBl5XnlNDiT4cQFeuCJJrvJmts9YrTZDizTX7PjC2s6W4x+MBGZeEY6dGMrF04/6Hgqg==}
 
   browser-or-node@3.0.0:
     resolution: {integrity: sha512-iczIdVJzGEYhP5DqQxYM9Hh7Ztpqqi+CXZpSmX8ALFs9ecXkQIeqRyM6TfxEfMVpwhl3dSuDvxdzzo9sUOIVBQ==}
@@ -6117,12 +6098,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@polymarket/builder-signing-sdk@1.0.0':
-    dependencies:
-      axios: 1.13.6
-    transitivePeerDependencies:
-      - debug
-
   '@polymarket/clob-client-v2@1.0.6(bufferutil@4.1.0)(typescript@5.9.3)':
     dependencies:
       '@ethersproject/providers': 5.8.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
@@ -6145,19 +6120,6 @@ snapshots:
       axios: 1.13.6
       browser-or-node: 3.0.0
       tslib: 2.8.1
-      viem: 2.47.2(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76)
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@polymarket/clob-client@5.8.1(bufferutil@4.1.0)(typescript@5.9.3)(zod@3.25.76)':
-    dependencies:
-      '@polymarket/builder-signing-sdk': 1.0.0
-      axios: 1.13.6
-      browser-or-node: 2.1.1
       viem: 2.47.2(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76)
     transitivePeerDependencies:
       - bufferutil
@@ -8627,8 +8589,6 @@ snapshots:
       text-encoding-utf-8: 1.0.2
 
   brorand@1.1.0: {}
-
-  browser-or-node@2.1.1: {}
 
   browser-or-node@3.0.0: {}
 

@@ -1,26 +1,22 @@
 // @autopoly/sports-model — pure-function statistical engine reproducing the
 // methods used in Kimi's 2026 World Cup report, as composable modules:
-//   strength (Elo/FIFA) → goal distribution (Poisson / Dixon-Coles / Bivariate)
-//   → process metrics (xG/xT) → ML enhancement → Monte Carlo simulation
-//   → Bayesian update → market de-vig/deviation → ensemble → calibration.
+//   strength (Elo) → goal distribution (Poisson / Dixon-Coles)
+//   → process metrics (xG/xT) → contextual adjustment → ML enhancement
+//   → ensemble → calibration.
 // Every module is deterministic, immutable, and unit-tested.
+// (Unused modules — zigp / spi / bivariate-poisson / monte-carlo / bayesian /
+//  market / decision — were removed in the 2026-07-03 Stage 1 cleanup; see git
+//  history to restore.)
 
 export * from "./types.js";
 export * from "./rng.js";
 
 export * from "./elo.js";
 export * from "./poisson.js";
-export * from "./zigp.js";
-export * from "./spi.js";
 export * from "./dixon-coles.js";
-export * from "./bivariate-poisson.js";
 export * from "./xg.js";
 export * from "./contextual.js";
-export * from "./monte-carlo.js";
 
-export * from "./decision.js";
-export * from "./bayesian.js";
-export * from "./market.js";
 export * from "./ensemble.js";
 export * from "./calibration.js";
 
