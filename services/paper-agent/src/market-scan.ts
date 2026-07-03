@@ -54,8 +54,9 @@ export interface ScanOptions {
 
 export const DEFAULT_SCAN_OPTIONS: ScanOptions = {
   minLiquidityUsd: 5_000, // repo risk hard floor
-  minVolume24hUsd: 10_000,
-  perCategory: 8,
+  minVolume24hUsd: 2_000, // loosened from 10k (user 2026-07-03) — liquidity floor carries the risk gate
+  perCategory: 12, // widened with the volume gate: the top-8 cap was binding before the gate could
+
   minHoursToEnd: 48, // skip markets resolving imminently — no time to re-evaluate
   priceBand: [0.05, 0.95]
 };
