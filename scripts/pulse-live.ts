@@ -78,6 +78,13 @@ import {
   writeJsonArtifact
 } from "./live-run-common.ts";
 import {
+  buildCredentialsCheck,
+  buildEnvFileCheck,
+  buildExecutionModeCheck,
+  buildSignerFunderCheck,
+  getPreflightBlockingReason
+} from "./preflight-checks.ts";
+import {
   probeCollateralBalanceUsd
 } from "./live-preflight-probes.ts";
 import { appendEquitySnapshot } from "./equity-snapshot.ts";
@@ -236,10 +243,6 @@ function getErrorRawSummary(error: unknown): string | null {
     return null;
   }
   return getErrorMessage(cause);
-}
-
-function getPreflightBlockingReason(checks: PreflightReport["checks"]): string | null {
-  return checks.find((check) => check.blocking && !check.ok)?.summary ?? null;
 }
 
 function getMarketBindingBlocks(items: SkippedDecision[]) {
@@ -534,50 +537,23 @@ async function runPreflight(input: {
     collateralProbe.balanceUsd ?? input.orchestratorConfig.initialBankrollUsd
   );
   const checks = [
-    {
-      key: "execution-mode",
-      blocking: true,
-      ok: process.env.AUTOPOLY_EXECUTION_MODE === "live",
-      summary: process.env.AUTOPOLY_EXECUTION_MODE === "live"
-        ? "Execution mode is live."
-        : `AUTOPOLY_EXECUTION_MODE must be live. Received ${process.env.AUTOPOLY_EXECUTION_MODE ?? "-"}.`
-    },
-    {
-      key: "env-file",
-      blocking: true,
-      ok: Boolean(input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath),
-      summary: (input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath)
-        ? `Using env file ${(input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath)}.`
-        : "ENV_FILE is required for forecast:live runs."
-    },
-    {
-      key: "credentials",
-      blocking: true,
-      ok: usesOnchainOsWallet ? walletIdentity != null : Boolean(input.executorConfig.privateKey && input.executorConfig.funderAddress),
-      summary: usesOnchainOsWallet
-        ? walletIdentity
-          ? `WALLET_PROVIDER=onchainos. Active signer ${maskAddressForDisplay(walletIdentity.signerAddress)}; Polymarket funder ${maskAddressForDisplay(walletIdentity.funderAddress)}; signatureType=${walletIdentity.signatureType}.`
-          : `WALLET_PROVIDER=onchainos, but wallet identity could not be resolved: ${walletIdentityError ?? "unknown error"}.`
-        : input.executorConfig.privateKey && input.executorConfig.funderAddress
-          ? "PRIVATE_KEY and FUNDER_ADDRESS are present."
-          : "Missing PRIVATE_KEY or FUNDER_ADDRESS."
-    },
-    {
-      key: "signer-funder",
-      blocking: false,
-      ok: true,
-      summary: usesOnchainOsWallet
-        ? walletIdentity
-          ? `OnchainOS signer ${maskAddressForDisplay(walletIdentity.signerAddress)} trades through ${walletIdentity.walletMode} funder ${maskAddressForDisplay(walletIdentity.funderAddress)}.`
-          : "OnchainOS signer/funder alignment is unavailable until the wallet session resolves."
-        : !signerAddress
-        ? "Unable to derive signer address from PRIVATE_KEY."
-        : !funderAddress
-          ? "FUNDER_ADDRESS is missing."
-          : signerMatchesFunder
-            ? "Signer address matches FUNDER_ADDRESS."
-            : `Signer ${signerAddress} does not match FUNDER_ADDRESS ${funderAddress}. Proceeding in non-blocking mode (proxy/funder setup may be intentional).`
-    },
+    buildExecutionModeCheck(process.env.AUTOPOLY_EXECUTION_MODE),
+    buildEnvFileCheck(input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath, "forecast:live runs"),
+    buildCredentialsCheck({
+      usesOnchainOsWallet,
+      walletIdentity,
+      walletIdentityError,
+      hasPrivateKey: Boolean(input.executorConfig.privateKey),
+      hasFunderAddress: Boolean(input.executorConfig.funderAddress),
+      blocking: true
+    }),
+    buildSignerFunderCheck({
+      usesOnchainOsWallet,
+      walletIdentity,
+      signerAddress,
+      funderAddress: funderAddress ?? "",
+      signerMatchesFunder: Boolean(signerMatchesFunder)
+    }),
     {
       key: "collateral",
       blocking: !input.recommendOnly,
