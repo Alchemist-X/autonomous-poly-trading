@@ -7,8 +7,16 @@
 // while keeping the stroke width constant.
 
 import type { CSSProperties } from "react";
+import { useT, type Entry } from "../../lib/i18n";
+import { RP } from "../../lib/i18n/research-parts";
 
 export type Mark = "keep" | "doubt";
+
+// Subject words used in the toolbar aria-labels ("evidence" | "reasoning").
+const SUBJECT_WORDS: Record<string, Entry> = {
+  evidence: RP.subjectEvidence,
+  reasoning: RP.subjectReasoning
+};
 type OverlayVariant = "note" | "evidence";
 
 function overlaySvgStyle(variant: OverlayVariant): CSSProperties {
@@ -44,6 +52,7 @@ function badgeStyle(color: string, rotate: string, variant: OverlayVariant): CSS
 }
 
 export function MarkOverlay({ mark, variant }: { mark: Mark; variant: OverlayVariant }) {
+  const t = useT();
   if (mark === "keep") {
     return (
       <>
@@ -74,7 +83,7 @@ export function MarkOverlay({ mark, variant }: { mark: Mark; variant: OverlayVar
             opacity="0.4"
           />
         </svg>
-        <span style={badgeStyle("var(--pos)", "rotate(-3deg)", variant)}>KEPT</span>
+        <span style={badgeStyle("var(--pos)", "rotate(-3deg)", variant)}>{t(RP.annoKept)}</span>
       </>
     );
   }
@@ -103,7 +112,7 @@ export function MarkOverlay({ mark, variant }: { mark: Mark; variant: OverlayVar
           strokeLinecap="round"
         />
       </svg>
-      <span style={badgeStyle("var(--neg)", "rotate(2deg)", variant)}>DOUBTED</span>
+      <span style={badgeStyle("var(--neg)", "rotate(2deg)", variant)}>{t(RP.annoDoubted)}</span>
     </>
   );
 }
@@ -134,6 +143,8 @@ export function AnnoBar({
   onDoubt: () => void;
   onNote?: () => void;
 }) {
+  const t = useT();
+  const subjectWord = SUBJECT_WORDS[subject] ? t(SUBJECT_WORDS[subject]) : subject;
   return (
     <div
       className="anno-bar"
@@ -143,20 +154,20 @@ export function AnnoBar({
         type="button"
         className="abtn"
         onClick={onKeep}
-        aria-label={`Keep this ${subject}`}
+        aria-label={t(RP.annoKeepAria, { subject: subjectWord })}
         aria-pressed={mark === "keep"}
         style={{ ...ABTN, color: "var(--pos)" }}
       >
         <svg viewBox="0 0 20 14" style={{ width: 14, height: 10 }} aria-hidden="true">
           <ellipse cx="10" cy="7" rx="8.5" ry="5.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
         </svg>
-        KEEP
+        {t(RP.annoKeep)}
       </button>
       <button
         type="button"
         className="abtn"
         onClick={onDoubt}
-        aria-label={`Doubt this ${subject}`}
+        aria-label={t(RP.annoDoubtAria, { subject: subjectWord })}
         aria-pressed={mark === "doubt"}
         style={{ ...ABTN, color: "var(--neg)" }}
       >
@@ -164,17 +175,17 @@ export function AnnoBar({
           <ellipse cx="10" cy="7" rx="8.5" ry="5.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
           <path d="M3 12 L17 2" stroke="currentColor" strokeWidth="1.5" />
         </svg>
-        DOUBT
+        {t(RP.annoDoubt)}
       </button>
       {onNote && (
         <button
           type="button"
           className="abtn"
           onClick={onNote}
-          aria-label="Attach a note"
+          aria-label={t(RP.annoNoteAria)}
           style={{ ...ABTN, color: "var(--muted)" }}
         >
-          + NOTE
+          {t(RP.annoNote)}
         </button>
       )}
     </div>

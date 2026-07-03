@@ -1,14 +1,17 @@
 "use client";
 
 // Screen 01 · Ask — glow hero, ask bar, example chip, latest-dossier card and
-// the three-step explainer. Layout + copy verbatim from the design handoff
-// ("Raven Home.dc.html"); submission wired to the real forecast API.
+// the three-step explainer. Layout from the design handoff
+// ("Raven Home.dc.html"); submission wired to the real forecast API. All
+// user-facing copy lives in the HOME i18n dictionary (lib/i18n/home.ts).
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { RvShell } from "../components/chrome/rv-shell";
 import { GTA6_DEMO, GTA6_DEMO_ID } from "../lib/demo/gta6";
+import { confidenceLabel, sourcesLabel, useLocale, useT, verdictLabel } from "../lib/i18n";
+import { HOME } from "../lib/i18n/home";
 import { cap, credWord } from "../lib/vm/format";
 import type { RunListItem } from "../lib/vm/types";
 import "./home.css";
@@ -44,22 +47,12 @@ const DEMO_CARD: LatestCard = {
   resDate: GTA6_DEMO.meta.resDate
 };
 
+// Dictionary entries per explainer card; rendered through t() so the cards
+// follow the active locale.
 const STEPS = [
-  {
-    kicker: "01 · FRAME",
-    title: "The question is pinned down",
-    body: "Normalized into something checkable — exact date, exact resolution criteria — and given an honest base-rate prior."
-  },
-  {
-    kicker: "02 · RESEARCH",
-    title: "Adversarial rounds",
-    body: "Gather evidence, weigh its credibility and value, then hunt for whatever would prove the current lean wrong. You can push back mid-run."
-  },
-  {
-    kicker: "03 · VERDICT",
-    title: "A number you can audit",
-    body: "One probability with its confidence band — and every source that moved it, in reading order, line by line."
-  }
+  { kicker: HOME.step1Kicker, title: HOME.step1Title, body: HOME.step1Body },
+  { kicker: HOME.step2Kicker, title: HOME.step2Title, body: HOME.step2Body },
+  { kicker: HOME.step3Kicker, title: HOME.step3Title, body: HOME.step3Body }
 ] as const;
 
 // "Very unlikely" + "A third delay…" → "Very unlikely — a third delay…"
@@ -85,12 +78,27 @@ function toCard(run: RunListItem): LatestCard {
 
 export default function HomePage() {
   const router = useRouter();
+  const t = useT();
+  const { locale } = useLocale();
   const inputRef = useRef<HTMLInputElement>(null);
   const [q, setQ] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [latest, setLatest] = useState<LatestCard>(DEMO_CARD);
   const [liveRuns, setLiveRuns] = useState<LiveRun[]>([]);
+  // Daily-quota gate: revealed only when the server answers 429 quota_exceeded;
+  // an accepted code is remembered so tomorrow's visits keep working.
+  const [inviteNeeded, setInviteNeeded] = useState(false);
+  const [invite, setInvite] = useState("");
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("raven-invite");
+      if (saved) setInvite(saved);
+    } catch {
+      // storage blocked (e.g. "block all cookies") — the input still works
+    }
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -129,14 +137,34 @@ export default function HomePage() {
     setSubmitting(true);
     setSubmitError(null);
     try {
+      const inviteCode = invite.trim();
       const res = await fetch("/api/forecasts", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question })
+        // `language` makes the engine write its reasoning/evidence in the
+        // reader's locale; `invite` unlocks a run once free quota is spent.
+        body: JSON.stringify({ question, language: locale, ...(inviteCode ? { invite: inviteCode } : {}) })
       });
-      const body = (await res.json().catch(() => null)) as { eventId?: string; error?: string } | null;
+      const body = (await res.json().catch(() => null)) as {
+        eventId?: string;
+        error?: string;
+        message?: string;
+      } | null;
+      if (res.status === 429 && body?.error === "quota_exceeded") {
+        setInviteNeeded(true);
+        throw new Error(body.message ?? "daily free quota reached — enter an invite code to continue");
+      }
       if (!res.ok || !body?.eventId) {
-        throw new Error(body?.error ?? `request failed (${res.status})`);
+        throw new Error(body?.error ?? t(HOME.requestFailed, { status: res.status }));
+      }
+      // Persist only a code that actually unlocked a gated request — saving
+      // unvalidated input would pre-fill garbage on later visits.
+      if (inviteCode && inviteNeeded) {
+        try {
+          window.localStorage.setItem("raven-invite", inviteCode);
+        } catch {
+          // storage blocked — the run still starts
+        }
       }
       router.push(`/forecast/${body.eventId}/research`);
     } catch (err) {
@@ -158,7 +186,7 @@ export default function HomePage() {
           className="rv-hdr-meta"
           style={{ fontFamily: "var(--fm)", fontSize: 10, letterSpacing: ".08em", color: "var(--faint)" }}
         >
-          RESEARCH PREVIEW
+          {t(HOME.researchPreview)}
         </span>
       }
     >
@@ -180,7 +208,7 @@ export default function HomePage() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/raven-mascot.png"
-          alt="Raven, a hooded crow holding a glowing orb"
+          alt={t(HOME.mascotAlt)}
           style={{
             position: "relative",
             width: 136,
@@ -202,7 +230,7 @@ export default function HomePage() {
             textAlign: "center"
           }}
         >
-          Raven <span style={{ color: "var(--accent)" }}>Forecasting Engine</span>
+          Raven <span style={{ color: "var(--accent)" }}>{t(HOME.heroTitleAccent)}</span>
         </h1>
         <p
           style={{
@@ -215,8 +243,7 @@ export default function HomePage() {
             textAlign: "center"
           }}
         >
-          Ask a hard yes-or-no question about the future. Raven frames it precisely, researches it in adversarial
-          rounds, and returns a probability — with every source that moved it laid out in reading order.
+          {t(HOME.heroLede)}
         </p>
 
         <form
@@ -242,8 +269,8 @@ export default function HomePage() {
             ref={inputRef}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Will … happen by …?"
-            aria-label="Forecast question"
+            placeholder={t(HOME.askPlaceholder)}
+            aria-label={t(HOME.askAriaLabel)}
             style={{
               flex: 1,
               minWidth: 0,
@@ -276,7 +303,7 @@ export default function HomePage() {
               opacity: submitting ? 0.7 : 1
             }}
           >
-            {submitting ? "Framing…" : "Forecast it"}
+            {submitting ? t(HOME.submitBusy) : t(HOME.submitIdle)}
           </button>
         </form>
         {submitError ? (
@@ -295,6 +322,57 @@ export default function HomePage() {
             {submitError}
           </div>
         ) : null}
+        {inviteNeeded ? (
+          <div
+            style={{
+              position: "relative",
+              width: "min(720px,92vw)",
+              marginTop: 10,
+              display: "flex",
+              gap: 10,
+              alignItems: "center",
+              flexWrap: "wrap",
+              background: "var(--surface)",
+              border: "1px solid var(--line2)",
+              borderRadius: 10,
+              padding: "10px 14px"
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--fm)",
+                fontSize: 10.5,
+                letterSpacing: ".06em",
+                textTransform: "uppercase",
+                color: "var(--muted)"
+              }}
+            >
+              Invite code
+            </span>
+            <input
+              value={invite}
+              onChange={(e) => setInvite(e.target.value)}
+              placeholder="e.g. raven-…"
+              aria-label="Invite code"
+              autoComplete="off"
+              style={{
+                flex: 1,
+                minWidth: 140,
+                background: "none",
+                border: "none",
+                outline: "none",
+                color: "var(--text)",
+                fontFamily: "var(--fm)",
+                fontSize: 13,
+                padding: "6px 0",
+                letterSpacing: ".04em"
+              }}
+            />
+            <span style={{ fontFamily: "var(--fm)", fontSize: 10, color: "var(--faint)", letterSpacing: ".03em" }}>
+              then press “Forecast it” again
+            </span>
+          </div>
+        ) : null}
 
         <div
           style={{
@@ -308,7 +386,7 @@ export default function HomePage() {
           }}
         >
           <span style={{ fontFamily: "var(--fm)", fontSize: 10.5, letterSpacing: ".04em", color: "var(--faint)" }}>
-            Works best with a deadline and a checkable outcome — try
+            {t(HOME.hintPrefix)}
           </span>
           <button
             type="button"
@@ -325,7 +403,7 @@ export default function HomePage() {
               cursor: "pointer"
             }}
           >
-            Will the GTA 6 launch slip past November 19, 2026?
+            {t(HOME.exampleChip)}
           </button>
         </div>
 
@@ -340,7 +418,7 @@ export default function HomePage() {
               marginBottom: 10
             }}
           >
-            Latest dossier
+            {t(HOME.latestDossier)}
           </div>
           {liveRuns.map((r) => (
             <Link
@@ -371,7 +449,7 @@ export default function HomePage() {
                 }}
               />
               <span style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                LIVE — {r.question}
+                {t(HOME.liveRun, { question: r.question })}
               </span>
             </Link>
           ))}
@@ -418,7 +496,7 @@ export default function HomePage() {
                 {latest.question}
               </div>
               <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 5, fontStyle: "italic" }}>
-                {verdictLine(latest.verdict, latest.quip)}
+                {verdictLine(verdictLabel(latest.verdict, locale), latest.quip)}
               </div>
               <div
                 style={{
@@ -431,12 +509,12 @@ export default function HomePage() {
                   flexWrap: "wrap"
                 }}
               >
-                <span>{latest.sources} sources</span>
+                <span>{sourcesLabel(latest.sources, locale)}</span>
                 <span>{latest.duration}</span>
                 <span style={{ color: `var(--cred-${credWord(latest.confidence)})` }}>
-                  {cap(latest.confidence)} confidence
+                  {t(HOME.confidenceMeta, { level: cap(confidenceLabel(latest.confidence, locale)) })}
                 </span>
-                {latest.resDate ? <span>resolves {latest.resDate}</span> : null}
+                {latest.resDate ? <span>{t(HOME.resolvesOn, { date: latest.resDate })}</span> : null}
               </div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -457,7 +535,7 @@ export default function HomePage() {
                   borderRadius: 8
                 }}
               >
-                Read the dossier
+                {t(HOME.readDossier)}
               </Link>
               <Link
                 href={`/forecast/${latest.id}/research`}
@@ -476,7 +554,7 @@ export default function HomePage() {
                   borderRadius: 8
                 }}
               >
-                Watch the run
+                {t(HOME.watchRun)}
               </Link>
             </div>
           </div>
@@ -485,7 +563,7 @@ export default function HomePage() {
         <div className="rv-home-steps">
           {STEPS.map((s) => (
             <div
-              key={s.kicker}
+              key={s.kicker.en}
               style={{
                 border: "1px solid var(--line)",
                 borderRadius: 13,
@@ -502,10 +580,10 @@ export default function HomePage() {
                   color: "var(--accent)"
                 }}
               >
-                {s.kicker}
+                {t(s.kicker)}
               </div>
-              <div style={{ fontFamily: "var(--fd)", fontWeight: 600, fontSize: 16, marginTop: 9 }}>{s.title}</div>
-              <p style={{ margin: "6px 0 0", fontSize: 13, lineHeight: 1.55, color: "var(--muted)" }}>{s.body}</p>
+              <div style={{ fontFamily: "var(--fd)", fontWeight: 600, fontSize: 16, marginTop: 9 }}>{t(s.title)}</div>
+              <p style={{ margin: "6px 0 0", fontSize: 13, lineHeight: 1.55, color: "var(--muted)" }}>{t(s.body)}</p>
             </div>
           ))}
         </div>

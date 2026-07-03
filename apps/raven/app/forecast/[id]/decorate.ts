@@ -2,16 +2,19 @@
 // (01…NN in reading order across iterations), arrows/labels and anchor hrefs.
 // Semantics ported verbatim from the design handoff's Report renderVals().
 
+import type { Entry } from "../../../lib/i18n";
+import { SIDE_LABEL_TEMPLATES } from "../../../lib/i18n/verdict";
 import { arrowFor, cap, diamondsFor, dirFor } from "../../../lib/vm/format";
 import type { DossierVM, EvidenceVM, IterationVM, NetDir, Side } from "../../../lib/vm/types";
 
 // "Support" is relative to the forecast's lean: on a NO-leaning run (the demo)
-// supporting evidence pushes NO; on a YES-leaning run it pushes YES.
-export function sideLabelFor(side: Side, leanYes: boolean): string {
-  if (side === "neutral") return "No directional weight";
-  const lean = leanYes ? "YES" : "NO";
-  const against = leanYes ? "NO" : "YES";
-  return side === "support" ? `Supports the forecast (pushes ${lean})` : `Cuts against the forecast (pushes ${against})`;
+// supporting evidence pushes NO; on a YES-leaning run it pushes YES. Returns a
+// locale Entry (both languages baked) so components render it with t().
+export function sideLabelFor(side: Side, leanYes: boolean): Entry {
+  if (side === "neutral") return SIDE_LABEL_TEMPLATES.neutral;
+  const dir = side === "support" ? (leanYes ? "YES" : "NO") : leanYes ? "NO" : "YES";
+  const tpl = SIDE_LABEL_TEMPLATES[side];
+  return { en: tpl.en.replaceAll("{dir}", dir), zh: tpl.zh.replaceAll("{dir}", dir) };
 }
 
 export interface DecoratedEvidence extends EvidenceVM {
@@ -20,9 +23,9 @@ export interface DecoratedEvidence extends EvidenceVM {
   dir: NetDir;
   deltaAbs: string; // "12%"
   valDiamonds: string;
-  valueLabel: string;
-  credLabel: string;
-  sideLabel: string;
+  valueLabel: string; // "High" | "Med" | "Low" — localized via tierWord()
+  credLabel: string; // "High" | "Med" | "Low" — localized via tierWord()
+  sideLabel: Entry; // rendered with t() at the component layer
   href: string; // "#ev-01"
 }
 
@@ -31,7 +34,7 @@ export interface DecoratedIteration extends Omit<IterationVM, "evidence"> {
 }
 
 export interface DecoratedCore extends DecoratedEvidence {
-  rank: string;
+  rank: string; // English rank key — localized via rankEntry() + t() in the view
 }
 
 export interface DecoratedDossier {

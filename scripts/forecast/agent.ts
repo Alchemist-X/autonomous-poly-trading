@@ -8,7 +8,7 @@
 
 import { runAgentRaw } from "./claude-agent";
 import type { AgentRunResult, RunAgentOptions } from "./claude-agent";
-import { runDeepSeekRaw } from "./deepseek-agent";
+import { runDeepSeekRaw, webSearchEnabled } from "./deepseek-agent";
 
 export type ProviderName = "claude" | "deepseek";
 
@@ -17,7 +17,9 @@ export function providerName(): ProviderName {
 }
 
 export function providerHasWebSearch(name: ProviderName = providerName()): boolean {
-  return name === "claude";
+  // deepseek/kimi gain a real search trace when the function-calling research
+  // loop is enabled (FORECAST_WEB_SEARCH) — prompts may then instruct research.
+  return name === "claude" || (name === "deepseek" && webSearchEnabled());
 }
 
 export async function runAgent(prompt: string, opts: RunAgentOptions = {}): Promise<AgentRunResult> {

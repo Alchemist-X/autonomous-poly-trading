@@ -1,18 +1,29 @@
-// DeepSeek provider — OpenAI-compatible chat completion, NO web search.
+// DeepSeek provider — OpenAI-compatible chat completion, with OPTIONAL web
+// search via function calling (FORECAST_WEB_SEARCH=1|duckduckgo|tavily).
 //
-// This backend exists so the loop can be exercised cheaply (and driven from the
-// Raven app) without Claude Code: one HTTP POST per round, structured JSON via
-// json_object mode. It has no tool trace, so the fabrication guard degrades to
-// a CITATION LIVENESS check (see verifyCitedUrls): a cited URL counts as
+// Default (search off): one HTTP POST per round, structured JSON via
+// json_object mode, no tool trace — the fabrication guard degrades to a
+// CITATION LIVENESS check (see verifyCitedUrls): a cited URL counts as
 // "verified" unless it provably does not exist — a strictly weaker guarantee
-// than Claude's search-trace membership (a live page does not prove the model
-// read it, only that the citation isn't a dead fabrication).
+// than a search-trace membership check.
+//
+// Search on: the model gets web_search/fetch_page tools (standard OpenAI
+// function calling — works for DeepSeek AND Kimi/Moonshot through the same
+// adapter); the tool loop records a REAL search trace, so citations are
+// verified by trace membership exactly like the claude provider (with the
+// liveness check as fallback only when the model never touched the tools).
 //
 // The endpoint is configured purely by env (DEEPSEEK_BASE_URL / API key), so no
 // secret is committed here.
 
 import { extractJsonObject } from "./claude-agent";
 import type { AgentRunResult, RunAgentOptions } from "./claude-agent";
+import { fetchPageText, webSearch } from "./web-search";
+
+export function webSearchEnabled(): boolean {
+  const v = (process.env.FORECAST_WEB_SEARCH ?? "").trim().toLowerCase();
+  return v === "1" || v === "true" || v === "duckduckgo" || v === "tavily";
+}
 
 export interface DeepSeekDeps {
   fetchFn?: typeof fetch; // injectable for tests
@@ -107,6 +118,49 @@ export async function verifyCitedUrls(urls: string[], fetchFn: typeof fetch = fe
   return verified;
 }
 
+// OpenAI function-calling tool definitions for the research loop.
+const RESEARCH_TOOLS = [
+  {
+    type: "function",
+    function: {
+      name: "web_search",
+      description: "Search the live web. Returns up to 8 results with title, url and snippet.",
+      parameters: {
+        type: "object",
+        properties: { query: { type: "string", description: "search query" } },
+        required: ["query"]
+      }
+    }
+  },
+  {
+    type: "function",
+    function: {
+      name: "fetch_page",
+      description: "Fetch a web page by URL and return its readable text (truncated).",
+      parameters: {
+        type: "object",
+        properties: { url: { type: "string", description: "absolute http(s) URL" } },
+        required: ["url"]
+      }
+    }
+  }
+] as const;
+
+const MAX_MODEL_TURNS = 8; // model responses per round (tool turns + final)
+const MAX_TOOL_CALLS = 14; // total tool executions per round
+
+interface ChatMessage {
+  role: "user" | "assistant" | "tool";
+  content: string | null;
+  tool_calls?: Array<{ id: string; type: string; function: { name: string; arguments: string } }>;
+  tool_call_id?: string;
+}
+
+interface ChatResponse {
+  choices?: Array<{ message?: ChatMessage }>;
+  usage?: { prompt_tokens?: number; completion_tokens?: number };
+}
+
 export async function runDeepSeekRaw(
   prompt: string,
   opts: RunAgentOptions = {},
@@ -120,6 +174,10 @@ export async function runDeepSeekRaw(
   const model = opts.model || process.env.FORECAST_DEEPSEEK_MODEL || "deepseek-chat";
   const fetchFn = deps.fetchFn ?? fetch;
   const timeoutMs = opts.timeoutMs ?? (Number(process.env.FORECAST_AGENT_TIMEOUT_MS) || 360_000);
+
+  if (webSearchEnabled()) {
+    return runWithTools(prompt, { baseUrl, apiKey, model, fetchFn, timeoutMs });
+  }
 
   // The timeout must cover the BODY read too, not just the response headers — a
   // drip-fed body would otherwise stall a round indefinitely. The abort signal
@@ -186,5 +244,136 @@ export async function runDeepSeekRaw(
     numTurns: 1,
     exitCode: 0,
     stderrTail: "",
+  };
+}
+
+interface ToolLoopCtx {
+  baseUrl: string;
+  apiKey: string;
+  model: string;
+  fetchFn: typeof fetch;
+  timeoutMs: number;
+}
+
+// The research tool loop: standard OpenAI function calling against the same
+// endpoint. The overall timeout is a shared budget across every model call in
+// the loop. During tool turns response_format is OMITTED (json_object mode
+// suppresses tool calls); if the final content fails to parse, one repair
+// turn asks for the JSON alone.
+async function runWithTools(prompt: string, ctx: ToolLoopCtx): Promise<AgentRunResult> {
+  const deadline = Date.now() + ctx.timeoutMs;
+  let promptTokens = 0;
+  let completionTokens = 0;
+
+  const call = async (messages: ChatMessage[], withTools: boolean, forceJson: boolean): Promise<ChatMessage> => {
+    const remaining = deadline - Date.now();
+    if (remaining <= 1000) throw new Error(`deepseek tool loop exhausted its ${ctx.timeoutMs}ms budget`);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), remaining);
+    try {
+      const res = await ctx.fetchFn(`${ctx.baseUrl}/chat/completions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${ctx.apiKey}` },
+        body: JSON.stringify({
+          model: ctx.model,
+          messages,
+          ...(withTools ? { tools: RESEARCH_TOOLS } : {}),
+          ...(forceJson ? { response_format: { type: "json_object" } } : {}),
+          max_tokens: 6000
+        }),
+        signal: controller.signal
+      });
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        throw new Error(`deepseek API error ${res.status}: ${body.slice(0, 300)}`);
+      }
+      const data = (await res.json()) as ChatResponse;
+      promptTokens += data.usage?.prompt_tokens ?? 0;
+      completionTokens += data.usage?.completion_tokens ?? 0;
+      const msg = data.choices?.[0]?.message;
+      if (!msg) throw new Error("deepseek returned no message");
+      return msg;
+    } catch (err) {
+      if (controller.signal.aborted) throw new Error(`deepseek request timed out (shared ${ctx.timeoutMs}ms budget)`);
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  const messages: ChatMessage[] = [{ role: "user", content: prompt }];
+  const searchQueries: string[] = [];
+  const traceUrls = new Set<string>();
+  let toolCalls = 0;
+  let finalText = "";
+
+  for (let turn = 0; turn < MAX_MODEL_TURNS; turn++) {
+    const allowTools = toolCalls < MAX_TOOL_CALLS;
+    const msg = await call(messages, allowTools, false);
+    if (msg.tool_calls?.length && allowTools) {
+      messages.push({ role: "assistant", content: msg.content ?? null, tool_calls: msg.tool_calls });
+      for (const tc of msg.tool_calls) {
+        toolCalls += 1;
+        let resultText: string;
+        try {
+          const args = JSON.parse(tc.function.arguments || "{}") as { query?: string; url?: string };
+          if (tc.function.name === "web_search" && args.query) {
+            searchQueries.push(args.query);
+            const hits = await webSearch(args.query, ctx.fetchFn);
+            for (const h of hits) traceUrls.add(h.url);
+            resultText = JSON.stringify(hits);
+          } else if (tc.function.name === "fetch_page" && args.url) {
+            traceUrls.add(args.url);
+            resultText = await fetchPageText(args.url, ctx.fetchFn);
+          } else {
+            resultText = `[unknown tool or missing argument: ${tc.function.name}]`;
+          }
+        } catch (error) {
+          resultText = `[tool failed: ${error instanceof Error ? error.message : String(error)}]`;
+        }
+        messages.push({ role: "tool", content: resultText.slice(0, 8000), tool_call_id: tc.id });
+      }
+      continue;
+    }
+    finalText = msg.content ?? "";
+    break;
+  }
+
+  let jsonObject = finalText ? extractJsonObject(finalText) : null;
+  if (!jsonObject) {
+    // One repair turn: JSON only, no tools.
+    messages.push({
+      role: "user",
+      content: "Return ONLY the JSON object requested in the original instructions — no prose, no tool calls, valid json."
+    });
+    const repaired = await call(messages, false, true);
+    finalText = repaired.content ?? finalText;
+    jsonObject = finalText ? extractJsonObject(finalText) : null;
+  }
+  const jsonError = !finalText ? "empty completion" : jsonObject ? null : "no JSON object found in agent final text";
+
+  // Verified set: the REAL tool trace when the model researched; liveness
+  // fallback (weaker) only when it never touched the tools.
+  const searchResultUrls = traceUrls.size
+    ? traceUrls
+    : await verifyCitedUrls(collectCitedUrls(jsonObject), ctx.fetchFn);
+
+  const priceIn = Number(process.env.DEEPSEEK_PRICE_IN_PER_MTOK);
+  const priceOut = Number(process.env.DEEPSEEK_PRICE_OUT_PER_MTOK);
+  const costUsd =
+    Number.isFinite(priceIn) && Number.isFinite(priceOut)
+      ? (promptTokens * priceIn + completionTokens * priceOut) / 1_000_000
+      : null;
+
+  return {
+    rawFinalText: finalText,
+    jsonObject,
+    jsonError,
+    searchQueries,
+    searchResultUrls,
+    costUsd,
+    numTurns: Math.min(MAX_MODEL_TURNS, toolCalls + 1),
+    exitCode: 0,
+    stderrTail: ""
   };
 }
