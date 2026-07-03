@@ -26,6 +26,9 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  isDrawLeg, isResolvedYes, nameMatchesKey, normTeam, type GammaEvent, type GammaMarket
+} from "./lib/settlement.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const GEN_DIR = path.join(REPO_ROOT, "apps/web/lib/world-cup/generated");
@@ -54,68 +57,12 @@ interface FixtureInput {
   readonly teamB: string;
 }
 
-interface GammaMarket {
-  readonly question?: string;
-  readonly groupItemTitle?: string;
-  readonly outcomePrices?: string;
-  readonly closed?: boolean;
-  readonly umaResolutionStatus?: string;
-}
-interface GammaEvent {
-  readonly slug?: string;
-  readonly title?: string;
-  readonly closed?: boolean;
-  readonly markets?: readonly GammaMarket[];
-}
-
 const PENDING: Fifa8Result = { status: "pending", winner: null, score: null };
 
 async function fetchJson(url: string): Promise<unknown> {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`${r.status} ${url}`);
   return r.json();
-}
-
-function parseJsonArray(raw: string | undefined): string[] {
-  if (!raw) return [];
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.map(String) : [];
-  } catch {
-    return [];
-  }
-}
-
-// Accent-/punctuation-insensitive team key; drops the connector "and" so
-// "Bosnia and Herzegovina" == "Bosnia-Herzegovina". Mirrors settlement.ts.
-function normTeam(s: string): string {
-  return s
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/\band\b/g, "")
-    .replace(/[^a-z0-9]/g, "");
-}
-
-// True when `name` matches `key` (a normalized team key), tolerant of one being
-// a substring of the other (e.g. "korea" ⊂ "korearepublic").
-function nameMatchesKey(name: string, key: string): boolean {
-  const x = normTeam(name);
-  if (!x || !key) return false;
-  return x === key || (x.length >= 3 && key.includes(x)) || (key.length >= 3 && x.includes(key));
-}
-
-// A binary Yes/No leg is "settled YES" when UMA resolved it and the first (Yes)
-// leg paid out 1. We read outcomePrices ONLY as the settlement bit — the numeric
-// value is never stored or surfaced (market-blind).
-function isResolvedYes(m: GammaMarket): boolean {
-  if (m.umaResolutionStatus !== "resolved" || !m.closed) return false;
-  const prices = parseJsonArray(m.outcomePrices);
-  return prices.length > 0 && Math.round(Number(prices[0])) === 1;
-}
-
-function isDrawLeg(m: GammaMarket): boolean {
-  return /^draw\b/i.test(m.groupItemTitle ?? "") || /end in a draw/i.test(m.question ?? "");
 }
 
 // Exclude futures / aggregate markets that share team names but aren't the head-
