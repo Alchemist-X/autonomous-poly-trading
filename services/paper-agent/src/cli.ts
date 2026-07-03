@@ -14,7 +14,7 @@ import { applyBuy, loadPortfolio, positionId, savePortfolio, type PaperPosition 
 import { fetchBook, fetchMarket } from "./polymarket";
 import { writeReflectionReport } from "./reflect";
 import { runEvaluationCycle, runFillTick } from "./run-cycle";
-import { appendLedger } from "./store";
+import { acquireBookLock, appendLedger, releaseBookLock } from "./store";
 
 async function cmdBuy(slug: string, sideRaw: string, usdRaw: string): Promise<void> {
   const side = sideRaw.toUpperCase() === "NO" ? 1 : 0;
@@ -25,6 +25,15 @@ async function cmdBuy(slug: string, sideRaw: string, usdRaw: string): Promise<vo
   if (!isYesNoMarket(market.outcomes) || market.tokenIds.length !== 2) {
     throw new Error(`phase 1 supports Yes/No binary markets only (got outcomes: ${market.outcomes.join("/")})`);
   }
+  if (!acquireBookLock()) throw new Error("book is locked by a running cycle/tick — try again in a moment");
+  try {
+    await seedBuy(slug, side, usd, market);
+  } finally {
+    releaseBookLock();
+  }
+}
+
+async function seedBuy(slug: string, side: number, usd: number, market: Awaited<ReturnType<typeof fetchMarket>>): Promise<void> {
   const portfolio = loadPortfolio();
   const id = positionId(slug, side);
   if (portfolio.positions.some((p) => p.id === id)) throw new Error(`position ${id} already open`);

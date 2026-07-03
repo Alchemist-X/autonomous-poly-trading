@@ -34,7 +34,7 @@ import {
 } from "./portfolio";
 import { decideEntry, decideExit, planHybridExit, stopLossBreached } from "./policy";
 import { fetchBook, fetchMarket, type MarketInfo, type OrderBook } from "./polymarket";
-import { appendLedger } from "./store";
+import { acquireBookLock, appendLedger, releaseBookLock } from "./store";
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -138,6 +138,21 @@ function executeExit(
 // ---- The 3×/day evaluation cycle ----------------------------------------------
 
 export async function runEvaluationCycle(cfg: PaperConfig): Promise<void> {
+  // Cross-process guard: refuse to run if another cycle/tick holds the book
+  // (e.g. a manual `paper cycle` while the scheduler is live) — prevents the
+  // load-modify-save race that silently drops entries.
+  if (!acquireBookLock()) {
+    log.warn("book is locked by another cycle/tick — skipping this evaluation cycle");
+    return;
+  }
+  try {
+    await runEvaluationCycleLocked(cfg);
+  } finally {
+    releaseBookLock();
+  }
+}
+
+async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
   let portfolio = loadPortfolio();
   appendLedger({ type: "cycle_start", positions: portfolio.positions.length, cashUsd: portfolio.cashUsd });
   let evals = 0;
@@ -374,6 +389,18 @@ async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: 
 // ---- Fast tick: stop-loss sweep, resting-limit fills, resolution sweep ---------
 
 export async function runFillTick(cfg: PaperConfig): Promise<void> {
+  if (!acquireBookLock()) {
+    log.warn("book is locked by another cycle/tick — skipping this fill tick");
+    return;
+  }
+  try {
+    await runFillTickLocked(cfg);
+  } finally {
+    releaseBookLock();
+  }
+}
+
+async function runFillTickLocked(cfg: PaperConfig): Promise<void> {
   let portfolio = loadPortfolio();
   if (!portfolio.positions.length) return;
 
