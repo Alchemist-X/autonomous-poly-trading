@@ -11,6 +11,14 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-07-03 by Claude（**全自主 Polymarket 纸面交易 agent 第一期上线 VPS**，分支 `feat/paper-polymarket-agent`，PR #67，栈在 #65 上）。
+> 用户指令：VPS 上部署全自主 Polymarket agent，第一期纯测试盘——记手续费模拟成交、每日 3 次重点评估持仓（DeepSeek/Kimi 独立进程隔离出概率）、概率与市价有差值就平仓、混合 50/50（限价+市价）对冲手续费摩擦、要有回测/反思。
+> ① **`services/paper-agent`**（第三个 compose 服务，共享镜像/卷；**零私钥零签名器零下单端点**，唯一网络面 = Gamma/CLOB 公开 GET）：模拟成交按真实盘口逐档 walk（真滑点）；**费率用 CLOB 逐市场实时元数据**（taker/maker bps + tick size，入场时存仓位、退出时刷新）；入场费计入成本基（现金与已实现 PnL 可对账）。
+> ② **持仓评估（重点）**：每日 3 次（`PAPER_EVAL_TIMES_UTC`）每仓 spawn 独立进程跑预测引擎（deepseek provider；Kimi 走同一 OpenAI 兼容适配器换 `DEEPSEEK_BASE_URL`）——prompt 只含市场问题+结算标准，**不含持仓/成本/盘口**；dossier 在 paper-agent 私有命名空间（不与 raven/API 混）。决策：持有净 edge（扣费）< 阈值 → 平仓；**止损（−35%）压过模型**——周期内先于 LLM 检查 + 每 10 分钟 tick 无模型扫描。
+> ③ **混合执行**：negative_edge 平仓 = 50% 市价 + 50% maker 限价（TTL 8h 回落市价，未成交余量滚入限价）；stop_loss = 100% 市价。④ **反思/回测**：每天最后一轮后自动出报告（`runtime-artifacts/paper-agent/reports/`）：逐笔"卖出 vs 假如持有"反事实 α、Brier 校准、费用拖累、限价/市价执行质量对比。
+> ⑤ **对抗式评审 22 项确认全修**，两个靠真实 API 探针抓到的硬伤值得记住：**Gamma `?slug=` 默认排除已关闭市场**（结算查询必须两步：先平查再 `&closed=true`；CLOB /book 关盘后 404 → 先结算后取盘口）；**Gamma 已无 `category` 字段**（静态费率表是死代码 → 全部改 CLOB 实时费率）。另修：作废盘 0.5/0.5 退款、`--max-rounds` 是总量帽（续跑必须传 已完成+增量）、单写者队列防 cycle/tick 竞态。
+> ⑥ 验收：26/26 测试；本地+VM 双 E2E（预评估止损零 LLM 花费、$2.25 实时费率入账、负 edge 混合退出、反思报告落盘）；VM 三容器并存健康。**运维**：`sudo docker exec raven-paper-agent-1 pnpm --filter @autopoly/paper-agent paper status|buy|cycle|reflect`；观察几天每日反思报告后再定第二期（自动开仓 watchlist 已内建，`PAPER_WATCHLIST` 未启用）。英文版 handoff 此条待同步翻译。
+>
 > 最后更新：2026-07-03 by Claude（**Forecast API + MCP 服务上线 GCP 东京 VM**，分支 `claude/bold-shamir-7903ab`，PR #65）。
 > 用户指令：把 forecasting agent 抽象成任何人可调用的 hosted API（答案 = 事件概率 + 分析思路 + 证据），交付 PDF + 纯文字两种形态，托管在 Google VPS，并做成 MCP。
 > ① **新服务 `services/forecast-api`**（raw node:http 零框架，~10 个小文件）：`POST /v1/forecasts {question}` spawn 现有引擎（与 apps/raven run-manager 同款接缝：`tsx scripts/forecast/cli.ts` + 读 state.json）；`GET /v1/forecasts/:id` = JSON、`/text` = 纯文字、`/pdf` = A4 档案（headless Chromium，pulse-decision-report 同管线，按 state 版本缓存于事件目录 answer.pdf）；`POST /mcp` = 无状态 streamable-HTTP MCP（工具 forecast_start/forecast_status/forecast_result）。token 门（Bearer/x-api-key/?token=，`FORECAST_API_TOKEN` 空值回落 `RAVEN_ACCESS_TOKEN`）；并发 run 上限默认 2（429）；**内部 credibleInterval 全表面不出现**（含 jobLogTail 消毒）。vitest 22/22 + typecheck 绿。
