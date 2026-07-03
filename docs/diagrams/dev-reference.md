@@ -2,7 +2,7 @@
 
 > 英文版：[dev-reference.en.md](dev-reference.en.md)（待同步翻译）
 >
-> 最后更新：2026-06-15
+> 最后更新：2026-07-03（Stage 1 清理后重写仓库树；删除 e2e / hostinger / viewer / position-monitor 相关条目）
 
 本仓库主 README 只保留面向 Agent 的自然语言工作流。需要直接用 pnpm 手动操作、或者排查依赖/部署形态时，翻这份。
 
@@ -15,34 +15,39 @@
 - **三层产品 / 包命名（历史累积，各自内部自洽）：**
   - `predict-raven` = 仓库名（GitHub repo / 本地目录）。
   - `@autopoly/*` = npm workspace scope（历史遗留；所有子包都用这个 scope，不影响功能）。
-  - `raven` = 产品代号（`apps/raven-managed`、`raven-agent-loop` 等）。
+  - `raven` = 产品代号（`apps/raven`、`apps/raven-managed` 等）。
 
 ## Monorepo 结构
 
 本仓库是 `pnpm` monorepo（`pnpm@10.28.1`，Node ≥ 20），没有根级 `src/`，源码分布在以下子包中：
 
 ```
-autonomous-poly-trading/
+predict-raven/
 ├── apps/
-│   └── web/                          # Next.js 16 网站：公开围观 + 管理员控制台
+│   ├── web/                          # Next.js 公开站：世界杯盲测预测（forecasting-agent.com）
+│   ├── raven/                        # Raven Forecasting Engine 三屏 app（:3200）
+│   └── raven-managed/                # 托管交易前端（Phase 3a 完成，保留待开发）
 ├── services/
 │   ├── orchestrator/                 # 调度、Pulse、决策运行时、风控、报告
 │   ├── executor/                     # Polymarket CLOB 对接、下单、同步、队列 worker
+│   ├── managed-trading/              # 托管交易后端（保留待开发）
 │   └── rough-loop/                   # 独立的代码任务循环器（非交易主链路）
 ├── packages/
-│   ├── contracts/                    # Zod schema：TradeDecisionSet 等共享契约
+│   ├── contracts/                    # Zod schema：TradeDecisionSet 等共享契约 + env 加载
 │   ├── db/                           # Drizzle schema、迁移、查询、local-state
-│   └── terminal-ui/                  # 终端彩色输出、错误摘要、表格渲染
-├── scripts/                          # 工作区级入口：daily-pulse、live-test、poly-cli
-├── vendor/                           # 外部仓库锁定清单（manifest.json）
-├── deploy/hostinger/                 # VPS 部署脚本与环境模板
-├── Illustration/                     # 架构图、流程图、运维说明（中英双语）
-├── Plan/                             # 阶段性规划文档
-├── Wasted/                           # 已归档的 legacy handoff / 探索稿 / 历史进度
-├── E2E Test Driven Development/      # Playwright + Vitest E2E 套件
-├── runtime-artifacts/                # 运行产物归档（.gitignore，仅保留 .gitkeep）
-├── docker-compose.yml                # 本地 Postgres 17 + Redis 8
-├── docker-compose.hostinger.yml      # 生产向容器编排
+│   ├── terminal-ui/                  # 终端彩色输出、错误摘要、表格渲染
+│   ├── norns/                        # 模型别名解析（orchestrator 配置链）
+│   ├── sports-model/                 # 世界杯建模原语（elo/poisson/xg 等，fifa-models 消费）
+│   ├── sports-data/                  # Polymarket Gamma/WS 行情客户端（世界杯脚本用）
+│   ├── fifa-models/                  # FIFA 八模型淘汰赛预测引擎
+│   └── market-intelligence/          # Python 种子模块（issue #25 定性，未接线）
+├── scripts/                          # 工作区级入口：pulse-live / daily-pulse / forecast/ / world-cup/
+├── vendor/                           # 外部仓库锁定清单（manifest.json）+ vendor:sync 镜像（gitignore）
+├── deploy/                           # docker-compose、raven Docker 套件、cron 模板
+├── docs/                             # agent-handoff / diagrams / internal（中英双语）
+├── evaluation/                       # 历史评测归档
+├── runtime-artifacts/                # 运行产物归档（默认 gitignore；世界杯共享件白名单入库）
+├── .github/workflows/                # ci.yml（build/typecheck/test 门禁）+ wc-results.yml（世界杯部署）
 └── package.json                      # 根 scripts + workspace 依赖
 ```
 
@@ -50,7 +55,8 @@ autonomous-poly-trading/
 
 | 模块 | 做什么 | 关键入口 |
 | --- | --- | --- |
-| `apps/web` | 公开页面（总览/持仓/成交/runs/reports/backtests）+ 管理员操作 | `app/page.tsx` |
+| `apps/web` | 世界杯盲测预测公开站 + prediction-engine 展示页 | `app/[locale]/world-cup/` |
+| `apps/raven` | Forecasting Engine 三屏 app（Ask → Research → Verdict） | `app/page.tsx` |
 | `services/orchestrator` | Pulse 生成 → 决策运行时 → 风控裁剪 → 报告产物 | `src/jobs/daily-pulse-core.ts` |
 | `services/executor` | Polymarket CLOB 下单、仓位同步、止损、flatten | `src/workers/queue-worker.ts`、`src/lib/polymarket.ts` |
 | `packages/contracts` | `TradeDecisionSet`、`actionSchema`、队列/任务名等 | `src/index.ts` |
@@ -65,7 +71,8 @@ autonomous-poly-trading/
 
 ```bash
 pnpm build              # 全量构建
-pnpm typecheck          # 全量类型检查
+pnpm typecheck          # 全量类型检查（workspace 包）
+pnpm typecheck:scripts  # scripts/ 树 tsc 门禁（2026-07-03 起；14 个存量错清零前 CI 非阻塞）
 pnpm test               # Vitest 单测
 ```
 
@@ -126,14 +133,6 @@ pnpm --filter @autopoly/executor ops:check -- --slug <market-slug>
 pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
 ```
 
-### E2E
-
-```bash
-pnpm e2e:install-browsers
-pnpm e2e:local-lite
-AUTOPOLY_E2E_REMOTE=1 pnpm e2e:remote-real
-```
-
 ### Rough Loop
 
 ```bash
@@ -185,7 +184,7 @@ pnpm wc:results -- --all     # 不按开球时间过滤，强制探测全部 72 
 | Postgres 17 | 托管数据库 |
 | Redis 8 | 同机或托管 |
 
-Hostinger VPS 方案见 [hostinger-vps-deploy-runbook.md](hostinger-vps-deploy-runbook.md)，配合 `docker-compose.hostinger.yml` 和 `deploy/hostinger/stack.env.example`。
+当前实际部署形态：`apps/web` → Vercel（`wc-results.yml` 用 `VERCEL_TOKEN` 构建+部署+promote）；`apps/raven` → GCP 东京 VM Docker（套件见 `deploy/raven/`）。Hostinger VPS 方案已于 2026-07-03 随 Stage 1 清理移除（`deploy/hostinger/` 已删，runbook 仅存档参考）。
 
 管理员操作通过站内受保护接口调 orchestrator，不向公众暴露 `4001 / 4002 / 5432 / 6379`。
 

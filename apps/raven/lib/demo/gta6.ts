@@ -13,7 +13,6 @@ const META = {
   verdict: "Very unlikely",
   quip: "A third delay would be a real plot twist at this point.",
   prior: "38%",
-  ci: "3%–11%",
   duration: "33m 35s",
   sources: "13",
   nSupport: "9",

@@ -122,7 +122,6 @@ export function adaptState(state: StateX, job: Job | null): DossierVM {
     verdict: verdictFor(state.currentProb),
     quip: summary?.quip ?? "",
     prior: pct(state.framing.priorProbability),
-    ci: `${r100(state.credibleInterval[0])}%–${r100(state.credibleInterval[1])}%`,
     duration: formatDuration(state.createdAtUtc, state.updatedAtUtc),
     sources: String(allEvidence.length),
     nSupport: String(nSupport),

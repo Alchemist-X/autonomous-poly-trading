@@ -2,4 +2,3 @@ packages:
   - apps/*
   - packages/*
   - services/*
-  - "E2E Test Driven Development/suite"

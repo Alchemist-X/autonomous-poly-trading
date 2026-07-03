@@ -11,7 +11,14 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-03 by Claude（**Raven 全站中英切换 + 引擎中文输出**，分支 `claude/kind-goodall-e0d263`）。
+> 最后更新：2026-07-03 by Claude（**仓库复杂度三阶段重构计划 + Stage 1 全量执行**，分支 `claude/determined-murdock-1b1027`）。
+> 用户反馈"整仓复杂度太大"→ 10 路并行诊断（~84k 行）→ 计划落盘 [`docs/internal/plan/2026-07-03-repo-complexity-refactor-3stage.md`](internal/plan/2026-07-03-repo-complexity-refactor-3stage.md)（三阶段 + 8 项用户拍板决策全记录）→ **Stage 1 已完成**：
+> ① **门禁**：首个真 CI `.github/workflows/ci.yml`（build/typecheck/test；**依赖 PR #61 先合否则 provider-runtime 3 个 vendor 测试红**）；`scripts/tsconfig.json` + `pnpm typecheck:scripts`——scripts 1.26 万行首次有 tsc 检查（存量基线 14 错，CI 非阻塞，**`live-test.ts:125` `Cannot find name 'db'` 疑似真 bug**，Stage 2 清零后转阻塞）；三语 i18n key 一致性 vitest。
+> ② **删除 ~1.5 万行**（每项 grep 留证）：web lib/research 孤儿簇 2446 + public-run-pulse 757 + market-impact 1333 + globals.css 1519 + 生成 JSON 1.2MB；sports-model 7 零引用模块 + eval runner 2103；orchestrator raven-agent-loop 1004；position-monitor / forecast viewer / generate-wallet-envs / v2-smoke / e2e 整目录（workspace 死条目一并清）/ deploy/hostinger；executor okx `.js` shim；managed-trading clob-client v1 依赖。**用户决定保留**：raven-managed+managed-trading 线（待未来开发）、/api/prediction-engine/run + auth 链。
+> ③ **减构建**：apps/web prebuild 3 包→1 包（只剩 db），新 worktree 上手变快。④ **对齐**：AGENTS.md 与 CLAUDE.md 逐字节同步（原盲测政策/构建命令两处漂移已消）；settings.local.json 移出 git；dev-reference.md 仓库树重写（原为 autonomous-poly-trading 时代幽灵树）；world-cup 4 个一次性脚本入 archive/。
+> 验收：`pnpm -r build` 全绿（web 331 页）、`pnpm -r typecheck` 绿、`pnpm test` 759/762（3 失败=PR #61 既有 vendor 问题）、8 张桌面/移动截图 0 pageerror。**下一步**：合 PR #61 → 合本分支 PR → Stage 2（消重复立契约，清单见 plan 文档 §3）。英文版 handoff 此条待同步翻译。
+>
+> 上次更新：2026-07-03 by Claude（**Raven 全站中英切换 + 引擎中文输出**，分支 `claude/kind-goodall-e0d263`）。
 > ① **UI i18n**：无依赖自研 locale 层（`apps/raven/lib/i18n/`：LocaleProvider（localStorage 持久化，Provider 挂在 `app/layout.tsx`）+ `useT(entry, vars)` + 判词/置信度/档位映射）；字典按域拆文件防冲突（ui/home/verdict/research-parts，约 170 键）。三屏 + chrome 全量翻译（导航/页脚/计划清单/进度坞/摘要/分析师工作台/证据 pill/判决页全部标签），头部新增「中文/EN」切换。GTA6 demo 内容保持英文（英文档案）。
 > ② **引擎输出语言（opt-in，交易管线不受影响）**：`scripts/forecast/language.ts` — `FORECAST_LANGUAGE=zh` 时向 framing/audit/round/summary 四个 prompt 注入「自由文本字段写简体中文、JSON 键/枚举/URL 保持 ASCII」指令；**默认（不设 env）prompt 逐字节不变**（已验证 + vitest 62/62 绿）。链路：首页 POST 带 `language: locale` → API zod → run-manager 子进程 env。zh 用户新起的 run，推理/证据 takeaway/summary 全中文；已有英文档案不动。
 > 验收：typecheck + build 绿；zh/en × 桌面/375px × 三屏截图自评全过，0 page error。英文版 handoff 待同步翻译。

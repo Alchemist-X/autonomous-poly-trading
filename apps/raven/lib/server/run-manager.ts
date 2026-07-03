@@ -1,5 +1,6 @@
 // Spawns and tracks forecast engine runs (tsx scripts/forecast/cli.ts) as
-// child processes, mirroring the proven pattern in scripts/forecast/viewer/
+// child processes (spawn engine CLI + poll state.json; the standalone viewer
+// prototype that pioneered this pattern was removed 2026-07-03)
 // server.ts. Jobs live on globalThis so Next dev-server HMR doesn't lose them;
 // the engine's own state.json (written after every round) is the durable feed.
 
