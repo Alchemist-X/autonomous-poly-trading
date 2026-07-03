@@ -12,6 +12,8 @@
 
 - **`forecast:*` = 面向用户的命令名；`pulse` = 引擎内部代号。两者是同一套预测引擎。** CLI 用 `forecast:live` / `forecast:recommend` / `forecast:positions`；而 `services/orchestrator/src/pulse/`、`scripts/pulse-*.ts`、归档路径 `runtime-artifacts/pulse/…` 和 `runtime-artifacts/reports/pulse/…` 仍叫 `pulse`。`pulse:*` 命令保留为 `forecast:*` 的**兼容别名**（见 `package.json`）。
   - **为什么不全量改名（有意保留）：** 全量重命名要动 12 个 `src/pulse/` 文件 + 13 个 `pulse-*` 脚本 + 12 处写 `runtime-artifacts/pulse` 的归档路径——改归档路径会让已有归档"失联"、并改变实盘运行的写入位置，**风险高、收益低**。所以内部一律读作"引擎代号 = pulse，对外命令名 = forecast"，不再追求字面统一。
+  - **冻结策略（2026-07-03 Stage 2 定，用于止血而非改名）：** 以下 `pulse` 标识符视为 **frozen legacy identifier**，任何重构都**不许改**，因为改了会断链或孤立历史数据：① `PULSE_*` 环境变量（部署脚本/cron 依赖）；② DB 里持久化的 artifact kind `pulse-report`；③ 归档路径 `runtime-artifacts/pulse-live/` 与 `runtime-artifacts/reports/pulse/`。**可安全改名的只有文件/模块名层**（约 30 个 `pulse-*` 文件），中等风险、需一次性 PR + 全仓 grep 兜底，暂不做。
+  - **别名弃用：** `package.json` 里 5 个 `pulse:*` 命令（`daily:pulse` / `pulse:live` / `pulse:recommend` / `pulse:positions` / `managed:pulse`）是 `forecast:*` / `daily:forecast` / `managed:forecast` 的**兼容别名**，标记为 **deprecated**；文档/新脚本一律用 `forecast:*`，别名走完一个弃用周期后删除。**新代码一律 forecast 命名**。
 - **三层产品 / 包命名（历史累积，各自内部自洽）：**
   - `predict-raven` = 仓库名（GitHub repo / 本地目录）。
   - `@autopoly/*` = npm workspace scope（历史遗留；所有子包都用这个 scope，不影响功能）。

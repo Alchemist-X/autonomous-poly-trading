@@ -17,6 +17,7 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import type { AgentRuntimeProvider, OrchestratorConfig } from "../config.js";
 import { resolveProviderSkillSettings } from "../runtime/skill-settings.js";
+import { OPENCLAW_DEFAULT_COMMAND_TEMPLATE } from "../lib/provider-command-templates.js";
 import type { ProgressReporter } from "../lib/terminal-progress.js";
 import type { PulseCandidate } from "./market-pulse.js";
 
@@ -147,7 +148,7 @@ function resolveDefaultProviderCommand(provider: string): string | null {
     case "claude-code":
       return "cat {{prompt_file}} | claude --print > {{output_file}}";
     case "openclaw":
-      return 'node "{{repo_root}}/scripts/openclaw-agent-command.mjs" --prompt-file "{{prompt_file}}" --output-file "{{output_file}}"';
+      return OPENCLAW_DEFAULT_COMMAND_TEMPLATE;
     default:
       return null;
   }
