@@ -11,7 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-03 by Claude（**仓库复杂度三阶段重构计划 + Stage 1 全量执行 + 合并 PR #65/#67/#61**，分支 `claude/determined-murdock-1b1027`）。
+> 最后更新：2026-07-04 by Claude（**Stage 2 收尾 + Stage 3 开工:forecast-engine 抽包第一步**，PR #73/#74/#75 全合入）。
+> ① **#73 Gamma 传输层**：executor 6 处硬编码 gamma host → `services/executor/src/lib/gamma.ts` 的 `gammaFetch`（只共享传输层——redeem 优雅降级/orderbook offset 分页各自保留，"6→1 换客户端"已被 endpoint 分析证伪）。合并前用只读探针实测 6/6 调用点（零 LLM/零下单）。
+> ② **#74 两个真钱相关漏项 + recommendation 编译期锁**：`calculatePositionPnlPct` 公式单源化（executor risk.ts 唯一公式,helpers 只做展示取整）；**managed-trading 改走 loadEnvFile**（原裸 dotenv 忽略 ENV_FILE = 多状态源风险,现与 executor/orchestrator 对齐）；contracts 新增 `recommendation-file.ts` wire schema——写盘方 `satisfies` 锁 + orchestrator 互赋值断言 + mapper 单向锁，**全程无 .parse()**（运行时校验按操作地图文档留给未来单点 safeParse）。
+> ③ **#75 forecast-engine 抽包（issue #56 第一步,lift-and-shift）**：17 文件 git-mv → `packages/forecast-engine/src/`;`scripts/forecast/cli.ts` 留 6 行 shim,raven/forecast-api/paper-agent/forecast:event 四条 spawn 接缝零改动;raven 的 makeEventId"逐字节契约"复制体消灭（re-export 同一份代码）,cwd 补偿的 forecastsRoot 有意保留并注释;包只 typecheck 不 build（源码消费,语义不变）。**#56 第二步待做**：dist 化 + provider/store 配置注入（env 直读 → config 对象）。
+> 验收：全程 typecheck/838 测试/raven build 绿,scripts 门禁 13 基线不变,CI 绿。plan 文档状态节已刷新（Stage 2 剩余项 + Stage 3 剩余项清单在 plan 头部）。英文版 handoff 此条待同步翻译。
+>
+> 上次更新：2026-07-03 by Claude（**仓库复杂度三阶段重构计划 + Stage 1 全量执行 + 合并 PR #65/#67/#61**，分支 `claude/determined-murdock-1b1027`）。
 > 用户反馈"整仓复杂度太大"→ 10 路并行诊断（~84k 行）→ 计划落盘 [`docs/internal/plan/2026-07-03-repo-complexity-refactor-3stage.md`](internal/plan/2026-07-03-repo-complexity-refactor-3stage.md)（三阶段 + 8 项用户拍板决策全记录）→ **Stage 1 已完成**：
 > ① **门禁**：首个真 CI `.github/workflows/ci.yml`（build/typecheck/test；**依赖 PR #61 先合否则 provider-runtime 3 个 vendor 测试红**）；`scripts/tsconfig.json` + `pnpm typecheck:scripts`——scripts 1.26 万行首次有 tsc 检查（存量基线 14 错，CI 非阻塞，**`live-test.ts:125` `Cannot find name 'db'` 疑似真 bug**，Stage 2 清零后转阻塞）；三语 i18n key 一致性 vitest。
 > ② **删除 ~1.5 万行**（每项 grep 留证）：web lib/research 孤儿簇 2446 + public-run-pulse 757 + market-impact 1333 + globals.css 1519 + 生成 JSON 1.2MB；sports-model 7 零引用模块 + eval runner 2103；orchestrator raven-agent-loop 1004；position-monitor / forecast viewer / generate-wallet-envs / v2-smoke / e2e 整目录（workspace 死条目一并清）/ deploy/hostinger；executor okx `.js` shim；managed-trading clob-client v1 依赖。**用户决定保留**：raven-managed+managed-trading 线（待未来开发）、/api/prediction-engine/run + auth 链。
