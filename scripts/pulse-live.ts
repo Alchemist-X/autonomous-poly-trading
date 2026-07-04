@@ -1,7 +1,7 @@
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { randomUUID } from "node:crypto";
-import type { OverviewResponse, PublicPosition, TradeDecision } from "@autopoly/contracts";
+import type { OverviewResponse, PublicPosition, RecommendationFile, TradeDecision } from "@autopoly/contracts";
 import {
   createTerminalPrinter,
   formatRatioPercent,
@@ -1158,6 +1158,9 @@ export async function runPulseLive(args: Args = parseArgs()) {
     });
     plansForSummary = plans;
     skippedForSummary = skipped;
+    // `satisfies` locks the on-disk shape to the shared wire schema at compile
+    // time (readers derive their types from the same schema); the emitted
+    // object is unchanged.
     await writeJsonArtifact(recommendationPath, {
       runId,
       executionMode: "pulse-live",
@@ -1172,7 +1175,7 @@ export async function runPulseLive(args: Args = parseArgs()) {
       decisions: coreResult.decisionSet.decisions,
       executablePlans: plans,
       skipped
-    });
+    } satisfies RecommendationFile);
 
     if (useHumanOutput) {
       printRecommendationSummary({

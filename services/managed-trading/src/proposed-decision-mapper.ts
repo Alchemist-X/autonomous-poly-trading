@@ -18,6 +18,7 @@
 // managed-trading package stays decoupled). Concrete file loading lives
 // in `scripts/managed-pulse.ts`.
 
+import type { PlannedExecutionWire, RecommendationFile, TradeDecision } from "@autopoly/contracts";
 import type {
   ProposedDecision,
   ProposedDecisionAction,
@@ -258,3 +259,26 @@ function clamp01(value: number): number {
   if (value > 1) return 1;
   return value;
 }
+
+// ---------------------------------------------------------------------------
+// Compile-time wire locks
+// ---------------------------------------------------------------------------
+//
+// The Pulse* input types above are DELIBERATELY looser than the wire (this
+// mapper narrows untrusted JSON), so we don't replace them with the contracts
+// types. Instead we assert one direction: every valid wire object must be
+// accepted by our loose input types. If the recommendation.json wire schema
+// in @autopoly/contracts renames or retypes a field this mapper reads, this
+// becomes a typecheck failure instead of the silent drift the header used to
+// warn about ("not enforced by a runtime schema").
+type WireAssignableTo<Wire, LooseInput> = [Wire] extends [LooseInput] ? true : never;
+
+const plannedExecutionWireAccepted: WireAssignableTo<PlannedExecutionWire, PulsePlannedExecution> = true;
+const tradeDecisionWireAccepted: WireAssignableTo<TradeDecision, PulseTradeDecision> = true;
+const recommendationFileWireAccepted: WireAssignableTo<RecommendationFile, PulseRecommendationFile> = true;
+
+export const pulseWireLocks = {
+  plannedExecutionWireAccepted,
+  tradeDecisionWireAccepted,
+  recommendationFileWireAccepted
+};
