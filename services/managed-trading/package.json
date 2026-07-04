@@ -32,7 +32,6 @@
     "@autopoly/db": "workspace:*",
     "@polymarket/builder-relayer-client": "^0.0.9",
     "@polymarket/clob-client-v2": "1.0.6",
-    "dotenv": "17.2.3",
     "drizzle-orm": "0.45.1",
     "ethers": "5.7.2",
     "viem": "2.31.0"

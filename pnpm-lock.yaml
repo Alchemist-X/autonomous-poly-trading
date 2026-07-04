@@ -260,9 +260,6 @@ importers:
       '@polymarket/clob-client-v2':
         specifier: 1.0.6
         version: 1.0.6(bufferutil@4.1.0)(typescript@5.9.3)(zod@3.25.76)
-      dotenv:
-        specifier: 17.2.3
-        version: 17.2.3
       drizzle-orm:
         specifier: 0.45.1
         version: 0.45.1(postgres@3.4.8)
