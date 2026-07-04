@@ -131,10 +131,12 @@ export interface CalibrationLedgerEntry {
     markVsFillDeltaUsd: number | null;
   };
   outcome: {
-    status: "pending";
-    resolvedAtUtc: null;
-    winningOutcome: null;
-    realizedPnlUsd: null;
+    // Written as "pending" at run time; scripts/forecast-resolution-backfill.ts
+    // later rewrites terminal rows to "resolved" / "voided" with the winner.
+    status: "pending" | "resolved" | "voided";
+    resolvedAtUtc: string | null;
+    winningOutcome: string | null;
+    realizedPnlUsd: number | null;
   };
 }
 

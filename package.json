@@ -28,6 +28,7 @@
     "forecast:live": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/pulse-live.ts",
     "forecast:recommend": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/pulse-live.ts --recommend-only",
     "forecast:positions": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/terminal-ui build && tsx scripts/pulse-live.ts --recommend-only --positions-only",
+    "forecast:score": "tsx scripts/forecast-resolution-backfill.ts",
     "prediction:invite": "pnpm --filter @autopoly/db build && tsx scripts/prediction-invite.ts",
     "managed:forecast": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && tsx scripts/managed-pulse.ts",
     "poly:cache-order-limits": "tsx scripts/cache-polymarket-order-limits.ts",
