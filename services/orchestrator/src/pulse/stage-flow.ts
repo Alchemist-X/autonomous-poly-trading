@@ -205,15 +205,16 @@ export function buildPulseStageFlowReport(input: {
       implementation: "partial",
       currentImplementation: [
         "Pulse scrapes Polymarket rules, context, comments, and CLOB order books.",
-        "Pulse web-search stores DuckDuckGo result titles, URLs, hosts, snippets, status, and timeout/failure details."
+        "Pulse web-search stores DuckDuckGo result titles, URLs, hosts, snippets, status, and timeout/failure details.",
+        "Pulse web-search fetches the top result pages per candidate (round-robin across queries, deduped) and stores readable-text excerpts.",
+        "The render agent has WebSearch/WebFetch tool access for its own targeted follow-up research."
       ],
       gaps: [
-        "Current web-search does not fetch and compare full article/page bodies.",
         "Twitter/X, Reddit, Telegram, military maps, and some official/local sources are not authenticated or normalized.",
         "Source categories are inferred in the report instead of stored as a typed evidence table."
       ],
       fullParityWork: [
-        "Fetch selected result pages and extract dated evidence records with source category, stance, and reliability.",
+        "Extract dated evidence records with source category, stance, and reliability from the fetched pages.",
         "Add allowlisted official/mainstream/local/third-party connectors where API access is legal and stable."
       ],
       estimate: estimate({
