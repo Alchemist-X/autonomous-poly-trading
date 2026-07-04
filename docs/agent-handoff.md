@@ -15,7 +15,7 @@
 > ① **补上反馈回路**：新增 `pnpm forecast:score`（`scripts/forecast-resolution-backfill.ts`）——校准账本 86 条 outcome 全部 pending、系统从未给自己打过分；现在从 Gamma 回填结算、算 Brier/按档校准/相对市场 skill，写 `evaluation/calibration-report.md` + `calibration-summary.json`；下轮 pulse render 自动把该摘要注入 prompt（`loadCalibrationBrief`，样本 ≥5 才注入）。**接手后先跑一次 `pnpm forecast:score`**（读网 + 只写 evaluation/，安全）。
 > ② **实盘 render 有了真检索**：`claude --print` 默认命令补 `--allowedTools "WebSearch WebFetch"`（此前 prompt 说"可主动检索"但 --print 模式工具被拦，= 承诺是空头的）；orchestrator web-search 新增 top 结果页**正文摘录**（每候选 2 页/1600 字、轮转采样、失败单页记录）进 context JSON；查询模板类目感知（体育→博彩赔率、金融→数据源、政治→通讯社）+ 当月时间锚。
 > ③ **forecast-engine ROADMAP HIGH-VALUE 三项全落地** + 一批：防极端 `calibratedProb`、±3pp 带状收敛、单轮 2.5 nats 上限、跨轮聚类衰减、可信度分层加权、key drivers 定向研究、时间感知 prompt、LLR 量纲锚定（0.7≈2x）、市场赔率隔离、summary premortem。详见 `packages/forecast-engine/ROADMAP.md` 2026-07-05 节。
-> ④ **pulse prompt 概率纪律块**（市场扫描 + 持仓复审，中英）：显式基准率先行、偏离市场价必须答"市场错在哪"、长尾折价是先验不是公式、**方向自检**（审计发现历史推荐 139:8 清一色买 No）、时间衰减、禁凑整。
+> ④ **prompt 两层全改**。harness 层（full-pulse.ts，中英）：概率纪律块——显式基准率先行、偏离市场价必须答"市场错在哪"、长尾折价是先验不是公式、**方向自检**（审计发现历史推荐 139:8 清一色买 No）、时间衰减、禁凑整。方法论层（vendored skill，en+zh 四文件）：删掉"每轮 3-5 个 No 扫描"配额和"Top 3 至少 1 个买 No"规则、长尾折价表改写为"需事件级证据确认的先验"（双向：也扫深度热门低估）、"买 No 的优势"改为诚实经济学（高胜率≠正期望）、锚定检查升级为硬性门槛（>25pp 偏离需说清市场错在哪 + ≥2 条独立带日期证据）、**证据门槛**（零外部证据 = 不交易，堵 3/16 式灾难）、同源回声只算一条 + 单一事实 ±20% 饱和上限、证据表加日期列、反证搜索必做。已推上游 `Alchemist-X/all-polymarket-skill` 分支 `forecast-quality-prompts`（commit `f00aaf3`），`vendor/manifest.json` 已 bump。**合并后要跑 `pnpm vendor:sync` 才会在本机生效**；上游 main 未动（manifest 按 commit 钉）。
 > ⑤ **删 227 行死代码 deterministic fallback**（无调用方；且其逻辑是 market+10pp 伪造"AI 概率"生成 provisional 开仓，违反"下单概率必须出自 forecasting 流程"铁律）。
 > ⚠️ ②④⑤ 触及实盘行为，PR 等用户确认后合并。审计明确指出但**本轮未做**的两大项已入 P1。英文版 handoff 此条待同步翻译。
 >
