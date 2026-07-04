@@ -1,8 +1,8 @@
-// Adapts the engine's ForecastState (scripts/forecast/types) into the
+// Adapts the engine's ForecastState (packages/forecast-engine) into the
 // design-shaped DossierVM the three screens render. The archived GTA 6 demo
 // bypasses this and ships its hand-authored VM directly.
 
-import type { ForecastState, LedgerEntry, RoundRecord } from "../../../../scripts/forecast/types";
+import type { ForecastState, LedgerEntry, RoundRecord } from "../../../../packages/forecast-engine/src/types";
 import { GTA6_DEMO, GTA6_DEMO_ID } from "../demo/gta6";
 import {
   credWord,

@@ -10,6 +10,13 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../../scripts/forecast/types.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../packages/forecast-engine/src/types.ts",
+    "../../packages/forecast-engine/src/store.ts"
+  ],
   "exclude": ["node_modules"]
 }

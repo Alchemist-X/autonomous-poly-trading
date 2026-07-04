@@ -1,4 +1,4 @@
-# Iterative Binary Forecaster (`scripts/forecast/`)
+# Iterative Binary Forecaster (`packages/forecast-engine/src/`)
 
 > 中文在下。An iterative, fully-traceable probability engine for binary (yes/no)
 > events, driven by a user prompt. Built for predict-raven on the
