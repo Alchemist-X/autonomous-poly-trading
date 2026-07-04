@@ -7,7 +7,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
-import type { ForecastState } from "../../../scripts/forecast/types";
+import type { ForecastState } from "../../../packages/forecast-engine/src/types";
 
 export type { ForecastState };
 

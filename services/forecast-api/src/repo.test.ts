@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 // The engine's own implementation — the parity oracle. If either side drifts,
 // the API would poll a different event dir than the CLI writes to.
-import { makeEventId as engineMakeEventId } from "../../../scripts/forecast/store";
+import { makeEventId as engineMakeEventId } from "../../../packages/forecast-engine/src/store";
 import { isSafeEventId, makeEventId, readEnvFile } from "./repo";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";

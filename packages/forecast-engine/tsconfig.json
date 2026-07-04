@@ -1,0 +1,13 @@
+{
+  "extends": "../../config/tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "types": ["node"],
+    // Matches the strictness the engine was checked with before extraction
+    // (scripts/tsconfig also disables this). Tightening it is a behavior-risk
+    // source edit — deferred to the provider/store injection step (issue #56).
+    "noUncheckedIndexedAccess": false
+  },
+  "include": ["src/**/*.ts"]
+}

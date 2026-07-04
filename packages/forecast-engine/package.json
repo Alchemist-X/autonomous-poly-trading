@@ -1,0 +1,13 @@
+{
+  "name": "@autopoly/forecast-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Iterative binary forecaster: framing -> evidence rounds -> verdict. Source-consumed (tsx/deep imports); no dist build yet — provider/store injection is the next extraction step (issue #56).",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  }
+}
