@@ -1,15 +1,22 @@
 import { describe, expect, it } from "vitest";
 import {
   applyLlrs,
+  bandStable,
+  capRoundLlrs,
   clamp,
   clampReflection,
   clampUnverified,
   clusterFactors,
+  clusterFactorsWithHistory,
   confirmationRatio,
+  credibilityFactor,
   credibleInterval,
   effectiveLlr,
+  independentClusterCount,
   invLogit,
   logit,
+  ROUND_MAX_ABS_LLR_SUM,
+  shrinkTowardAnchor,
 } from "./bayes";
 import { canonicalizeUrl } from "./url";
 import { extractJsonObject, extractToolUrls, validateRoundOutput } from "./claude-agent";
@@ -85,6 +92,17 @@ describe("bayes log-odds", () => {
     expect(confirmationRatio(0.7, [])).toBeNull();
   });
 
+  it("clusterFactorsWithHistory keeps damping clusters that already have ledger members", () => {
+    // one prior member in cluster "a": the strongest NEW a-source starts at ×0.5
+    expect(clusterFactorsWithHistory(["a", "a", "b"], [1.0, 0.5, 0.9], ["a"])).toEqual([0.5, 0.25, 1]);
+    // two prior members: ×0.25
+    expect(clusterFactorsWithHistory(["a"], [1.0], ["a", "a"])).toEqual([0.25]);
+    // engine-internal ids in the ledger never form a cross-round cluster
+    expect(clusterFactorsWithHistory(["", "x"], [1, 1], ["__solo_0", "__reflection"])).toEqual([1, 1]);
+    // no prior members: identical to within-round clusterFactors
+    expect(clusterFactorsWithHistory(["a", "a"], [1.0, 0.5], [])).toEqual(clusterFactors(["a", "a"], [1.0, 0.5]));
+  });
+
   it("clusterFactors damps correlated same-cluster sources (P0-3)", () => {
     // same cluster: strongest keeps full weight, each next ×0.5^rank
     expect(clusterFactors(["a", "a", "a"], [1.0, 0.8, 0.6])).toEqual([1, 0.5, 0.25]);
@@ -107,6 +125,60 @@ describe("bayes log-odds", () => {
   it("clamp bounds", () => {
     expect(clamp(5, 0, 1)).toBe(1);
     expect(clamp(-5, 0, 1)).toBe(0);
+  });
+
+  it("credibilityFactor: high full weight, medium/low progressively damped", () => {
+    expect(credibilityFactor("high")).toBe(1);
+    expect(credibilityFactor("medium")).toBeLessThan(1);
+    expect(credibilityFactor("low")).toBeLessThan(credibilityFactor("medium"));
+    // unknown values behave like medium (lenient, never zero out evidence)
+    expect(credibilityFactor("certain")).toBe(credibilityFactor("medium"));
+  });
+
+  it("capRoundLlrs: under the cap is untouched; over the cap scales all entries proportionally (#8)", () => {
+    expect(capRoundLlrs([0.5, -0.3])).toEqual([0.5, -0.3]);
+    const capped = capRoundLlrs([2, 2, 1]); // |sum|=5 > cap
+    const sum = capped.reduce((a, b) => a + b, 0);
+    expect(Math.abs(sum)).toBeCloseTo(ROUND_MAX_ABS_LLR_SUM, 9);
+    // relative attribution preserved
+    expect(capped[0] / capped[2]).toBeCloseTo(2, 9);
+    // sign-symmetric
+    const neg = capRoundLlrs([-2, -2, -1]);
+    expect(neg.reduce((a, b) => a + b, 0)).toBeCloseTo(-ROUND_MAX_ABS_LLR_SUM, 9);
+    // offsetting evidence with a small net sum is NOT scaled
+    expect(capRoundLlrs([2, -1.9])).toEqual([2, -1.9]);
+    expect(capRoundLlrs([])).toEqual([]);
+  });
+
+  it("independentClusterCount: distinct ids count once, blanks are their own cluster", () => {
+    expect(independentClusterCount(["a", "a", "b"])).toBe(2);
+    expect(independentClusterCount(["", "", "a"])).toBe(3);
+    expect(independentClusterCount([])).toBe(0);
+  });
+
+  it("shrinkTowardAnchor: no evidence returns the anchor; more clusters shrink less (#6)", () => {
+    // n=0 => fully back to the base-rate anchor
+    expect(shrinkTowardAnchor(0.9, 0.3, 0, "medium")).toBeCloseTo(0.3, 6);
+    // shrunk value lies strictly between anchor and posterior
+    const one = shrinkTowardAnchor(0.9, 0.3, 1, "medium");
+    expect(one).toBeGreaterThan(0.3);
+    expect(one).toBeLessThan(0.9);
+    // more independent clusters => closer to the raw posterior
+    const many = shrinkTowardAnchor(0.9, 0.3, 8, "medium");
+    expect(many).toBeGreaterThan(one);
+    // higher confidence => less shrink
+    expect(shrinkTowardAnchor(0.9, 0.3, 2, "high")).toBeGreaterThan(shrinkTowardAnchor(0.9, 0.3, 2, "low"));
+    // idempotent anchor: posterior == anchor stays put
+    expect(shrinkTowardAnchor(0.4, 0.4, 3, "medium")).toBeCloseTo(0.4, 6);
+  });
+
+  it("bandStable: k trailing posteriors within the corridor => stable (#7)", () => {
+    // last 3 within 6pp corridor
+    expect(bandStable([0.31, 0.336, 0.387, 0.36], 3, 0.03)).toBe(true);
+    // spread wider than the corridor
+    expect(bandStable([0.31, 0.336, 0.42], 3, 0.03)).toBe(false);
+    // not enough rounds yet
+    expect(bandStable([0.5, 0.51], 3, 0.03)).toBe(false);
   });
 });
 

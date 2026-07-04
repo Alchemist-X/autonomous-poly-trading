@@ -146,6 +146,9 @@ export function renderReport(state: ForecastState): string {
   if (state.framing.framingCaveats)
     lines.push(`- **Framing caveats** (audit): ${state.framing.framingCaveats}`);
   lines.push(`- **Framing confidence**: ${state.framing.framingConfidence}`);
+  if (state.framing.keyDrivers?.length) {
+    lines.push(`- **Key drivers**: ${state.framing.keyDrivers.map((d, i) => `d${i + 1} ${d}`).join(" · ")}`);
+  }
   lines.push(`- **Rounds run**: ${state.round}`);
   lines.push(`- **Status**: ${state.status}`);
   // Internal heuristic band — kept in the audit trail, never labeled a
@@ -155,6 +158,13 @@ export function renderReport(state: ForecastState): string {
       state.credibleInterval[0]
     )} – ${pct(state.credibleInterval[1])})`
   );
+  // #6: the anti-extremization view — shown whenever it meaningfully differs
+  // from the raw posterior, so a thin evidence base reads as such.
+  if (state.calibratedProb != null && Math.abs(state.calibratedProb - state.currentProb) >= 0.005) {
+    lines.push(
+      `- **Calibrated estimate** (shrunk toward the base rate for thin evidence): **${pct(state.calibratedProb)}**`
+    );
+  }
   lines.push(`- **Sources counted**: ${state.evidenceLedger.length}`);
   lines.push(`- **Last updated**: ${state.updatedAtUtc}`);
   lines.push("");
@@ -181,6 +191,10 @@ export function renderReport(state: ForecastState): string {
     }
     if (s.calibrationNote) {
       lines.push(`**Calibration note:** ${s.calibrationNote}`);
+      lines.push("");
+    }
+    if (s.premortem) {
+      lines.push(`**Premortem (if it resolves the other way):** ${s.premortem}`);
       lines.push("");
     }
   }
@@ -212,6 +226,12 @@ export function renderReport(state: ForecastState): string {
     if (r.unverifiedPp > 0.1) {
       lines.push(
         `> ⚠ ${r.unverifiedPp.toFixed(1)}pp of this round's movement came from soft-clamped UNVERIFIED sources (not found in the agent's tool trace).`
+      );
+      lines.push("");
+    }
+    if (r.roundLlrScale != null && r.roundLlrScale < 1) {
+      lines.push(
+        `> ⚠ round LLR cap applied: this round's net evidence weight was scaled ×${r.roundLlrScale.toFixed(2)} (single-round saturation backstop).`
       );
       lines.push("");
     }

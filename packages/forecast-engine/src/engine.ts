@@ -12,13 +12,18 @@ import { providerHasWebSearch, runAgent } from "./agent";
 import { languageDirective } from "./language";
 import {
   applyLlrs,
+  bandStable,
+  capRoundLlrs,
   clamp,
   clampReflection,
   clampUnverified,
-  clusterFactors,
+  clusterFactorsWithHistory,
   confirmationRatio,
+  credibilityFactor,
   credibleInterval,
   effectiveLlr,
+  independentClusterCount,
+  shrinkTowardAnchor,
 } from "./bayes";
 import { validateRoundOutput } from "./claude-agent";
 import type { AgentRunResult, RunAgentOptions } from "./claude-agent";
@@ -103,6 +108,35 @@ export function buildPrompt(
     analystSection = lines.join("\n") + "\n";
   }
 
+  // Time awareness: how long until the event must resolve. Prompt-only by design
+  // (no automatic time-decay LLR — that would hard-code a contestable "YES needs
+  // a visible precursor" assumption; the agent weighs it case by case).
+  let timeSection = "";
+  if (state.framing.resolutionDate) {
+    const ms = Date.parse(`${state.framing.resolutionDate}T23:59:59Z`) - Date.now();
+    if (Number.isFinite(ms)) {
+      const days = Math.max(0, Math.ceil(ms / 86_400_000));
+      timeSection = `TIME TO RESOLUTION: ~${days} day(s) (today is ${new Date().toISOString().slice(0, 10)}). Weigh evidence against this window: for near-dated events the absence of a required precursor is itself evidence; for far-dated events do not over-react to daily noise.\n`;
+    }
+  }
+
+  // Directed research: the frame's key drivers, each annotated with how much
+  // evidence has already landed on it, so the agent spends this round's searches
+  // where the forecast is still least resolved.
+  let driversSection = "";
+  if (state.framing.keyDrivers?.length) {
+    const perDriver = new Map<string, number>();
+    for (const e of state.evidenceLedger) {
+      if (e.kind !== "evidence" || !e.driver) continue;
+      perDriver.set(e.driver, (perDriver.get(e.driver) ?? 0) + 1);
+    }
+    const lines = state.framing.keyDrivers.map((d, i) => {
+      const id = `d${i + 1}`;
+      return `- ${id} (${perDriver.get(id) ?? 0} source(s) so far): ${d}`;
+    });
+    driversSection = `KEY DRIVERS (the sub-questions that determine the outcome — aim your searches at the LEAST-covered / most unresolved driver first, and tag each evidence item with the driver id it informs):\n${lines.join("\n")}\n`;
+  }
+
   // Research instructions are provider-aware: a search-less provider must never
   // be told to WebSearch, and must not fabricate URLs to satisfy the cite rule.
   const research = extras.hasWebSearch
@@ -117,18 +151,18 @@ export function buildPrompt(
 EVENT: ${state.framing.normalizedQuestion}
 RESOLUTION CRITERIA: ${state.framing.resolutionCriteria}
 RESOLUTION DATE (must occur by): ${state.framing.resolutionDate ?? "(open-ended)"}
-
+${timeSection}
 CURRENT ESTIMATE (this is your PRIOR for this round): P(YES) = ${(state.currentProb * 100).toFixed(1)}%
 ROUND: ${roundNo} of ${maxRounds}
-
+${driversSection}
 SOURCES ALREADY COUNTED IN PREVIOUS ROUNDS — do NOT re-use or re-count these URLs; you must find NEW information:
 ${counted}
 ${analystSection}
 YOUR TASK THIS ROUND:
 ${research}
 3. For each NEW source, decide whether it makes YES more likely (supports_yes), less likely (supports_no), or neutral, and how strongly.
-4. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Be conservative — a single web article is rarely "strong".
-5. Tag each source's provenance and reliability: "source_type" — "official" (primary/company/government/regulator statements), "press" (journalism), or "insider" (leakers, analysts, industry chatter) — and "credibility" ("high" | "medium" | "low"): how reliable this specific source is for this claim (track record, primacy), independent of how much it moves the number.
+4. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Calibration anchors — llr 0.7 means "this evidence is ~2x more likely in a world where YES happens than where it doesn't"; 1.4 ≈ 4x; 2.0 ≈ 7x. Reserve ≥1.5 for near-dispositive PRIMARY evidence (an official confirmation/cancellation); a single web article is rarely "strong". If a source is itself an aggregate odds quote (prediction-market price, sportsbook line, polling average), treat it as informed OPINION, not a new fact: give all such quotes the shared cluster_id "market-odds" and keep |llr| ≤ 0.5.
+5. Tag each source's provenance and reliability: "source_type" — "official" (primary/company/government/regulator statements), "press" (journalism), or "insider" (leakers, analysts, industry chatter) — and "credibility" ("high" | "medium" | "low"): how reliable this specific source is for this claim (track record, primacy), independent of how much it moves the number. Credibility scales the applied weight, so prefer ONE primary/official source over several repeating a rumor; include the claim's own date in the claim text when known (e.g. "(2026-06-28)").
 6. Group correlated sources with cluster_id: give sources that trace to the SAME underlying story, wire report, poll, or primary actor the SAME cluster_id string; give genuinely independent sources DIFFERENT cluster_ids. (Five outlets re-reporting one announcement are one cluster, not five.)
 7. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
 ${citeRule}
@@ -148,6 +182,7 @@ OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or aft
       "credibility": "high" | "medium" | "low",
       "llr": -1.5,
       "cluster_id": "okc-sweep",
+      "driver": "d2 (the key-driver id this informs, or \\"\\" if none)",
       "rationale": "why this moves the probability and by how much"
     }
   ],
@@ -187,6 +222,7 @@ export function newForecastState(input: {
     createdAtUtc: ts,
     updatedAtUtc: ts,
     currentProb: p,
+    calibratedProb: p, // no evidence yet: the calibrated view IS the anchor
     credibleInterval: [clamp(p - 0.18, 0, 1), clamp(p + 0.18, 0, 1)],
     round: 0,
     status: "open",
@@ -282,20 +318,35 @@ async function runOneRound(
     return reflVerified[i] ? a : clampUnverified(a);
   });
 
-  // P0-4 + P0-3: new evidence, verification-clamped and cluster-damped.
+  // P0-4 + P0-3 + reliability tier: new evidence, verification-clamped,
+  // cluster-damped, and credibility-weighted.
   const verifiedFlags = survivors.map((ev) => traceCanonical.has(canonicalizeUrl(ev.source_url)));
-  const baseLlrs = survivors.map((ev) => effectiveLlr(ev.stance, ev.llr));
-  const factors = clusterFactors(
+  const baseLlrs = survivors.map((ev) => effectiveLlr(ev.stance, ev.llr) * credibilityFactor(ev.credibility));
+  // Cross-round damping: clusters that already have ledger members keep
+  // discounting — an echo of round 1's wire story cannot re-count at full
+  // weight in round 3.
+  const factors = clusterFactorsWithHistory(
     survivors.map((ev) => ev.cluster_id),
-    baseLlrs
+    baseLlrs,
+    state.evidenceLedger.filter((e) => e.kind === "evidence").map((e) => e.clusterId)
   );
   const evLlrs = baseLlrs.map((base, i) => {
     const clustered = base * factors[i];
     return verifiedFlags[i] ? clustered : clampUnverified(clustered);
   });
 
+  // #8: per-round signed-sum cap — one round of many same-direction sources
+  // cannot slam the probability to a wall. Scaled proportionally (attribution
+  // keeps its shape); the scale is recorded for the audit trail.
+  const uncapped = [...reflLlrs, ...evLlrs];
+  const cappedAll = capRoundLlrs(uncapped);
+  const uncappedSum = uncapped.reduce((a, b) => a + b, 0);
+  const roundLlrScale = uncappedSum !== 0 ? (cappedAll.reduce((a, b) => a + b, 0) / uncappedSum) : 1;
+  const cappedRefl = cappedAll.slice(0, reflLlrs.length);
+  const cappedEv = cappedAll.slice(reflLlrs.length);
+
   // Thread reflection adjustments first, then this round's new evidence.
-  const { post, steps } = applyLlrs(priorProb, [...reflLlrs, ...evLlrs]);
+  const { post, steps } = applyLlrs(priorProb, cappedAll);
   const reflSteps = steps.slice(0, reflItems.length);
   const evSteps = steps.slice(reflItems.length);
 
@@ -336,7 +387,7 @@ async function runOneRound(
       kind: "reflection",
       clusterId: "__reflection",
       clusterFactor: 1,
-      effectiveLlr: reflLlrs[i],
+      effectiveLlr: cappedRefl[i],
       probBefore: step.probBefore,
       probAfter: step.probAfter,
       deltaPp: step.deltaPp,
@@ -380,7 +431,7 @@ async function runOneRound(
       kind: "evidence",
       clusterId: ev.cluster_id || `__solo_${i}`,
       clusterFactor: factors[i],
-      effectiveLlr: evLlrs[i],
+      effectiveLlr: cappedEv[i],
       probBefore: step.probBefore,
       probAfter: step.probAfter,
       deltaPp: step.deltaPp,
@@ -390,6 +441,7 @@ async function runOneRound(
       verifiedInSearchTrace: verified,
       sourceType: ev.source_type,
       credibility: ev.credibility,
+      driver: ev.driver || undefined,
     });
   });
 
@@ -417,6 +469,13 @@ async function runOneRound(
   // Commit the round into state (continuity: priorProb == previous postProb).
   state.evidenceLedger.push(...newLedger);
   state.currentProb = post;
+  // #6: derived anti-extremization view — recomputed from the ledger every
+  // round (idempotent), anchored on the framing base rate, weighted by how many
+  // genuinely independent evidence clusters exist.
+  const evidenceClusters = independentClusterCount(
+    state.evidenceLedger.filter((e) => e.kind === "evidence").map((e) => e.clusterId)
+  );
+  state.calibratedProb = shrinkTowardAnchor(post, state.framing.priorProbability, evidenceClusters, out.confidence);
   state.credibleInterval = credibleInterval(post, state.evidenceLedger.length, out.confidence);
   state.round = roundNo;
   state.updatedAtUtc = ts;
@@ -439,6 +498,8 @@ async function runOneRound(
     searchQueries: result.searchQueries,
     searchResultUrlCount: result.searchResultUrls.size,
     costUsd: result.costUsd,
+    ...(roundLlrScale < 1 ? { roundLlrScale } : {}),
+    calibratedProb: state.calibratedProb,
   };
 
   // Stamp consumed analyst input (success path only). Re-read fresh: the app may
@@ -520,6 +581,23 @@ export async function runForecast(
     if (Math.abs(record.postProb - record.priorProb) < epsilon && roundNo >= minRounds) {
       state.status = "converged";
       log(`  ■ converged (move < ${(epsilon * 100).toFixed(1)}pp) — stopping.`);
+      break;
+    }
+    // #7: band convergence — an oscillating forecast that has plateaued inside a
+    // narrow corridor for several evidence-bearing rounds is done, even though no
+    // single round went sub-epsilon (the failure mode the per-round stop misses).
+    // Early-stop only: at maxRounds the loop labels max_rounds as before.
+    const bandRounds = Math.max(2, Number(process.env.FORECAST_BAND_ROUNDS) || 3);
+    const bandHalfWidth = Number(process.env.FORECAST_BAND_HALF_WIDTH) || 0.03;
+    if (
+      roundNo >= minRounds &&
+      roundNo < maxRounds &&
+      bandStable(state.roundHistory.map((r) => r.postProb), bandRounds, bandHalfWidth)
+    ) {
+      state.status = "converged";
+      log(
+        `  ■ plateaued (last ${bandRounds} rounds within a ±${(bandHalfWidth * 100).toFixed(1)}pp band) — stopping.`
+      );
       break;
     }
     if (roundNo >= maxRounds) {

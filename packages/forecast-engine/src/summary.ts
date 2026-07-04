@@ -53,6 +53,7 @@ OUTPUT only a single JSON object — no prose, no code fence:
   "key_factors_no": ["strongest factors pushing toward NO"],
   "main_uncertainties": "what is unresolved or could move this before the resolution date",
   "calibration_note": "if you think the computed probability is materially mis-calibrated, say so and why — but do NOT assert a different number as the answer; otherwise empty string",
+  "premortem": "assume the event has RESOLVED THE OTHER WAY (against the current lean): in 1-3 sentences, the single most plausible path that got it there, citing [NN] where relevant — the reader's early-warning signal",
   "why_sentence": "ONE complete, self-explaining sentence — the single reason the number landed where it did, naming the decisive evidence; no fragment",
   "quip": "one short dry human aside reacting to the verdict — personality, not advice",
   "confidence_reason": "one line on why confidence is high/medium/low"
@@ -79,6 +80,7 @@ export function validateSummary(raw: unknown): ForecastSummary {
     keyFactorsNo: strArray(o.key_factors_no),
     mainUncertainties: typeof o.main_uncertainties === "string" ? o.main_uncertainties : "",
     calibrationNote: typeof o.calibration_note === "string" ? o.calibration_note : "",
+    premortem: optStr(o.premortem),
     whySentence: optStr(o.why_sentence),
     quip: optStr(o.quip),
     confidenceReason: optStr(o.confidence_reason),

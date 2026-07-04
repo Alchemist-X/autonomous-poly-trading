@@ -38,6 +38,11 @@ export interface EventFraming {
   // would miss and silently corrupt every downstream round.
   framingCaveats: string; // ambiguities / edge cases the audit flagged
   framingConfidence: "high" | "medium" | "low";
+  // Key drivers: the 2-4 sub-questions that mostly determine the outcome. Rounds
+  // target the least-resolved driver instead of searching generically, making the
+  // loop's information acquisition directed. Lenient: validators default to [];
+  // optional because legacy state.json files on disk predate the field.
+  keyDrivers?: string[];
 }
 export interface AgentEvidence {
   claim: string; // the specific fact found, in one sentence
@@ -50,6 +55,7 @@ export interface AgentEvidence {
   cluster_id: string; // P0-3: same id => sources share one underlying story/poll/origin
   source_type: SourceType; // provenance class (validator defaults to "press")
   credibility: Confidence; // reliability of this source for this claim (validator defaults to "medium")
+  driver: string; // which key driver this evidence informs ("" when untagged; lenient)
 }
 
 // (a) Reflection: an adjustment to a PRIOR-round source, proposed when this
@@ -97,6 +103,7 @@ export interface LedgerEntry {
   verifiedInSearchTrace: boolean; // was this URL actually returned by the agent's WebSearch?
   sourceType: SourceType; // provenance class of the cited source
   credibility: Confidence; // reliability of this source for this claim
+  driver?: string; // key driver this evidence informs (absent on legacy states)
 }
 
 export interface PerSourceUpdate {
@@ -145,6 +152,8 @@ export interface RoundRecord {
   searchResultUrlCount: number;
   costUsd: number | null;
   analystConsumedIds?: string[]; // ids of analyst notes consumed (injected) this round
+  roundLlrScale?: number; // <1 when the per-round signed-sum LLR cap (#8) scaled this round's updates
+  calibratedProb?: number; // anti-extremization view (#6) of postProb, derived — never threads forward
 }
 
 export type ForecastStatus =
@@ -164,6 +173,7 @@ export interface ForecastSummary {
   keyFactorsNo: string[]; // strongest factors pushing toward NO
   mainUncertainties: string; // what is unresolved / could move it before resolution
   calibrationNote: string; // optional: if the agent thinks the number is mis-calibrated, why (no new number)
+  premortem?: string; // "assume it resolved the OTHER way" — the single most plausible path there
   whySentence?: string; // ONE self-explaining sentence: the single reason the number landed here
   quip?: string; // one short dry human aside reacting to the verdict
   confidenceReason?: string; // one line on why confidence is high/medium/low
@@ -175,7 +185,10 @@ export interface ForecastState {
   framing: EventFraming; // Round-0 frame: the normalized question actually forecast
   createdAtUtc: string;
   updatedAtUtc: string;
-  currentProb: number; // the maintained P(YES), threaded across rounds
+  currentProb: number; // the maintained P(YES), threaded across rounds (raw Bayesian posterior)
+  calibratedProb?: number; // #6 anti-extremization view: currentProb shrunk toward the base-rate
+  // anchor when independent evidence is thin. Derived + idempotent (recomputed
+  // from the ledger each round; a resume never compounds it).
   credibleInterval: [number, number];
   round: number; // number of completed rounds
   status: ForecastStatus;

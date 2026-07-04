@@ -192,6 +192,7 @@ export function validateRoundOutput(raw: unknown): AgentRoundOutput {
       credibility: CONFIDENCES.has(ev.credibility as string)
         ? (ev.credibility as AgentRoundOutput["new_evidence"][number]["credibility"])
         : "medium",
+      driver: typeof ev.driver === "string" ? ev.driver.trim() : "",
     };
   });
   const prob = Number(o.agent_holistic_probability);
