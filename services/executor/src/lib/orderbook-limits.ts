@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { gammaFetch } from "./gamma.js";
 import type { BookSnapshot } from "./polymarket-sdk.js";
 
 export interface PersistedPolymarketOrderLimit {
@@ -153,13 +154,8 @@ async function writeStore(filePath: string, store: PersistedPolymarketOrderLimit
 }
 
 async function fetchActiveMarketPage(limit: number, offset: number) {
-  const response = await fetch(
-    `https://gamma-api.polymarket.com/markets?limit=${limit}&offset=${offset}&active=true&closed=false&order=liquidity&ascending=false`,
-    {
-      headers: {
-        "user-agent": "@autopoly/executor"
-      }
-    }
+  const response = await gammaFetch(
+    `/markets?limit=${limit}&offset=${offset}&active=true&closed=false&order=liquidity&ascending=false`
   );
   if (!response.ok) {
     throw new Error(`Gamma API failed: ${response.status}`);

@@ -3,6 +3,7 @@ import { ClobClient, OrderType, Side, type Chain } from "@polymarket/clob-client
 import { buildPaperOrderResult } from "@autopoly/contracts";
 import { Wallet } from "ethers";
 import type { ExecutorConfig } from "../config.js";
+import { gammaFetch } from "./gamma.js";
 import {
   OkxAgenticSigner,
   type ExecutorWalletProvider,
@@ -96,14 +97,7 @@ export async function fetchPolymarketProxyWallet(address: string): Promise<strin
   }
 
   try {
-    const response = await fetch(
-      `https://gamma-api.polymarket.com/public-profile?address=${encodeURIComponent(normalizedAddress)}`,
-      {
-        headers: {
-          "user-agent": "@autopoly/executor"
-        }
-      }
-    );
+    const response = await gammaFetch(`/public-profile?address=${encodeURIComponent(normalizedAddress)}`);
 
     if (response.status === 404) {
       return null;
@@ -515,7 +509,7 @@ export async function fetchRemotePositions(config: ExecutorConfig): Promise<Remo
 }
 
 export async function fetchEventBySlug(_config: ExecutorConfig, slug: string): Promise<GammaRecord> {
-  const response = await fetch(`https://gamma-api.polymarket.com/events/slug/${encodeURIComponent(slug)}`);
+  const response = await gammaFetch(`/events/slug/${encodeURIComponent(slug)}`);
   if (!response.ok) {
     throw new Error(`Failed to resolve event slug "${slug}": ${response.status}`);
   }
@@ -527,7 +521,7 @@ export async function fetchEventBySlug(_config: ExecutorConfig, slug: string): P
 }
 
 export async function fetchMarketBySlug(_config: ExecutorConfig, slug: string): Promise<GammaRecord[]> {
-  const response = await fetch(`https://gamma-api.polymarket.com/markets?slug=${encodeURIComponent(slug)}`);
+  const response = await gammaFetch(`/markets?slug=${encodeURIComponent(slug)}`);
   if (!response.ok) {
     throw new Error(`Failed to resolve market slug "${slug}": ${response.status}`);
   }
@@ -540,8 +534,8 @@ export async function fetchMarketBySlug(_config: ExecutorConfig, slug: string): 
 
 export async function fetchActiveMarkets(_config: ExecutorConfig, limit = 100): Promise<GammaRecord[]> {
   const clampedLimit = Math.max(1, Math.min(500, Math.trunc(limit)));
-  const response = await fetch(
-    `https://gamma-api.polymarket.com/markets?limit=${clampedLimit}&active=true&closed=false&order=liquidity&ascending=false`
+  const response = await gammaFetch(
+    `/markets?limit=${clampedLimit}&active=true&closed=false&order=liquidity&ascending=false`
   );
   if (!response.ok) {
     throw new Error(`Gamma API failed: ${response.status}`);
