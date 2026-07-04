@@ -38,11 +38,12 @@ Produce:
 - assumptions: assumptions you made (timezone, definitions, scope).
 - forecastable: true if this can be sensibly forecast as a binary event with a checkable resolution; false if too vague/subjective/unresolvable.
 - clarification_needed: if forecastable is false, what the user must specify; else "".
-- prior_probability: your PRIOR P(YES) in [0,1] from GENERAL KNOWLEDGE / a reference class ONLY — the base rate BEFORE weighing specific current evidence (e.g. "a named product shipping by a pre-announced date ~0.55", "a specific bilateral ceasefire holding 6 months ~0.3"). Not 0.5 unless the reference class truly is a coin flip.
-- prior_rationale: the reference class and why that base rate.
+- prior_probability: your PRIOR P(YES) in [0,1] from GENERAL KNOWLEDGE / a reference class ONLY — the base rate BEFORE weighing specific current evidence (e.g. "a named product shipping by a pre-announced date ~0.55", "a specific bilateral ceasefire holding 6 months ~0.3"). Not 0.5 unless the reference class truly is a coin flip. Before settling on one, name 2-3 candidate reference classes and pick the one whose members best match this event; put the runners-up in prior_rationale.
+- prior_rationale: the chosen reference class, the candidate classes you rejected, and why that base rate.
+- key_drivers: the 2-4 concrete sub-questions that mostly determine the outcome (each answerable by research, e.g. "Has production started?", "Does the incumbent lead in swing-state polls?"). These direct every research round, so make them load-bearing and disjoint.
 ${languageDirective()}
 OUTPUT only a single JSON object, no prose, no code fence:
-{"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"..."}`;
+{"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"...","key_drivers":["...","..."]}`;
 }
 
 function buildAuditPrompt(question: string, frame: EventFraming, hasWebSearch: boolean): string {
@@ -57,11 +58,12 @@ PROPOSED FRAME:
 - forecastable: ${frame.forecastable}
 - prior_probability: ${frame.priorProbability}
 - prior_rationale: ${frame.priorRationale}
+- key_drivers: ${frame.keyDrivers?.length ? frame.keyDrivers.join(" | ") : "(none)"}
 
-Re-derive the frame independently. Return a CORRECTED frame (keep it if already correct), PLUS an honest audit. Be strict: if the resolution bar is ambiguous or unfaithful to the user's intent, fix it and say so in framing_caveats.
+Re-derive the frame independently. Return a CORRECTED frame (keep it if already correct), PLUS an honest audit. Be strict: if the resolution bar is ambiguous or unfaithful to the user's intent, fix it and say so in framing_caveats. Also audit key_drivers: they must be the 2-4 disjoint sub-questions that mostly determine the outcome — replace vague or redundant ones.
 ${languageDirective()}
 OUTPUT only a single JSON object, no prose, no code fence:
-{"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"...","framing_caveats":"edge cases / ambiguities the user should know, or '' if none","framing_confidence":"high|medium|low"}`;
+{"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"...","key_drivers":["...","..."],"framing_caveats":"edge cases / ambiguities the user should know, or '' if none","framing_confidence":"high|medium|low"}`;
 }
 
 function num(v: unknown, fallback: number): number {
@@ -80,6 +82,11 @@ function coreFraming(raw: unknown): Omit<EventFraming, "framingCaveats" | "frami
   const rd = o.resolution_date;
   const resolutionDate =
     typeof rd === "string" && rd.trim() && rd.trim().toLowerCase() !== "null" ? rd.trim() : null;
+  // Lenient: key_drivers enrich the research loop but must never fail a frame.
+  const keyDrivers = (Array.isArray(o.key_drivers) ? o.key_drivers : [])
+    .filter((d): d is string => typeof d === "string" && d.trim().length > 0)
+    .map((d) => d.trim())
+    .slice(0, 4);
   return {
     normalizedQuestion: o.normalized_question.trim(),
     resolutionCriteria: o.resolution_criteria.trim(),
@@ -90,6 +97,7 @@ function coreFraming(raw: unknown): Omit<EventFraming, "framingCaveats" | "frami
     clarificationNeeded: typeof o.clarification_needed === "string" ? o.clarification_needed : "",
     priorProbability: num(o.prior_probability, 0.5),
     priorRationale: typeof o.prior_rationale === "string" ? o.prior_rationale : "",
+    keyDrivers,
   };
 }
 

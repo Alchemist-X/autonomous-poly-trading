@@ -122,6 +122,11 @@ async function main(): Promise<void> {
   console.log(
     `FINAL P(YES) = ${pct(final.currentProb)}  (internal band ${pct(final.credibleInterval[0])} – ${pct(final.credibleInterval[1])})`
   );
+  // #6: the anti-extremization view — surfaced whenever thin evidence makes it
+  // meaningfully differ from the raw Bayesian posterior.
+  if (final.calibratedProb != null && Math.abs(final.calibratedProb - final.currentProb) >= 0.005) {
+    console.log(`Calibrated estimate (shrunk toward the base rate for thin evidence): ${pct(final.calibratedProb)}`);
+  }
   console.log(`Status: ${final.status}  ·  Rounds: ${final.round}  ·  Sources: ${final.evidenceLedger.length}`);
   if (final.summary?.verdict) console.log(`\n${final.summary.verdict}`);
   const totalCost = final.roundHistory.reduce((s, r) => s + (r.costUsd ?? 0), 0);

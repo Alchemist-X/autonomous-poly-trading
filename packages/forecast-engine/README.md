@@ -104,15 +104,26 @@ log-likelihood-ratio per source, the engine threads those through log-odds space
 
 - **No double-counting across rounds** — every source is keyed by canonical URL;
   already-counted URLs are stripped before the update and listed back to the agent
-  as "do not re-count".
+  as "do not re-count". Cluster damping also carries across rounds: a later echo
+  of an already-counted story enters at a geometrically-discounted weight.
 - **No oscillation from re-picking** — continuity invariant: round *n* prior ==
   round *n-1* posterior; the agent moves *from* the supplied prior. Per-source LLR
   magnitude is clamped (≤2 nats); probability clamped to [1%, 99%].
 - **No fabricated citations** — every cited URL is reconciled against the agent's
   actual WebSearch result trace (from stream-json); unmatched URLs are flagged
   `⚠ not in trace` in the report.
-- **Bounded cost/rounds** — hard `--max-rounds` cap; stops early on no-new-info or
-  convergence (move < 1pp).
+- **Bounded cost/rounds** — hard `--max-rounds` cap; stops early on no-new-info,
+  convergence (move < 1pp), or a plateau (last K rounds inside a ±3pp band; env
+  `FORECAST_BAND_ROUNDS` / `FORECAST_BAND_HALF_WIDTH`).
+- **Directed research** — Round 0 emits 2-4 key drivers (the sub-questions that
+  determine the outcome); each round shows per-driver evidence coverage and aims
+  searches at the least-resolved driver.
+- **Weighted by reliability, capped per round** — source credibility scales the
+  applied LLR (high 1.0 / medium 0.8 / low 0.5); a single round's net evidence is
+  capped at 2.5 nats; aggregate odds quotes are quarantined as opinion.
+- **Calibrated view** — alongside the raw Bayesian posterior, a derived
+  `calibratedProb` shrinks toward the base-rate anchor while independent evidence
+  clusters are few (anti-extremization; idempotent, resume-safe).
 
 ## Known limitations / next steps
 
@@ -144,7 +155,11 @@ log-likelihood-ratio per source, the engine threads those through log-odds space
 `report.md`(人类可读追溯,含框定)+ `state.json`(可恢复的机器状态)。重复同一 prompt 会
 **续跑加轮**,旧信源作为"不要重复计数"传回 agent。
 
-关键防护:跨轮按 canonical URL **去重**、连续性不变量**防震荡**、用真实搜索轨迹**核对信源
-防编造**、`--max-rounds` + 收敛/无新信息**封顶成本**。
+关键防护:跨轮按 canonical URL **去重**(聚类衰减也跨轮生效,旧故事的回声按几何折扣计入)、
+连续性不变量**防震荡**、用真实搜索轨迹**核对信源防编造**、`--max-rounds` + 收敛/无新信息/
+**±3pp 平台期带状收敛**封顶成本。另有:Round 0 产出 2-4 个**关键驱动因子**定向每轮检索、
+信源可信度分层加权(高 1.0/中 0.8/低 0.5)、单轮净证据 2.5 nats 上限、聚合赔率隔离
+(cluster "market-odds")、以及在独立证据簇偏少时向基准率收缩的**校准概率视图**
+(`calibratedProb`,派生且幂等,续跑不复利)。
 
 局限:暂不自动打分(无结算源,符合既定决策)、仅二元、置信区间是启发式、Web 可视化另做。

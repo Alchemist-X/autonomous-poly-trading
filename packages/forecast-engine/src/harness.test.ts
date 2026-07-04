@@ -237,6 +237,32 @@ describe("buildPrompt (provider- and analyst-aware)", () => {
     expect(p).not.toContain("already used lead"); // consumed notes are not re-injected
   });
 
+  it("renders time-to-resolution and key-driver targeting with per-driver coverage", () => {
+    const state = newForecastState({
+      eventId: "evt-drv",
+      eventText: "t",
+      framing: { ...framing(0.5), keyDrivers: ["Has production started?", "Any regulatory block?"] },
+    });
+    state.evidenceLedger.push({ ...ledgerEntry("led-1", "https://src.com/a", "prior claim"), driver: "d1" });
+    const p = buildPrompt(state, 2, 3, { hasWebSearch: true, analyst: null });
+    expect(p).toContain("TIME TO RESOLUTION");
+    expect(p).toContain("KEY DRIVERS");
+    expect(p).toContain("- d1 (1 source(s) so far): Has production started?");
+    expect(p).toContain("- d2 (0 source(s) so far): Any regulatory block?");
+    expect(p).toContain('"driver"');
+  });
+
+  it("omits driver/time sections when the frame has neither", () => {
+    const state = newForecastState({
+      eventId: "evt-plain",
+      eventText: "t",
+      framing: { ...framing(0.5), resolutionDate: null },
+    });
+    const p = buildPrompt(state, 1, 3, { hasWebSearch: true, analyst: null });
+    expect(p).not.toContain("KEY DRIVERS");
+    expect(p).not.toContain("TIME TO RESOLUTION");
+  });
+
   it("renders no analyst section when there is nothing to inject", () => {
     const p = buildPrompt(mkState(), 1, 3, { hasWebSearch: true, analyst: null });
     expect(p).not.toContain("ANALYST INPUT");
@@ -344,6 +370,34 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
     const onDisk = JSON.parse(readFileSync(file, "utf8"));
     expect(onDisk.currentProb).toBeCloseTo(final.currentProb, 9);
     expect(onDisk.evidenceLedger[0].sourceType).toBe("official");
+  });
+
+  it("credibility scales applied weight; the round cap records its scale; calibratedProb is derived", async () => {
+    const state = newForecastState({ eventId: "evt-weights", eventText: "t", framing: framing(0.3) });
+    const fakeAgent = async (prompt: string): Promise<AgentRunResult> => {
+      if (prompt.includes("wrapping up")) return agentResult(summaryOut);
+      return agentResult(
+        roundOut([
+          evidence("https://hi.com/1", 1.5, { credibility: "high", cluster_id: "c1" }),
+          evidence("https://lo.com/2", 1.5, { credibility: "low", cluster_id: "c2" }),
+          evidence("https://mid.com/3", 1.5, { credibility: "high", cluster_id: "c3" }),
+        ]),
+        ["https://hi.com/1", "https://lo.com/2", "https://mid.com/3"]
+      );
+    };
+    const final = await runForecast(state, { maxRounds: 1, runAgentFn: fakeAgent });
+    const hi = final.evidenceLedger.find((e) => e.url.includes("hi.com"))!;
+    const lo = final.evidenceLedger.find((e) => e.url.includes("lo.com"))!;
+    // low-credibility source applies at half the high-credibility weight (×0.5 vs ×1.0)
+    expect(Math.abs(lo.effectiveLlr)).toBeLessThan(Math.abs(hi.effectiveLlr));
+    // raw sum 1.5 + 0.75 + 1.5 = 3.75 > 2.5 → the round cap scaled everything
+    const r = final.roundHistory[0];
+    expect(r.roundLlrScale).toBeDefined();
+    expect(r.roundLlrScale!).toBeLessThan(1);
+    // calibrated view exists and sits between the anchor (0.3) and the raw posterior
+    expect(final.calibratedProb).toBeDefined();
+    expect(final.calibratedProb!).toBeGreaterThan(0.3);
+    expect(final.calibratedProb!).toBeLessThan(final.currentProb);
   });
 
   it("minRounds: a net-zero round 1 does not converge before the disconfirmation round has run", async () => {

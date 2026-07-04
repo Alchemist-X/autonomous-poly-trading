@@ -88,20 +88,40 @@ Ranked by NECESSITY after a multi-lens proposal + adversarial challenge pass.
    also evades the convergence stop. Require ≥1 search framed to falsify the current
    lean each round; track the confirming/opposing LLR ratio. Composes with reflection (a).
 
-### HIGH VALUE
-6. **Anti-extremization shrink toward the base rate** [M, after #2] — regress the
-   posterior toward the outside view when confidence is low / few independent clusters.
-7. **Convergence needs K-round stability with NEW independent evidence** [S] — don't
-   stop on a single sub-1pp round; distinguish "converged" from "stalled / dedup-starved".
-8. **Per-round signed-sum LLR cap** [S] — cheap interim backstop against single-round
-   saturation; largely subsumed once clustering (#3) lands, so ship as a stopgap then retire.
+### HIGH VALUE — ✅ ALL 3 SHIPPED (2026-07-05)
+6. ✅ **Anti-extremization shrink toward the base rate** — derived `calibratedProb`
+   (bayes.ts `shrinkTowardAnchor`, w = n/(n+k) in logit space over independent
+   evidence clusters, k by confidence). Idempotent view: never mutates the
+   running log-odds thread, so resumes cannot compound it. Shown in report/CLI
+   when it differs ≥0.5pp from the raw posterior.
+7. ✅ **Band convergence** — `bandStable`: stop when the last K (default 3, env
+   `FORECAST_BAND_ROUNDS`) round-end probabilities fit a ±3pp corridor (env
+   `FORECAST_BAND_HALF_WIDTH`). Early-stop only (never fires at maxRounds), so
+   default 3-round runs behave exactly as before; long contested runs stop
+   oscillating ~2 rounds sooner.
+8. ✅ **Per-round signed-sum LLR cap** — `capRoundLlrs` (cap 2.5 nats on the NET
+   round sum, proportional scaling, offsetting evidence untouched);
+   `roundLlrScale` recorded and rendered when it fires.
+
+Also shipped 2026-07-05 (from LATER + agentic-redesign groundwork):
+- ✅ daysUntilResolution surfaced in the round prompt (prompt-only, as decided).
+- ✅ Reliability-tier source weighting: `credibilityFactor` high 1.0 / medium 0.8 /
+  low 0.5 multiplies the effective LLR (agent-declared credibility now has teeth).
+- ✅ **Cross-round cluster damping** (extends P0-3): `clusterFactorsWithHistory`
+  counts prior ledger members of a cluster, so a round-3 echo of a round-1 wire
+  story enters at decay^(rank+priorMembers), not full weight.
+- ✅ **Key drivers**: framing emits 2-4 outcome-determining sub-questions
+  (audited by the skeptical pass); each round shows per-driver evidence coverage
+  and targets the least-resolved driver; evidence carries an optional `driver` tag.
+- ✅ LLR calibration anchors in the round prompt (0.7≈2x, 1.4≈4x, 2.0≈7x) +
+  market-odds quarantine (aggregate odds quotes share cluster_id "market-odds",
+  |llr| ≤ 0.5 — opinion, not fact).
+- ✅ Summary premortem field ("assume it resolved the other way — the most
+  plausible path"), rendered in the report.
 
 ### LATER / NICE
-- Surface daysUntilResolution to the agent (prompt only; skip auto time-decay LLR — it
-  hard-codes a contestable "YES needs a visible precursor" assumption).
 - Effective-independent-source count in the credible interval (rider on #3) — or just
   downgrade the CI to a qualitative label, since it's explicitly uncalibrated.
-- Reliability-tier source weighting (overlaps with #3 + #4).
 - Scoped self-consistency: re-rate ONLY the few highest-impact LLRs (not full ensemble).
 
 ### DO NOT (over-engineering / non-goals)

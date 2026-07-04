@@ -4,6 +4,9 @@ import type { PulseCandidate } from "./market-pulse.js";
 
 const DEFAULT_RESULTS_PER_QUERY = 4;
 const DEFAULT_QUERIES_PER_CANDIDATE = 4;
+const DEFAULT_PAGES_PER_CANDIDATE = 2;
+const PAGE_EXCERPT_MAX_CHARS = 1600;
+const PAGE_FETCH_TIMEOUT_MS = 12_000;
 
 export interface PulseWebSearchResult {
   title: string;
@@ -20,10 +23,23 @@ export interface PulseWebSearchQueryEvidence {
   error?: string;
 }
 
+// Full-text excerpt of a top search hit. Snippets alone proved to be
+// navigational noise (titles + 300 chars) — the report LLM repeatedly flagged
+// "no quantitative evidence, sources are nav pages"; fetching the top pages'
+// readable text turns the search step into actual evidence.
+export interface PulseWebSearchPageExcerpt {
+  url: string;
+  sourceHost: string;
+  status: "fetched" | "failed";
+  excerpt?: string;
+  error?: string;
+}
+
 export interface PulseWebSearchCandidateEvidence {
   marketSlug: string;
   question: string;
   queries: PulseWebSearchQueryEvidence[];
+  pages?: PulseWebSearchPageExcerpt[];
 }
 
 export interface PulseWebSearchSummary {
@@ -40,6 +56,11 @@ export type PulseWebSearchRunner = (
   query: string,
   options: { signal: AbortSignal }
 ) => Promise<PulseWebSearchResult[]>;
+
+export type PulseWebSearchPageFetcher = (
+  url: string,
+  options: { signal: AbortSignal }
+) => Promise<string>;
 
 function htmlDecode(value: string): string {
   return value
@@ -119,7 +140,25 @@ export function parseDuckDuckGoHtml(html: string): PulseWebSearchResult[] {
   return results;
 }
 
-export function buildPulseWebSearchQueries(candidate: PulseCandidate): string[] {
+// The authority query is category-aware: for sports the strongest public
+// baseline is bookmaker odds (implied probabilities), for crypto/finance the
+// live data itself; the wire/government site filter only fits politics-shaped
+// events and used to be applied to everything.
+const SPORTS_CATEGORIES = new Set(["sports", "soccer", "football", "tennis", "esports", "nba", "nfl", "mlb", "fifa"]);
+const FINANCE_CATEGORIES = new Set(["crypto", "cryptocurrency", "finance", "economics", "macro", "commodities", "stocks"]);
+
+function buildAuthorityQuery(candidate: PulseCandidate, terms: string): string {
+  const category = (candidate.categorySlug ?? candidate.categoryLabel ?? "").toLowerCase();
+  if ([...SPORTS_CATEGORIES].some((c) => category.includes(c))) {
+    return `${candidate.question.trim()} bookmaker odds implied probability`;
+  }
+  if ([...FINANCE_CATEGORIES].some((c) => category.includes(c))) {
+    return `${terms} price data analysis site:coingecko.com OR site:tradingview.com OR site:bloomberg.com OR site:reuters.com`;
+  }
+  return `${terms} site:reuters.com OR site:apnews.com OR site:state.gov OR site:whitehouse.gov OR site:iaea.org`;
+}
+
+export function buildPulseWebSearchQueries(candidate: PulseCandidate, now: Date = new Date()): string[] {
   const question = candidate.question.trim();
   const tagText = (candidate.tags ?? [])
     .map((tag) => tag.label || tag.slug)
@@ -132,11 +171,14 @@ export function buildPulseWebSearchQueries(candidate: PulseCandidate): string[] 
     .join(" ")
     .replace(/\s+/g, " ")
     .trim();
+  // Recency anchor: DDG has no date operator that survives the HTML endpoint,
+  // but a month-year token reliably pulls current coverage above evergreen pages.
+  const monthYear = now.toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
   const queries = [
     `"${question}"`,
     `${terms} official announcement statement`,
-    `${terms} Reuters AP latest`,
-    `${terms} site:reuters.com OR site:apnews.com OR site:state.gov OR site:whitehouse.gov OR site:iaea.org`
+    `${terms} Reuters AP latest ${monthYear}`,
+    buildAuthorityQuery(candidate, terms)
   ];
   const seen = new Set<string>();
   return queries
@@ -153,6 +195,55 @@ export function buildPulseWebSearchQueries(candidate: PulseCandidate): string[] 
 
 export function resolvePulseWebSearchTimeoutMs(config: Pick<OrchestratorConfig, "pulse">): number {
   return Math.max(1, config.pulse.webSearchTimeoutSeconds) * 1000;
+}
+
+// Fetch one page and reduce it to readable text (tags stripped, whitespace
+// collapsed, capped). Failures are represented in the summary, never thrown.
+async function fetchPageText(url: string, options: { signal: AbortSignal }): Promise<string> {
+  const pageTimeout = AbortSignal.timeout(PAGE_FETCH_TIMEOUT_MS);
+  const response = await fetch(url, {
+    signal: AbortSignal.any([options.signal, pageTimeout]),
+    redirect: "follow",
+    headers: {
+      "accept": "text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.5",
+      "user-agent": "predict-raven-pulse-web-search/1.0"
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`page fetch failed: HTTP ${response.status}`);
+  }
+  return stripTags(await response.text());
+}
+
+// Pick the pages worth reading in full for one candidate: round-robin across
+// the candidate's queries (each query's top hit first, for source diversity),
+// dedupe by URL, and skip hosts that cannot carry event evidence (the market
+// itself, search engines).
+const SKIP_PAGE_HOSTS = new Set(["polymarket.com", "duckduckgo.com"]);
+export function selectPagesToFetch(
+  queries: readonly PulseWebSearchQueryEvidence[],
+  limit: number = DEFAULT_PAGES_PER_CANDIDATE
+): PulseWebSearchResult[] {
+  const seen = new Set<string>();
+  const picks: PulseWebSearchResult[] = [];
+  const maxResults = Math.max(0, ...queries.map((query) => query.results.length));
+  for (let rank = 0; rank < maxResults; rank++) {
+    for (const query of queries) {
+      const result = query.results[rank];
+      if (!result) {
+        continue;
+      }
+      if (picks.length >= limit) {
+        return picks;
+      }
+      if (seen.has(result.url) || SKIP_PAGE_HOSTS.has(result.sourceHost)) {
+        continue;
+      }
+      seen.add(result.url);
+      picks.push(result);
+    }
+  }
+  return picks;
 }
 
 async function searchDuckDuckGo(query: string, options: { signal: AbortSignal }): Promise<PulseWebSearchResult[]> {
@@ -190,6 +281,7 @@ export async function collectPulseWebSearchEvidence(input: {
   config: Pick<OrchestratorConfig, "pulse">;
   progress?: ProgressReporter;
   search?: PulseWebSearchRunner;
+  fetchPage?: PulseWebSearchPageFetcher;
   now?: () => Date;
 }): Promise<PulseWebSearchSummary> {
   const searchedAt = input.now?.() ?? new Date();
@@ -209,6 +301,7 @@ export async function collectPulseWebSearchEvidence(input: {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const search = input.search ?? searchDuckDuckGo;
+  const fetchPage = input.fetchPage ?? fetchPageText;
   const evidence: PulseWebSearchCandidateEvidence[] = [];
   let queryCount = 0;
   let queryFailures = 0;
@@ -253,10 +346,46 @@ export async function collectPulseWebSearchEvidence(input: {
           });
         }
       }
+      // Full-text pass: read the top hits so the render step gets dated,
+      // quotable evidence instead of navigational snippets. Page failures are
+      // recorded per URL; an expired global budget just stops further fetches
+      // (already-collected search evidence must not be discarded as timed_out).
+      const pages: PulseWebSearchPageExcerpt[] = [];
+      for (const pick of selectPagesToFetch(queryEvidence)) {
+        if (controller.signal.aborted) {
+          break;
+        }
+        input.progress?.stage({
+          percent: 47,
+          label: "Pulse web-search page fetch",
+          detail: `${candidate.marketSlug}: ${pick.sourceHost}`
+        });
+        try {
+          const text = await fetchPage(pick.url, { signal: controller.signal });
+          pages.push({
+            url: pick.url,
+            sourceHost: pick.sourceHost,
+            status: "fetched",
+            excerpt: truncate(text, PAGE_EXCERPT_MAX_CHARS)
+          });
+        } catch (error) {
+          if (controller.signal.aborted) {
+            break;
+          }
+          pages.push({
+            url: pick.url,
+            sourceHost: pick.sourceHost,
+            status: "failed",
+            error: getErrorMessage(error)
+          });
+        }
+      }
+
       evidence.push({
         marketSlug: candidate.marketSlug,
         question: candidate.question,
-        queries: queryEvidence
+        queries: queryEvidence,
+        pages
       });
     }
   } catch (error) {

@@ -11,7 +11,15 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-04 by Claude（**Stage 2 收尾 + Stage 3 开工:forecast-engine 抽包第一步**，PR #73/#74/#75 全合入）。
+> 最后更新：2026-07-05 by Claude（**Forecasting Agent 质量升级一批**，分支 `claude/vigorous-visvesvaraya-0e73e6`；先 7-agent 并行审计 61 份历史报告 + 全部预测代码，再按审计结论实施；全程 typecheck 17/17 + vitest 865/865 绿）。
+> ① **补上反馈回路**：新增 `pnpm forecast:score`（`scripts/forecast-resolution-backfill.ts`）——校准账本 86 条 outcome 全部 pending、系统从未给自己打过分；现在从 Gamma 回填结算、算 Brier/按档校准/相对市场 skill，写 `evaluation/calibration-report.md` + `calibration-summary.json`；下轮 pulse render 自动把该摘要注入 prompt（`loadCalibrationBrief`，样本 ≥5 才注入）。**接手后先跑一次 `pnpm forecast:score`**（读网 + 只写 evaluation/，安全）。
+> ② **实盘 render 有了真检索**：`claude --print` 默认命令补 `--allowedTools "WebSearch WebFetch"`（此前 prompt 说"可主动检索"但 --print 模式工具被拦，= 承诺是空头的）；orchestrator web-search 新增 top 结果页**正文摘录**（每候选 2 页/1600 字、轮转采样、失败单页记录）进 context JSON；查询模板类目感知（体育→博彩赔率、金融→数据源、政治→通讯社）+ 当月时间锚。
+> ③ **forecast-engine ROADMAP HIGH-VALUE 三项全落地** + 一批：防极端 `calibratedProb`、±3pp 带状收敛、单轮 2.5 nats 上限、跨轮聚类衰减、可信度分层加权、key drivers 定向研究、时间感知 prompt、LLR 量纲锚定（0.7≈2x）、市场赔率隔离、summary premortem。详见 `packages/forecast-engine/ROADMAP.md` 2026-07-05 节。
+> ④ **prompt 两层全改**。harness 层（full-pulse.ts，中英）：概率纪律块——显式基准率先行、偏离市场价必须答"市场错在哪"、长尾折价是先验不是公式、**方向自检**（审计发现历史推荐 139:8 清一色买 No）、时间衰减、禁凑整。方法论层（vendored skill，en+zh 四文件）：删掉"每轮 3-5 个 No 扫描"配额和"Top 3 至少 1 个买 No"规则、长尾折价表改写为"需事件级证据确认的先验"（双向：也扫深度热门低估）、"买 No 的优势"改为诚实经济学（高胜率≠正期望）、锚定检查升级为硬性门槛（>25pp 偏离需说清市场错在哪 + ≥2 条独立带日期证据）、**证据门槛**（零外部证据 = 不交易，堵 3/16 式灾难）、同源回声只算一条 + 单一事实 ±20% 饱和上限、证据表加日期列、反证搜索必做。已推上游 `Alchemist-X/all-polymarket-skill` 分支 `forecast-quality-prompts`（commit `f00aaf3`），`vendor/manifest.json` 已 bump。**合并后要跑 `pnpm vendor:sync` 才会在本机生效**；上游 main 未动（manifest 按 commit 钉）。
+> ⑤ **删 227 行死代码 deterministic fallback**（无调用方；且其逻辑是 market+10pp 伪造"AI 概率"生成 provisional 开仓，违反"下单概率必须出自 forecasting 流程"铁律）。
+> ⚠️ ②④⑤ 触及实盘行为，PR 等用户确认后合并。审计明确指出但**本轮未做**的两大项已入 P1。英文版 handoff 此条待同步翻译。
+>
+> 此前更新：2026-07-04 by Claude（**Stage 2 收尾 + Stage 3 开工:forecast-engine 抽包第一步**，PR #73/#74/#75 全合入）。
 > ① **#73 Gamma 传输层**：executor 6 处硬编码 gamma host → `services/executor/src/lib/gamma.ts` 的 `gammaFetch`（只共享传输层——redeem 优雅降级/orderbook offset 分页各自保留，"6→1 换客户端"已被 endpoint 分析证伪）。合并前用只读探针实测 6/6 调用点（零 LLM/零下单）。
 > ② **#74 两个真钱相关漏项 + recommendation 编译期锁**：`calculatePositionPnlPct` 公式单源化（executor risk.ts 唯一公式,helpers 只做展示取整）；**managed-trading 改走 loadEnvFile**（原裸 dotenv 忽略 ENV_FILE = 多状态源风险,现与 executor/orchestrator 对齐）；contracts 新增 `recommendation-file.ts` wire schema——写盘方 `satisfies` 锁 + orchestrator 互赋值断言 + mapper 单向锁，**全程无 .parse()**（运行时校验按操作地图文档留给未来单点 safeParse）。
 > ③ **#75 forecast-engine 抽包（issue #56 第一步,lift-and-shift）**：17 文件 git-mv → `packages/forecast-engine/src/`;`scripts/forecast/cli.ts` 留 6 行 shim,raven/forecast-api/paper-agent/forecast:event 四条 spawn 接缝零改动;raven 的 makeEventId"逐字节契约"复制体消灭（re-export 同一份代码）,cwd 补偿的 forecastsRoot 有意保留并注释;包只 typecheck 不 build（源码消费,语义不变）。**#56 第二步待做**：dist 化 + provider/store 配置注入（env 直读 → config 对象）。
@@ -219,6 +227,9 @@
 - [ ] **wrap pizza 钱包的 USDC.e → pUSD**（V2 切换前必做，否则 4/28 之后 preflight 会看到 collateral=0）。手动操作：登 polymarket.com UI 找 "Migrate to pUSD" 入口
 
 ## 🟡 P1 — 本周
+
+- [ ] **【审计 2026-07-05】forecast-engine 接入实盘交易路径（两个预测大脑合一）**：实盘概率仍来自单发 markdown render + 正则解析（`pulse-entry-planner.ts:253`），而更严谨的迭代引擎只服务 raven app / forecast-api。参考实现已在仓库里：`services/paper-agent/src/evaluator.ts`（隔离子进程逐市场跑引擎）+ `reflect.ts`（从已结算结果算 Brier 反思）。建议路线：先加 `PULSE_ENGINE_MODE=iterative`（默认 off）把引擎结果注入 research context 让 render 对账，验证后再让引擎概率直接进 entry planner。**涉及实盘，默认值翻转需用户拍板。**
+- [ ] **【审计 2026-07-05】候选选择改为找 edge，不是随机采样**：market-pulse 目前对过滤后市场**随机 shuffle** 挑 20 候选、再按 volume/liquidity 优先级挑 4 个深研——研究预算恰好花在定价最有效（最没 edge）的市场上；报告自己都写"被选中主要是流动性权重而非 edge"。改法：确定性 edge 导向评分（价格尾部区 + 点差 + 24h/7d 价格变动 + prescreen TRADE 结果加权；Gamma 有 oneDayPriceChange 字段但管线从未取），建议 `PULSE_CANDIDATE_STRATEGY=edge|random` 灰度，**默认值翻转需用户拍板**。
 
 - [x] ~~**接 Polymarket Builder Code**~~ ✅ commit `a6513bc`（2026-05-04，Phase 3a.0）。executor 现在按 `POLYMARKET_BUILDER_*` 5 个 env 自动给 FOK/GTC 单挂 builderCode。**用户操作**：把 5 个 env vars 抄进 `.env.pizza`（或当前在跑的钱包 env），下次 `forecast:live` 自动开始累积 builder volume
 - [x] **【P1 · 已实现】Polymarket 读取默认 in-process + 订单簿去重预取**：2026-05-07 `POLY_CLI_ENABLED` 改成显式 `true` 才走 `pnpm exec tsx scripts/poly-cli.ts`，默认直接用 in-process SDK；`POLY_CLI_STRICT=true` 仍可强制隔离 bridge。`pulse-live` 新增单轮 `readBook` / `computeAvgCost` Promise cache；`buildExecutionPlan` 对 open/close/reduce 的 unique tokenId 做 bounded-concurrency prefetch，避免同一轮重复读 CLOB / 重复 spawn。

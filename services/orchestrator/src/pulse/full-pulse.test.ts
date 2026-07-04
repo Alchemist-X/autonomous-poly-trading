@@ -1,8 +1,10 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { OrchestratorConfig } from "../config.js";
-import { resolvePulseRenderTimeoutMs } from "./full-pulse.js";
+import { loadCalibrationBrief, resolvePulseRenderTimeoutMs } from "./full-pulse.js";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 
@@ -86,5 +88,51 @@ describe("pulse render timeout", () => {
       ...baseConfig,
       pulseTimeoutMode: "unbounded"
     })).toBe(0);
+  });
+});
+
+describe("loadCalibrationBrief", () => {
+  const writeSummary = (dir: string, summary: unknown) => {
+    mkdirSync(path.join(dir, "evaluation"), { recursive: true });
+    writeFileSync(path.join(dir, "evaluation", "calibration-summary.json"), JSON.stringify(summary), "utf8");
+  };
+
+  it("returns null when no summary exists or the sample is too small", () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "pulse-calib-"));
+    try {
+      expect(loadCalibrationBrief(dir, "en")).toBeNull();
+      writeSummary(dir, { resolvedScored: 2, aiBrier: 0.2 });
+      expect(loadCalibrationBrief(dir, "en")).toBeNull();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("renders Brier, market skill, and the worst calibration buckets", () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "pulse-calib-"));
+    try {
+      writeSummary(dir, {
+        generatedAtUtc: "2026-07-05T00:00:00Z",
+        resolvedScored: 12,
+        aiBrier: 0.21,
+        marketBrier: 0.18,
+        skillVsMarket: -0.03,
+        buckets: [
+          { range: "70-80%", count: 5, meanForecast: 0.74, hitRate: 0.4 },
+          { range: "10-20%", count: 2, meanForecast: 0.15, hitRate: 0.5 }, // n<3: excluded
+          { range: "80-90%", count: 4, meanForecast: 0.85, hitRate: 0.9 }
+        ]
+      });
+      const brief = loadCalibrationBrief(dir, "en");
+      expect(brief).not.toBeNull();
+      const text = (brief ?? []).join("\n");
+      expect(text).toContain("Historical AI Brier 0.210");
+      expect(text).toContain("trailing");
+      expect(text).toContain("70-80%");
+      expect(text).toContain("overconfident");
+      expect(text).not.toContain("10-20%");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
