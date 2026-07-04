@@ -1,6 +1,9 @@
 # 仓库复杂度三阶段重构计划
 
-> 状态：**Stage 1 执行中**（2026-07-03 用户批准）。英文版待同步翻译。
+> 状态（2026-07-04 更新）：**Stage 1 完成（#68）；Stage 2 主体完成**（#69 helpers 去重、#70 contracts 拆域+stripPrices、#71 settlement 合一+recommendation 调研、#72 preflight 闸统一、#73 Gamma 传输层、#74 PnL 单源+managed ENV_FILE+recommendation 编译期类型锁）；**Stage 3 已开工**——forecast-engine 抽包第一步（lift-and-shift）已合（#75，`packages/forecast-engine`，spawn 接缝 shim 兼容）。英文版待同步翻译。
+>
+> Stage 2 仍余（低优先）：formatUsd/logger/cli-args 工具收敛、包边界正名（scripts 深路径 import）、making/taking 换算抽 contracts、predeps 收敛、vendor 双份合一、world-cup.module.css / raven 大页面拆分、recommendation 运行时 safeParse（单点，见操作地图文档）。
+> Stage 3 仍余：引擎 dist 化 + provider/store 配置注入（#56 第二步）、orchestrator 大文件拆分、polymarket-sdk 拆分、**执行引擎下沉 executor（需用户小额 live 验收）**、provider-runtime 删除（需用户拍板）、live-test 并入、daily-pulse spawn→import。
 >
 > 依据：2026-07-03 十路并行诊断（全仓 ~84k 行 TS/Python，443 次工具调用，每个死代码判定均做过全仓引用搜索）。诊断原始发现归档于当次会话 workflow `wf_ae1b75f2-3a5`。
 
