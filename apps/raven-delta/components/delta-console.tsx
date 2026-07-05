@@ -10,14 +10,12 @@ import { WsPanel } from "./ws-panel";
 
 const SAMPLE = {
   en: {
-    headline: "OpenAI announces a $40B multi-year cloud and GPU capacity agreement with Microsoft, Nvidia, and Oracle",
-    body: "The agreement expands AI data-center capacity through 2028. Management says demand for Blackwell-class GPUs remains above prior internal forecasts, while power availability is the main constraint.",
-    source: "Reuters"
+    text: "OpenAI announces a $40B multi-year cloud and GPU capacity agreement with Microsoft, Nvidia, and Oracle\n\nThe agreement expands AI data-center capacity through 2028. Management says demand for Blackwell-class GPUs remains above prior internal forecasts, while power availability is the main constraint.",
+    url: "https://www.reuters.com/technology/openai-40b-capacity-agreement-sample"
   },
   zh: {
-    headline: "OpenAI 宣布与 Microsoft、Nvidia、Oracle 签署 400 亿美元多年云与 GPU 产能协议",
-    body: "该协议将 AI 数据中心产能扩展至 2028 年。管理层称 Blackwell 级 GPU 需求高于此前内部预测，电力供给是主要约束。",
-    source: "路透社"
+    text: "OpenAI 宣布与 Microsoft、Nvidia、Oracle 签署 400 亿美元多年云与 GPU 产能协议\n\n该协议将 AI 数据中心产能扩展至 2028 年。管理层称 Blackwell 级 GPU 需求高于此前内部预测，电力供给是主要约束。",
+    url: "https://www.reuters.com/technology/openai-40b-capacity-agreement-sample"
   }
 } as const;
 
@@ -30,9 +28,7 @@ interface ConsoleProps {
 export function DeltaConsole({ engine, universeSize, universeVersion }: ConsoleProps) {
   const t = useT();
   const { locale, setLocale } = useLocale();
-  const [headline, setHeadline] = useState("");
-  const [body, setBody] = useState("");
-  const [source, setSource] = useState("");
+  const [text, setText] = useState("");
   const [url, setUrl] = useState("");
   const [emails, setEmails] = useState("");
   const [topic, setTopic] = useState("delta");
@@ -42,9 +38,8 @@ export function DeltaConsole({ engine, universeSize, universeVersion }: ConsoleP
 
   function loadSample() {
     const sample = SAMPLE[locale];
-    setHeadline(sample.headline);
-    setBody(sample.body);
-    setSource(sample.source);
+    setText(sample.text);
+    setUrl(sample.url);
     setError(null);
   }
 
@@ -57,9 +52,7 @@ export function DeltaConsole({ engine, universeSize, universeVersion }: ConsoleP
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          headline,
-          body: body || undefined,
-          source: source || undefined,
+          text,
           url: url || undefined,
           locale,
           push: { emails, wsTopic: topic }
@@ -133,37 +126,20 @@ export function DeltaConsole({ engine, universeSize, universeVersion }: ConsoleP
             </div>
 
             <div className="dl-field">
-              <label htmlFor="dl-headline">{t("headlineLabel")}</label>
+              <label htmlFor="dl-text">{t("textLabel")}</label>
               <textarea
-                id="dl-headline"
-                rows={3}
-                value={headline}
-                onChange={(event) => setHeadline(event.target.value)}
-                aria-describedby="dl-headline-help"
+                id="dl-text"
+                rows={7}
+                value={text}
+                onChange={(event) => setText(event.target.value)}
+                aria-describedby="dl-text-help"
               />
-              <p id="dl-headline-help">{t("headlineHelp")}</p>
+              <p id="dl-text-help">{t("textHelp")}</p>
             </div>
 
             <div className="dl-field">
-              <label htmlFor="dl-body">{t("bodyLabel")}</label>
-              <textarea id="dl-body" rows={5} value={body} onChange={(event) => setBody(event.target.value)} aria-describedby="dl-body-help" />
-              <p id="dl-body-help">{t("bodyHelp")}</p>
-            </div>
-
-            <div className="dl-two-col">
-              <div className="dl-field">
-                <label htmlFor="dl-source">{t("sourceLabel")}</label>
-                <input
-                  id="dl-source"
-                  value={source}
-                  onChange={(event) => setSource(event.target.value)}
-                  placeholder={t("sourcePlaceholder")}
-                />
-              </div>
-              <div className="dl-field">
-                <label htmlFor="dl-url">{t("urlLabel")}</label>
-                <input id="dl-url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…" />
-              </div>
+              <label htmlFor="dl-url">{t("urlLabel")}</label>
+              <input id="dl-url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…" />
             </div>
 
             <div className="dl-field">
@@ -189,7 +165,7 @@ export function DeltaConsole({ engine, universeSize, universeVersion }: ConsoleP
               </p>
             ) : null}
 
-            <button type="submit" className="dl-btn dl-btn-primary" disabled={loading || !headline.trim()} aria-busy={loading}>
+            <button type="submit" className="dl-btn dl-btn-primary" disabled={loading || !text.trim()} aria-busy={loading}>
               {loading ? t("analyzingButton") : t("analyzeButton")}
             </button>
             {loading ? <p className="dl-hint">{t("analyzingHint")}</p> : null}

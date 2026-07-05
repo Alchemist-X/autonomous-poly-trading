@@ -6,6 +6,7 @@
 import { NextResponse } from "next/server";
 import { newsInputSchema } from "../../../lib/analyzer/schema";
 import { runDeltaAnalysis } from "../../../lib/analyzer/analyze";
+import { runQualityGate } from "../../../lib/analyzer/quality-gate";
 import { deliverRun } from "../../../lib/delivery";
 import { ingestAllowed } from "../../../lib/auth";
 import { DEFAULT_WS_TOPIC } from "../../../lib/delivery/websocket";
@@ -37,6 +38,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid news item.", detail }, { status: 400 });
   }
 
+  // Stage 1 — quality gate: a cheap judgment on whether the item is big
+  // enough to justify a full analysis + push. Sub-threshold items stop here.
+  const gate = await runQualityGate(parsed.data);
+  if (!gate.pass) {
+    return NextResponse.json(
+      { status: "gated", gate, runId: null, delivery: [] },
+      { status: 202 }
+    );
+  }
+
+  // Stage 2 — full delta analysis, then push email + WS immediately.
   const { run } = await runDeltaAnalysis(parsed.data);
   const delivery = await deliverRun({
     run,
@@ -48,10 +60,13 @@ export async function POST(request: Request) {
 
   return NextResponse.json(
     {
+      status: "analyzed",
+      gate,
       runId: run.id,
       engine: run.engine,
       worthAttention: run.analysis.attention.worthAttention,
       attentionScore: run.analysis.attention.score,
+      firstSeenUtc: run.analysis.timing.firstSeenUtc,
       impactedCount: run.analysis.impactedStocks.length,
       delivery
     },

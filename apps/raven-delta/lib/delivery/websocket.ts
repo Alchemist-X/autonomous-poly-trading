@@ -24,6 +24,8 @@ export function wsDigest(run: DeltaRun, topic: string): Record<string, unknown> 
     engine: run.engine,
     generatedAtUtc: run.generatedAtUtc,
     headline: run.news.headline,
+    url: run.news.url,
+    firstSeenUtc: run.analysis.timing.firstSeenUtc,
     worthAttention: run.analysis.attention.worthAttention,
     attentionScore: run.analysis.attention.score,
     verdict: run.analysis.attention.verdict,

@@ -154,7 +154,10 @@ function normalizeCandidate(raw: unknown): unknown {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return raw;
   const record = raw as Record<string, unknown>;
   const stocks = Array.isArray(record.impactedStocks) ? record.impactedStocks.slice(0, 5) : record.impactedStocks;
-  return { ...record, impactedStocks: stocks };
+  // Models occasionally omit timing entirely; an honest "not reported" beats
+  // burning the repair round on it.
+  const timing = record.timing ?? { firstSeenUtc: null, basis: "engine did not report first-seen timing" };
+  return { ...record, impactedStocks: stocks, timing };
 }
 
 // Server-side truth for inUniverse and duplicate tickers — never trust the
@@ -174,6 +177,17 @@ function enforceUniverseFacts(analysis: DeltaAnalysis): DeltaAnalysis {
     ];
   });
   return { ...analysis, impactedStocks: stocks };
+}
+
+// Generic single-shot JSON call for small harness judgments (e.g. the ingest
+// quality gate). No repair round — callers fall back on failure.
+export async function runLlmJson(engine: EngineId, prompt: string): Promise<unknown> {
+  if (engine === "rules") throw new Error("runLlmJson cannot run the rules engine.");
+  const runPrompt = engine === "deepseek" ? runDeepSeekPrompt : runClaudeCliPrompt;
+  const raw = await runPrompt(prompt);
+  const candidate = extractJsonObject(raw);
+  if (candidate === null) throw new Error("no JSON object in engine output");
+  return candidate;
 }
 
 export async function runLlmAnalysis(engine: EngineId, prompt: string): Promise<DeltaAnalysis> {

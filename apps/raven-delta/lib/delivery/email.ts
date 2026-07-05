@@ -4,6 +4,7 @@
 
 import type { DeltaRun, DeliveryReceipt } from "../analyzer/schema";
 import { failureDetail, pick, postJson, receipt, type DeliveryLocale } from "./shared";
+import { renderHtml, renderPlainText } from "./report-email";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -36,85 +37,8 @@ function subjectFor(run: DeltaRun): string {
   return `[Raven Delta] ${flat.slice(0, 120)}`;
 }
 
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-export function renderPlainText(run: DeltaRun, locale: DeliveryLocale): string {
-  const a = run.analysis;
-  const attention = a.attention.worthAttention
-    ? pick(locale, "WORTH ATTENTION", "值得关注")
-    : pick(locale, "not actionable", "无需行动");
-  const lines = [
-    `Raven Delta · ${run.id} · ${run.engine}`,
-    "",
-    run.news.headline,
-    "",
-    `${pick(locale, "Attention", "关注度")}: ${attention} (${a.attention.score}/100) — ${a.attention.verdict}`,
-    a.marketReadout,
-    "",
-    pick(locale, "Impacted stocks:", "受影响股票："),
-    ...(a.impactedStocks.length === 0
-      ? [pick(locale, "- none — no trade suggested from this headline", "- 无——本条新闻不建议交易")]
-      : a.impactedStocks.map(
-          (stock) =>
-            `- ${stock.ticker} ${stock.direction} ${stock.magnitude} | ${stock.action} | ${stock.expectedMovePct.min}%..${stock.expectedMovePct.max}% | ${stock.reasoning}`
-        )),
-    "",
-    `${pick(locale, "Trading plan", "操作计划")}: ${a.tradingPlan}`,
-    "",
-    pick(locale, "Limitations:", "局限性："),
-    ...a.limitations.map((item) => `- ${item}`)
-  ];
-  return lines.join("\n");
-}
-
-export function renderHtml(run: DeltaRun, locale: DeliveryLocale): string {
-  const a = run.analysis;
-  const rows = a.impactedStocks
-    .map(
-      (stock) => `
-      <tr>
-        <td><strong>${escapeHtml(stock.ticker)}</strong><br/>${escapeHtml(stock.company)}</td>
-        <td>${escapeHtml(stock.direction)} · ${escapeHtml(stock.magnitude)}</td>
-        <td>${escapeHtml(stock.action)}</td>
-        <td>${stock.expectedMovePct.min}%..${stock.expectedMovePct.max}%</td>
-        <td>${escapeHtml(stock.reasoning)}</td>
-      </tr>`
-    )
-    .join("");
-  const headers = [
-    pick(locale, "Ticker", "股票"),
-    pick(locale, "Direction", "方向"),
-    pick(locale, "Action", "操作"),
-    pick(locale, "Expected move", "预期波动"),
-    pick(locale, "Reasoning", "推理")
-  ];
-  return `
-    <div style="font-family: Georgia, 'Times New Roman', serif; color: #211c13; line-height: 1.5;">
-      <p style="font-size: 12px; color: #6e6452; text-transform: uppercase; letter-spacing: 0.08em;">Raven Delta · Raven Labs</p>
-      <h1 style="font-size: 22px; margin: 0 0 10px;">${escapeHtml(run.news.headline)}</h1>
-      <p><strong>${escapeHtml(a.attention.verdict)}</strong></p>
-      <p>${escapeHtml(a.marketReadout)}</p>
-      <table cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; font-size: 14px;">
-        <thead>
-          <tr style="text-align: left; background: #f4efe4;">${headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("")}</tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-      <p>${escapeHtml(a.tradingPlan)}</p>
-      <p style="font-size: 12px; color: #6e6452;">${escapeHtml(
-        pick(locale, "Demo mode: no live prices, no orders, not investment advice.", "演示模式：无实时价格、不下单、不构成投资建议。")
-      )}</p>
-    </div>`;
-}
-
 export async function sendEmail(run: DeltaRun, requested: readonly string[], gate: EmailGate, locale: DeliveryLocale): Promise<DeliveryReceipt> {
+  const sentAtIso = new Date().toISOString();
   const { allowed, rejected } = filterRecipients(requested, gate);
   const rejectedNote =
     rejected.length > 0
@@ -140,7 +64,7 @@ export async function sendEmail(run: DeltaRun, requested: readonly string[], gat
   if (resendKey && from) {
     const result = await postJson(
       "https://api.resend.com/emails",
-      { from, to: allowed, subject: subjectFor(run), text: renderPlainText(run, locale), html: renderHtml(run, locale) },
+      { from, to: allowed, subject: subjectFor(run), text: renderPlainText(run, locale, sentAtIso), html: renderHtml(run, locale, sentAtIso) },
       { authorization: `Bearer ${resendKey}` }
     );
     if (!result.ok) {
@@ -161,8 +85,8 @@ export async function sendEmail(run: DeltaRun, requested: readonly string[], gat
       channel: "email",
       recipients: allowed,
       subject: subjectFor(run),
-      text: renderPlainText(run, locale),
-      html: renderHtml(run, locale),
+      text: renderPlainText(run, locale, sentAtIso),
+      html: renderHtml(run, locale, sentAtIso),
       runId: run.id
     });
     if (!result.ok) {

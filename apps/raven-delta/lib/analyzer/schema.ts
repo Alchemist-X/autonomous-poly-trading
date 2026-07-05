@@ -21,15 +21,27 @@ export type EngineId = (typeof ENGINES)[number];
 
 export const MAX_IMPACTED_STOCKS = 5;
 
+// Input is deliberately minimal: paste the news text, optionally attach the
+// URL. There is no self-declared "source" field — verification (who really
+// reported this, and when it first appeared) is the ENGINE's job, not the
+// caller's claim.
 export const newsInputSchema = z.object({
-  headline: z.string().trim().min(1).max(500),
-  body: z.string().trim().max(4000).optional(),
-  source: z.string().trim().max(140).optional(),
+  text: z.string().trim().min(1).max(6000),
   url: z.string().trim().url().max(500).optional(),
+  // Machine feeds (e.g. a tweet timestamp) may pass this; the console doesn't.
   publishedAtUtc: z.string().trim().datetime({ offset: true }).optional(),
   locale: z.enum(["en", "zh"]).default("en")
 });
 export type NewsInput = z.infer<typeof newsInputSchema>;
+
+// Display headline = first non-empty line of the pasted text.
+export function headlineOf(text: string): string {
+  const firstLine = text
+    .split("\n")
+    .map((line) => line.trim())
+    .find(Boolean);
+  return (firstLine ?? text.trim()).slice(0, 200);
+}
 
 const evidenceSchema = z.object({
   point: z.string().trim().min(1).max(500),
@@ -69,6 +81,14 @@ export const deltaAnalysisSchema = z.object({
     newsType: z.string().trim().min(1).max(80),
     credibilityNote: z.string().trim().min(1).max(400)
   }),
+  // When did this news FIRST appear anywhere public? Freshness is the whole
+  // game for news trading — staleness must be stated, never implied.
+  timing: z.object({
+    firstSeenUtc: z.string().trim().datetime({ offset: true }).nullable(),
+    // How firstSeenUtc was established (web-search trace, caller timestamp,
+    // or an honest "cannot verify in this mode").
+    basis: z.string().trim().min(1).max(300)
+  }),
   // How the market mechanism transmits this news (the "delta", not the level).
   marketReadout: z.string().trim().min(1).max(1200),
   impactedStocks: z.array(impactedStockSchema).max(MAX_IMPACTED_STOCKS),
@@ -102,10 +122,9 @@ export interface DeltaRun {
   universeVersion: string;
   news: {
     headline: string;
-    body: string | null;
-    source: string | null;
+    text: string;
     url: string | null;
-    publishedAtUtc: string;
+    publishedAtUtc: string | null;
   };
   analysis: DeltaAnalysis;
   stages: RunStage[];

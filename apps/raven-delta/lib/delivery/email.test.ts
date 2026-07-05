@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { filterRecipients, renderPlainText, sendEmail } from "./email";
+import { filterRecipients, sendEmail } from "./email";
+import { renderHtml, renderPlainText } from "./report-email";
 import type { DeltaRun } from "../analyzer/schema";
 
 const RUN: DeltaRun = {
@@ -11,9 +12,8 @@ const RUN: DeltaRun = {
   universeVersion: "2026-07-05",
   news: {
     headline: "Line one\r\nLine two smuggles headers",
-    body: null,
-    source: "Reuters",
-    url: null,
+    text: "Line one\r\nLine two smuggles headers",
+    url: "https://example.com/original-story",
     publishedAtUtc: "2026-07-05T12:00:00.000Z"
   },
   analysis: {
@@ -23,6 +23,10 @@ const RUN: DeltaRun = {
       verdict: "Worth a look.",
       newsType: "AI capex",
       credibilityNote: "Single source."
+    },
+    timing: {
+      firstSeenUtc: "2026-07-05T11:30:00.000Z",
+      basis: "caller timestamp"
     },
     marketReadout: "Capacity commitments reprice AI compute demand.",
     impactedStocks: [
@@ -119,10 +123,35 @@ describe("sendEmail", () => {
   });
 });
 
-describe("renderPlainText", () => {
+describe("report rendering", () => {
+  const SENT_AT = "2026-07-05T12:00:00.000Z"; // 30 min after firstSeen
+
   it("localizes scaffolding for zh runs", () => {
-    const text = renderPlainText(RUN, "zh");
-    expect(text).toContain("受影响股票");
+    const text = renderPlainText(RUN, "zh", SENT_AT);
+    expect(text).toContain("要做的操作");
     expect(text).toContain("局限性");
+  });
+
+  it("always carries the three required items: original link, elapsed time, action", () => {
+    const text = renderPlainText(RUN, "en", SENT_AT);
+    expect(text).toContain("https://example.com/original-story"); // #1 original link
+    expect(text).toContain("30 min had passed"); // #2 elapsed since first seen
+    expect(text).toContain("WATCH NVDA"); // #3 the action to take
+    const html = renderHtml(RUN, "en", SENT_AT);
+    expect(html).toContain("https://example.com/original-story");
+    expect(html).toContain("30 min");
+    expect(html).toContain("WATCH");
+  });
+
+  it("stays honest when first-seen could not be verified", () => {
+    const run = { ...RUN, analysis: { ...RUN.analysis, timing: { firstSeenUtc: null, basis: "cannot verify" } } };
+    const text = renderPlainText(run, "en", SENT_AT);
+    expect(text).toContain("could not be verified");
+  });
+
+  it("flags stale news (>24h) in the HTML banner", () => {
+    const run = { ...RUN, analysis: { ...RUN.analysis, timing: { firstSeenUtc: "2026-07-03T12:00:00.000Z", basis: "caller timestamp" } } };
+    const html = renderHtml(run, "en", SENT_AT);
+    expect(html).toContain("likely priced in");
   });
 });

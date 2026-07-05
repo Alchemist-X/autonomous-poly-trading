@@ -224,16 +224,40 @@ function buildLimitations(locale: Locale): string[] {
   ];
 }
 
+// First-seen timing: the rules engine has no network access, so the only
+// honest anchors are a caller-provided timestamp or nothing at all.
+function buildTiming(news: NewsInput, locale: Locale): DeltaAnalysis["timing"] {
+  if (news.publishedAtUtc) {
+    return {
+      firstSeenUtc: news.publishedAtUtc,
+      basis: pick(
+        locale,
+        "Caller-provided timestamp (e.g. feed/tweet time); earliest public appearance was not independently verified.",
+        "调用方提供的时间戳（如信息流/推文时间）；未独立核实全网最早出现时间。"
+      )
+    };
+  }
+  return {
+    firstSeenUtc: null,
+    basis: pick(
+      locale,
+      "Rules engine cannot verify when this news first appeared (no web access in this mode).",
+      "规则引擎无法核实这条新闻全网最早出现时间（该模式下无联网检索）。"
+    )
+  };
+}
+
 // nowIso is part of the shared engine contract (the LLM engine anchors
 // recency framing on it); the deterministic rules are time-independent.
 export function runRulesAnalysis(news: NewsInput, _nowIso: string): DeltaAnalysis {
   const locale = news.locale;
-  const text = normalizeText([news.headline, news.body, news.source].filter(Boolean).join(" "));
+  const text = normalizeText(news.text);
   const signals = detectSignals(text, locale);
   const scored = scoreUniverse(text, signals);
   const top = scored.slice(0, MAX_IMPACTED_STOCKS);
   return {
     attention: buildAttention(signals, scored, locale),
+    timing: buildTiming(news, locale),
     marketReadout: buildMarketReadout(signals, locale),
     impactedStocks: top.map((item) => buildImpactedStock(item, locale)),
     tradingPlan: buildTradingPlan(top, locale),

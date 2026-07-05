@@ -4,6 +4,7 @@
 // 0-5 impacted stocks with reasoning/evidence/action, then plan + receipts.
 
 import type { DeltaRun } from "../lib/analyzer/schema";
+import { freshnessRead } from "../lib/analyzer/timing";
 import { useLocale, useT, valueLabel } from "../lib/i18n";
 
 function movePctText(range: { min: number; max: number }): string {
@@ -16,9 +17,20 @@ export function ReportView({ run }: { run: DeltaRun }) {
   const { locale } = useLocale();
   const analysis = run.analysis;
   const attention = analysis.attention;
+  // Freshness is anchored to the run's generation time so the banner stays
+  // stable (and server/client render identically).
+  const fresh = freshnessRead(analysis.timing.firstSeenUtc, run.generatedAtUtc, locale);
 
   return (
     <div className="dl-report">
+      <div className={`dl-fresh ${fresh.staleWarning ? "dl-fresh-stale" : ""} ${!fresh.known ? "dl-fresh-unknown" : ""}`}>
+        <span className="dl-fresh-label">⏱ {fresh.label}</span>
+        {fresh.staleWarning ? <span className="dl-fresh-warn">{t("staleWarning")}</span> : null}
+        <span className="dl-fresh-basis">
+          {t("timingBasisLabel")}: {analysis.timing.basis}
+        </span>
+      </div>
+
       <section className="dl-verdict" aria-labelledby="dl-verdict-title">
         <div className="dl-verdict-row">
           <span className={`dl-attention-pill ${attention.worthAttention ? "dl-attention-yes" : "dl-attention-no"}`}>
@@ -36,6 +48,16 @@ export function ReportView({ run }: { run: DeltaRun }) {
         </div>
         <h2 id="dl-verdict-title">{attention.verdict}</h2>
         <p>{attention.credibilityNote}</p>
+        <p className="dl-source-row">
+          {t("originalLink")}:{" "}
+          {run.news.url ? (
+            <a href={run.news.url} target="_blank" rel="noopener noreferrer">
+              {run.news.url}
+            </a>
+          ) : (
+            t("noUrl")
+          )}
+        </p>
         {run.engineFallbackReason && run.engine === "rules" ? (
           <p className="dl-fallback-note">
             {t("engineFallbackNote")} {run.engineFallbackReason}

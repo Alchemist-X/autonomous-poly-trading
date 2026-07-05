@@ -16,8 +16,9 @@ import {
 
 const NOW_ISO = "2026-07-05T12:00:00.000Z";
 
-function makeNews(input: Partial<NewsInput> & { headline: string }): NewsInput {
-  return newsInputSchema.parse(input);
+function makeNews(input: { headline: string; body?: string; locale?: "en" | "zh"; publishedAtUtc?: string }): NewsInput {
+  const { headline, body, ...rest } = input;
+  return newsInputSchema.parse({ text: [headline, body].filter(Boolean).join("\n"), ...rest });
 }
 
 function expectParses(analysis: DeltaAnalysis): void {
@@ -33,7 +34,7 @@ describe("runRulesAnalysis", () => {
     const analysis = runRulesAnalysis(news, NOW_ISO);
     expectParses(analysis);
 
-    const text = normalizeText(`${news.headline} ${news.body}`);
+    const text = normalizeText(news.text);
     const signalIds = detectSignals(text, "en").map((signal) => signal.id);
     expect(signalIds).toContain("ai-capex");
 
@@ -104,7 +105,7 @@ describe("runRulesAnalysis", () => {
       headline: "美国 CPI 数据显示通胀超预期，美联储或再度加息",
       locale: "zh"
     });
-    const text = normalizeText(news.headline);
+    const text = normalizeText(news.text);
     const signals = detectSignals(text, "zh");
     expect(signals.map((signal) => signal.id)).toEqual(["hawkish-rates"]);
 
@@ -145,7 +146,7 @@ describe("runRulesAnalysis", () => {
       expect(stock?.evidence.some((entry) => entry.point.includes("Sector exposure only"))).toBe(true);
     }
 
-    const text = normalizeText(news.headline);
+    const text = normalizeText(news.text);
     const signals = detectSignals(text, "en");
     const exxon = findStock("XOM");
     expect(exxon).not.toBeNull();

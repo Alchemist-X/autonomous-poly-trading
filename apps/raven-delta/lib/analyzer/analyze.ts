@@ -2,7 +2,7 @@
 // LLM engines degrade to the rules fallback with an explicit, user-visible
 // reason (never a silent fallback — repo rule §6).
 
-import type { DeltaAnalysis, DeltaRun, EngineId, NewsInput, RunStage } from "./schema";
+import { headlineOf, type DeltaAnalysis, type DeltaRun, type EngineId, type NewsInput, type RunStage } from "./schema";
 import { buildAnalysisPrompt } from "./prompt";
 import { resolveEngine, runLlmAnalysis } from "./provider";
 import { runRulesAnalysis } from "./rules-engine";
@@ -26,6 +26,7 @@ export interface AnalysisOutcome {
 
 export async function runDeltaAnalysis(news: NewsInput, now = new Date()): Promise<AnalysisOutcome> {
   const nowIso = now.toISOString();
+  const headline = headlineOf(news.text);
   const stages: RunStage[] = [];
   const resolution = resolveEngine();
 
@@ -48,18 +49,17 @@ export async function runDeltaAnalysis(news: NewsInput, now = new Date()): Promi
   stages.push({ id: "engine", title: `engine:${engine}`, durationMs: Date.now() - engineStart });
 
   const run: DeltaRun = {
-    id: buildRunId(news.headline, nowIso),
+    id: buildRunId(headline, nowIso),
     mode: "demo_read_only",
     engine,
     engineFallbackReason,
     generatedAtUtc: nowIso,
     universeVersion: getUniverse().version,
     news: {
-      headline: news.headline,
-      body: news.body ?? null,
-      source: news.source ?? null,
+      headline,
+      text: news.text,
       url: news.url ?? null,
-      publishedAtUtc: news.publishedAtUtc ?? nowIso
+      publishedAtUtc: news.publishedAtUtc ?? null
     },
     analysis,
     stages,

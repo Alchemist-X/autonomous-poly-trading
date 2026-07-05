@@ -13,7 +13,11 @@ const OUTPUT_SPEC = `Return EXACTLY ONE JSON object (no markdown fences, no pros
     "score": number,                  // 0-100 attention score
     "verdict": string,                // one or two sentences: why it is / is not worth attention
     "newsType": string,               // short catalyst class, e.g. "AI capex", "antitrust", "rates", "M&A"
-    "credibilityNote": string         // read on the source's credibility and confirmation status
+    "credibilityNote": string         // YOUR verification read: who actually reported this, is it confirmed?
+  },
+  "timing": {
+    "firstSeenUtc": string | null,    // ISO timestamp of the EARLIEST public appearance you can establish; null if you cannot
+    "basis": string                   // how you established it (search trace / provided timestamp / "cannot verify")
   },
   "marketReadout": string,            // the mechanism: what this news CHANGES vs. pre-news baseline
   "impactedStocks": [                 // 0 to 5 entries. Fewer, higher-conviction entries beat padding.
@@ -48,7 +52,8 @@ export function buildAnalysisPrompt(news: NewsInput): string {
 
 Doctrine — trade the increment, not the level:
 - A static "will this stock go up" probability is not the product. The question is what THIS headline changes relative to the pre-news baseline: which cash flows, multiples, or risk premia get repriced, and for whom.
-- First triage: is this news worth a desk's attention at all? Consider source credibility (is the stated source a credible primary outlet or filing?), novelty (is it plausibly already priced in / widely reported earlier?), and materiality. If it is not worth attention, say so and return an EMPTY impactedStocks list — that is a valid, valuable answer.
+- VERIFY, never trust: the caller gives you raw pasted text (optionally a URL) and no source claim. Establish yourself — with web search when available — whether the story is real, who first reported it, and WHEN it first appeared anywhere public (firstSeenUtc). Freshness is the whole game: a 5-minute-old story and a 3-day-old story are different products. If you cannot verify, say so plainly in timing.basis and credibilityNote — never fabricate a timestamp.
+- First triage: is this news worth a desk's attention at all? Consider credibility, novelty (is it plausibly already priced in / widely reported earlier?), and materiality. If it is not worth attention, say so and return an EMPTY impactedStocks list — that is a valid, valuable answer.
 - Then map exposure: direct subjects of the news first, then second-order exposure (suppliers, customers, competitors, sector baskets). Anchor on the maintained universe below; you may include an out-of-universe ticker when the news demands it (flag inUniverse=false).
 - 0 to 5 impacted stocks. Include a name only when you can state a concrete repricing mechanism and evidence. Do not pad to 5.
 - Evidence discipline: quote or paraphrase specifics from the provided headline/body for each claim; attach source/url only when you are confident it is real. Never invent quotes, numbers, or URLs.
@@ -60,12 +65,12 @@ ${universePromptTable()}
 
 ${lang}
 
-News item to analyze:
-HEADLINE: ${news.headline}
-${news.body ? `BODY: ${news.body}` : "BODY: (none provided)"}
-SOURCE: ${news.source ?? "(unstated)"}
-URL: ${news.url ?? "(none)"}
-PUBLISHED_AT_UTC: ${news.publishedAtUtc ?? "(unstated — assume just now)"}
+News item to analyze (raw paste — no source claim; verify it yourself):
+TEXT:
+${news.text}
+
+URL: ${news.url ?? "(none provided)"}
+CALLER_TIMESTAMP_UTC: ${news.publishedAtUtc ?? "(none — establish first appearance yourself)"}
 
 ${OUTPUT_SPEC}`;
 }
