@@ -8,7 +8,7 @@ import {
   normalizeEmail,
   readBooleanEnv,
   shouldAutoActivate
-} from "./prediction-access-rules.js";
+} from "./prediction-access-rules";
 
 export type PredictionAccessMode =
   | "disabled"

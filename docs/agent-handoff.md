@@ -11,7 +11,11 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-06-15 by Claude（本会话共合并 **PR #18–#27** + 建 **issue #25**；main `ea82839`；全程 typecheck + vitest **713** 全绿）。要点：
+> 最后更新：2026-07-05 by Codex。本会话按用户要求开发新的 **News Delta / stock-news impact** 产品原型：基于 Forecasting Engine 的“新闻到来→增量影响→受影响美股→推荐操作→邮件/WebSocket 推送”流程。新增入口 `/stock-news`（兼容 `/stock-news/zh-CN`、`/[locale]/stock-news`）、API `/api/stock-news-impact/run`、核心分析器 `apps/web/lib/stock-news-impact.ts`、delivery adapter `apps/web/lib/stock-news-delivery.ts`、本地 WS hub `pnpm stock-news:ws`（`scripts/stock-news-ws-server.ts`）。邮件默认 Resend / webhook，未配置时明确 `simulated`；WebSocket 本地默认 `ws://127.0.0.1:8791/ws` + `POST /broadcast`。验证：新增 `stock-news-impact.test.ts`，相关单测 12 pass；`@autopoly/web` typecheck pass；`@autopoly/web` build pass；桌面/移动截图 + 交互 WS 验收通过，归档见 `runtime-artifacts/screenshots/20260705-stock-news*` 与 `runtime-artifacts/screenshots/20260705-stock-news-interactive-fixed/`。本轮**没有运行 `forecast:live` / `daily:forecast`，没有加载钱包，没有下单**。
+>
+> 此前更新：2026-07-02 by Codex。本会话按用户要求对 Polymarket `fed-decision-in-july-181` 的 **No change** 分支做只读 Forecasting Engine 预测并生成 PDF：Raven engine 概率 **91.0%**（Polymarket 输入 80.5%，CME/FedWatch 参考 69.0%，engine 解析侧 `Yes`，edge +10.5pp，confidence high）。归档目录：`runtime-artifacts/fed-decision-july-2026-no-change/20260702T092845Z-dd2b1d79-14a7-4cce-8ab3-7581256bec4c/`，PDF：`fed-no-change-forecast-report.pdf`，Pulse 原文：`pulse-report.md`，context：`pulse-context.json`，结果：`forecast-result.json`。本轮使用临时 read-only 脚本调用 `buildFullPulseArchive`，**没有运行 `forecast:live` / `daily:forecast`，没有加载钱包、没有 auto-redeem、没有下单**；临时脚本已移入归档目录 `fed-decision-forecast.ts`。PDF已渲染为 3 页 PNG 并读图验收，版式可读、无遮挡。
+>
+> 此前更新：2026-06-15 by Claude（本会话共合并 **PR #18–#27** + 建 **issue #25**；main `ea82839`；全程 typecheck + vitest **713** 全绿）。要点：
 > ① **Forecasting Engine `/research` 全量双语化**（EN 默认 + 一键 `中文` toggle，chrome 与流式研究内容一起切；新增 `apps/web/lib/research/locale.ts` + `i18n.ts`，`locale` 从 composer→SSE→route→driver→`buildPredictionDemoRun`/`replayRun` 全链路打通，服务端按语言生成内容）——**PR #18**，已部署 forecasting-agent.com（web 项目 `prj_kPZRC…`，`scripts/world-cup/deploy-web.sh`）并实测 EN/zh 双语 + toggle live、0 console error。/research beta 入口仍 dormant。
 > ② 清掉 3 个 open issue：AW setup 文档 + `poly:aw/okx` 别名（**#19** closes #7）、持久化 agent-loop 纯库（**#20**，#6，no live-money）、market-intelligence Python 模块作为可选增强落地（**#21**，#5）。
 > ③ 仓库体检（4 维并行审计）后的收尾：统一 3 份分叉 `loadEnvFile`→`@autopoly/contracts/env`（**#22**，**修实盘 ENV_FILE 优先级漂移风险**：ENV_FILE 优先 + override + fail-closed）、加 Prettier 配置（可用）+ 休眠 ESLint flat config（**#23**，ESLint 依赖因沙箱无网未装）、pulse/forecast/autopoly/raven 命名 glossary（**#24**，**未做有风险的全量改名**，artifact 路径迁移会孤立归档）、删 **~5,128 行死 CSS**（**#26**，globals.css 5403→1759，全是 AutoPoly purge 漏删的 preview/bal/dash 族 + 孤儿 module）、apps/web 单测基线 1→4 文件 **+31 测试**（**#27**，把 access-control 纯规则抽到 `prediction-access-rules.ts` 以绕开 next-auth import）。
@@ -181,6 +185,15 @@
 - 移动 `vitest.config.ts` 到 `config/` 后必须 `root: REPO_ROOT` 否则找不到 `@autopoly/*` workspace 包
 - `git mv` 整目录时未追踪文件不会被 git 移动，要手动 `mv`
 - 4/24 跑 v2 smoke 时 no1 钱包 USDC.e 有 $3.96 但 pUSD 为 0 → 验证 SDK 接入正常但下单需要先 wrap
+
+## 🔄 上次会话留下的上下文（2026-07-05）
+
+- 用户要求基于 Forecasting Engine 做新产品：X/新闻到来时，不做静态概率展示，而是分析“新闻增量影响了哪些美股、市场可能怎么动、推荐怎么操作”，并通过邮件和 WebSocket 推送。
+- 已实现一个只读 demo 流程：`/stock-news` 页面、`/api/stock-news-impact/run` API、核心分析器 `apps/web/lib/stock-news-impact.ts`、delivery adapter `apps/web/lib/stock-news-delivery.ts`、本地 WS hub `scripts/stock-news-ws-server.ts`（root script：`pnpm stock-news:ws`）。
+- 本轮产品边界：根据新闻 catalyst 识别受影响股票、方向、预期移动区间、概率增量、推荐动作、风险与触发条件；邮件支持 Resend / webhook，未配置时返回 `simulated`；WebSocket 本地默认 `ws://127.0.0.1:8791/ws` + `POST /broadcast`。
+- `apps/web` 新增用户可见页面已按 i18n 走 `apps/web/lib/world-cup/messages/{en,zh-CN,zh-TW.generated}.json`；导航新增 `News Delta`；移动端 header 已调窄，避免新增导航后挤出屏幕。
+- 验证：`stock-news-impact.test.ts` + `prediction-access.test.ts` 共 12 tests pass；`@autopoly/web` typecheck pass；`@autopoly/web` build pass；桌面/移动截图和真实 WS 交互验证通过，归档 `runtime-artifacts/screenshots/20260705-stock-news*`，最终交互截图在 `runtime-artifacts/screenshots/20260705-stock-news-interactive-fixed/`。
+- 本轮没有运行 `forecast:live` / `daily:forecast`，没有加载钱包，没有下单。下一步要接真实产品时，优先补新闻源 ingest（X/新闻 API）、券商或行情价格快照、真实邮件收件人权限与生产 WS 广播服务；demo 当前是确定性规则引擎，不应作为真实证券投资建议直接使用。
 
 ## 🔄 上次会话留下的上下文（2026-06-07）
 
