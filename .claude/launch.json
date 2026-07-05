@@ -14,6 +14,12 @@
       "port": 3200
     },
     {
+      "name": "raven-delta",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@autopoly/raven-delta", "dev"],
+      "port": 3300
+    },
+    {
       "name": "raven-quota",
       "runtimeExecutable": "env",
       "runtimeArgs": [

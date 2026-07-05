@@ -29,7 +29,6 @@ export function WorldCupHeader() {
             Predict Raven<span className={styles.brandEd}>{t(locale, "edition")}</span>
           </Link>
           <nav className={styles.headerNav}>
-            <Link href={withLocale("/stock-news", locale)}>{t(locale, "navNewsImpact")}</Link>
             <Link href={withLocale("/prediction-engine", locale)}>{t(locale, "navDeploy")}</Link>
             <a
               href="https://github.com/Alchemist-X/predict-raven"
