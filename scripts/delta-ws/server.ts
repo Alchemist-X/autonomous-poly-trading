@@ -7,8 +7,14 @@
  * either side defaults to "delta". Frames go through the RFC 6455 codec in
  * ./frame.ts, so fragmented and masked client frames parse correctly.
  *
- * Optional auth: when DELTA_WS_TOKEN is set, /broadcast requires
- * `Authorization: Bearer <token>` and upgrades require `?token=<token>`.
+ * Auth model (write-gated, read-open by default):
+ * - DELTA_WS_TOKEN set          -> POST /broadcast requires `Authorization:
+ *   Bearer <token>` (spoofed alerts are the real threat).
+ * - DELTA_WS_SUBSCRIBE_TOKEN set -> WebSocket upgrades additionally require
+ *   `?token=<that value>` (private instances only; dashboards must know it).
+ *
+ * Bind host: 127.0.0.1 by default; set DELTA_WS_HOST=0.0.0.0 inside a
+ * container so the published port is reachable.
  *
  * Run: DELTA_WS_PORT=8791 pnpm exec tsx scripts/delta-ws/server.ts
  */
@@ -29,7 +35,9 @@ import {
 
 const WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 const PORT = Number(process.env.DELTA_WS_PORT || 8791);
+const HOST = process.env.DELTA_WS_HOST || "127.0.0.1";
 const SHARED_TOKEN = process.env.DELTA_WS_TOKEN;
+const SUBSCRIBE_TOKEN = process.env.DELTA_WS_SUBSCRIBE_TOKEN;
 const DEFAULT_TOPIC = "delta";
 const MAX_CLIENTS = 100;
 const MAX_SOCKET_BUFFERED_BYTES = 1_048_576;
@@ -252,7 +260,9 @@ server.on("upgrade", (request, socket) => {
     socket.destroy();
     return;
   }
-  if (SHARED_TOKEN && url.searchParams.get("token") !== SHARED_TOKEN) {
+  // Read side stays open unless a subscribe token is explicitly configured;
+  // the broadcast (write) side keeps its own DELTA_WS_TOKEN gate.
+  if (SUBSCRIBE_TOKEN && url.searchParams.get("token") !== SUBSCRIBE_TOKEN) {
     C.warn("upgrade rejected: missing or invalid ?token");
     socket.destroy();
     return;
@@ -308,11 +318,11 @@ const heartbeat = setInterval(() => {
 
 // --- Lifecycle -----------------------------------------------------------
 
-server.listen(PORT, "127.0.0.1", () => {
+server.listen(PORT, HOST, () => {
   C.info("execution mode: demo-live-push | decision source: AI implementation");
-  C.ok(`Raven Delta WebSocket hub listening on ws://127.0.0.1:${PORT}/ws (default topic "${DEFAULT_TOPIC}")`);
-  C.info(`Broadcast endpoint: http://127.0.0.1:${PORT}/broadcast`);
-  C.info(SHARED_TOKEN ? "auth: shared token required (DELTA_WS_TOKEN set)" : "auth: open (set DELTA_WS_TOKEN to require a token)");
+  C.ok(`Raven Delta WebSocket hub listening on ws://${HOST}:${PORT}/ws (default topic "${DEFAULT_TOPIC}")`);
+  C.info(`Broadcast endpoint: http://${HOST}:${PORT}/broadcast`);
+  C.info(`auth: broadcast ${SHARED_TOKEN ? "token-gated" : "open"} · subscribe ${SUBSCRIBE_TOKEN ? "token-gated" : "open"}`);
 });
 
 process.on("SIGINT", () => {

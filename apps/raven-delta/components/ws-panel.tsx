@@ -9,12 +9,21 @@ import { useT } from "../lib/i18n";
 
 type WsStatus = "idle" | "connecting" | "connected" | "closed" | "error";
 
-export function WsPanel({ defaultUrl }: { defaultUrl: string }) {
+export function WsPanel({ topic }: { topic: string }) {
   const t = useT();
-  const [url, setUrl] = useState(defaultUrl);
+  const [url, setUrl] = useState("");
+  const [urlTouched, setUrlTouched] = useState(false);
   const [status, setStatus] = useState<WsStatus>("idle");
   const [messages, setMessages] = useState<string[]>([]);
   const socketRef = useRef<WebSocket | null>(null);
+
+  // The hub runs next to the app (locally or on the same VM), so derive the
+  // default from the page's own hostname; a hand-edited URL is left alone.
+  useEffect(() => {
+    if (!urlTouched) {
+      setUrl(`ws://${window.location.hostname}:8791/ws?topic=${encodeURIComponent(topic || "delta")}`);
+    }
+  }, [topic, urlTouched]);
 
   useEffect(() => {
     return () => {
@@ -69,7 +78,14 @@ export function WsPanel({ defaultUrl }: { defaultUrl: string }) {
       <div className="dl-ws-row">
         <div className="dl-field">
           <label htmlFor="dl-ws-url">{t("wsUrlLabel")}</label>
-          <input id="dl-ws-url" value={url} onChange={(event) => setUrl(event.target.value)} />
+          <input
+            id="dl-ws-url"
+            value={url}
+            onChange={(event) => {
+              setUrlTouched(true);
+              setUrl(event.target.value);
+            }}
+          />
         </div>
         <button type="button" className="dl-btn" onClick={toggleConnection}>
           {isActive ? t("wsDisconnect") : t("wsConnect")}

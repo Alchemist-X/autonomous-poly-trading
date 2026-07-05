@@ -180,7 +180,7 @@ export function DeltaConsole({ engine, universeSize, universeVersion }: ConsoleP
                 <p>{t("emptyCopy")}</p>
               </section>
             )}
-            <WsPanel defaultUrl={`ws://127.0.0.1:8791/ws?topic=${encodeURIComponent(topic || "delta")}`} />
+            <WsPanel topic={topic} />
           </div>
         </div>
       </main>
