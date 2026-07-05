@@ -11,6 +11,16 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
+> 最后更新：2026-07-05 by Claude（**Raven Delta 独立站点第一版**，分支 `claude/dreamy-ptolemy-8a4853`；重做了同日 Codex 的 stock-news demo——用户明确产品形态：不放 world-cup 站，做 forecasting engine 风格的**独立站点** + 维护股票池 + 真 agent 分析 + 0-5 只受影响股票 + 邮件/WS 推送）。
+> ① **旧 demo 处置**：分支先 rebase 到最新 main（落后 134 commit，7 文件冲突已解，navForecasts/navBracket/LegalFooter 跟随 main 删除不恢复）；对旧 demo 跑了 7 维多代理评审（102 原始发现 → 40 canonical → 逐条 2 名怀疑者对抗验证：14 confirmed / 24 contested），可迁移的修复全部带进新实现；apps/web 里 /stock-news 页面/API/组件/58 个 sni* i18n key 全部移除（typecheck + 17 测试仍绿）。
+> ② **新站点 `apps/raven-delta`**（端口 3300，`pnpm delta:dev`；视觉 = apps/raven 同款 token：暖棕 #15120c + 橙 #ee7130 + Newsreader/Plex Mono；en/zh 切换）：**zod 机器契约**（`lib/analyzer/schema.ts`：attention gate（worthAttention+0-100 分+理由+催化类型+可信度注记）→ marketReadout → **impactedStocks 0-5**（方向/幅度/**预期波动区间**/置信度/推理链/证据/操作/风险）→ tradingPlan → limitations，prompt 只引导思考、schema 强制正确、LLM 输出违约自动带 zod 错误重试一轮再降级）；**维护股票池** `config/stock-universe.json`（20 只种子含中文别名，运营直接编辑，池外股票 inUniverse=false 显式标注、served-side 覆写不信模型）；**provider 链** deepseek→claude-cli→rules（降级必带用户可见原因，规则引擎修了旧 demo 的 CJK 关键词碰撞/generic-alias 假直接命中/零信号假 verdict 等）；**推送层**带全部安全修复（出站超时、subject CRLF 消毒、回执不泄内部细节、真实送达数、**匿名调用者只能发 DELTA_EMAIL_ALLOWLIST 白名单**）；API = `POST /api/analyze`（控制台）/ `POST /api/ingest`（**token 门禁机器接缝，未来 Twitter/X 轮询器只需 POST 这里**，见 `lib/news-sources/types.ts`）/ `GET /api/runs`（归档在 `runtime-artifacts/raven-delta/runs/`）/ `GET /api/health`。
+> ③ **WS hub 重写** `scripts/delta-ws/`（`pnpm delta:ws`，端口 DELTA_WS_PORT=8791）：真 RFC 6455 帧解析（跨 TCP 分片+掩码）、完整关闭握手、30s 心跳踢线、`?topic=` 订阅过滤、可选 DELTA_WS_TOKEN 鉴权、去 CORS 通配、背压/100 客户端上限；14 帧编解码测试 + 16 项实时检查过。
+> ④ 验证：根 `pnpm test` **880/880**（新增 delta 42 个）、两 app typecheck/build 绿、桌面/移动截图 0 pageerror（`runtime-artifacts/screenshots/20260705-raven-delta/`）、浏览器→API→规则引擎→hub→浏览器 WS 全链路实测（en+zh 各一轮）。env 见 `.env.example` 新增 DELTA_* 段。
+> **待办**：P1 = 配 LLM key 才有真 agent 分析（`DEEPSEEK_API_KEY` 或 VM 同款 `claude setup-token`；本机 claude CLI 无头调用 401，已实测降级链路正常）；P2 = Twitter/X 轮询 adapter（对着 /api/ingest 写即可）；P2 = 部署形态未做（建议并入 deploy/raven compose）；P2 = 邮件真实发送未实测（无 RESEND key）。本轮没有运行 forecast:live，没有加载钱包，没有下单。英文版 handoff 已同步。
+> **v2 补充（同日，用户产品反馈六条全落地）**：① 输入简化为「粘贴文字 + 可选 URL」，**去掉来源字段**（核实是引擎的事：prompt 要求自行验证 + 建立最早出现时间）；② schema 新增 `timing.firstSeenUtc/basis`——**全网最早出现时间**成为一级指标：UI 时效横幅（>24h 红色「大概率已定价」警告，无法核实时诚实说明）、WS digest 带 firstSeenUtc；③ 文案凝练（"News that matters. Impact in minutes." / "最有价值的新闻，对市场意味着什么"）；④ `/api/ingest` 加**质量闸门**（`lib/analyzer/quality-gate.ts`，LLM 快评分→规则回退，`DELTA_GATE_MIN_SCORE` 默认 60，未达标不分析不推送、202 gated）——这就是未来推特轮询器的完整管线：新闻→质量判断→够大才 Delta 分析→第一时间邮件+WS；⑤ **邮件报告重排**（`lib/delivery/report-email.ts`，forecasting-agent 风格暖纸色、决策先行），三必含：原文链接 / ⏱ 首现距发送已过多久 / WHAT TO DO 操作块；⑥ **邮件订阅测试模块** `pnpm delta:test-email`（默认收件人 issue.00.gui@gmail.com，可 `--text/--url/--locale/--email` 覆盖；跑完整闸门→分析→推送管线，**每次都落 HTML/txt 预览**到 `runtime-artifacts/raven-delta/email-preview/`，无 RESEND key 时回执 simulated 并打印需要配什么）。验证：根测试 890/890（新增 timing/gate/渲染三必含断言）、typecheck/build 绿、scripts 门禁 13 基线不变、无头全新会话 0 pageerror（截图 `20260705-raven-delta-v2/` + 邮件模板 `20260705-delta-email/`）。
+>
+> 上次更新：2026-07-05 by Codex。本会话按用户要求开发新的 **News Delta / stock-news impact** 产品原型：基于 Forecasting Engine 的“新闻到来→增量影响→受影响美股→推荐操作→邮件/WebSocket 推送”流程。新增入口 `/stock-news`（兼容 `/stock-news/zh-CN`、`/[locale]/stock-news`）、API `/api/stock-news-impact/run`、核心分析器 `apps/web/lib/stock-news-impact.ts`、delivery adapter `apps/web/lib/stock-news-delivery.ts`、本地 WS hub `pnpm stock-news:ws`（`scripts/stock-news-ws-server.ts`）。邮件默认 Resend / webhook，未配置时明确 `simulated`；WebSocket 本地默认 `ws://127.0.0.1:8791/ws` + `POST /broadcast`。验证：新增 `stock-news-impact.test.ts`，相关单测 12 pass；`@autopoly/web` typecheck pass；`@autopoly/web` build pass；桌面/移动截图 + 交互 WS 验收通过，归档见 `runtime-artifacts/screenshots/20260705-stock-news*` 与 `runtime-artifacts/screenshots/20260705-stock-news-interactive-fixed/`。本轮**没有运行 `forecast:live` / `daily:forecast`，没有加载钱包，没有下单**。
+>
 > 最后更新：2026-07-04 by Claude（**Stage 2 收尾 + Stage 3 开工:forecast-engine 抽包第一步**，PR #73/#74/#75 全合入）。
 > ① **#73 Gamma 传输层**：executor 6 处硬编码 gamma host → `services/executor/src/lib/gamma.ts` 的 `gammaFetch`（只共享传输层——redeem 优雅降级/orderbook offset 分页各自保留，"6→1 换客户端"已被 endpoint 分析证伪）。合并前用只读探针实测 6/6 调用点（零 LLM/零下单）。
 > ② **#74 两个真钱相关漏项 + recommendation 编译期锁**：`calculatePositionPnlPct` 公式单源化（executor risk.ts 唯一公式,helpers 只做展示取整）；**managed-trading 改走 loadEnvFile**（原裸 dotenv 忽略 ENV_FILE = 多状态源风险,现与 executor/orchestrator 对齐）；contracts 新增 `recommendation-file.ts` wire schema——写盘方 `satisfies` 锁 + orchestrator 互赋值断言 + mapper 单向锁，**全程无 .parse()**（运行时校验按操作地图文档留给未来单点 safeParse）。
@@ -114,6 +124,8 @@
 > ③ PR #29（构建修复+比分 4→16+初版工作流）→ #30（改 token 直接部署）→ #31（promote scope + 线上验收）均合并 main；`wc-scores` 分支已删（token 直接部署不需要）；旧 Mac 例程 `world-cup-daily-results` 已暂停（一个调度器原则）。
 > ✅ **无遗留用户待办**。调频次/时间改 workflow 的 `cron` 即可；`VERCEL_TOKEN` secret 已配（**安全：凡在对话里出现过的 token 一律视为泄漏，须吊销轮换**）。
 > 注：当前 diff-gate 用整文件 `git diff`，因 `generatedAt` 时间戳每次都变 → 实际每次都部署（2 次/天，成本可接受）；若要"无变化不部署"可改成只比 `.results`（小优化，非必需）。
+>
+> 最后更新：2026-07-02 by Codex。本会话按用户要求对 Polymarket `fed-decision-in-july-181` 的 **No change** 分支做只读 Forecasting Engine 预测并生成 PDF：Raven engine 概率 **91.0%**（Polymarket 输入 80.5%，CME/FedWatch 参考 69.0%，engine 解析侧 `Yes`，edge +10.5pp，confidence high）。归档目录：`runtime-artifacts/fed-decision-july-2026-no-change/20260702T092845Z-dd2b1d79-14a7-4cce-8ab3-7581256bec4c/`，PDF：`fed-no-change-forecast-report.pdf`，Pulse 原文：`pulse-report.md`，context：`pulse-context.json`，结果：`forecast-result.json`。本轮使用临时 read-only 脚本调用 `buildFullPulseArchive`，**没有运行 `forecast:live` / `daily:forecast`，没有加载钱包、没有 auto-redeem、没有下单**；临时脚本已移入归档目录 `fed-decision-forecast.ts`。PDF已渲染为 3 页 PNG 并读图验收，版式可读、无遮挡。
 >
 > 最后更新：2026-06-15 by Claude（本会话共合并 **PR #18–#27** + 建 **issue #25**；main `ea82839`；全程 typecheck + vitest **713** 全绿）。要点：
 > ① **Forecasting Engine `/research` 全量双语化**（EN 默认 + 一键 `中文` toggle，chrome 与流式研究内容一起切；新增 `apps/web/lib/research/locale.ts` + `i18n.ts`，`locale` 从 composer→SSE→route→driver→`buildPredictionDemoRun`/`replayRun` 全链路打通，服务端按语言生成内容）——**PR #18**，已部署 forecasting-agent.com（web 项目 `prj_kPZRC…`，`scripts/world-cup/deploy-web.sh`）并实测 EN/zh 双语 + toggle live、0 console error。/research beta 入口仍 dormant。
@@ -285,6 +297,15 @@
 - 移动 `vitest.config.ts` 到 `config/` 后必须 `root: REPO_ROOT` 否则找不到 `@autopoly/*` workspace 包
 - `git mv` 整目录时未追踪文件不会被 git 移动，要手动 `mv`
 - 4/24 跑 v2 smoke 时 no1 钱包 USDC.e 有 $3.96 但 pUSD 为 0 → 验证 SDK 接入正常但下单需要先 wrap
+
+## 🔄 上次会话留下的上下文（2026-07-05）
+
+- 用户要求基于 Forecasting Engine 做新产品：X/新闻到来时，不做静态概率展示，而是分析“新闻增量影响了哪些美股、市场可能怎么动、推荐怎么操作”，并通过邮件和 WebSocket 推送。
+- 已实现一个只读 demo 流程：`/stock-news` 页面、`/api/stock-news-impact/run` API、核心分析器 `apps/web/lib/stock-news-impact.ts`、delivery adapter `apps/web/lib/stock-news-delivery.ts`、本地 WS hub `scripts/stock-news-ws-server.ts`（root script：`pnpm stock-news:ws`）。
+- 本轮产品边界：根据新闻 catalyst 识别受影响股票、方向、预期移动区间、概率增量、推荐动作、风险与触发条件；邮件支持 Resend / webhook，未配置时返回 `simulated`；WebSocket 本地默认 `ws://127.0.0.1:8791/ws` + `POST /broadcast`。
+- `apps/web` 新增用户可见页面已按 i18n 走 `apps/web/lib/world-cup/messages/{en,zh-CN,zh-TW.generated}.json`；导航新增 `News Delta`；移动端 header 已调窄，避免新增导航后挤出屏幕。
+- 验证：`stock-news-impact.test.ts` + `prediction-access.test.ts` 共 12 tests pass；`@autopoly/web` typecheck pass；`@autopoly/web` build pass；桌面/移动截图和真实 WS 交互验证通过，归档 `runtime-artifacts/screenshots/20260705-stock-news*`，最终交互截图在 `runtime-artifacts/screenshots/20260705-stock-news-interactive-fixed/`。
+- 本轮没有运行 `forecast:live` / `daily:forecast`，没有加载钱包，没有下单。下一步要接真实产品时，优先补新闻源 ingest（X/新闻 API）、券商或行情价格快照、真实邮件收件人权限与生产 WS 广播服务；demo 当前是确定性规则引擎，不应作为真实证券投资建议直接使用。
 
 ## 🔄 上次会话留下的上下文（2026-06-07）
 

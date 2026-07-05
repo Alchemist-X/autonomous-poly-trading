@@ -55,6 +55,40 @@ services:
       - claude-config:/root/.claude
     mem_limit: 2g
 
+  # Raven Delta — news -> US-stock impact engine (standalone site, port 3300).
+  # Gate the instance with DELTA_ACCESS_TOKEN; the analysis engine follows
+  # DELTA_PROVIDER/DELTA_CLAUDE_CLI (the claude CLI + oauth token are already
+  # in this image/env for the other services).
+  raven-delta:
+    image: raven-suite
+    depends_on:
+      - raven
+    restart: unless-stopped
+    command: ["pnpm", "--filter", "@autopoly/raven-delta", "start"]
+    ports:
+      - "127.0.0.1:3300:3300"
+    env_file: .env
+    volumes:
+      - raven-artifacts:/app/runtime-artifacts
+      - claude-config:/root/.claude
+    mem_limit: 2g
+
+  # Raven Delta WebSocket hub: dashboards subscribe here; the app POSTs run
+  # digests to /broadcast (write side gated by DELTA_WS_TOKEN).
+  delta-ws:
+    image: raven-suite
+    depends_on:
+      - raven
+    restart: unless-stopped
+    command: ["pnpm", "delta:ws"]
+    environment:
+      # Bind beyond loopback inside the container so the published port works.
+      DELTA_WS_HOST: 0.0.0.0
+    ports:
+      - "127.0.0.1:8791:8791"
+    env_file: .env
+    mem_limit: 512m
+
 volumes:
   raven-artifacts:
   claude-config:

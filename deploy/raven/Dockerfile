@@ -18,10 +18,11 @@ COPY . .
 
 RUN pnpm install --frozen-lockfile \
   && pnpm --filter @autopoly/raven build \
+  && pnpm --filter @autopoly/raven-delta build \
   && pnpm store prune
 
 ENV NODE_ENV=production
-EXPOSE 3200 8787
+EXPOSE 3200 8787 3300 8791
 
 # next start -p 3200 (binds 0.0.0.0 inside the container); the engine runs as
 # child processes of this server and persists to /app/runtime-artifacts.
