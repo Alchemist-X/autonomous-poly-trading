@@ -2031,6 +2031,24 @@
     display: inline-flex;
     align-items: center;
   }
+  .ghLink {
+    display: none;
+  }
+  .headerNav {
+    justify-content: flex-start;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .headerNav::-webkit-scrollbar {
+    display: none;
+  }
+  .headerNav a,
+  .langToggle {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
   /* Wide markdown tables scroll inside their box instead of squishing. */
   .reportProse table {
     width: auto;
@@ -2914,5 +2932,20 @@
 @media (max-width: 400px) {
   .kgPanel {
     padding: 15px;
+  }
+}
+
+@media (max-width: 640px) {
+  .headerNav .ghLink {
+    display: none !important;
+  }
+  .headerNav {
+    gap: 9px;
+    font-size: 12.5px;
+  }
+  .langToggle {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 12.5px;
   }
 }
