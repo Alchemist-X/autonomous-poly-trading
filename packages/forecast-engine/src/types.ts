@@ -97,6 +97,7 @@ export interface LedgerEntry {
   verifiedInSearchTrace: boolean; // was this URL actually returned by the agent's WebSearch?
   sourceType: SourceType; // provenance class of the cited source
   credibility: Confidence; // reliability of this source for this claim
+  excluded?: "market_price"; // market-blind mode zero-weighted this source (kept in the ledger for the audit trail)
 }
 
 export interface PerSourceUpdate {
@@ -112,6 +113,7 @@ export interface PerSourceUpdate {
   kind: "evidence" | "reflection"; // (a) reflection = a correction to a prior source
   sourceType: SourceType; // provenance class of the cited source
   credibility: Confidence; // reliability of this source for this claim
+  excluded?: "market_price"; // market-blind mode zero-weighted this source
 }
 
 // (b) Computed decomposition of why a round's probability moved: net, the split
@@ -153,7 +155,11 @@ export type ForecastStatus =
   | "no_new_info"
   | "max_rounds"
   | "resolved"
-  | "aborted";
+  | "aborted"
+  // The unclamped posterior crossed PROB_FLOOR/PROB_CEIL: the reported number
+  // is the engine's expressible bound, not a settled estimate. Distinct from
+  // "converged" so consumers never mistake a pinned artifact for convergence.
+  | "saturated";
 
 // A final, whole-forecast synthesis written after the last round. It EXPLAINS the
 // engine's final probability (the balance of evidence, key drivers, open
@@ -183,6 +189,18 @@ export interface ForecastState {
   roundHistory: RoundRecord[];
   summary: ForecastSummary | null; // final whole-forecast synthesis (after the last round)
   provider?: string; // which LLM provider produced this run ("claude" | "deepseek")
+  // Set when currentProb sits at PROB_FLOOR/PROB_CEIL because the unclamped
+  // posterior crossed it — the number is a bound, not a point estimate.
+  saturatedAt?: "floor" | "ceil" | null;
+  // Market-blind mode bookkeeping (FORECAST_MARKET_BLIND=1): how many sources
+  // the domain blocklist zero-weighted, and whether the prior rationale still
+  // reads market-price-anchored. Consumers (paper agent) use this to discount
+  // or flag the edge computed from this forecast.
+  marketBlind?: {
+    enabled: boolean;
+    blockedCount: number;
+    priorSuspect: boolean;
+  };
 }
 
 // ---- Analyst-in-the-loop (written by the app / a human, read by the engine). ----

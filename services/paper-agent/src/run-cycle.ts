@@ -206,13 +206,26 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
       // The pre-eval snapshot is minutes old by now — decide and execute
       // against a fresh one.
       const book = await fetchBook(pos.tokenId);
-      const decision = decideExit(cfg, agentProb, pos.avgEntryPrice, book, pos.fees);
+      const rawDecision = decideExit(cfg, agentProb, pos.avgEntryPrice, book, pos.fees);
+      // A market-price-contaminated estimate converges on the mark, which
+      // fabricates a small negative edge — never trade on it. Stop-loss is
+      // price-based and stays authoritative.
+      const decision =
+        evaluation.contaminated && rawDecision.reason === "negative_edge"
+          ? {
+              ...rawDecision,
+              action: "hold" as const,
+              reason: "hold" as const,
+              detail: `contaminated eval — edge not trusted (${rawDecision.detail})`
+            }
+          : rawDecision;
 
       appendLedger({
         type: "evaluation",
         positionId: posId,
         slug: pos.slug,
         outcome: pos.outcomeLabel,
+        outcomeIndex: pos.outcomeIndex,
         forecastId: evaluation.forecastId,
         engineRounds: evaluation.rounds,
         evidenceCount: evaluation.evidenceCount,
@@ -220,6 +233,8 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
         probYes: evaluation.probYes,
         bestBid: decision.mark,
         netEdgePp: decision.netEdgePp,
+        saturatedAt: evaluation.saturatedAt,
+        contaminated: evaluation.contaminated,
         action: decision.action,
         reason: decision.reason,
         detail: decision.detail
@@ -237,7 +252,9 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
                   mark: decision.mark,
                   netEdgePp: decision.netEdgePp,
                   decision: `${decision.action}:${decision.reason}`,
-                  forecastId: evaluation.forecastId
+                  forecastId: evaluation.forecastId,
+                  saturatedAt: evaluation.saturatedAt,
+                  contaminated: evaluation.contaminated
                 }
               }
             : x
@@ -332,12 +349,27 @@ async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: 
       if (evaluation.unforecastable) continue;
       const yesBook = await fetchBook(market.tokenIds[0]!);
       const noBook = await fetchBook(market.tokenIds[1]!);
-      const entry = decideEntry(cfg, evaluation.probYes, yesBook, noBook, fees);
+      const rawEntry = decideEntry(cfg, evaluation.probYes, yesBook, noBook, fees);
+      // Same fail-safe as position evals: a contaminated estimate's edge is
+      // partly circular — never open a position on it.
+      const entry =
+        evaluation.contaminated && rawEntry.enter
+          ? { ...rawEntry, enter: false, detail: `contaminated eval — entry blocked (${rawEntry.detail})` }
+          : rawEntry;
+      // Market's contemporaneous P(YES) — the baseline the calibration report
+      // scores the agent against once the market resolves (Brier skill).
+      const yesBid = yesBook.bids[0]?.price;
+      const yesAsk = yesBook.asks[0]?.price;
+      const marketProbYes =
+        yesBid !== undefined && yesAsk !== undefined ? (yesBid + yesAsk) / 2 : (yesBid ?? yesAsk ?? null);
       appendLedger({
         type: "watchlist_eval",
         slug,
         forecastId: evaluation.forecastId,
         probYes: evaluation.probYes,
+        marketProbYes,
+        saturatedAt: evaluation.saturatedAt,
+        contaminated: evaluation.contaminated,
         enter: entry.enter,
         outcomeIndex: entry.outcomeIndex,
         edgePp: entry.edgePp,

@@ -17,9 +17,13 @@ import {
   clampUnverified,
   clusterFactors,
   confirmationRatio,
+  credibilityCap,
   credibleInterval,
   effectiveLlr,
+  PROB_CEIL,
+  PROB_FLOOR,
 } from "./bayes";
+import { isMarketPriceSource, marketBlind, marketBlindDirective } from "./market-blind";
 import { validateRoundOutput } from "./claude-agent";
 import type { AgentRunResult, RunAgentOptions } from "./claude-agent";
 import { loadAnalyst, saveAnalyst, saveState, writeReport } from "./store";
@@ -106,7 +110,7 @@ export function buildPrompt(
   // Research instructions are provider-aware: a search-less provider must never
   // be told to WebSearch, and must not fabricate URLs to satisfy the cite rule.
   const research = extras.hasWebSearch
-    ? "1. Use WebSearch to find NEW, relevant, recent evidence about whether this event will happen. Do not re-count any source already listed above.\n2. DISCONFIRMATION (required): run at least ONE search aimed at FALSIFYING the current lean — if P(YES) above is >50%, search for the strongest reasons it will NOT happen; if <50%, search for the strongest reasons it WILL. Report what you find even if it is weak or comes up empty (say so in round_summary). Do not only look for evidence that confirms the current estimate."
+    ? "1. Use WebSearch to find NEW, relevant, recent evidence about whether this event will happen. Do not re-count any source already listed above. PRIMARY SOURCE FIRST: if the framing names a settlement source, target it directly at least once this round (e.g. a site: query or its exact page) before falling back to third-party mirrors — the resolution will be read off the primary source, not the mirrors. NATIVE LANGUAGE: when the question centers on a non-English-speaking country or actor, run at least one search in the locally relevant language (e.g. Persian for Iran, Chinese for Taiwan) — local/state media often reports before English outlets.\n2. DISCONFIRMATION (required): run at least ONE search aimed at FALSIFYING the current lean — if P(YES) above is >50%, search for the strongest reasons it will NOT happen; if <50%, search for the strongest reasons it WILL. Report what you find even if it is weak or comes up empty (say so in round_summary). Do not only look for evidence that confirms the current estimate."
     : "1. You have NO web access. Use your own knowledge (respecting its cutoff) to surface NEW, relevant evidence about whether this event will happen. Do not re-count any source already listed above.\n2. DISCONFIRMATION (required): argue the strongest case against the current lean — if P(YES) above is >50%, the strongest reasons it will NOT happen; if <50%, the strongest reasons it WILL — and include it as evidence if it holds up. Report the attempt even if it comes up empty (say so in round_summary). Do not only reason toward what confirms the current estimate.";
   const citeRule = extras.hasWebSearch
     ? "8. Only cite source_url values you actually retrieved via WebSearch."
@@ -117,6 +121,8 @@ export function buildPrompt(
 EVENT: ${state.framing.normalizedQuestion}
 RESOLUTION CRITERIA: ${state.framing.resolutionCriteria}
 RESOLUTION DATE (must occur by): ${state.framing.resolutionDate ?? "(open-ended)"}
+SETTLEMENT SOURCE (the primary source the outcome will be read from): ${state.framing.settlementSource || "(unspecified)"}
+TODAY (UTC): ${nowUtc().slice(0, 10)} — date every claim against this. A scheduled future event (a visit, a deadline, a hearing) counts as a no-show ONLY once a source dated AFTER the scheduled date confirms it did not happen; never score a still-upcoming event as already missed.
 
 CURRENT ESTIMATE (this is your PRIOR for this round): P(YES) = ${(state.currentProb * 100).toFixed(1)}%
 ROUND: ${roundNo} of ${maxRounds}
@@ -126,11 +132,11 @@ ${counted}
 ${analystSection}
 YOUR TASK THIS ROUND:
 ${research}
-3. For each NEW source, decide whether it makes YES more likely (supports_yes), less likely (supports_no), or neutral, and how strongly.
-4. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Be conservative — a single web article is rarely "strong".
-5. Tag each source's provenance and reliability: "source_type" — "official" (primary/company/government/regulator statements), "press" (journalism), or "insider" (leakers, analysts, industry chatter) — and "credibility" ("high" | "medium" | "low"): how reliable this specific source is for this claim (track record, primacy), independent of how much it moves the number.
-6. Group correlated sources with cluster_id: give sources that trace to the SAME underlying story, wire report, poll, or primary actor the SAME cluster_id string; give genuinely independent sources DIFFERENT cluster_ids. (Five outlets re-reporting one announcement are one cluster, not five.)
-7. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies.
+3. For each NEW source, decide whether it makes YES more likely (supports_yes), less likely (supports_no), or neutral, and how strongly. In each rationale, state whether the scenario the source describes would itself satisfy the RESOLUTION CRITERIA above; a source about a scenario the criteria explicitly EXCLUDE (wrong category, wrong actor, below the stated bar) may only count via an argued escalation path to a qualifying scenario, with llr magnitude ≤ 0.3.
+4. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Be conservative — a single web article is rarely "strong". A "nothing has changed / still no news" observation is weak by definition (llr ≤ 0.2): absence of news discriminates little on a horizon of weeks or months, and it must ALWAYS use the exact cluster_id "status-quo-continuation" so repeats are discounted.
+5. Tag each source's provenance and reliability: "source_type" — "official" (primary/company/government/regulator statements), "press" (journalism), or "insider" (leakers, analysts, industry chatter) — and "credibility" ("high" | "medium" | "low"): how reliable this specific source is for this claim (track record, primacy), independent of how much it moves the number. Low credibility caps the applied weight.
+6. Group correlated sources with cluster_id: give sources that trace to the SAME underlying story, wire report, poll, or primary actor the SAME cluster_id string; give genuinely independent sources DIFFERENT cluster_ids. (Five outlets re-reporting one announcement are one cluster, not five.) Reuse the same cluster_id you would have used in a previous round when the underlying story is the same — repeats of already-counted stories are automatically down-weighted.
+7. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies. CONSISTENCY: if a key number in a new claim differs by more than 2× from a number already in the ledger or framing (casualty counts, traffic levels, poll figures), reconcile the discrepancy in notes or downgrade the new claim to weak.
 ${citeRule}
 9. REFLECTION (optional): each prior source above shows its [stance, ±pp effect]. If this round's research shows a PRIOR source was wrong, stale, or double-counted, add a reflection entry: its target_url, a signed llr_adjustment (the CHANGE to its weight — NEGATIVE to walk it back toward NO, POSITIVE toward YES), a reason, and a new_source_url citing the NEW information that justifies the change. Only adjust a prior source when you have a NEW cited reason; do not re-litigate the whole estimate. Leave reflection empty ([]) if nothing prior needs correcting.
 
@@ -165,7 +171,7 @@ OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or aft
   "notes": "caveats, resolution assumptions, what to check next round"
 }
 If you genuinely found no new relevant information this round, return an empty new_evidence array, an empty reflection array, and set found_new_information to false.
-${languageDirective()}`;
+${marketBlindDirective()}${languageDirective()}`;
 }
 
 export function newForecastState(input: {
@@ -267,35 +273,83 @@ async function runOneRound(
   }
 
   const priorProb = state.currentProb;
+  const blind = marketBlind();
 
   // (a) Reflection: corrections to PRIOR sources. Guardrail — keep only those whose
   // target is a real prior-round source (cited new source already enforced at
   // validation). Applied BEFORE this round's new evidence, clamped tighter, and
   // tagged separately so they never silently re-pick the whole probability.
+  // Review 2026-07-06: a reflection whose justifying source is ALSO booked as
+  // evidence (same round or a prior round) double-counts that page — drop it and
+  // keep the evidence side.
   const ledgerByCanon = new Map(state.evidenceLedger.map((e) => [e.urlCanonical, e]));
   const reflItems = out.reflection
     .map((r) => ({ r, target: ledgerByCanon.get(canonicalizeUrl(r.target_url)) }))
-    .filter((x): x is { r: (typeof out.reflection)[number]; target: LedgerEntry } => x.target !== undefined);
+    .filter((x): x is { r: (typeof out.reflection)[number]; target: LedgerEntry } => x.target !== undefined)
+    .filter((x) => {
+      const justifier = canonicalizeUrl(x.r.new_source_url);
+      return !seenThisRound.has(justifier) && !counted.has(justifier);
+    });
   const reflVerified = reflItems.map((x) => traceCanonical.has(canonicalizeUrl(x.r.new_source_url)));
+  const reflBlocked = reflItems.map((x) => blind && isMarketPriceSource(x.r.new_source_url));
   const reflLlrs = reflItems.map((x, i) => {
+    if (reflBlocked[i]) return 0; // market-blind: a market-price page justifies nothing
     const a = clampReflection(x.r.llr_adjustment);
     return reflVerified[i] ? a : clampUnverified(a);
   });
 
-  // P0-4 + P0-3: new evidence, verification-clamped and cluster-damped.
+  // P0-4 + P0-3: new evidence — market-blind exclusion, credibility cap,
+  // one-sided damping, cross-round cluster decay, verification clamp, in order.
   const verifiedFlags = survivors.map((ev) => traceCanonical.has(canonicalizeUrl(ev.source_url)));
-  const baseLlrs = survivors.map((ev) => effectiveLlr(ev.stance, ev.llr));
+  const excludedFlags = survivors.map((ev) => blind && isMarketPriceSource(ev.source_url));
+  const baseLlrs = survivors.map((ev, i) =>
+    excludedFlags[i] ? 0 : credibilityCap(ev.credibility, effectiveLlr(ev.stance, ev.llr))
+  );
+
+  // Confirmation-bias tripwire with teeth (review 2026-07-06: the ⚠ used to be
+  // decorative — 4/5 one-sided rounds still ground the posterior to the floor).
+  // After two consecutive ≥90% one-sided rounds, same-direction evidence runs at
+  // half weight until counter-evidence breaks the streak.
+  const lastTwo = state.roundHistory.slice(-2);
+  const oneSidedStreak =
+    lastTwo.length === 2 && lastTwo.every((r) => (r.confirmationRatio ?? 0) >= 0.9);
+  const leanDir = priorProb > 0.5 ? 1 : priorProb < 0.5 ? -1 : 0;
+  const dampedLlrs =
+    oneSidedStreak && leanDir !== 0
+      ? baseLlrs.map((l) => (Math.sign(l) === leanDir ? l * 0.5 : l))
+      : baseLlrs;
+
+  // Cross-round independence: cluster ranks start after the cluster's
+  // already-counted prior-round entries, so a story repeated across resumed
+  // dossier days decays instead of re-entering at full weight.
+  const priorClusterCounts = new Map<string, number>();
+  for (const e of state.evidenceLedger) {
+    if (e.kind !== "evidence" || e.excluded) continue;
+    const key = e.clusterId?.trim();
+    if (!key || key.startsWith("__")) continue;
+    priorClusterCounts.set(key, (priorClusterCounts.get(key) ?? 0) + 1);
+  }
   const factors = clusterFactors(
     survivors.map((ev) => ev.cluster_id),
-    baseLlrs
+    dampedLlrs,
+    priorClusterCounts
   );
-  const evLlrs = baseLlrs.map((base, i) => {
-    const clustered = base * factors[i];
-    return verifiedFlags[i] ? clustered : clampUnverified(clustered);
+
+  // Verification clamp, tightened: an unverified (possibly fabricated) source
+  // may not out-move every verified source of its round.
+  const clusteredLlrs = dampedLlrs.map((base, i) => base * factors[i]);
+  const verifiedAbs = clusteredLlrs.filter((_, i) => verifiedFlags[i]).map((l) => Math.abs(l));
+  const maxVerifiedAbs = verifiedAbs.length ? Math.max(...verifiedAbs) : 0;
+  const evLlrs = clusteredLlrs.map((clustered, i) => {
+    if (verifiedFlags[i]) return clustered;
+    const capped = clampUnverified(clustered);
+    return maxVerifiedAbs > 0
+      ? Math.sign(capped) * Math.min(Math.abs(capped), maxVerifiedAbs)
+      : capped;
   });
 
   // Thread reflection adjustments first, then this round's new evidence.
-  const { post, steps } = applyLlrs(priorProb, [...reflLlrs, ...evLlrs]);
+  const { post, steps, pinned } = applyLlrs(priorProb, [...reflLlrs, ...evLlrs]);
   const reflSteps = steps.slice(0, reflItems.length);
   const evSteps = steps.slice(reflItems.length);
 
@@ -307,7 +361,8 @@ async function runOneRound(
   reflItems.forEach((x, i) => {
     const step = reflSteps[i];
     const verified = reflVerified[i];
-    if (!verified) unverifiedPp += Math.abs(step.deltaPp);
+    const excluded = reflBlocked[i] ? ("market_price" as const) : undefined;
+    if (!verified && !excluded) unverifiedPp += Math.abs(step.deltaPp);
     const stance = reflLlrs[i] >= 0 ? "supports_yes" : "supports_no";
     const targetLabel = (x.target.title || x.r.target_url).slice(0, 60);
     perSourceUpdates.push({
@@ -324,6 +379,7 @@ async function runOneRound(
       // The new source's own metadata isn't collected for reflections.
       sourceType: "press",
       credibility: "medium",
+      excluded,
     });
     newLedger.push({
       id: `${state.eventId}-r${roundNo}-refl-${i}`,
@@ -347,6 +403,7 @@ async function runOneRound(
       // The new source's own metadata isn't collected for reflections.
       sourceType: "press",
       credibility: "medium",
+      excluded,
     });
   });
 
@@ -354,7 +411,8 @@ async function runOneRound(
     const step = evSteps[i];
     const canon = canonicalizeUrl(ev.source_url);
     const verified = verifiedFlags[i];
-    if (!verified) unverifiedPp += Math.abs(step.deltaPp);
+    const excluded = excludedFlags[i] ? ("market_price" as const) : undefined;
+    if (!verified && !excluded) unverifiedPp += Math.abs(step.deltaPp);
     perSourceUpdates.push({
       url: ev.source_url,
       title: ev.source_title,
@@ -368,6 +426,7 @@ async function runOneRound(
       kind: "evidence",
       sourceType: ev.source_type,
       credibility: ev.credibility,
+      excluded,
     });
     newLedger.push({
       id: `${state.eventId}-r${roundNo}-${i}`,
@@ -390,6 +449,7 @@ async function runOneRound(
       verifiedInSearchTrace: verified,
       sourceType: ev.source_type,
       credibility: ev.credibility,
+      excluded,
     });
   });
 
@@ -417,6 +477,22 @@ async function runOneRound(
   // Commit the round into state (continuity: priorProb == previous postProb).
   state.evidenceLedger.push(...newLedger);
   state.currentProb = post;
+  // Saturation: pinned means THIS round's unclamped posterior crossed the
+  // floor/ceiling. A previously-saturated state stays saturated while the
+  // probability sits at the bound; it clears once evidence moves it off.
+  state.saturatedAt =
+    pinned ??
+    (state.saturatedAt === "floor" && post <= PROB_FLOOR + 1e-9
+      ? "floor"
+      : state.saturatedAt === "ceil" && post >= PROB_CEIL - 1e-9
+        ? "ceil"
+        : null);
+  if (blind) {
+    const blockedThisRound =
+      excludedFlags.filter(Boolean).length + reflBlocked.filter(Boolean).length;
+    const prev = state.marketBlind ?? { enabled: true, blockedCount: 0, priorSuspect: false };
+    state.marketBlind = { ...prev, enabled: true, blockedCount: prev.blockedCount + blockedThisRound };
+  }
   state.credibleInterval = credibleInterval(post, state.evidenceLedger.length, out.confidence);
   state.round = roundNo;
   state.updatedAtUtc = ts;
@@ -431,7 +507,9 @@ async function runOneRound(
     duplicateCount,
     reflectionCount: reflItems.length,
     unverifiedPp,
-    confirmationRatio: confirmationRatio(priorProb, baseLlrs),
+    // Includes reflection adjustments (review 2026-07-06: excluding them made
+    // the ratio unauditable against the rendered table).
+    confirmationRatio: confirmationRatio(priorProb, [...reflLlrs, ...baseLlrs]),
     whyChanged,
     agentHolisticProb: out.agent_holistic_probability,
     confidence: out.confidence,
@@ -518,8 +596,17 @@ export async function runForecast(
       break;
     }
     if (Math.abs(record.postProb - record.priorProb) < epsilon && roundNo >= minRounds) {
-      state.status = "converged";
-      log(`  ■ converged (move < ${(epsilon * 100).toFixed(1)}pp) — stopping.`);
+      // A pinned posterior trivially passes the epsilon test — that is
+      // saturation (the number is the engine's expressible bound), not
+      // convergence. Stop either way: burning more rounds at the bound is pure
+      // cost, and the next resumed run re-researches with fresh rounds.
+      if (state.saturatedAt) {
+        state.status = "saturated";
+        log(`  ■ saturated at the ${state.saturatedAt} (${state.saturatedAt === "floor" ? PROB_FLOOR : PROB_CEIL}) — stopping; the true estimate lies beyond the engine's expressible range.`);
+      } else {
+        state.status = "converged";
+        log(`  ■ converged (move < ${(epsilon * 100).toFixed(1)}pp) — stopping.`);
+      }
       break;
     }
     if (roundNo >= maxRounds) {

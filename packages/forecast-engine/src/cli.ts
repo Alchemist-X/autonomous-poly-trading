@@ -14,6 +14,7 @@
 import { providerName } from "./agent";
 import { runForecast, newForecastState } from "./engine";
 import { frameEvent } from "./framing";
+import { marketBlind } from "./market-blind";
 import { eventDir, loadState, makeEventId, saveState } from "./store";
 import type { ForecastState } from "./types";
 
@@ -84,7 +85,7 @@ async function main(): Promise<void> {
     console.log(`  Prompt: ${args.question}`);
     console.log(`  Endpoint: ${process.env.ANTHROPIC_BASE_URL ?? "(default Anthropic)"}`);
     console.log(`\n▶ Round 0 — framing the question…`);
-    const { framing, costUsd } = await frameEvent(args.question, {
+    const { framing, costUsd, priorSuspect } = await frameEvent(args.question, {
       userResolution: args.resolution,
       model: args.model,
     });
@@ -104,6 +105,10 @@ async function main(): Promise<void> {
     }
     state = newForecastState({ eventId, eventText: args.question, framing });
     state.provider = provider;
+    if (marketBlind()) {
+      state.marketBlind = { enabled: true, blockedCount: 0, priorSuspect };
+      if (priorSuspect) console.log(`  ⚠ prior rationale still reads market-price-anchored after re-audit — flagged`);
+    }
     // Persist immediately: the framed question + prior are real progress a
     // watching UI can show while round 1 (minutes) runs.
     saveState(state);

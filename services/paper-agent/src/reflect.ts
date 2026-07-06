@@ -1,22 +1,27 @@
 // Reflection = the backtest loop for a live paper book. Instead of replaying
 // history against a strategy, we grade every decision the agent actually made:
-//  1. EXIT ALPHA — for each exit, fetch the price path AFTER the exit and
-//     compare realized proceeds vs "what if we had held" (to now/resolution).
-//  2. CALIBRATION — Brier score of the agent's probabilities against resolved
-//     outcomes (the honest long-run test of the evaluator).
+//  1. CALIBRATION — paired Brier of the agent vs the market over EVERY
+//     evaluated market that has since resolved (held positions AND watchlist
+//     passes), plus the skill score 1 − agent/market (>0 = beat the market).
+//     This answers the owner's headline question without waiting for our own
+//     positions to be held to resolution.
+//  2. EXIT ALPHA — per exit episode (market+limit halves merged), realized
+//     proceeds vs "what if we had held" (to now/resolution).
 //  3. FEE DRAG — total friction paid, split by taker/maker.
-//  4. HYBRID QUALITY — limit-half fill rate + price improvement vs the
-//     market-half of the same exits.
+//  4. HYBRID QUALITY — limit fill rate + SAME-exit price improvement of the
+//     limit half vs the market half on the same position (book-wide pooling
+//     was misleading — review 2026-07-06).
+//  5. ENGINE FLAGS — saturation/contamination counters over all evaluations.
 // Output: reports/<ts>-reflection.{json,md} — the artifacts to review daily.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { log } from "./log";
-import { loadPortfolio } from "./portfolio";
-import { fetchBook, fetchMarket, fetchPriceHistory } from "./polymarket";
+import { loadPortfolio, type Portfolio } from "./portfolio";
+import { fetchBook, fetchMarket, fetchPriceHistory, type MarketInfo } from "./polymarket";
 import { readLedger, reportsDir } from "./store";
 
-interface TradeEvent {
+interface LedgerEvent {
   ts: string;
   type: string;
   side?: string;
@@ -29,32 +34,75 @@ interface TradeEvent {
   limitId?: string;
   reason?: string;
   agentProbOutcome?: number;
+  probYes?: number;
+  marketProbYes?: number | null;
+  bestBid?: number;
+  outcomeIndex?: number;
+  saturatedAt?: string | null;
+  contaminated?: boolean;
   kind?: string;
   outcome?: string;
+}
+
+export interface PositionSnapshot {
+  positionId: string;
+  question: string;
+  direction: string;
+  shares: number;
+  avgEntryPrice: number;
+  costUsd: number;
+  mark: number | null;
+  unrealizedUsd: number | null;
+  agentProb: number | null;
+  netEdgePp: number | null;
+  saturated: boolean;
+  contaminated: boolean;
+}
+
+export interface ExitEpisode {
+  positionId: string;
+  question: string;
+  direction: string;
+  ts: string;
+  style: "market" | "limit" | "market+limit";
+  legs: number;
+  shares: number;
+  exitPrice: number; // share-weighted across legs
+  feeUsd: number;
+  priceNow: number | null;
+  exitAlphaUsd: number | null; // proceeds − hold-counterfactual value
+  reason: string;
+}
+
+export interface CalibrationRow {
+  label: string;
+  agentProb: number;
+  marketProb: number;
+  outcome: 0 | 1;
+  ts: string;
 }
 
 export interface Reflection {
   generatedAtUtc: string;
   book: {
     cashUsd: number;
+    bankrollUsd: number;
     openPositions: number;
     realizedPnlUsd: number;
     totalFeesUsd: number;
     equityUsd: number | null;
   };
-  exits: Array<{
-    positionId: string;
-    ts: string;
-    style: string;
-    shares: number;
-    exitPrice: number;
-    feeUsd: number;
-    priceNow: number | null;
-    exitAlphaUsd: number | null; // proceeds − hold-counterfactual value
-    reason: string;
-  }>;
+  positions: PositionSnapshot[];
+  exits: ExitEpisode[];
   exitAlphaTotalUsd: number;
-  calibration: { n: number; brier: number | null; note: string };
+  calibration: {
+    n: number;
+    brierAgent: number | null;
+    brierMarket: number | null;
+    skill: number | null; // 1 − brierAgent/brierMarket, >0 = beat the market
+    note: string;
+    rows: CalibrationRow[];
+  };
   fees: { takerUsd: number; makerUsd: number; totalUsd: number };
   hybrid: {
     limitPlaced: number;
@@ -62,104 +110,371 @@ export interface Reflection {
     limitFillRate: number | null;
     avgLimitPrice: number | null;
     avgMarketPrice: number | null;
-    limitImprovementPp: number | null;
+    limitImprovementPp: number | null; // same-exit pairs only
+  };
+  engineFlags: {
+    evaluations: number;
+    saturated: number;
+    contaminated: number;
+    flagsTracked: boolean; // old ledgers predate the flag fields
   };
 }
 
-export async function buildReflection(): Promise<Reflection> {
-  const ledger = readLedger() as unknown as TradeEvent[];
-  const portfolio = loadPortfolio();
+function parseOutcomeIndex(positionId: string): number | null {
+  const match = /:(\d+)$/.exec(positionId);
+  return match ? Number(match[1]) : null;
+}
 
-  const sells = ledger.filter((e) => e.type === "trade" && e.side === "sell");
-  const buys = ledger.filter((e) => e.type === "trade" && e.side === "buy");
-  const resolutions = ledger.filter((e) => e.type === "resolution");
-  const evaluations = ledger.filter((e) => e.type === "evaluation" || e.type === "watchlist_eval");
+function slugOfPositionId(positionId: string): string {
+  return positionId.replace(/:\d+$/, "");
+}
 
-  // 1. Exit alpha: realized proceeds vs price now (or settlement) had we held.
-  const exits: Reflection["exits"] = [];
-  let exitAlphaTotal = 0;
-  const priceNowCache = new Map<string, number | null>();
-  for (const sell of sells) {
-    if (!sell.positionId || !sell.slug || !sell.shares || sell.avgPrice === undefined) continue;
-    let priceNow = priceNowCache.get(sell.positionId) ?? null;
-    if (!priceNowCache.has(sell.positionId)) {
-      priceNow = null;
-      const idx = Number(sell.positionId.split(":").pop());
-      try {
-        // Live market state first: covers exits whose market resolved AFTER
-        // we sold (prices-history 404s post-close — review finding).
-        const market = await fetchMarket(sell.slug);
-        if (market.resolution === "resolved") priceNow = market.resolvedOutcomeIndex === idx ? 1 : 0;
-        else if (market.resolution === "voided") priceNow = 0.5;
-        else if (market.tokenIds[idx]) {
-          const nowSec = Date.now() / 1000;
-          const hist = await fetchPriceHistory(market.tokenIds[idx]!, nowSec - 6 * 3600, nowSec);
-          priceNow = hist.length ? hist[hist.length - 1]!.p : null;
-        }
-      } catch {
-        priceNow = null;
-      }
-      // A ledgered settlement of OUR position is authoritative regardless.
-      const res = resolutions.find((r) => r.positionId === sell.positionId);
-      if (res && res.kind !== "voided") priceNow = res.kind === "won" ? 1 : 0;
-      else if (res) priceNow = 0.5;
-      priceNowCache.set(sell.positionId, priceNow);
+function shareWeightedAvg(fills: LedgerEvent[]): number | null {
+  const total = fills.reduce((sum, f) => sum + (f.shares ?? 0), 0);
+  if (!total) return null;
+  return fills.reduce((sum, f) => sum + (f.avgPrice ?? 0) * (f.shares ?? 0), 0) / total;
+}
+
+type MarketGetter = (slug: string) => Promise<MarketInfo | null>;
+
+// Per-run memoized market lookup. Errors resolve to null so one dead/renamed
+// market can never kill the whole report.
+function memoizedMarketGetter(): MarketGetter {
+  const cache = new Map<string, Promise<MarketInfo | null>>();
+  return (slug) => {
+    const cached = cache.get(slug);
+    if (cached) return cached;
+    const pending = fetchMarket(slug).catch(() => null);
+    cache.set(slug, pending);
+    return pending;
+  };
+}
+
+// ---------------------------------------------------------------------------
+// 1. Calibration: paired agent-vs-market Brier over every resolved eval unit.
+// ---------------------------------------------------------------------------
+
+interface ScoringUnit {
+  key: string;
+  slug: string;
+  // Outcome index the unit's probabilities refer to: the HELD outcome for
+  // position evals, YES (index 0) for watchlist evals.
+  scoredIndex: number;
+  evals: Array<{ ts: string; agentProb: number; marketProb: number }>;
+}
+
+// One scoring unit per evaluated market: position evals keyed by positionId,
+// watchlist evals keyed by "wl:"+slug. Only evals carrying BOTH an agent and
+// a market probability are kept, so the two Brier means stay paired (old
+// watchlist events lack marketProbYes and drop out of both).
+function collectScoringUnits(ledger: LedgerEvent[]): ScoringUnit[] {
+  const units = new Map<string, ScoringUnit>();
+  const add = (key: string, slug: string, scoredIndex: number, ev: ScoringUnit["evals"][number]): void => {
+    const unit = units.get(key) ?? { key, slug, scoredIndex, evals: [] };
+    units.set(key, { ...unit, evals: [...unit.evals, ev] });
+  };
+  for (const e of ledger) {
+    if (e.type === "evaluation" && e.positionId && typeof e.agentProbOutcome === "number" && typeof e.bestBid === "number") {
+      const idx = typeof e.outcomeIndex === "number" ? e.outcomeIndex : parseOutcomeIndex(e.positionId);
+      if (idx === null) continue;
+      add(e.positionId, e.slug ?? slugOfPositionId(e.positionId), idx, {
+        ts: e.ts,
+        agentProb: e.agentProbOutcome,
+        marketProb: e.bestBid
+      });
+    } else if (e.type === "watchlist_eval" && e.slug && typeof e.probYes === "number" && typeof e.marketProbYes === "number") {
+      add(`wl:${e.slug}`, e.slug, 0, { ts: e.ts, agentProb: e.probYes, marketProb: e.marketProbYes });
     }
-    const proceeds = sell.shares * sell.avgPrice - (sell.feeUsd ?? 0);
-    const alpha = priceNow === null ? null : proceeds - sell.shares * priceNow;
-    if (alpha !== null) exitAlphaTotal += alpha;
-    exits.push({
-      positionId: sell.positionId,
-      ts: sell.ts,
-      style: sell.style ?? "market",
-      shares: sell.shares,
-      exitPrice: sell.avgPrice,
-      feeUsd: sell.feeUsd ?? 0,
-      priceNow,
-      exitAlphaUsd: alpha,
-      reason: sell.reason ?? ""
+  }
+  return [...units.values()];
+}
+
+interface SlugResolution {
+  winner: number | null; // winning outcome index; null = voided
+  ts: string;
+}
+
+// Slug-level winners derived from ledgered settlements of OUR positions.
+// kind won/lost speaks about the HELD outcome; the paper agent only trades
+// binary Yes/No markets, so "lost" pins the winner on the other leg.
+function ledgerResolutions(ledger: LedgerEvent[]): Map<string, SlugResolution> {
+  const map = new Map<string, SlugResolution>();
+  for (const e of ledger) {
+    if (e.type !== "resolution" || !e.positionId) continue;
+    const slug = e.slug ?? slugOfPositionId(e.positionId);
+    const held = parseOutcomeIndex(e.positionId);
+    if (e.kind === "voided") map.set(slug, { winner: null, ts: e.ts });
+    else if (held !== null && (e.kind === "won" || e.kind === "lost")) {
+      map.set(slug, { winner: e.kind === "won" ? held : 1 - held, ts: e.ts });
+    }
+  }
+  return map;
+}
+
+interface ResolvedOutcome {
+  winner: number;
+  ts: string | null; // ledger resolution ts; null when fetched from Gamma
+}
+
+// Resolution per slug: ledgered settlement first, else a live Gamma lookup.
+// Voided, still-open and unfetchable markets are skipped, not scored.
+async function resolveUnit(
+  slug: string,
+  settled: Map<string, SlugResolution>,
+  getMarket: MarketGetter
+): Promise<ResolvedOutcome | null> {
+  const fromLedger = settled.get(slug);
+  if (fromLedger) return fromLedger.winner === null ? null : { winner: fromLedger.winner, ts: fromLedger.ts };
+  const market = await getMarket(slug);
+  if (!market || market.resolution !== "resolved" || market.resolvedOutcomeIndex === null) return null;
+  return { winner: market.resolvedOutcomeIndex, ts: null };
+}
+
+async function buildCalibration(ledger: LedgerEvent[], getMarket: MarketGetter): Promise<Reflection["calibration"]> {
+  const units = collectScoringUnits(ledger);
+  const settled = ledgerResolutions(ledger);
+  const rows: CalibrationRow[] = [];
+  let sumAgent = 0;
+  let sumMarket = 0;
+  for (const unit of units) {
+    const resolved = await resolveUnit(unit.slug, settled, getMarket);
+    if (!resolved) continue;
+    // Last eval strictly before the ledgered resolution time; fetched
+    // resolutions carry no timestamp, but evals stop once a market closes,
+    // so the last eval IS the pre-resolution one.
+    const resolvedTs = resolved.ts;
+    const usable = resolvedTs === null ? unit.evals : unit.evals.filter((e) => e.ts < resolvedTs);
+    const last = usable[usable.length - 1];
+    if (!last) continue;
+    const outcome: 0 | 1 = resolved.winner === unit.scoredIndex ? 1 : 0;
+    sumAgent += (last.agentProb - outcome) ** 2;
+    sumMarket += (last.marketProb - outcome) ** 2;
+    const market = await getMarket(unit.slug);
+    rows.push({
+      label: market?.question ?? unit.slug,
+      agentProb: last.agentProb,
+      marketProb: last.marketProb,
+      outcome,
+      ts: last.ts
     });
   }
+  const n = rows.length;
+  const brierAgent = n ? sumAgent / n : null;
+  const brierMarket = n ? sumMarket / n : null;
+  const skill = brierAgent !== null && brierMarket !== null && brierMarket > 0 ? 1 - brierAgent / brierMarket : null;
+  return {
+    n,
+    brierAgent,
+    brierMarket,
+    skill,
+    note: n
+      ? "paired Brier over every resolved eval unit: last pre-resolution agent prob vs market price (bestBid); skill = 1 - agent/market, >0 beats the market"
+      : "尚无已结算市场，Brier 暂不可计",
+    rows: [...rows].sort((a, b) => (a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0)).slice(0, 30)
+  };
+}
 
-  // 2. Calibration: last pre-resolution agent prob per resolved position.
-  let brier: number | null = null;
-  let calN = 0;
-  {
-    let sum = 0;
-    for (const res of resolutions) {
-      if (res.kind === "voided") continue;
-      const evalsFor = evaluations.filter(
-        (e) => e.positionId === res.positionId && typeof e.agentProbOutcome === "number" && e.ts < res.ts
-      );
-      const last = evalsFor[evalsFor.length - 1];
-      if (!last) continue;
-      const outcome = res.kind === "won" ? 1 : 0;
-      sum += Math.pow((last.agentProbOutcome ?? 0) - outcome, 2);
-      calN += 1;
-    }
-    brier = calN ? sum / calN : null;
+// ---------------------------------------------------------------------------
+// 2. Exit alpha: merged market+limit episodes vs the hold counterfactual.
+// ---------------------------------------------------------------------------
+
+// Counterfactual "price if we had held": a ledgered settlement of OUR
+// position is authoritative; otherwise live market state (prices-history
+// 404s after close, so resolution is checked first — review finding).
+async function computePriceNow(
+  positionId: string,
+  slug: string,
+  resolutions: LedgerEvent[],
+  getMarket: MarketGetter
+): Promise<number | null> {
+  const settled = resolutions.find((r) => r.positionId === positionId);
+  if (settled) return settled.kind === "voided" ? 0.5 : settled.kind === "won" ? 1 : 0;
+  const idx = parseOutcomeIndex(positionId);
+  const market = await getMarket(slug);
+  if (!market || idx === null) return null;
+  if (market.resolution === "resolved") return market.resolvedOutcomeIndex === idx ? 1 : 0;
+  if (market.resolution === "voided") return 0.5;
+  const tokenId = market.tokenIds[idx];
+  if (!tokenId) return null;
+  try {
+    const nowSec = Date.now() / 1000;
+    const history = await fetchPriceHistory(tokenId, nowSec - 6 * 3600, nowSec);
+    return history.length ? history[history.length - 1]!.p : null;
+  } catch {
+    return null;
   }
+}
 
-  // 3. Fees.
+// YES/NO from the trade's outcome label, else the positionId ":N" suffix.
+function directionOf(event: LedgerEvent): string {
+  if (event.outcome) return event.outcome.toUpperCase();
+  const idx = event.positionId ? parseOutcomeIndex(event.positionId) : null;
+  if (idx === 0) return "YES";
+  if (idx === 1) return "NO";
+  return "?";
+}
+
+async function buildExits(
+  ledger: LedgerEvent[],
+  getMarket: MarketGetter
+): Promise<{ episodes: ExitEpisode[]; totalAlphaUsd: number }> {
+  const sells = ledger.filter((e) => e.type === "trade" && e.side === "sell");
+  const resolutions = ledger.filter((e) => e.type === "resolution");
+  // One episode per positionId + reason prefix: the market half, the limit
+  // half's (partial) fills and any ttl-fallback leg of the same exit decision
+  // collapse into a single row.
+  const groups = new Map<string, LedgerEvent[]>();
+  for (const sell of sells) {
+    if (!sell.positionId || !sell.slug || !sell.shares || sell.avgPrice === undefined) continue;
+    const prefix = (sell.reason ?? "").split(":")[0] ?? "";
+    const key = `${sell.positionId}|${prefix}`;
+    groups.set(key, [...(groups.get(key) ?? []), sell]);
+  }
+  const priceNowCache = new Map<string, Promise<number | null>>();
+  const priceNowFor = (positionId: string, slug: string): Promise<number | null> => {
+    const cached = priceNowCache.get(positionId);
+    if (cached) return cached;
+    const pending = computePriceNow(positionId, slug, resolutions, getMarket);
+    priceNowCache.set(positionId, pending);
+    return pending;
+  };
+  const episodes: ExitEpisode[] = [];
+  let totalAlphaUsd = 0;
+  for (const legs of groups.values()) {
+    const first = legs[0]!;
+    const positionId = first.positionId!;
+    const slug = first.slug!;
+    const priceNow = await priceNowFor(positionId, slug);
+    const shares = legs.reduce((s, l) => s + (l.shares ?? 0), 0);
+    const exitPrice = shareWeightedAvg(legs) ?? 0;
+    const feeUsd = legs.reduce((s, l) => s + (l.feeUsd ?? 0), 0);
+    const proceeds = shares * exitPrice - feeUsd;
+    const alpha = priceNow === null ? null : proceeds - shares * priceNow;
+    if (alpha !== null) totalAlphaUsd += alpha;
+    const hasLimit = legs.some((l) => l.style === "limit");
+    const hasMarket = legs.some((l) => l.style !== "limit");
+    const hasFallback = legs.some((l) => (l.reason ?? "").endsWith(":limit_ttl_fallback"));
+    const prefix = (first.reason ?? "").split(":")[0] ?? "";
+    const market = await getMarket(slug);
+    episodes.push({
+      positionId,
+      question: market?.question ?? slug,
+      direction: directionOf(first),
+      ts: first.ts,
+      style: hasLimit && hasMarket ? "market+limit" : hasLimit ? "limit" : "market",
+      legs: legs.length,
+      shares,
+      exitPrice,
+      feeUsd,
+      priceNow,
+      exitAlphaUsd: alpha,
+      reason: prefix + (hasFallback ? "+limit_ttl_fallback" : "")
+    });
+  }
+  return { episodes, totalAlphaUsd };
+}
+
+// ---------------------------------------------------------------------------
+// 4. Hybrid quality: same-exit limit-vs-market comparison.
+// ---------------------------------------------------------------------------
+
+function buildHybrid(ledger: LedgerEvent[]): Reflection["hybrid"] {
+  const limitPlaced = ledger.filter((e) => e.type === "limit_placed").length;
+  const sells = ledger.filter((e) => e.type === "trade" && e.side === "sell");
+  const limitFills = sells.filter((s) => s.style === "limit");
+  // Only positions where BOTH halves of a negative_edge hybrid exit filled
+  // are comparable. TTL-fallback fills are market executions at a later book
+  // state — excluded from both sides of the pairing.
+  const isLimitHalf = (s: LedgerEvent): boolean =>
+    s.style === "limit" && (s.reason ?? "").startsWith("negative_edge") && !(s.reason ?? "").includes("limit_ttl_fallback");
+  const isMarketHalf = (s: LedgerEvent): boolean => s.style === "market" && s.reason === "negative_edge";
+  const byPosition = new Map<string, { limit: LedgerEvent[]; market: LedgerEvent[] }>();
+  for (const s of sells) {
+    if (!s.positionId) continue;
+    const bucket = byPosition.get(s.positionId) ?? { limit: [], market: [] };
+    if (isLimitHalf(s)) byPosition.set(s.positionId, { ...bucket, limit: [...bucket.limit, s] });
+    else if (isMarketHalf(s)) byPosition.set(s.positionId, { ...bucket, market: [...bucket.market, s] });
+  }
+  const pairedLimit: LedgerEvent[] = [];
+  const pairedMarket: LedgerEvent[] = [];
+  let improvementWeighted = 0;
+  let improvementWeight = 0;
+  for (const bucket of byPosition.values()) {
+    const avgLimit = shareWeightedAvg(bucket.limit);
+    const avgMarket = shareWeightedAvg(bucket.market);
+    if (avgLimit === null || avgMarket === null) continue;
+    const weight = bucket.limit.reduce((s, f) => s + (f.shares ?? 0), 0);
+    improvementWeighted += (avgLimit - avgMarket) * weight;
+    improvementWeight += weight;
+    pairedLimit.push(...bucket.limit);
+    pairedMarket.push(...bucket.market);
+  }
+  return {
+    limitPlaced,
+    limitFilled: limitFills.length,
+    limitFillRate: limitPlaced ? limitFills.length / limitPlaced : null,
+    avgLimitPrice: shareWeightedAvg(pairedLimit),
+    avgMarketPrice: shareWeightedAvg(pairedMarket),
+    limitImprovementPp: improvementWeight ? (improvementWeighted / improvementWeight) * 100 : null
+  };
+}
+
+// ---------------------------------------------------------------------------
+// 5. Engine flags + positions snapshot.
+// ---------------------------------------------------------------------------
+
+function buildEngineFlags(ledger: LedgerEvent[]): Reflection["engineFlags"] {
+  const evals = ledger.filter((e) => e.type === "evaluation" || e.type === "watchlist_eval");
+  return {
+    evaluations: evals.length,
+    saturated: evals.filter((e) => Boolean(e.saturatedAt)).length,
+    contaminated: evals.filter((e) => e.contaminated === true).length,
+    // Old ledgers predate these fields; the quality line only renders once
+    // at least one event carries them (or a flag actually fired).
+    flagsTracked: evals.some((e) => e.saturatedAt !== undefined || e.contaminated !== undefined)
+  };
+}
+
+function snapshotPositions(portfolio: Portfolio): PositionSnapshot[] {
+  return portfolio.positions.map((pos) => {
+    const mark = pos.lastEval?.mark ?? null;
+    return {
+      positionId: pos.id,
+      question: pos.question,
+      direction: pos.outcomeLabel.toUpperCase(),
+      shares: pos.shares,
+      avgEntryPrice: pos.avgEntryPrice,
+      costUsd: pos.shares * pos.avgEntryPrice,
+      mark,
+      unrealizedUsd: mark === null ? null : pos.shares * (mark - pos.avgEntryPrice),
+      agentProb: pos.lastEval?.agentProb ?? null,
+      netEdgePp: pos.lastEval?.netEdgePp ?? null,
+      saturated: Boolean(pos.lastEval?.saturatedAt),
+      contaminated: Boolean(pos.lastEval?.contaminated)
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Assembly.
+// ---------------------------------------------------------------------------
+
+export async function buildReflection(): Promise<Reflection> {
+  const ledger = readLedger() as unknown as LedgerEvent[];
+  const portfolio = loadPortfolio();
+  const getMarket = memoizedMarketGetter();
+
+  const calibration = await buildCalibration(ledger, getMarket);
+  const { episodes, totalAlphaUsd } = await buildExits(ledger, getMarket);
+  const hybrid = buildHybrid(ledger);
+  const engineFlags = buildEngineFlags(ledger);
+
   const takerUsd = ledger
     .filter((e) => e.type === "trade" && e.style === "market")
     .reduce((s, e) => s + (e.feeUsd ?? 0), 0);
   const makerUsd = ledger
     .filter((e) => e.type === "trade" && e.style === "limit")
     .reduce((s, e) => s + (e.feeUsd ?? 0), 0);
-
-  // 4. Hybrid quality.
-  const limitPlaced = ledger.filter((e) => e.type === "limit_placed").length;
-  const limitFills = sells.filter((s) => s.style === "limit");
-  const marketExitFills = sells.filter((s) => s.style === "market" && s.reason === "negative_edge");
-  const limitFillsComparable = limitFills.filter((s) => (s.reason ?? "").startsWith("negative_edge"));
-  const avg = (rows: TradeEvent[]): number | null => {
-    const tot = rows.reduce((s, r) => s + (r.shares ?? 0), 0);
-    if (!tot) return null;
-    return rows.reduce((s, r) => s + (r.avgPrice ?? 0) * (r.shares ?? 0), 0) / tot;
-  };
-  const avgLimit = avg(limitFillsComparable);
-  const avgMarket = avg(marketExitFills);
 
   // Equity = cash + freshly marked open positions (fall back to the last
   // eval's mark when the book is unreachable; null only if neither exists).
@@ -184,63 +499,158 @@ export async function buildReflection(): Promise<Reflection> {
     generatedAtUtc: new Date().toISOString(),
     book: {
       cashUsd: portfolio.cashUsd,
+      bankrollUsd: portfolio.bankrollUsd,
       openPositions: portfolio.positions.length,
       realizedPnlUsd: portfolio.realizedPnlUsd,
       totalFeesUsd: portfolio.totalFeesUsd,
       equityUsd: equity
     },
-    exits,
-    exitAlphaTotalUsd: exitAlphaTotal,
-    calibration: {
-      n: calN,
-      brier,
-      note: calN ? "Brier of last pre-resolution agent prob vs outcome (0=perfect, 0.25=coin flip)" : "no resolved positions yet"
-    },
+    positions: snapshotPositions(portfolio),
+    exits: episodes,
+    exitAlphaTotalUsd: totalAlphaUsd,
+    calibration,
     fees: { takerUsd, makerUsd, totalUsd: takerUsd + makerUsd },
-    hybrid: {
-      limitPlaced,
-      limitFilled: limitFills.length,
-      limitFillRate: limitPlaced ? limitFills.length / limitPlaced : null,
-      avgLimitPrice: avgLimit,
-      avgMarketPrice: avgMarket,
-      limitImprovementPp: avgLimit !== null && avgMarket !== null ? (avgLimit - avgMarket) * 100 : null
-    }
+    hybrid,
+    engineFlags
   };
 }
+
+// ---------------------------------------------------------------------------
+// Markdown rendering (Chinese-first; numbers/dates stay ASCII).
+// ---------------------------------------------------------------------------
 
 function fmtUsd(v: number | null): string {
   return v === null ? "–" : `$${v.toFixed(2)}`;
 }
 
-export function renderReflectionMd(r: Reflection): string {
-  const lines: string[] = [];
-  lines.push(`# Paper agent reflection — ${r.generatedAtUtc}`);
-  lines.push("");
-  lines.push(`## Book`);
-  lines.push(`cash ${fmtUsd(r.book.cashUsd)} · open positions ${r.book.openPositions} · realized PnL ${fmtUsd(r.book.realizedPnlUsd)} · fees paid ${fmtUsd(r.book.totalFeesUsd)} · equity ${fmtUsd(r.book.equityUsd)}`);
-  lines.push("");
-  lines.push(`## Exit alpha (realized vs hold-counterfactual): ${fmtUsd(r.exitAlphaTotalUsd)}`);
-  lines.push("");
-  lines.push("| position | when | style | shares | exit | now | alpha | reason |");
+function fmtSignedUsd(v: number | null): string {
+  return v === null ? "–" : `${v < 0 ? "-" : "+"}$${Math.abs(v).toFixed(2)}`;
+}
+
+function fmtSigned(v: number | null, digits: number): string {
+  return v === null ? "–" : `${v >= 0 ? "+" : ""}${v.toFixed(digits)}`;
+}
+
+function fmtSignedPp(v: number | null): string {
+  return v === null ? "–" : `${fmtSigned(v, 1)}pp`;
+}
+
+function fmtProb(v: number | null): string {
+  return v === null ? "–" : v.toFixed(3);
+}
+
+function fmtWhen(ts: string): string {
+  return `${ts.slice(5, 10)} ${ts.slice(11, 16)}`; // MM-DD HH:mm
+}
+
+function truncate(text: string, max = 60): string {
+  return text.length <= max ? text : `${text.slice(0, max - 1)}…`;
+}
+
+function exitStyleLabel(style: ExitEpisode["style"]): string {
+  return style === "market+limit" ? "market+limit 两腿" : style;
+}
+
+function exitReasonLabel(reason: string): string {
+  const prefix = reason.split("+")[0] ?? reason;
+  const base = prefix === "negative_edge" ? "负edge退出" : prefix === "stop_loss" ? "止损" : prefix;
+  return reason.includes("limit_ttl_fallback") ? `${base}+限价单超时回落` : base;
+}
+
+function renderPositionsSection(r: Reflection): string[] {
+  const lines = ["## 持仓快照 Positions", ""];
+  if (!r.positions.length) return [...lines, "当前无持仓。", ""];
+  lines.push("| 问题 | 方向 | 成本 | mark | 浮盈 | agent P | edge | 备注 |");
   lines.push("| --- | --- | --- | --- | --- | --- | --- | --- |");
+  for (const p of r.positions) {
+    const flags = [p.saturated ? "⚠饱和" : "", p.contaminated ? "⛔污染" : ""].filter(Boolean).join(" ");
+    const cost = `${fmtUsd(p.costUsd)} (${p.shares.toFixed(1)}×${p.avgEntryPrice.toFixed(3)})`;
+    lines.push(
+      `| ${truncate(p.question)} | ${p.direction} | ${cost} | ${fmtProb(p.mark)} | ${fmtSignedUsd(p.unrealizedUsd)} | ${fmtProb(p.agentProb)} | ${fmtSignedPp(p.netEdgePp)} | ${flags} |`
+    );
+  }
+  const markValueUsd = r.positions.reduce((s, p) => s + (p.mark === null ? 0 : p.shares * p.mark), 0);
+  const totalUsd = r.book.cashUsd + markValueUsd;
+  const pct = r.book.bankrollUsd > 0 ? ` = 本金的 ${((totalUsd / r.book.bankrollUsd) * 100).toFixed(1)}%` : "";
+  lines.push("");
+  lines.push(`总权益 = 现金 ${fmtUsd(r.book.cashUsd)} + 持仓市值 ${fmtUsd(markValueUsd)}（按 mark）= ${fmtUsd(totalUsd)}${pct}`);
+  lines.push("");
+  lines.push("edge = agent 估计的持有价值 − 立刻卖出净得；饱和 = 概率打到引擎 1%/99% 上限；污染 = 该预测被检测到引用了预测市场价格");
+  lines.push("");
+  return lines;
+}
+
+function renderExitsSection(r: Reflection): string[] {
+  const lines = [`## 退出质量 Exit alpha（卖出所得 vs 持有反事实）：${fmtUsd(r.exitAlphaTotalUsd)}`, ""];
+  if (!r.exits.length) return [...lines, "尚无退出。", ""];
+  lines.push("| 问题 | 方向 | 时间 | 方式 | shares | 卖价 | 现价 | α | 原因 |");
+  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
   for (const e of r.exits.slice(-30)) {
     lines.push(
-      `| ${e.positionId} | ${e.ts.slice(0, 16)} | ${e.style} | ${e.shares.toFixed(1)} | ${e.exitPrice.toFixed(3)} | ${e.priceNow === null ? "–" : e.priceNow.toFixed(3)} | ${e.exitAlphaUsd === null ? "–" : fmtUsd(e.exitAlphaUsd)} | ${e.reason} |`
+      `| ${truncate(e.question)} | ${e.direction} | ${fmtWhen(e.ts)} | ${exitStyleLabel(e.style)} | ${e.shares.toFixed(1)} | ${e.exitPrice.toFixed(3)} | ${fmtProb(e.priceNow)} | ${fmtSignedUsd(e.exitAlphaUsd)} | ${exitReasonLabel(e.reason)} |`
     );
   }
   lines.push("");
-  lines.push(`## Calibration`);
-  lines.push(`n=${r.calibration.n} · Brier ${r.calibration.brier === null ? "–" : r.calibration.brier.toFixed(3)} — ${r.calibration.note}`);
+  lines.push("α = 卖出所得 −（若持有到现在/结算的价值）；正 = 卖对了");
   lines.push("");
-  lines.push(`## Fees`);
-  lines.push(`taker ${fmtUsd(r.fees.takerUsd)} · maker ${fmtUsd(r.fees.makerUsd)} · total ${fmtUsd(r.fees.totalUsd)}`);
-  lines.push("");
-  lines.push(`## Hybrid execution`);
+  return lines;
+}
+
+function renderCalibrationSection(r: Reflection): string[] {
+  const lines = ["## 校准 Calibration (Brier)", ""];
+  const c = r.calibration;
+  if (!c.n) return [...lines, "尚无已结算市场，Brier 暂不可计。", ""];
   lines.push(
-    `limits placed ${r.hybrid.limitPlaced} · filled ${r.hybrid.limitFilled} (${r.hybrid.limitFillRate === null ? "–" : Math.round(r.hybrid.limitFillRate * 100) + "%"}) · avg limit ${r.hybrid.avgLimitPrice?.toFixed(3) ?? "–"} vs avg market ${r.hybrid.avgMarketPrice?.toFixed(3) ?? "–"} · improvement ${r.hybrid.limitImprovementPp === null ? "–" : r.hybrid.limitImprovementPp.toFixed(1) + "pp"}`
+    `n=${c.n} · agent ${fmtProb(c.brierAgent)} vs market ${fmtProb(c.brierMarket)} · skill score ${fmtSigned(c.skill, 2)}（>0 = 跑赢市场）`
   );
   lines.push("");
-  lines.push("_Simulated book — no real orders. Fees per the repo's calibrated category model._");
+  lines.push("| 问题 | agent P | market P | 结果 | 日期 |");
+  lines.push("| --- | --- | --- | --- | --- |");
+  for (const row of c.rows) {
+    lines.push(
+      `| ${truncate(row.label)} | ${row.agentProb.toFixed(3)} | ${row.marketProb.toFixed(3)} | ${row.outcome ? "✓ 发生" : "✗ 未发生"} | ${row.ts.slice(0, 10)} |`
+    );
+  }
+  lines.push("");
+  return lines;
+}
+
+function renderTailSections(r: Reflection): string[] {
+  const lines = [
+    "## 费用 Fees",
+    `taker（市价）${fmtUsd(r.fees.takerUsd)} · maker（限价）${fmtUsd(r.fees.makerUsd)} · 合计 ${fmtUsd(r.fees.totalUsd)}`,
+    "",
+    "## 混合执行 Hybrid execution"
+  ];
+  const h = r.hybrid;
+  const fillRate = h.limitFillRate === null ? "–" : `${Math.round(h.limitFillRate * 100)}%`;
+  const pairing =
+    h.limitImprovementPp === null
+      ? "同笔退出配对：暂无（需同一持仓的 market 腿与 limit 腿都成交）"
+      : `同笔退出配对：limit 均价 ${fmtProb(h.avgLimitPrice)} vs market 均价 ${fmtProb(h.avgMarketPrice)} · limit 改善 ${fmtSignedPp(h.limitImprovementPp)}`;
+  lines.push(`限价单挂出 ${h.limitPlaced} · 成交 ${h.limitFilled}（${fillRate}）· ${pairing}`);
+  lines.push("");
+  const f = r.engineFlags;
+  if (f.evaluations > 0 && (f.saturated > 0 || f.contaminated > 0 || f.flagsTracked)) {
+    lines.push(`引擎质量：${f.evaluations} 次评估中 ${f.saturated} 次饱和、${f.contaminated} 次检测到市场价格污染`);
+    lines.push("");
+  }
+  return lines;
+}
+
+export function renderReflectionMd(r: Reflection): string {
+  const lines = [
+    `# 模拟盘每日反思（paper agent reflection）— ${r.generatedAtUtc}`,
+    "",
+    "## 账本 Book",
+    `现金 ${fmtUsd(r.book.cashUsd)} · 持仓 ${r.book.openPositions} 个 · 已实现盈亏 ${fmtUsd(r.book.realizedPnlUsd)} · 已付费用 ${fmtUsd(r.book.totalFeesUsd)} · 总权益（equity）${fmtUsd(r.book.equityUsd)}`,
+    "",
+    ...renderPositionsSection(r),
+    ...renderExitsSection(r),
+    ...renderCalibrationSection(r),
+    ...renderTailSections(r),
+    "_模拟盘——无真实订单。费用按仓库校准的分类费率模型计。_"
+  ];
   return lines.join("\n") + "\n";
 }
 

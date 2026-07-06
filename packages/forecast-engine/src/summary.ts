@@ -46,6 +46,10 @@ ${ledger}
 
 When the verdict prose references a specific source, cite it inline as [NN] — its two-digit index in the ledger above.
 
+RULES:
+- When comparing numbers, write the arithmetic explicitly (e.g. "32.57 of 60 ≈ 55%") — never a vague fraction like "roughly a third" without the division.
+- Every key_factors_yes / key_factors_no item must describe a scenario that would actually satisfy (or block) the RESOLUTION CRITERIA; if a factor concerns an excluded/non-qualifying scenario, either omit it or explicitly mark it "(indirect)".
+
 OUTPUT only a single JSON object — no prose, no code fence:
 {
   "verdict": "1-2 paragraphs: the overall read — why P(YES) landed at ${pct(state.currentProb)}, the balance of evidence, citing sources inline as [NN]",
