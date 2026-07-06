@@ -82,8 +82,11 @@ function cmdStatus(): void {
     process.stdout.write("(no open positions)\n");
   }
   for (const pos of p.positions) {
+    const flags = pos.lastEval
+      ? `${pos.lastEval.saturatedAt ? " ⚠saturated" : ""}${pos.lastEval.contaminated ? " ⛔contaminated" : ""}`
+      : "";
     const ev = pos.lastEval
-      ? ` · last eval ${pos.lastEval.ts.slice(0, 16)}: P=${(pos.lastEval.agentProb * 100).toFixed(1)}% edge=${pos.lastEval.netEdgePp?.toFixed(1) ?? "–"}pp → ${pos.lastEval.decision}`
+      ? ` · last eval ${pos.lastEval.ts.slice(0, 16)}: P=${(pos.lastEval.agentProb * 100).toFixed(1)}%${flags} edge=${pos.lastEval.netEdgePp?.toFixed(1) ?? "–"}pp → ${pos.lastEval.decision}`
       : " · not yet evaluated";
     process.stdout.write(
       `${pos.id}: ${pos.shares.toFixed(1)} ${pos.outcomeLabel} @ ${pos.avgEntryPrice.toFixed(3)}${ev}\n`

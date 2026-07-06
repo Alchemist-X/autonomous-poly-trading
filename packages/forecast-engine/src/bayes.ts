@@ -48,6 +48,21 @@ export function clampUnverified(llr: number): number {
   return Math.sign(llr) * mag;
 }
 
+// Review 2026-07-06: the agent's credibility tag was collected but never used —
+// SEO blogs and thin proxies were the biggest movers of some forecasts. The tag
+// now caps |llr|, so a low-credibility source can never outweigh a high-quality
+// one no matter what strength the agent claims for it.
+const CREDIBILITY_MEDIUM_MAX_LLR = 0.8;
+export const CREDIBILITY_MAX_LLR: Record<string, number> = {
+  low: 0.25,
+  medium: CREDIBILITY_MEDIUM_MAX_LLR,
+  high: MAX_ABS_LLR,
+};
+export function credibilityCap(credibility: string, llr: number): number {
+  const cap = CREDIBILITY_MAX_LLR[credibility] ?? CREDIBILITY_MEDIUM_MAX_LLR;
+  return Math.sign(llr) * Math.min(Math.abs(llr), cap);
+}
+
 // (a) A reflection adjusts the weight of a PRIOR source; its magnitude is clamped
 // tighter than fresh evidence so a single round can nudge but never violently
 // re-litigate the running probability (anti-oscillation / no self-persuasion).
@@ -65,7 +80,17 @@ export function clampReflection(llr: number): number {
 // cluster the strongest source keeps full weight and each additional same-cluster
 // source is geometrically damped, so one fact cannot be counted five times.
 export const CLUSTER_DECAY = 0.5;
-export function clusterFactors(clusterIds: string[], llrs: number[]): number[] {
+// priorCounts: how many ledger entries from PREVIOUS rounds already sit in each
+// cluster (review 2026-07-06: decay used to be per-round only, so the same
+// status-quo observation re-entered at full weight every round across a
+// multi-day resumed dossier — ~9 recounts pushed one forecast below its own
+// stated actuarial floor). A prior count of k shifts every rank by k, so a
+// repeat of an already-counted story starts at decay^k instead of full weight.
+export function clusterFactors(
+  clusterIds: string[],
+  llrs: number[],
+  priorCounts?: ReadonlyMap<string, number>
+): number[] {
   const groups = new Map<string, number[]>();
   clusterIds.forEach((cid, i) => {
     // blank / missing id => treat the source as its own independent cluster
@@ -75,11 +100,13 @@ export function clusterFactors(clusterIds: string[], llrs: number[]): number[] {
     else groups.set(key, [i]);
   });
   const factors = new Array(clusterIds.length).fill(1);
-  for (const idxs of groups.values()) {
-    if (idxs.length <= 1) continue;
-    // rank within the cluster by |llr| desc: strongest full, then ×decay^rank
-    const ranked = [...idxs].sort((a, b) => Math.abs(llrs[b]) - Math.abs(llrs[a]));
-    ranked.forEach((idx, rank) => (factors[idx] = Math.pow(CLUSTER_DECAY, rank)));
+  for (const [key, idxs] of groups.entries()) {
+    const offset = priorCounts?.get(key) ?? 0;
+    if (idxs.length <= 1 && offset === 0) continue;
+    // rank within the cluster by |llr| desc: strongest full, then ×decay^rank,
+    // with ranks starting after the cluster's already-counted prior entries
+    const ranked = [...idxs].sort((a, b) => Math.abs(llrs[b] ?? 0) - Math.abs(llrs[a] ?? 0));
+    ranked.forEach((idx, rank) => (factors[idx] = Math.pow(CLUSTER_DECAY, rank + offset)));
   }
   return factors;
 }
@@ -110,10 +137,13 @@ export interface AppliedStep {
 // Thread a sequence of LLRs through the prior, returning the running probability
 // after each step plus the final posterior. This is the engine's single source
 // of truth for the probability — the agent never sets the number directly.
+// pinned: the UNCLAMPED posterior crossed the floor/ceiling, i.e. the reported
+// number is the engine's expressible bound, not the true posterior (review
+// 2026-07-06: a floor-pinned 1.0% used to read as a real "converged" estimate).
 export function applyLlrs(
   priorProb: number,
   llrs: number[]
-): { post: number; steps: AppliedStep[] } {
+): { post: number; steps: AppliedStep[]; pinned: "floor" | "ceil" | null } {
   let lo = logit(priorProb);
   const steps: AppliedStep[] = [];
   for (const llr of llrs) {
@@ -122,12 +152,16 @@ export function applyLlrs(
     const after = clamp(invLogit(lo), PROB_FLOOR, PROB_CEIL);
     steps.push({ probBefore: before, probAfter: after, deltaPp: (after - before) * 100 });
   }
-  return { post: clamp(invLogit(lo), PROB_FLOOR, PROB_CEIL), steps };
+  const raw = invLogit(lo);
+  const pinned = raw < PROB_FLOOR ? "floor" : raw > PROB_CEIL ? "ceil" : null;
+  return { post: clamp(raw, PROB_FLOOR, PROB_CEIL), steps, pinned };
 }
 
 // A crude-but-honest credible band: it narrows as more independent sources
 // accumulate and as stated confidence rises. Not a calibrated interval — a
 // visual uncertainty cue until/unless real calibration is added later.
+// Endpoints clamp to [PROB_FLOOR, PROB_CEIL]: the engine can never output a
+// probability outside that range, so a band touching 0% or 100% was lying.
 export function credibleInterval(
   prob: number,
   nSources: number,
@@ -136,5 +170,5 @@ export function credibleInterval(
   const confFactor = confidence === "high" ? 0.6 : confidence === "medium" ? 0.85 : 1.1;
   const base = 0.18 * confFactor;
   const halfWidth = base / Math.sqrt(1 + nSources);
-  return [clamp(prob - halfWidth, 0, 1), clamp(prob + halfWidth, 0, 1)];
+  return [clamp(prob - halfWidth, PROB_FLOOR, PROB_CEIL), clamp(prob + halfWidth, PROB_FLOOR, PROB_CEIL)];
 }

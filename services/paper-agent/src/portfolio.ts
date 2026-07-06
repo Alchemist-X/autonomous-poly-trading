@@ -44,6 +44,10 @@ export interface PaperPosition {
     netEdgePp: number | null;
     decision: string;
     forecastId: string;
+    // Engine caveats (review 2026-07-06): agentProb sits at the engine's
+    // 0.01/0.99 bound / the run used prediction-market prices despite the ban.
+    saturatedAt?: "floor" | "ceil" | null;
+    contaminated?: boolean;
   };
 }
 

@@ -11,6 +11,7 @@
 import { providerHasWebSearch, runAgent } from "./agent";
 import { extractJsonObject } from "./claude-agent";
 import { languageDirective } from "./language";
+import { marketBlind, marketBlindDirective, mentionsMarketPricing } from "./market-blind";
 import type { EventFraming } from "./types";
 
 // Provider-aware research line: a search-less provider must not be told to
@@ -40,12 +41,17 @@ Produce:
 - clarification_needed: if forecastable is false, what the user must specify; else "".
 - prior_probability: your PRIOR P(YES) in [0,1] from GENERAL KNOWLEDGE / a reference class ONLY — the base rate BEFORE weighing specific current evidence (e.g. "a named product shipping by a pre-announced date ~0.55", "a specific bilateral ceasefire holding 6 months ~0.3"). Not 0.5 unless the reference class truly is a coin flip.
 - prior_rationale: the reference class and why that base rate.
-${languageDirective()}
+${marketBlindDirective()}${languageDirective()}
 OUTPUT only a single JSON object, no prose, no code fence:
 {"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"..."}`;
 }
 
-function buildAuditPrompt(question: string, frame: EventFraming, hasWebSearch: boolean): string {
+function buildAuditPrompt(
+  question: string,
+  frame: EventFraming,
+  hasWebSearch: boolean,
+  violationNotice = ""
+): string {
   const research = hasWebSearch ? "You MAY WebSearch to check dates/definitions." : NO_WEB_LINE;
   return `You are a SKEPTICAL forecasting-question auditor. Another editor framed a user's prompt into a binary question. Your job is to catch errors that would make the whole forecast quantify the WRONG question: an ambiguous or drifted YES/NO bar, an inverted edge case, a wrong resolution date, a mis-judged forecastable verdict, or a base-rate prior that ignores the reference class. ${research}
 
@@ -57,9 +63,9 @@ PROPOSED FRAME:
 - forecastable: ${frame.forecastable}
 - prior_probability: ${frame.priorProbability}
 - prior_rationale: ${frame.priorRationale}
-
+${violationNotice}
 Re-derive the frame independently. Return a CORRECTED frame (keep it if already correct), PLUS an honest audit. Be strict: if the resolution bar is ambiguous or unfaithful to the user's intent, fix it and say so in framing_caveats.
-${languageDirective()}
+${marketBlindDirective()}${languageDirective()}
 OUTPUT only a single JSON object, no prose, no code fence:
 {"normalized_question":"...","resolution_criteria":"...","resolution_date":"2026-12-31","settlement_source":"...","assumptions":"...","forecastable":true,"clarification_needed":"","prior_probability":0.45,"prior_rationale":"...","framing_caveats":"edge cases / ambiguities the user should know, or '' if none","framing_confidence":"high|medium|low"}`;
 }
@@ -115,6 +121,10 @@ export interface FrameResult {
   framing: EventFraming;
   searchQueries: string[];
   costUsd: number | null;
+  // Market-blind mode only: the prior rationale still reads market-price-
+  // anchored after one corrective re-audit — the edge computed downstream from
+  // this forecast should be treated as contaminated.
+  priorSuspect: boolean;
 }
 
 async function runValidated<T>(
@@ -139,10 +149,34 @@ export async function frameEvent(
   // Pass 1: frame + base-rate prior.
   const first = await runValidated(buildFramingPrompt(question, opts.userResolution ?? null, hasWebSearch), validateFraming, opts.model);
   // Pass 2 (P0-1): independent skeptical audit; its corrected frame is authoritative.
-  const audited = await runValidated(buildAuditPrompt(question, first.value, hasWebSearch), validateAudit, opts.model);
+  let audited = await runValidated(buildAuditPrompt(question, first.value, hasWebSearch), validateAudit, opts.model);
+  let totalCost = (first.costUsd ?? 0) + (audited.costUsd ?? 0);
+  let allQueries = [...first.searchQueries, ...audited.searchQueries];
+  let priorSuspect = false;
+
+  // Market-blind guard (review 2026-07-06): the audit pass itself was a prior
+  // contaminator — it looked up the live market price and "corrected" the prior
+  // to it. When the audited rationale reads market-anchored, re-run the audit
+  // ONCE with an explicit violation notice; if it still does, keep the frame
+  // but flag it so downstream consumers can discount the edge.
+  if (marketBlind() && mentionsMarketPricing(audited.value.priorRationale)) {
+    const notice =
+      "\nVIOLATION NOTICE: the previous audit's prior_rationale anchored on prediction-market prices, which is forbidden here. Re-derive prior_probability STRICTLY from a reference class of comparable past events — no market prices, odds, or implied probabilities.\n";
+    const retried = await runValidated(
+      buildAuditPrompt(question, first.value, hasWebSearch, notice),
+      validateAudit,
+      opts.model
+    );
+    totalCost += retried.costUsd ?? 0;
+    allQueries = [...allQueries, ...retried.searchQueries];
+    audited = retried;
+    priorSuspect = mentionsMarketPricing(audited.value.priorRationale);
+  }
+
   return {
     framing: audited.value,
-    searchQueries: [...first.searchQueries, ...audited.searchQueries],
-    costUsd: (first.costUsd ?? 0) + (audited.costUsd ?? 0),
+    searchQueries: allQueries,
+    costUsd: totalCost,
+    priorSuspect,
   };
 }

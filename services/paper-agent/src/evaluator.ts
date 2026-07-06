@@ -34,6 +34,13 @@ export interface Evaluation {
   status: string;
   evidenceCount: number;
   unforecastable: boolean;
+  // Engine flags (review 2026-07-06). saturatedAt: probYes sits at the engine's
+  // 0.01/0.99 bound — the edge derived from it is a lower bound on uncertainty,
+  // not a precise estimate. contaminated: market-blind mode caught the engine
+  // using prediction-market prices (blocked sources and/or a price-anchored
+  // prior) — the "independent" estimate is partially circular.
+  saturatedAt: "floor" | "ceil" | null;
+  contaminated: boolean;
 }
 
 // Mirror of scripts/forecast/store.ts makeEventId (same contract as the other
@@ -65,6 +72,8 @@ interface EngineState {
   round?: number;
   status?: string;
   evidenceLedger?: unknown[];
+  saturatedAt?: "floor" | "ceil" | null;
+  marketBlind?: { enabled?: boolean; blockedCount?: number; priorSuspect?: boolean };
 }
 
 function readState(eventId: string): EngineState | null {
@@ -108,7 +117,15 @@ export async function evaluateMarket(market: MarketInfo, opts: EvaluateOptions):
     ...process.env,
     FORECAST_PROVIDER: opts.provider,
     FORECAST_MIN_ROUNDS: "1",
-    ARTIFACT_STORAGE_ROOT: engineRoot()
+    ARTIFACT_STORAGE_ROOT: engineRoot(),
+    // Market-blind (review 2026-07-06): the edge computation is only meaningful
+    // if the engine's estimate is INDEPENDENT of the market it is compared
+    // against — without this the engine was found looking up the live
+    // Polymarket price of the very market it was forecasting.
+    FORECAST_MARKET_BLIND: "1",
+    // The owner reads these dossiers; default to Chinese prose (override with
+    // PAPER_FORECAST_LANGUAGE=en). Machine fields stay ASCII either way.
+    FORECAST_LANGUAGE: process.env.PAPER_FORECAST_LANGUAGE ?? "zh"
   };
   // For the OpenAI-compatible path, web research is ON by default (function-
   // calling loop; keyless DuckDuckGo unless TAVILY_API_KEY). Opt out with
@@ -149,19 +166,38 @@ export async function evaluateMarket(market: MarketInfo, opts: EvaluateOptions):
   if (exitCode === 2) {
     // Framing judged the prompt unforecastable — surface it; the caller holds
     // and ledgers rather than trading on a number that doesn't exist.
-    return { forecastId: eventId, probYes: NaN, rounds: 0, status: "unforecastable", evidenceCount: 0, unforecastable: true };
+    return {
+      forecastId: eventId,
+      probYes: NaN,
+      rounds: 0,
+      status: "unforecastable",
+      evidenceCount: 0,
+      unforecastable: true,
+      saturatedAt: null,
+      contaminated: false
+    };
   }
 
   const state = readState(eventId);
   if (!state || typeof state.currentProb !== "number") throw new Error(`engine produced no probability for ${eventId}`);
-  log.info(`evaluated ${market.slug} → P(YES)=${(state.currentProb * 100).toFixed(1)}% (rounds ${state.round ?? "?"}/${totalRounds})`);
+  const saturatedAt = state.saturatedAt ?? null;
+  const contaminated = Boolean(
+    state.marketBlind && ((state.marketBlind.blockedCount ?? 0) > 0 || state.marketBlind.priorSuspect)
+  );
+  log.info(
+    `evaluated ${market.slug} → P(YES)=${(state.currentProb * 100).toFixed(1)}% (rounds ${state.round ?? "?"}/${totalRounds})` +
+      (saturatedAt ? ` [saturated:${saturatedAt}]` : "") +
+      (contaminated ? " [market-price contamination flagged]" : "")
+  );
   return {
     forecastId: eventId,
     probYes: state.currentProb,
     rounds: state.round ?? 0,
     status: state.status ?? "unknown",
     evidenceCount: state.evidenceLedger?.length ?? 0,
-    unforecastable: false
+    unforecastable: false,
+    saturatedAt,
+    contaminated
   };
 }
 
