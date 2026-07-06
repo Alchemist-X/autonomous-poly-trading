@@ -1,0 +1,427 @@
+{
+  "id": "multicalibrated",
+  "name": "Multi-calibrated 8-in-1",
+  "family": "ensemble",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.5081380963939485,
+          "draw": 0.33068045886754843,
+          "away": 0.16118144473850304
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Brazil is the call here at about 51%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Brazil at 60%.",
+              "contributionPp": 26.3
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Brazil's win chance by -8.8 points.",
+              "contributionPp": -8.8
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.4662219583683662,
+          "draw": 0.36011616625935705,
+          "away": 0.17366187537227676
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Germany is the call here at about 47%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Germany at 54%.",
+              "contributionPp": 21
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Germany's win chance by -7.7 points.",
+              "contributionPp": -7.7
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.46149593291505336,
+          "draw": 0.3219755725931048,
+          "away": 0.2165284944918418
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Netherlands is the call here at about 46%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Netherlands at 52%.",
+              "contributionPp": 18.8
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Netherlands's win chance by -6 points.",
+              "contributionPp": -6
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.2947134703866259,
+          "draw": 0.29792562686022717,
+          "away": 0.40736090275314696
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Norway is the call here at about 41%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Norway at 44%.",
+              "contributionPp": -1.7
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Côte d'Ivoire's win chance by -2.2 points.",
+              "contributionPp": -2.2
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.6763721265524154,
+          "draw": 0.20832143248288243,
+          "away": 0.11530644096470223
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, France is the call here at about 68%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours France at 72%.",
+              "contributionPp": 38.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting France's win chance by -4.3 points.",
+              "contributionPp": -4.3
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.38002944281277107,
+          "draw": 0.3420809002638634,
+          "away": 0.2778896569233656
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Mexico is the call here at about 38%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Mexico at 45%.",
+              "contributionPp": 11.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Mexico's win chance by -6.9 points.",
+              "contributionPp": -6.9
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.44195480886262645,
+          "draw": 0.3659366392296618,
+          "away": 0.1921085519077118
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Belgium is the call here at about 44%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Belgium at 53%.",
+              "contributionPp": 19.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Belgium's win chance by -8.7 points.",
+              "contributionPp": -8.7
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.5803631418279878,
+          "draw": 0.29529810097457,
+          "away": 0.12433875719744233
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, England is the call here at about 58%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours England at 62%.",
+              "contributionPp": 28.5
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting England's win chance by -3.8 points.",
+              "contributionPp": -3.8
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.47954024042453475,
+          "draw": 0.32815718956819606,
+          "away": 0.19230257000726922
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, United States is the call here at about 48%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours United States at 55%.",
+              "contributionPp": 21.7
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting United States's win chance by -7.1 points.",
+              "contributionPp": -7.1
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.49355599457788746,
+          "draw": 0.3267010605265578,
+          "away": 0.17974294489555476
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Switzerland is the call here at about 49%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Switzerland at 55%.",
+              "contributionPp": 22.1
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Switzerland's win chance by -6.1 points.",
+              "contributionPp": -6.1
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.754389158239145,
+          "draw": 0.20093884423296357,
+          "away": 0.04467199752789143
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Spain is the call here at about 75%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Spain at 59%.",
+              "contributionPp": 26
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Spain's win chance by +16.1 points.",
+              "contributionPp": 16.1
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.43294452787949134,
+          "draw": 0.38322670198405984,
+          "away": 0.1838287701364488
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Portugal is the call here at about 43%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Portugal at 51%.",
+              "contributionPp": 17.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Portugal's win chance by -7.7 points.",
+              "contributionPp": -7.7
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.6463502095575607,
+          "draw": 0.2569780891283643,
+          "away": 0.09667170131407507
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Argentina is the call here at about 65%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Argentina at 70%.",
+              "contributionPp": 36.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Argentina's win chance by -5.3 points.",
+              "contributionPp": -5.3
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0.256702494000712,
+          "draw": 0.38156899615766987,
+          "away": 0.36172850984161825
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, a draw is the call here at about 38%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Egypt at 44%.",
+              "contributionPp": -2.3
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Australia's win chance by -5.4 points.",
+              "contributionPp": -5.4
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.6021923828302119,
+          "draw": 0.28788063572735495,
+          "away": 0.10992698144243311
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, Colombia is the call here at about 60%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours Colombia at 65%.",
+              "contributionPp": 31.9
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting Colombia's win chance by -5 points.",
+              "contributionPp": -5
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight linear (arithmetic) opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 5 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus, then a knockout 90-minute draw calibration (target ~31% draws, the 2022 Qatar knockout rate) lifting the draw on even ties. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    }
+  ]
+}

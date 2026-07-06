@@ -12,6 +12,7 @@ export {
   type PulseFilterArgs
 } from "../services/orchestrator/src/pulse/pulse-filters.ts";
 import type { PulseFilterArgs } from "../services/orchestrator/src/pulse/pulse-filters.ts";
+import { calculatePositionPnlPct as unroundedPositionPnlPct } from "../services/executor/src/lib/risk.ts";
 
 export function buildPulseLiveRunIdentityRows(input: {
   executionMode: string;
@@ -61,11 +62,14 @@ export function calculatePositionValueUsd(size: number, currentPrice: number) {
   return roundCurrency(size * currentPrice);
 }
 
+// Display variant of the executor's stop-loss PnL math: the FORMULA lives in
+// exactly one place (services/executor/src/lib/risk.ts, which stop-loss
+// comparisons consume unrounded); this wrapper only rounds for artifacts.
 export function calculatePositionPnlPct(avgCost: number, currentPrice: number) {
   if (!(avgCost > 0)) {
     return 0;
   }
-  return roundMetric((currentPrice - avgCost) / avgCost);
+  return roundMetric(unroundedPositionPnlPct(avgCost, currentPrice));
 }
 
 export function loadPulseFilterFile(filePath: string | null): PulseFilterArgs {

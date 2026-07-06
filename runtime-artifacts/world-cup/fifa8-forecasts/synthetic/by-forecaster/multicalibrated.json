@@ -1,0 +1,455 @@
+{
+  "id": "multicalibrated",
+  "name": "Multi-calibrated 8-in-1",
+  "family": "ensemble",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-t21-t14-2026-07-04",
+      "teamA": "T21",
+      "teamB": "T14",
+      "prediction": {
+        "probs": {
+          "home": 0.7549976443264078,
+          "draw": 0.23883251430788177,
+          "away": 0.006169841365710468
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T21 is the call here at about 75%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T21 at 86%.",
+              "contributionPp": 52.4
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T21's win chance by -10.2 points.",
+              "contributionPp": -10.2
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t00-t07-2026-07-05",
+      "teamA": "T00",
+      "teamB": "T07",
+      "prediction": {
+        "probs": {
+          "home": 0.639970002165983,
+          "draw": 0.34148437193355213,
+          "away": 0.018545625900464886
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T00 is the call here at about 64%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T00 at 72%.",
+              "contributionPp": 38.4
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T00's win chance by -7.7 points.",
+              "contributionPp": -7.7
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t25-t02-2026-07-06",
+      "teamA": "T25",
+      "teamB": "T02",
+      "prediction": {
+        "probs": {
+          "home": 0.7979355645301323,
+          "draw": 0.1988909861457894,
+          "away": 0.003173449324078335
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T25 is the call here at about 80%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T25 at 80%.",
+              "contributionPp": 46.5
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T25's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t12-t43-2026-07-07",
+      "teamA": "T12",
+      "teamB": "T43",
+      "prediction": {
+        "probs": {
+          "home": 0.8029503318571669,
+          "draw": 0.014013199093796967,
+          "away": 0.1830364690490362
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T12 is the call here at about 80%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T12 at 80%.",
+              "contributionPp": 47
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T12's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t30-t23-2026-07-08",
+      "teamA": "T30",
+      "teamB": "T23",
+      "prediction": {
+        "probs": {
+          "home": 0.6608954827392061,
+          "draw": 0.1963479561655609,
+          "away": 0.1427565610952331
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T30 is the call here at about 66%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T30 at 66%.",
+              "contributionPp": 32.8
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T30's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t06-t28-2026-07-09",
+      "teamA": "T06",
+      "teamB": "T28",
+      "prediction": {
+        "probs": {
+          "home": 0.7788284480518722,
+          "draw": 0.21695898242941178,
+          "away": 0.004212569518716006
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T06 is the call here at about 78%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T06 at 78%.",
+              "contributionPp": 44.5
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T06's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t24-t31-2026-07-04",
+      "teamA": "T24",
+      "teamB": "T31",
+      "prediction": {
+        "probs": {
+          "home": 0.807080528437523,
+          "draw": 0.18999791291075235,
+          "away": 0.0029215586517247765
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T24 is the call here at about 81%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T24 at 81%.",
+              "contributionPp": 47.4
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T24's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t33-t27-2026-07-05",
+      "teamA": "T33",
+      "teamB": "T27",
+      "prediction": {
+        "probs": {
+          "home": 0.5700037789702872,
+          "draw": 0.3244059769670013,
+          "away": 0.10559024406271153
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T33 is the call here at about 57%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T33 at 57%.",
+              "contributionPp": 23.7
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T33's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t45-t47-2026-07-06",
+      "teamA": "T45",
+      "teamB": "T47",
+      "prediction": {
+        "probs": {
+          "home": 0.6986309759611101,
+          "draw": 0.19990039114629135,
+          "away": 0.10146863289259855
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T45 is the call here at about 70%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T45 at 70%.",
+              "contributionPp": 36.5
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T45's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t34-t39-2026-07-07",
+      "teamA": "T34",
+      "teamB": "T39",
+      "prediction": {
+        "probs": {
+          "home": 0.8237420755453437,
+          "draw": 0.1695261033015987,
+          "away": 0.0067318211530576
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T34 is the call here at about 82%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T34 at 82%.",
+              "contributionPp": 49
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T34's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t18-t32-2026-07-08",
+      "teamA": "T18",
+      "teamB": "T32",
+      "prediction": {
+        "probs": {
+          "home": 0.5632254337539492,
+          "draw": 0.2205213292767319,
+          "away": 0.21625323696931886
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T18 is the call here at about 56%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T18 at 56%.",
+              "contributionPp": 23
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T18's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t16-t29-2026-07-09",
+      "teamA": "T16",
+      "teamB": "T29",
+      "prediction": {
+        "probs": {
+          "home": 0.6140919413351947,
+          "draw": 0.213907547495579,
+          "away": 0.1720005111692263
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T16 is the call here at about 61%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T16 at 61%.",
+              "contributionPp": 28.1
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T16's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t20-t38-2026-07-04",
+      "teamA": "T20",
+      "teamB": "T38",
+      "prediction": {
+        "probs": {
+          "home": 0.5820853585796647,
+          "draw": 0.2531724806067629,
+          "away": 0.16474216081357249
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T20 is the call here at about 58%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T20 at 58%.",
+              "contributionPp": 24.9
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T20's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t03-t46-2026-07-05",
+      "teamA": "T03",
+      "teamB": "T46",
+      "prediction": {
+        "probs": {
+          "home": 0.6993026420737843,
+          "draw": 0.28843606151439116,
+          "away": 0.012261296411824558
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T03 is the call here at about 70%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T03 at 70%.",
+              "contributionPp": 36.6
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T03's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t05-t37-2026-07-06",
+      "teamA": "T05",
+      "teamB": "T37",
+      "prediction": {
+        "probs": {
+          "home": 0.607814660007313,
+          "draw": 0.3774995193271039,
+          "away": 0.014685820665583193
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T05 is the call here at about 61%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T05 at 61%.",
+              "contributionPp": 27.4
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T05's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t17-t11-2026-07-07",
+      "teamA": "T17",
+      "teamB": "T11",
+      "prediction": {
+        "probs": {
+          "home": 0.422322232266058,
+          "draw": 0.22148988367705277,
+          "away": 0.3561878840568893
+        },
+        "rationale": {
+          "headline": "Blending all 8 models and correcting for known group-stage biases, T17 is the call here at about 42%.",
+          "drivers": [
+            {
+              "label": "Consensus of all models",
+              "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T17 at 42%.",
+              "contributionPp": 8.9
+            },
+            {
+              "label": "Bias correction",
+              "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T17's win chance by 0 points.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+        }
+      }
+    }
+  ]
+}

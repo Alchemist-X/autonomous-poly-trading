@@ -12,7 +12,7 @@ import {
 } from "@autopoly/terminal-ui";
 import { Wallet } from "ethers";
 import { loadConfig as loadExecutorConfig } from "../services/executor/src/config.ts";
-import { fetchRemotePositions } from "../services/executor/src/lib/polymarket.ts";
+import { fetchRemotePositions, resolvePolymarketSigningIdentity, type PolymarketSigningIdentity } from "../services/executor/src/lib/polymarket.ts";
 import { loadConfig as loadOrchestratorConfig } from "../services/orchestrator/src/config.ts";
 import {
   buildExecutionDispatchPlan,
@@ -33,6 +33,13 @@ import {
   writeJsonArtifact
 } from "./live-run-common.ts";
 import { runPulseLive } from "./pulse-live.ts";
+import {
+  buildCredentialsCheck,
+  buildEnvFileCheck,
+  buildExecutionModeCheck,
+  buildSignerFunderCheck,
+  getPreflightBlockingReason
+} from "./preflight-checks.ts";
 
 interface Args {
   json: boolean;
@@ -119,10 +126,6 @@ export function parseArgs(argv = process.argv.slice(2)): Args {
   };
 }
 
-function getBlockingReason(checks: RunnerPreflightCheck[]) {
-  return checks.find((check) => check.blocking && !check.ok)?.summary ?? null;
-}
-
 function deriveSignerAddress(privateKey: string) {
   if (!privateKey) {
     return "";
@@ -158,9 +161,24 @@ async function runRunnerPreflight(input: {
   executorConfig: ReturnType<typeof loadExecutorConfig>;
   orchestratorConfig: ReturnType<typeof loadOrchestratorConfig>;
 }): Promise<RunnerPreflightReport> {
-  const signerAddress = deriveSignerAddress(input.executorConfig.privateKey);
-  const signerMatchesFunder = signerAddress && input.executorConfig.funderAddress
-    ? signerAddress.toLowerCase() === input.executorConfig.funderAddress.toLowerCase()
+  // Resolve the signing identity the same way pulse-live does, so the
+  // credentials/signer gates handle the onchainos wallet (this path used to
+  // only understand PRIVATE_KEY + FUNDER_ADDRESS — the drift the shared
+  // preflight builders close).
+  const usesOnchainOsWallet = input.executorConfig.walletProvider === "onchainos";
+  let walletIdentity: PolymarketSigningIdentity | null = null;
+  let walletIdentityError: string | null = null;
+  try {
+    if (usesOnchainOsWallet || input.executorConfig.privateKey || input.executorConfig.funderAddress) {
+      walletIdentity = await resolvePolymarketSigningIdentity(input.executorConfig);
+    }
+  } catch (error) {
+    walletIdentityError = getErrorMessage(error);
+  }
+  const signerAddress = walletIdentity?.signerAddress ?? deriveSignerAddress(input.executorConfig.privateKey);
+  const funderAddress = walletIdentity?.funderAddress ?? input.executorConfig.funderAddress;
+  const signerMatchesFunder = signerAddress && funderAddress
+    ? signerAddress.toLowerCase() === funderAddress.toLowerCase()
     : null;
   const collateralProbe = await probeCollateralBalanceUsd(input.executorConfig);
   const remotePositions = await fetchRemotePositions(input.executorConfig).catch(() => []);
@@ -168,42 +186,23 @@ async function runRunnerPreflight(input: {
   const liveDispatch = !input.args.mockExecutor;
 
   const checks: RunnerPreflightCheck[] = [
-    {
-      key: "execution-mode",
-      blocking: true,
-      ok: process.env.AUTOPOLY_EXECUTION_MODE === "live",
-      summary: process.env.AUTOPOLY_EXECUTION_MODE === "live"
-        ? "Execution mode is live."
-        : `AUTOPOLY_EXECUTION_MODE must be live. Received ${process.env.AUTOPOLY_EXECUTION_MODE ?? "-"}.`
-    },
-    {
-      key: "env-file",
-      blocking: true,
-      ok: Boolean(input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath),
-      summary: (input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath)
-        ? `Using env file ${(input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath)}.`
-        : "ENV_FILE is required for persistent live runs."
-    },
-    {
-      key: "credentials",
-      blocking: liveDispatch,
-      ok: Boolean(input.executorConfig.privateKey && input.executorConfig.funderAddress),
-      summary: input.executorConfig.privateKey && input.executorConfig.funderAddress
-        ? "PRIVATE_KEY and FUNDER_ADDRESS are present."
-        : liveDispatch
-          ? "Missing PRIVATE_KEY or FUNDER_ADDRESS; live dispatch is blocked."
-          : "Missing PRIVATE_KEY or FUNDER_ADDRESS; mock executor mode will not broadcast."
-    },
-    {
-      key: "signer-funder",
-      blocking: false,
-      ok: true,
-      summary: signerMatchesFunder === true
-        ? "Signer address matches FUNDER_ADDRESS."
-        : signerMatchesFunder === false
-          ? `Signer ${signerAddress} does not match FUNDER_ADDRESS ${input.executorConfig.funderAddress}. Proxy/funder setups may be intentional.`
-          : "Signer/FUNDER_ADDRESS alignment could not be verified."
-    },
+    buildExecutionModeCheck(process.env.AUTOPOLY_EXECUTION_MODE),
+    buildEnvFileCheck(input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath, "persistent live runs"),
+    buildCredentialsCheck({
+      usesOnchainOsWallet,
+      walletIdentity,
+      walletIdentityError,
+      hasPrivateKey: Boolean(input.executorConfig.privateKey),
+      hasFunderAddress: Boolean(input.executorConfig.funderAddress),
+      blocking: liveDispatch
+    }),
+    buildSignerFunderCheck({
+      usesOnchainOsWallet,
+      walletIdentity,
+      signerAddress,
+      funderAddress: funderAddress ?? "",
+      signerMatchesFunder: signerMatchesFunder === true
+    }),
     {
       key: "wallet-inventory",
       blocking: liveDispatch,
@@ -237,14 +236,14 @@ async function runRunnerPreflight(input: {
 
   return {
     ok: checks.every((check) => check.ok || !check.blocking),
-    blockingReason: getBlockingReason(checks),
+    blockingReason: getPreflightBlockingReason(checks),
     executionMode: process.env.AUTOPOLY_EXECUTION_MODE ?? "live",
     decisionStrategy: input.orchestratorConfig.decisionStrategy,
     envFilePath: input.orchestratorConfig.envFilePath ?? input.executorConfig.envFilePath,
     redisUrl: input.orchestratorConfig.redisUrl,
     archiveRoot: input.args.archiveRoot,
     wallet: {
-      funderAddress: input.executorConfig.funderAddress,
+      funderAddress,
       signerAddress,
       signerMatchesFunder
     },

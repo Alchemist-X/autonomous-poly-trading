@@ -1,0 +1,419 @@
+{
+  "fixtureId": "fifwc-t33-t27-2026-07-05",
+  "teamA": "T33",
+  "teamB": "T27",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.5332488030131862,
+        "draw": 0.2543011974194227,
+        "away": 0.21244999956739105
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T33",
+          "p": 0.5332488030131862
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2543011974194227
+        },
+        {
+          "key": "b",
+          "label": "T27",
+          "p": 0.21244999956739105
+        }
+      ],
+      "headline": "T33 are a slight favourite to beat T27 (53.3% to win).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "T33's attack is projected for about 1.7 goals against T27's defence, versus roughly 1 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": 32.1
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "T33 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 25.4%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.6808291832713217,
+        "draw": 0.19966743007868323,
+        "away": 0.11950338664999521
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T33",
+          "p": 0.6808291832713217
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.19966743007868323
+        },
+        {
+          "key": "b",
+          "label": "T27",
+          "p": 0.11950338664999521
+        }
+      ],
+      "headline": "T33 are the clear favourite to beat T27, winning roughly 68 times out of 100 to T27's 12.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage T33 created 0 more good chances per game than they gave up, versus 0.2 for T27 — T33 simply made better chances more often.",
+          "contributionPp": 1.2
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "T33 are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": 8
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that T27 would need a clear upset to advance.",
+          "contributionPp": 4
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.48314583366379593,
+        "draw": 0.21980600063963962,
+        "away": 0.2970481656965645
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T33",
+          "p": 0.48314583366379593
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.21980600063963962
+        },
+        {
+          "key": "b",
+          "label": "T27",
+          "p": 0.2970481656965645
+        }
+      ],
+      "headline": "T33 is the favourite, expected to generate the better scoring chances over 90 minutes.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "T33 has been creating about 1.9 goals of chances a game; T27's defence usually allows about 1.3. That points to roughly 1.9 goals for T33.",
+          "contributionPp": 26.5
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "T27 has been creating about 1 goals of chances a game; T33's defence usually allows about 0.9. That points to roughly 1.5 goals for T27.",
+          "contributionPp": -6.8
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, T33 projects to outscore T27 by about 0.5 goals on the night.",
+          "contributionPp": 10.6
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.6620229539252241,
+        "draw": 0.20651051392082515,
+        "away": 0.13146653215395074
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T33",
+          "p": 0.6620229539252241
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.20651051392082515
+        },
+        {
+          "key": "b",
+          "label": "T27",
+          "p": 0.13146653215395074
+        }
+      ],
+      "headline": "T33 is clearly the stronger side here with about a 66% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "T33 ran a heavier high-intensity workload in the group stage than T27, leaving it more likely to tire and fade as this match wears on.",
+          "contributionPp": -1
+        },
+        {
+          "label": "Form and strength",
+          "detail": "T33 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": 14.9
+        },
+        {
+          "label": "Rest edge",
+          "detail": "T27 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+          "contributionPp": -0.6
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.5592810028350622,
+        "draw": 0.2658338993682961,
+        "away": 0.17488509779664171
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T33",
+          "p": 0.5592810028350622
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2658338993682961
+        },
+        {
+          "key": "b",
+          "label": "T27",
+          "p": 0.17488509779664171
+        }
+      ],
+      "headline": "T33 is the slight favourite — its game style matches up well against T27.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "T33 has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": 26.1
+        },
+        {
+          "label": "Style matchup",
+          "detail": "T33 leans on keeping the ball while T27 leans on springing counter-attacks; that clash is close to a wash.",
+          "contributionPp": 0.1
+        },
+        {
+          "label": "How even it is",
+          "detail": "T33 controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0.2797504651096439,
+        "draw": 0.6508261958787291,
+        "away": 0.06942333901162706
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T33",
+          "p": 0.2797504651096439
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.6508261958787291
+        },
+        {
+          "key": "b",
+          "label": "T27",
+          "p": 0.06942333901162706
+        }
+      ],
+      "headline": "T33 are favoured to beat T27, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "T33 completed line-breaking passes more reliably, slicing through T27's lines more often.",
+          "contributionPp": 10.1
+        },
+        {
+          "label": "Converting chances",
+          "detail": "T33 turned more of its forward runs into real scoring looks than T27 did.",
+          "contributionPp": 6.1
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "T33 created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": 8.5
+        },
+        {
+          "label": "Controlling the ball",
+          "detail": "T33 held possession noticeably more, keeping T27 chasing the game.",
+          "contributionPp": 1.3
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.5245249002736335,
+        "draw": 0.4740557001809222,
+        "away": 0.001419399545444506
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T33",
+          "p": 0.5245249002736335
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.4740557001809222
+        },
+        {
+          "key": "b",
+          "label": "T27",
+          "p": 0.001419399545444506
+        }
+      ],
+      "headline": "T33 is the slight edge (52%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "T33 spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed.",
+          "contributionPp": 0.44674169906033345
+        },
+        {
+          "label": "Ball control",
+          "detail": "T33 keeps the ball more (56% vs 48%), dictating the tempo of build-up.",
+          "contributionPp": 1.250154955302372
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "T33 has created the better chances on average (1.61 vs 1.05 expected goals a game).",
+          "contributionPp": 10.029968949295542
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.4294907403400796,
+        "draw": 0.23833451054648538,
+        "away": 0.33217474911343503
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T33",
+          "p": 0.4294907403400796
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.23833451054648538
+        },
+        {
+          "key": "b",
+          "label": "T27",
+          "p": 0.33217474911343503
+        }
+      ],
+      "headline": "Pulling every angle together, T33 is slightly the side to back here, at about a 43% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "86% of the underlying views lean T33, so the blended call sides with T33 with confidence.",
+          "contributionPp": 9.7
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — T33 edges it, but the result is close to a toss-up.",
+          "contributionPp": 9.6
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T33 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.5700037789702872,
+        "draw": 0.3244059769670013,
+        "away": 0.10559024406271153
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T33",
+          "p": 0.5700037789702872
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.3244059769670013
+        },
+        {
+          "key": "b",
+          "label": "T27",
+          "p": 0.10559024406271153
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, T33 is the call here at about 57%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T33 at 57%.",
+          "contributionPp": 23.7
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T33's win chance by 0 points.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

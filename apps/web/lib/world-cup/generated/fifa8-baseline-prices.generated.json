@@ -1,0 +1,83 @@
+{
+ "generatedAt": "2026-06-29T16:20:24.636Z",
+ "capturedAt": "2026-06-29T16:20:31.666Z",
+ "source": "polymarket-clob-price-history",
+ "note": "Market's implied win/draw/loss for each FIFA8 R32 fixture at the forecast time. Post-hoc benchmark only — the FIFA8 forecasts are market-blind and never read a price.",
+ "prices": {
+  "fifwc-civ-nor-2026-06-30": {
+   "a": 0.255,
+   "draw": 0.275,
+   "b": 0.465
+  },
+  "fifwc-ger-par-2026-06-29": {
+   "a": 0.725,
+   "draw": 0.185,
+   "b": 0.095
+  },
+  "fifwc-bra-jpn-2026-06-29": {
+   "a": 0.535,
+   "draw": 0.275,
+   "b": 0.185
+  },
+  "fifwc-nld-mar-2026-06-29": {
+   "a": 0.415,
+   "draw": 0.315,
+   "b": 0.275
+  },
+  "fifwc-fra-swe-2026-06-30": {
+   "a": 0.775,
+   "draw": 0.155,
+   "b": 0.075
+  },
+  "fifwc-mex-ecu-2026-06-30": {
+   "a": 0.435,
+   "draw": 0.335,
+   "b": 0.235
+  },
+  "fifwc-eng-cdr-2026-07-01": {
+   "a": 0.765,
+   "draw": 0.175,
+   "b": 0.065
+  },
+  "fifwc-bel-sen-2026-07-01": {
+   "a": 0.435,
+   "draw": 0.295,
+   "b": 0.275
+  },
+  "fifwc-che-alg-2026-07-02": {
+   "a": 0.475,
+   "draw": 0.285,
+   "b": 0.235
+  },
+  "fifwc-usa-bih-2026-07-01": {
+   "a": 0.715,
+   "draw": 0.185,
+   "b": 0.095
+  },
+  "fifwc-esp-aut-2026-07-02": {
+   "a": 0.755,
+   "draw": 0.175,
+   "b": 0.075
+  },
+  "fifwc-prt-hrv-2026-07-02": {
+   "a": 0.545,
+   "draw": 0.275,
+   "b": 0.195
+  },
+  "fifwc-arg-cvi-2026-07-03": {
+   "a": 0.845,
+   "draw": 0.115,
+   "b": 0.044
+  },
+  "fifwc-aus-egy-2026-07-03": {
+   "a": 0.285,
+   "draw": 0.335,
+   "b": 0.385
+  },
+  "fifwc-col-gha-2026-07-03": {
+   "a": 0.635,
+   "draw": 0.245,
+   "b": 0.125
+  }
+ }
+}

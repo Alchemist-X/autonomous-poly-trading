@@ -8,7 +8,9 @@ import styles from "./world-cup.module.css";
 const TABS: ReadonlyArray<{ href: string; key: StrKey }> = [
   { href: "/world-cup", key: "tabChampion" },
   { href: "/world-cup/groups", key: "tabGroups" },
-  { href: "/world-cup/bracket", key: "tabKnockout" }
+  { href: "/world-cup/bracket", key: "tabKnockout" },
+  { href: "/world-cup/knockout", key: "tabKnockoutPred" },
+  { href: "/world-cup/performance", key: "tabPerformance" }
 ];
 
 export function TabNav() {

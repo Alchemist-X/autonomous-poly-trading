@@ -1,0 +1,502 @@
+{
+  "id": "tactical-melo",
+  "name": "Tactical style-clash mElo",
+  "family": "elo",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.45337525430492326,
+          "draw": 0.38101791364794835,
+          "away": 0.16560683204712837
+        },
+        "rationale": {
+          "headline": "Brazil is the slight favourite — its game style matches up well against Japan.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Brazil has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 23.7
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Brazil leans on sitting in a deep block while Japan leans on sitting in a deep block; that clash tilts the game toward Japan, who is the lower-rated side here.",
+              "contributionPp": -0.6
+            },
+            {
+              "label": "How even it is",
+              "detail": "Brazil controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.3404989099727703,
+          "draw": 0.39621501935163606,
+          "away": 0.26328607067559373
+        },
+        "rationale": {
+          "headline": "Germany and Paraguay look evenly matched, with Germany a hair ahead on the day.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Germany has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 7.1
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Germany leans on keeping the ball while Paraguay leans on sitting in a deep block; that clash tilts the game toward Paraguay, who is the lower-rated side here.",
+              "contributionPp": -0.7
+            },
+            {
+              "label": "How even it is",
+              "detail": "The styles roughly cancel out, so a draw is very much in play.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.28659311152961736,
+          "draw": 0.37818681188952274,
+          "away": 0.3352200765808599
+        },
+        "rationale": {
+          "headline": "Netherlands and Morocco look evenly matched, with Morocco a hair ahead on the day.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Morocco has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": -5.7
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Netherlands leans on keeping the ball while Morocco leans on keeping the ball; that clash tilts the game toward Netherlands, who is the lower-rated side here.",
+              "contributionPp": 1.8
+            },
+            {
+              "label": "How even it is",
+              "detail": "The styles roughly cancel out, so a draw is very much in play.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.17155866461242567,
+          "draw": 0.31995144169026635,
+          "away": 0.508489893697308
+        },
+        "rationale": {
+          "headline": "Norway is the slight favourite — its game style matches up well against Côte d'Ivoire.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Norway has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": -25.8
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Côte d'Ivoire leans on sitting in a deep block while Norway leans on sitting in a deep block; that clash tilts the game toward Côte d'Ivoire, who is the lower-rated side here.",
+              "contributionPp": 1.3
+            },
+            {
+              "label": "How even it is",
+              "detail": "Norway controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.798064163465721,
+          "draw": 0.17778966652505782,
+          "away": 0.02414617000922127
+        },
+        "rationale": {
+          "headline": "France is the clear favourite — its game style matches up well against Sweden.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "France has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 47
+            },
+            {
+              "label": "Style matchup",
+              "detail": "France leans on a balanced approach while Sweden leans on sitting in a deep block; that clash is close to a wash.",
+              "contributionPp": 0.4
+            },
+            {
+              "label": "How even it is",
+              "detail": "France controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.648735583482816,
+          "draw": 0.30327723567224585,
+          "away": 0.04798718084493815
+        },
+        "rationale": {
+          "headline": "Mexico is the clear favourite — its game style matches up well against Ecuador.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Mexico has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 43.4
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Mexico leans on a balanced approach while Ecuador leans on keeping the ball; that clash tilts the game toward Ecuador, who is the lower-rated side here.",
+              "contributionPp": -1
+            },
+            {
+              "label": "How even it is",
+              "detail": "Mexico controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.4454350394322302,
+          "draw": 0.39269269975543025,
+          "away": 0.16187226081233952
+        },
+        "rationale": {
+          "headline": "Belgium is the slight favourite — its game style matches up well against Senegal.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Belgium has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 21.1
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Belgium leans on keeping the ball while Senegal leans on keeping the ball; that clash tilts the game toward Belgium.",
+              "contributionPp": 2.8
+            },
+            {
+              "label": "How even it is",
+              "detail": "Belgium controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.5397735448991979,
+          "draw": 0.30619752535097433,
+          "away": 0.15402892974982782
+        },
+        "rationale": {
+          "headline": "England is the slight favourite — its game style matches up well against DR Congo.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "England has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 26.7
+            },
+            {
+              "label": "Style matchup",
+              "detail": "England leans on keeping the ball while DR Congo leans on sitting in a deep block; that clash tilts the game toward England.",
+              "contributionPp": 1.5
+            },
+            {
+              "label": "How even it is",
+              "detail": "England controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.513887835982303,
+          "draw": 0.3516989384328465,
+          "away": 0.13441322558485047
+        },
+        "rationale": {
+          "headline": "United States is the slight favourite — its game style matches up well against Bosnia-Herzegovina.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "United States has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 28.8
+            },
+            {
+              "label": "Style matchup",
+              "detail": "United States leans on keeping the ball while Bosnia-Herzegovina leans on sitting in a deep block; that clash tilts the game toward United States.",
+              "contributionPp": 0.8
+            },
+            {
+              "label": "How even it is",
+              "detail": "United States controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.3377154041072345,
+          "draw": 0.3747792704594941,
+          "away": 0.28750532543327145
+        },
+        "rationale": {
+          "headline": "Switzerland and Algeria look evenly matched, with Switzerland a hair ahead on the day.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Switzerland has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 6.3
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Switzerland leans on keeping the ball while Algeria leans on keeping the ball; that clash tilts the game toward Algeria, who is the lower-rated side here.",
+              "contributionPp": -2.3
+            },
+            {
+              "label": "How even it is",
+              "detail": "The styles roughly cancel out, so a draw is very much in play.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.49932646579316026,
+          "draw": 0.31044906948416684,
+          "away": 0.1902244647226729
+        },
+        "rationale": {
+          "headline": "Spain is the slight favourite — its game style matches up well against Austria.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Spain has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 22.9
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Spain leans on keeping the ball while Austria leans on sitting in a deep block; that clash tilts the game toward Austria, who is the lower-rated side here.",
+              "contributionPp": -0.7
+            },
+            {
+              "label": "How even it is",
+              "detail": "Spain controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.35667080721935607,
+          "draw": 0.4007417112359687,
+          "away": 0.24258748154467527
+        },
+        "rationale": {
+          "headline": "Portugal and Croatia look evenly matched, with Portugal a hair ahead on the day.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Portugal has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 7.4
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Portugal leans on keeping the ball while Croatia leans on a balanced approach; that clash tilts the game toward Portugal.",
+              "contributionPp": 2.1
+            },
+            {
+              "label": "How even it is",
+              "detail": "The styles roughly cancel out, so a draw is very much in play.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.7715737953484875,
+          "draw": 0.2004298473358837,
+          "away": 0.027996357315628908
+        },
+        "rationale": {
+          "headline": "Argentina is the clear favourite — its game style matches up well against Cabo Verde.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Argentina has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 46.9
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Argentina leans on sitting in a deep block while Cabo Verde leans on sitting in a deep block; that clash tilts the game toward Cabo Verde, who is the lower-rated side here.",
+              "contributionPp": -3.4
+            },
+            {
+              "label": "How even it is",
+              "detail": "Argentina controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0.27431486988787374,
+          "draw": 0.41993429825053047,
+          "away": 0.3057508318615958
+        },
+        "rationale": {
+          "headline": "Australia and Egypt look evenly matched, with Egypt a hair ahead on the day.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Egypt has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": -3.4
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Australia leans on sitting in a deep block while Egypt leans on sitting in a deep block; that clash tilts the game toward Australia, who is the lower-rated side here.",
+              "contributionPp": 0.7
+            },
+            {
+              "label": "How even it is",
+              "detail": "The styles roughly cancel out, so a draw is very much in play.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.58854354688775,
+          "draw": 0.29722973579601825,
+          "away": 0.11422671731623167
+        },
+        "rationale": {
+          "headline": "Colombia is the clear favourite — its game style matches up well against Ghana.",
+          "drivers": [
+            {
+              "label": "Overall quality",
+              "detail": "Colombia has been the stronger side across the group stage, scoring more freely and conceding less.",
+              "contributionPp": 33.8
+            },
+            {
+              "label": "Style matchup",
+              "detail": "Colombia leans on keeping the ball while Ghana leans on sitting in a deep block; that clash is close to a wash.",
+              "contributionPp": 0
+            },
+            {
+              "label": "How even it is",
+              "detail": "Colombia controls the kind of game it wants to play, which is why we make it the pick rather than a coin flip.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+        }
+      }
+    }
+  ]
+}

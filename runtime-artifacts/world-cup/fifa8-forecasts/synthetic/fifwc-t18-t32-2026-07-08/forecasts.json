@@ -1,0 +1,419 @@
+{
+  "fixtureId": "fifwc-t18-t32-2026-07-08",
+  "teamA": "T18",
+  "teamB": "T32",
+  "kickoffUtc": "",
+  "headlineForecaster": "multicalibrated",
+  "marketBlind": true,
+  "forecasters": [
+    {
+      "id": "dixon-coles-bayes",
+      "name": "Dixon-Coles (Bayesian-shrunk)",
+      "family": "statistical",
+      "probs": {
+        "home": 0.4136375359360005,
+        "draw": 0.30027950628259537,
+        "away": 0.2860829577814041
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T18",
+          "p": 0.4136375359360005
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.30027950628259537
+        },
+        {
+          "key": "b",
+          "label": "T32",
+          "p": 0.2860829577814041
+        }
+      ],
+      "headline": "T18 are narrowly ahead to beat T32 (41.4% to win), though a tight low-scoring draw is very much in play (30%).",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "T18's attack is projected for about 1.2 goals against T32's defence, versus roughly 1 the other way — the scoring gap is what tilts the call.",
+          "contributionPp": 12.8
+        },
+        {
+          "label": "Goal-creation strength",
+          "detail": "T18 carries the stronger end-to-end goal output in their FIFA match stats, so they convert more of their chances into the projected scoreline.",
+          "contributionPp": 7.1
+        },
+        {
+          "label": "Low-scoring caution",
+          "detail": "Both sides project to score few goals, and tight games like this end level more often than raw averages suggest — that keeps the draw alive at 30%.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: each team's FIFA on-pitch scoring rate (xG-for and goals-against, Bayesian-shrunk toward an Elo strength prior in the profile layer) is mapped to relative attack/defence strengths, combined via the Maher multiplicative model into per-team goal expectations on a neutral venue, then expanded into a Dixon-Coles score matrix with low-score dependence rho=0 (league baseline 1.4 goals/side, goal scale 1.2); cell probabilities are collapsed to win/draw/win. No betting odds or prediction-market prices were used at any step."
+    },
+    {
+      "id": "xg-elo",
+      "name": "xG-corrected Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.6042240531296108,
+        "draw": 0.22491500905805176,
+        "away": 0.17086093781233755
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T18",
+          "p": 0.6042240531296108
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.22491500905805176
+        },
+        {
+          "key": "b",
+          "label": "T32",
+          "p": 0.17086093781233755
+        }
+      ],
+      "headline": "T18 are the clear favourite to beat T32, winning roughly 60 times out of 100 to T32's 17.",
+      "drivers": [
+        {
+          "label": "Chance-creation form",
+          "detail": "Across the group stage T18 created 0 more good chances per game than they gave up, versus 0 for T32 — T18 simply made better chances more often.",
+          "contributionPp": 0.2
+        },
+        {
+          "label": "Earned standing, not lucky results",
+          "detail": "T18 are rated on how convincingly they out-created opponents, not on tight scorelines, so wins built on real dominance count more than results that hinged on a single lucky goal.",
+          "contributionPp": 6.9
+        },
+        {
+          "label": "Margin of safety",
+          "detail": "The gap is wide enough that T32 would need a clear upset to advance.",
+          "contributionPp": 3.5
+        }
+      ],
+      "methodNote": "Market-blind: each team's pre-tournament Elo prior is replayed through the group stage using expected-goal difference as the match outcome — a logistic merit score S_xG = 1/(1+e^(-1.8·xGD)) drives a standard Elo update (scale 400, K=24) so chance-creation, not the raw scoreline, moves ratings; the fixture is then converted to 1X2 via a Davidson ties model on the neutral-venue rating difference. Inputs are FIFA on-pitch xG and Elo priors only — no betting or prediction-market data was used."
+    },
+    {
+      "id": "prodegy",
+      "name": "PRODEGY split attack/defence Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.47359278403533334,
+        "draw": 0.21164239698280424,
+        "away": 0.3147648189818623
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T18",
+          "p": 0.47359278403533334
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.21164239698280424
+        },
+        {
+          "key": "b",
+          "label": "T32",
+          "p": 0.3147648189818623
+        }
+      ],
+      "headline": "T18 is the favourite, expected to generate the better scoring chances over 90 minutes.",
+      "drivers": [
+        {
+          "label": "Attack vs defence",
+          "detail": "T18 has been creating about 1.9 goals of chances a game; T32's defence usually allows about 1.2. That points to roughly 2.1 goals for T18.",
+          "contributionPp": 30.5
+        },
+        {
+          "label": "Defence vs attack",
+          "detail": "T32 has been creating about 1.2 goals of chances a game; T18's defence usually allows about 0.9. That points to roughly 1.7 goals for T32.",
+          "contributionPp": -14.9
+        },
+        {
+          "label": "Two-way balance",
+          "detail": "Across both ends, T18 projects to outscore T32 by about 0.4 goals on the night.",
+          "contributionPp": 9.4
+        }
+      ],
+      "methodNote": "Market-blind: independent offence (xOS) and defence (xDS) ratings in goal units, seeded from pre-tournament Elo priors and updated sequentially over group-stage FIFA xG (rate 0.15) against each opponent's opposing rating. Fixture goal rates lambda = xOS_A - xDS_B + base and mu = xOS_B - xDS_A + base feed an independent-Poisson score matrix; 1X2 read off and normalised. No betting or prediction-market data was used."
+    },
+    {
+      "id": "fatigue-elo",
+      "name": "Physical-decay dynamic-K Elo",
+      "family": "elo",
+      "probs": {
+        "home": 0.5776028830333757,
+        "draw": 0.23208462288118356,
+        "away": 0.1903124940854408
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T18",
+          "p": 0.5776028830333757
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.23208462288118356
+        },
+        {
+          "key": "b",
+          "label": "T32",
+          "p": 0.1903124940854408
+        }
+      ],
+      "headline": "T18 is clearly the stronger side here with about a 58% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+      "drivers": [
+        {
+          "label": "Physical load",
+          "detail": "T18 ran a heavier high-intensity workload in the group stage than T32, leaving it more likely to tire and fade as this match wears on.",
+          "contributionPp": -1
+        },
+        {
+          "label": "Form and strength",
+          "detail": "T18 carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+          "contributionPp": 10.5
+        },
+        {
+          "label": "Rest edge",
+          "detail": "T32 comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+          "contributionPp": -0.5
+        }
+      ],
+      "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+    },
+    {
+      "id": "tactical-melo",
+      "name": "Tactical style-clash mElo",
+      "family": "elo",
+      "probs": {
+        "home": 0.2782021954337978,
+        "draw": 0.29343156005785453,
+        "away": 0.42836624450834765
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T18",
+          "p": 0.2782021954337978
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.29343156005785453
+        },
+        {
+          "key": "b",
+          "label": "T32",
+          "p": 0.42836624450834765
+        }
+      ],
+      "headline": "T18 and T32 look evenly matched, with T32 a hair ahead on the day.",
+      "drivers": [
+        {
+          "label": "Overall quality",
+          "detail": "T32 has been the stronger side across the group stage, scoring more freely and conceding less.",
+          "contributionPp": -10.6
+        },
+        {
+          "label": "Style matchup",
+          "detail": "T18 leans on keeping the ball while T32 leans on springing counter-attacks; that clash is close to a wash.",
+          "contributionPp": 0
+        },
+        {
+          "label": "How even it is",
+          "detail": "The styles roughly cancel out, so a draw is very much in play.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: multidimensional Elo (mElo). Each team carries a learned scalar rating mu (logistic gradient ascent on group-stage results, draws as 0.5, priors seeded from centred Elo) plus a fixed 4D tactical embedding c built from FIFA possession / high-press / counter-attack / low-block z-scores. Head-to-head advantage A = (mu_A - mu_B) + 0.35 * c_A^T Omega c_B with Omega block-diagonal cyclic [[0,1],[-1,0]], giving an antisymmetric non-transitive style-clash term; win prob = sigmoid(A), draw split via Davidson nu=0.85. Uses only on-pitch FIFA statistics and pre-tournament Elo priors — no market data was used."
+    },
+    {
+      "id": "linebreak-gbm",
+      "name": "Line-breaks & offers efficiency (gradient-boosted)",
+      "family": "ml",
+      "probs": {
+        "home": 0.6455977526357514,
+        "draw": 0.06626822246091062,
+        "away": 0.288134024903338
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T18",
+          "p": 0.6455977526357514
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.06626822246091062
+        },
+        {
+          "key": "b",
+          "label": "T32",
+          "p": 0.288134024903338
+        }
+      ],
+      "headline": "T18 are clear favourites to beat T32, mostly on cleaner attacking play.",
+      "drivers": [
+        {
+          "label": "Breaking through the defence",
+          "detail": "T18 completed line-breaking passes more reliably, slicing through T32's lines more often.",
+          "contributionPp": 6.2
+        },
+        {
+          "label": "Converting chances",
+          "detail": "T18 turned more of its forward runs into real scoring looks than T32 did.",
+          "contributionPp": 4
+        },
+        {
+          "label": "Scoring vs leaking goals",
+          "detail": "T18 created more and conceded less across the group stage, a stronger net goal balance.",
+          "contributionPp": 4
+        },
+        {
+          "label": "Controlling the ball",
+          "detail": "T18 held possession noticeably more, keeping T32 chasing the game.",
+          "contributionPp": 0.9
+        }
+      ],
+      "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+    },
+    {
+      "id": "passnet-rf",
+      "name": "Passing-network structure (random forest)",
+      "family": "ml",
+      "probs": {
+        "home": 0.804670258772009,
+        "draw": 0.17793054319322843,
+        "away": 0.01739919803476255
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T18",
+          "p": 0.804670258772009
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.17793054319322843
+        },
+        {
+          "key": "b",
+          "label": "T32",
+          "p": 0.01739919803476255
+        }
+      ],
+      "headline": "T18 is the clear favourite (80%) — its passing play is the harder one to break down.",
+      "drivers": [
+        {
+          "label": "Passing structure",
+          "detail": "T32 builds through more players, but T18's other strengths outweigh it here.",
+          "contributionPp": 0.01614617575770838
+        },
+        {
+          "label": "Ball control",
+          "detail": "T18 keeps the ball more (57% vs 51%), dictating the tempo of build-up.",
+          "contributionPp": 0.9240481270752695
+        },
+        {
+          "label": "Scoring threat",
+          "detail": "T18 has created the better chances on average (1.57 vs 1.18 expected goals a game).",
+          "contributionPp": 7.163699405865555
+        }
+      ],
+      "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+    },
+    {
+      "id": "stacked-ensemble",
+      "name": "Stacked Ensemble",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.4509367959450067,
+        "draw": 0.21438751922225496,
+        "away": 0.3346756848327383
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T18",
+          "p": 0.4509367959450067
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.21438751922225496
+        },
+        {
+          "key": "b",
+          "label": "T32",
+          "p": 0.3346756848327383
+        }
+      ],
+      "headline": "Pulling every angle together, T18 is narrowly the side to back here, at about a 45% chance to win.",
+      "drivers": [
+        {
+          "label": "Model agreement",
+          "detail": "86% of the underlying views lean T18, so the blended call sides with T18 with confidence.",
+          "contributionPp": 11.6
+        },
+        {
+          "label": "How settled",
+          "detail": "No single outcome dominates — T18 edges it, but the result is close to a toss-up.",
+          "contributionPp": 11.8
+        }
+      ],
+      "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(T18 win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+    },
+    {
+      "id": "multicalibrated",
+      "name": "Multi-calibrated 8-in-1",
+      "family": "ensemble",
+      "probs": {
+        "home": 0.5632254337539492,
+        "draw": 0.2205213292767319,
+        "away": 0.21625323696931886
+      },
+      "outcomes": [
+        {
+          "key": "a",
+          "label": "T18",
+          "p": 0.5632254337539492
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "p": 0.2205213292767319
+        },
+        {
+          "key": "b",
+          "label": "T32",
+          "p": 0.21625323696931886
+        }
+      ],
+      "headline": "Blending all 8 models and correcting for known group-stage biases, T18 is the call here at about 56%.",
+      "drivers": [
+        {
+          "label": "Consensus of all models",
+          "detail": "The eight model views are pooled into one balanced consensus before any adjustment, which favours T18 at 56%.",
+          "contributionPp": 23
+        },
+        {
+          "label": "Bias correction",
+          "detail": "The consensus is nudged to fix biases the models showed on group matches of this type, shifting T18's win chance by 0 points.",
+          "contributionPp": 0
+        }
+      ],
+      "methodNote": "Market-blind: equal-weight logarithmic opinion pool of all 8 model views (seven base models + the stacked ensemble), then MCBoost multicalibration (alpha=0.15, 7 correction round(s)) learned on the group stage across overlapping style/strength subgroups, replayed on this fixture and bounded to within 12pp per outcome of the consensus. No betting or market-implied probabilities were used at any stage."
+    }
+  ]
+}

@@ -6,6 +6,41 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@autopoly/web", "dev"],
       "port": 3000
+    },
+    {
+      "name": "raven",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@autopoly/raven", "dev"],
+      "port": 3200
+    },
+    {
+      "name": "raven-delta",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@autopoly/raven-delta", "dev"],
+      "port": 3300
+    },
+    {
+      "name": "raven-quota",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "FORECAST_DAILY_QUOTA=0",
+        "FORECAST_PROVIDER=deepseek",
+        "pnpm",
+        "--filter",
+        "@autopoly/raven",
+        "exec",
+        "next",
+        "dev",
+        "-p",
+        "3213"
+      ],
+      "port": 3213
+    },
+    {
+      "name": "raven-alt",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@autopoly/raven", "exec", "next", "dev", "-p", "3211"],
+      "port": 3211
     }
   ]
 }

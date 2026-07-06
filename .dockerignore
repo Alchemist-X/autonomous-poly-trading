@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+**/.next
+**/dist
+.git
+.claude/worktrees
+runtime-artifacts
+run-error
+.env
+.env.*
+!.env.example
+e2e/artifacts
+docs/archive

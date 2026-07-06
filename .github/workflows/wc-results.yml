@@ -1,0 +1,86 @@
+# World Cup results refresh + publish — runs the cheap, credential-free
+# settlement fetch (`pnpm wc:results`, market-blind: settled winner + final
+# score, no prices), and when the scores actually changed it builds and deploys
+# the site to forecasting-agent.com via the Vercel CLI using a VERCEL_TOKEN.
+#
+# The heavy Next build runs here on GitHub's runner (never on the small Hostinger
+# VPS, which sits next to the live-trading containers). deploy-web.sh's `vercel
+# promote` re-aliases production, which also clears any prior `vercel rollback`
+# pin — so no Vercel dashboard wiring is needed.
+#
+# One-time setup (the only thing a human must do):
+#   In the repo: Settings -> Secrets and variables -> Actions -> New repository
+#   secret named VERCEL_TOKEN, value = a Vercel token scoped to the
+#   forecasting-agent.com team. Nothing else.
+#
+# Manual test: Actions tab -> "World Cup results refresh" -> Run workflow.
+name: World Cup results refresh
+
+on:
+  # Group stage finished (2026-06-28); the final 72 results are frozen in
+  # results.generated.json, so the twice-daily cron is disabled. Run manually
+  # only — e.g. to republish forecasting-agent.com after a UI change:
+  # Actions -> "World Cup results refresh" -> Run workflow.
+  # (To re-enable a schedule for the knockout stage, restore a `schedule:` block.)
+  workflow_dispatch: {}
+
+# Never let two runs deploy at once.
+concurrency:
+  group: wc-results
+  cancel-in-progress: false
+
+jobs:
+  refresh-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Refresh group-stage settlement (group stage is over, so this is now a
+      # no-op against the frozen results — kept so a manual run still self-checks
+      # the data before publishing).
+      - name: Refresh settled results
+        run: pnpm wc:results
+
+      # This workflow is manual-only now (no cron), so every run deploys — the
+      # operator triggers it precisely when they want to republish current main
+      # (e.g. after a UI change). No score-change gate.
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Build + deploy to forecasting-agent.com
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: team_2pB0XDZyHAZM66UPHg0fuAvA
+          VERCEL_PROJECT_ID: prj_kPZRCALGVSeotZxQ1PD0fvOOwmRc
+        run: |
+          # Pull project settings + production env into .vercel/ so `vercel build`
+          # (inside deploy-web.sh) has everything it needs in CI.
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          bash scripts/world-cup/deploy-web.sh
+
+      - name: Verify live site (real acceptance, not just a green CLI)
+        run: |
+          url="https://forecasting-agent.com/world-cup/groups"
+          code=$(curl -sS -o /dev/null -w "%{http_code}" "$url")
+          echo "GET $url -> $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::Live site returned $code (expected 200) — the deploy did not alias production."
+            exit 1
+          fi
+          echo "Live site healthy (200) — scores published."

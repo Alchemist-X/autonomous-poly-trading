@@ -28,10 +28,21 @@ export interface MatchResult {
   readonly awayGoals: number | null;
   readonly score: string | null; // "1-1" — home-away, ordered as team a vs team b
   readonly settledAt: string | null; // ISO timestamp of UMA resolution
-  readonly source: "exact_score" | "moneyline" | null;
+  // "espn": Polymarket settled the winner only (e.g. its exact-score market hit
+  // the "Any Other Score" bucket), so the numeric score was backfilled from
+  // ESPN's results feed (see lib/espn-results.ts). Winner stays Polymarket's.
+  // "verified": an operator-verified override (see results-overrides.json) that
+  // wins over fetched data — used when the feeds are missing/inconsistent and the
+  // result was confirmed from authoritative public sources.
+  readonly source: "exact_score" | "moneyline" | "espn" | "verified" | null;
 }
 
-interface GammaMarket {
+// Settlement primitives below (Gamma types, parseJsonArray, isResolvedYes,
+// isDrawLeg, normTeam, nameMatchesKey) are the shared core reused by the
+// knockout reader (fifa8-results.ts). The two readers differ only in how they
+// LOCATE the event (group = slug-direct, knockout = team-name search) and how
+// they ORIENT a/b (group = home-first by slug position, knockout = by name).
+export interface GammaMarket {
   readonly question?: string;
   readonly groupItemTitle?: string;
   readonly outcomes?: string;
@@ -42,14 +53,14 @@ interface GammaMarket {
   readonly endDate?: string;
 }
 
-interface GammaEvent {
+export interface GammaEvent {
   readonly slug?: string;
   readonly title?: string;
   readonly closed?: boolean;
   readonly markets?: readonly GammaMarket[];
 }
 
-function parseJsonArray(raw: string | undefined): string[] {
+export function parseJsonArray(raw: string | undefined): string[] {
   if (!raw) return [];
   try {
     const parsed: unknown = JSON.parse(raw);
@@ -62,7 +73,7 @@ function parseJsonArray(raw: string | undefined): string[] {
 // A binary Yes/No market is "settled YES" when UMA has resolved it and the
 // first (Yes) leg paid out 1. We read outcomePrices ONLY as the settlement bit
 // (1 vs 0); the numeric value is never stored or surfaced.
-function isResolvedYes(m: GammaMarket): boolean {
+export function isResolvedYes(m: GammaMarket): boolean {
   if (m.umaResolutionStatus !== "resolved" || !m.closed) return false;
   const prices = parseJsonArray(m.outcomePrices);
   return prices.length > 0 && Math.round(Number(prices[0])) === 1;
@@ -119,22 +130,72 @@ function resultFromExactScore(slug: string, ev: GammaEvent): MatchResult | null 
   };
 }
 
-// Fallback when the exact-score event hasn't resolved yet: derive only the
-// winner from the 1x2 moneyline. The draw leg's title starts with "Draw"; the
-// other two are single-team win legs. With no score, map the winning leg to
-// home/away by its position among the non-draw legs (home = team a).
+export function isDrawLeg(m: GammaMarket): boolean {
+  return /^draw\b/i.test(m.groupItemTitle ?? "") || /end in a draw/i.test(m.question ?? "");
+}
+
+// Accent-/punctuation-insensitive team key; also drops the connector "and" so
+// "Bosnia and Herzegovina" == "Bosnia-Herzegovina".
+export function normTeam(s: string): string {
+  return s
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/\band\b/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+// True when `name` (raw) matches a pre-normalized team `key`, tolerant of one
+// being a substring of the other (e.g. "korea" ⊂ "korearepublic").
+export function nameMatchesKey(name: string, key: string): boolean {
+  const x = normTeam(name);
+  if (!x || !key) return false;
+  return x === key || (x.length >= 3 && key.includes(x)) || (key.length >= 3 && x.includes(key));
+}
+
+// The draw leg names the fixture as "(Home vs. Away)" (home first, reliably) —
+// e.g. "Draw (England vs. Croatia)". Use it to learn the canonical orientation,
+// because the per-leg ORDER of the win legs is NOT reliably home-first.
+function orientationFromDraw(markets: readonly GammaMarket[]): { home: string; away: string } | null {
+  const draw = markets.find(isDrawLeg);
+  const text = draw?.groupItemTitle ?? draw?.question ?? "";
+  const inner = text.match(/\(([^)]+)\)/)?.[1] ?? text;
+  const vs = inner.match(/^(.+?)\s+vs\.?\s+(.+?)$/i);
+  return vs ? { home: vs[1].trim(), away: vs[2].trim() } : null;
+}
+
+// Match a winning leg's team-name title to home (a) or away (b). Returns null
+// when the name is ambiguous or matches neither.
+function sideForTeam(wonTitle: string, home: string, away: string): Winner | null {
+  const w = normTeam(wonTitle);
+  if (!w) return null;
+  const onHome = nameMatchesKey(home, w);
+  const onAway = nameMatchesKey(away, w);
+  if (onHome && !onAway) return "a";
+  if (onAway && !onHome) return "b";
+  return null;
+}
+
+// Fallback when the exact-score event hasn't resolved with a numeric score:
+// derive the winner from the 1x2 moneyline. The winning leg's title is the
+// winning team's name; map it to home (a) / away (b) BY NAME — Polymarket's leg
+// order is not reliably home-first, so position would flip teams (it did, on
+// England/Croatia and Switzerland/Bosnia). Position is kept only as a last
+// resort when the name cannot be matched.
 function resultFromMoneyline(slug: string, ev: GammaEvent): MatchResult | null {
   const markets = ev.markets ?? [];
   const won = markets.find(isResolvedYes);
   if (!won) return null;
-  const title = won.groupItemTitle ?? won.question ?? "";
-  const isDraw = /^draw\b/i.test(title) || /end in a draw/i.test(won.question ?? "");
-  if (isDraw) {
+  if (isDrawLeg(won)) {
     return { ...PENDING(slug), status: "resolved", winner: "draw", settledAt: settledAtOf(won), source: "moneyline" };
   }
-  const teamLegs = markets.filter((m) => !/^draw\b/i.test(m.groupItemTitle ?? "") && !/end in a draw/i.test(m.question ?? ""));
-  const idx = teamLegs.indexOf(won);
-  const winner: Winner = idx <= 0 ? "a" : "b";
+  const wonTitle = won.groupItemTitle ?? won.question ?? "";
+  const orient = orientationFromDraw(markets);
+  let winner = orient ? sideForTeam(wonTitle, orient.home, orient.away) : null;
+  if (winner == null) {
+    const teamLegs = markets.filter((m) => !isDrawLeg(m));
+    winner = teamLegs.indexOf(won) <= 0 ? "a" : "b";
+  }
   return { ...PENDING(slug), status: "resolved", winner, settledAt: settledAtOf(won), source: "moneyline" };
 }
 

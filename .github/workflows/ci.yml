@@ -1,0 +1,50 @@
+# First real quality gate for the repo (added 2026-07-03, Stage 1 of the
+# complexity-refactor plan). Before this, the only workflow was the world-cup
+# deploy job and the 884-case test suite never ran in CI.
+#
+# NOTE: `pnpm test` includes services/orchestrator/src/runtime/provider-runtime.test.ts,
+# which fails on machines without vendor/repos synced. PR #61 makes those tests
+# hermetic — merge it before/with this workflow so CI is green from day one.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4 # version comes from package.json "packageManager"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build workspace packages
+        run: pnpm -r build
+
+      - name: Typecheck workspace packages
+        run: pnpm -r typecheck
+
+      - name: Test
+        run: pnpm test
+
+      # 14 pre-existing type errors in the live-trading entry scripts are
+      # baselined (see docs/internal/plan/2026-07-03-repo-complexity-refactor-3stage.md).
+      # Non-blocking until Stage 2 clears them; then drop continue-on-error.
+      - name: Typecheck scripts/ (non-blocking, Stage 2 flips this to required)
+        run: pnpm typecheck:scripts
+        continue-on-error: true

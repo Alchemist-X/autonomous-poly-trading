@@ -1,0 +1,169 @@
+/* Screen 02 · Research — layout classes that need media queries or pseudo
+   selectors (inline styles cover everything static). Scoped under
+   .rv-research; tokens/utilities come from globals.css. */
+
+.rv-research {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 34px 60px;
+}
+/* Extra bottom room so the fixed progress dock never covers the feed. */
+.rv-research.has-dock {
+  padding-bottom: 150px;
+}
+
+/* Status strip: question + Now line left, provisional number + axis right. */
+.rv-research .rvp-strip {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 30px;
+  align-items: end;
+  padding: 4px 2px 22px;
+  border-bottom: 1px solid var(--line);
+}
+.rv-research .rvp-quant {
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
+}
+.rv-research .rvp-numblock {
+  text-align: right;
+}
+.rv-research .rvp-num {
+  font-family: var(--fd);
+  font-weight: 600;
+  font-size: 58px;
+  line-height: 0.8;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Feed + sticky analyst rail. */
+.rv-research .rvp-grid {
+  display: grid;
+  grid-template-columns: 1fr 330px;
+  gap: 34px;
+  align-items: start;
+  margin-top: 22px;
+}
+.rv-research .rvp-grid > * {
+  min-width: 0;
+}
+.rv-research .rvp-rail {
+  position: sticky;
+  top: 20px;
+}
+
+/* Keyboard/touch affordance: focused annotatable cards get a subtle ring
+   (the design zeroes the default outline on the reasoning card). */
+.rv-research .anno:focus-visible {
+  outline: 1px dashed var(--line2);
+  outline-offset: 3px;
+}
+
+/* Manus-style docked progress bar (fixed, floats above the feed). */
+.rvp-dock {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 50;
+  width: min(720px, calc(100vw - 24px));
+}
+.rvp-dock-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--line2);
+  border-radius: 13px;
+  padding: 11px 14px;
+  box-shadow: 0 18px 50px -14px var(--shadow);
+}
+.rvp-dock-panel {
+  background: var(--bg2);
+  border: 1px solid var(--line2);
+  border-radius: 13px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 18px 50px -14px var(--shadow);
+  max-height: 46vh;
+  overflow: auto;
+  animation: rv-in 0.25s ease both;
+}
+
+/* Folded-iteration receipt rows + fold chevrons. */
+.rvp-fold {
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+button.rvp-fold:hover {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  border-bottom-color: var(--line2);
+}
+
+/* Dossier attachment card in the verdict digest. */
+.rvd-card {
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.rvd-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg2));
+}
+.rvd-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Fire-and-forget error toast for annotation persistence. */
+.rv-research-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 96px; /* clears the docked progress bar */
+  transform: translateX(-50%);
+  z-index: 60;
+  max-width: min(480px, calc(100vw - 32px));
+  font-family: var(--fm);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--neg);
+  background: var(--bg2);
+  border: 1px solid color-mix(in srgb, var(--neg) 45%, transparent);
+  border-radius: 9px;
+  padding: 9px 14px;
+  box-shadow: 0 18px 50px -18px var(--shadow);
+}
+
+/* Mobile: stack the strip, drop the rail below the feed, shrink the number. */
+@media (max-width: 880px) {
+  .rv-research {
+    padding: 18px 16px 48px;
+  }
+  .rv-research .rvp-strip {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .rv-research .rvp-quant {
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px 22px;
+  }
+  .rv-research .rvp-numblock {
+    text-align: left;
+  }
+  .rv-research .rvp-num {
+    font-size: 44px;
+  }
+  .rv-research .rvp-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .rv-research .rvp-rail {
+    position: static;
+  }
+}

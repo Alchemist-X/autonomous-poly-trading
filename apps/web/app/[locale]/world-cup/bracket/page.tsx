@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { DISCLAIMER_SHORT } from "../../../../lib/legal-copy";
 import { getByFamily, sortedOutcomes } from "../../../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../../../lib/world-cup/team-meta";
 import { isZh, LOCALES, localeOf, t, teamLabel, withLocale, type Locale } from "../../../../lib/world-cup/i18n";
@@ -201,10 +200,6 @@ export default async function BracketPage({ params }: { params: Promise<{ locale
         <PoolList id="reach-qf" title={t(locale, "qfBoard")} note={t(locale, "sumQf")} locale={locale} />
         <PoolList id="reach-sf" title={t(locale, "sfBoard")} note={t(locale, "sumSf")} locale={locale} />
       </div>
-
-      <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {isZh(locale) ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
-      </p>
     </div>
   );
 }

@@ -1,22 +1,21 @@
-import { existsSync, statSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { tradeDecisionSetSchema, type Artifact, type TradeDecisionSet } from "@autopoly/contracts";
+import { isChineseLocale } from "../config.js";
 import type { AgentRuntimeProvider, OrchestratorConfig, SkillLocale } from "../config.js";
 import { buildArtifactRelativePath, writeStoredArtifact } from "../lib/artifacts.js";
+import { OPENCLAW_DEFAULT_COMMAND_TEMPLATE } from "../lib/provider-command-templates.js";
+import { formatRemainingTimeoutMs, readOutputSizeBytes, stripCodeFences } from "../lib/provider-output.js";
 import { combineTextMetrics, formatTextMetrics, measureText, readTextMetrics } from "../lib/text-metrics.js";
 import type { PulseSnapshot } from "../pulse/market-pulse.js";
 import type { AgentRuntime, RuntimeExecutionContext, RuntimeExecutionResult } from "./agent-runtime.js";
 import { resolveProviderSkillSettings, type ResolvedProviderSkillSettings } from "./skill-settings.js";
 
 const RUNTIME_HEARTBEAT_INTERVAL_MS = 5000;
-
-function isChineseLocale(locale: ResolvedProviderSkillSettings["locale"]): boolean {
-  return locale === "zh";
-}
 
 function formatPulseTradeable(value: boolean, locale: ResolvedProviderSkillSettings["locale"]): string {
   if (isChineseLocale(locale)) {
@@ -34,39 +33,6 @@ function formatPulseRiskFlags(flags: string[], locale: ResolvedProviderSkillSett
 
 function truncate(text: string, maxChars: number): string {
   return text.length <= maxChars ? text : `${text.slice(0, maxChars - 24)}\n\n... truncated ...\n`;
-}
-
-function stripCodeFences(text: string): string {
-  const trimmed = text.trim();
-  if (!trimmed.startsWith("```")) {
-    return trimmed;
-  }
-
-  const lines = trimmed.split("\n");
-  if (lines.length < 3) {
-    return trimmed;
-  }
-
-  return lines.slice(1, -1).join("\n").trim();
-}
-
-function readOutputSizeBytes(outputPath: string | undefined): number {
-  if (!outputPath || !existsSync(outputPath)) {
-    return 0;
-  }
-  try {
-    return statSync(outputPath).size;
-  } catch {
-    return 0;
-  }
-}
-
-function formatRemainingTimeoutMs(startedAt: number, timeoutMs: number | null): string {
-  if (timeoutMs == null) {
-    return "disabled";
-  }
-  const remainingMs = Math.max(0, timeoutMs - (Date.now() - startedAt));
-  return `${Math.ceil(remainingMs / 1000)}s`;
 }
 
 function buildRuntimeHeartbeatDetail(input: {
@@ -566,7 +532,7 @@ export function resolveDefaultRuntimeProviderCommand(provider: string): string |
     case "claude-code":
       return 'cat "{{prompt_file}}" | claude --print > "{{output_file}}"';
     case "openclaw":
-      return 'node "{{repo_root}}/scripts/openclaw-agent-command.mjs" --prompt-file "{{prompt_file}}" --output-file "{{output_file}}"';
+      return OPENCLAW_DEFAULT_COMMAND_TEMPLATE;
     default:
       return null;
   }

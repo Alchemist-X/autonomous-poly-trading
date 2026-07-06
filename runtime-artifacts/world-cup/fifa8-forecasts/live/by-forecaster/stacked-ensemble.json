@@ -1,0 +1,427 @@
+{
+  "id": "stacked-ensemble",
+  "name": "Stacked Ensemble",
+  "family": "ensemble",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.4295702013835643,
+          "draw": 0.3688109783766883,
+          "away": 0.2016188202397474
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Brazil is narrowly the side to back here, at about a 50% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean Brazil, so the blended call sides with Brazil with confidence.",
+              "contributionPp": 26.8
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Brazil edges it, but the result is close to a toss-up.",
+              "contributionPp": 17.1
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Brazil win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.4192496881129385,
+          "draw": 0.37401763417574585,
+          "away": 0.20673267771131562
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Germany is narrowly the side to back here, at about a 49% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean Germany, so the blended call sides with Germany with confidence.",
+              "contributionPp": 24.8
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Germany edges it, but the result is close to a toss-up.",
+              "contributionPp": 15.5
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Germany win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.43716096372031577,
+          "draw": 0.34796433575382535,
+          "away": 0.2148747005258589
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Netherlands is narrowly the side to back here, at about a 49% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "86% of the underlying views lean Netherlands, so the blended call sides with Netherlands with confidence.",
+              "contributionPp": 25.1
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Netherlands edges it, but the result is close to a toss-up.",
+              "contributionPp": 16
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Netherlands win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.42754778088033296,
+          "draw": 0.3267351306766598,
+          "away": 0.24571708844300727
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Côte d'Ivoire is narrowly the side to back here, at about a 46% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "71% of the underlying views lean Norway, so the blended call sides with Côte d'Ivoire with confidence.",
+              "contributionPp": 19.5
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Côte d'Ivoire edges it, but the result is close to a toss-up.",
+              "contributionPp": 12.6
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Côte d'Ivoire win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.4885041569817749,
+          "draw": 0.30185996138359894,
+          "away": 0.20963588163462615
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, France is narrowly the side to back here, at about a 52% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean France, so the blended call sides with France with confidence.",
+              "contributionPp": 29.7
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — France edges it, but the result is close to a toss-up.",
+              "contributionPp": 18.6
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(France win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.4100567582022449,
+          "draw": 0.37938766946445956,
+          "away": 0.21055557233329555
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Mexico is narrowly the side to back here, at about a 48% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "The underlying views are split — about 57% lean Ecuador — so the blended call for Mexico is held back.",
+              "contributionPp": 23.6
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Mexico edges it, but the result is close to a toss-up.",
+              "contributionPp": 15.1
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Mexico win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.4105354903743533,
+          "draw": 0.38849424836510305,
+          "away": 0.20097026126054365
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Belgium is narrowly the side to back here, at about a 49% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean Belgium, so the blended call sides with Belgium with confidence.",
+              "contributionPp": 25.1
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Belgium edges it, but the result is close to a toss-up.",
+              "contributionPp": 15.8
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Belgium win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.4582930079232805,
+          "draw": 0.32335024808623547,
+          "away": 0.21835674399048405
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, England is narrowly the side to back here, at about a 49% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean England, so the blended call sides with England with confidence.",
+              "contributionPp": 25.6
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — England edges it, but the result is close to a toss-up.",
+              "contributionPp": 15.5
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(England win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.4290460540601481,
+          "draw": 0.36126072369131457,
+          "away": 0.20969322224853734
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, United States is narrowly the side to back here, at about a 49% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean United States, so the blended call sides with United States with confidence.",
+              "contributionPp": 25.2
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — United States edges it, but the result is close to a toss-up.",
+              "contributionPp": 15.9
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(United States win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.4366634493634599,
+          "draw": 0.35024882461972734,
+          "away": 0.21308772601681283
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Switzerland is narrowly the side to back here, at about a 49% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean Switzerland, so the blended call sides with Switzerland with confidence.",
+              "contributionPp": 25.1
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Switzerland edges it, but the result is close to a toss-up.",
+              "contributionPp": 15.7
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Switzerland win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.4614471159562924,
+          "draw": 0.31661259114207496,
+          "away": 0.2219402929016326
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Spain is narrowly the side to back here, at about a 48% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "86% of the underlying views lean Spain, so the blended call sides with Spain with confidence.",
+              "contributionPp": 25.2
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Spain edges it, but the result is close to a toss-up.",
+              "contributionPp": 15.2
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Spain win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.4104694858905458,
+          "draw": 0.3841337364266529,
+          "away": 0.2053967776828014
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Portugal is narrowly the side to back here, at about a 48% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean Portugal, so the blended call sides with Portugal with confidence.",
+              "contributionPp": 24.1
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Portugal edges it, but the result is close to a toss-up.",
+              "contributionPp": 15
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Portugal win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.4653970505813047,
+          "draw": 0.32695105762879617,
+          "away": 0.2076518917898991
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Argentina is narrowly the side to back here, at about a 50% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean Argentina, so the blended call sides with Argentina with confidence.",
+              "contributionPp": 27.9
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Argentina edges it, but the result is close to a toss-up.",
+              "contributionPp": 17
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Argentina win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0.37264218711775954,
+          "draw": 0.40618435735942404,
+          "away": 0.22117345552281634
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Australia is narrowly the side to back here, at about a 45% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "The underlying views are split — about 57% lean Egypt — so the blended call for Australia is held back.",
+              "contributionPp": 18.3
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Australia edges it, but the result is close to a toss-up.",
+              "contributionPp": 11.8
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Australia win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.4602170327374427,
+          "draw": 0.3286582099445031,
+          "away": 0.21112475731805425
+        },
+        "rationale": {
+          "headline": "Pulling every angle together, Colombia is narrowly the side to back here, at about a 50% chance to win.",
+          "drivers": [
+            {
+              "label": "Model agreement",
+              "detail": "100% of the underlying views lean Colombia, so the blended call sides with Colombia with confidence.",
+              "contributionPp": 27
+            },
+            {
+              "label": "How settled",
+              "detail": "No single outcome dominates — Colombia edges it, but the result is close to a toss-up.",
+              "contributionPp": 16.5
+            }
+          ],
+          "methodNote": "Market-blind: ridge-logistic stack over the 7 base models. Each base view contributes its P(Colombia win) and P(draw) as features; three one-vs-rest logistic heads (L2=1) trained on 72 prior matches produce class scores that are clamped and renormalised to a 1X2 triple. Falls back to an equal-weight logarithmic opinion pool of the base views when the sample is thin or an outcome is unseen. No betting odds or market-implied probabilities were used at any stage."
+        }
+      }
+    }
+  ]
+}

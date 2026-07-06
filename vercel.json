@@ -43,7 +43,8 @@
     },
     {
       "src": "^/(?!apps/web/)(.+)$",
-      "dest": "/apps/web/$1"
+      "dest": "/apps/web/$1",
+      "check": true
     }
   ]
 }

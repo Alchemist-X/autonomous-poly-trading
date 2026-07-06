@@ -1,0 +1,26 @@
+{
+  "version": "2026-07-05",
+  "note": "Operator-maintained US-equity universe for Raven Delta. The analyzer maps news impact onto these names first; out-of-universe tickers are allowed in output but flagged inUniverse=false. Aliases include Chinese names so CJK headlines produce direct hits.",
+  "stocks": [
+    { "ticker": "NVDA", "company": "NVIDIA", "companyZh": "英伟达", "sector": "Semiconductors", "tags": ["semiconductors", "ai-infrastructure", "data-center"], "aliases": ["nvidia", "gpu", "blackwell", "cuda", "英伟达", "輝達"], "beta": 1.35 },
+    { "ticker": "AMD", "company": "Advanced Micro Devices", "companyZh": "超威半导体", "sector": "Semiconductors", "tags": ["semiconductors", "ai-infrastructure", "data-center"], "aliases": ["amd", "advanced micro devices", "mi300", "mi350", "超威"], "beta": 1.25 },
+    { "ticker": "TSM", "company": "Taiwan Semiconductor", "companyZh": "台积电", "sector": "Semiconductors", "tags": ["semiconductors", "foundry", "hardware-supply"], "aliases": ["taiwan semiconductor", "tsmc", "foundry", "台积电", "台積電"], "beta": 1.05 },
+    { "ticker": "ASML", "company": "ASML", "companyZh": "阿斯麦", "sector": "Semiconductor equipment", "tags": ["semiconductors", "equipment", "hardware-supply"], "aliases": ["asml", "euv", "lithography", "阿斯麦", "光刻机"], "beta": 1.08 },
+    { "ticker": "MSFT", "company": "Microsoft", "companyZh": "微软", "sector": "Cloud software", "tags": ["cloud", "ai-infrastructure", "software", "mega-cap-tech"], "aliases": ["microsoft", "azure", "openai", "copilot", "微软", "微軟"], "beta": 0.95 },
+    { "ticker": "ORCL", "company": "Oracle", "companyZh": "甲骨文", "sector": "Cloud software", "tags": ["cloud", "ai-infrastructure", "software"], "aliases": ["oracle", "oci", "甲骨文"], "beta": 1.05 },
+    { "ticker": "AMZN", "company": "Amazon", "companyZh": "亚马逊", "sector": "Cloud and retail", "tags": ["cloud", "consumer", "mega-cap-tech"], "aliases": ["amazon", "aws", "亚马逊", "亞馬遜"], "beta": 1.0 },
+    { "ticker": "GOOGL", "company": "Alphabet", "companyZh": "谷歌", "sector": "Internet platforms", "tags": ["cloud", "platforms", "ads", "mega-cap-tech"], "aliases": ["alphabet", "google", "gemini", "youtube", "谷歌", "字母表"], "beta": 0.98 },
+    { "ticker": "META", "company": "Meta Platforms", "companyZh": "Meta", "sector": "Internet platforms", "tags": ["platforms", "ads", "ai-infrastructure", "mega-cap-tech"], "aliases": ["meta", "facebook", "instagram", "threads", "脸书", "臉書"], "beta": 1.12 },
+    { "ticker": "AAPL", "company": "Apple", "companyZh": "苹果", "sector": "Consumer hardware", "tags": ["consumer-hardware", "mega-cap-tech", "china-supply"], "aliases": ["apple", "iphone", "app store", "苹果", "蘋果"], "beta": 0.9 },
+    { "ticker": "TSLA", "company": "Tesla", "companyZh": "特斯拉", "sector": "Electric vehicles", "tags": ["ev", "consumer", "china-supply"], "aliases": ["tesla", "ev deliveries", "model y", "robotaxi", "特斯拉"], "beta": 1.55 },
+    { "ticker": "JPM", "company": "JPMorgan Chase", "companyZh": "摩根大通", "sector": "Banks", "tags": ["banks", "rates", "credit"], "aliases": ["jpmorgan", "jamie dimon", "摩根大通"], "beta": 0.85 },
+    { "ticker": "BAC", "company": "Bank of America", "companyZh": "美国银行", "sector": "Banks", "tags": ["banks", "rates", "credit"], "aliases": ["bank of america", "美国银行", "美國銀行"], "beta": 0.9 },
+    { "ticker": "XOM", "company": "Exxon Mobil", "companyZh": "埃克森美孚", "sector": "Energy", "tags": ["energy", "oil"], "aliases": ["exxon", "埃克森美孚"], "beta": 0.75 },
+    { "ticker": "CVX", "company": "Chevron", "companyZh": "雪佛龙", "sector": "Energy", "tags": ["energy", "oil"], "aliases": ["chevron", "雪佛龙", "雪佛龍"], "beta": 0.75 },
+    { "ticker": "LLY", "company": "Eli Lilly", "companyZh": "礼来", "sector": "Healthcare", "tags": ["healthcare", "pharma", "glp-1"], "aliases": ["eli lilly", "lilly", "zepbound", "mounjaro", "glp-1", "礼来", "禮來"], "beta": 0.78 },
+    { "ticker": "PFE", "company": "Pfizer", "companyZh": "辉瑞", "sector": "Healthcare", "tags": ["healthcare", "pharma"], "aliases": ["pfizer", "vaccine", "辉瑞", "輝瑞"], "beta": 0.68 },
+    { "ticker": "NKE", "company": "Nike", "companyZh": "耐克", "sector": "Consumer discretionary", "tags": ["consumer", "china-supply"], "aliases": ["nike", "sneaker", "footwear", "耐克", "耐吉"], "beta": 1.0 },
+    { "ticker": "CRWD", "company": "CrowdStrike", "companyZh": "CrowdStrike", "sector": "Cybersecurity", "tags": ["cybersecurity", "software"], "aliases": ["crowdstrike", "endpoint security"], "beta": 1.25 },
+    { "ticker": "PANW", "company": "Palo Alto Networks", "companyZh": "派拓网络", "sector": "Cybersecurity", "tags": ["cybersecurity", "software"], "aliases": ["palo alto networks", "firewall", "派拓"], "beta": 1.12 }
+  ]
+}

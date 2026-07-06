@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { DISCLAIMER_SHORT } from "../../../../lib/legal-copy";
 import { bestPickKey, getByFamily, getResult, sortedOutcomes, type Forecast } from "../../../../lib/world-cup/forecast-store";
 import { resolveTeam } from "../../../../lib/world-cup/team-meta";
 import { isZh, LOCALES, localeOf, t, teamLabel, withLocale } from "../../../../lib/world-cup/i18n";
@@ -41,10 +40,10 @@ export default async function GroupsPage({ params }: { params: Promise<{ locale:
   const accuracyPct = settled > 0 ? Math.round((hits / settled) * 100) : 0;
   const accuracyBadge =
     settled > 0 ? (
-      <div className={styles.accuracyBar}>
+      <Link href={withLocale("/world-cup/performance", locale)} className={styles.accuracyBar}>
         <span aria-hidden>✅</span>
-        {t(locale, "accuracyLabel")} · <strong>{hits}/{settled}</strong> · {accuracyPct}%
-      </div>
+        {t(locale, "accuracyLabel")} · <strong>{hits}/{settled}</strong> · {accuracyPct}% →
+      </Link>
     ) : null;
 
   return (
@@ -83,10 +82,6 @@ export default async function GroupsPage({ params }: { params: Promise<{ locale:
           );
         })}
       </div>
-
-      <p className={styles.disclaimer} style={{ marginTop: 28 }}>
-        {isZh(locale) ? DISCLAIMER_SHORT.zh : DISCLAIMER_SHORT.en}
-      </p>
     </div>
   );
 }

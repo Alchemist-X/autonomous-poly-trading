@@ -3,8 +3,10 @@ import type { RuntimeExecutionContext } from "./agent-runtime.js";
 import type { PulseEntryPlan } from "./decision-metadata.js";
 import {
   applyBatchCap,
+  assessPulseReportParseability,
   buildPulseEntryPlans,
   calculateMonthlyReturn,
+  hasPulseNoTradeMarker,
   rankByMonthlyReturn
 } from "./pulse-entry-planner.js";
 
@@ -757,5 +759,214 @@ describe("buildPulseEntryPlans fee integration", () => {
     expect(plans[0]!.marketSlug).toBe("geo-market");
     expect(plans[1]!.marketSlug).toBe("crypto-market");
     expect(plans[0]!.netEdge).toBeGreaterThan(plans[1]!.netEdge);
+  });
+});
+
+describe("assessPulseReportParseability", () => {
+  it("counts an entry-ready section when direction and matching probability row exist", () => {
+    const markdown = [
+      "# Pulse Report",
+      "",
+      "## 候选池与筛选思路",
+      "本轮从 1,000 个事件中筛出 12 个候选。",
+      "",
+      "## Demo market question",
+      "",
+      "| 字段 | 值 |",
+      "|------|-----|",
+      "| **链接** | https://example.com/demo-market |",
+      "| **方向** | 买入 Yes |",
+      "| **置信度** | 高 |",
+      "",
+      "| 结果 | 市场定价 | AI 估算 |",
+      "|------|---------|---------|",
+      "| Yes | 42.0% | 55.0% |",
+      "| No | 58.0% | 45.0% |",
+      "",
+      "### 推理逻辑",
+      "Edge comes from a verified filing."
+    ].join("\n");
+
+    const result = assessPulseReportParseability(markdown);
+    expect(result.sectionCount).toBe(2);
+    expect(result.probabilityRowSectionCount).toBe(1);
+    expect(result.entryReadySectionCount).toBe(1);
+    expect(result.hasNoTradeMarker).toBe(false);
+  });
+
+  it("reports zero entry-ready sections for prose-only paraphrased probabilities", () => {
+    const markdown = [
+      "# Pulse Report",
+      "",
+      "## Demo market question",
+      "我们估计 Yes 的概率大约在 55% 左右，而市场定价约 42%。",
+      "方向上更看好 Yes 一侧。建议仓位约 3%。"
+    ].join("\n");
+
+    const result = assessPulseReportParseability(markdown);
+    expect(result.sectionCount).toBe(1);
+    expect(result.probabilityRowSectionCount).toBe(0);
+    expect(result.entryReadySectionCount).toBe(0);
+    expect(result.hasNoTradeMarker).toBe(false);
+  });
+
+  it("detects the explicit NO-TRADE marker", () => {
+    const markdown = [
+      "NO-TRADE",
+      "",
+      "# Pulse Report",
+      "",
+      "## 候选池与筛选思路",
+      "本轮 12 个候选全部未达到 edge 标准：最高毛 edge 4%，低于默认 5% 分档下限。"
+    ].join("\n");
+
+    const result = assessPulseReportParseability(markdown);
+    expect(result.entryReadySectionCount).toBe(0);
+    expect(result.hasNoTradeMarker).toBe(true);
+  });
+
+  it("counts probability rows without direction (position-review shape) separately", () => {
+    const markdown = [
+      "## Held market question",
+      "",
+      "| 结果 | 市场定价 | AI 估算 |",
+      "|------|---------|---------|",
+      "| Yes | 62.0% | 60.0% |",
+      "| No | 38.0% | 40.0% |",
+      "",
+      "持仓动作建议：hold"
+    ].join("\n");
+
+    const result = assessPulseReportParseability(markdown);
+    expect(result.probabilityRowSectionCount).toBe(1);
+    expect(result.entryReadySectionCount).toBe(0);
+  });
+
+  it("does not count a direction whose probability row is missing", () => {
+    const markdown = [
+      "## Demo market question",
+      "",
+      "| **方向** | 买入 No |",
+      "",
+      "| 结果 | 市场定价 | AI 估算 |",
+      "|------|---------|---------|",
+      "| Yes | 42.0% | 55.0% |"
+    ].join("\n");
+
+    const result = assessPulseReportParseability(markdown);
+    expect(result.probabilityRowSectionCount).toBe(1);
+    expect(result.entryReadySectionCount).toBe(0);
+  });
+});
+
+describe("extractProbabilities tolerance (via assessPulseReportParseability)", () => {
+  it("parses bold-emphasized probability rows like real archived reports", () => {
+    const markdown = [
+      "## US 确认外星人存在 by Sep 30",
+      "",
+      "| 方向 | 买入 No @ 限价 0.945（或更优） |",
+      "",
+      "| 结果 | 市场定价 | AI 估算 | Edge |",
+      "|------|---------|---------|------|",
+      "| Yes | 5.5% | 2.0% | -3.5% |",
+      "| **No** | **94.5%** | **98.0%** | **+3.5%（买入方向）** |"
+    ].join("\n");
+
+    const result = assessPulseReportParseability(markdown);
+    expect(result.probabilityRowSectionCount).toBe(1);
+    expect(result.entryReadySectionCount).toBe(1);
+  });
+});
+
+describe("NO-TRADE marker hardening", () => {
+  const wellFormedSection = [
+    "## Demo market question",
+    "",
+    "| **链接** | https://example.com/demo-market |",
+    "| **方向** | 买入 Yes |",
+    "",
+    "| 结果 | 市场定价 | AI 估算 |",
+    "|------|---------|---------|",
+    "| Yes | 42.0% | 55.0% |",
+    "| No | 58.0% | 45.0% |"
+  ].join("\n");
+
+  it("ignores a prose mention of NO-TRADE (anchored to its own line)", () => {
+    const markdown = ["# Pulse", "", "本轮远未达到 NO-TRADE 标准，继续给出推荐。", "", wellFormedSection].join("\n");
+    expect(hasPulseNoTradeMarker(markdown)).toBe(false);
+    expect(assessPulseReportParseability(markdown).hasNoTradeMarker).toBe(false);
+  });
+
+  it("accepts the marker on its own line, optionally bolded", () => {
+    expect(hasPulseNoTradeMarker("NO-TRADE\n\n# Pulse")).toBe(true);
+    expect(hasPulseNoTradeMarker("**NO-TRADE**\n\n# Pulse")).toBe(true);
+  });
+
+  it("suppresses entry plans when the report declares NO-TRADE despite a formatted section", () => {
+    const markdown = ["NO-TRADE", "", "本轮无值得交易的市场。", "", wellFormedSection].join("\n");
+    const plans = buildPulseEntryPlans({
+      context: createContext(markdown),
+      positionStopLossPct: 0.3,
+      nowMs: FIXED_NOW_MS
+    });
+    expect(plans).toHaveLength(0);
+  });
+});
+
+describe("assessPulseReportParseability candidate binding", () => {
+  const candidates = [
+    { question: "Will the Fed cut rates at the September 2026 FOMC meeting?", url: "https://example.com/fed", endDate: "2026-09-17T18:00:00Z" },
+    { question: "Will the Fed cut rates at the October 2026 FOMC meeting?", url: "https://example.com/fed", endDate: "2026-10-29T18:00:00Z" }
+  ];
+
+  function sectionWith(title: string) {
+    return [
+      `## ${title}`,
+      "",
+      "| **方向** | 买入 Yes |",
+      "",
+      "| 结果 | 市场定价 | AI 估算 |",
+      "|------|---------|---------|",
+      "| Yes | 42.0% | 55.0% |",
+      "| No | 58.0% | 45.0% |"
+    ].join("\n");
+  }
+
+  it("binds an exact title match even against a near-identical sibling strike", () => {
+    // September vs October siblings overlap on every other token (0.889);
+    // an exact match must win instead of being killed by the 0.15 margin rule.
+    const markdown = sectionWith("Will the Fed cut rates at the September 2026 FOMC meeting?");
+    expect(assessPulseReportParseability(markdown, candidates).entryReadySectionCount).toBe(1);
+  });
+
+  it("rejects a paraphrased title that matches no candidate (shared event URL)", () => {
+    // Chinese paraphrase: zero token overlap; both candidates share the URL so
+    // the URL fallback also requires a title match and fails.
+    const markdown = [
+      "## 美联储九月会降息吗",
+      "",
+      "| **链接** | https://example.com/fed |",
+      "| **方向** | 买入 Yes |",
+      "",
+      "| 结果 | 市场定价 | AI 估算 |",
+      "|------|---------|---------|",
+      "| Yes | 42.0% | 55.0% |"
+    ].join("\n");
+    const result = assessPulseReportParseability(markdown, candidates);
+    expect(result.probabilityRowSectionCount).toBe(1);
+    expect(result.entryReadySectionCount).toBe(0);
+  });
+
+  it("rejects a recommended side with no positive edge (Kelly would drop it)", () => {
+    const markdown = [
+      "## Will the Fed cut rates at the September 2026 FOMC meeting?",
+      "",
+      "| **方向** | 买入 Yes |",
+      "",
+      "| 结果 | 市场定价 | AI 估算 |",
+      "|------|---------|---------|",
+      "| Yes | 42.0% | 42.0% |"
+    ].join("\n");
+    expect(assessPulseReportParseability(markdown, candidates).entryReadySectionCount).toBe(0);
   });
 });

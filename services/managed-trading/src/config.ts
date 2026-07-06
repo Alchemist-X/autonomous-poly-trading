@@ -5,8 +5,16 @@
 // on a real-money path. Mirrors the validation pattern used in
 // `services/executor/src/config.ts` (kept separate to avoid cross-service
 // coupling — if the schema diverges later, only one side needs to move).
+//
+// Env loading goes through the shared @autopoly/contracts/env loader (same as
+// executor/orchestrator) so ENV_FILE=.env.<wallet> switches THIS service too.
+// The previous bare `import "dotenv/config"` ignored ENV_FILE — on a shared
+// machine that meant executor/orchestrator switched wallets while
+// managed-trading silently kept reading .env (multi-state-source risk).
 
-import "dotenv/config";
+import { loadEnvFile } from "@autopoly/contracts/env";
+
+loadEnvFile();
 
 export type ManagedTradingMode = "paper" | "live";
 

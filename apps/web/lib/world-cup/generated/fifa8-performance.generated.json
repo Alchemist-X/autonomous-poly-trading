@@ -1,0 +1,153 @@
+{
+ "generatedAt": "2026-06-29T16:20:34.583Z",
+ "headline": "multicalibrated",
+ "settled": 0,
+ "forecasters": [
+  {
+   "id": "dixon-coles-bayes",
+   "name": "Dixon-Coles (Bayesian-shrunk)",
+   "family": "statistical",
+   "agg": {
+    "settled": 0,
+    "bestPickHit": 0,
+    "bestPickPct": 0,
+    "roiPct": 0,
+    "bets": 0,
+    "wins": 0,
+    "skips": 0,
+    "bssPct": 0,
+    "ecePct": 0
+   }
+  },
+  {
+   "id": "xg-elo",
+   "name": "xG-corrected Elo",
+   "family": "elo",
+   "agg": {
+    "settled": 0,
+    "bestPickHit": 0,
+    "bestPickPct": 0,
+    "roiPct": 0,
+    "bets": 0,
+    "wins": 0,
+    "skips": 0,
+    "bssPct": 0,
+    "ecePct": 0
+   }
+  },
+  {
+   "id": "prodegy",
+   "name": "PRODEGY split attack/defence Elo",
+   "family": "elo",
+   "agg": {
+    "settled": 0,
+    "bestPickHit": 0,
+    "bestPickPct": 0,
+    "roiPct": 0,
+    "bets": 0,
+    "wins": 0,
+    "skips": 0,
+    "bssPct": 0,
+    "ecePct": 0
+   }
+  },
+  {
+   "id": "fatigue-elo",
+   "name": "Physical-decay dynamic-K Elo",
+   "family": "elo",
+   "agg": {
+    "settled": 0,
+    "bestPickHit": 0,
+    "bestPickPct": 0,
+    "roiPct": 0,
+    "bets": 0,
+    "wins": 0,
+    "skips": 0,
+    "bssPct": 0,
+    "ecePct": 0
+   }
+  },
+  {
+   "id": "tactical-melo",
+   "name": "Tactical style-clash mElo",
+   "family": "elo",
+   "agg": {
+    "settled": 0,
+    "bestPickHit": 0,
+    "bestPickPct": 0,
+    "roiPct": 0,
+    "bets": 0,
+    "wins": 0,
+    "skips": 0,
+    "bssPct": 0,
+    "ecePct": 0
+   }
+  },
+  {
+   "id": "linebreak-gbm",
+   "name": "Line-breaks & offers efficiency (gradient-boosted)",
+   "family": "ml",
+   "agg": {
+    "settled": 0,
+    "bestPickHit": 0,
+    "bestPickPct": 0,
+    "roiPct": 0,
+    "bets": 0,
+    "wins": 0,
+    "skips": 0,
+    "bssPct": 0,
+    "ecePct": 0
+   }
+  },
+  {
+   "id": "passnet-rf",
+   "name": "Passing-network structure (random forest)",
+   "family": "ml",
+   "agg": {
+    "settled": 0,
+    "bestPickHit": 0,
+    "bestPickPct": 0,
+    "roiPct": 0,
+    "bets": 0,
+    "wins": 0,
+    "skips": 0,
+    "bssPct": 0,
+    "ecePct": 0
+   }
+  },
+  {
+   "id": "stacked-ensemble",
+   "name": "Stacked Ensemble",
+   "family": "ensemble",
+   "agg": {
+    "settled": 0,
+    "bestPickHit": 0,
+    "bestPickPct": 0,
+    "roiPct": 0,
+    "bets": 0,
+    "wins": 0,
+    "skips": 0,
+    "bssPct": 0,
+    "ecePct": 0
+   }
+  },
+  {
+   "id": "multicalibrated",
+   "name": "Multi-calibrated 8-in-1",
+   "family": "ensemble",
+   "agg": {
+    "settled": 0,
+    "bestPickHit": 0,
+    "bestPickPct": 0,
+    "roiPct": 0,
+    "bets": 0,
+    "wins": 0,
+    "skips": 0,
+    "bssPct": 0,
+    "ecePct": 0
+   }
+  }
+ ],
+ "matches": [],
+ "bins": []
+}

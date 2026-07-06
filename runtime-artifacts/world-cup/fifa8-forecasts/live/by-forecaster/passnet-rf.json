@@ -1,0 +1,502 @@
+{
+  "id": "passnet-rf",
+  "name": "Passing-network structure (random forest)",
+  "family": "ml",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.6936388130828406,
+          "draw": 0.24655720587036586,
+          "away": 0.05980398104679352
+        },
+        "rationale": {
+          "headline": "Brazil is the clear favourite (81%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Brazil spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Brazil keeps the ball more (49% vs 48%), dictating the tempo of build-up.",
+              "contributionPp": 0.2400000000000002
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Brazil has created the better chances on average (1.94 vs 1.39 expected goals a game).",
+              "contributionPp": 9.836984867728269
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.59669177331841,
+          "draw": 0.3563016686613917,
+          "away": 0.04700655802019839
+        },
+        "rationale": {
+          "headline": "Germany is the clear favourite (70%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Germany spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Germany keeps the ball more (51% vs 40%), dictating the tempo of build-up.",
+              "contributionPp": 1.7099999999999997
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Germany has created the better chances on average (1.99 vs 1.08 expected goals a game).",
+              "contributionPp": 16.388049605136835
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.5693420051646986,
+          "draw": 0.3063571833715761,
+          "away": 0.12430081146372522
+        },
+        "rationale": {
+          "headline": "Netherlands is the clear favourite (64%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Netherlands spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Netherlands keeps the ball more (53% vs 52%), dictating the tempo of build-up.",
+              "contributionPp": 0.18999999999999878
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Netherlands has created the better chances on average (1.68 vs 1.45 expected goals a game).",
+              "contributionPp": 4.172567491665298
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.5010105034483616,
+          "draw": 0.13297717454652058,
+          "away": 0.3660123220051178
+        },
+        "rationale": {
+          "headline": "Côte d'Ivoire is the slight edge (54%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Côte d'Ivoire spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Côte d'Ivoire keeps the ball more (48% vs 48%), dictating the tempo of build-up.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Norway has created the better chances on average (1.26 vs 1.71 expected goals a game).",
+              "contributionPp": -8.063051866481366
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.8217064471021196,
+          "draw": 0.12440329146501591,
+          "away": 0.053890261432864565
+        },
+        "rationale": {
+          "headline": "France is the clear favourite (87%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "France spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "France keeps the ball more (50% vs 48%), dictating the tempo of build-up.",
+              "contributionPp": 0.35750000000000204
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "France has created the better chances on average (1.92 vs 1.27 expected goals a game).",
+              "contributionPp": 11.75030580487857
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.3299248972259297,
+          "draw": 0.28022495790131063,
+          "away": 0.38985014487275965
+        },
+        "rationale": {
+          "headline": "Ecuador is the slight edge (46%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Mexico builds through more players, but Ecuador's other strengths outweigh it here. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Ecuador keeps the ball more (49% vs 51%), dictating the tempo of build-up.",
+              "contributionPp": -0.2625
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Ecuador has created the better chances on average (1.51 vs 1.76 expected goals a game).",
+              "contributionPp": -4.404140218104885
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.5798353938764118,
+          "draw": 0.31312171797858723,
+          "away": 0.10704288814500094
+        },
+        "rationale": {
+          "headline": "Belgium is the clear favourite (69%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Belgium spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Belgium keeps the ball more (51% vs 51%), dictating the tempo of build-up.",
+              "contributionPp": 0.007500000000000639
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Belgium has created the better chances on average (1.83 vs 1.60 expected goals a game).",
+              "contributionPp": 4.041862873609318
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.6670801288838211,
+          "draw": 0.2814986959587168,
+          "away": 0.05142117515746215
+        },
+        "rationale": {
+          "headline": "England is the clear favourite (71%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "England spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "England keeps the ball more (55% vs 44%), dictating the tempo of build-up.",
+              "contributionPp": 1.6974999999999993
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "England has created the better chances on average (2.07 vs 1.09 expected goals a game).",
+              "contributionPp": 17.53951910885573
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.5046651890193434,
+          "draw": 0.21729926519530884,
+          "away": 0.27803554578534784
+        },
+        "rationale": {
+          "headline": "United States is the clear favourite (58%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "United States spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "United States keeps the ball more (52% vs 44%), dictating the tempo of build-up.",
+              "contributionPp": 1.2699999999999991
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "United States has created the better chances on average (1.44 vs 0.88 expected goals a game).",
+              "contributionPp": 10.171626848942182
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.7141180403848659,
+          "draw": 0.24211294688518425,
+          "away": 0.04376901272994974
+        },
+        "rationale": {
+          "headline": "Switzerland is the clear favourite (80%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Switzerland spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Algeria keeps the ball more (53% vs 54%), dictating the tempo of build-up.",
+              "contributionPp": -0.20999999999999872
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Switzerland has created the better chances on average (1.84 vs 1.34 expected goals a game).",
+              "contributionPp": 8.92950630759727
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.37819553620371993,
+          "draw": 0.5823606583016137,
+          "away": 0.03944380549466639
+        },
+        "rationale": {
+          "headline": "Spain and Austria look evenly matched on how they build play, with a 40% lean to Spain.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Spain spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Spain keeps the ball more (56% vs 47%), dictating the tempo of build-up.",
+              "contributionPp": 1.3825000000000003
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Spain has created the better chances on average (2.31 vs 1.37 expected goals a game).",
+              "contributionPp": 16.94724894677093
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.5787345211417277,
+          "draw": 0.34808495043648296,
+          "away": 0.0731805284217894
+        },
+        "rationale": {
+          "headline": "Portugal is the clear favourite (68%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Portugal spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Portugal keeps the ball more (53% vs 49%), dictating the tempo of build-up.",
+              "contributionPp": 0.48999999999999877
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Portugal has created the better chances on average (1.61 vs 1.30 expected goals a game).",
+              "contributionPp": 5.515003770679871
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.517502915480484,
+          "draw": 0.362605797555724,
+          "away": 0.11989128696379193
+        },
+        "rationale": {
+          "headline": "Argentina is the clear favourite (56%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Argentina spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Argentina keeps the ball more (52% vs 43%), dictating the tempo of build-up.",
+              "contributionPp": 1.3399999999999983
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Argentina has created the better chances on average (2.22 vs 0.89 expected goals a game).",
+              "contributionPp": 23.967541132660266
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0.15165908631604197,
+          "draw": 0.3691642809228696,
+          "away": 0.4791766327610883
+        },
+        "rationale": {
+          "headline": "Egypt is the clear favourite (58%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Australia builds through more players, but Egypt's other strengths outweigh it here. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Egypt keeps the ball more (42% vs 49%), dictating the tempo of build-up.",
+              "contributionPp": -0.9650000000000005
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Egypt has created the better chances on average (1.10 vs 1.22 expected goals a game).",
+              "contributionPp": -2.2102516135269035
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.5836388076229725,
+          "draw": 0.36678333220015186,
+          "away": 0.04957786017687552
+        },
+        "rationale": {
+          "headline": "Colombia is the clear favourite (63%) — its passing play is the harder one to break down.",
+          "drivers": [
+            {
+              "label": "Passing structure",
+              "detail": "Colombia spreads passes across more players and fewer go through one pivot, so it keeps more routes forward when pressed. (Passing-network detail was unavailable, so this leans on possession and pressing instead.)",
+              "contributionPp": 0
+            },
+            {
+              "label": "Ball control",
+              "detail": "Colombia keeps the ball more (53% vs 41%), dictating the tempo of build-up.",
+              "contributionPp": 1.7100000000000009
+            },
+            {
+              "label": "Scoring threat",
+              "detail": "Colombia has created the better chances on average (1.72 vs 0.83 expected goals a game).",
+              "contributionPp": 15.989162948088083
+            }
+          ],
+          "methodNote": "Market-blind: three one-vs-rest random forests (60 CART trees each, depth 5, 70% feature subsampling) over the A-minus-B difference of passing-network graph features (density, centralization, top-5 edge share) and style features (possession, high-press share, expected-goal rate); forest scores are clamped to [0,1] and normalised to a 1X2 distribution. Training rows are leakage-safe (each rebuilt from matches strictly before its date) and fall back to a logistic model on structure and attack gaps under eight rows. No betting or market data was used."
+        }
+      }
+    }
+  ]
+}

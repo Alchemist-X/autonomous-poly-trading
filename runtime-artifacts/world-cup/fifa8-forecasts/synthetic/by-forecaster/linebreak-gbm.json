@@ -1,0 +1,610 @@
+{
+  "id": "linebreak-gbm",
+  "name": "Line-breaks & offers efficiency (gradient-boosted)",
+  "family": "ml",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-t21-t14-2026-07-04",
+      "teamA": "T21",
+      "teamB": "T14",
+      "prediction": {
+        "probs": {
+          "home": 0.954319520141962,
+          "draw": 0.034931045206222755,
+          "away": 0.010749434651815265
+        },
+        "rationale": {
+          "headline": "T21 are clear favourites to beat T14, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T21 completed line-breaking passes more reliably, slicing through T14's lines more often.",
+              "contributionPp": 27.2
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T21 turned more of its forward runs into real scoring looks than T14 did.",
+              "contributionPp": 14.7
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T21 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 27.1
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T21 held possession noticeably more, keeping T14 chasing the game.",
+              "contributionPp": 3.4
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t00-t07-2026-07-05",
+      "teamA": "T00",
+      "teamB": "T07",
+      "prediction": {
+        "probs": {
+          "home": 0.8355576666098102,
+          "draw": 0.044746195354486984,
+          "away": 0.11969613803570277
+        },
+        "rationale": {
+          "headline": "T00 are clear favourites to beat T07, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T00 completed line-breaking passes more reliably, slicing through T07's lines more often.",
+              "contributionPp": 17.7
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T00 turned more of its forward runs into real scoring looks than T07 did.",
+              "contributionPp": 9.6
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T00 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 14.7
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T00 held possession noticeably more, keeping T07 chasing the game.",
+              "contributionPp": 2.6
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t25-t02-2026-07-06",
+      "teamA": "T25",
+      "teamB": "T02",
+      "prediction": {
+        "probs": {
+          "home": 0.9651912608265122,
+          "draw": 0.03480873917348791,
+          "away": 0
+        },
+        "rationale": {
+          "headline": "T25 are clear favourites to beat T02, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T25 completed line-breaking passes more reliably, slicing through T02's lines more often.",
+              "contributionPp": 15.5
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T25 turned more of its forward runs into real scoring looks than T02 did.",
+              "contributionPp": 8.7
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T25 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 14.7
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T25 held possession noticeably more, keeping T02 chasing the game.",
+              "contributionPp": 2.5
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t12-t43-2026-07-07",
+      "teamA": "T12",
+      "teamB": "T43",
+      "prediction": {
+        "probs": {
+          "home": 0.2707677810731965,
+          "draw": 0,
+          "away": 0.7292322189268036
+        },
+        "rationale": {
+          "headline": "T43 are clear favourites to beat T12, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T12 completed line-breaking passes more reliably, slicing through T43's lines more often.",
+              "contributionPp": 13.1
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T12 turned more of its forward runs into real scoring looks than T43 did.",
+              "contributionPp": 7.4
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T12 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 3.7
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T12 held possession noticeably more, keeping T43 chasing the game.",
+              "contributionPp": 2.3
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t30-t23-2026-07-08",
+      "teamA": "T30",
+      "teamB": "T23",
+      "prediction": {
+        "probs": {
+          "home": 0.8546195221613363,
+          "draw": 0.03827653130009242,
+          "away": 0.1071039465385713
+        },
+        "rationale": {
+          "headline": "T30 are clear favourites to beat T23, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T30 completed line-breaking passes more reliably, slicing through T23's lines more often.",
+              "contributionPp": 12.7
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T30 turned more of its forward runs into real scoring looks than T23 did.",
+              "contributionPp": 6.9
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T30 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 9.6
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T30 held possession noticeably more, keeping T23 chasing the game.",
+              "contributionPp": 1.9
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t06-t28-2026-07-09",
+      "teamA": "T06",
+      "teamB": "T28",
+      "prediction": {
+        "probs": {
+          "home": 0.965154277014749,
+          "draw": 0.03484572298525106,
+          "away": 0
+        },
+        "rationale": {
+          "headline": "T06 are clear favourites to beat T28, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T06 completed line-breaking passes more reliably, slicing through T28's lines more often.",
+              "contributionPp": 12.3
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T06 turned more of its forward runs into real scoring looks than T28 did.",
+              "contributionPp": 6.5
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T06 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 13.1
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T06 held possession noticeably more, keeping T28 chasing the game.",
+              "contributionPp": 1.8
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t24-t31-2026-07-04",
+      "teamA": "T24",
+      "teamB": "T31",
+      "prediction": {
+        "probs": {
+          "home": 0.9614683689038799,
+          "draw": 0.038531631096120185,
+          "away": 0
+        },
+        "rationale": {
+          "headline": "T24 are clear favourites to beat T31, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T24 completed line-breaking passes more reliably, slicing through T31's lines more often.",
+              "contributionPp": 11.2
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T24 turned more of its forward runs into real scoring looks than T31 did.",
+              "contributionPp": 5.6
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T24 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 12.2
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T24 held possession noticeably more, keeping T31 chasing the game.",
+              "contributionPp": 1.7
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t33-t27-2026-07-05",
+      "teamA": "T33",
+      "teamB": "T27",
+      "prediction": {
+        "probs": {
+          "home": 0.2797504651096439,
+          "draw": 0.6508261958787291,
+          "away": 0.06942333901162706
+        },
+        "rationale": {
+          "headline": "T33 are favoured to beat T27, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T33 completed line-breaking passes more reliably, slicing through T27's lines more often.",
+              "contributionPp": 10.1
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T33 turned more of its forward runs into real scoring looks than T27 did.",
+              "contributionPp": 6.1
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T33 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 8.5
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T33 held possession noticeably more, keeping T27 chasing the game.",
+              "contributionPp": 1.3
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t45-t47-2026-07-06",
+      "teamA": "T45",
+      "teamB": "T47",
+      "prediction": {
+        "probs": {
+          "home": 0.9564322338901107,
+          "draw": 0.022005018449924692,
+          "away": 0.021562747659964628
+        },
+        "rationale": {
+          "headline": "T45 are clear favourites to beat T47, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T45 completed line-breaking passes more reliably, slicing through T47's lines more often.",
+              "contributionPp": 8.8
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T45 turned more of its forward runs into real scoring looks than T47 did.",
+              "contributionPp": 5.8
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T45 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 8
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T45 held possession noticeably more, keeping T47 chasing the game.",
+              "contributionPp": 1.9
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t34-t39-2026-07-07",
+      "teamA": "T34",
+      "teamB": "T39",
+      "prediction": {
+        "probs": {
+          "home": 0.9956780544615764,
+          "draw": 0.004321945538423479,
+          "away": 0
+        },
+        "rationale": {
+          "headline": "T34 are clear favourites to beat T39, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T34 completed line-breaking passes more reliably, slicing through T39's lines more often.",
+              "contributionPp": 8.7
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T34 turned more of its forward runs into real scoring looks than T39 did.",
+              "contributionPp": 4
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T34 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 11
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T34 held possession noticeably more, keeping T39 chasing the game.",
+              "contributionPp": 1.2
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t18-t32-2026-07-08",
+      "teamA": "T18",
+      "teamB": "T32",
+      "prediction": {
+        "probs": {
+          "home": 0.6455977526357514,
+          "draw": 0.06626822246091062,
+          "away": 0.288134024903338
+        },
+        "rationale": {
+          "headline": "T18 are clear favourites to beat T32, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T18 completed line-breaking passes more reliably, slicing through T32's lines more often.",
+              "contributionPp": 6.2
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T18 turned more of its forward runs into real scoring looks than T32 did.",
+              "contributionPp": 4
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T18 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 4
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T18 held possession noticeably more, keeping T32 chasing the game.",
+              "contributionPp": 0.9
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t16-t29-2026-07-09",
+      "teamA": "T16",
+      "teamB": "T29",
+      "prediction": {
+        "probs": {
+          "home": 0.9034049307897266,
+          "draw": 0.055049357008370006,
+          "away": 0.04154571220190338
+        },
+        "rationale": {
+          "headline": "T16 are clear favourites to beat T29, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T16 completed line-breaking passes more reliably, slicing through T29's lines more often.",
+              "contributionPp": 6.6
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T16 turned more of its forward runs into real scoring looks than T29 did.",
+              "contributionPp": 2.9
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T16 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 6.5
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T16 held possession noticeably more, keeping T29 chasing the game.",
+              "contributionPp": 1.1
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t20-t38-2026-07-04",
+      "teamA": "T20",
+      "teamB": "T38",
+      "prediction": {
+        "probs": {
+          "home": 0.6047680664446735,
+          "draw": 0.36278792950689887,
+          "away": 0.032444004048427656
+        },
+        "rationale": {
+          "headline": "T20 are clear favourites to beat T38, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T20 completed line-breaking passes more reliably, slicing through T38's lines more often.",
+              "contributionPp": 5.2
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T20 turned more of its forward runs into real scoring looks than T38 did.",
+              "contributionPp": 2.7
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T20 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 0.7
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T20 held possession noticeably more, keeping T38 chasing the game.",
+              "contributionPp": 0.5
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t03-t46-2026-07-05",
+      "teamA": "T03",
+      "teamB": "T46",
+      "prediction": {
+        "probs": {
+          "home": 0.8959071369534882,
+          "draw": 0.10409286304651189,
+          "away": 0
+        },
+        "rationale": {
+          "headline": "T03 are clear favourites to beat T46, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T03 completed line-breaking passes more reliably, slicing through T46's lines more often.",
+              "contributionPp": 3.7
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T03 turned more of its forward runs into real scoring looks than T46 did.",
+              "contributionPp": 2.5
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T03 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 8.9
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T03 held possession noticeably more, keeping T46 chasing the game.",
+              "contributionPp": 0.5
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t05-t37-2026-07-06",
+      "teamA": "T05",
+      "teamB": "T37",
+      "prediction": {
+        "probs": {
+          "home": 0.599239063256217,
+          "draw": 0.400760936743783,
+          "away": 0
+        },
+        "rationale": {
+          "headline": "T05 are clear favourites to beat T37, mostly on cleaner attacking play.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T05 completed line-breaking passes more reliably, slicing through T37's lines more often.",
+              "contributionPp": 2.1
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T05 turned more of its forward runs into real scoring looks than T37 did.",
+              "contributionPp": 2.5
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T05 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 1.2
+            },
+            {
+              "label": "Controlling the ball",
+              "detail": "T05 held possession noticeably more, keeping T37 chasing the game.",
+              "contributionPp": 0.8
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-t17-t11-2026-07-07",
+      "teamA": "T17",
+      "teamB": "T11",
+      "prediction": {
+        "probs": {
+          "home": 0.4511076853358359,
+          "draw": 0.05836906568949678,
+          "away": 0.49052324897466715
+        },
+        "rationale": {
+          "headline": "T17 and T11 look evenly matched, with a real chance of a draw.",
+          "drivers": [
+            {
+              "label": "Breaking through the defence",
+              "detail": "T17 completed line-breaking passes more reliably, slicing through T11's lines more often.",
+              "contributionPp": 0.1
+            },
+            {
+              "label": "Converting chances",
+              "detail": "T17 turned more of its forward runs into real scoring looks than T11 did.",
+              "contributionPp": 0.2
+            },
+            {
+              "label": "Scoring vs leaking goals",
+              "detail": "T17 created more and conceded less across the group stage, a stronger net goal balance.",
+              "contributionPp": 2.2
+            }
+          ],
+          "methodNote": "Market-blind: per-team penetration/creation profiles (line-break success, 4-unit penetration share, offer conversion, shrunk attack/defence rates, possession) are differenced (team A − team B) into one feature vector. Three one-vs-rest gradient-boosted regression ensembles (40 rounds, depth 3, learning rate 0.1), trained on leakage-safe group-stage rows (each match seen only with prior-match profiles), score the home/draw/away outcomes; scores are clamped to [0,1] and normalised to sum to 1. No betting odds, prices, or market-implied probabilities were used."
+        }
+      }
+    }
+  ]
+}

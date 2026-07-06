@@ -1,0 +1,25 @@
+{
+  // First tsc gate for the ~12k-line scripts/ tree (incl. the live-trading
+  // entrypoints), which tsx executes without any type checking.
+  "extends": "../config/tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    // tsx executes these scripts and allows both; align tsc with the runtime.
+    // noUncheckedIndexedAccess stays off here until the pre-existing violations
+    // are cleared (Stage 2) — the workspace packages keep the strict setting.
+    "noUncheckedIndexedAccess": false,
+    "allowImportingTsExtensions": true,
+    "types": ["node"],
+    "paths": {
+      "@autopoly/contracts": ["../packages/contracts/src/index.ts"],
+      "@autopoly/contracts/env": ["../packages/contracts/src/env.ts"],
+      "@autopoly/db": ["../packages/db/src/index.ts"],
+      "@autopoly/terminal-ui": ["../packages/terminal-ui/src/index.ts"],
+      "@autopoly/norns": ["../packages/norns/src/index.ts"],
+      "@autopoly/sports-data": ["../packages/sports-data/src/index.ts"],
+      "@autopoly/sports-model": ["../packages/sports-model/src/index.ts"]
+    }
+  },
+  "include": ["./**/*.ts", "./**/*.mts"],
+  "exclude": ["world-cup/archive/**"]
+}

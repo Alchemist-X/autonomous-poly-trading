@@ -1,0 +1,472 @@
+{
+  "id": "fatigue-elo",
+  "name": "Physical-decay dynamic-K Elo",
+  "family": "elo",
+  "predictions": [
+    {
+      "fixtureId": "fifwc-bra-jpn-2026-06-29",
+      "teamA": "Brazil",
+      "teamB": "Japan",
+      "prediction": {
+        "probs": {
+          "home": 0.39679107531545654,
+          "draw": 0.36383979496841845,
+          "away": 0.23936912971612503
+        },
+        "rationale": {
+          "headline": "Brazil is a slight favourite here with about a 47% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Brazil and Japan ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Brazil carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 4.4
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-ger-par-2026-06-29",
+      "teamA": "Germany",
+      "teamB": "Paraguay",
+      "prediction": {
+        "probs": {
+          "home": 0.3983622588385197,
+          "draw": 0.3592361397449434,
+          "away": 0.24240160141653688
+        },
+        "rationale": {
+          "headline": "Germany is a slight favourite here with about a 46% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Germany ran a heavier high-intensity workload in the group stage than Paraguay, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -0.5
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Germany carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 4.7
+            },
+            {
+              "label": "Rest edge",
+              "detail": "Paraguay comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.3
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-nld-mar-2026-06-29",
+      "teamA": "Netherlands",
+      "teamB": "Morocco",
+      "prediction": {
+        "probs": {
+          "home": 0.44121027346320507,
+          "draw": 0.3347881823270792,
+          "away": 0.22400154420971571
+        },
+        "rationale": {
+          "headline": "Netherlands is clearly the stronger side here with about a 50% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Morocco ran a heavier high-intensity workload in the group stage than Netherlands, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": 0.6
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Netherlands carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 5.4
+            },
+            {
+              "label": "Rest edge",
+              "detail": "Netherlands comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": 0.3
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-civ-nor-2026-06-30",
+      "teamA": "Côte d'Ivoire",
+      "teamB": "Norway",
+      "prediction": {
+        "probs": {
+          "home": 0.1693508098630481,
+          "draw": 0.2822265933543356,
+          "away": 0.5484225967826163
+        },
+        "rationale": {
+          "headline": "Norway is clearly the stronger side here with about a 59% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Norway ran a heavier high-intensity workload in the group stage than Côte d'Ivoire, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": 0.2
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Norway carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": -10.3
+            },
+            {
+              "label": "Rest edge",
+              "detail": "Côte d'Ivoire comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": 0.1
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-fra-swe-2026-06-30",
+      "teamA": "France",
+      "teamB": "Sweden",
+      "prediction": {
+        "probs": {
+          "home": 0.6802152573199295,
+          "draw": 0.23141608476332018,
+          "away": 0.08836865791675023
+        },
+        "rationale": {
+          "headline": "France is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "France and Sweden ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+              "contributionPp": -0.1
+            },
+            {
+              "label": "Form and strength",
+              "detail": "France carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 17.8
+            },
+            {
+              "label": "Rest edge",
+              "detail": "Sweden comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-mex-ecu-2026-06-30",
+      "teamA": "Mexico",
+      "teamB": "Ecuador",
+      "prediction": {
+        "probs": {
+          "home": 0.2887713459308875,
+          "draw": 0.37229692231793865,
+          "away": 0.3389317317511739
+        },
+        "rationale": {
+          "headline": "Ecuador is a slight favourite here with about a 40% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Mexico and Ecuador ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Ecuador carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": -1.4
+            },
+            {
+              "label": "Rest edge",
+              "detail": "Mexico comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": 0
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-bel-sen-2026-07-01",
+      "teamA": "Belgium",
+      "teamB": "Senegal",
+      "prediction": {
+        "probs": {
+          "home": 0.343491985452735,
+          "draw": 0.3801291982014834,
+          "away": 0.2763788163457816
+        },
+        "rationale": {
+          "headline": "Belgium is a slight favourite here with about a 41% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Belgium and Senegal ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Belgium carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 1.9
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-eng-cdr-2026-07-01",
+      "teamA": "England",
+      "teamB": "DR Congo",
+      "prediction": {
+        "probs": {
+          "home": 0.6726457302527302,
+          "draw": 0.23529658288390082,
+          "away": 0.09205768686336895
+        },
+        "rationale": {
+          "headline": "England is clearly the stronger side here with about a 72% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "England ran a heavier high-intensity workload in the group stage than DR Congo, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -0.5
+            },
+            {
+              "label": "Form and strength",
+              "detail": "England carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 17.7
+            },
+            {
+              "label": "Rest edge",
+              "detail": "DR Congo comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.3
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-usa-bih-2026-07-01",
+      "teamA": "United States",
+      "teamB": "Bosnia-Herzegovina",
+      "prediction": {
+        "probs": {
+          "home": 0.4511735614993833,
+          "draw": 0.34208945256345574,
+          "away": 0.20673698593716097
+        },
+        "rationale": {
+          "headline": "United States is clearly the stronger side here with about a 52% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "United States ran a heavier high-intensity workload in the group stage than Bosnia-Herzegovina, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": -0.5
+            },
+            {
+              "label": "Form and strength",
+              "detail": "United States carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 7.2
+            },
+            {
+              "label": "Rest edge",
+              "detail": "Bosnia-Herzegovina comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": -0.3
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-che-alg-2026-07-02",
+      "teamA": "Switzerland",
+      "teamB": "Algeria",
+      "prediction": {
+        "probs": {
+          "home": 0.4394264350988141,
+          "draw": 0.33184244100068916,
+          "away": 0.22873112390049677
+        },
+        "rationale": {
+          "headline": "Switzerland is clearly the stronger side here with about a 49% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Switzerland and Algeria ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Switzerland carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 5.7
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-esp-aut-2026-07-02",
+      "teamA": "Spain",
+      "teamB": "Austria",
+      "prediction": {
+        "probs": {
+          "home": 0.6617998672161842,
+          "draw": 0.2330982412938616,
+          "away": 0.10510189148995414
+        },
+        "rationale": {
+          "headline": "Spain is clearly the stronger side here with about a 70% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Spain and Austria ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Spain carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 16
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-prt-hrv-2026-07-02",
+      "teamA": "Portugal",
+      "teamB": "Croatia",
+      "prediction": {
+        "probs": {
+          "home": 0.38513627755436575,
+          "draw": 0.3669947184826296,
+          "away": 0.2478690039630046
+        },
+        "rationale": {
+          "headline": "Portugal is a slight favourite here with about a 45% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Croatia ran a heavier high-intensity workload in the group stage than Portugal, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": 0.3
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Portugal carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 3.6
+            },
+            {
+              "label": "Rest edge",
+              "detail": "Portugal comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": 0.1
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-arg-cvi-2026-07-03",
+      "teamA": "Argentina",
+      "teamB": "Cabo Verde",
+      "prediction": {
+        "probs": {
+          "home": 0.7690958898437462,
+          "draw": 0.19378138831647385,
+          "away": 0.03712272183977996
+        },
+        "rationale": {
+          "headline": "Argentina is clearly the stronger side here with about a 83% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Argentina and Cabo Verde ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Argentina carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 26.3
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-aus-egy-2026-07-03",
+      "teamA": "Australia",
+      "teamB": "Egypt",
+      "prediction": {
+        "probs": {
+          "home": 0.37415520625974996,
+          "draw": 0.3842345145610352,
+          "away": 0.2416102791792148
+        },
+        "rationale": {
+          "headline": "Australia is a slight favourite here with about a 45% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Egypt ran a heavier high-intensity workload in the group stage than Australia, leaving it more likely to tire and fade as this match wears on.",
+              "contributionPp": 0.4
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Australia carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 3.5
+            },
+            {
+              "label": "Rest edge",
+              "detail": "Australia comes in with the better turnaround between matches and should be the fresher side at kickoff.",
+              "contributionPp": 0.2
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    },
+    {
+      "fixtureId": "fifwc-col-gha-2026-07-03",
+      "teamA": "Colombia",
+      "teamB": "Ghana",
+      "prediction": {
+        "probs": {
+          "home": 0.7301138199406572,
+          "draw": 0.21586238610084346,
+          "away": 0.05402379395849929
+        },
+        "rationale": {
+          "headline": "Colombia is clearly the stronger side here with about a 79% chance to win, partly because the other side ran a heavier physical load and is likelier to tire.",
+          "drivers": [
+            {
+              "label": "Physical load",
+              "detail": "Colombia and Ghana ran similar high-intensity distances in the group stage, so neither looks more likely to tire late.",
+              "contributionPp": 0
+            },
+            {
+              "label": "Form and strength",
+              "detail": "Colombia carried stronger group-stage results into this fixture and starts as the on-paper favourite.",
+              "contributionPp": 22.6
+            }
+          ],
+          "methodNote": "Market-blind: dynamic-K Elo replayed over group-stage results, seeded from pre-tournament Elo priors. Each rating update used a learning rate scaled by the team's relative sprint load (sprints + high-speed runs per minute) and a knockout stage weight. At prediction time each team's effective rating is reduced by a fatigue penalty proportional to how far its average high-intensity running distance exceeded the field mean, and the rating gap is mapped to a 1X2 distribution via a Davidson-tie logistic (scale 400, no home advantage, draw nu 0.7). No betting or prediction-market data was used."
+        }
+      }
+    }
+  ]
+}

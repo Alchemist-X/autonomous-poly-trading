@@ -106,6 +106,7 @@ async function collectPreflight(input: {
   executorConfig: ReturnType<typeof loadExecutorConfig>;
   orchestratorConfig: ReturnType<typeof loadOrchestratorConfig>;
 }): Promise<LiveTestPreflightReport> {
+  const db = getDb();
   let dbOk = false;
   let redisOk = false;
   let clobOk = false;

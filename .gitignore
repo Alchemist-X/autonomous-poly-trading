@@ -31,6 +31,8 @@ agents.env
 
 # --- Claude Code transient worktrees (multi-GB sub-agent scratch dirs) ---
 .claude/worktrees/
+# personal permission overrides must not be shared via git
+.claude/settings.local.json
 
 # --- Vendor mirrors (synced via pnpm vendor:sync) ---
 vendor/repos
@@ -50,6 +52,8 @@ runtime-artifacts/world-cup/*
 !runtime-artifacts/world-cup/run-ledger/
 !runtime-artifacts/world-cup/reports/
 !runtime-artifacts/world-cup/code-archive/
+!runtime-artifacts/world-cup/fifa/
+!runtime-artifacts/world-cup/fifa8-forecasts/
 __pycache__/
 run-error/
 output/
@@ -63,3 +67,15 @@ e2e/e2e/
 
 # --- Deploy adapters (auto-generated on link) ---
 .vercel
+
+# design-sync
+.design-sync/sb-reference/
+.design-sync/learnings/
+.design-sync/.cache/
+.design-sync/node_modules
+.ds-sync/
+ds-bundle/
+
+# forecast engine design-handoff bundle (not versioned)
+forecast-engine-handoff/
+forecast-engine-handoff.zip

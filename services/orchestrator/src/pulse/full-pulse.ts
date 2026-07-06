@@ -1,13 +1,20 @@
 import { spawn } from "node:child_process";
-import { existsSync, statSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { isChineseLocale } from "../config.js";
 import type { AgentRuntimeProvider, OrchestratorConfig, SkillLocale } from "../config.js";
 import { writeStoredArtifact } from "../lib/artifacts.js";
+import { OPENCLAW_DEFAULT_COMMAND_TEMPLATE } from "../lib/provider-command-templates.js";
+import { formatRemainingTimeoutMs, readOutputSizeBytes, stripCodeFences } from "../lib/provider-output.js";
 import { calculateQuarterKelly } from "../lib/risk.js";
 import { combineTextMetrics, formatTextMetrics, measureText, readTextMetrics } from "../lib/text-metrics.js";
 import type { ProgressReporter } from "../lib/terminal-progress.js";
+import {
+  assessPulseReportParseability,
+  PULSE_NO_TRADE_MARKER
+} from "../runtime/pulse-entry-planner.js";
 import { resolveProviderSkillSettings } from "../runtime/skill-settings.js";
 import type { PulseBucketStat, PulseCandidate, PulseFetchConfig, PulseStatsBundle } from "./market-pulse.js";
 import { preScreenCandidates, type PreScreenResult, type PreScreenSummary } from "./pulse-prescreen.js";
@@ -79,10 +86,6 @@ type FullPulsePurpose = "market-scan" | "position-review";
 type JsonRecord = Record<string, unknown>;
 const COMMAND_HEARTBEAT_INTERVAL_MS = 5000;
 const DEFAULT_PULSE_DIRECT_RENDER_TIMEOUT_SECONDS = 1200;
-
-function isChineseLocale(locale: SkillLocale): boolean {
-  return locale === "zh";
-}
 
 function asRecord(value: unknown): JsonRecord | null {
   return value && typeof value === "object" && !Array.isArray(value) ? value as JsonRecord : null;
@@ -543,25 +546,6 @@ function buildDeterministicPulseMarkdown(context: FullPulseContext): string {
   ].join("\n");
 }
 
-function readOutputSizeBytes(outputPath: string | undefined): number {
-  if (!outputPath || !existsSync(outputPath)) {
-    return 0;
-  }
-  try {
-    return statSync(outputPath).size;
-  } catch {
-    return 0;
-  }
-}
-
-function formatRemainingTimeoutMs(startedAt: number, timeoutMs: number | null): string {
-  if (timeoutMs == null) {
-    return "disabled";
-  }
-  const remainingMs = Math.max(0, timeoutMs - (Date.now() - startedAt));
-  return `${Math.ceil(remainingMs / 1000)}s`;
-}
-
 function buildCommandHeartbeatDetail(input: {
   stage: string;
   progressDetail?: string;
@@ -583,19 +567,6 @@ function buildCommandHeartbeatDetail(input: {
     .join(" | ");
 }
 
-function stripCodeFences(text: string): string {
-  const trimmed = text.trim();
-  if (!trimmed.startsWith("```")) {
-    return trimmed;
-  }
-
-  const lines = trimmed.split("\n");
-  if (lines.length < 3) {
-    return trimmed;
-  }
-
-  return lines.slice(1, -1).join("\n").trim();
-}
 
 async function runCommand(input: {
   command: string;
@@ -839,29 +810,40 @@ function buildFullPulsePrompt(input: {
   if (input.purpose === "position-review") {
     if (isChineseLocale(input.locale)) {
       return [
-        "你正在生成一份“已有持仓专用”的 Polymarket Pulse 复审报告。",
-        "这不是新市场扫描，也不是开新仓推荐。研究上下文 JSON 中的 candidates / research_candidates 全部来自当前已有持仓。",
+        "你是一名顶级预测市场分析师，正在为真实资金持仓做概率复审。",
+        "研究上下文 JSON 中的 candidates / research_candidates 全部来自当前已有持仓；这不是新市场扫描。",
+        "你复审出的概率是唯一进入交易管道的数字：下游代码只从报告中提取概率表和动作建议，并在代码层重算敞口与风控。把主要精力花在“把每个持仓的概率重新做准”上。",
         "",
-        "必须先阅读这些文件：",
+        "参考文件（方法论是推理脚手架，不是硬性配方；其中的量化参数是默认值，若你有更好判断可偏离并写明理由）：",
         `- Pulse Skill: ${input.paths.pulseSkillFile}`,
         `- 输出模板: ${input.paths.outputTemplateFile}`,
         `- 分析框架: ${input.paths.analysisFrameworkFile}`,
         `- 持仓研究上下文 JSON: ${input.contextJsonPath}`,
         "",
-        "执行要求：",
-        "1. 只输出最终 Markdown，不要输出代码块，不要输出解释。",
-        "2. 全文必须使用中文。",
-        "3. 不要推荐任何不在研究上下文 JSON 里的新市场。",
-        "4. `research_candidates[].market.position` 是当前仓位元数据，必须用其中的 heldOutcomeLabel / shares / avgCost / currentPrice / currentValueUsd / unrealizedPnlPct 说明当前持仓方向、规模和 PnL；除非字段缺失，不得写“数据不足”。",
-        "5. 必须逐仓复审：research_candidates 里每个已有持仓都要有一个独立 `##` 章节，标题尽量保留市场问题或 market slug。",
-        "6. 每个持仓章节必须包含：链接、当前持仓方向、方向（`买入 Yes` 或 `买入 No`，表示模型现在更支持的一侧）、概率评估表、Edge、证据链、结算规则、推理逻辑、持仓动作建议（hold / reduce / close）。",
-        "7. 概率评估表必须至少包含 `| Yes | 市场定价 | AI 估算 |` 和 `| No | 市场定价 | AI 估算 |` 两行，百分比格式要能被程序解析。",
-        "8. 如果当前持仓一侧已经没有 edge，请明确给出反向一侧的概率与 edge；不要把 AI 概率机械设成市场概率。",
-      "9. 研究上下文 JSON 中没有的数据，必须明确写“未获取”或“数据不足”，不能编造。",
-      "10. 必须阅读并使用研究上下文 JSON 的 `web_search` 字段：若 status=completed，把外部 web-search 结果纳入证据链、概率评估和信息源；若 status=timed_out/failed/disabled，明确写“已尝试 web-search 但超时/失败/关闭”，不得写成本次没有尝试外部 web-search。",
-      "11. 必须阅读并使用研究上下文 JSON 的 `stage_flow` 字段，按其中 1-7 阶段组织复审：定义、搜索/推理、证据、权重、结构化模型、贝叶斯更新、结论/市场比较；无法完全完成的阶段必须在报告中标注缺口。",
-      "12. 只有在完成逐仓复审所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
-      "13. 输出中不要出现“Top 3 新开仓”“推荐新开仓”这类章节；本报告只服务已有持仓概率/edge 复审。",
+        "研究自由度：",
+        "- 已提供的上下文是起点，不是边界。当证据不足以支撑可靠复审时，主动补充检索与查证（结算规则页、官方数据源、最新新闻），并在信息源中记录 URL 和日期。",
+        "- 必须阅读并使用 JSON 的 `web_search` 与 `stage_flow` 字段；若 web_search status=timed_out/failed/disabled，如实说明，不得写成本次未尝试。",
+        "",
+        "诚实性（不可违反）：",
+        "- 上下文中没有且你未查证到的数据，明确写“未获取”，不得编造；关键事实主张附来源和日期。",
+        "- 不要把 AI 概率机械设成市场概率：如果持仓一侧已无 edge，明确给出反向一侧的概率与 edge。",
+        "",
+        "程序接口（硬性要求——下游用正则提取，格式错误 = 该持仓复审被静默忽略）：",
+        "1. 只输出最终 Markdown，不要代码块包裹，不要输出解释性前后缀；全文使用中文。",
+        "2. 逐仓复审：每个已有持仓一个独立 `##` 章节，标题保留市场原问题或 market slug。",
+        "3. 每个持仓章节必须包含以下可解析字段：",
+        "   - 链接：Polymarket 事件 URL",
+        "   - 方向：`买入 Yes` 或 `买入 No`（模型现在更支持的一侧）",
+        "   - 概率评估表，必须同时含 `| Yes | 市场定价 | AI 估算 |` 与 `| No | ... |` 两行、百分比格式",
+        "   - 持仓动作建议：hold / reduce / close",
+        "   - `### 推理逻辑` 小节（作为该持仓动作的 thesis 存档）",
+        "4. 用 `research_candidates[].market.position` 里的 heldOutcomeLabel / shares / avgCost / currentPrice / currentValueUsd / unrealizedPnlPct 说明当前持仓方向、规模和 PnL；字段存在就必须使用。",
+        "5. 不要出现“Top 3 新开仓”“推荐新开仓”章节；本报告只服务已有持仓复审。",
+        "",
+        "写法（给人读的部分）：",
+        "- 每个持仓章节第一句给出结论：动作建议 + AI 概率（区间跨越决策边界或宽于 ±5pp 时，同句给出区间）。",
+        "- 每句带一个具体信息（数字/日期/来源）；用数字替代形容词；给出会推翻当前判断的观察点。",
+        "- 简洁不等于自信：概率必须如实反映证据强度，禁止为了行文有力而收窄区间。",
         "",
         `当前 provider：${input.provider}`,
         "输出最终 Markdown。"
@@ -869,28 +851,40 @@ function buildFullPulsePrompt(input: {
     }
 
     return [
-      "You are generating a position-only Polymarket Pulse review report for existing holdings.",
-      "This is not a new-market scan and not a new-entry recommendation. Every candidate / research_candidate in the JSON context is an existing position.",
+      "You are a top-tier prediction-market analyst refreshing probabilities for real-money holdings.",
+      "Every candidate / research_candidate in the JSON context is an existing position; this is not a new-market scan.",
+      "Your refreshed probabilities are the only numbers that enter the trading pipeline: downstream code extracts the probability table and action guidance from this report and recomputes exposure and risk in code. Spend your effort making each position's probability right.",
       "",
-      "Read these files first:",
+      "Reference files (the methodology is a reasoning scaffold, not a fixed recipe; its quantitative parameters are defaults you may deviate from with stated reasons):",
       `- Pulse Skill: ${input.paths.pulseSkillFile}`,
       `- Output Template: ${input.paths.outputTemplateFile}`,
       `- Analysis Framework: ${input.paths.analysisFrameworkFile}`,
       `- Position research context JSON: ${input.contextJsonPath}`,
       "",
-      "Requirements:",
-      "1. Output final Markdown only.",
-      "2. Do not recommend any market that is not present in the research context JSON.",
-      "3. Review every existing position: each research_candidate must have its own `##` section, with a title that preserves the market question or market slug.",
-      "4. `research_candidates[].market.position` contains the current position metadata; use heldOutcomeLabel / shares / avgCost / currentPrice / currentValueUsd / unrealizedPnlPct to describe the held side, size, and PnL unless those fields are missing.",
-      "5. Each position section must include: link, current held side, current favored side (`Buy Yes` or `Buy No`), probability table, edge, evidence chain, resolution rules, reasoning, and position action guidance (hold / reduce / close).",
-      "6. The probability table must include at least `| Yes | Market | AI |` and `| No | Market | AI |` rows in percentage format so the parser can read it.",
-      "7. If the held side no longer has edge, explicitly provide the opposite side's probability and edge; do not mechanically set AI probability equal to market probability.",
-      "8. If data is missing, explicitly mark it unavailable instead of inventing it.",
-      "9. You must read and use the `web_search` field in the research context JSON. If status=completed, incorporate the external web-search results into the evidence chain, probability estimate, and source list. If status=timed_out/failed/disabled, explicitly say web-search was attempted but timed out/failed/was disabled; do not claim no external web-search was attempted.",
-      "10. You must read and use the `stage_flow` field in the research context JSON. Structure the review around its 1-7 stages: definition, search/reasoning, evidence, weighting, structured model, Bayesian-style update, and conclusion/market comparison. Mark any stage that cannot be fully completed.",
-      "11. Only do very limited targeted verification if the provided context is clearly insufficient for a position review.",
-      "12. Do not include Top 3 new-entry or new-market recommendation sections; this report exists only to refresh probability / edge for current holdings.",
+      "Research freedom:",
+      "- The provided context is a starting point, not a boundary. When evidence is insufficient for a reliable review, actively verify further (resolution-rule pages, official sources, latest news) and record URLs and dates in the source list.",
+      "- Read and use the `web_search` and `stage_flow` fields in the JSON. If web_search status=timed_out/failed/disabled, say so honestly; never claim no search was attempted.",
+      "",
+      "Honesty (non-negotiable):",
+      "- Mark data you neither have nor verified as unavailable; never invent it. Attach source + date to key factual claims.",
+      "- Do not mechanically set AI probability equal to market probability: if the held side has no edge left, explicitly give the opposite side's probability and edge.",
+      "",
+      "Machine interface (hard requirements — downstream regex extraction; a format miss means that position's review is silently ignored):",
+      "1. Output final Markdown only, no code fences, no explanatory preamble.",
+      "2. Review every position: one `##` section per holding, title preserving the market question or market slug.",
+      "3. Each position section must include these parseable fields:",
+      "   - Link: the Polymarket event URL",
+      "   - Direction: `Buy Yes` or `Buy No` (the side the model now favors)",
+      "   - Probability table with BOTH `| Yes | Market | AI |` and `| No | ... |` rows in percentage format",
+      "   - Position action guidance: hold / reduce / close",
+      "   - A `### Reasoning` subsection (archived as the thesis for that position action)",
+      "4. Use `research_candidates[].market.position` (heldOutcomeLabel / shares / avgCost / currentPrice / currentValueUsd / unrealizedPnlPct) to describe the held side, size, and PnL whenever those fields exist.",
+      "5. No Top 3 / new-entry sections; this report only refreshes existing holdings.",
+      "",
+      "Prose (the human-facing part):",
+      "- Open each position section with the conclusion: action + AI probability (include the interval in the same sentence when it straddles a decision boundary or is wider than ±5pp).",
+      "- Every sentence carries a specific (number/date/source); replace adjectives with the numbers behind them; name what would flip your call.",
+      "- Concision must not become overconfidence: probabilities must reflect actual evidence strength — never narrow an interval for punchier prose.",
       "",
       `Active provider: ${input.provider}`,
       "Output the final Markdown."
@@ -899,28 +893,44 @@ function buildFullPulsePrompt(input: {
 
   if (isChineseLocale(input.locale)) {
     return [
-      "你正在生成一份完整的 Polymarket 市场脉冲报告。",
-      "这份报告将直接替代系统中当前的简化 pulse 候选快照，并作为长期归档文档保存。",
+      "你是一名顶级预测市场分析师，正在为一次真实资金的交易决策生成完整的 Polymarket 市场脉冲报告。",
+      "你的概率判断是唯一进入交易管道的数字：下游代码只从报告中提取概率、方向等结构化字段，并在代码层重算 Kelly 仓位与风控裁剪。把绝大部分精力花在“把概率做准”上——文字是给人看的审计材料，数字才是交易依据。",
       "",
-      "必须先阅读这些文件：",
+      "参考文件（方法论是推理脚手架，不是硬性配方；其中的量化参数——证据更新幅度、edge 分档、排序公式——是默认值，若你有更好判断可偏离并写明理由）：",
       `- Pulse Skill: ${input.paths.pulseSkillFile}`,
-      `- 输出模板: ${input.paths.outputTemplateFile}`,
+      `- 输出模板: ${input.paths.outputTemplateFile}（章节参考；只有下方“程序接口”列出的字段是硬性要求）`,
       `- 分析框架: ${input.paths.analysisFrameworkFile}`,
       `- 研究上下文 JSON: ${input.contextJsonPath}`,
       "",
-      "执行要求：",
-      "1. 只输出最终 Markdown，不要输出代码块，不要输出解释。",
-      "2. 全文必须使用中文。",
-      "3. 报告必须尽量遵循输出模板的章节顺序和字段结构。",
-      "4. 必须产出完整文档，而不是候选表摘要。",
-      "5. 在正式 Top 3 推荐之前，必须增加“候选池与筛选思路”和“推荐摘要”章节，说明本轮候选从哪里来、筛掉了什么、为什么最终进入 Top 3，并先给出一张可快速浏览的摘要表。",
-      "6. 必须包含：报告头部、候选池与筛选思路、推荐摘要、前 3 个推荐市场、概率评估、证据链、四维分析、结算规则、推理逻辑、仓位建议、评论区校验、信息源、元数据。",
-      "7. 研究上下文 JSON 中没有的数据，必须明确写“未获取”或“数据不足”，不能编造。",
-      "8. 必须阅读并使用研究上下文 JSON 的 `web_search` 字段：若 status=completed，把外部 web-search 结果纳入候选筛选、概率评估、证据链和信息源；若 status=timed_out/failed/disabled，明确写“已尝试 web-search 但超时/失败/关闭”，不得写成本次没有尝试外部 web-search。",
-      "9. 必须阅读并使用研究上下文 JSON 的 `stage_flow` 字段，按其中 1-7 阶段组织每个候选的分析：定义、搜索/推理、证据、权重、结构化模型、贝叶斯更新、结论/市场比较；无法完全完成的阶段必须在报告中标注缺口。",
-      "10. 默认只使用已提供的研究上下文完成报告；只有在完成报告所必需且上下文明显缺失时，才允许做极少量定向补充核验。",
-      "11. 如果无法补齐外部证据，也必须完成完整模板，并在置信度和结论中反映证据缺口。",
-      "12. Top 3 推荐必须给出明确方向、edge、概率和仓位建议，并说明它优于其余候选的原因。",
+      "研究自由度：",
+      "- 已提供的研究上下文是起点，不是边界。当证据不足以支撑可靠概率时，主动补充检索与查证（结算规则页、官方数据源、最新新闻），并在信息源中记录 URL 和日期。",
+      "- 必须阅读并使用 JSON 的 `web_search` 与 `stage_flow` 字段；若 web_search status=timed_out/failed/disabled，如实说明，不得写成本次未尝试。",
+      "",
+      "诚实性（不可违反）：",
+      "- 不要推荐任何不在研究上下文 JSON 里的市场（下游只能交易这些市场的 token）。",
+      "- 缺失且未查证到的数据明确写“未获取”，不得编造；关键事实主张附来源 URL 和日期，无法溯源的主张不得作为主要证据。",
+      "- 即使证据有缺口也要完成报告，在置信度和结论中如实反映缺口。",
+      "",
+      "程序接口（硬性要求——下游用正则提取，格式错误 = 该推荐被静默丢弃）：",
+      "1. 只输出最终 Markdown，不要代码块包裹，不要输出解释性前后缀；全文使用中文。",
+      "2. 每个推荐市场一个独立 `##` 章节，标题保留市场原问题（可用英文原文，程序靠标题匹配候选）。",
+      "3. 每个推荐章节必须包含以下可解析字段（表格行或 `**标签：** 值` 均可）：",
+      "   - 链接：https://polymarket.com/event/{event_slug}",
+      "   - 方向：`买入 Yes` 或 `买入 No`",
+      "   - 概率评估表，必须同时含 `| Yes | 市场定价 | AI 估算 |` 与 `| No | ... |` 两行、百分比格式（半角数字 + %）",
+      "   - 置信度：高 / 中 / 低",
+      "   - 建议仓位：资金百分比",
+      "   - 流动性上限：$ 金额",
+      "   - `### 推理逻辑` 小节（作为交易 thesis 存档）",
+      "   - `### 概率评估`、`### 证据链`、`### 信息源` 小节标题（归档决策报告按这些标题摘录）；有数据缺口时用 `**数据缺口：**` 一行标注",
+      "4. 推荐数量：最多 3 个。达不到你的 edge 标准就少推荐——不要为凑数纳入弱推荐。若本轮没有任何值得交易的市场，在报告开头单独一行写 `NO-TRADE` 并说明原因。",
+      "",
+      "报告写法（给人读的部分）：",
+      "- 报告开头给出候选池概览与筛选思路（简短即可），让人能审计“为什么是这几个”。",
+      "- 结论先行：每个市场章节第一句给出方向 + AI 概率（区间跨越决策边界或宽于 ±5pp 时，同句给出区间）。",
+      "- 每句带一个具体信息（数字/日期/人名/来源）；用数字替代形容词；数字配基准。",
+      "- 不确定性用带界限的数字表达（区间、至少/最多），不用软词堆叠；给出会推翻判断的观察点（kill condition）。",
+      "- 简洁不等于自信：概率必须如实反映证据强度，禁止为了行文有力而收窄区间或抬高置信度。",
       "",
       `当前 provider：${input.provider}`,
       "输出最终 Markdown。"
@@ -928,26 +938,44 @@ function buildFullPulsePrompt(input: {
   }
 
   return [
-    "You are generating a full Polymarket market pulse report.",
-    "This report replaces the simplified pulse snapshot and must be archived as a complete document.",
+    "You are a top-tier prediction-market analyst generating a full Polymarket market pulse report for a real-money trading decision.",
+    "Your probability estimates are the only numbers that enter the trading pipeline: downstream code extracts probability, direction, and other structured fields from this report and recomputes Kelly sizing and risk trims in code. Spend most of your effort getting the probabilities right — the prose is the human audit trail; the numbers are what trades.",
     "",
-    "Read these files first:",
+    "Reference files (the methodology is a reasoning scaffold, not a fixed recipe; its quantitative parameters — evidence-update magnitudes, edge tiers, ranking formulas — are defaults you may deviate from with stated reasons):",
     `- Pulse Skill: ${input.paths.pulseSkillFile}`,
-    `- Output Template: ${input.paths.outputTemplateFile}`,
+    `- Output Template: ${input.paths.outputTemplateFile} (section reference; only the fields under "Machine interface" below are hard requirements)`,
     `- Analysis Framework: ${input.paths.analysisFrameworkFile}`,
     `- Research Context JSON: ${input.contextJsonPath}`,
     "",
-    "Requirements:",
-    "1. Output final Markdown only.",
-    "2. Follow the output template as closely as possible.",
-    "3. Produce a complete document, not a candidate summary.",
-    "4. Add both a candidate-pool/selection-rationale section and a recommendation-summary table before the Top 3 recommendations, explaining where the candidates came from, what was filtered out, and why the final Top 3 survived.",
-    "5. Include: header, candidate-pool rationale, recommendation summary, top 3 recommendations, probability evaluation, evidence chain, four-dimensional analysis, resolution rules, reasoning logic, sizing guidance, comment review, source list, metadata.",
-    "6. If data is missing, explicitly mark it as unavailable instead of inventing it.",
-    "7. You must read and use the `web_search` field in the research context JSON. If status=completed, incorporate the external web-search results into candidate selection, probability estimates, evidence chains, and source lists. If status=timed_out/failed/disabled, explicitly say web-search was attempted but timed out/failed/was disabled; do not claim no external web-search was attempted.",
-    "8. You must read and use the `stage_flow` field in the research context JSON. Structure each candidate's analysis around its 1-7 stages: definition, search/reasoning, evidence, weighting, structured model, Bayesian-style update, and conclusion/market comparison. Mark any stage that cannot be fully completed.",
-    "9. Default to the provided research context. Only do very limited additional verification if the report would otherwise be incomplete.",
-    "10. Top 3 recommendations must include direction, edge, probabilities, sizing guidance, and why each beats the remaining candidates.",
+    "Research freedom:",
+    "- The provided research context is a starting point, not a boundary. When evidence is insufficient for a reliable probability, actively verify further (resolution-rule pages, official sources, latest news) and record URLs and dates in the source list.",
+    "- Read and use the `web_search` and `stage_flow` fields in the JSON. If web_search status=timed_out/failed/disabled, say so honestly; never claim no search was attempted.",
+    "",
+    "Honesty (non-negotiable):",
+    "- Do not recommend any market that is not present in the research context JSON (downstream can only trade those markets' tokens).",
+    "- Mark data you neither have nor verified as unavailable; never invent it. Attach source URL + date to key factual claims; unverifiable claims must not carry the case.",
+    "- Complete the report even when evidence has gaps, and reflect those gaps honestly in confidence and conclusions.",
+    "",
+    "Machine interface (hard requirements — downstream regex extraction; a format miss means that recommendation is silently dropped):",
+    "1. Output final Markdown only, no code fences, no explanatory preamble.",
+    "2. One `##` section per recommended market, title preserving the original market question (the program matches sections to candidates by title).",
+    "3. Each recommendation section must include these parseable fields (table rows or `**Label:** value` both work):",
+    "   - Link: https://polymarket.com/event/{event_slug}",
+    "   - Direction: `Buy Yes` or `Buy No`",
+    "   - Probability table with BOTH `| Yes | Market | AI |` and `| No | ... |` rows in percentage format (ASCII digits + %)",
+    "   - Confidence: high / medium / low",
+    "   - Suggested size: percent of bankroll",
+    "   - Liquidity cap: $ amount",
+    "   - A `### Reasoning` subsection (archived as the trade thesis)",
+    "   - `### 概率评估`, `### 证据链`, `### 信息源` subsection headings (the archived decision report excerpts by these headings); mark any data gap on a `**数据缺口：**` line",
+    "4. Count: at most 3 recommendations. If fewer clear your edge bar, recommend fewer — never pad with weak picks. If nothing is worth trading this round, write `NO-TRADE` on its own line at the top and explain why.",
+    "",
+    "Prose (the human-facing part):",
+    "- Open the report with a brief candidate-pool overview and selection rationale so a human can audit why these picks.",
+    "- Conclusion first: each market section opens with direction + AI probability (include the interval in the same sentence when it straddles a decision boundary or is wider than ±5pp).",
+    "- Every sentence carries a specific (number/date/name/source); replace adjectives with the numbers behind them; pair numbers with baselines.",
+    "- Express uncertainty as bounded numbers (intervals, at least/at most), not stacked hedge words; name the kill condition that would flip your call.",
+    "- Concision must not become overconfidence: probabilities must reflect actual evidence strength — never narrow an interval or inflate confidence for punchier prose.",
     "",
     `Active provider: ${input.provider}`,
     "Output the final Markdown."
@@ -967,7 +995,7 @@ function resolveDefaultProviderCommand(provider: string): string | null {
     case "claude-code":
       return 'cat {{prompt_file}} | claude --print > {{output_file}}';
     case "openclaw":
-      return 'node "{{repo_root}}/scripts/openclaw-agent-command.mjs" --prompt-file "{{prompt_file}}" --output-file "{{output_file}}"';
+      return OPENCLAW_DEFAULT_COMMAND_TEMPLATE;
     default:
       return null;
   }
@@ -1183,6 +1211,29 @@ async function renderFullPulseMarkdown(input: {
     if (!content.trim()) {
       throw new Error("Full pulse provider returned empty markdown.");
     }
+
+    // Deterministic parseability gate: the trading path only reads what the
+    // entry-planner regexes extract, and a report without a single
+    // machine-readable direction + probability row would otherwise trade
+    // nothing SILENTLY (aiProb falls back to marketProb → edge 0 → all plans
+    // dropped). Fail closed at render time instead.
+    const parseability = assessPulseReportParseability(content);
+    if ((input.purpose ?? "market-scan") !== "position-review") {
+      if (parseability.entryReadySectionCount === 0 && !parseability.hasNoTradeMarker) {
+        throw new Error(
+          `Full pulse report failed the parseability gate: ${parseability.sectionCount} sections, ` +
+          `${parseability.probabilityRowSectionCount} with probability rows, 0 entry-ready ` +
+          `(direction + matching | Yes/No | market% | ai% | row), and no explicit ${PULSE_NO_TRADE_MARKER} marker. ` +
+          `Downstream trading would silently extract nothing. Inspect the preserved render output.`
+        );
+      }
+    } else if (parseability.probabilityRowSectionCount === 0) {
+      input.progress?.info(
+        "Pulse render parseability warning | position-review report has no machine-readable probability rows; " +
+        "position reviews will fall back to code-level stale-hold logic."
+      );
+    }
+
     input.progress?.info(
       `Pulse render output | ${path.basename(outputPath)} | ${formatTextMetrics(measureText(content))} | elapsed ${Math.round((Date.now() - renderStartedAt) / 1000)}s`
     );
@@ -1421,6 +1472,23 @@ export async function buildFullPulseArchive(input: {
     input.relativeMarkdownPath,
     markdown
   );
+
+  // Second, candidate-aware parseability layer. The render-time gate is
+  // format-only; this one also mirrors the planner's section-to-candidate
+  // binding (title/URL match) against the same candidate list stored in the
+  // archive JSON, so a perfectly formatted report whose sections match no
+  // candidate still fails closed instead of silently trading nothing. Runs
+  // after the archive write so the offending report stays inspectable.
+  if ((input.purpose ?? "market-scan") !== "position-review") {
+    const bound = assessPulseReportParseability(markdown, input.candidates);
+    if (bound.entryReadySectionCount === 0 && !bound.hasNoTradeMarker) {
+      throw new Error(
+        `Full pulse report failed the candidate-binding gate: ${bound.probabilityRowSectionCount} sections have ` +
+        `probability rows but none binds to a pulse candidate with a positive-edge direction, and no ${PULSE_NO_TRADE_MARKER} ` +
+        `marker is present. Downstream trading would silently extract nothing. Archived report: ${absoluteMarkdownPath}`
+      );
+    }
+  }
 
   return {
     markdown,
