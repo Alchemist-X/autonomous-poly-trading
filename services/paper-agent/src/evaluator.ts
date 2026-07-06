@@ -116,7 +116,11 @@ export async function evaluateMarket(market: MarketInfo, opts: EvaluateOptions):
   const env: NodeJS.ProcessEnv = {
     ...process.env,
     FORECAST_PROVIDER: opts.provider,
-    FORECAST_MIN_ROUNDS: "1",
+    // 2 (not 1): a single round with large offsetting evidence nets ~0pp and
+    // used to read as "converged" — the engine documents this failure mode and
+    // min-rounds is its guard. Only fresh dossiers pay the extra round;
+    // resumed dossiers already satisfy it.
+    FORECAST_MIN_ROUNDS: "2",
     ARTIFACT_STORAGE_ROOT: engineRoot(),
     // Market-blind (review 2026-07-06): the edge computation is only meaningful
     // if the engine's estimate is INDEPENDENT of the market it is compared

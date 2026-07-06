@@ -110,7 +110,7 @@ export function buildPrompt(
   // Research instructions are provider-aware: a search-less provider must never
   // be told to WebSearch, and must not fabricate URLs to satisfy the cite rule.
   const research = extras.hasWebSearch
-    ? "1. Use WebSearch to find NEW, relevant, recent evidence about whether this event will happen. Do not re-count any source already listed above.\n2. DISCONFIRMATION (required): run at least ONE search aimed at FALSIFYING the current lean — if P(YES) above is >50%, search for the strongest reasons it will NOT happen; if <50%, search for the strongest reasons it WILL. Report what you find even if it is weak or comes up empty (say so in round_summary). Do not only look for evidence that confirms the current estimate."
+    ? "1. Use WebSearch to find NEW, relevant, recent evidence about whether this event will happen. Do not re-count any source already listed above. PRIMARY SOURCE FIRST: if the framing names a settlement source, target it directly at least once this round (e.g. a site: query or its exact page) before falling back to third-party mirrors — the resolution will be read off the primary source, not the mirrors. NATIVE LANGUAGE: when the question centers on a non-English-speaking country or actor, run at least one search in the locally relevant language (e.g. Persian for Iran, Chinese for Taiwan) — local/state media often reports before English outlets.\n2. DISCONFIRMATION (required): run at least ONE search aimed at FALSIFYING the current lean — if P(YES) above is >50%, search for the strongest reasons it will NOT happen; if <50%, search for the strongest reasons it WILL. Report what you find even if it is weak or comes up empty (say so in round_summary). Do not only look for evidence that confirms the current estimate."
     : "1. You have NO web access. Use your own knowledge (respecting its cutoff) to surface NEW, relevant evidence about whether this event will happen. Do not re-count any source already listed above.\n2. DISCONFIRMATION (required): argue the strongest case against the current lean — if P(YES) above is >50%, the strongest reasons it will NOT happen; if <50%, the strongest reasons it WILL — and include it as evidence if it holds up. Report the attempt even if it comes up empty (say so in round_summary). Do not only reason toward what confirms the current estimate.";
   const citeRule = extras.hasWebSearch
     ? "8. Only cite source_url values you actually retrieved via WebSearch."
@@ -121,6 +121,7 @@ export function buildPrompt(
 EVENT: ${state.framing.normalizedQuestion}
 RESOLUTION CRITERIA: ${state.framing.resolutionCriteria}
 RESOLUTION DATE (must occur by): ${state.framing.resolutionDate ?? "(open-ended)"}
+SETTLEMENT SOURCE (the primary source the outcome will be read from): ${state.framing.settlementSource || "(unspecified)"}
 TODAY (UTC): ${nowUtc().slice(0, 10)} — date every claim against this. A scheduled future event (a visit, a deadline, a hearing) counts as a no-show ONLY once a source dated AFTER the scheduled date confirms it did not happen; never score a still-upcoming event as already missed.
 
 CURRENT ESTIMATE (this is your PRIOR for this round): P(YES) = ${(state.currentProb * 100).toFixed(1)}%
