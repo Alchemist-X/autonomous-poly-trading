@@ -99,14 +99,21 @@ function resolutionOf(closed: boolean, prices: number[] | null): { state: Resolu
 }
 
 // Two-step lookup: the plain slug query only returns OPEN markets; once a
-// market closes it only appears with &closed=true. A miss on both = the
-// market is gone/renamed (caller escalates to the operator).
-export async function fetchMarket(slug: string): Promise<MarketInfo> {
+// market closes it only appears with &closed=true. Polymarket also RENAMES
+// market slugs in place (live incident 2026-07-07: putin-out-before-2027 →
+// putin-out-before-2027-346, same conditionId), so a held position must be
+// able to fall back to its immutable conditionId — otherwise it can neither
+// be re-evaluated nor SETTLED for as long as the slug stays broken. A miss on
+// all lookups = the market is gone (caller escalates to the operator).
+export async function fetchMarket(slug: string, conditionId?: string): Promise<MarketInfo> {
   const enc = encodeURIComponent(slug);
   let rows = await fetchJson<GammaMarket[]>(`${GAMMA}/markets?slug=${enc}`);
   if (!rows.length) rows = await fetchJson<GammaMarket[]>(`${GAMMA}/markets?slug=${enc}&closed=true`);
+  if (!rows.length && conditionId) {
+    rows = await fetchJson<GammaMarket[]>(`${GAMMA}/markets?condition_ids=${encodeURIComponent(conditionId)}`);
+  }
   const m = rows[0];
-  if (!m) throw new Error(`no Polymarket market found for slug "${slug}" (open or closed)`);
+  if (!m) throw new Error(`no Polymarket market found for slug "${slug}" (open or closed${conditionId ? ", conditionId fallback tried" : ""})`);
   const outcomes = parseJsonArray(m.outcomes);
   const tokenIds = parseJsonArray(m.clobTokenIds);
   const priceStrings = parseJsonArray(m.outcomePrices);

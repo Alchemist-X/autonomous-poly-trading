@@ -128,6 +128,16 @@ export function saveAnalyst(eventId: string, a: AnalystState): void {
   writeFileAtomic(analystPath(eventId), JSON.stringify(a, null, 2));
 }
 
+// Diagnostic artifacts (e.g. an agent's invalid round output) — persisted next
+// to the dossier so production failures are diagnosable after the fact.
+export function writeDiagnostic(eventId: string, name: string, content: string): string {
+  const dir = eventDir(eventId);
+  mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, name);
+  writeFileSync(file, content, "utf8");
+  return file;
+}
+
 const pct = (p: number): string => `${(p * 100).toFixed(1)}%`;
 const signed = (pp: number): string => `${pp >= 0 ? "+" : ""}${pp.toFixed(1)}pp`;
 

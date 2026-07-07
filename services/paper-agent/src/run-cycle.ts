@@ -160,9 +160,21 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
   for (const stale of [...portfolio.positions]) {
     const posId = stale.id;
     try {
-      const current = findPosition(portfolio, posId);
+      let current = findPosition(portfolio, posId);
       if (!current) continue;
-      const market = await fetchMarket(current.slug);
+      const market = await fetchMarket(current.slug, current.conditionId);
+      // Self-heal a Gamma slug rename (conditionId fallback found the market
+      // under a new slug): store the new slug so future lookups hit directly.
+      if (market.slug !== current.slug) {
+        log.warn(`slug renamed on Gamma: ${current.slug} → ${market.slug} (position ${posId})`);
+        appendLedger({ type: "slug_renamed", positionId: posId, slug: current.slug, newSlug: market.slug });
+        current = { ...current, slug: market.slug };
+        portfolio = {
+          ...portfolio,
+          positions: portfolio.positions.map((x) => (x.id === posId ? current! : x))
+        };
+        savePortfolio(portfolio);
+      }
 
       if (market.closed) {
         const settled = settleFromMarket(portfolio, current, market);
@@ -441,7 +453,7 @@ async function runFillTickLocked(cfg: PaperConfig): Promise<void> {
     try {
       const pos = findPosition(portfolio, posId);
       if (!pos) continue;
-      const market = await fetchMarket(pos.slug);
+      const market = await fetchMarket(pos.slug, pos.conditionId);
 
       if (market.closed) {
         const settled = settleFromMarket(portfolio, pos, market);
