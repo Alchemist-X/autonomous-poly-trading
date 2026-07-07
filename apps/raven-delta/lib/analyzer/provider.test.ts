@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { extractJsonObject, resolveEngine } from "./provider";
+import { buildClaudeArgs, extractJsonObject, resolveEngine } from "./provider";
+import { LONGPORT_ALLOWED_TOOL_IDS } from "./longport-mcp";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -48,5 +49,53 @@ describe("resolveEngine", () => {
     vi.stubEnv("DEEPSEEK_API_KEY", "");
     vi.stubEnv("DELTA_CLAUDE_CLI", "1");
     expect(resolveEngine().engine).toBe("claude-cli");
+  });
+});
+
+describe("buildClaudeArgs LongPort wiring", () => {
+  it("adds no MCP config or longport tools when disabled", () => {
+    vi.stubEnv("DELTA_LONGPORT_ENABLED", "");
+    const { args, cleanup } = buildClaudeArgs(true);
+    try {
+      expect(args).not.toContain("--mcp-config");
+      expect(args).not.toContain("--disallowedTools");
+      const allowed = args[args.indexOf("--allowedTools") + 1];
+      expect(allowed).toBe("WebSearch");
+    } finally {
+      cleanup();
+    }
+  });
+
+  it("adds no MCP config for a non-market-data call even when enabled (gate/repair path)", () => {
+    vi.stubEnv("DELTA_LONGPORT_ENABLED", "1");
+    vi.stubEnv("DELTA_LONGPORT_TOKEN", "tok");
+    const { args, cleanup } = buildClaudeArgs(false);
+    try {
+      expect(args).not.toContain("--mcp-config");
+      const allowed = args[args.indexOf("--allowedTools") + 1];
+      expect(allowed).toBe("WebSearch");
+    } finally {
+      cleanup();
+    }
+  });
+
+  it("attaches the MCP config, read-only allowlist, and trade denylist for a market-data call when enabled", () => {
+    vi.stubEnv("DELTA_LONGPORT_ENABLED", "1");
+    vi.stubEnv("DELTA_LONGPORT_TOKEN", "tok");
+    const { args, cleanup } = buildClaudeArgs(true);
+    try {
+      expect(args).toContain("--mcp-config");
+      expect(args).toContain("--strict-mcp-config");
+      const allowed = args[args.indexOf("--allowedTools") + 1];
+      expect(allowed).toContain("WebSearch");
+      expect(allowed).toContain(LONGPORT_ALLOWED_TOOL_IDS[0]);
+      // Trade tools must be BOTH absent from the allowlist and present in the denylist.
+      expect(allowed).not.toContain("submit_order");
+      const disallowed = args[args.indexOf("--disallowedTools") + 1];
+      expect(disallowed).toContain("submit_order");
+      expect(disallowed).toContain("create_watchlist_group");
+    } finally {
+      cleanup();
+    }
   });
 });

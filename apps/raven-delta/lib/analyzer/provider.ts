@@ -10,6 +10,7 @@ import { spawn } from "node:child_process";
 import { deltaAnalysisSchema, type DeltaAnalysis, type EngineId } from "./schema";
 import { buildRepairPrompt } from "./prompt";
 import { findStock } from "./universe";
+import { prepareLongportCli, resolveLongport } from "./longport-mcp";
 
 const DEFAULT_TIMEOUT_MS = 180_000;
 
@@ -96,44 +97,101 @@ async function runDeepSeekPrompt(prompt: string): Promise<string> {
   }
 }
 
-async function runClaudeCliPrompt(prompt: string): Promise<string> {
-  const timeoutMs = engineTimeoutMs();
-  const allowedTools = process.env.DELTA_ALLOWED_TOOLS ?? "WebSearch";
+// Build the claude CLI args. The LongPort MCP is attached ONLY when the caller
+// asks for market data (marketData=true — the analysis path) AND it is enabled;
+// the quality gate and the schema-repair round get plain args with no MCP, so
+// the bearer-token temp file and the live brokerage session never open for a
+// prompt that cannot use them. When attached: merge the READ-ONLY market-data
+// tools into --allowedTools and pass the write/trade tools as --disallowedTools
+// (defense-in-depth — the allowlist alone already makes them unreachable).
+// Returns a cleanup() that removes the temp mcp-config (which may carry the
+// bearer token).
+export function buildClaudeArgs(marketData = false): { args: string[]; cleanup: () => void } {
   const model = process.env.DELTA_CLAUDE_MODEL?.trim() || "";
-  const args = ["--print", "--output-format", "json", "--allowedTools", allowedTools];
-  if (model) args.push("--model", model);
+  const baseAllowed = (process.env.DELTA_ALLOWED_TOOLS ?? "WebSearch")
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
 
-  return await new Promise<string>((resolve, reject) => {
-    const child = spawn("claude", args, { env: process.env });
-    let stdout = "";
-    let stderr = "";
-    const timer = setTimeout(() => {
-      child.kill("SIGTERM");
-      reject(new Error(`claude CLI timed out after ${timeoutMs}ms`));
-    }, timeoutMs);
-    child.stdout.on("data", (d) => (stdout += d.toString()));
-    child.stderr.on("data", (d) => (stderr += d.toString()));
-    child.on("error", (error) => {
-      clearTimeout(timer);
-      reject(error);
+  const longport = resolveLongport();
+  if (!marketData || !longport.enabled) {
+    const args = ["--print", "--output-format", "json", "--allowedTools", baseAllowed.join(",")];
+    if (model) args.push("--model", model);
+    return { args, cleanup: () => {} };
+  }
+
+  const cli = prepareLongportCli();
+  const allowed = [...baseAllowed, ...cli.allowedTools].join(",");
+  const args = [
+    "--print",
+    "--output-format",
+    "json",
+    "--mcp-config",
+    cli.configPath,
+    // Use ONLY the longport server from our config — never inherit a globally
+    // registered MCP server (which could carry write/trade tools) into this run.
+    "--strict-mcp-config",
+    "--allowedTools",
+    allowed,
+    // Never reachable given the allowlist, but stated explicitly so the intent
+    // survives a future refactor that widens --allowedTools.
+    "--disallowedTools",
+    cli.disallowedTools.join(","),
+  ];
+  if (model) args.push("--model", model);
+  return { args, cleanup: cli.cleanup };
+}
+
+// Strip any bearer token from child-process stderr before it becomes a
+// persisted + browser-returned string (engineFallbackReason). The token should
+// never appear here — it only lives in the mcp-config file, not argv or the
+// prompt — but this closes the one channel where a future CLI could echo it.
+function redactSecrets(text: string): string {
+  const token = process.env.DELTA_LONGPORT_TOKEN?.trim();
+  let out = text.replace(/Bearer\s+[A-Za-z0-9._~+/=-]+/gi, "Bearer [redacted]");
+  if (token) out = out.split(token).join("[redacted]");
+  return out;
+}
+
+async function runClaudeCliPrompt(prompt: string, opts: { marketData?: boolean } = {}): Promise<string> {
+  const timeoutMs = engineTimeoutMs();
+  const { args, cleanup } = buildClaudeArgs(opts.marketData ?? false);
+
+  try {
+    return await new Promise<string>((resolve, reject) => {
+      const child = spawn("claude", args, { env: process.env });
+      let stdout = "";
+      let stderr = "";
+      const timer = setTimeout(() => {
+        child.kill("SIGTERM");
+        reject(new Error(`claude CLI timed out after ${timeoutMs}ms`));
+      }, timeoutMs);
+      child.stdout.on("data", (d) => (stdout += d.toString()));
+      child.stderr.on("data", (d) => (stderr += d.toString()));
+      child.on("error", (error) => {
+        clearTimeout(timer);
+        reject(error);
+      });
+      child.on("close", (code) => {
+        clearTimeout(timer);
+        if (code !== 0) {
+          reject(new Error(`claude CLI exited ${code}: ${redactSecrets(stderr).slice(-300)}`));
+          return;
+        }
+        try {
+          const envelope = JSON.parse(stdout) as { result?: string };
+          resolve(envelope.result ?? "");
+        } catch {
+          // Older CLI versions may print the text directly.
+          resolve(stdout);
+        }
+      });
+      child.stdin.write(prompt);
+      child.stdin.end();
     });
-    child.on("close", (code) => {
-      clearTimeout(timer);
-      if (code !== 0) {
-        reject(new Error(`claude CLI exited ${code}: ${stderr.slice(-300)}`));
-        return;
-      }
-      try {
-        const envelope = JSON.parse(stdout) as { result?: string };
-        resolve(envelope.result ?? "");
-      } catch {
-        // Older CLI versions may print the text directly.
-        resolve(stdout);
-      }
-    });
-    child.stdin.write(prompt);
-    child.stdin.end();
-  });
+  } finally {
+    cleanup();
+  }
 }
 
 function summarizeZodError(error: unknown): string {
@@ -180,26 +238,33 @@ function enforceUniverseFacts(analysis: DeltaAnalysis): DeltaAnalysis {
 }
 
 // Generic single-shot JSON call for small harness judgments (e.g. the ingest
-// quality gate). No repair round — callers fall back on failure.
+// quality gate). No repair round — callers fall back on failure. No market data:
+// these prompts never carry the tool-use guidance, so the LongPort MCP must not
+// be attached (would cost a token temp-file + brokerage session for nothing).
 export async function runLlmJson(engine: EngineId, prompt: string): Promise<unknown> {
   if (engine === "rules") throw new Error("runLlmJson cannot run the rules engine.");
-  const runPrompt = engine === "deepseek" ? runDeepSeekPrompt : runClaudeCliPrompt;
-  const raw = await runPrompt(prompt);
+  const raw = engine === "deepseek" ? await runDeepSeekPrompt(prompt) : await runClaudeCliPrompt(prompt);
   const candidate = extractJsonObject(raw);
   if (candidate === null) throw new Error("no JSON object in engine output");
   return candidate;
 }
 
 export async function runLlmAnalysis(engine: EngineId, prompt: string): Promise<DeltaAnalysis> {
-  const runPrompt = engine === "deepseek" ? runDeepSeekPrompt : runClaudeCliPrompt;
   if (engine === "rules") throw new Error("runLlmAnalysis cannot run the rules engine.");
+  // Only the first (analysis) call carries the marketDataSection guidance and
+  // may use LongPort tools; the repair round only fixes JSON shape, so it runs
+  // WITHOUT the MCP attached.
+  const runFirst = (p: string): Promise<string> =>
+    engine === "deepseek" ? runDeepSeekPrompt(p) : runClaudeCliPrompt(p, { marketData: true });
+  const runRepair = (p: string): Promise<string> =>
+    engine === "deepseek" ? runDeepSeekPrompt(p) : runClaudeCliPrompt(p);
 
-  const firstRaw = await runPrompt(prompt);
+  const firstRaw = await runFirst(prompt);
   const firstCandidate = normalizeCandidate(extractJsonObject(firstRaw));
   const firstParse = deltaAnalysisSchema.safeParse(firstCandidate);
   if (firstParse.success) return enforceUniverseFacts(firstParse.data);
 
-  const repairRaw = await runPrompt(buildRepairPrompt(firstRaw, summarizeZodError(firstParse.error)));
+  const repairRaw = await runRepair(buildRepairPrompt(firstRaw, summarizeZodError(firstParse.error)));
   const repairCandidate = normalizeCandidate(extractJsonObject(repairRaw));
   const repairParse = deltaAnalysisSchema.safeParse(repairCandidate);
   if (repairParse.success) return enforceUniverseFacts(repairParse.data);

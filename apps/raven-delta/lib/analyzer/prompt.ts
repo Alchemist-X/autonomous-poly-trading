@@ -3,8 +3,27 @@
 // text avoids over-constraining the reasoning and instead states the desk
 // context, the increment-first doctrine, and the output surface.
 
-import type { NewsInput } from "./schema";
+import type { EngineId, NewsInput } from "./schema";
 import { universePromptTable, getUniverse } from "./universe";
+import { LONGPORT_SERVER_NAME, resolveLongport } from "./longport-mcp";
+
+// Guidance injected ONLY for the claude-cli engine when LongPort market data is
+// wired in — deepseek/rules have no MCP tools, so telling them to call quotes
+// would be a lie. The analyst grounds its numbers on the live price/recent move
+// but must NOT treat a quote as evidence about the NEWS itself (freshness is
+// still established by web search).
+function marketDataSection(engine: EngineId | undefined): string {
+  if (engine !== "claude-cli" || !resolveLongport().enabled) return "";
+  const p = `mcp__${LONGPORT_SERVER_NAME}__`;
+  return `
+LIVE MARKET DATA (LongPort, read-only) — you have MCP tools for real US/HK market data:
+- \`${p}quote\` (real-time price), \`${p}candlesticks\` / \`${p}history_candlesticks_by_date\` (recent move), \`${p}intraday\`, \`${p}depth\`, \`${p}trading_session\` / \`${p}market_status\` (is the market open?), \`${p}valuation\` / \`${p}financial_report_latest\` (fundamentals).
+- Use them to GROUND each impacted stock: check the actual last price and how far it has already moved TODAY before you state a direction and expectedMovePct — a 4% pop that already happened is priced in, and belongs in risks, not upside.
+- Record what you pulled as evidence: put the price / % move / quote timestamp in the stock's evidence[] with source "LongPort". Never invent a quote you did not fetch.
+- These tools are market data ONLY. You cannot and must not place, cancel, or size any order, or read account/portfolio data — that is out of scope for this desk.
+- If a tool call fails or the market is closed, say so in limitations and fall back to reasoning from the news; do not block the analysis on it.
+`;
+}
 
 const OUTPUT_SPEC = `Return EXACTLY ONE JSON object (no markdown fences, no prose outside it) with this shape:
 {
@@ -41,7 +60,7 @@ const OUTPUT_SPEC = `Return EXACTLY ONE JSON object (no markdown fences, no pros
   "limitations": [ string ]           // at least one honest limitation of this analysis
 }`;
 
-export function buildAnalysisPrompt(news: NewsInput): string {
+export function buildAnalysisPrompt(news: NewsInput, engine?: EngineId): string {
   const universe = getUniverse();
   const lang =
     news.locale === "zh"
@@ -49,6 +68,7 @@ export function buildAnalysisPrompt(news: NewsInput): string {
       : "Write every human-readable string field in English.";
 
   return `You are the news-impact analyst behind Raven Delta, Raven Labs' real-time news engine for US equities.
+${marketDataSection(engine)}
 
 Doctrine — trade the increment, not the level:
 - A static "will this stock go up" probability is not the product. The question is what THIS headline changes relative to the pre-news baseline: which cash flows, multiples, or risk premia get repriced, and for whom.
