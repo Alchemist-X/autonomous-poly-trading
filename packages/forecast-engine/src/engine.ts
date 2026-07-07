@@ -26,7 +26,7 @@ import {
 import { isMarketPriceSource, marketBlind, marketBlindDirective } from "./market-blind";
 import { validateRoundOutput } from "./claude-agent";
 import type { AgentRunResult, RunAgentOptions } from "./claude-agent";
-import { loadAnalyst, saveAnalyst, saveState, writeReport } from "./store";
+import { loadAnalyst, saveAnalyst, saveState, writeDiagnostic, writeReport } from "./store";
 import { summarizeForecast } from "./summary";
 import { canonicalizeUrl } from "./url";
 import type {
@@ -245,6 +245,13 @@ async function runOneRound(
     out = validate(result);
   }
   if (!out) {
+    // Persist the invalid output for diagnosis — two production rounds aborted
+    // with "no JSON object" (2026-07-06/07) and left no trace to debug from.
+    try {
+      writeDiagnostic(state.eventId, `invalid-round-${roundNo}.txt`, result.rawFinalText ?? "");
+    } catch {
+      // diagnostic only — never mask the real error
+    }
     throw new Error(
       `round ${roundNo} aborted: agent output invalid after retry: ${result.jsonError ?? "schema mismatch"}\n` +
         `stderr: ${result.stderrTail}`
