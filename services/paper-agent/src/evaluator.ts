@@ -129,7 +129,12 @@ export async function evaluateMarket(market: MarketInfo, opts: EvaluateOptions):
     FORECAST_MARKET_BLIND: "1",
     // The owner reads these dossiers; default to Chinese prose (override with
     // PAPER_FORECAST_LANGUAGE=en). Machine fields stay ASCII either way.
-    FORECAST_LANGUAGE: process.env.PAPER_FORECAST_LANGUAGE ?? "zh"
+    FORECAST_LANGUAGE: process.env.PAPER_FORECAST_LANGUAGE ?? "zh",
+    // 10 min per agent call (engine default is 6): the review prompts mandate
+    // more searches per round (disconfirmation + primary source + native
+    // language) and a live round timed out at 360s on 2026-07-07. Two calls
+    // per eval still fit the 25-min child timeout.
+    FORECAST_AGENT_TIMEOUT_MS: process.env.FORECAST_AGENT_TIMEOUT_MS ?? "600000"
   };
   // For the OpenAI-compatible path, web research is ON by default (function-
   // calling loop; keyless DuckDuckGo unless TAVILY_API_KEY). Opt out with
