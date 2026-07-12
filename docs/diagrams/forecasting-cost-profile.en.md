@@ -4,7 +4,17 @@
 >
 > 中文版：[`forecasting-cost-profile.md`](forecasting-cost-profile.md)
 >
-> Last updated: 2026-06-12
+> Last updated: 2026-07-02
+
+## Single-event read-only Forecasting Engine run (measured 2026-07-02)
+
+| Task | Stage | Measured time / tokens | Notes |
+| --- | --- | --- | --- |
+| Fed Decision in July / No change | Gamma event parse + one-candidate deep research + web-search | ~9s, context ~7.0k tokens | `runtime-artifacts/fed-decision-july-2026-no-change/20260702T092845Z-dd2b1d79-14a7-4cce-8ab3-7581256bec4c/`; web-search ran 4 queries, 3 completed and 1 hit DuckDuckGo 403 |
+| Same | `claude-code` Pulse render | 262s, input ~7.0k tokens (context) + ~4.5k support-doc tokens, output ~2.4k tokens | One-candidate targeted research, not `forecast:live`; no wallet, auto-redeem, or order placement; normal 0-byte silence for about 4 minutes before output |
+| Same | PDF generation + PNG visual QA | seconds | 3-page PDF rendered with `pdftoppm` and visually inspected |
+
+Takeaway: a single-event read-only forecast is much lighter than a full live run, roughly 4.5 minutes end to end; provider rendering remains the bottleneck.
 
 ## Shape of one full live forecasting run (measured 2026-06-10, 3 complete runs)
 

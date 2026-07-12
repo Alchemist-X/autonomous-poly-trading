@@ -4,7 +4,17 @@
 >
 > 英文版：[`forecasting-cost-profile.en.md`](forecasting-cost-profile.en.md)
 >
-> 最后更新：2026-06-12
+> 最后更新：2026-07-02
+
+## 单事件只读 Forecasting Engine run（2026-07-02 实测）
+
+| 任务 | 阶段 | 实测耗时 / token | 备注 |
+| --- | --- | --- | --- |
+| Fed Decision in July / No change | Gamma 事件解析 + 单候选 deep research + web-search | ~9s，context ~7.0k tok | `runtime-artifacts/fed-decision-july-2026-no-change/20260702T092845Z-dd2b1d79-14a7-4cce-8ab3-7581256bec4c/`；web-search 4 条查询，3 成功、1 条 DuckDuckGo 403 |
+| 同上 | `claude-code` Pulse render | 262s，input ~7.0k tok（context）+ support docs ~4.5k tok，output ~2.4k tok | 单候选定向研究，不走 `forecast:live`，无钱包 / auto-redeem / 下单；0 字节静默约 4 分钟后正常产出 |
+| 同上 | PDF 生成 + PNG 视觉验收 | 秒级 | PDF 3 页，已用 `pdftoppm` 渲染并读图验收 |
+
+结论：单事件 read-only 预测比完整 live run 轻很多，端到端约 4.5 分钟；慢点仍是 provider render。
 
 ## 一次完整实盘 forecasting run 的形状（2026-06-10 实测，3 轮完整 run）
 
