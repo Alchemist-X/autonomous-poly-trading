@@ -1,4 +1,4 @@
-import { getPerformance, type LegKey, type PerfLeg, type PerfMatch } from "../../lib/world-cup/performance";
+import type { LegKey, PerfLeg, PerfMatch, Performance } from "../../lib/world-cup/performance";
 import { resolveTeam } from "../../lib/world-cup/team-meta";
 import { t, teamLabel, type Locale } from "../../lib/world-cup/i18n";
 import styles from "./world-cup.module.css";
@@ -78,8 +78,8 @@ function matchReturn(m: PerfMatch): number {
   return m.legs.reduce((sum, l) => sum + (l.retPct ?? 0), 0);
 }
 
-export function PerformanceDetail({ locale }: { locale: Locale }) {
-  const { agg, matches, bins } = getPerformance();
+export function PerformanceDetail({ locale, perf }: { locale: Locale; perf: Performance }) {
+  const { agg, matches, bins } = perf;
   const sign = (n: number) => `${n >= 0 ? "+" : "−"}${Math.abs(n)}%`;
   const ranked = [...matches].sort((a, b) => matchReturn(b) - matchReturn(a));
   const topMatches = ranked.slice(0, 3);

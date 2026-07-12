@@ -1,87 +1,87 @@
 {
- "generatedAt": "2026-06-29T16:20:34.267Z",
+ "generatedAt": "2026-07-12T14:37:50.519Z",
  "source": "polymarket-settlement",
  "note": "Market-blind: settled winner + final score only — no prices or implied probabilities. winner a=teamA / b=teamB by NAME.",
  "counts": {
-  "resolved": 0,
-  "pending": 15,
+  "resolved": 15,
+  "pending": 0,
   "total": 15
  },
  "results": {
-  "fifwc-bra-jpn-2026-06-29": {
-   "status": "pending",
-   "winner": null,
-   "score": null
-  },
-  "fifwc-nld-mar-2026-06-29": {
-   "status": "pending",
-   "winner": null,
-   "score": null
-  },
-  "fifwc-fra-swe-2026-06-30": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+  "fifwc-civ-nor-2026-06-30": {
+   "status": "resolved",
+   "winner": "b",
+   "score": "1-2"
   },
   "fifwc-ger-par-2026-06-29": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+   "status": "resolved",
+   "winner": "draw",
+   "score": "1-1"
   },
-  "fifwc-civ-nor-2026-06-30": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+  "fifwc-nld-mar-2026-06-29": {
+   "status": "resolved",
+   "winner": "draw",
+   "score": "1-1"
   },
-  "fifwc-mex-ecu-2026-06-30": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+  "fifwc-fra-swe-2026-06-30": {
+   "status": "resolved",
+   "winner": "a",
+   "score": "3-0"
   },
-  "fifwc-bel-sen-2026-07-01": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+  "fifwc-bra-jpn-2026-06-29": {
+   "status": "resolved",
+   "winner": "a",
+   "score": "2-1"
   },
   "fifwc-eng-cdr-2026-07-01": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+   "status": "resolved",
+   "winner": "a",
+   "score": "2-1"
   },
-  "fifwc-usa-bih-2026-07-01": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+  "fifwc-bel-sen-2026-07-01": {
+   "status": "resolved",
+   "winner": "draw",
+   "score": "2-2"
   },
   "fifwc-che-alg-2026-07-02": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+   "status": "resolved",
+   "winner": "a",
+   "score": "2-0"
   },
-  "fifwc-esp-aut-2026-07-02": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+  "fifwc-mex-ecu-2026-06-30": {
+   "status": "resolved",
+   "winner": "a",
+   "score": "2-0"
   },
-  "fifwc-aus-egy-2026-07-03": {
-   "status": "pending",
-   "winner": null,
-   "score": null
-  },
-  "fifwc-arg-cvi-2026-07-03": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+  "fifwc-usa-bih-2026-07-01": {
+   "status": "resolved",
+   "winner": "a",
+   "score": "2-0"
   },
   "fifwc-prt-hrv-2026-07-02": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+   "status": "resolved",
+   "winner": "a",
+   "score": "2-1"
+  },
+  "fifwc-esp-aut-2026-07-02": {
+   "status": "resolved",
+   "winner": "a",
+   "score": "3-0"
+  },
+  "fifwc-arg-cvi-2026-07-03": {
+   "status": "resolved",
+   "winner": "draw",
+   "score": "1-1"
   },
   "fifwc-col-gha-2026-07-03": {
-   "status": "pending",
-   "winner": null,
-   "score": null
+   "status": "resolved",
+   "winner": "a",
+   "score": "1-0"
+  },
+  "fifwc-aus-egy-2026-07-03": {
+   "status": "resolved",
+   "winner": "draw",
+   "score": "1-1"
   }
  }
 }

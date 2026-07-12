@@ -11,7 +11,12 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-07 by Claude（**paper agent 业绩核查 + 报告质量三维评审与修复**，分支 `claude/heuristic-clarke-1a459e`，**PR #81**，已部署 VM paper-agent 容器）。
+> 最后更新：2026-07-12 by Claude（**淘汰赛 32 强预测效果上线预测效果页**，分支 `feat/wc-knockout-performance`，**PR #86**）。
+> ① **数据**：`pnpm tsx scripts/world-cup/fifa8-results.ts` **15/15 R32 全部结算**（90 分钟口径，5 场平局）；`fifa8-performance.ts` 重算 9 模型榜——发布的多重校准融合 **bestPick 11/15（73%）· Mock PNL +11.7% · Brier skill +3.5% · ECE 14.2%**；榜首 Dixon-Coles 贝叶斯（BSS +3.8%），垫底 PRODEGY（−20.7%）。市场盲测不变：价格只做事后基准。
+> ② **Web**：`/world-cup/performance` 新增「小组赛 / 淘汰赛 · 32 强」stage tab（`perf-stage-tabs.tsx` 客户端切换两个 SSG panel；`PerformanceDetail` 改接收数据 prop——淘汰赛 tab 与小组赛同版式同指标）；新 reader `apps/web/lib/world-cup/fifa8-performance.ts`（取 headline=multicalibrated）；i18n 新 key `perfTabGroups/perfTabKnockout/perfKnockoutScope`（en+zh-CN 手写，zh-TW 重新生成）。build 绿；桌面+移动 × en/zh-CN/zh-TW 验收，0 console error。
+> ③ **部署**：merge 后手动 `gh workflow run wc-results.yml --ref main`（forecasting-agent.com 唯一发布通道）。**待办**：R16 起的淘汰赛预测尚未生成（fifa8 管线只覆盖 R32）——生成后预测效果页加第三个 tab 或并入淘汰赛 tab；`wc-results.yml` 的 cron 仍停用（小组赛冻结时关的），淘汰赛结果更新目前靠手动跑 fifa8-results + 重部署。
+>
+> 上次更新：2026-07-07 by Claude（**paper agent 业绩核查 + 报告质量三维评审与修复**，分支 `claude/heuristic-clarke-1a459e`，**PR #81**，已部署 VM paper-agent 容器）。
 > ① **业绩（截至 2026-07-06 UTC）**：$10k 模拟盘跑 3 天，权益 **$10,321.69（+3.22%）** = realized +$200.20（3 笔 negative_edge 退出全对账）+ 浮盈 +$121.49（5 仓）；**Brier / skill score 尚不可计（n=0，最早 7/10-7/15 才有市场结算）**。
 > ② **123-agent 对抗评审**（14 份 engine 报告 + 3 份反思 + search trace + 生成代码；104 发现 → 51 确认）：三大 P0 = **市场盲测失效**（engine 主动搜并锚定它要对赌的 Polymarket 价格，4/14 先验直接引市价，evidence 轮里也搜 `Polymarket odds`——edge 部分自指）；**P=99%/1% 是 bayes.ts PROB_FLOOR/CEIL 钳位**（5/14 dossier 打死在 floor 且伪装 "converged"，floor 后每轮照跑白烧 $4/轮）；**结论埋在 700 词框架墙后**。次级：status-quo 证据跨轮全权重重复 ~9 次、credibility 标签收集不使用、未验证引用可当最大 mover、hybrid 指标混池虚报（+14.7pp → 配对真值 +0.6pp）、`|` 未转义断表格。完整计划归档见 PR #81 描述。
 > ③ **修复全部落地（engine + paper-agent，924 测试绿 / 18 包 typecheck 绿）**：`FORECAST_MARKET_BLIND=1` 模式（三处 prompt 禁令 + 域名黑名单归零权重 + 先验重审 + state.json 污染标记 + paper-agent 对污染评估不开仓/不 negative_edge 退出）；`saturated` 新状态全链路透传（报告头注明"引擎下限非精确值"，floor 即止省 token）；跨轮 cluster decay + `status-quo-continuation` 规范 id；credibility 限幅 |llr|（low≤0.25）+ 未验证源不得超该轮最大 verified 贡献 + 连续 2 轮单边同向权重减半；**反思报告新增 Brier skill score = 1 − Brier_agent/Brier_market**（基线 = 同时刻 bestBid / watchlist 中价，覆盖所有已评估结算市场，watchlist_eval 开始记 `marketProbYes`）——**用户最关心的"是否跑赢市场"以后每日自动回答**；报告改 verdict-first + 引用可点击 + zh 模板，paper-agent dossier 默认中文（`PAPER_FORECAST_LANGUAGE` 可覆盖）。
