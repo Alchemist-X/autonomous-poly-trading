@@ -1,134 +1,22 @@
 {
- "generatedAt": "2026-06-29T16:20:34.583Z",
+ "generatedAt": "2026-07-12T14:37:59.918Z",
  "headline": "multicalibrated",
- "settled": 0,
+ "settled": 15,
  "forecasters": [
   {
    "id": "dixon-coles-bayes",
    "name": "Dixon-Coles (Bayesian-shrunk)",
    "family": "statistical",
    "agg": {
-    "settled": 0,
-    "bestPickHit": 0,
-    "bestPickPct": 0,
-    "roiPct": 0,
-    "bets": 0,
-    "wins": 0,
-    "skips": 0,
-    "bssPct": 0,
-    "ecePct": 0
-   }
-  },
-  {
-   "id": "xg-elo",
-   "name": "xG-corrected Elo",
-   "family": "elo",
-   "agg": {
-    "settled": 0,
-    "bestPickHit": 0,
-    "bestPickPct": 0,
-    "roiPct": 0,
-    "bets": 0,
-    "wins": 0,
-    "skips": 0,
-    "bssPct": 0,
-    "ecePct": 0
-   }
-  },
-  {
-   "id": "prodegy",
-   "name": "PRODEGY split attack/defence Elo",
-   "family": "elo",
-   "agg": {
-    "settled": 0,
-    "bestPickHit": 0,
-    "bestPickPct": 0,
-    "roiPct": 0,
-    "bets": 0,
-    "wins": 0,
-    "skips": 0,
-    "bssPct": 0,
-    "ecePct": 0
-   }
-  },
-  {
-   "id": "fatigue-elo",
-   "name": "Physical-decay dynamic-K Elo",
-   "family": "elo",
-   "agg": {
-    "settled": 0,
-    "bestPickHit": 0,
-    "bestPickPct": 0,
-    "roiPct": 0,
-    "bets": 0,
-    "wins": 0,
-    "skips": 0,
-    "bssPct": 0,
-    "ecePct": 0
-   }
-  },
-  {
-   "id": "tactical-melo",
-   "name": "Tactical style-clash mElo",
-   "family": "elo",
-   "agg": {
-    "settled": 0,
-    "bestPickHit": 0,
-    "bestPickPct": 0,
-    "roiPct": 0,
-    "bets": 0,
-    "wins": 0,
-    "skips": 0,
-    "bssPct": 0,
-    "ecePct": 0
-   }
-  },
-  {
-   "id": "linebreak-gbm",
-   "name": "Line-breaks & offers efficiency (gradient-boosted)",
-   "family": "ml",
-   "agg": {
-    "settled": 0,
-    "bestPickHit": 0,
-    "bestPickPct": 0,
-    "roiPct": 0,
-    "bets": 0,
-    "wins": 0,
-    "skips": 0,
-    "bssPct": 0,
-    "ecePct": 0
-   }
-  },
-  {
-   "id": "passnet-rf",
-   "name": "Passing-network structure (random forest)",
-   "family": "ml",
-   "agg": {
-    "settled": 0,
-    "bestPickHit": 0,
-    "bestPickPct": 0,
-    "roiPct": 0,
-    "bets": 0,
-    "wins": 0,
-    "skips": 0,
-    "bssPct": 0,
-    "ecePct": 0
-   }
-  },
-  {
-   "id": "stacked-ensemble",
-   "name": "Stacked Ensemble",
-   "family": "ensemble",
-   "agg": {
-    "settled": 0,
-    "bestPickHit": 0,
-    "bestPickPct": 0,
-    "roiPct": 0,
-    "bets": 0,
-    "wins": 0,
-    "skips": 0,
-    "bssPct": 0,
-    "ecePct": 0
+    "settled": 15,
+    "bestPickHit": 10,
+    "bestPickPct": 67,
+    "roiPct": 36.9,
+    "bets": 34,
+    "wins": 16,
+    "skips": 11,
+    "bssPct": 3.8,
+    "ecePct": 11.1
    }
   },
   {
@@ -136,18 +24,743 @@
    "name": "Multi-calibrated 8-in-1",
    "family": "ensemble",
    "agg": {
-    "settled": 0,
-    "bestPickHit": 0,
-    "bestPickPct": 0,
-    "roiPct": 0,
-    "bets": 0,
-    "wins": 0,
-    "skips": 0,
-    "bssPct": 0,
-    "ecePct": 0
+    "settled": 15,
+    "bestPickHit": 11,
+    "bestPickPct": 73,
+    "roiPct": 11.7,
+    "bets": 31,
+    "wins": 9,
+    "skips": 14,
+    "bssPct": 3.5,
+    "ecePct": 14.2
+   }
+  },
+  {
+   "id": "tactical-melo",
+   "name": "Tactical style-clash mElo",
+   "family": "elo",
+   "agg": {
+    "settled": 15,
+    "bestPickHit": 11,
+    "bestPickPct": 73,
+    "roiPct": 26.7,
+    "bets": 38,
+    "wins": 16,
+    "skips": 7,
+    "bssPct": 2.2,
+    "ecePct": 13.5
+   }
+  },
+  {
+   "id": "passnet-rf",
+   "name": "Passing-network structure (random forest)",
+   "family": "ml",
+   "agg": {
+    "settled": 15,
+    "bestPickHit": 7,
+    "bestPickPct": 47,
+    "roiPct": 27.5,
+    "bets": 40,
+    "wins": 22,
+    "skips": 5,
+    "bssPct": 0.8,
+    "ecePct": 23.5
+   }
+  },
+  {
+   "id": "fatigue-elo",
+   "name": "Physical-decay dynamic-K Elo",
+   "family": "elo",
+   "agg": {
+    "settled": 15,
+    "bestPickHit": 11,
+    "bestPickPct": 73,
+    "roiPct": 18.7,
+    "bets": 35,
+    "wins": 13,
+    "skips": 10,
+    "bssPct": -0.9,
+    "ecePct": 14.2
+   }
+  },
+  {
+   "id": "xg-elo",
+   "name": "xG-corrected Elo",
+   "family": "elo",
+   "agg": {
+    "settled": 15,
+    "bestPickHit": 11,
+    "bestPickPct": 73,
+    "roiPct": 18.7,
+    "bets": 35,
+    "wins": 13,
+    "skips": 10,
+    "bssPct": -1.2,
+    "ecePct": 13.3
+   }
+  },
+  {
+   "id": "stacked-ensemble",
+   "name": "Stacked Ensemble",
+   "family": "ensemble",
+   "agg": {
+    "settled": 15,
+    "bestPickHit": 10,
+    "bestPickPct": 67,
+    "roiPct": 0.3,
+    "bets": 38,
+    "wins": 10,
+    "skips": 7,
+    "bssPct": -11.3,
+    "ecePct": 15
+   }
+  },
+  {
+   "id": "linebreak-gbm",
+   "name": "Line-breaks & offers efficiency (gradient-boosted)",
+   "family": "ml",
+   "agg": {
+    "settled": 15,
+    "bestPickHit": 9,
+    "bestPickPct": 60,
+    "roiPct": 29.6,
+    "bets": 41,
+    "wins": 23,
+    "skips": 4,
+    "bssPct": -12.1,
+    "ecePct": 14.4
+   }
+  },
+  {
+   "id": "prodegy",
+   "name": "PRODEGY split attack/defence Elo",
+   "family": "elo",
+   "agg": {
+    "settled": 15,
+    "bestPickHit": 9,
+    "bestPickPct": 60,
+    "roiPct": -9.1,
+    "bets": 39,
+    "wins": 9,
+    "skips": 6,
+    "bssPct": -20.7,
+    "ecePct": 11.4
    }
   }
  ],
- "matches": [],
- "bins": []
+ "matches": [
+  {
+   "slug": "fifwc-bra-jpn-2026-06-29",
+   "homeEn": "Brazil",
+   "awayEn": "Japan",
+   "score": "2-1",
+   "winner": "a",
+   "our": [
+    0.51,
+    0.33,
+    0.16
+   ],
+   "mkt": [
+    0.54,
+    0.28,
+    0.19
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-ger-par-2026-06-29",
+   "homeEn": "Germany",
+   "awayEn": "Paraguay",
+   "score": "1-1",
+   "winner": "draw",
+   "our": [
+    0.47,
+    0.36,
+    0.17
+   ],
+   "mkt": [
+    0.72,
+    0.18,
+    0.09
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": 263.6,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": 440.5,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-nld-mar-2026-06-29",
+   "homeEn": "Netherlands",
+   "awayEn": "Morocco",
+   "score": "1-1",
+   "winner": "draw",
+   "our": [
+    0.46,
+    0.32,
+    0.22
+   ],
+   "mkt": [
+    0.41,
+    0.31,
+    0.27
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 37.9,
+     "win": true
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-civ-nor-2026-06-30",
+   "homeEn": "Côte d'Ivoire",
+   "awayEn": "Norway",
+   "score": "1-2",
+   "winner": "b",
+   "our": [
+    0.3,
+    0.3,
+    0.41
+   ],
+   "mkt": [
+    0.26,
+    0.28,
+    0.47
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-fra-swe-2026-06-30",
+   "homeEn": "France",
+   "awayEn": "Sweden",
+   "score": "3-0",
+   "winner": "a",
+   "our": [
+    0.68,
+    0.21,
+    0.12
+   ],
+   "mkt": [
+    0.77,
+    0.15,
+    0.07
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-mex-ecu-2026-06-30",
+   "homeEn": "Mexico",
+   "awayEn": "Ecuador",
+   "score": "2-0",
+   "winner": "a",
+   "our": [
+    0.38,
+    0.34,
+    0.28
+   ],
+   "mkt": [
+    0.43,
+    0.33,
+    0.23
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-bel-sen-2026-07-01",
+   "homeEn": "Belgium",
+   "awayEn": "Senegal",
+   "score": "2-2",
+   "winner": "draw",
+   "our": [
+    0.44,
+    0.37,
+    0.19
+   ],
+   "mkt": [
+    0.43,
+    0.29,
+    0.27
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": 239,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 37.9,
+     "win": true
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-eng-cdr-2026-07-01",
+   "homeEn": "England",
+   "awayEn": "DR Congo",
+   "score": "2-1",
+   "winner": "a",
+   "our": [
+    0.58,
+    0.3,
+    0.12
+   ],
+   "mkt": [
+    0.76,
+    0.17,
+    0.06
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-usa-bih-2026-07-01",
+   "homeEn": "United States",
+   "awayEn": "Bosnia-Herzegovina",
+   "score": "2-0",
+   "winner": "a",
+   "our": [
+    0.48,
+    0.33,
+    0.19
+   ],
+   "mkt": [
+    0.72,
+    0.19,
+    0.1
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-che-alg-2026-07-02",
+   "homeEn": "Switzerland",
+   "awayEn": "Algeria",
+   "score": "2-0",
+   "winner": "a",
+   "our": [
+    0.49,
+    0.33,
+    0.18
+   ],
+   "mkt": [
+    0.48,
+    0.29,
+    0.24
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "no",
+     "retPct": 30.7,
+     "win": true
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-esp-aut-2026-07-02",
+   "homeEn": "Spain",
+   "awayEn": "Austria",
+   "score": "3-0",
+   "winner": "a",
+   "our": [
+    0.75,
+    0.2,
+    0.05
+   ],
+   "mkt": [
+    0.75,
+    0.17,
+    0.07
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-prt-hrv-2026-07-02",
+   "homeEn": "Portugal",
+   "awayEn": "Croatia",
+   "score": "2-1",
+   "winner": "a",
+   "our": [
+    0.43,
+    0.38,
+    0.18
+   ],
+   "mkt": [
+    0.54,
+    0.27,
+    0.19
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-arg-cvi-2026-07-03",
+   "homeEn": "Argentina",
+   "awayEn": "Cabo Verde",
+   "score": "1-1",
+   "winner": "draw",
+   "our": [
+    0.65,
+    0.26,
+    0.1
+   ],
+   "mkt": [
+    0.84,
+    0.11,
+    0.04
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": 545.2,
+     "win": true
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": 769.6,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-aus-egy-2026-07-03",
+   "homeEn": "Australia",
+   "awayEn": "Egypt",
+   "score": "1-1",
+   "winner": "draw",
+   "our": [
+    0.26,
+    0.38,
+    0.36
+   ],
+   "mkt": [
+    0.28,
+    0.33,
+    0.38
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": 198.5,
+     "win": true
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  },
+  {
+   "slug": "fifwc-col-gha-2026-07-03",
+   "homeEn": "Colombia",
+   "awayEn": "Ghana",
+   "score": "1-0",
+   "winner": "a",
+   "our": [
+    0.6,
+    0.29,
+    0.11
+   ],
+   "mkt": [
+    0.63,
+    0.24,
+    0.12
+   ],
+   "legs": [
+    {
+     "leg": "a",
+     "side": "no",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "draw",
+     "side": "yes",
+     "retPct": -100,
+     "win": false
+    },
+    {
+     "leg": "b",
+     "side": "skip",
+     "retPct": null,
+     "win": false
+    }
+   ]
+  }
+ ],
+ "bins": [
+  {
+   "lo": 0,
+   "hi": 0.1,
+   "n": 2,
+   "predPct": 7,
+   "obsPct": 0
+  },
+  {
+   "lo": 0.1,
+   "hi": 0.2,
+   "n": 9,
+   "predPct": 16,
+   "obsPct": 0
+  },
+  {
+   "lo": 0.2,
+   "hi": 0.3,
+   "n": 10,
+   "predPct": 26,
+   "obsPct": 10
+  },
+  {
+   "lo": 0.3,
+   "hi": 0.4,
+   "n": 11,
+   "predPct": 35,
+   "obsPct": 45
+  },
+  {
+   "lo": 0.4,
+   "hi": 0.5,
+   "n": 7,
+   "predPct": 45,
+   "obsPct": 57
+  },
+  {
+   "lo": 0.5,
+   "hi": 0.6,
+   "n": 2,
+   "predPct": 54,
+   "obsPct": 100
+  },
+  {
+   "lo": 0.6,
+   "hi": 0.7,
+   "n": 3,
+   "predPct": 64,
+   "obsPct": 67
+  },
+  {
+   "lo": 0.7,
+   "hi": 0.8,
+   "n": 1,
+   "predPct": 75,
+   "obsPct": 100
+  }
+ ]
 }

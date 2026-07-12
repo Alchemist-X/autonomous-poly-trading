@@ -2401,12 +2401,52 @@
   margin: 26px 0 0;
 }
 
+/* Stage switcher (group stage vs knockout) — a compact sibling of .tabNav. */
+.perfStageTabs {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 16px;
+  padding: 3px;
+  background: #eceef2;
+  border-radius: 10px;
+  width: fit-content;
+}
+.perfStageTab {
+  padding: 8px 20px;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #5b6472;
+  cursor: pointer;
+  transition: color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+.perfStageTab:hover {
+  color: #0f1115;
+}
+.perfStageTabActive {
+  background: #ffffff;
+  color: #0f1115;
+  box-shadow: 0 1px 3px rgba(15, 17, 21, 0.1);
+}
+.perfStageNote {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
 @media (max-width: 640px) {
   .perfCards {
     grid-template-columns: repeat(2, 1fr);
   }
   .perfCalibVals {
     display: none;
+  }
+  .perfStageTab {
+    padding: 8px 14px;
   }
 }
 
