@@ -11,7 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-17 by Claude（**/engine 与 /delta 挂载到 forecasting-agent.com 路径**，分支 `feat/mount-engine-delta-paths`，**PR #87**，已全链路部署+验收）。
+> 最后更新：2026-07-17 by Claude（**engine/delta 访问模型改为邀请码门**，纯 VM `.env` 改动无 PR，已部署+验收）。
+> ① **动机**：用户要"取消 access-token，改成 invite code `raven-labs`"。
+> ② **改动（VM `deploy/raven/.env`，备份 `deploy/raven/.env.pre-invite-20260717-*.bak`）**：注释掉 `RAVEN_ACCESS_TOKEN`（engine 站点门 fail-open → **/engine 现公开可浏览**，往期 dossier 免码可读）；`FORECAST_DAILY_QUOTA` 20→**0**（→ engine 每次 run 都需邀请码，走既有 quota→invite 机制）；`DELTA_ACCESS_TOKEN` 改为字面值 `raven-labs`（delta 无 invite 系统，入口码即 raven-labs）。`FORECAST_INVITE_CODE=raven-labs` 未动（invite 表里 `raven-labs` = ok·∞·无过期）；`FORECAST_API_TOKEN` 独立未动（:8787 API bearer 门不受影响）。
+> ③ **重启**：`docker compose up -d --no-deps raven raven-delta forecast-api`（无 --build，纯 env reload，镜像不变）。
+> ④ **验收**：/engine 无 token 200；/delta 无码 401、`?token=raven-labs`→307+cookie→200；/engine POST run 无邀请码→429 `quota_exceeded`（未真跑，没花钱）。⚠️ **回滚**：恢复 .env.bak 三个键（RAVEN_ACCESS_TOKEN 取消注释、QUOTA 回 20、DELTA_ACCESS_TOKEN 回原值）+ 重启三容器。⚠️ 邀请码 `raven-labs` 本就是 `.env.example` 里的公开种子码，非机密——如需真正限流请用 `invite-cli create` 建带次数/过期的专属码并吊销 seed。
+>
+> 上次更新：2026-07-17 by Claude（**/engine 与 /delta 挂载到 forecasting-agent.com 路径**，分支 `feat/mount-engine-delta-paths`，**PR #87**，已全链路部署+验收）。
 > ① **改动**：apps/raven `basePath:'/engine'`、apps/raven-delta `basePath:'/delta'`（各自 `lib/base-path.ts` 单一事实源，手写 fetch/img 全部前缀化）；根 vercel.json 在 catch-all 前加 4 条代理路由（`/engine/*`→VM:80、`/delta/*`→VM:3300；源是明文 http，后续可升级 Caddy origin TLS）。**顺手修了两个 token 门存量漏洞**：Next 16 下 matcher 不匹配裸根路径（无 token 直接放行首页——raven-delta 的 proxy.ts 是 raven 的旧拷贝，两处一并修齐）；cookie path 收窄到各自 basePath（与主站同域后不再全站互发）。
 > ② **部署**：VM clean-untar（备份 `~/predict-raven.pre-mount-20260717-1349.bak`）+ 回拷 .env/override，`docker compose build raven raven-delta` + `up -d --no-deps`。**镜像漂移：raven 与 raven-delta 现均在 merged main（f5dfbe2）**，仍旧镜像的只剩 forecast-api。主站经 `gh workflow run wc-results.yml --ref main` 部署成功。
 > ③ **验收**：forecasting-agent.com/engine 与 /delta token 流（?token= → 307+Set-Cookie → 200）全通；/delta/api/health 公开 200；/world-cup/groups 200 无恙；桌面+移动截图自评通过，0 console error。⚠️ **旧直连 URL 已迁移**：`34.85.97.32/` → `/engine`、`:3300/` → `:3300/delta`（旧书签会 404）。
