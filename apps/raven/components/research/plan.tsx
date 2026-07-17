@@ -5,6 +5,7 @@
 // and PlanList renders the live checklist — steps check off as the run
 // advances, joined by a dashed connector.
 
+import { withBasePath } from "../../lib/base-path";
 import { useT } from "../../lib/i18n";
 import { RS } from "../../lib/i18n/ui";
 import type { PlanStepVM } from "./research-vm";
@@ -24,7 +25,7 @@ export function RavenMessage({
       <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/raven-mascot.png"
+          src={withBasePath("/raven-mascot.png")}
           alt=""
           aria-hidden="true"
           style={{

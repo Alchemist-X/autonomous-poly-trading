@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { RvShell } from "../components/chrome/rv-shell";
+import { withBasePath } from "../lib/base-path";
 import { GTA6_DEMO, GTA6_DEMO_ID } from "../lib/demo/gta6";
 import { confidenceLabel, sourcesLabel, useLocale, useT, verdictLabel } from "../lib/i18n";
 import { HOME } from "../lib/i18n/home";
@@ -104,7 +105,7 @@ export default function HomePage() {
     let alive = true;
     const load = async () => {
       try {
-        const res = await fetch("/api/forecasts", { cache: "no-store" });
+        const res = await fetch(withBasePath("/api/forecasts"), { cache: "no-store" });
         if (!res.ok) return;
         const body = (await res.json()) as { runs?: RunListItem[] };
         if (!alive || !Array.isArray(body.runs)) return;
@@ -138,7 +139,7 @@ export default function HomePage() {
     setSubmitError(null);
     try {
       const inviteCode = invite.trim();
-      const res = await fetch("/api/forecasts", {
+      const res = await fetch(withBasePath("/api/forecasts"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         // `language` makes the engine write its reasoning/evidence in the
@@ -207,7 +208,7 @@ export default function HomePage() {
 
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/raven-mascot.png"
+          src={withBasePath("/raven-mascot.png")}
           alt={t(HOME.mascotAlt)}
           style={{
             position: "relative",

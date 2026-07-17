@@ -6,8 +6,11 @@
 // redirects to the clean URL. APIs also accept an `x-raven-token` header.
 
 import { NextRequest, NextResponse } from "next/server";
+import { BASE_PATH } from "./lib/base-path";
 
 const COOKIE = "raven-access";
+// Note: `req.nextUrl.pathname` (and the matcher below) are basePath-stripped,
+// so these patterns stay basePath-free even though the app mounts at /engine.
 const PUBLIC_PATHS = [/^\/_next\//, /^\/favicon\.ico$/, /^\/raven-mascot\.png$/];
 
 // Constant-time-ish comparison; avoids early-exit timing on the token match.
@@ -23,7 +26,7 @@ function tokenMatches(provided: string, expected: string): boolean {
 function accessPage(): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Raven — access</title></head>
 <body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#15120c;color:#ede5d6;font-family:Georgia,serif">
-<form method="GET" action="/" style="text-align:center;padding:24px">
+<form method="GET" action="${BASE_PATH || "/"}" style="text-align:center;padding:24px">
 <div style="font-size:22px;font-weight:600">Raven <span style="color:#ee7130">Forecasting Engine</span></div>
 <p style="color:#a99d87;font-size:13px;margin:10px 0 18px">This instance is private. Enter your access token.</p>
 <input name="token" autofocus placeholder="access token" style="background:#221b10;border:1px solid #3b3324;border-radius:9px;color:#ede5d6;font-size:14px;padding:10px 14px;outline:none;width:240px">
@@ -52,7 +55,9 @@ export default function proxy(req: NextRequest) {
         sameSite: "lax",
         secure: req.nextUrl.protocol === "https:",
         maxAge: 60 * 60 * 24 * 90,
-        path: "/"
+        // Scope to the mount prefix so the cookie is not sent to the rest of
+        // the shared domain once the main site reverse-proxies /engine/*.
+        path: BASE_PATH || "/"
       });
       return res;
     }
@@ -70,5 +75,7 @@ export default function proxy(req: NextRequest) {
 
 export const config = {
   // Everything except Next's static assets (also filtered above for safety).
-  matcher: ["/((?!_next/static|_next/image).*)"]
+  // Next prepends basePath to each matcher, so "/((?!…).*)" only covers
+  // /engine/<something>; the bare "/" entry is needed to gate /engine itself.
+  matcher: ["/", "/((?!_next/static|_next/image).*)"]
 };
