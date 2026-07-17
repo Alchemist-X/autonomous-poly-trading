@@ -11,7 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-12 by Claude（**淘汰赛 32 强预测效果上线预测效果页**，分支 `feat/wc-knockout-performance`，**PR #86**）。
+> 最后更新：2026-07-17 by Claude（**/engine 与 /delta 挂载到 forecasting-agent.com 路径**，分支 `feat/mount-engine-delta-paths`，**PR #87**，已全链路部署+验收）。
+> ① **改动**：apps/raven `basePath:'/engine'`、apps/raven-delta `basePath:'/delta'`（各自 `lib/base-path.ts` 单一事实源，手写 fetch/img 全部前缀化）；根 vercel.json 在 catch-all 前加 4 条代理路由（`/engine/*`→VM:80、`/delta/*`→VM:3300；源是明文 http，后续可升级 Caddy origin TLS）。**顺手修了两个 token 门存量漏洞**：Next 16 下 matcher 不匹配裸根路径（无 token 直接放行首页——raven-delta 的 proxy.ts 是 raven 的旧拷贝，两处一并修齐）；cookie path 收窄到各自 basePath（与主站同域后不再全站互发）。
+> ② **部署**：VM clean-untar（备份 `~/predict-raven.pre-mount-20260717-1349.bak`）+ 回拷 .env/override，`docker compose build raven raven-delta` + `up -d --no-deps`。**镜像漂移：raven 与 raven-delta 现均在 merged main（f5dfbe2）**，仍旧镜像的只剩 forecast-api。主站经 `gh workflow run wc-results.yml --ref main` 部署成功。
+> ③ **验收**：forecasting-agent.com/engine 与 /delta token 流（?token= → 307+Set-Cookie → 200）全通；/delta/api/health 公开 200；/world-cup/groups 200 无恙；桌面+移动截图自评通过，0 console error。⚠️ **旧直连 URL 已迁移**：`34.85.97.32/` → `/engine`、`:3300/` → `:3300/delta`（旧书签会 404）。
+> ④ **已知/待办**：raven-delta 的 vitest 存量全挂（vitest 3.2.4 用 CJS require 加载 ESM-only 的 vite 7，`ERR_REQUIRE_ESM`，与本次无关——建议升 vitest 或 pin vite 6）；delta-ws :8791 仍是直连端口不走域名（Vercel 路由不代理 WebSocket）；同 VM 上另有本人的 video-digest 服务（8931/443 Caddy `read.issuewys.com`），互不相干。
+>
+> 上次更新：2026-07-12 by Claude（**淘汰赛 32 强预测效果上线预测效果页**，分支 `feat/wc-knockout-performance`，**PR #86**）。
 > ① **数据**：`pnpm tsx scripts/world-cup/fifa8-results.ts` **15/15 R32 全部结算**（90 分钟口径，5 场平局）；`fifa8-performance.ts` 重算 9 模型榜——发布的多重校准融合 **bestPick 11/15（73%）· Mock PNL +11.7% · Brier skill +3.5% · ECE 14.2%**；榜首 Dixon-Coles 贝叶斯（BSS +3.8%），垫底 PRODEGY（−20.7%）。市场盲测不变：价格只做事后基准。
 > ② **Web**：`/world-cup/performance` 新增「小组赛 / 淘汰赛 · 32 强」stage tab（`perf-stage-tabs.tsx` 客户端切换两个 SSG panel；`PerformanceDetail` 改接收数据 prop——淘汰赛 tab 与小组赛同版式同指标）；新 reader `apps/web/lib/world-cup/fifa8-performance.ts`（取 headline=multicalibrated）；i18n 新 key `perfTabGroups/perfTabKnockout/perfKnockoutScope`（en+zh-CN 手写，zh-TW 重新生成）。build 绿；桌面+移动 × en/zh-CN/zh-TW 验收，0 console error。
 > ③ **部署**：merge 后手动 `gh workflow run wc-results.yml --ref main`（forecasting-agent.com 唯一发布通道）。**待办**：R16 起的淘汰赛预测尚未生成（fifa8 管线只覆盖 R32）——生成后预测效果页加第三个 tab 或并入淘汰赛 tab；`wc-results.yml` 的 cron 仍停用（小组赛冻结时关的），淘汰赛结果更新目前靠手动跑 fifa8-results + 重部署。
