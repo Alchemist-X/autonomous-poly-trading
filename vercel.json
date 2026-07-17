@@ -12,6 +12,22 @@
       "dest": "/apps/web"
     },
     {
+      "src": "^/engine$",
+      "dest": "http://34.85.97.32/engine"
+    },
+    {
+      "src": "^/engine/(.*)$",
+      "dest": "http://34.85.97.32/engine/$1"
+    },
+    {
+      "src": "^/delta$",
+      "dest": "http://34.85.97.32:3300/delta"
+    },
+    {
+      "src": "^/delta/(.*)$",
+      "dest": "http://34.85.97.32:3300/delta/$1"
+    },
+    {
       "src": "^/world-cup/(zh-CN|zh-TW)/?$",
       "dest": "/$1/world-cup",
       "continue": true

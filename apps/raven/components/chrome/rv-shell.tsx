@@ -7,6 +7,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { withBasePath } from "../../lib/base-path";
 import { useLocale, useT } from "../../lib/i18n";
 import { CHROME } from "../../lib/i18n/ui";
 import { GTA6_DEMO_ID } from "../../lib/demo/gta6";
@@ -75,7 +76,7 @@ export function RvShell({ active, forecastId, headerRight, showFooter = true, ch
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/raven-mascot.png"
+            src={withBasePath("/raven-mascot.png")}
             alt="Raven mascot"
             style={{
               width: 32,

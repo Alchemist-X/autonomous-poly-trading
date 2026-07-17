@@ -4,6 +4,7 @@
 
 import { useState, type FormEvent } from "react";
 import type { DeltaRun } from "../lib/analyzer/schema";
+import { withBasePath } from "../lib/base-path";
 import { useLocale, useT } from "../lib/i18n";
 import { ReportView } from "./report-view";
 import { WsPanel } from "./ws-panel";
@@ -48,7 +49,8 @@ export function DeltaConsole({ engine, universeSize, universeVersion }: ConsoleP
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/analyze", {
+      // Hand-written fetch URLs are not basePath-prefixed by Next; do it here.
+      const response = await fetch(withBasePath("/api/analyze"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({

@@ -6,6 +6,7 @@
 // polling stops once the run is terminal and the dossier is complete.
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { withBasePath } from "../base-path";
 import type { AnalystState } from "../server/analyst";
 import type { DossierVM } from "../vm/types";
 
@@ -34,7 +35,7 @@ export function useForecast(id: string) {
 
   const fetchOnce = useCallback(async (): Promise<ForecastPayload | null> => {
     try {
-      const res = await fetch(`/api/forecasts/${encodeURIComponent(id)}`, { cache: "no-store" });
+      const res = await fetch(withBasePath(`/api/forecasts/${encodeURIComponent(id)}`), { cache: "no-store" });
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { error?: string } | null;
         throw new Error(body?.error ?? `request failed (${res.status})`);
@@ -72,7 +73,7 @@ export function useForecast(id: string) {
 }
 
 export async function apiSetMark(id: string, targetId: string, mark: "keep" | "doubt" | null): Promise<void> {
-  const res = await fetch(`/api/forecasts/${encodeURIComponent(id)}/marks`, {
+  const res = await fetch(withBasePath(`/api/forecasts/${encodeURIComponent(id)}/marks`), {
     method: "PUT",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ targetId, mark })
@@ -84,7 +85,7 @@ export async function apiAddNote(
   id: string,
   input: { text: string; stance: "yes" | "no" | "question"; targetId: string | null }
 ): Promise<void> {
-  const res = await fetch(`/api/forecasts/${encodeURIComponent(id)}/notes`, {
+  const res = await fetch(withBasePath(`/api/forecasts/${encodeURIComponent(id)}/notes`), {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(input)
@@ -93,7 +94,7 @@ export async function apiAddNote(
 }
 
 export async function apiRemoveNote(id: string, noteId: string): Promise<void> {
-  const res = await fetch(`/api/forecasts/${encodeURIComponent(id)}/notes/${encodeURIComponent(noteId)}`, {
+  const res = await fetch(withBasePath(`/api/forecasts/${encodeURIComponent(id)}/notes/${encodeURIComponent(noteId)}`), {
     method: "DELETE"
   });
   if (!res.ok && res.status !== 404) throw new Error(`removing note failed (${res.status})`);

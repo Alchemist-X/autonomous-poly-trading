@@ -10,6 +10,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const COOKIE = "delta-access";
+// Note on basePath ("/delta" in next.config.ts): inside proxy/middleware Next
+// strips the basePath before matching, so `nextUrl.pathname` and the matcher
+// below see "/api/health", not "/delta/api/health". These patterns stay
+// basePath-free on purpose. The prefix is available as `nextUrl.basePath`.
 const PUBLIC_PATHS = [/^\/_next\//, /^\/favicon\.ico$/, /^\/api\/health$/];
 
 // Constant-time-ish comparison; avoids early-exit timing on the token match.
@@ -22,10 +26,13 @@ function tokenMatches(provided: string, expected: string): boolean {
   return diff === 0;
 }
 
-function accessPage(): string {
+// `action` must carry the basePath: this HTML is returned raw by the proxy,
+// so the browser resolves the form target against the domain root, not the
+// Next app root.
+function accessPage(action: string): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Raven Delta — access</title></head>
 <body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#15120c;color:#ede5d6;font-family:Georgia,serif">
-<form method="GET" action="/" style="text-align:center;padding:24px">
+<form method="GET" action="${action}" style="text-align:center;padding:24px">
 <div style="font-size:22px;font-weight:600">Raven <span style="color:#ee7130">Delta</span></div>
 <p style="color:#a99d87;font-size:13px;margin:10px 0 18px">This instance is private. Enter your access token.</p>
 <input name="token" autofocus placeholder="access token" style="background:#221b10;border:1px solid #3b3324;border-radius:9px;color:#ede5d6;font-size:14px;padding:10px 14px;outline:none;width:240px">
@@ -45,7 +52,8 @@ export default function proxy(req: NextRequest) {
   const expected = process.env.DELTA_ACCESS_TOKEN?.trim();
   if (!expected) return NextResponse.next(); // gate disabled (local dev)
 
-  const { pathname } = req.nextUrl;
+  const { pathname } = req.nextUrl; // basePath already stripped here
+  const basePath = req.nextUrl.basePath || "";
   if (PUBLIC_PATHS.some((r) => r.test(pathname))) return NextResponse.next();
 
   const fromQuery = req.nextUrl.searchParams.get("token");
@@ -62,7 +70,10 @@ export default function proxy(req: NextRequest) {
         sameSite: "lax",
         secure: req.nextUrl.protocol === "https:",
         maxAge: 60 * 60 * 24 * 90,
-        path: "/"
+        // Scope to the basePath: the app shares forecasting-agent.com with
+        // other apps behind the reverse proxy, and the token cookie must not
+        // be sent to them.
+        path: basePath || "/"
       });
       return res;
     }
@@ -72,7 +83,7 @@ export default function proxy(req: NextRequest) {
   if (pathname.startsWith("/api/")) {
     return NextResponse.json({ error: "unauthorized — provide the access token" }, { status: 401 });
   }
-  return new NextResponse(accessPage(), {
+  return new NextResponse(accessPage(`${basePath}/`), {
     status: 401,
     headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }
   });
@@ -80,5 +91,8 @@ export default function proxy(req: NextRequest) {
 
 export const config = {
   // Everything except Next's static assets (also filtered above for safety).
-  matcher: ["/((?!_next/static|_next/image).*)"]
+  // "/" is listed explicitly: the grouped pattern requires a non-empty match
+  // under Next 16, so the bare root path would otherwise bypass the gate
+  // (verified against next start: / rendered ungated, /x was gated).
+  matcher: ["/", "/((?!_next/static|_next/image).*)"]
 };

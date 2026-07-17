@@ -18,7 +18,7 @@ export interface NewsSourceAdapter {
 }
 
 export interface IngestClientOptions {
-  ingestUrl: string; // e.g. http://127.0.0.1:3300/api/ingest
+  ingestUrl: string; // e.g. http://127.0.0.1:3300/delta/api/ingest (basePath included)
   accessToken?: string;
 }
 
