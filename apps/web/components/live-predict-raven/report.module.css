@@ -1,0 +1,226 @@
+.page {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 40px 20px 72px;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.header {
+  margin-bottom: 8px;
+}
+
+.kicker {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: 999px;
+  padding: 5px 14px;
+  margin-bottom: 14px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1.15;
+  margin: 0 0 10px;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 15px;
+  margin: 4px 0;
+}
+
+.section {
+  margin-top: 40px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3.2vw, 28px);
+  margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.subTitle {
+  font-size: 19px;
+  margin: 26px 0 6px;
+}
+
+.sectionNote {
+  color: var(--muted);
+  font-size: 15px;
+  margin: 8px 0 12px;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.tile {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-soft);
+}
+
+.tileLabel {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.tileValue {
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.tileSub {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.pos {
+  color: var(--positive);
+}
+
+.neg {
+  color: var(--negative);
+}
+
+.callout {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 14px 0 0;
+}
+
+.chartWrap {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 14px 8px;
+  box-shadow: var(--shadow-soft);
+  overflow-x: auto;
+}
+
+/* Keep axis/label text legible on narrow screens: the SVG scrolls sideways
+   inside its card instead of shrinking below readable size. */
+.chartWrap svg {
+  min-width: 640px;
+}
+
+.details {
+  margin-top: 10px;
+}
+
+.details summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 15px;
+  padding: 4px 0;
+}
+
+.details summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  min-width: 640px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.table thead th {
+  font-size: 13.5px;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rowNote {
+  display: block;
+  color: var(--muted);
+  font-size: 13.5px;
+  margin-top: 3px;
+}
+
+.list {
+  margin: 8px 0 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer {
+  margin-top: 48px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line-strong);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+@media (max-width: 860px) {
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 28px 14px 56px;
+    font-size: 16px;
+  }
+
+  .tiles {
+    grid-template-columns: 1fr;
+  }
+
+  .tileValue {
+    font-size: 22px;
+  }
+}
