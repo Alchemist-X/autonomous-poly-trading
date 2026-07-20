@@ -32,7 +32,7 @@ import {
   type Portfolio,
   type RestingLimit
 } from "./portfolio";
-import { decideEntry, decideExit, planHybridExit, stopLossBreached } from "./policy";
+import { applySaturatedHold, decideEntry, decideExit, planHybridExit, stopLossBreached } from "./policy";
 import { fetchBook, fetchMarket, type MarketInfo, type OrderBook } from "./polymarket";
 import { acquireBookLock, appendLedger, releaseBookLock } from "./store";
 
@@ -222,7 +222,7 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
       // A market-price-contaminated estimate converges on the mark, which
       // fabricates a small negative edge — never trade on it. Stop-loss is
       // price-based and stays authoritative.
-      const decision =
+      const uncontaminated =
         evaluation.contaminated && rawDecision.reason === "negative_edge"
           ? {
               ...rawDecision,
@@ -231,6 +231,28 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
               detail: `contaminated eval — edge not trusted (${rawDecision.detail})`
             }
           : rawDecision;
+      // A ceiling-clamped (saturated) estimate on the held side makes the
+      // negative edge a clamp artifact — hold to resolution instead of selling
+      // the last cent of a near-certain winner (policy.applySaturatedHold).
+      const decision = applySaturatedHold(cfg, uncontaminated, evaluation.saturatedAt, pos.outcomeIndex, book, pos.fees);
+
+      // Hold-to-resolution must also stop any prior cycle's resting exit
+      // limit — otherwise the fill tick (or its TTL fallback) liquidates the
+      // position the veto just decided to keep.
+      if (decision.saturatedHold) {
+        const staleLimits = portfolio.restingLimits.filter((l) => l.positionId === posId);
+        if (staleLimits.length > 0) {
+          portfolio = { ...portfolio, restingLimits: portfolio.restingLimits.filter((l) => l.positionId !== posId) };
+          appendLedger({
+            type: "limit_cancelled",
+            positionId: posId,
+            slug: pos.slug,
+            reason: "saturated_hold",
+            limitIds: staleLimits.map((l) => l.id),
+            shares: staleLimits.reduce((sum, l) => sum + l.shares, 0)
+          });
+        }
+      }
 
       appendLedger({
         type: "evaluation",
@@ -247,6 +269,7 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
         netEdgePp: decision.netEdgePp,
         saturatedAt: evaluation.saturatedAt,
         contaminated: evaluation.contaminated,
+        saturatedHold: decision.saturatedHold ?? false,
         action: decision.action,
         reason: decision.reason,
         detail: decision.detail
@@ -266,7 +289,8 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
                   decision: `${decision.action}:${decision.reason}`,
                   forecastId: evaluation.forecastId,
                   saturatedAt: evaluation.saturatedAt,
-                  contaminated: evaluation.contaminated
+                  contaminated: evaluation.contaminated,
+                  saturatedHold: decision.saturatedHold ?? false
                 }
               }
             : x

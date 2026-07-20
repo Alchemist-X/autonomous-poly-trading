@@ -48,6 +48,9 @@ export interface PaperPosition {
     // 0.01/0.99 bound / the run used prediction-market prices despite the ban.
     saturatedAt?: "floor" | "ceil" | null;
     contaminated?: boolean;
+    // A negative_edge exit was vetoed because the clamp bound the held side —
+    // the position is riding to resolution (policy.applySaturatedHold).
+    saturatedHold?: boolean;
   };
 }
 

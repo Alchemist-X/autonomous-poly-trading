@@ -11,6 +11,11 @@ export interface PaperConfig {
   // Exit when net edge of holding (fair − executable, after fees) drops below
   // this many percentage points. 0 = the standing "negative net edge → sell".
   exitEdgePp: number;
+  // When an evaluation is saturated at the held side's probability bound
+  // (engine ceiling 0.99), the derived negative edge is a clamp artifact, not
+  // information — hold to resolution instead of selling (user 2026-07-20).
+  // Stop-loss and full-value capture (bid net of fees ≥ 0.999) still exit.
+  saturatedHoldEnabled: boolean;
   // Hard stop: exit regardless of model view when mark loses this fraction of
   // entry price. Standing rule: stop-loss outranks everything.
   stopLossPct: number;
@@ -61,6 +66,9 @@ export function loadPaperConfig(env: NodeJS.ProcessEnv = process.env): PaperConf
     evalTimesUtc: times.length ? times : ["00:10", "08:10", "16:10"],
     fillCheckMinutes: num("PAPER_FILL_CHECK_MINUTES", 10, 1),
     exitEdgePp: num("PAPER_EXIT_EDGE_PP", 0),
+    saturatedHoldEnabled: !["0", "false", "off", "no"].includes(
+      (env.PAPER_SATURATED_HOLD ?? "").trim().toLowerCase()
+    ),
     stopLossPct: num("PAPER_STOP_LOSS_PCT", 0.35, 0.01),
     hybridMarketRatio: Math.min(1, num("PAPER_HYBRID_MARKET_RATIO", 0.5)),
     limitTtlHours: num("PAPER_LIMIT_TTL_HOURS", 8, 0.1),
