@@ -23,6 +23,9 @@ export interface ExitDecision {
   mark: number | null;
   netEdgePp: number | null;
   detail: string;
+  // True when applySaturatedHold converted a negative_edge exit into a hold —
+  // consumers must cancel resting exit limits and ledger the veto explicitly.
+  saturatedHold?: boolean;
 }
 
 // Net edge of HOLDING one share: fair value P minus what a sale nets now.
@@ -91,6 +94,55 @@ export function decideExit(
     mark: edge.mark,
     netEdgePp: edge.edgePp,
     detail: `net edge ${edge.edgePp.toFixed(1)}pp ≥ ${cfg.exitEdgePp}pp — keep`
+  };
+}
+
+// Selling at/above this net-of-fee price captures effectively full value —
+// exiting is then strictly better than waiting for resolution (same payout,
+// sooner, and no voided-market risk), so the saturation veto steps aside.
+export const SATURATED_HOLD_FULL_VALUE = 0.999;
+
+// True when the engine's probability clamp binds in the HELD side's favor:
+// probYes pinned at the ceiling while we hold YES, or at the floor while we
+// hold NO (P(NO) = 1 − probYes is then pinned at the ceiling).
+function saturationFavorsHeldSide(saturatedAt: "floor" | "ceil" | null, outcomeIndex: number): boolean {
+  return (outcomeIndex === 0 && saturatedAt === "ceil") || (outcomeIndex === 1 && saturatedAt === "floor");
+}
+
+// A negative-edge exit computed from a ceiling-clamped probability carries no
+// information: the true posterior lies somewhere in [0.99, 1) and the flip
+// point sits inside that inexpressible band, so "edge < 0" only restates the
+// clamp (empirically: the mojtaba 2026-07-15 exit at bid 0.994 vs clamped
+// 0.99, alpha −$3.21 versus resolution). Convert such exits into holds and let
+// the position ride to settlement. The veto never touches stop-loss (decided
+// before negative_edge and model-free) and steps aside once the bid nets
+// SATURATED_HOLD_FULL_VALUE — at that price selling dominates holding.
+export function applySaturatedHold(
+  cfg: PaperConfig,
+  decision: ExitDecision,
+  saturatedAt: "floor" | "ceil" | null,
+  outcomeIndex: number,
+  book: OrderBook,
+  fees: MarketFeeParams
+): ExitDecision {
+  if (!cfg.saturatedHoldEnabled) return decision;
+  if (decision.reason !== "negative_edge") return decision;
+  if (!saturationFavorsHeldSide(saturatedAt, outcomeIndex)) return decision;
+  const bid = bestBid(book);
+  if (bid === null) return decision;
+  const exitNet = bid - takerFeeUsd(1, bid, fees);
+  if (exitNet >= SATURATED_HOLD_FULL_VALUE) return decision;
+  // The veto is only justified when some true probability inside the clamp
+  // band [ceil, 1] would clear the hold threshold. If even P = 1 leaves the
+  // edge below exitEdgePp, the exit is correct for every expressible belief
+  // and must stand (matters when PAPER_EXIT_EDGE_PP > 0).
+  if ((1 - exitNet) * 100 < cfg.exitEdgePp) return decision;
+  return {
+    ...decision,
+    action: "hold",
+    reason: "hold",
+    saturatedHold: true,
+    detail: `saturated ${saturatedAt} eval — ceiling-clamped edge is a bound, not a signal; holding to resolution (${decision.detail})`
   };
 }
 

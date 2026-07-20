@@ -177,6 +177,33 @@ beforeEach(() => {
   vi.mocked(fetchPriceHistory).mockResolvedValue([]);
 });
 
+describe("engineFlags saturated holds", () => {
+  it("counts clamp-vetoed holds separately from plain saturation and renders them", async () => {
+    vi.mocked(readLedger).mockReturnValue([
+      ...calibrationLedger,
+      {
+        ts: "2026-07-01T03:00:00.000Z",
+        type: "evaluation",
+        positionId: "m-d:1",
+        slug: "m-d",
+        outcome: "No",
+        agentProbOutcome: 0.99,
+        probYes: 0.01,
+        bestBid: 0.994,
+        saturatedAt: "floor",
+        saturatedHold: true,
+        action: "hold"
+      }
+    ]);
+    vi.mocked(fetchMarket).mockImplementation(async (slug: string) => market({ slug, question: `Q:${slug}` }));
+
+    const r = await buildReflection();
+    expect(r.engineFlags.saturatedHolds).toBe(1);
+    expect(r.engineFlags.saturated).toBe(2); // m-a (ceil) + m-d (floor)
+    expect(renderReflectionMd(r)).toContain("1 次饱和持有");
+  });
+});
+
 describe("calibration (Brier skill score vs market)", () => {
   it("scores every resolved unit: ledgered positions + fetched watchlist", async () => {
     vi.mocked(readLedger).mockReturnValue(calibrationLedger);

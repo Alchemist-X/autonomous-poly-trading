@@ -40,6 +40,7 @@ interface LedgerEvent {
   outcomeIndex?: number;
   saturatedAt?: string | null;
   contaminated?: boolean;
+  saturatedHold?: boolean;
   kind?: string;
   outcome?: string;
 }
@@ -116,6 +117,7 @@ export interface Reflection {
     evaluations: number;
     saturated: number;
     contaminated: number;
+    saturatedHolds: number; // negative_edge exits vetoed by the clamp guard
     flagsTracked: boolean; // old ledgers predate the flag fields
   };
 }
@@ -429,6 +431,7 @@ function buildEngineFlags(ledger: LedgerEvent[]): Reflection["engineFlags"] {
     evaluations: evals.length,
     saturated: evals.filter((e) => Boolean(e.saturatedAt)).length,
     contaminated: evals.filter((e) => e.contaminated === true).length,
+    saturatedHolds: evals.filter((e) => e.saturatedHold === true).length,
     // Old ledgers predate these fields; the quality line only renders once
     // at least one event carries them (or a flag actually fired).
     flagsTracked: evals.some((e) => e.saturatedAt !== undefined || e.contaminated !== undefined)
@@ -632,7 +635,8 @@ function renderTailSections(r: Reflection): string[] {
   lines.push("");
   const f = r.engineFlags;
   if (f.evaluations > 0 && (f.saturated > 0 || f.contaminated > 0 || f.flagsTracked)) {
-    lines.push(`引擎质量：${f.evaluations} 次评估中 ${f.saturated} 次饱和、${f.contaminated} 次检测到市场价格污染`);
+    const holdNote = f.saturatedHolds > 0 ? `、${f.saturatedHolds} 次饱和持有（负 edge 退出被钳位守卫改判持有到结算）` : "";
+    lines.push(`引擎质量：${f.evaluations} 次评估中 ${f.saturated} 次饱和、${f.contaminated} 次检测到市场价格污染${holdNote}`);
     lines.push("");
   }
   return lines;
