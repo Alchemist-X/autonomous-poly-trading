@@ -11,7 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-17 by Claude（**engine/delta 访问模型改为邀请码门**，纯 VM `.env` 改动无 PR，已部署+验收）。
+> 最后更新：2026-07-20 by Claude（**模拟盘复盘页 `/live-predict-raven` 上线 forecasting-agent.com**，分支 `feat/live-predict-raven-report`）。
+> ① **背景**：用户先要模拟盘收益分析（SSH 拉 VM paper-agent 账本全量复盘），再要求发布成网页远程 review：挂 forecasting-agent.com`/live-predict-raven`、输入 `raven-labs` 解锁。
+> ② **业绩快照（截至 2026-07-20 02:20Z，第 53 周期）**：equity **$10,433.57（+4.3%，17 天）**= realized −$178.82 + 浮盈 +$611.71；32 笔成交 / 12 次开仓 / 已平 6 回合 **4 胜 2 负（66.7%）**，但平均亏损 $230 vs 平均盈利 $70（profit factor 0.61）；两笔亏损 = 同一市场（伊朗 MOU 7/17）止损后 4 小时原方向重进再止损（合计 −$460）；exit α +$990（退出决策整体加分）；Brier skill **−7.32 但 n=3** 不可下结论；6 仓全地缘 NO、4 仓共享伊朗驱动；峰值 $10,799（7/14）、最大回撤 −3.8%。**建议（未做）**：止损后同市场冷却期 > 题材级相关敞口上限 > 饱和评估 edge 不按名义值展示。
+> ③ **页面实现（apps/web 顶层路由，vercel.json catch-all 已覆盖零路由改动）**：服务端邀请码门（`lib/live-predict-raven/access.ts`，sha256+timingSafeEqual，httpOnly cookie 30 天，`LIVE_PREDICT_RAVEN_CODE` env 可换码、默认 raven-labs 与 /engine 门同码）+ `POST /api/live-predict-raven/unlock`；报告 = **烘焙快照** `lib/live-predict-raven/snapshot.ts` + 纯函数 `stats.ts`（20 个 vitest）；SVG 权益曲线服务端渲染零客户端 JS；`robots noindex`；中文为主（走 `/invite` 顶层工具页先例，未进 world-cup 三语系统）。**刷新数据 = 重拉 VM 账本改 snapshot.ts 重部署，非实时**——想升级成实时需 paper-agent 暴露 HTTP 只读端点再走 vercel 代理（未做）。
+> ④ **验收**：`pnpm --filter @autopoly/web build` 绿（332 页）；桌面+移动整页截图 0 pageerror；本地门流程实测（错码→提示、`raven-labs`→cookie→报告、刷新保持解锁）。部署走 merge 后 `gh workflow run wc-results.yml --ref main`。英文版 handoff 此条待同步翻译。
+>
+> 上次更新：2026-07-17 by Claude（**engine/delta 访问模型改为邀请码门**，纯 VM `.env` 改动无 PR，已部署+验收）。
 > ① **动机**：用户要"取消 access-token，改成 invite code `raven-labs`"。
 > ② **改动（VM `deploy/raven/.env`，备份 `deploy/raven/.env.pre-invite-20260717-*.bak`）**：注释掉 `RAVEN_ACCESS_TOKEN`（engine 站点门 fail-open → **/engine 现公开可浏览**，往期 dossier 免码可读）；`FORECAST_DAILY_QUOTA` 20→**0**（→ engine 每次 run 都需邀请码，走既有 quota→invite 机制）；`DELTA_ACCESS_TOKEN` 改为字面值 `raven-labs`（delta 无 invite 系统，入口码即 raven-labs）。`FORECAST_INVITE_CODE=raven-labs` 未动（invite 表里 `raven-labs` = ok·∞·无过期）；`FORECAST_API_TOKEN` 独立未动（:8787 API bearer 门不受影响）。
 > ③ **重启**：`docker compose up -d --no-deps raven raven-delta forecast-api`（无 --build，纯 env reload，镜像不变）。
