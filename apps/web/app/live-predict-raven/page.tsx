@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { PaperReport } from "../../components/live-predict-raven/report";
 import { UnlockGate } from "../../components/live-predict-raven/unlock-gate";
 import { ACCESS_COOKIE_NAME, isValidAccessToken } from "../../lib/live-predict-raven/access";
+import { fetchLiveSnapshot } from "../../lib/live-predict-raven/live";
+import { PAPER_SNAPSHOT } from "../../lib/live-predict-raven/snapshot";
 
 export const metadata: Metadata = {
   title: "Paper Trading 复盘 — Predict Raven",
@@ -24,5 +26,8 @@ export default async function LivePredictRavenPage({
     const params = await searchParams;
     return <UnlockGate showError={params?.error === "1"} />;
   }
-  return <PaperReport />;
+  // Live book from the Tokyo VM (refreshed by the agent after every evaluation
+  // cycle); the baked snapshot is the labeled fallback when the VM is down.
+  const live = await fetchLiveSnapshot();
+  return <PaperReport snapshot={live ?? PAPER_SNAPSHOT} dataSource={live ? "live" : "baked"} />;
 }

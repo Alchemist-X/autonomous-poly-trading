@@ -80,7 +80,10 @@ export function OpenPositionsTable({ positions }: { positions: readonly OpenPosi
               <td className={styles.num}>{fmtPrice(p.markPrice)}</td>
               <PnlCell value={p.unrealizedUsd} />
               <td className={styles.num}>{fmtProb(p.agentProb)}</td>
-              <td>{p.flag ? FLAG_LABEL[p.flag] : "—"}</td>
+              <td>
+                {p.flag ? FLAG_LABEL[p.flag] : "—"}
+                {p.saturatedHold ? <span className={styles.rowNote}>持有到期中（钳位卖出已拦截）</span> : null}
+              </td>
             </tr>
           ))}
         </tbody>

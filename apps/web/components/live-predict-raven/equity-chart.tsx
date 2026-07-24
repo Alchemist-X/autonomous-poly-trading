@@ -11,10 +11,24 @@ const VIEW_H = 300;
 const MARGIN = { top: 34, right: 82, bottom: 36, left: 62 };
 const PLOT_W = VIEW_W - MARGIN.left - MARGIN.right;
 const PLOT_H = VIEW_H - MARGIN.top - MARGIN.bottom;
-const Y_MIN = 9950;
-const Y_MAX = 10850;
-const Y_TICKS = [10000, 10200, 10400, 10600, 10800];
 const X_TICK_EVERY = 4;
+
+interface YScale {
+  min: number;
+  max: number;
+  ticks: readonly number[];
+}
+
+// Domain follows the data (the curve is live now): pad to clean $100 bounds
+// and pick the smallest step from a fixed menu that yields ≤ 6 gridlines.
+function yScaleFor(values: readonly number[]): YScale {
+  const lo = Math.floor((Math.min(...values) - 50) / 100) * 100;
+  const hi = Math.ceil((Math.max(...values) + 50) / 100) * 100;
+  const step = [100, 200, 500, 1000, 2000].find((s) => (hi - lo) / s <= 6) ?? 5000;
+  const ticks = [];
+  for (let t = Math.ceil(lo / step) * step; t <= hi; t += step) ticks.push(t);
+  return { min: lo, max: hi, ticks };
+}
 
 const usd0 = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -33,13 +47,13 @@ interface PlacedPoint extends EquityPoint {
   index: number;
 }
 
-function placePoints(curve: readonly EquityPoint[]): readonly PlacedPoint[] {
+function placePoints(curve: readonly EquityPoint[], scale: YScale): readonly PlacedPoint[] {
   const step = curve.length > 1 ? PLOT_W / (curve.length - 1) : 0;
   return curve.map((point, index) => ({
     ...point,
     index,
     x: MARGIN.left + index * step,
-    y: MARGIN.top + ((Y_MAX - point.equityUsd) / (Y_MAX - Y_MIN)) * PLOT_H
+    y: MARGIN.top + ((scale.max - point.equityUsd) / (scale.max - scale.min)) * PLOT_H
   }));
 }
 
@@ -55,7 +69,11 @@ function areaPath(points: readonly PlacedPoint[], first: PlacedPoint, last: Plac
 }
 
 export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoint[]; bankrollUsd: number }) {
-  const points = placePoints(curve);
+  if (curve.length === 0) {
+    return null;
+  }
+  const scale = yScaleFor([...curve.map((p) => p.equityUsd), bankrollUsd]);
+  const points = placePoints(curve, scale);
   const first = points[0];
   const end = points[points.length - 1];
   if (!first || !end) {
@@ -66,7 +84,7 @@ export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoin
     (worst, p) => (p.index > peak.index && p.equityUsd < worst.equityUsd ? p : worst),
     end
   );
-  const bankrollY = MARGIN.top + ((Y_MAX - bankrollUsd) / (Y_MAX - Y_MIN)) * PLOT_H;
+  const bankrollY = MARGIN.top + ((scale.max - bankrollUsd) / (scale.max - scale.min)) * PLOT_H;
   const featured = [peak, trough, end].filter((p, i, arr) => arr.indexOf(p) === i);
 
   return (
@@ -76,8 +94,8 @@ export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoin
       aria-label={`权益曲线：7 月 3 日 $10,000 起步，7 月 14 日最高 ${usd0.format(peak.equityUsd)}，7 月 16 日回落到 ${usd0.format(trough.equityUsd)}，最新 ${usd0.format(end.equityUsd)}`}
       style={{ width: "100%", height: "auto", display: "block" }}
     >
-      {Y_TICKS.map((tick) => {
-        const y = MARGIN.top + ((Y_MAX - tick) / (Y_MAX - Y_MIN)) * PLOT_H;
+      {scale.ticks.map((tick) => {
+        const y = MARGIN.top + ((scale.max - tick) / (scale.max - scale.min)) * PLOT_H;
         return (
           <g key={tick}>
             <line
@@ -115,7 +133,11 @@ export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoin
       </text>
 
       {points
-        .filter((p) => p.index % X_TICK_EVERY === 1 || p.index === points.length - 1)
+        .filter(
+          // Periodic ticks, but never one adjacent to the always-shown last
+          // tick (their labels would overlap).
+          (p) => (p.index % X_TICK_EVERY === 1 && p.index < points.length - 2) || p.index === points.length - 1
+        )
         .map((p) => (
           <text key={p.index} x={p.x} y={VIEW_H - 12} textAnchor="middle" fontSize={12.5} fill="var(--muted)">
             {p.date.replace("开盘", "")}

@@ -1,4 +1,4 @@
-import { PAPER_SNAPSHOT } from "../../lib/live-predict-raven/snapshot";
+import type { PaperSnapshot } from "../../lib/live-predict-raven/snapshot";
 import { deriveReportStats } from "../../lib/live-predict-raven/stats";
 import { EquityChart } from "./equity-chart";
 import { fmtSignedPct, fmtSignedUsd, fmtUsd } from "./format";
@@ -21,9 +21,21 @@ function Tile({ label, value, sub, tone }: { label: string; value: string; sub?:
   );
 }
 
-export function PaperReport() {
-  const s = PAPER_SNAPSHOT;
+const fmtUtcMinute = (iso: string): string => (iso.length >= 16 ? `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC` : iso);
+
+export function PaperReport({
+  snapshot,
+  dataSource
+}: {
+  snapshot: PaperSnapshot;
+  dataSource: "live" | "baked";
+}) {
+  const s = snapshot;
   const { trade, equity, openBook } = deriveReportStats(s);
+  const runDays = Math.max(
+    1,
+    Math.round((Date.parse(s.lastEvalCycleUtc) - Date.parse(s.startedUtc)) / 86_400_000)
+  );
 
   return (
     <main className={styles.page}>
@@ -35,8 +47,13 @@ export function PaperReport() {
           仅 finance / geopolitics / tech 三类市场
         </p>
         <p className={styles.meta}>
-          数据截至 <strong>2026-07-20 02:20 UTC</strong>（第 {s.evalCycles} 个评估周期）· 反思报告{" "}
-          {s.reflectionReportUtc} · 静态快照，非实时刷新
+          数据截至 <strong>{fmtUtcMinute(s.lastEvalCycleUtc)}</strong>（第 {s.evalCycles} 个评估周期）· 反思报告{" "}
+          {fmtUtcMinute(s.reflectionReportUtc)} ·{" "}
+          {dataSource === "live" ? (
+            <strong>实时数据（每个评估周期后自动更新）</strong>
+          ) : (
+            "快照回退（VM 数据源暂不可达，显示最近一次留档）"
+          )}
         </p>
       </header>
 
@@ -48,7 +65,7 @@ export function PaperReport() {
           <Tile
             label="总权益"
             value={fmtUsd(equity.currentUsd)}
-            sub={`${fmtSignedPct(equity.returnPct)} vs 本金 · 17 天`}
+            sub={`${fmtSignedPct(equity.returnPct)} vs 本金 · ${runDays} 天`}
             tone={equity.returnPct >= 0 ? "pos" : "neg"}
           />
           <Tile
@@ -83,7 +100,7 @@ export function PaperReport() {
           <Tile
             label="最大回撤"
             value={fmtSignedPct(equity.maxDrawdownPct)}
-            sub={`峰值 ${fmtUsd(equity.peakUsd)}（${equity.peakDate}）→ 07-16`}
+            sub={`峰值 ${fmtUsd(equity.peakUsd)}（${equity.peakDate}）之后的最深回落`}
             tone="neg"
           />
           <Tile
@@ -93,8 +110,10 @@ export function PaperReport() {
           />
         </div>
         <p className={styles.callout}>
-          一句话：赚了 4.3%，但结构上是"高胜率小盈利 + 低频大亏损"——平均单笔亏损（$230）约为平均单笔盈利（$70）的
-          3.3 倍，目前靠 66.7% 的胜率和浮盈扛住。已实现部分整体仍是负数。
+          一句话：赚了 {equity.returnPct.toFixed(1)}%，但结构上是"高胜率小盈利 + 低频大亏损"——平均单笔亏损（
+          {fmtUsd(trade.avgLossUsd)}）约为平均单笔盈利（{fmtUsd(trade.avgWinUsd)}）的{" "}
+          {trade.avgWinUsd > 0 ? (trade.avgLossUsd / trade.avgWinUsd).toFixed(1) : "—"} 倍，目前靠{" "}
+          {trade.winRatePct.toFixed(1)}% 的胜率和浮盈扛住。已实现部分整体仍是负数。
         </p>
       </section>
 
@@ -106,8 +125,8 @@ export function PaperReport() {
           <EquityChart curve={s.equityCurve} bankrollUsd={s.bankrollUsd} />
         </div>
         <p className={styles.sectionNote}>
-          7/14 冲到峰值 +8.0% 后，7/15–16 被同一市场的两次止损（合计 -$460）砸出 -3.8%
-          回撤，随后企稳。
+          7/14 冲到峰值 +8.0% 后，7/15–16 被同一市场的两次止损（合计 -$460）拖低，低点出现在
+          7/21，随后回稳。
         </p>
         <details className={styles.details}>
           <summary>查看逐日数值表</summary>
@@ -159,7 +178,7 @@ export function PaperReport() {
         </h3>
         <p className={styles.sectionNote}>
           skill score = 1 − Brier_agent / Brier_market，&gt;0 才算跑赢市场。当前为负（agent {s.brier.agentScore.toFixed(3)} vs 市场{" "}
-          {s.brier.marketScore.toFixed(3)}），但样本只有 3 个已结算市场，被 MOU 一次失误主导——尚不能下结论。7/31
+          {s.brier.marketScore.toFixed(3)}），样本仅 {s.brier.n} 个已结算市场——尚不能下结论。7/31
           有一批持仓集中到期，样本很快会上来。
         </p>
         <BrierTable rows={s.brier.rows} />
@@ -172,9 +191,15 @@ export function PaperReport() {
             {s.engineQuality.contaminated} 次检测到市场价格污染、{s.engineQuality.evalErrors} 次评估错误（均
             fail-safe 为 hold）。
           </li>
+          {s.engineQuality.limitVsMarketPp !== null ? (
+            <li>
+              混合退出：限价腿较市价腿平均改善 +{s.engineQuality.limitVsMarketPp.toFixed(2)}pp（限价单挂出{" "}
+              {s.engineQuality.limitOrdersPlaced} 次、分批成交 {s.engineQuality.limitFills} 笔）。方向正确，幅度小。
+            </li>
+          ) : null}
           <li>
-            混合退出：限价腿较市价腿平均改善 +{s.engineQuality.limitVsMarketPp}pp（限价单挂出{" "}
-            {s.engineQuality.limitOrdersPlaced} 次、分批成交 {s.engineQuality.limitFills} 笔）。方向正确，幅度小。
+            饱和持有拦截 <strong>{s.saturatedHolds}</strong> 次——saturated-hold 修复（PR #91）阻止 99%
+            钳位把接近满值的赢家提前卖掉，改为持有到结算。
           </li>
           <li>费用 $0：本批地缘市场 taker/maker 均为 0 bps，费用拖累尚未被真正测试。</li>
         </ul>
@@ -202,7 +227,8 @@ export function PaperReport() {
             4 仓共享伊朗驱动。
           </li>
           <li>
-            <strong>建议 ③：</strong>饱和评估的 edge 不应按名义值展示/决策；等 7/31 结算潮把 Brier
+            <strong>建议 ③（已部分落地）：</strong>饱和钳位导致的错误卖出已由 saturated-hold 修复（PR
+            #91）拦截，赢家可持有到结算；饱和 edge 的名义值展示仍待改进。等 7/31 结算潮把 Brier
             样本攒起来再评价预测能力。
           </li>
         </ul>
@@ -215,7 +241,8 @@ export function PaperReport() {
         </p>
         <p>
           数据来源：raven-paper-agent-1 容器 portfolio.json / ledger.jsonl（{s.fills.total} 笔成交，其中 1
-          笔买入被 7/3 账本锁竞争丢弃、现金已还原）与每日反思报告。本页为静态快照，刷新需重拉 VM 账本后重新部署。
+          笔买入被 7/3 账本锁竞争丢弃、现金已还原）与每日反思报告，经 VM forecast-api 只读端点在每次页面访问时拉取——
+          agent 每次评估周期（review）落盘后，本页即反映最新状态；VM 不可达时回退到最近一次留档快照并在页顶标注。
         </p>
       </footer>
     </main>

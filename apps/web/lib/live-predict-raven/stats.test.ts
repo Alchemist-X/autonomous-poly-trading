@@ -37,15 +37,15 @@ describe("live-predict-raven stats", () => {
   describe("deriveEquityStats", () => {
     it("reads current equity, peak, and return off the curve", () => {
       const stats = deriveEquityStats(PAPER_SNAPSHOT.equityCurve, PAPER_SNAPSHOT.bankrollUsd);
-      expect(stats.currentUsd).toBe(10433.57);
+      expect(stats.currentUsd).toBe(10406.37);
       expect(stats.peakUsd).toBe(10799.24);
       expect(stats.peakDate).toBe("07-14");
-      expect(stats.returnPct).toBeCloseTo(4.34, 2);
+      expect(stats.returnPct).toBeCloseTo(4.06, 2);
     });
 
-    it("computes max drawdown as the worst peak-to-trough drop (7/14 -> 7/16)", () => {
+    it("computes max drawdown as the worst peak-to-trough drop (7/14 -> 7/21)", () => {
       const stats = deriveEquityStats(PAPER_SNAPSHOT.equityCurve, PAPER_SNAPSHOT.bankrollUsd);
-      expect(stats.maxDrawdownPct).toBeCloseTo(-3.81, 1);
+      expect(stats.maxDrawdownPct).toBeCloseTo(-3.93, 1);
     });
 
     it("is monotonic-safe: a flat curve has zero drawdown", () => {
@@ -58,11 +58,11 @@ describe("live-predict-raven stats", () => {
   });
 
   describe("deriveOpenBookStats", () => {
-    it("sums cost basis (~$3000) and unrealized (+$611.71) across the 6 open positions", () => {
+    it("sums cost basis (~$3000) and unrealized (+$584.93) across the 6 open positions", () => {
       const stats = deriveOpenBookStats(PAPER_SNAPSHOT.openPositions, PAPER_SNAPSHOT.cashUsd);
       expect(stats.positionCount).toBe(6);
       expect(stats.costUsd).toBeCloseTo(3000, 0);
-      expect(stats.unrealizedUsd).toBeCloseTo(611.71, 1);
+      expect(stats.unrealizedUsd).toBeCloseTo(584.93, 1);
       expect(stats.green).toBe(4);
       expect(stats.flat).toBe(1);
       expect(stats.red).toBe(1);
@@ -79,7 +79,7 @@ describe("live-predict-raven stats", () => {
     it("assembles all three sections from the snapshot", () => {
       const stats = deriveReportStats(PAPER_SNAPSHOT);
       expect(stats.trade.closedCount).toBe(6);
-      expect(stats.equity.currentUsd).toBe(10433.57);
+      expect(stats.equity.currentUsd).toBe(10406.37);
       expect(stats.openBook.positionCount).toBe(6);
     });
   });
