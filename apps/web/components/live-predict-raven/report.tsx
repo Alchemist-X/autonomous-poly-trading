@@ -7,7 +7,8 @@ import {
   ClosedTradesTable,
   EquityTable,
   ExitAlphaTable,
-  OpenPositionsTable
+  OpenPositionsTable,
+  ParamsTable
 } from "./report-tables";
 import styles from "./report.module.css";
 
@@ -207,6 +208,18 @@ export function PaperReport({
           </li>
           <li>费用 $0：本批地缘市场 taker/maker 均为 0 bps，费用拖累尚未被真正测试。</li>
         </ul>
+      </section>
+
+      <section className={styles.section} aria-labelledby="sec-params">
+        <h2 id="sec-params" className={styles.sectionTitle}>
+          运行参数
+        </h2>
+        <p className={styles.sectionNote}>
+          {dataSource === "live"
+            ? "实时读取自 VM 环境配置（env 可调默认值，调整须经用户确认）。"
+            : "留档快照值（VM 暂不可达）；参数以 VM 环境配置为准。"}
+        </p>
+        <ParamsTable config={s.config} />
       </section>
 
       <section className={styles.section} aria-labelledby="sec-verdict">

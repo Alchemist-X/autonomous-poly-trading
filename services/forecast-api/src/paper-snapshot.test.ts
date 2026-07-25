@@ -328,6 +328,43 @@ describe("buildPaperSnapshot", () => {
   });
 });
 
+describe("readPaperConfigView", () => {
+  const CONFIG_KEYS = [
+    "PAPER_MAX_POSITIONS",
+    "PAPER_MAX_EVALS_PER_CYCLE",
+    "PAPER_SATURATED_HOLD",
+    "PAPER_CATEGORIES",
+    "PAPER_EVAL_TIMES_UTC"
+  ];
+
+  afterEach(() => {
+    for (const k of CONFIG_KEYS) delete process.env[k];
+  });
+
+  it("mirrors paper-agent defaults when env is unset", () => {
+    const s = buildPaperSnapshot(root);
+    expect(s.config.maxPositions).toBe(10);
+    expect(s.config.entryEdgePp).toBe(8);
+    expect(s.config.stopLossPct).toBe(0.35);
+    expect(s.config.saturatedHoldEnabled).toBe(true);
+    expect(s.config.evalTimesUtc).toEqual(["00:10", "08:10", "16:10"]);
+  });
+
+  it("honors env overrides and the saturated-hold kill-switch spellings", () => {
+    process.env.PAPER_MAX_POSITIONS = "22";
+    process.env.PAPER_MAX_EVALS_PER_CYCLE = "16";
+    process.env.PAPER_SATURATED_HOLD = "off";
+    process.env.PAPER_CATEGORIES = "Finance, Tech";
+    process.env.PAPER_EVAL_TIMES_UTC = "02:00,10:00,18:00";
+    const s = buildPaperSnapshot(root);
+    expect(s.config.maxPositions).toBe(22);
+    expect(s.config.maxEvalsPerCycle).toBe(16);
+    expect(s.config.saturatedHoldEnabled).toBe(false);
+    expect(s.config.categories).toEqual(["finance", "tech"]);
+    expect(s.config.evalTimesUtc).toEqual(["02:00", "10:00", "18:00"]);
+  });
+});
+
 describe("getPaperSnapshot cache", () => {
   it("serves cached payloads within the TTL and rebuilds after it", () => {
     process.env.PAPER_ARTIFACTS_ROOT = root;
