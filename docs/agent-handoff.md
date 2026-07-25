@@ -11,7 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-20 by Claude（**模拟盘复盘页 `/live-predict-raven` 上线 forecasting-agent.com**，分支 `feat/live-predict-raven-report`）。
+> 最后更新：2026-07-24 by Claude（**/live-predict-raven 实时化：每次评估周期后自动更新**，分支 `feat/live-paper-snapshot`，**PR #93**）。
+> ① **背景**：用户要"更新最新收益 + GCloud 侧做到价格每次 review 后更新"。方案 = forecast-api（与 paper-agent 共享 runtime-artifacts 卷）加只读 `GET /paper/snapshot`（主 token **或** invite code `raven-labs` 双通道鉴权，60s 内存缓存）；apps/web 页面改为请求时服务端拉 VM（5s 超时 no-store），失败回退烘焙快照并在页顶显式标注数据源。
+> ② **端点聚合**（`services/forecast-api/src/paper-snapshot.ts`）：portfolio.json（现金/已实现/持仓+lastEval mark，equity=cash+lastEval 标记 = 恰好"截至上次 review"）+ ledger.jsonl（成交/周期/评估计数、saturatedHold 计数、**顺序重放配对已平仓回合**——支持同 positionId 再进场（MOU 双回合）、剔除 7/3 锁竞争丢单，产线数据复算 6 回合与手工分析分毫不差）+ 每日反思（权益曲线/退出 α/Brier/hybrid 透传）。web 侧 `live.ts` 解析校验 + 中文标签装饰（未知新市场回退英文）；图表 Y 域改数据驱动 + 刻度防碰撞。
+> ③ **最新业绩（截至 2026-07-24 10:23Z，第 66 周期，21 天）**：equity **$10,406（+4.1%）**（7/23 反思按实时盘口 $10,440）；已平 6 回合 4 胜 2 负不变；浮盈 +$585；**Brier n=4、skill −0.16**（新增中菲冲突：agent 8.8% vs 市场 13.5%、事件发生——从 −7.32 收敛但仍为负）；exit α +$1,077（NATO 行反事实翻正 +12.66）；饱和率 200/351（57%）；**saturated-hold 已实拦 1 次**（7/24 10:02 霍尔木兹 7/31：bid 0.992、netEdge −0.2pp，老逻辑必卖，新逻辑 `saturatedHold:true` 持有——修复上线 4 天首次生效）。
+> ④ **验收**：forecast-api 40/40 + web 27/27 vitest、web build 332 页绿；**真数据本地 E2E**（scp 产线账本→本地 :8788 起 forecast-api→web dev 指向它→页面"实时数据"徽标 + 全部数字与 VM 一致）；桌面/移动截图 0 pageerror。**待办（本条写入时进行中）**：对抗评审工作流过 diff → merge #93 → VM 重建 forecast-api 容器（⚠️ 镜像漂移最旧，重建后先冒烟旧端点 /healthz + /v1/forecasts；⚠️ 长构建用 nohup 防 SSH 掐线）→ `gh workflow run wc-results.yml` 发 web → 生产 E2E。英文版 handoff 此条待同步翻译。
+>
+> 上次更新：2026-07-20 by Claude（**模拟盘复盘页 `/live-predict-raven` 上线 forecasting-agent.com**，分支 `feat/live-predict-raven-report`）。
 > ① **背景**：用户先要模拟盘收益分析（SSH 拉 VM paper-agent 账本全量复盘），再要求发布成网页远程 review：挂 forecasting-agent.com`/live-predict-raven`、输入 `raven-labs` 解锁。
 > ② **业绩快照（截至 2026-07-20 02:20Z，第 53 周期）**：equity **$10,433.57（+4.3%，17 天）**= realized −$178.82 + 浮盈 +$611.71；32 笔成交 / 12 次开仓 / 已平 6 回合 **4 胜 2 负（66.7%）**，但平均亏损 $230 vs 平均盈利 $70（profit factor 0.61）；两笔亏损 = 同一市场（伊朗 MOU 7/17）止损后 4 小时原方向重进再止损（合计 −$460）；exit α +$990（退出决策整体加分）；Brier skill **−7.32 但 n=3** 不可下结论；6 仓全地缘 NO、4 仓共享伊朗驱动；峰值 $10,799（7/14）、最大回撤 −3.8%。**建议（未做）**：止损后同市场冷却期 > 题材级相关敞口上限 > 饱和评估 edge 不按名义值展示。
 > ③ **页面实现（apps/web 顶层路由，vercel.json catch-all 已覆盖零路由改动）**：服务端邀请码门（`lib/live-predict-raven/access.ts`，sha256+timingSafeEqual，httpOnly cookie 30 天，`LIVE_PREDICT_RAVEN_CODE` env 可换码、默认 raven-labs 与 /engine 门同码）+ `POST /api/live-predict-raven/unlock`；报告 = **烘焙快照** `lib/live-predict-raven/snapshot.ts` + 纯函数 `stats.ts`（20 个 vitest）；SVG 权益曲线服务端渲染零客户端 JS；`robots noindex`；中文为主（走 `/invite` 顶层工具页先例，未进 world-cup 三语系统）。**刷新数据 = 重拉 VM 账本改 snapshot.ts 重部署，非实时**——想升级成实时需 paper-agent 暴露 HTTP 只读端点再走 vercel 代理（未做）。

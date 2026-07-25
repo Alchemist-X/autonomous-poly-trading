@@ -10,6 +10,13 @@ export interface EquityPoint {
   equityUsd: number;
 }
 
+export type ExitReasonKind =
+  | "negative_edge"
+  | "stop_loss"
+  | "settled_won"
+  | "settled_lost"
+  | "settled_voided";
+
 export interface ClosedTrade {
   question: string;
   slug: string;
@@ -21,7 +28,7 @@ export interface ClosedTrade {
   shares: number;
   costUsd: number;
   pnlUsd: number;
-  exitReason: "negative_edge" | "stop_loss";
+  exitReason: ExitReasonKind;
   note?: string;
 }
 
@@ -36,6 +43,8 @@ export interface OpenPosition {
   unrealizedUsd: number;
   agentProb: number;
   flag: "saturated" | "contaminated" | null;
+  /** True when the saturated-hold guard vetoed a clamp-induced exit (PR #91). */
+  saturatedHold?: boolean;
 }
 
 export interface ExitAlphaRow {
@@ -72,6 +81,8 @@ export interface PaperSnapshot {
   /** One buy fill was dropped by the 2026-07-03 book-lock race (cash restored). */
   droppedBuyFills: number;
   evalCycles: number;
+  /** Count of clamp-induced exits vetoed by the saturated-hold guard. */
+  saturatedHolds: number;
   equityCurve: readonly EquityPoint[];
   closedTrades: readonly ClosedTrade[];
   openPositions: readonly OpenPosition[];
@@ -90,23 +101,24 @@ export interface PaperSnapshot {
     evalErrors: number;
     limitOrdersPlaced: number;
     limitFills: number;
-    limitVsMarketPp: number;
+    limitVsMarketPp: number | null;
   };
 }
 
 export const PAPER_SNAPSHOT: PaperSnapshot = {
-  generatedAtUtc: "2026-07-20T03:30Z",
-  reflectionReportUtc: "2026-07-19T18:18Z",
-  lastEvalCycleUtc: "2026-07-20T02:20Z",
-  startedUtc: "2026-07-03T07:36Z",
+  generatedAtUtc: "2026-07-24T11:15Z",
+  reflectionReportUtc: "2026-07-23T18:19Z",
+  lastEvalCycleUtc: "2026-07-24T10:13Z",
+  startedUtc: "2026-07-03T07:17Z",
   bankrollUsd: 10000,
   cashUsd: 6821.18,
   realizedPnlUsd: -178.82,
-  equityUsd: 10433.57,
+  equityUsd: 10406.37,
   feesUsd: 0,
   fills: { total: 32, buys: 13, sells: 19 },
   droppedBuyFills: 1,
-  evalCycles: 53,
+  evalCycles: 66,
+  saturatedHolds: 1,
   equityCurve: [
     { date: "07-03开盘", equityUsd: 10000 },
     { date: "07-03", equityUsd: 9995.28 },
@@ -125,7 +137,12 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
     { date: "07-16", equityUsd: 10387.81 },
     { date: "07-17", equityUsd: 10450.87 },
     { date: "07-18", equityUsd: 10401.49 },
-    { date: "07-19", equityUsd: 10433.57 }
+    { date: "07-19", equityUsd: 10433.57 },
+    { date: "07-20", equityUsd: 10379.58 },
+    { date: "07-21", equityUsd: 10374.44 },
+    { date: "07-22", equityUsd: 10417.31 },
+    { date: "07-23", equityUsd: 10440.04 },
+    { date: "07-24", equityUsd: 10406.37 }
   ],
   closedTrades: [
     {
@@ -166,7 +183,7 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       costUsd: 500,
       pnlUsd: 94.15,
       exitReason: "negative_edge",
-      note: "退出后价格跌到 0.145 — 反事实检验里最赚的一次退出（α +$477）"
+      note: "退出后价格跌到 0.065 — 反事实检验里最赚的一次退出（α +$542）"
     },
     {
       question: "Mojtaba Khamenei 7/15 前公开露面？",
@@ -180,7 +197,7 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       costUsd: 500,
       pnlUsd: 81.17,
       exitReason: "negative_edge",
-      note: "持有 12 天到临近结算，接近满值退出"
+      note: "持有 12 天到临近结算；这次 0.994 卖出正是 99% 钳位强制的（saturated-hold 修复的起因）"
     },
     {
       question: "伊朗 7/17 前宣布退出 MOU 谈判？（第一次）",
@@ -219,10 +236,11 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       openedUtc: "2026-07-03T10:12Z",
       shares: 674.2,
       entryPrice: 0.742,
-      markPrice: 0.984,
-      unrealizedUsd: 163.38,
+      markPrice: 0.992,
+      unrealizedUsd: 168.55,
       agentProb: 0.99,
-      flag: "saturated"
+      flag: "saturated",
+      saturatedHold: true
     },
     {
       question: "普京 2027 年前卸任俄罗斯总统？",
@@ -231,9 +249,9 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       openedUtc: "2026-07-04T02:12Z",
       shares: 555.6,
       entryPrice: 0.9,
-      markPrice: 0.9,
-      unrealizedUsd: 0,
-      agentProb: 0.97,
+      markPrice: 0.91,
+      unrealizedUsd: 5.56,
+      agentProb: 0.986,
       flag: "contaminated"
     },
     {
@@ -243,8 +261,8 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       openedUtc: "2026-07-05T02:20Z",
       shares: 704.2,
       entryPrice: 0.71,
-      markPrice: 0.88,
-      unrealizedUsd: 119.72,
+      markPrice: 0.86,
+      unrealizedUsd: 105.63,
       agentProb: 0.99,
       flag: "saturated"
     },
@@ -255,8 +273,8 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       openedUtc: "2026-07-06T02:19Z",
       shares: 1785.7,
       entryPrice: 0.28,
-      markPrice: 0.49,
-      unrealizedUsd: 375,
+      markPrice: 0.48,
+      unrealizedUsd: 357.14,
       agentProb: 0.99,
       flag: "saturated"
     },
@@ -267,8 +285,8 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       openedUtc: "2026-07-07T02:25Z",
       shares: 555.6,
       entryPrice: 0.9,
-      markPrice: 0.91,
-      unrealizedUsd: 5.56,
+      markPrice: 0.9,
+      unrealizedUsd: 0,
       agentProb: 0.99,
       flag: "saturated"
     },
@@ -281,12 +299,12 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       entryPrice: 0.77,
       markPrice: 0.69,
       unrealizedUsd: -51.95,
-      agentProb: 0.873,
+      agentProb: 0.93,
       flag: null
     }
   ],
   exitAlpha: {
-    totalUsd: 989.91,
+    totalUsd: 1076.73,
     rows: [
       {
         question: "美伊 7/10 前外交会晤？",
@@ -304,9 +322,9 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
         soldUtc: "07-05 10:08",
         exitStyle: "市价（限价超时回落）",
         avgExitPrice: 0.82,
-        priceNow: 0.835,
-        alphaUsd: -9.49,
-        reason: "负 edge 退出"
+        priceNow: 0.8,
+        alphaUsd: 12.66,
+        reason: "负 edge 退出+限价单超时回落"
       },
       {
         question: "美伊 7/31 前外交会晤？",
@@ -314,8 +332,8 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
         soldUtc: "07-05 18:15",
         exitStyle: "市价+限价两腿",
         avgExitPrice: 0.735,
-        priceNow: 0.145,
-        alphaUsd: 476.93,
+        priceNow: 0.065,
+        alphaUsd: 541.6,
         reason: "负 edge 退出"
       },
       {
@@ -341,10 +359,10 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
     ]
   },
   brier: {
-    n: 3,
-    agentScore: 0.013,
-    marketScore: 0.002,
-    skillScore: -7.32,
+    n: 4,
+    agentScore: 0.2175,
+    marketScore: 0.1882,
+    skillScore: -0.16,
     rows: [
       {
         question: "伊朗 7/17 前退出 MOU 谈判？",
@@ -361,6 +379,13 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
         resolvedUtc: "2026-07-15"
       },
       {
+        question: "中菲 2027 前军事冲突？",
+        agentProb: 0.088,
+        marketProb: 0.135,
+        happened: true,
+        resolvedUtc: "2026-07-07"
+      },
+      {
         question: "美伊 7/10 前外交会晤？",
         agentProb: 0.976,
         marketProb: 0.976,
@@ -369,13 +394,15 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       }
     ]
   },
+  // Ledger-count basis (same basis the live endpoint uses, so live and
+  // fallback never disagree on the counting method).
   engineQuality: {
-    evaluations: 305,
-    saturated: 147,
-    contaminated: 36,
-    evalErrors: 8,
+    evaluations: 351,
+    saturated: 200,
+    contaminated: 50,
+    evalErrors: 9,
     limitOrdersPlaced: 4,
     limitFills: 12,
-    limitVsMarketPp: 0.5
+    limitVsMarketPp: 0.46
   }
 };

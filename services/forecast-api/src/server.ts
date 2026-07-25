@@ -8,6 +8,7 @@
 //   GET  /v1/forecasts/:id/text        answer as plain text
 //   GET  /v1/forecasts/:id/pdf         answer as a PDF dossier
 //   POST /mcp                          MCP streamable-HTTP endpoint (stateless)
+//   GET  /paper/snapshot               paper-agent book snapshot (token OR invite code)
 //
 // Every /v1 + /mcp route is token-gated (Authorization: Bearer, x-api-key, or ?token=).
 
@@ -19,6 +20,7 @@ import type { ServiceConfig } from "./config";
 import { authorizeInviteUse, describeInviteState, inviteState } from "./invites";
 import { log } from "./log";
 import { handleMcpRequest } from "./mcp";
+import { getPaperSnapshot } from "./paper-snapshot";
 import { ensurePdf } from "./pdf";
 import { QuotaExceededError } from "./quota";
 import { renderHtml } from "./render-html";
@@ -253,6 +255,26 @@ async function route(req: IncomingMessage, res: ServerResponse, config: ServiceC
         mcp: "POST /mcp (streamable HTTP, same token)"
       }
     });
+    return;
+  }
+
+  // Paper-book snapshot for the /live-predict-raven review page. Simulation
+  // data only (no keys, no live-trading state); the page's invite code is
+  // accepted as a lighter credential so the web app needs no extra secret.
+  if (url.pathname === "/paper/snapshot" && method === "GET") {
+    if (!isAuthorized(req, url, config.token) && !isAuthorized(req, url, config.inviteCode)) {
+      sendJson(res, 401, { error: "unauthorized — provide the access token or invite code (Authorization: Bearer, x-api-key, or ?token=)" });
+      return;
+    }
+    const snapshot = getPaperSnapshot();
+    // A zeroed book means the artifacts are missing/moved (root misconfig,
+    // volume remount) — surface a real error instead of a plausible-looking
+    // empty payload that consumers would render as "the fund went to zero".
+    if (!(snapshot.bankrollUsd > 0)) {
+      sendJson(res, 503, { error: "paper book not found on this host — check ARTIFACT_STORAGE_ROOT / volume mounts" });
+      return;
+    }
+    sendJson(res, 200, snapshot);
     return;
   }
 

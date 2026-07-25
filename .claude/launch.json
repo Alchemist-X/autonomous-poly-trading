@@ -8,6 +8,18 @@
       "port": 3000
     },
     {
+      "name": "web-live-paper",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "LIVE_PREDICT_RAVEN_UPSTREAM=http://localhost:8788",
+        "pnpm",
+        "--filter",
+        "@autopoly/web",
+        "dev"
+      ],
+      "port": 3000
+    },
+    {
       "name": "raven",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@autopoly/raven", "dev"],
