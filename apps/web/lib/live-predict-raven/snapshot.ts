@@ -10,6 +10,13 @@ export interface EquityPoint {
   equityUsd: number;
 }
 
+export type ExitReasonKind =
+  | "negative_edge"
+  | "stop_loss"
+  | "settled_won"
+  | "settled_lost"
+  | "settled_voided";
+
 export interface ClosedTrade {
   question: string;
   slug: string;
@@ -21,7 +28,7 @@ export interface ClosedTrade {
   shares: number;
   costUsd: number;
   pnlUsd: number;
-  exitReason: "negative_edge" | "stop_loss";
+  exitReason: ExitReasonKind;
   note?: string;
 }
 
@@ -135,7 +142,7 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
     { date: "07-21", equityUsd: 10374.44 },
     { date: "07-22", equityUsd: 10417.31 },
     { date: "07-23", equityUsd: 10440.04 },
-    { date: "现在", equityUsd: 10406.37 }
+    { date: "07-24", equityUsd: 10406.37 }
   ],
   closedTrades: [
     {
@@ -387,10 +394,12 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
       }
     ]
   },
+  // Ledger-count basis (same basis the live endpoint uses, so live and
+  // fallback never disagree on the counting method).
   engineQuality: {
-    evaluations: 377,
-    saturated: 192,
-    contaminated: 48,
+    evaluations: 351,
+    saturated: 200,
+    contaminated: 50,
     evalErrors: 9,
     limitOrdersPlaced: 4,
     limitFills: 12,

@@ -32,10 +32,11 @@ export function PaperReport({
 }) {
   const s = snapshot;
   const { trade, equity, openBook } = deriveReportStats(s);
-  const runDays = Math.max(
-    1,
-    Math.round((Date.parse(s.lastEvalCycleUtc) - Date.parse(s.startedUtc)) / 86_400_000)
-  );
+  const rawDays = Math.round((Date.parse(s.lastEvalCycleUtc) - Date.parse(s.startedUtc)) / 86_400_000);
+  const runDaysLabel = Number.isFinite(rawDays) ? `${Math.max(1, rawDays)} 天` : "—";
+  const payoffRatio =
+    trade.avgWinUsd > 0 && trade.avgLossUsd > 0 ? (trade.avgWinUsd / trade.avgLossUsd).toFixed(2) : "—";
+  const effectiveOpens = Math.max(0, s.fills.buys - s.droppedBuyFills);
 
   return (
     <main className={styles.page}>
@@ -52,7 +53,7 @@ export function PaperReport({
           {dataSource === "live" ? (
             <strong>实时数据（每个评估周期后自动更新）</strong>
           ) : (
-            "快照回退（VM 数据源暂不可达，显示最近一次留档）"
+            <strong>快照回退——实时数据暂不可用，显示 {s.generatedAtUtc.slice(0, 10)} 留档</strong>
           )}
         </p>
       </header>
@@ -65,7 +66,7 @@ export function PaperReport({
           <Tile
             label="总权益"
             value={fmtUsd(equity.currentUsd)}
-            sub={`${fmtSignedPct(equity.returnPct)} vs 本金 · ${runDays} 天`}
+            sub={`${fmtSignedPct(equity.returnPct)} vs 本金 · ${runDaysLabel}`}
             tone={equity.returnPct >= 0 ? "pos" : "neg"}
           />
           <Tile
@@ -76,26 +77,26 @@ export function PaperReport({
           <Tile
             label="已实现盈亏"
             value={fmtSignedUsd(s.realizedPnlUsd)}
-            sub="全部亏损来自同一市场的两次止损"
-            tone="neg"
+            sub="已平仓回合与结算的累计净额"
+            tone={s.realizedPnlUsd >= 0 ? "pos" : "neg"}
           />
           <Tile
             label="浮动盈亏"
             value={fmtSignedUsd(openBook.unrealizedUsd)}
             sub={`${openBook.positionCount} 仓：${openBook.green} 绿 ${openBook.flat} 平 ${openBook.red} 红`}
-            tone="pos"
+            tone={openBook.unrealizedUsd >= 0 ? "pos" : "neg"}
           />
         </div>
         <div className={styles.tiles}>
           <Tile
             label="总成交"
             value={`${s.fills.total} 笔`}
-            sub={`${s.fills.buys} 买 + ${s.fills.sells} 卖（含分批成交）· 有效开仓 12 次`}
+            sub={`${s.fills.buys} 买 + ${s.fills.sells} 卖（含分批成交）· 有效开仓 ${effectiveOpens} 次`}
           />
           <Tile
             label="平均盈 / 亏"
             value={`${fmtSignedUsd(trade.avgWinUsd)} / ${fmtSignedUsd(-trade.avgLossUsd)}`}
-            sub={`盈亏比 0.31 · profit factor ${trade.profitFactor.toFixed(2)}`}
+            sub={`盈亏比 ${payoffRatio} · profit factor ${Number.isFinite(trade.profitFactor) ? trade.profitFactor.toFixed(2) : "∞"}`}
           />
           <Tile
             label="最大回撤"
@@ -110,23 +111,25 @@ export function PaperReport({
           />
         </div>
         <p className={styles.callout}>
-          一句话：赚了 {equity.returnPct.toFixed(1)}%，但结构上是"高胜率小盈利 + 低频大亏损"——平均单笔亏损（
-          {fmtUsd(trade.avgLossUsd)}）约为平均单笔盈利（{fmtUsd(trade.avgWinUsd)}）的{" "}
+          一句话：{equity.returnPct >= 0 ? "赚了" : "亏了"} {Math.abs(equity.returnPct).toFixed(1)}%
+          ，结构上是"高胜率小盈利 + 低频大亏损"——平均单笔亏损（{fmtUsd(trade.avgLossUsd)}
+          ）约为平均单笔盈利（{fmtUsd(trade.avgWinUsd)}）的{" "}
           {trade.avgWinUsd > 0 ? (trade.avgLossUsd / trade.avgWinUsd).toFixed(1) : "—"} 倍，目前靠{" "}
-          {trade.winRatePct.toFixed(1)}% 的胜率和浮盈扛住。已实现部分整体仍是负数。
+          {trade.winRatePct.toFixed(1)}% 的胜率和浮盈扛住。
+          {s.realizedPnlUsd < 0 ? "已实现部分整体仍是负数。" : ""}
         </p>
       </section>
 
       <section className={styles.section} aria-labelledby="sec-equity">
         <h2 id="sec-equity" className={styles.sectionTitle}>
-          权益曲线（每日 18:18 UTC 反思快照）
+          权益曲线（每日反思快照 + 最新评估点）
         </h2>
         <div className={styles.chartWrap}>
           <EquityChart curve={s.equityCurve} bankrollUsd={s.bankrollUsd} />
         </div>
         <p className={styles.sectionNote}>
-          7/14 冲到峰值 +8.0% 后，7/15–16 被同一市场的两次止损（合计 -$460）拖低，低点出现在
-          7/21，随后回稳。
+          复盘注（2026-07-24）：7/14 冲到峰值 +8.0% 后，7/15–16 被同一市场的两次止损（合计
+          -$460）拖低，低点出现在 7/21，随后回稳。
         </p>
         <details className={styles.details}>
           <summary>查看逐日数值表</summary>
@@ -136,11 +139,11 @@ export function PaperReport({
 
       <section className={styles.section} aria-labelledby="sec-closed">
         <h2 id="sec-closed" className={styles.sectionTitle}>
-          已平仓 6 回合：4 胜 2 负
+          已平仓 {trade.closedCount} 回合：{trade.wins} 胜 {trade.losses} 负
         </h2>
         <ClosedTradesTable trades={s.closedTrades} />
         <p className={styles.callout}>
-          两笔亏损是同一个论点买了两次："伊朗 7/17 前退出 MOU 谈判"。第一次 agent 估 19.5%（市场只给
+          复盘注（2026-07-24）：两笔亏损是同一个论点买了两次："伊朗 7/17 前退出 MOU 谈判"。第一次 agent 估 19.5%（市场只给
           6.4%）买 YES，4 小时后止损；当晚在更低价位原方向重进，次日再止损。这是整个模拟盘唯一一次显著偏离市场定价的独立判断，也是全部已实现亏损的来源。反事实检验显示两次止损本身都是对的（死扛到归零会多亏
           $540）——错在入场与止损后无冷却期的重进。
         </p>
@@ -153,10 +156,11 @@ export function PaperReport({
         <OpenPositionsTable positions={s.openPositions} />
         <p className={styles.sectionNote}>
           ⚠ 饱和 = 引擎概率打到 99% 上限，edge 为下限值而非精确判断；⛔ 污染 =
-          该预测被检测到引用了市场价格，不作为开仓/退出依据。现价为 7/19 反思报告 mark。
+          该预测被检测到引用了市场价格，不作为开仓/退出依据。现价 = 各仓最近一次评估时的 bid
+          mark，随每次评估周期更新。
         </p>
         <p className={styles.callout}>
-          风险集中：六仓全是地缘政治 NO，其中四仓共享"伊朗局势"单一驱动（霍尔木兹 ×2 + 核协议 +
+          复盘注（2026-07-24）风险集中：六仓全是地缘政治 NO，其中四仓共享"伊朗局势"单一驱动（霍尔木兹 ×2 + 核协议 +
           入侵伊朗）。一次中东局势突变会同时打穿多仓。亮点是霍尔木兹 12/31：市场定价 72% 会恢复通航时逆势买
           NO @ 0.28，现在市场已向 agent 靠拢（+75%），是目前唯一在赢的真正逆市场立场（未结算）。
         </p>
@@ -207,7 +211,7 @@ export function PaperReport({
 
       <section className={styles.section} aria-labelledby="sec-verdict">
         <h2 id="sec-verdict" className={styles.sectionTitle}>
-          结论与建议
+          结论与建议（2026-07-24 复盘）
         </h2>
         <ul className={styles.list}>
           <li>

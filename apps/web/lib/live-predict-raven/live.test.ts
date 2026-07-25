@@ -126,6 +126,24 @@ describe("parseLivePayload", () => {
     expect(parseLivePayload({ ...validPayload, equityCurve: [] })).toBeNull();
   });
 
+  it("rejects degraded payloads (rotated ledger) instead of rendering NaN", () => {
+    expect(parseLivePayload({ ...validPayload, startedUtc: null })).toBeNull();
+    expect(parseLivePayload({ ...validPayload, lastEvalCycleUtc: "" })).toBeNull();
+    expect(parseLivePayload({ ...validPayload, evalCycles: 0 })).toBeNull();
+  });
+
+  it("passes settlement exit reasons through and drops rows without a cost basis", () => {
+    const s = parseLivePayload({
+      ...validPayload,
+      closedTrades: [
+        { ...validPayload.closedTrades[0], exitReason: "settled_won" },
+        { ...validPayload.closedTrades[0], costUsd: 0 }
+      ]
+    });
+    expect(s?.closedTrades).toHaveLength(1);
+    expect(s?.closedTrades[0]?.exitReason).toBe("settled_won");
+  });
+
   it("drops malformed rows instead of failing the whole payload", () => {
     const s = parseLivePayload({
       ...validPayload,

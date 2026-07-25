@@ -91,7 +91,7 @@ export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoin
     <svg
       viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
       role="img"
-      aria-label={`权益曲线：7 月 3 日 $10,000 起步，7 月 14 日最高 ${usd0.format(peak.equityUsd)}，7 月 16 日回落到 ${usd0.format(trough.equityUsd)}，最新 ${usd0.format(end.equityUsd)}`}
+      aria-label={`权益曲线：${first.date} ${usd0.format(first.equityUsd)} 起步，${peak.date} 最高 ${usd0.format(peak.equityUsd)}，${trough.date} 低点 ${usd0.format(trough.equityUsd)}，最新 ${usd0.format(end.equityUsd)}`}
       style={{ width: "100%", height: "auto", display: "block" }}
     >
       {scale.ticks.map((tick) => {

@@ -103,7 +103,14 @@ const round2 = (n: number): number => Math.round(n * 100) / 100;
 const round4 = (n: number): number => Math.round(n * 10000) / 10000;
 
 function paperRoot(): string {
-  return process.env.PAPER_ARTIFACTS_ROOT?.trim() || path.join(repoRoot(), "runtime-artifacts", "paper-agent");
+  // Explicit override first (tests), then the ARTIFACT_STORAGE_ROOT convention
+  // shared with the paper-agent's own store.ts, then the repo default —
+  // keeping this endpoint pointed at the same files the agent writes.
+  const explicit = process.env.PAPER_ARTIFACTS_ROOT?.trim();
+  if (explicit) return explicit;
+  const shared = process.env.ARTIFACT_STORAGE_ROOT?.trim();
+  if (shared) return path.join(shared, "paper-agent");
+  return path.join(repoRoot(), "runtime-artifacts", "paper-agent");
 }
 
 function readJson(file: string): Record<string, unknown> | null {
@@ -134,19 +141,51 @@ function isDroppedFill(e: Record<string, unknown>): boolean {
   );
 }
 
-// Sequential replay per positionId: a position closes when its share count
-// returns to ~zero; the same id can round-trip more than once (MOU did).
-function pairClosedTrades(trades: Array<Record<string, unknown>>): ApiClosedTrade[] {
+const SETTLEMENT_PER_SHARE: Record<string, number> = { won: 1, lost: 0, voided: 0.5 };
+
+// Sequential replay per positionId over trade AND resolution events: a
+// position closes when its share count returns to ~zero (sells) or when a
+// resolution settles the remainder (won $1 / lost $0 / voided $0.50 — the
+// hold-to-settlement path the saturated-hold guard exists for). The same id
+// can round-trip more than once (MOU did), and a partial exit whose residual
+// settles produces ONE episode with combined sell + settlement economics.
+function pairClosedTrades(events: Array<Record<string, unknown>>): ApiClosedTrade[] {
   const open = new Map<
     string,
     { shares: number; costUsd: number; proceedsUsd: number; soldShares: number; openedUtc: string; side: string; lastSellUtc: string; lastReason: string }
   >();
   const closed: ApiClosedTrade[] = [];
-  for (const t of trades) {
+  for (const t of events) {
     const id = String(t.positionId ?? "");
+    if (!id) continue;
+    if (t.type === "resolution") {
+      const cur = open.get(id);
+      const perShare = SETTLEMENT_PER_SHARE[String(t.kind ?? "")];
+      if (!cur || perShare === undefined || cur.shares <= 0.01) {
+        open.delete(id);
+        continue;
+      }
+      const soldShares = cur.soldShares + cur.shares;
+      const proceedsUsd = cur.proceedsUsd + cur.shares * perShare;
+      closed.push({
+        slug: String(t.slug ?? ""),
+        positionId: id,
+        side: cur.side,
+        openedUtc: cur.openedUtc,
+        closedUtc: String(t.ts ?? ""),
+        entryPrice: round4(cur.costUsd / soldShares),
+        exitPrice: round4(proceedsUsd / soldShares),
+        shares: round2(soldShares),
+        costUsd: round2(cur.costUsd),
+        pnlUsd: round2(proceedsUsd - cur.costUsd),
+        exitReason: `settled_${String(t.kind)}`
+      });
+      open.delete(id);
+      continue;
+    }
     const shares = Number(t.shares ?? 0);
     const price = Number(t.avgPrice ?? 0);
-    if (!id || !(shares > 0)) continue;
+    if (!(shares > 0)) continue;
     if (t.side === "buy") {
       const cur = open.get(id) ?? {
         shares: 0,
@@ -195,6 +234,8 @@ function pairClosedTrades(trades: Array<Record<string, unknown>>): ApiClosedTrad
 
 function equityCurve(reportsDir: string, bankrollUsd: number): Array<{ date: string; equityUsd: number }> {
   if (!existsSync(reportsDir)) return [];
+  // Key by FULL date (year included) so a multi-year run never overwrites a
+  // prior year's point in place; the MM-DD display label is derived after.
   const byDate = new Map<string, number>();
   const files = readdirSync(reportsDir)
     .filter((f) => f.endsWith("-reflection.json"))
@@ -203,9 +244,11 @@ function equityCurve(reportsDir: string, bankrollUsd: number): Array<{ date: str
     const j = readJson(path.join(reportsDir, f));
     const equity = (j?.book as Record<string, unknown> | undefined)?.equityUsd;
     const ts = typeof j?.generatedAtUtc === "string" ? j.generatedAtUtc : f;
-    if (typeof equity === "number") byDate.set(ts.slice(5, 10), equity);
+    if (typeof equity === "number") byDate.set(ts.slice(0, 10), equity);
   }
-  const points = [...byDate.entries()].map(([date, equityUsd]) => ({ date, equityUsd }));
+  const points = [...byDate.entries()]
+    .sort(([a], [b]) => (a < b ? -1 : 1))
+    .map(([date, equityUsd]) => ({ date: date.slice(5), equityUsd }));
   return [{ date: "起点", equityUsd: bankrollUsd }, ...points];
 }
 
@@ -232,8 +275,10 @@ export function buildPaperSnapshot(rootDir: string = paperRoot()): PaperSnapshot
   const reportsDir = path.join(rootDir, "reports");
 
   const trades = ledger.filter((e) => e.type === "trade");
-  const pairableTrades = trades.filter((e) => !isDroppedFill(e));
-  const droppedBuyFills = trades.length - pairableTrades.length;
+  const pairableEvents = ledger.filter(
+    (e) => (e.type === "trade" || e.type === "resolution") && !isDroppedFill(e)
+  );
+  const droppedBuyFills = trades.filter((e) => isDroppedFill(e)).length;
   const buys = trades.filter((e) => e.side === "buy").length;
   const sells = trades.filter((e) => e.side === "sell").length;
   const evaluations = ledger.filter((e) => e.type === "evaluation");
@@ -310,7 +355,7 @@ export function buildPaperSnapshot(rootDir: string = paperRoot()): PaperSnapshot
       { date: "现在", equityUsd }
     ],
     openPositions,
-    closedTrades: pairClosedTrades(pairableTrades),
+    closedTrades: pairClosedTrades(pairableEvents),
     exitAlpha: {
       totalUsd: typeof reflection?.exitAlphaTotalUsd === "number" ? round2(reflection.exitAlphaTotalUsd) : null,
       rows: exits.map((e) => ({

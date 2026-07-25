@@ -94,6 +94,61 @@ const ledgerLines = [
   { ts: "2026-07-06T10:02:00.000Z", type: "watchlist_eval", slug: "w1" },
   { ts: "2026-07-06T10:03:00.000Z", type: "evaluation_error", positionId: "open-pos:1", error: "boom" },
   { ts: "2026-07-06T10:04:00.000Z", type: "limit_placed", positionId: "demo-market:1" },
+  // Hold-to-settlement path (the saturated-hold scenario): bought, half sold,
+  // remainder resolved WON — must pair into ONE combined closed episode.
+  {
+    ts: "2026-07-07T00:00:00.000Z",
+    type: "trade",
+    side: "buy",
+    positionId: "settle-market:1",
+    slug: "settle-market",
+    outcome: "No",
+    shares: 100,
+    avgPrice: 0.8,
+    feeUsd: 0
+  },
+  {
+    ts: "2026-07-07T06:00:00.000Z",
+    type: "trade",
+    side: "sell",
+    style: "market",
+    positionId: "settle-market:1",
+    slug: "settle-market",
+    shares: 40,
+    avgPrice: 0.95,
+    feeUsd: 0,
+    reason: "negative_edge"
+  },
+  {
+    ts: "2026-07-08T00:00:00.000Z",
+    type: "resolution",
+    positionId: "settle-market:1",
+    slug: "settle-market",
+    kind: "won",
+    shares: 60,
+    avgEntryPrice: 0.8
+  },
+  // Voided settlement with no preceding sells refunds $0.50/share.
+  {
+    ts: "2026-07-08T01:00:00.000Z",
+    type: "trade",
+    side: "buy",
+    positionId: "void-market:1",
+    slug: "void-market",
+    outcome: "Yes",
+    shares: 200,
+    avgPrice: 0.4,
+    feeUsd: 0
+  },
+  {
+    ts: "2026-07-08T02:00:00.000Z",
+    type: "resolution",
+    positionId: "void-market:1",
+    slug: "void-market",
+    kind: "voided",
+    shares: 200,
+    avgEntryPrice: 0.4
+  },
   { ts: "2026-07-06T18:00:00.000Z", type: "cycle_end", positions: 1, cashUsd: 9500 }
 ];
 
@@ -183,7 +238,7 @@ describe("buildPaperSnapshot", () => {
 
   it("counts fills, cycles, evals and the saturated-hold interventions", () => {
     const s = buildPaperSnapshot(root);
-    expect(s.fills).toEqual({ total: 6, buys: 3, sells: 3 });
+    expect(s.fills).toEqual({ total: 9, buys: 5, sells: 4 });
     expect(s.droppedBuyFills).toBe(1);
     expect(s.evalCycles).toBe(1);
     expect(s.evaluations).toBe(2);
@@ -199,7 +254,7 @@ describe("buildPaperSnapshot", () => {
 
   it("pairs round trips sequentially, supporting re-entry on the same positionId", () => {
     const s = buildPaperSnapshot(root);
-    expect(s.closedTrades).toHaveLength(2);
+    expect(s.closedTrades).toHaveLength(4);
     const [first, second] = s.closedTrades;
     expect(first?.pnlUsd).toBeCloseTo(10, 2); // 100 sh: 0.8 -> 0.9
     expect(first?.exitReason).toBe("negative_edge"); // ttl-fallback suffix stripped
@@ -207,6 +262,20 @@ describe("buildPaperSnapshot", () => {
     expect(second?.exitReason).toBe("stop_loss");
     // The dropped hormuz fill never pairs into a closed trade.
     expect(s.closedTrades.every((t) => !t.slug.includes("hormuz"))).toBe(true);
+  });
+
+  it("closes hold-to-settlement positions, combining partial-sell and settlement economics", () => {
+    const s = buildPaperSnapshot(root);
+    const settled = s.closedTrades.find((t) => t.slug === "settle-market");
+    // cost 100×0.8 = 80; proceeds = 40×0.95 (sell) + 60×$1 (won) = 98
+    expect(settled?.exitReason).toBe("settled_won");
+    expect(settled?.shares).toBeCloseTo(100, 2);
+    expect(settled?.pnlUsd).toBeCloseTo(18, 2);
+    expect(settled?.exitPrice).toBeCloseTo(0.98, 4);
+    const voided = s.closedTrades.find((t) => t.slug === "void-market");
+    // cost 200×0.4 = 80; refund 200×$0.50 = 100
+    expect(voided?.exitReason).toBe("settled_voided");
+    expect(voided?.pnlUsd).toBeCloseTo(20, 2);
   });
 
   it("maps open positions with flags and saturatedHold", () => {
@@ -223,6 +292,18 @@ describe("buildPaperSnapshot", () => {
     expect(s.equityCurve[0]).toEqual({ date: "起点", equityUsd: 10000 });
     expect(s.equityCurve).toContainEqual({ date: "07-06", equityUsd: 9975 });
     expect(s.equityCurve[s.equityCurve.length - 1]?.date).toBe("现在");
+  });
+
+  it("keys curve points by full date so a later year never overwrites an earlier one", () => {
+    writeFileSync(
+      path.join(root, "reports", "2027-07-06T1818-reflection.json"),
+      JSON.stringify({ ...reflection, generatedAtUtc: "2027-07-06T18:18:00.000Z", book: { ...reflection.book, equityUsd: 12000 } })
+    );
+    const s = buildPaperSnapshot(root);
+    const labels = s.equityCurve.filter((p) => p.date === "07-06");
+    expect(labels).toHaveLength(2);
+    expect(labels[0]?.equityUsd).toBe(9975); // 2026 first
+    expect(labels[1]?.equityUsd).toBe(12000); // 2027 appended, not overwritten
   });
 
   it("passes exit alpha and Brier through from the latest reflection", () => {

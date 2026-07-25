@@ -5,10 +5,15 @@
 // baked snapshot, so the page never breaks when the VM is unreachable.
 
 import { tradeNote, shortUtc, zhExitReason, zhExitStyle, zhQuestion } from "./labels";
-import type { ClosedTrade, OpenPosition, PaperSnapshot } from "./snapshot";
+import type { ClosedTrade, ExitReasonKind, OpenPosition, PaperSnapshot } from "./snapshot";
 
 const DEFAULT_UPSTREAM = "http://34.85.97.32:8787";
 const FETCH_TIMEOUT_MS = 5000;
+// Warm-instance memos: a short success TTL keeps repeat views off the VM, and
+// a failure backoff stops every view from paying the full timeout while the
+// VM is down (deploys, instance stop — SYNs are silently dropped there).
+const SUCCESS_TTL_MS = 15_000;
+const FAILURE_BACKOFF_MS = 30_000;
 
 function upstreamUrl(): string {
   const base = process.env.LIVE_PREDICT_RAVEN_UPSTREAM?.trim() || DEFAULT_UPSTREAM;
@@ -18,6 +23,10 @@ function upstreamUrl(): string {
 function upstreamToken(): string {
   // The page's own invite code doubles as the API credential (accepted by the
   // endpoint alongside the main API token) — no extra secret to provision.
+  // SECURITY: this header crosses the public internet as plain HTTP (bare-IP
+  // VM, no TLS yet). NEVER configure the real FORECAST_API_TOKEN /
+  // RAVEN_ACCESS_TOKEN in this slot — the invite code is the only credential
+  // that may travel this wire until the VM endpoint is fronted by TLS.
   return process.env.LIVE_PREDICT_RAVEN_UPSTREAM_TOKEN?.trim() || "raven-labs";
 }
 
@@ -31,8 +40,22 @@ function toSide(v: unknown): "YES" | "NO" {
   return str(v).toUpperCase() === "YES" ? "YES" : "NO";
 }
 
-function toExitReason(v: unknown): ClosedTrade["exitReason"] {
-  return str(v).startsWith("stop_loss") ? "stop_loss" : "negative_edge";
+const EXIT_REASONS: ReadonlySet<ExitReasonKind> = new Set([
+  "negative_edge",
+  "stop_loss",
+  "settled_won",
+  "settled_lost",
+  "settled_voided"
+]);
+
+function toExitReason(v: unknown): ExitReasonKind {
+  const raw = str(v);
+  if (EXIT_REASONS.has(raw as ExitReasonKind)) return raw as ExitReasonKind;
+  return raw.startsWith("stop_loss") ? "stop_loss" : "negative_edge";
+}
+
+function isIsoTimestamp(v: unknown): v is string {
+  return typeof v === "string" && Number.isFinite(Date.parse(v));
 }
 
 // Strict on the numbers the headline tiles divide by; lenient elsewhere.
@@ -46,6 +69,11 @@ export function parseLivePayload(json: unknown): PaperSnapshot | null {
   const tradesRaw = Array.isArray(json.closedTrades) ? json.closedTrades : null;
   if (bankrollUsd === null || bankrollUsd <= 0 || cashUsd === null || equityUsd === null) return null;
   if (!curveRaw || curveRaw.length < 2 || !positionsRaw || !tradesRaw) return null;
+  // Degraded-but-parsable payloads (ledger rotated/unreadable on the VM) must
+  // fall back to the baked snapshot rather than render "NaN 天" / "第 0 个周期".
+  if (!isIsoTimestamp(json.startedUtc) || !isIsoTimestamp(json.lastEvalCycleUtc)) return null;
+  const evalCycles = num(json.evalCycles);
+  if (evalCycles === null || evalCycles < 1) return null;
 
   const equityCurve = curveRaw.flatMap((p) => {
     if (!isRec(p)) return [];
@@ -81,7 +109,10 @@ export function parseLivePayload(json: unknown): PaperSnapshot | null {
     if (!isRec(t)) return [];
     const shares = num(t.shares);
     const pnlUsd = num(t.pnlUsd);
-    if (shares === null || pnlUsd === null) return [];
+    const costUsd = num(t.costUsd);
+    // costUsd feeds the 收益率 division — a row without a positive cost basis
+    // would render Infinity%/NaN%, so it is dropped rather than coerced.
+    if (shares === null || pnlUsd === null || costUsd === null || costUsd <= 0) return [];
     const slug = str(t.slug);
     const closedUtc = str(t.closedUtc);
     return [
@@ -94,7 +125,7 @@ export function parseLivePayload(json: unknown): PaperSnapshot | null {
         entryPrice: num(t.entryPrice) ?? 0,
         exitPrice: num(t.exitPrice) ?? 0,
         shares,
-        costUsd: num(t.costUsd) ?? 0,
+        costUsd,
         pnlUsd,
         exitReason: toExitReason(t.exitReason),
         note: tradeNote(slug, closedUtc)
@@ -124,7 +155,7 @@ export function parseLivePayload(json: unknown): PaperSnapshot | null {
       sells: num(isRec(json.fills) ? json.fills.sells : null) ?? 0
     },
     droppedBuyFills: num(json.droppedBuyFills) ?? 0,
-    evalCycles: num(json.evalCycles) ?? 0,
+    evalCycles,
     saturatedHolds: num(json.saturatedHolds) ?? 0,
     equityCurve,
     closedTrades,
@@ -177,16 +208,31 @@ export function parseLivePayload(json: unknown): PaperSnapshot | null {
   };
 }
 
-export async function fetchLiveSnapshot(): Promise<PaperSnapshot | null> {
+let successMemo: { at: number; snapshot: PaperSnapshot } | null = null;
+let lastFailureAt = 0;
+
+export async function fetchLiveSnapshot(nowMs: number = Date.now()): Promise<PaperSnapshot | null> {
+  if (successMemo && nowMs - successMemo.at < SUCCESS_TTL_MS) return successMemo.snapshot;
+  if (nowMs - lastFailureAt < FAILURE_BACKOFF_MS) return null;
   try {
     const res = await fetch(upstreamUrl(), {
       headers: { authorization: `Bearer ${upstreamToken()}` },
       cache: "no-store",
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS)
     });
-    if (!res.ok) return null;
-    return parseLivePayload(await res.json());
+    if (!res.ok) {
+      lastFailureAt = nowMs;
+      return null;
+    }
+    const snapshot = parseLivePayload(await res.json());
+    if (snapshot) {
+      successMemo = { at: nowMs, snapshot };
+    } else {
+      lastFailureAt = nowMs;
+    }
+    return snapshot;
   } catch {
+    lastFailureAt = nowMs;
     return null;
   }
 }

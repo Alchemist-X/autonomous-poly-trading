@@ -266,7 +266,15 @@ async function route(req: IncomingMessage, res: ServerResponse, config: ServiceC
       sendJson(res, 401, { error: "unauthorized — provide the access token or invite code (Authorization: Bearer, x-api-key, or ?token=)" });
       return;
     }
-    sendJson(res, 200, getPaperSnapshot());
+    const snapshot = getPaperSnapshot();
+    // A zeroed book means the artifacts are missing/moved (root misconfig,
+    // volume remount) — surface a real error instead of a plausible-looking
+    // empty payload that consumers would render as "the fund went to zero".
+    if (!(snapshot.bankrollUsd > 0)) {
+      sendJson(res, 503, { error: "paper book not found on this host — check ARTIFACT_STORAGE_ROOT / volume mounts" });
+      return;
+    }
+    sendJson(res, 200, snapshot);
     return;
   }
 

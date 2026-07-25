@@ -8,6 +8,14 @@ import type {
 import { fmtPrice, fmtProb, fmtSignedUsd, fmtUsd } from "./format";
 import styles from "./report.module.css";
 
+const EXIT_REASON_LABEL: Record<string, string> = {
+  negative_edge: "负 edge 退出",
+  stop_loss: "止损",
+  settled_won: "持有到结算 ✓ 赢",
+  settled_lost: "持有到结算 ✗ 输",
+  settled_voided: "结算作废（退 $0.50）"
+};
+
 function PnlCell({ value }: { value: number }) {
   const tone = value > 0 ? styles.pos : value < 0 ? styles.neg : undefined;
   return <td className={`${styles.num} ${tone ?? ""}`}>{fmtSignedUsd(value)}</td>;
@@ -42,7 +50,7 @@ export function ClosedTradesTable({ trades }: { trades: readonly ClosedTrade[] }
               <td className={`${styles.num} ${t.pnlUsd > 0 ? styles.pos : styles.neg}`}>
                 {`${t.pnlUsd > 0 ? "+" : "-"}${Math.abs((t.pnlUsd / t.costUsd) * 100).toFixed(1)}%`}
               </td>
-              <td>{t.exitReason === "stop_loss" ? "止损" : "负 edge 退出"}</td>
+              <td>{EXIT_REASON_LABEL[t.exitReason] ?? t.exitReason}</td>
             </tr>
           ))}
         </tbody>
