@@ -5,7 +5,8 @@
 // baked snapshot, so the page never breaks when the VM is unreachable.
 
 import { tradeNote, shortUtc, zhExitReason, zhExitStyle, zhQuestion } from "./labels";
-import type { ClosedTrade, ExitReasonKind, OpenPosition, PaperSnapshot } from "./snapshot";
+import type { ClosedTrade, ExitReasonKind, OpenPosition, PaperParams, PaperSnapshot } from "./snapshot";
+import { PAPER_PARAMS_FALLBACK } from "./snapshot";
 
 const DEFAULT_UPSTREAM = "http://34.85.97.32:8787";
 const FETCH_TIMEOUT_MS = 5000;
@@ -56,6 +57,38 @@ function toExitReason(v: unknown): ExitReasonKind {
 
 function isIsoTimestamp(v: unknown): v is string {
   return typeof v === "string" && Number.isFinite(Date.parse(v));
+}
+
+// Config block: per-field lenient with the baked fallback (an older API build
+// without `config` must not sink the whole payload).
+function parseConfig(raw: unknown): PaperParams {
+  if (!isRec(raw)) return PAPER_PARAMS_FALLBACK;
+  const strings = (v: unknown): string[] | null =>
+    Array.isArray(v) && v.every((x) => typeof x === "string") ? (v as string[]) : null;
+  return {
+    bankrollUsd: num(raw.bankrollUsd) ?? PAPER_PARAMS_FALLBACK.bankrollUsd,
+    evalTimesUtc: strings(raw.evalTimesUtc) ?? PAPER_PARAMS_FALLBACK.evalTimesUtc,
+    entryNotionalUsd: num(raw.entryNotionalUsd) ?? PAPER_PARAMS_FALLBACK.entryNotionalUsd,
+    entryEdgePp: num(raw.entryEdgePp) ?? PAPER_PARAMS_FALLBACK.entryEdgePp,
+    exitEdgePp: num(raw.exitEdgePp) ?? PAPER_PARAMS_FALLBACK.exitEdgePp,
+    stopLossPct: num(raw.stopLossPct) ?? PAPER_PARAMS_FALLBACK.stopLossPct,
+    maxPositions: num(raw.maxPositions) ?? PAPER_PARAMS_FALLBACK.maxPositions,
+    maxPerEvent: num(raw.maxPerEvent) ?? PAPER_PARAMS_FALLBACK.maxPerEvent,
+    maxEvalsPerCycle: num(raw.maxEvalsPerCycle) ?? PAPER_PARAMS_FALLBACK.maxEvalsPerCycle,
+    evalMaxRounds: num(raw.evalMaxRounds) ?? PAPER_PARAMS_FALLBACK.evalMaxRounds,
+    evalProvider: typeof raw.evalProvider === "string" ? raw.evalProvider : PAPER_PARAMS_FALLBACK.evalProvider,
+    categories: strings(raw.categories) ?? PAPER_PARAMS_FALLBACK.categories,
+    scanMinLiquidityUsd: num(raw.scanMinLiquidityUsd) ?? PAPER_PARAMS_FALLBACK.scanMinLiquidityUsd,
+    scanMinVolume24hUsd: num(raw.scanMinVolume24hUsd) ?? PAPER_PARAMS_FALLBACK.scanMinVolume24hUsd,
+    scanPerCategory: num(raw.scanPerCategory) ?? PAPER_PARAMS_FALLBACK.scanPerCategory,
+    hybridMarketRatio: num(raw.hybridMarketRatio) ?? PAPER_PARAMS_FALLBACK.hybridMarketRatio,
+    limitTtlHours: num(raw.limitTtlHours) ?? PAPER_PARAMS_FALLBACK.limitTtlHours,
+    fillCheckMinutes: num(raw.fillCheckMinutes) ?? PAPER_PARAMS_FALLBACK.fillCheckMinutes,
+    saturatedHoldEnabled:
+      typeof raw.saturatedHoldEnabled === "boolean"
+        ? raw.saturatedHoldEnabled
+        : PAPER_PARAMS_FALLBACK.saturatedHoldEnabled
+  };
 }
 
 // Strict on the numbers the headline tiles divide by; lenient elsewhere.
@@ -141,6 +174,7 @@ export function parseLivePayload(json: unknown): PaperSnapshot | null {
 
   return {
     generatedAtUtc: str(json.generatedAtUtc),
+    config: parseConfig(json.config),
     reflectionReportUtc: str(json.reflectionReportUtc),
     lastEvalCycleUtc: str(json.lastEvalCycleUtc),
     startedUtc: str(json.startedUtc),

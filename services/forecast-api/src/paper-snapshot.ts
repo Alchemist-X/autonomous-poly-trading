@@ -37,6 +37,7 @@ export interface ApiClosedTrade {
 
 export interface PaperSnapshotPayload {
   generatedAtUtc: string;
+  config: PaperConfigView;
   startedUtc: string | null;
   lastEvalCycleUtc: string | null;
   reflectionReportUtc: string | null;
@@ -101,6 +102,72 @@ export interface PaperSnapshotPayload {
 
 const round2 = (n: number): number => Math.round(n * 100) / 100;
 const round4 = (n: number): number => Math.round(n * 10000) / 10000;
+
+export interface PaperConfigView {
+  bankrollUsd: number;
+  evalTimesUtc: string[];
+  entryNotionalUsd: number;
+  entryEdgePp: number;
+  exitEdgePp: number;
+  stopLossPct: number;
+  maxPositions: number;
+  maxPerEvent: number;
+  maxEvalsPerCycle: number;
+  evalMaxRounds: number;
+  evalProvider: string;
+  categories: string[];
+  scanMinLiquidityUsd: number;
+  scanMinVolume24hUsd: number;
+  scanPerCategory: number;
+  hybridMarketRatio: number;
+  limitTtlHours: number;
+  fillCheckMinutes: number;
+  saturatedHoldEnabled: boolean;
+}
+
+function envNum(name: string, fallback: number, min = 0): number {
+  const raw = process.env[name]?.trim();
+  if (!raw) return fallback;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= min ? n : fallback;
+}
+
+// MIRROR of services/paper-agent/src/config.ts loadPaperConfig — every
+// container shares deploy/raven/.env, so reading the same env with the same
+// defaults yields the paper-agent's effective config. Keep the two in sync
+// when a new PAPER_* knob lands.
+export function readPaperConfigView(): PaperConfigView {
+  const times = (process.env.PAPER_EVAL_TIMES_UTC ?? "00:10,08:10,16:10")
+    .split(",")
+    .map((t) => t.trim())
+    .filter((t) => /^\d{2}:\d{2}$/.test(t));
+  return {
+    bankrollUsd: envNum("PAPER_BANKROLL_USD", 1000, 1),
+    evalTimesUtc: times.length ? times : ["00:10", "08:10", "16:10"],
+    entryNotionalUsd: envNum("PAPER_ENTRY_NOTIONAL_USD", 50, 1),
+    entryEdgePp: envNum("PAPER_ENTRY_EDGE_PP", 8, 0.5),
+    exitEdgePp: envNum("PAPER_EXIT_EDGE_PP", 0),
+    stopLossPct: envNum("PAPER_STOP_LOSS_PCT", 0.35, 0.01),
+    maxPositions: envNum("PAPER_MAX_POSITIONS", 10, 1),
+    maxPerEvent: envNum("PAPER_MAX_PER_EVENT", 1, 1),
+    maxEvalsPerCycle: envNum("PAPER_MAX_EVALS_PER_CYCLE", 12, 1),
+    evalMaxRounds: envNum("PAPER_EVAL_MAX_ROUNDS", 1, 1),
+    evalProvider: process.env.PAPER_EVAL_PROVIDER?.trim() === "deepseek" ? "deepseek" : "claude",
+    categories: (process.env.PAPER_CATEGORIES ?? "")
+      .split(",")
+      .map((c) => c.trim().toLowerCase())
+      .filter(Boolean),
+    scanMinLiquidityUsd: envNum("PAPER_SCAN_MIN_LIQUIDITY_USD", 5000, 0),
+    scanMinVolume24hUsd: envNum("PAPER_SCAN_MIN_VOLUME24H_USD", 10000, 0),
+    scanPerCategory: envNum("PAPER_SCAN_PER_CATEGORY", 8, 1),
+    hybridMarketRatio: Math.min(1, envNum("PAPER_HYBRID_MARKET_RATIO", 0.5)),
+    limitTtlHours: envNum("PAPER_LIMIT_TTL_HOURS", 8, 0.1),
+    fillCheckMinutes: envNum("PAPER_FILL_CHECK_MINUTES", 10, 1),
+    saturatedHoldEnabled: !["0", "false", "off", "no"].includes(
+      (process.env.PAPER_SATURATED_HOLD ?? "").trim().toLowerCase()
+    )
+  };
+}
 
 function paperRoot(): string {
   // Explicit override first (tests), then the ARTIFACT_STORAGE_ROOT convention
@@ -322,6 +389,7 @@ export function buildPaperSnapshot(rootDir: string = paperRoot()): PaperSnapshot
 
   return {
     generatedAtUtc: new Date().toISOString(),
+    config: readPaperConfigView(),
     startedUtc: typeof firstCycle?.ts === "string" ? firstCycle.ts : null,
     lastEvalCycleUtc: (() => {
       const last = cycleEnds[cycleEnds.length - 1];

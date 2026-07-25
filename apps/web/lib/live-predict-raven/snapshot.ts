@@ -66,8 +66,31 @@ export interface BrierRow {
   resolvedUtc: string;
 }
 
+export interface PaperParams {
+  bankrollUsd: number;
+  evalTimesUtc: string[];
+  entryNotionalUsd: number;
+  entryEdgePp: number;
+  exitEdgePp: number;
+  stopLossPct: number;
+  maxPositions: number;
+  maxPerEvent: number;
+  maxEvalsPerCycle: number;
+  evalMaxRounds: number;
+  evalProvider: string;
+  categories: string[];
+  scanMinLiquidityUsd: number;
+  scanMinVolume24hUsd: number;
+  scanPerCategory: number;
+  hybridMarketRatio: number;
+  limitTtlHours: number;
+  fillCheckMinutes: number;
+  saturatedHoldEnabled: boolean;
+}
+
 export interface PaperSnapshot {
   generatedAtUtc: string;
+  config: PaperParams;
   reflectionReportUtc: string;
   lastEvalCycleUtc: string;
   startedUtc: string;
@@ -105,8 +128,33 @@ export interface PaperSnapshot {
   };
 }
 
+// Effective VM config as of 2026-07-25 (env values + code defaults); the live
+// payload carries the current values read from the VM env each request.
+export const PAPER_PARAMS_FALLBACK: PaperParams = {
+  bankrollUsd: 10000,
+  evalTimesUtc: ["02:00", "10:00", "18:00"],
+  entryNotionalUsd: 500,
+  entryEdgePp: 8,
+  exitEdgePp: 0,
+  stopLossPct: 0.35,
+  maxPositions: 10,
+  maxPerEvent: 1,
+  maxEvalsPerCycle: 16,
+  evalMaxRounds: 1,
+  evalProvider: "claude",
+  categories: ["finance", "geopolitics", "tech"],
+  scanMinLiquidityUsd: 5000,
+  scanMinVolume24hUsd: 2000,
+  scanPerCategory: 12,
+  hybridMarketRatio: 0.5,
+  limitTtlHours: 8,
+  fillCheckMinutes: 10,
+  saturatedHoldEnabled: true
+};
+
 export const PAPER_SNAPSHOT: PaperSnapshot = {
   generatedAtUtc: "2026-07-24T11:15Z",
+  config: PAPER_PARAMS_FALLBACK,
   reflectionReportUtc: "2026-07-23T18:19Z",
   lastEvalCycleUtc: "2026-07-24T10:13Z",
   startedUtc: "2026-07-03T07:17Z",

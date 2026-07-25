@@ -3,7 +3,8 @@ import type {
   ClosedTrade,
   EquityPoint,
   ExitAlphaRow,
-  OpenPosition
+  OpenPosition,
+  PaperParams
 } from "../../lib/live-predict-raven/snapshot";
 import { fmtPrice, fmtProb, fmtSignedUsd, fmtUsd } from "./format";
 import styles from "./report.module.css";
@@ -152,6 +153,56 @@ export function BrierTable({ rows }: { rows: readonly BrierRow[] }) {
               <td className={styles.num}>{fmtProb(r.marketProb)}</td>
               <td>{r.happened ? "✓ 发生" : "✗ 未发生"}</td>
               <td>{r.resolvedUtc}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function ParamsTable({ config: c }: { config: PaperParams }) {
+  const rows: Array<[string, string, string]> = [
+    ["本金", `$${c.bankrollUsd.toLocaleString("en-US")}`, "PAPER_BANKROLL_USD"],
+    ["评估时间表", `每日 UTC ${c.evalTimesUtc.join(" / ")}（${c.evalTimesUtc.length} 轮）`, "PAPER_EVAL_TIMES_UTC"],
+    ["单仓名义", `$${c.entryNotionalUsd}`, "PAPER_ENTRY_NOTIONAL_USD"],
+    ["入场 edge 阈值", `≥ ${c.entryEdgePp}pp（扣费后）`, "PAPER_ENTRY_EDGE_PP"],
+    ["退出 edge 阈值", `< ${c.exitEdgePp}pp 即卖（饱和持有可豁免）`, "PAPER_EXIT_EDGE_PP"],
+    ["止损", `入场价 −${(c.stopLossPct * 100).toFixed(0)}%（压过模型；每 ${c.fillCheckMinutes} 分钟无模型扫描）`, "PAPER_STOP_LOSS_PCT"],
+    ["最大仓位数", `${c.maxPositions}`, "PAPER_MAX_POSITIONS"],
+    ["单事件仓位上限", `${c.maxPerEvent}`, "PAPER_MAX_PER_EVENT"],
+    ["每周期评估上限", `${c.maxEvalsPerCycle}（持仓复审优先，剩余给新候选）`, "PAPER_MAX_EVALS_PER_CYCLE"],
+    ["每次评估引擎轮次", `${c.evalMaxRounds}（新档案最少 2 轮）`, "PAPER_EVAL_MAX_ROUNDS"],
+    ["评估模型", `${c.evalProvider}（联网搜索、市场盲测）`, "PAPER_EVAL_PROVIDER"],
+    ["扫描类别", c.categories.join(" / ") || "—", "PAPER_CATEGORIES"],
+    [
+      "扫描门槛",
+      `流动性 ≥$${c.scanMinLiquidityUsd.toLocaleString("en-US")} · 24h 量 ≥$${c.scanMinVolume24hUsd.toLocaleString("en-US")} · 每类 ${c.scanPerCategory} 个`,
+      "PAPER_SCAN_*"
+    ],
+    [
+      "混合退出",
+      `${(c.hybridMarketRatio * 100).toFixed(0)}% 市价 + ${((1 - c.hybridMarketRatio) * 100).toFixed(0)}% 限价（TTL ${c.limitTtlHours}h 回落市价）`,
+      "PAPER_HYBRID_MARKET_RATIO"
+    ],
+    ["饱和持有", c.saturatedHoldEnabled ? "开启（钳位卖出拦截，持有到结算）" : "已关闭", "PAPER_SATURATED_HOLD"]
+  ];
+  return (
+    <div className={styles.tableWrap}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th scope="col">参数</th>
+            <th scope="col">当前值</th>
+            <th scope="col">env 键</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(([label, value, envKey]) => (
+            <tr key={envKey + label}>
+              <td>{label}</td>
+              <td>{value}</td>
+              <td className={styles.rowNote}>{envKey}</td>
             </tr>
           ))}
         </tbody>

@@ -154,6 +154,17 @@ describe("parseLivePayload", () => {
     expect(s?.closedTrades).toHaveLength(1);
   });
 
+  it("carries the live config through and falls back per-field when absent", () => {
+    const withConfig = parseLivePayload({
+      ...validPayload,
+      config: { maxPositions: 10, maxEvalsPerCycle: 16, saturatedHoldEnabled: true }
+    });
+    expect(withConfig?.config.maxEvalsPerCycle).toBe(16);
+    expect(withConfig?.config.entryEdgePp).toBe(8); // absent field -> fallback default
+    const withoutConfig = parseLivePayload(validPayload);
+    expect(withoutConfig?.config.maxPositions).toBe(10); // whole block fallback
+  });
+
   it("tolerates a null hybrid metric", () => {
     const s = parseLivePayload({
       ...validPayload,
