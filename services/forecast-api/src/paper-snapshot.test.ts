@@ -149,6 +149,31 @@ const ledgerLines = [
     shares: 200,
     avgEntryPrice: 0.4
   },
+  // Fee-bearing market (the NVDA pattern): entry fee must land in the round's
+  // cost basis and pnl, or the closed-trades table drifts from realized PnL.
+  {
+    ts: "2026-07-09T00:00:00.000Z",
+    type: "trade",
+    side: "buy",
+    positionId: "fee-market:1",
+    slug: "fee-market",
+    outcome: "Yes",
+    shares: 1000,
+    avgPrice: 0.2,
+    feeUsd: 20
+  },
+  {
+    ts: "2026-07-09T06:00:00.000Z",
+    type: "trade",
+    side: "sell",
+    style: "market",
+    positionId: "fee-market:1",
+    slug: "fee-market",
+    shares: 1000,
+    avgPrice: 0.1,
+    feeUsd: 10,
+    reason: "stop_loss"
+  },
   { ts: "2026-07-06T18:00:00.000Z", type: "cycle_end", positions: 1, cashUsd: 9500 }
 ];
 
@@ -238,7 +263,7 @@ describe("buildPaperSnapshot", () => {
 
   it("counts fills, cycles, evals and the saturated-hold interventions", () => {
     const s = buildPaperSnapshot(root);
-    expect(s.fills).toEqual({ total: 9, buys: 5, sells: 4 });
+    expect(s.fills).toEqual({ total: 11, buys: 6, sells: 5 });
     expect(s.droppedBuyFills).toBe(1);
     expect(s.evalCycles).toBe(1);
     expect(s.evaluations).toBe(2);
@@ -254,7 +279,7 @@ describe("buildPaperSnapshot", () => {
 
   it("pairs round trips sequentially, supporting re-entry on the same positionId", () => {
     const s = buildPaperSnapshot(root);
-    expect(s.closedTrades).toHaveLength(4);
+    expect(s.closedTrades).toHaveLength(5);
     const [first, second] = s.closedTrades;
     expect(first?.pnlUsd).toBeCloseTo(10, 2); // 100 sh: 0.8 -> 0.9
     expect(first?.exitReason).toBe("negative_edge"); // ttl-fallback suffix stripped
@@ -276,6 +301,15 @@ describe("buildPaperSnapshot", () => {
     // cost 200×0.4 = 80; refund 200×$0.50 = 100
     expect(voided?.exitReason).toBe("settled_voided");
     expect(voided?.pnlUsd).toBeCloseTo(20, 2);
+  });
+
+  it("folds entry fees into the round's cost basis and pnl", () => {
+    const s = buildPaperSnapshot(root);
+    const fee = s.closedTrades.find((t) => t.slug === "fee-market");
+    expect(fee?.costUsd).toBeCloseTo(220, 2); // 1000×0.2 notional + $20 entry fee
+    expect(fee?.pnlUsd).toBeCloseTo(-130, 2); // (100 − $10 sell fee) − 220
+    expect(fee?.entryPrice).toBeCloseTo(0.2, 4); // true fill price, fee excluded
+    expect(fee?.exitPrice).toBeCloseTo(0.09, 4);
   });
 
   it("maps open positions with flags and saturatedHold", () => {

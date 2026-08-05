@@ -146,8 +146,10 @@ export function BrierTable({ rows }: { rows: readonly BrierRow[] }) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
-            <tr key={r.question}>
+          {rows.map((r, i) => (
+            // The same market can appear more than once (one row per resolved
+            // position episode), so the question alone is not a unique key.
+            <tr key={`${r.question}-${r.resolvedUtc}-${i}`}>
               <td>{r.question}</td>
               <td className={styles.num}>{fmtProb(r.agentProb)}</td>
               <td className={styles.num}>{fmtProb(r.marketProb)}</td>

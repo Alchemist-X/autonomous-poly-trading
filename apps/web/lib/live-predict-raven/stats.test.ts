@@ -4,12 +4,12 @@ import { deriveEquityStats, deriveOpenBookStats, deriveReportStats, deriveTradeS
 
 describe("live-predict-raven stats", () => {
   describe("deriveTradeStats", () => {
-    it("computes 4 wins / 2 losses = 66.67% on the baked closed trades", () => {
+    it("computes 5 wins / 12 losses = 29.41% on the baked closed trades", () => {
       const stats = deriveTradeStats(PAPER_SNAPSHOT.closedTrades);
-      expect(stats.closedCount).toBe(6);
-      expect(stats.wins).toBe(4);
-      expect(stats.losses).toBe(2);
-      expect(stats.winRatePct).toBeCloseTo(66.67, 1);
+      expect(stats.closedCount).toBe(17);
+      expect(stats.wins).toBe(5);
+      expect(stats.losses).toBe(12);
+      expect(stats.winRatePct).toBeCloseTo(29.41, 1);
     });
 
     it("matches the book's realized PnL within per-fill rounding drift", () => {
@@ -17,12 +17,12 @@ describe("live-predict-raven stats", () => {
       expect(stats.realizedPnlUsd).toBeCloseTo(PAPER_SNAPSHOT.realizedPnlUsd, 0);
     });
 
-    it("shows the loss-size problem: avg loss ~3x avg win, profit factor < 1", () => {
+    it("shows the loss-size problem: avg loss ~2.4x avg win, profit factor far below 1", () => {
       const stats = deriveTradeStats(PAPER_SNAPSHOT.closedTrades);
-      expect(stats.avgWinUsd).toBeCloseTo(70.35, 1);
-      expect(stats.avgLossUsd).toBeCloseTo(230.09, 1);
+      expect(stats.avgWinUsd).toBeCloseTo(90.37, 1);
+      expect(stats.avgLossUsd).toBeCloseTo(213.85, 1);
       expect(stats.profitFactor).toBeLessThan(1);
-      expect(stats.profitFactor).toBeCloseTo(0.61, 2);
+      expect(stats.profitFactor).toBeCloseTo(0.18, 2);
     });
 
     it("handles an empty trade list without dividing by zero", () => {
@@ -37,15 +37,15 @@ describe("live-predict-raven stats", () => {
   describe("deriveEquityStats", () => {
     it("reads current equity, peak, and return off the curve", () => {
       const stats = deriveEquityStats(PAPER_SNAPSHOT.equityCurve, PAPER_SNAPSHOT.bankrollUsd);
-      expect(stats.currentUsd).toBe(10406.37);
+      expect(stats.currentUsd).toBe(7974.23);
       expect(stats.peakUsd).toBe(10799.24);
       expect(stats.peakDate).toBe("07-14");
-      expect(stats.returnPct).toBeCloseTo(4.06, 2);
+      expect(stats.returnPct).toBeCloseTo(-20.26, 2);
     });
 
-    it("computes max drawdown as the worst peak-to-trough drop (7/14 -> 7/21)", () => {
+    it("computes max drawdown as the worst peak-to-trough drop (7/14 peak -> now)", () => {
       const stats = deriveEquityStats(PAPER_SNAPSHOT.equityCurve, PAPER_SNAPSHOT.bankrollUsd);
-      expect(stats.maxDrawdownPct).toBeCloseTo(-3.93, 1);
+      expect(stats.maxDrawdownPct).toBeCloseTo(-26.16, 1);
     });
 
     it("is monotonic-safe: a flat curve has zero drawdown", () => {
@@ -58,29 +58,29 @@ describe("live-predict-raven stats", () => {
   });
 
   describe("deriveOpenBookStats", () => {
-    it("sums cost basis (~$3000) and unrealized (+$584.93) across the 6 open positions", () => {
+    it("sums cost basis (~$4950) and unrealized (+$133.59) across the 10 open positions", () => {
       const stats = deriveOpenBookStats(PAPER_SNAPSHOT.openPositions, PAPER_SNAPSHOT.cashUsd);
-      expect(stats.positionCount).toBe(6);
-      expect(stats.costUsd).toBeCloseTo(3000, 0);
-      expect(stats.unrealizedUsd).toBeCloseTo(584.93, 1);
-      expect(stats.green).toBe(4);
-      expect(stats.flat).toBe(1);
-      expect(stats.red).toBe(1);
+      expect(stats.positionCount).toBe(10);
+      expect(stats.costUsd).toBeCloseTo(4950, 0);
+      expect(stats.unrealizedUsd).toBeCloseTo(133.59, 1);
+      expect(stats.green).toBe(6);
+      expect(stats.flat).toBe(0);
+      expect(stats.red).toBe(4);
     });
 
-    it("reports the cash share of marked book value (~65%)", () => {
+    it("reports the cash share of marked book value (~36%)", () => {
       const stats = deriveOpenBookStats(PAPER_SNAPSHOT.openPositions, PAPER_SNAPSHOT.cashUsd);
-      expect(stats.cashSharePct).toBeGreaterThan(63);
-      expect(stats.cashSharePct).toBeLessThan(68);
+      expect(stats.cashSharePct).toBeGreaterThan(34);
+      expect(stats.cashSharePct).toBeLessThan(39);
     });
   });
 
   describe("deriveReportStats", () => {
     it("assembles all three sections from the snapshot", () => {
       const stats = deriveReportStats(PAPER_SNAPSHOT);
-      expect(stats.trade.closedCount).toBe(6);
-      expect(stats.equity.currentUsd).toBe(10406.37);
-      expect(stats.openBook.positionCount).toBe(6);
+      expect(stats.trade.closedCount).toBe(17);
+      expect(stats.equity.currentUsd).toBe(7974.23);
+      expect(stats.openBook.positionCount).toBe(10);
     });
   });
 });
