@@ -11,7 +11,14 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-07-24 by Claude（**/live-predict-raven 实时化：每次评估周期后自动更新**，分支 `feat/live-paper-snapshot`，**PR #93**）。
+> 最后更新：2026-08-05 by Claude（**模拟盘 8/5 数据刷新 + 回合盈亏计入入场费**，分支 `claude/raven-agent-yield-webpage-02513c`，**PR #98**，web + VM forecast-api 均已部署验收）。
+> ① **业绩剧变（截至 2026-08-05 02:33Z，第 101 周期，33 天）**：equity **$7,974.23（−20.3%）**，自 7/14 峰值 $10,799 最大回撤 −26.2%。已平 17 回合 **5 胜 12 负**——7/26–8/4 十一个新回合里十次止损，几乎全是以伊停火题材："以伊停火延续至 7/31"同一市场**三进三止损**（−$601）、美伊停火二进二止损（−$400）、哈马斯止损后 24h 重进（现持仓中）——7/24 提的"止损后冷却期"未落地，缺口以更大规模重演。**exit α 由 +$1,077 转 −$134**（NVDA 0.22 买 YES 止损后市场以 YES 结算 α −$1,838；哈马斯 −$869）；**Brier n=12、skill −0.53**，样本首次够量，初步结论 = agent 独立判断落后市场（失分集中在停火系列方向判断反）。饱和持有拦截累计 8 次；费用累计 $113.05（NVDA/Maduro 等新市场带真实费率，$45 入场费级别）。满仓 10/10，5 仓仍共享伊朗驱动。
+> ② **forecast-api 真 bug 修复（费用非零后暴露）**：`pairClosedTrades` 买入腿漏计 `feeUsd`（卖出腿有扣）→ 已平仓表合计与账面已实现差 $45（= NVDA 入场费）。现入场费计入回合 costUsd 与 pnlUsd（结算路径同步），`entryPrice` 保持真实成交价；fee-market 回归测试新增。**部署后已验证：闭仓表合计 −2114.36 vs 账面 −2114.37（1¢ 取整）对账一致**。
+> ③ **页面更新**：烘焙快照全量刷新到 8/5；11 个新市场中文标签 + 交易注；编者注/结论全部重写为 2026-08-05 复盘（费用文案改数据驱动，不再硬编码 $0；exit α 结论按正负动态）；BrierTable 行 key 去重（同一市场两行结算导致 React 重复 key 报错）。**页面上的三条建议（冷却期 / 题材敞口上限 / 止损与低价单适配）均为风控参数改动，需用户拍板后才实施。**
+> ④ **部署**：web 经 `gh workflow run wc-results.yml`；VM clean-untar（备份 `~/predict-raven.pre-fee-fix.bak`）+ nohup `compose build raven` + `up -d --no-deps forecast-api`（paper-agent 等其余容器零接触）。冒烟：healthz 200 / 无 token 401×2 / NVDA cost 495 pnl −287.55。生产 E2E：带码解锁 → 实时徽标 + $7,974.23 + NVDA −287.55（旧 −242.55 已消失）。**注意：镜像 raven-suite 已更新到 e36a4bb，raven/raven-delta/paper-agent 仍跑旧镜像**（#98 未动它们的代码，行为无差；下次全量 `up -d` 会切换）。VM 磁盘 **81%**（builder cache 清理仍待用户确认，见 7/20 条目）。
+> ⑤ **新发现 P2**：反思报告 calibration rows 里"以伊停火延续至 7/31"出现两行**相反结果**（7/29 happened=true vs 7/30 false）——疑似按 position episode 映射结算时的数据 quirk，待查 `services/paper-agent` 反思管线；NATO exit-α 行 priceNow/alpha 为 null（市场已下架）被渲染成 ±$0.00，观感待改。英文版 handoff 此条待同步翻译。
+>
+> 上次更新：2026-07-24 by Claude（**/live-predict-raven 实时化：每次评估周期后自动更新**，分支 `feat/live-paper-snapshot`，**PR #93**）。
 > ① **背景**：用户要"更新最新收益 + GCloud 侧做到价格每次 review 后更新"。方案 = forecast-api（与 paper-agent 共享 runtime-artifacts 卷）加只读 `GET /paper/snapshot`（主 token **或** invite code `raven-labs` 双通道鉴权，60s 内存缓存）；apps/web 页面改为请求时服务端拉 VM（5s 超时 no-store），失败回退烘焙快照并在页顶显式标注数据源。
 > ② **端点聚合**（`services/forecast-api/src/paper-snapshot.ts`）：portfolio.json（现金/已实现/持仓+lastEval mark，equity=cash+lastEval 标记 = 恰好"截至上次 review"）+ ledger.jsonl（成交/周期/评估计数、saturatedHold 计数、**顺序重放配对已平仓回合**——支持同 positionId 再进场（MOU 双回合）、剔除 7/3 锁竞争丢单，产线数据复算 6 回合与手工分析分毫不差）+ 每日反思（权益曲线/退出 α/Brier/hybrid 透传）。web 侧 `live.ts` 解析校验 + 中文标签装饰（未知新市场回退英文）；图表 Y 域改数据驱动 + 刻度防碰撞。
 > ③ **最新业绩（截至 2026-07-24 10:23Z，第 66 周期，21 天）**：equity **$10,406（+4.1%）**（7/23 反思按实时盘口 $10,440）；已平 6 回合 4 胜 2 负不变；浮盈 +$585；**Brier n=4、skill −0.16**（新增中菲冲突：agent 8.8% vs 市场 13.5%、事件发生——从 −7.32 收敛但仍为负）；exit α +$1,077（NATO 行反事实翻正 +12.66）；饱和率 200/351（57%）；**saturated-hold 已实拦 1 次**（7/24 10:02 霍尔木兹 7/31：bid 0.992、netEdge −0.2pp，老逻辑必卖，新逻辑 `saturatedHold:true` 持有——修复上线 4 天首次生效）。
