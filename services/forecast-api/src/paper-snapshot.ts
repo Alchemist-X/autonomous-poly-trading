@@ -217,9 +217,13 @@ const SETTLEMENT_PER_SHARE: Record<string, number> = { won: 1, lost: 0, voided: 
 // can round-trip more than once (MOU did), and a partial exit whose residual
 // settles produces ONE episode with combined sell + settlement economics.
 function pairClosedTrades(events: Array<Record<string, unknown>>): ApiClosedTrade[] {
+  // costUsd tracks notional (shares × price) so entryPrice stays the true fill
+  // price; buyFeesUsd is carried separately and folded into the reported cost
+  // basis and pnl at close time, so per-round pnl sums to the book's realized
+  // PnL even on fee-bearing markets (entry fees went unbooked before).
   const open = new Map<
     string,
-    { shares: number; costUsd: number; proceedsUsd: number; soldShares: number; openedUtc: string; side: string; lastSellUtc: string; lastReason: string }
+    { shares: number; costUsd: number; buyFeesUsd: number; proceedsUsd: number; soldShares: number; openedUtc: string; side: string; lastSellUtc: string; lastReason: string }
   >();
   const closed: ApiClosedTrade[] = [];
   for (const t of events) {
@@ -243,8 +247,8 @@ function pairClosedTrades(events: Array<Record<string, unknown>>): ApiClosedTrad
         entryPrice: round4(cur.costUsd / soldShares),
         exitPrice: round4(proceedsUsd / soldShares),
         shares: round2(soldShares),
-        costUsd: round2(cur.costUsd),
-        pnlUsd: round2(proceedsUsd - cur.costUsd),
+        costUsd: round2(cur.costUsd + cur.buyFeesUsd),
+        pnlUsd: round2(proceedsUsd - cur.costUsd - cur.buyFeesUsd),
         exitReason: `settled_${String(t.kind)}`
       });
       open.delete(id);
@@ -257,6 +261,7 @@ function pairClosedTrades(events: Array<Record<string, unknown>>): ApiClosedTrad
       const cur = open.get(id) ?? {
         shares: 0,
         costUsd: 0,
+        buyFeesUsd: 0,
         proceedsUsd: 0,
         soldShares: 0,
         openedUtc: String(t.ts ?? ""),
@@ -264,7 +269,12 @@ function pairClosedTrades(events: Array<Record<string, unknown>>): ApiClosedTrad
         lastSellUtc: "",
         lastReason: ""
       };
-      open.set(id, { ...cur, shares: cur.shares + shares, costUsd: cur.costUsd + shares * price });
+      open.set(id, {
+        ...cur,
+        shares: cur.shares + shares,
+        costUsd: cur.costUsd + shares * price,
+        buyFeesUsd: cur.buyFeesUsd + Number(t.feeUsd ?? 0)
+      });
     } else if (t.side === "sell") {
       const cur = open.get(id);
       if (!cur) continue;
@@ -286,8 +296,8 @@ function pairClosedTrades(events: Array<Record<string, unknown>>): ApiClosedTrad
           entryPrice: round4(next.costUsd / next.soldShares),
           exitPrice: round4(next.proceedsUsd / next.soldShares),
           shares: round2(next.soldShares),
-          costUsd: round2(next.costUsd),
-          pnlUsd: round2(next.proceedsUsd - next.costUsd),
+          costUsd: round2(next.costUsd + next.buyFeesUsd),
+          pnlUsd: round2(next.proceedsUsd - next.costUsd - next.buyFeesUsd),
           exitReason: next.lastReason
         });
         open.delete(id);

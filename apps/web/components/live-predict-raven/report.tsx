@@ -108,16 +108,16 @@ export function PaperReport({
           <Tile
             label="现金"
             value={fmtUsd(s.cashUsd)}
-            sub={`占总权益 ${openBook.cashSharePct.toFixed(1)}% · 费用 $0（本批市场费率 0 bps）`}
+            sub={`占总权益 ${openBook.cashSharePct.toFixed(1)}% · 累计费用 ${fmtUsd(s.feesUsd)}（按 CLOB 逐市场费率）`}
           />
         </div>
         <p className={styles.callout}>
           一句话：{equity.returnPct >= 0 ? "赚了" : "亏了"} {Math.abs(equity.returnPct).toFixed(1)}%
-          ，结构上是"高胜率小盈利 + 低频大亏损"——平均单笔亏损（{fmtUsd(trade.avgLossUsd)}
+          ——已平仓 {trade.closedCount} 回合 {trade.wins} 胜 {trade.losses} 负（胜率{" "}
+          {trade.winRatePct.toFixed(1)}%），平均单笔亏损（{fmtUsd(trade.avgLossUsd)}
           ）约为平均单笔盈利（{fmtUsd(trade.avgWinUsd)}）的{" "}
-          {trade.avgWinUsd > 0 ? (trade.avgLossUsd / trade.avgWinUsd).toFixed(1) : "—"} 倍，目前靠{" "}
-          {trade.winRatePct.toFixed(1)}% 的胜率和浮盈扛住。
-          {s.realizedPnlUsd < 0 ? "已实现部分整体仍是负数。" : ""}
+          {trade.avgWinUsd > 0 ? (trade.avgLossUsd / trade.avgWinUsd).toFixed(1) : "—"} 倍。
+          {s.realizedPnlUsd < 0 ? "已实现部分整体为负数。" : ""}
         </p>
       </section>
 
@@ -129,8 +129,9 @@ export function PaperReport({
           <EquityChart curve={s.equityCurve} bankrollUsd={s.bankrollUsd} />
         </div>
         <p className={styles.sectionNote}>
-          复盘注（2026-07-24）：7/14 冲到峰值 +8.0% 后，7/15–16 被同一市场的两次止损（合计
-          -$460）拖低，低点出现在 7/21，随后回稳。
+          复盘注（2026-08-05）：两段行情。7/14 冲到峰值 +8.0%（$10,799）后靠浮盈横盘到
+          7/24；7/25 起连续下台阶——11 天里 10 次止损，几乎全是以伊停火题材，8/4 跌到
+          $8,112，自峰值最大回撤 −26%。
         </p>
         <details className={styles.details}>
           <summary>查看逐日数值表</summary>
@@ -144,9 +145,11 @@ export function PaperReport({
         </h2>
         <ClosedTradesTable trades={s.closedTrades} />
         <p className={styles.callout}>
-          复盘注（2026-07-24）：两笔亏损是同一个论点买了两次："伊朗 7/17 前退出 MOU 谈判"。第一次 agent 估 19.5%（市场只给
-          6.4%）买 YES，4 小时后止损；当晚在更低价位原方向重进，次日再止损。这是整个模拟盘唯一一次显著偏离市场定价的独立判断，也是全部已实现亏损的来源。反事实检验显示两次止损本身都是对的（死扛到归零会多亏
-          $540）——错在入场与止损后无冷却期的重进。
+          复盘注（2026-08-05）：7/24 时"4 胜 2 负"的结构已被 7/26–8/4 的止损串彻底改写——新增 11
+          回合里 10 次止损。7/24 复盘提出的"止损后同市场冷却期"未落地，同样的错误以更大规模重演："以伊停火延续至
+          7/31"同一市场三进三止损（合计 −$601），"美伊 7/31 有效停火"二进二止损（−$400）。最贵的一笔是英伟达：0.22 买
+          YES 一天后止损，市场最终以 YES 结算（反事实 α −$1,838）。唯一亮点：霍尔木兹 7/31 被 saturated-hold
+          护着持有到临近结算，+$170 落袋。
         </p>
       </section>
 
@@ -161,9 +164,10 @@ export function PaperReport({
           mark，随每次评估周期更新。
         </p>
         <p className={styles.callout}>
-          复盘注（2026-07-24）风险集中：六仓全是地缘政治 NO，其中四仓共享"伊朗局势"单一驱动（霍尔木兹 ×2 + 核协议 +
-          入侵伊朗）。一次中东局势突变会同时打穿多仓。亮点是霍尔木兹 12/31：市场定价 72% 会恢复通航时逆势买
-          NO @ 0.28，现在市场已向 agent 靠拢（+75%），是目前唯一在赢的真正逆市场立场（未结算）。
+          复盘注（2026-08-05）风险集中：满仓 10/10，全是地缘政治 NO，其中五仓共享"伊朗局势"单一驱动（霍尔木兹
+          ×2 + 核协议 + 入侵伊朗 + 解除封锁）——正是这个题材在 7 月末打穿了已平仓账。亮点仍是霍尔木兹
+          12/31：市场定价 72% 会恢复通航时逆势买 NO @ 0.28，现价 0.38（+$179），是唯一在赢的真正逆市场立场（未结算）。8/4
+          新开的"解除封锁"仓一天浮亏 −$116，是当前最大的红仓。
         </p>
       </section>
 
@@ -174,7 +178,12 @@ export function PaperReport({
 
         <h3 className={styles.subTitle}>退出质量：α 合计 {fmtSignedUsd(s.exitAlpha.totalUsd)}</h3>
         <p className={styles.sectionNote}>
-          α = 卖出所得 −（若持有到现在/结算的价值），正数 = 卖对了。结论：退出决策整体明显加分。
+          α = 卖出所得 −（若持有到现在/结算的价值），正数 = 卖对了。
+          {s.exitAlpha.totalUsd >= 0
+            ? "合计为正：退出决策整体加分。"
+            : "合计为负：退出决策整体在减分。"}{" "}
+          复盘注（2026-08-05）：合计从 7/24 的 +$1,077 转负——英伟达（止损后市场以 YES 结算，−$1,838）与哈马斯（止损后
+          NO 价反弹近 4 倍，−$869）两笔反事实巨亏，压过了停火系列止损救回的约 +$1,400。
         </p>
         <ExitAlphaTable rows={s.exitAlpha.rows} />
 
@@ -183,8 +192,9 @@ export function PaperReport({
         </h3>
         <p className={styles.sectionNote}>
           skill score = 1 − Brier_agent / Brier_market，&gt;0 才算跑赢市场。当前为负（agent {s.brier.agentScore.toFixed(3)} vs 市场{" "}
-          {s.brier.marketScore.toFixed(3)}），样本仅 {s.brier.n} 个已结算市场——尚不能下结论。7/31
-          有一批持仓集中到期，样本很快会上来。
+          {s.brier.marketScore.toFixed(3)}，n={s.brier.n}）。复盘注（2026-08-05）：7/31
+          结算潮后样本首次够量，初步结论是 agent 落后于市场——大额失分集中在以伊停火系列（对"停火延续"的方向判断与结果相反）与"停止对伊军事行动"（agent
+          15% vs 市场 94%，事件发生）。
         </p>
         <BrierTable rows={s.brier.rows} />
 
@@ -206,7 +216,10 @@ export function PaperReport({
             饱和持有拦截 <strong>{s.saturatedHolds}</strong> 次——saturated-hold 修复（PR #91）阻止 99%
             钳位把接近满值的赢家提前卖掉，改为持有到结算。
           </li>
-          <li>费用 $0：本批地缘市场 taker/maker 均为 0 bps，费用拖累尚未被真正测试。</li>
+          <li>
+            累计费用 {fmtUsd(s.feesUsd)}：早期地缘市场费率均为 0 bps，7 月下旬起部分新市场（英伟达、马杜罗）带真实费率——英伟达回合
+            $45 入场费 + $23 卖出费已计入该回合成本与盈亏。
+          </li>
         </ul>
       </section>
 
@@ -224,37 +237,38 @@ export function PaperReport({
 
       <section className={styles.section} aria-labelledby="sec-verdict">
         <h2 id="sec-verdict" className={styles.sectionTitle}>
-          结论与建议（2026-07-24 复盘）
+          结论与建议（2026-08-05 复盘）
         </h2>
         <ul className={styles.list}>
           <li>
-            <strong>盈利构成：</strong>收"大概率不发生"的权利金（4 笔已验证有效）+ 一个在赢的逆市场仓（霍尔木兹
-            12/31，未结算）− 一次输掉的独立判断（MOU，-$460）。
+            <strong>亏损构成：</strong>−20% ≈ 已实现 −$2,114（12 个负回合、其中 10
+            次止损）+ 浮盈 +$134 的微弱缓冲。7 月上旬收权利金攒下的 +8%
+            浮盈，在 7/25 后的止损串里全部回吐并转亏。
           </li>
           <li>
-            <strong>与基准一致：</strong>贴着市场先验做小幅修正能稳定小赚；真正偏离市场的判断才是分水岭——目前
-            1 胜（浮盈）1 负（已实现）。
+            <strong>与基准：</strong>Brier skill −0.53（n=12）——首批足量样本显示独立判断整体落后市场。7/24
+            时"贴市场小修正稳定小赚"的通道，在短到期、高波动的停火系列上失效：agent 反复给出与市场大幅背离的方向判断，结果站在错的一边。
           </li>
           <li>
-            <strong>建议 ①（最高优先级）：</strong>止损后对同市场/同事件加冷却期。MOU 的第二次进场距第一次止损仅
-            4 小时，多亏 $227。
+            <strong>建议 ①（7/24 已提、仍未落地，代价已现）：</strong>止损后对同市场/同事件加冷却期。以伊停火 7/31
+            三进三止损（−$601）、美伊停火二进二止损（−$400）、哈马斯止损后 24 小时内重进（现持仓中）——全部是这一个缺口。
           </li>
           <li>
-            <strong>建议 ②：</strong>加题材级相关性敞口上限（或先在反思报告里显式呈现相关暴露）。事件级上限没挡住
-            4 仓共享伊朗驱动。
+            <strong>建议 ②：</strong>题材级相关性敞口上限。事件级 maxPerEvent=1 没挡住停火/封锁/军事行动这组强相关市场同向暴露，7
+            月末一个题材打穿整本账；当前在持 10 仓里仍有 5 仓共享伊朗驱动。
           </li>
           <li>
-            <strong>建议 ③（已部分落地）：</strong>饱和钳位导致的错误卖出已由 saturated-hold 修复（PR
-            #91）拦截，赢家可持有到结算；饱和 edge 的名义值展示仍待改进。等 7/31 结算潮把 Brier
-            样本攒起来再评价预测能力。
+            <strong>建议 ③：</strong>止损规则与低价单适配。−35% 价格止损对 0.1–0.3
+            区间的单子过于敏感（波动天然大），英伟达止损后市场以 YES 结算（α
+            −$1,838）；考虑按剩余净 edge 退出而非纯价格回撤，或对低价单缩小仓位而不是收紧止损。
           </li>
         </ul>
       </section>
 
       <footer className={styles.footer}>
         <p>
-          模拟盘——无真实订单、无真实资金。费用按 CLOB 逐市场实时元数据计（本批均为 0）。金额合计与总权益之间存在
-          &lt;$1 的取整差（报告 mark 保留两位）。
+          模拟盘——无真实订单、无真实资金。费用按 CLOB 逐市场实时元数据计（多数地缘市场为
+          0，个别市场带真实费率，已计入回合成本）。金额合计与总权益之间存在 &lt;$1 的取整差（报告 mark 保留两位）。
         </p>
         <p>
           数据来源：raven-paper-agent-1 容器 portfolio.json / ledger.jsonl（{s.fills.total} 笔成交，其中 1
