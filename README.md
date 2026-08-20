@@ -10,18 +10,23 @@
 
 > English is the primary README. 中文版见 [docs/README.zh-CN.md](docs/README.zh-CN.md).
 
-Last updated: 2026-06-12
+Last updated: 2026-08-20
 
 ---
 
-**predict-raven** is an open-source **forecasting agent framework**: it lets an AI agent estimate the probability of real-world events, gather and weigh evidence continuously, and act on the result. The same agent core powers two very different applications today:
+**predict-raven** is an open-source **forecasting agent framework**: it lets an AI agent estimate the probability of real-world events, gather and weigh evidence continuously, and act on the result. The same agent core powers a family of applications today:
 
 - **Autonomous prediction-market trading** — the first autonomous, continuously-running trading agent on [Polymarket](https://polymarket.com). It estimates fair probabilities, compares them to market-implied odds, and trades the edge under hard, service-layer risk controls.
-- **Market-blind public forecasting** — transparent, Brier-scored probabilities for all 48 teams at the 2026 World Cup, deliberately produced **without ever reading a market price**. Live at **[forecasting-agent.com](https://forecasting-agent.com/world-cup)**.
+- **Market-blind public forecasting** — transparent, Brier-scored probabilities for all 48 teams at the 2026 World Cup, deliberately produced **without ever reading a market price**. Live at **[forecasting-agent.com](https://forecasting-agent.com/world-cup)**, scored in public on the [track record page](https://forecasting-agent.com/world-cup/performance).
+- **Hosted Forecasting Engine** — the same iterative forecaster as hosted products: an interactive research console at [/engine](https://forecasting-agent.com/engine), the Raven Delta news-impact engine at [/delta](https://forecasting-agent.com/delta), and a forecast API + MCP service (probability + reasoning + evidence as JSON, plain text, or PDF). See [Forecasting Engine (hosted)](#forecasting-engine-hosted).
+- **Autonomous paper trading** — a simulation-only twin of the trading agent running unattended in the cloud: market-blind position evaluations three times a day, net-edge exits, and a daily self-review with a Brier skill score against the market. See [Autonomous paper trading](#autonomous-paper-trading-simulation).
 
 Watch live:
 
-- **World Cup forecasts (market-blind)**: [forecasting-agent.com](https://forecasting-agent.com/world-cup)
+- **World Cup forecasts (market-blind)**: [forecasting-agent.com/world-cup](https://forecasting-agent.com/world-cup) · [track record](https://forecasting-agent.com/world-cup/performance)
+- **Forecasting Engine console**: [forecasting-agent.com/engine](https://forecasting-agent.com/engine) (browsing is public; new runs are invite-gated)
+- **Raven Delta news-impact engine**: [forecasting-agent.com/delta](https://forecasting-agent.com/delta) (invite-gated)
+- **Paper-trading book review**: [forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven) (invite-gated, live VM snapshot)
 - **Trading decision log / equity curve**: [autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
 - **On-chain positions / fills (Polymarket profile)**: [`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
@@ -29,7 +34,7 @@ Watch live:
 
 The trading side is built around a single core component, **Market Pulse**: it lets the AI independently estimate the probability of an event, dynamically gathers evidence from information sources, compares that evidence against the market's implied odds, and issues trading instructions that combine edge with capital return efficiency.
 
-The same evidence-gathering core also runs in a **market-blind** mode that never reads odds at all — used for the public World Cup forecasting product (see [Market-blind forecasting](#market-blind-forecasting) below).
+The same evidence-gathering core is packaged as a standalone engine ([`packages/forecast-engine`](packages/forecast-engine)) and also runs in a **market-blind** mode that never reads odds at all — used for the public World Cup forecasting product (see [Market-blind forecasting](#market-blind-forecasting) below) and the hosted Forecasting Engine surfaces.
 
 ### Why let an Agent do this
 
@@ -51,9 +56,34 @@ The 2026 World Cup deployment is the public showcase — 87 questions (champion,
 
 - **Statistical prior**: live Elo ratings feed a Davidson three-way model for single matches; tournament questions run 100,000 Monte-Carlo simulations over the official bracket.
 - **Bayesian update**: key evidence (injuries, lineups, form, venue/altitude/weather) is converted into a bounded adjustment on the prior — at most ±8 percentage points per match, and nothing moves without a cited source.
-- **Public scoring**: every forecast is Brier-scored in public after the match settles; wrong calls stay on the record.
+- **Public scoring**: every forecast is Brier-scored in public after the match settles; wrong calls stay on the record. The [track record page](https://forecasting-agent.com/world-cup/performance) benchmarks the blind forecasts *after the fact* against Polymarket's implied probabilities at forecast time — Mock PNL, Brier skill score vs the market, calibration (ECE), and hit rate — for both the group stage and the knockout round of 32.
 
 Market data is used only for event structure and settlement mapping (slug / conditionId / resolution rules); price fields are stripped at cache-write time. Code lives in `scripts/world-cup/`, `packages/sports-data/`, `packages/sports-model/`, and `apps/web/app/world-cup/`. This is probability research, not betting advice.
+
+## Forecasting Engine (hosted)
+
+The evidence-gathering core is packaged as a reusable **iterative event forecaster** in [`packages/forecast-engine`](packages/forecast-engine): given a binary question, it frames the event, runs bounded evidence rounds with cited sources, and produces a traceable probability plus a decision-first report. Correctness guardrails are built in — a framing audit, a model self-estimated prior, independence-aware evidence aggregation (cluster discounting), a mandatory disconfirmation pass, consequential source verification, and an explicit `saturated` status when a probability pins at the engine's floor/ceiling. A market-blind mode (`FORECAST_MARKET_BLIND=1`) bans betting-market prices from prompts, search, and evidence weighting.
+
+Three hosted surfaces run this engine on a cloud VM, all under [forecasting-agent.com](https://forecasting-agent.com):
+
+| Surface | What it is | Code |
+| --- | --- | --- |
+| [`/engine`](https://forecasting-agent.com/engine) | Interactive research console (EN / 中文) — watch a run unfold step by step: plan checklist, evidence cards, verdict dossier | `apps/raven` |
+| [`/delta`](https://forecasting-agent.com/delta) | **Raven Delta** news-impact engine — paste a news item, get an attention verdict (with first-seen timing), 0–5 impacted US stocks with direction / magnitude / confidence, and a trading plan; email + WebSocket push | `apps/raven-delta` |
+| Forecast API + MCP | `POST /v1/forecasts {question}` → probability + reasoning + evidence as JSON, plain text, or a PDF dossier; also exposed as MCP tools (`forecast_start` / `forecast_status` / `forecast_result`) | `services/forecast-api` |
+
+Engine runs are metered: a daily quota plus file-backed invite codes with per-code limits and usage metering.
+
+## Autonomous paper trading (simulation)
+
+A **simulation-only** twin of the trading agent ([`services/paper-agent`](services/paper-agent)) runs a $10k paper book unattended on the same VM — zero private keys, zero order endpoints; its only network surface is public market-data reads:
+
+- **Market-blind evaluations, 3×/day** — each position is re-forecast by an isolated engine process that sees only the market question and settlement rules — never the position, cost basis, or order book.
+- **Net-edge exits + model-free stop-loss** — a position is closed when its fee-adjusted edge turns negative; a hard stop-loss overrides the model. Saturated winners (price pinned at the ceiling on the position's favorable side) are held to resolution instead of ceiling-sold.
+- **Realistic fills** — simulated orders walk the real order book (real slippage) and pay real per-market CLOB fees, with entry fees folded into round PnL; exits use a hybrid 50% market + 50% maker-limit split.
+- **Daily reflection** — the agent writes a daily self-review: counterfactual exit alpha, Brier calibration, and a **Brier skill score vs the market** — the standing answer to "is the agent actually beating the market?".
+
+The book is reviewed publicly at [forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven) (invite-gated): a live snapshot pulled from the VM at request time, the equity curve, the closed-round table, and the effective run parameters.
 
 ## Quick Start
 
@@ -113,7 +143,7 @@ run the pulse with real money
 
 Expected: the Agent places real orders based on the recommendations from step 3 and tells you which ones filled and which got rejected.
 
-> For concrete pnpm commands, env vars, and archive directories, see [docs/diagrams/dev-reference.md](docs/diagrams/dev-reference.md).
+> For concrete pnpm commands (`forecast:*`; the old `pulse:*` names remain as compatibility aliases), env vars, and archive directories, see [docs/diagrams/dev-reference.md](docs/diagrams/dev-reference.md).
 
 ## Architecture Overview
 
@@ -168,8 +198,7 @@ This is a thin **alias / mapping layer** (`@autopoly/norns`), not a rewrite. Any
 
 Where it applies:
 
-- **Deep Research console** (`apps/web` `/research`): the UI tier selector picks per run; `RESEARCH_DEFAULT_TIER` is the server default; `RESEARCH_API_MODEL` accepts a tier name *or* a raw id; the token budget defaults to the tier's.
-- **Existing engine / provider-runtime**: `CODEX_MODEL` / `CLAUDE_CODE_MODEL` / `OPENCLAW_MODEL` accept a tier name (e.g. `CLAUDE_CODE_MODEL=skuld`), resolved per provider family (codex → openai, claude-code / openclaw → anthropic).
+- **Trading engine / provider-runtime**: `CODEX_MODEL` / `CLAUDE_CODE_MODEL` / `OPENCLAW_MODEL` accept a tier name (e.g. `CLAUDE_CODE_MODEL=skuld`), resolved per provider family (codex → openai, claude-code / openclaw → anthropic).
 
 The tier table is the single source of truth in [`packages/norns/src/index.ts`](packages/norns/src/index.ts); all model ids are env-overridable.
 
@@ -302,6 +331,8 @@ All run artifacts are written to `runtime-artifacts/` (already in `.gitignore`),
 | `live-test/<timestamp>-<runId>/` | Stateful run artifacts (includes `error.json` on failure) |
 | `checkpoints/trial-recommend/` | Paper recommendation resume checkpoints |
 | `world-cup/` | Market-blind forecast archive, event list, Elo / Monte-Carlo backbone |
+| `paper-agent/` | Paper-trading book: ledger, dossiers, daily reflection reports |
+| `raven-delta/runs/` | Raven Delta news-impact analysis archive |
 | `local/paper-state.json` | Default paper state file |
 
 Failure archives (per the AGENTS convention) go to `run-error/` with the failing stage, core context, root-cause summary, and next-step command.
