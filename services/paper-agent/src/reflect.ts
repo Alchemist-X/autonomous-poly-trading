@@ -81,6 +81,49 @@ export interface CalibrationRow {
   marketProb: number;
   outcome: 0 | 1;
   ts: string;
+  // Horizon context (added 2026-08-21): how far ahead of resolution this call
+  // was made, and which Gamma event the market belongs to. Both are needed to
+  // read the headline number fairly — scoring only the LAST pre-resolution
+  // eval measures near-zero-horizon calls, and sibling markets of one event
+  // are not independent samples.
+  horizonDays?: number | null;
+  eventSlug?: string | null;
+}
+
+/** A pooled agent-vs-market Brier over some subset of scored calls. */
+export interface BrierBlock {
+  n: number;
+  brierAgent: number | null;
+  brierMarket: number | null;
+  skill: number | null;
+  medianHorizonDays: number | null;
+}
+
+export interface HorizonBucket extends BrierBlock {
+  label: string;
+  minDays: number;
+  maxDays: number | null;
+}
+
+/** One Gamma event = one underlying uncertainty; its markets are correlated. */
+export interface CalibrationCluster {
+  eventSlug: string;
+  label: string;
+  n: number;
+  skill: number | null;
+  brierAgent: number | null;
+  brierMarket: number | null;
+}
+
+/** An evaluated market that has NOT resolved yet — excluded from every Brier. */
+export interface PendingCalibrationRow {
+  label: string;
+  slug: string;
+  direction: string | null;
+  agentProb: number;
+  marketProb: number;
+  horizonDays: number | null;
+  unrealizedUsd: number | null;
 }
 
 export interface Reflection {
@@ -103,6 +146,26 @@ export interface Reflection {
     skill: number | null; // 1 − brierAgent/brierMarket, >0 = beat the market
     note: string;
     rows: CalibrationRow[];
+    // Fairness views (2026-08-21). The headline number above scores the LAST
+    // eval before each resolution — the easiest call the agent ever makes, on
+    // whichever markets happened to settle. These break that out so the
+    // number can be read for what it is:
+    //   atEntry   the FIRST call on each market (real foresight, long horizon)
+    //   buckets   the same pooled score split by how far out the call was
+    //   weighted  horizon^exponent-weighted pooling, so a 60-day call counts
+    //             for more than a same-day one
+    //   clusters  per Gamma event — sibling expiries of one story are one bet,
+    //             so effectiveN (distinct events) is the honest sample size
+    //   pending   evaluated markets still open: never scored here, which is
+    //             why an unresolved winning book does not show up in Brier
+    horizon: {
+      atEntry: BrierBlock | null;
+      atLast: BrierBlock | null;
+      buckets: HorizonBucket[];
+      weighted: { exponent: number; skill: number | null; n: number } | null;
+    };
+    clusters: { effectiveN: number; rows: CalibrationCluster[] };
+    pending: PendingCalibrationRow[];
   };
   fees: { takerUsd: number; makerUsd: number; totalUsd: number };
   hybrid: {
@@ -232,15 +295,205 @@ async function resolveUnit(
   return { winner: market.resolvedOutcomeIndex, ts: null };
 }
 
-async function buildCalibration(ledger: LedgerEvent[], getMarket: MarketGetter): Promise<Reflection["calibration"]> {
+// ---- Fairness views over the same scored calls ----------------------------
+//
+// Longer-horizon calls are harder, so weighting them equally with a call made
+// hours before settlement understates a forecaster who takes long positions.
+// The market baseline absorbs most of that (it faces the same horizon), which
+// is why the pooled skill score stays the headline; the exponent below only
+// re-weights WHICH calls dominate the pool, it never rescales an individual
+// Brier. 1.5 is the owner's chosen prior on how difficulty grows with days.
+const HORIZON_EXPONENT = 1.5;
+// Sub-day calls would otherwise get ~zero weight and drop out entirely.
+const MIN_HORIZON_DAYS = 0.25;
+
+const HORIZON_BUCKETS: Array<{ label: string; minDays: number; maxDays: number | null }> = [
+  { label: "≤1 天", minDays: 0, maxDays: 1 },
+  { label: "1–7 天", minDays: 1, maxDays: 7 },
+  { label: "7–30 天", minDays: 7, maxDays: 30 },
+  { label: "30 天以上", minDays: 30, maxDays: null }
+];
+
+interface ScoredCall {
+  agentProb: number;
+  marketProb: number;
+  ts: string;
+  horizonDays: number | null;
+}
+
+interface ScoredUnit {
+  key: string;
+  slug: string;
+  eventSlug: string;
+  label: string;
+  outcome: 0 | 1;
+  calls: ScoredCall[]; // chronological, all strictly before resolution
+}
+
+interface BrierSample {
+  agentProb: number;
+  marketProb: number;
+  outcome: 0 | 1;
+  horizonDays: number | null;
+  weight: number;
+}
+
+function median(xs: number[]): number | null {
+  if (xs.length === 0) return null;
+  const sorted = [...xs].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  const lo = sorted[mid - 1];
+  const hi = sorted[mid];
+  if (hi === undefined) return null;
+  return sorted.length % 2 === 0 && lo !== undefined ? (lo + hi) / 2 : hi;
+}
+
+/**
+ * Pooled paired Brier: weighted mean of the agent's squared error over the
+ * weighted mean of the market's. Pooling the SUMS (rather than averaging
+ * per-sample skill scores) is what keeps the number finite — a market that
+ * was nearly exact drives its own Brier toward 0 and would blow up any
+ * per-sample ratio.
+ */
+function poolBrier(samples: BrierSample[]): BrierBlock {
+  const totalWeight = samples.reduce((s, x) => s + x.weight, 0);
+  if (samples.length === 0 || totalWeight <= 0) {
+    return { n: samples.length, brierAgent: null, brierMarket: null, skill: null, medianHorizonDays: null };
+  }
+  const agent = samples.reduce((s, x) => s + x.weight * (x.agentProb - x.outcome) ** 2, 0) / totalWeight;
+  const market = samples.reduce((s, x) => s + x.weight * (x.marketProb - x.outcome) ** 2, 0) / totalWeight;
+  const horizons = samples.flatMap((x) => (x.horizonDays === null ? [] : [x.horizonDays]));
+  return {
+    n: samples.length,
+    brierAgent: agent,
+    brierMarket: market,
+    skill: market > 0 ? 1 - agent / market : null,
+    medianHorizonDays: median(horizons)
+  };
+}
+
+const sampleOf = (unit: ScoredUnit, call: ScoredCall, weight = 1): BrierSample => ({
+  agentProb: call.agentProb,
+  marketProb: call.marketProb,
+  outcome: unit.outcome,
+  horizonDays: call.horizonDays,
+  weight
+});
+
+function horizonViews(units: ScoredUnit[]): Reflection["calibration"]["horizon"] {
+  const firstCalls = units.flatMap((u) => {
+    const call = u.calls[0];
+    return call ? [{ unit: u, call }] : [];
+  });
+  const lastCalls = units.flatMap((u) => {
+    const call = u.calls[u.calls.length - 1];
+    return call ? [{ unit: u, call }] : [];
+  });
+
+  const buckets: HorizonBucket[] = HORIZON_BUCKETS.map((bucket) => {
+    // At most one call per unit per bucket: the LAST call still inside the
+    // band, so a market reviewed 40 times cannot dominate the bucket.
+    const samples = units.flatMap((u) => {
+      const inBucket = u.calls.filter(
+        (c) =>
+          c.horizonDays !== null &&
+          c.horizonDays >= bucket.minDays &&
+          (bucket.maxDays === null || c.horizonDays < bucket.maxDays)
+      );
+      const call = inBucket[inBucket.length - 1];
+      return call ? [sampleOf(u, call)] : [];
+    });
+    return { ...bucket, ...poolBrier(samples) };
+  });
+
+  const weightedSamples = firstCalls.map(({ unit, call }) =>
+    sampleOf(unit, call, Math.max(call.horizonDays ?? MIN_HORIZON_DAYS, MIN_HORIZON_DAYS) ** HORIZON_EXPONENT)
+  );
+  const weighted = poolBrier(weightedSamples);
+
+  return {
+    atEntry: firstCalls.length ? poolBrier(firstCalls.map(({ unit, call }) => sampleOf(unit, call))) : null,
+    atLast: lastCalls.length ? poolBrier(lastCalls.map(({ unit, call }) => sampleOf(unit, call))) : null,
+    buckets: buckets.filter((b) => b.n > 0),
+    weighted: weightedSamples.length ? { exponent: HORIZON_EXPONENT, skill: weighted.skill, n: weighted.n } : null
+  };
+}
+
+function clusterViews(units: ScoredUnit[]): Reflection["calibration"]["clusters"] {
+  const groups = new Map<string, ScoredUnit[]>();
+  for (const unit of units) {
+    groups.set(unit.eventSlug, [...(groups.get(unit.eventSlug) ?? []), unit]);
+  }
+  const rows: CalibrationCluster[] = [...groups.entries()].map(([eventSlug, members]) => {
+    const samples = members.flatMap((u) => {
+      const call = u.calls[u.calls.length - 1];
+      return call ? [sampleOf(u, call)] : [];
+    });
+    const pooled = poolBrier(samples);
+    return {
+      eventSlug,
+      label: members[0]?.label ?? eventSlug,
+      n: members.length,
+      skill: pooled.skill,
+      brierAgent: pooled.brierAgent,
+      brierMarket: pooled.brierMarket
+    };
+  });
+  return {
+    effectiveN: rows.length,
+    rows: rows.sort((a, b) => b.n - a.n)
+  };
+}
+
+async function buildPending(
+  units: ScoringUnit[],
+  scoredKeys: Set<string>,
+  getMarket: MarketGetter,
+  portfolio: Portfolio,
+  nowMs: number
+): Promise<PendingCalibrationRow[]> {
+  const rows: PendingCalibrationRow[] = [];
+  for (const unit of units) {
+    if (scoredKeys.has(unit.key)) continue;
+    const last = unit.evals[unit.evals.length - 1];
+    if (!last) continue;
+    const market = await getMarket(unit.slug);
+    if (market && market.resolution !== "open") continue;
+    const position = portfolio.positions.find((p) => p.id === unit.key);
+    const endMs = market?.endDateIso ? Date.parse(market.endDateIso) : NaN;
+    rows.push({
+      label: market?.question ?? unit.slug,
+      slug: unit.slug,
+      direction: position?.outcomeLabel.toUpperCase() ?? null,
+      agentProb: last.agentProb,
+      marketProb: last.marketProb,
+      horizonDays: Number.isFinite(endMs) ? Math.round(((endMs - nowMs) / 86_400_000) * 10) / 10 : null,
+      unrealizedUsd:
+        position && position.lastEval?.mark !== undefined && position.lastEval.mark !== null
+          ? position.shares * (position.lastEval.mark - position.avgEntryPrice)
+          : null
+    });
+  }
+  return rows.sort((a, b) => (b.unrealizedUsd ?? -Infinity) - (a.unrealizedUsd ?? -Infinity));
+}
+
+async function buildCalibration(
+  ledger: LedgerEvent[],
+  getMarket: MarketGetter,
+  portfolio: Portfolio,
+  nowMs: number = Date.now()
+): Promise<Reflection["calibration"]> {
   const units = collectScoringUnits(ledger);
   const settled = ledgerResolutions(ledger);
   const rows: CalibrationRow[] = [];
+  const scored: ScoredUnit[] = [];
+  const scoredKeys = new Set<string>();
   let sumAgent = 0;
   let sumMarket = 0;
   for (const unit of units) {
     const resolved = await resolveUnit(unit.slug, settled, getMarket);
     if (!resolved) continue;
+    const market = await getMarket(unit.slug);
     // Last eval strictly before the ledgered resolution time; fetched
     // resolutions carry no timestamp, but evals stop once a market closes,
     // so the last eval IS the pre-resolution one.
@@ -251,13 +504,44 @@ async function buildCalibration(ledger: LedgerEvent[], getMarket: MarketGetter):
     const outcome: 0 | 1 = resolved.winner === unit.scoredIndex ? 1 : 0;
     sumAgent += (last.agentProb - outcome) ** 2;
     sumMarket += (last.marketProb - outcome) ** 2;
-    const market = await getMarket(unit.slug);
+    // Resolution instant for horizon maths: the ledgered settlement if we held
+    // it, else the market's own end date. Without either, horizon is unknown
+    // and the call still counts in the headline but not in the horizon views.
+    const endMs = resolvedTs
+      ? Date.parse(resolvedTs)
+      : market?.endDateIso
+        ? Date.parse(market.endDateIso)
+        : NaN;
+    const horizonOf = (ts: string): number | null => {
+      const callMs = Date.parse(ts);
+      if (!Number.isFinite(endMs) || !Number.isFinite(callMs)) return null;
+      return Math.max(0, Math.round(((endMs - callMs) / 86_400_000) * 100) / 100);
+    };
+    const label = market?.question ?? unit.slug;
+    scoredKeys.add(unit.key);
+    scored.push({
+      key: unit.key,
+      slug: unit.slug,
+      // Sibling expiries of one story share a Gamma event; without one, the
+      // market stands alone as its own cluster.
+      eventSlug: market?.eventSlug || unit.slug,
+      label,
+      outcome,
+      calls: usable.map((e) => ({
+        agentProb: e.agentProb,
+        marketProb: e.marketProb,
+        ts: e.ts,
+        horizonDays: horizonOf(e.ts)
+      }))
+    });
     rows.push({
-      label: market?.question ?? unit.slug,
+      label,
       agentProb: last.agentProb,
       marketProb: last.marketProb,
       outcome,
-      ts: last.ts
+      ts: last.ts,
+      horizonDays: horizonOf(last.ts),
+      eventSlug: market?.eventSlug ?? null
     });
   }
   const n = rows.length;
@@ -272,7 +556,10 @@ async function buildCalibration(ledger: LedgerEvent[], getMarket: MarketGetter):
     note: n
       ? "paired Brier over every resolved eval unit: last pre-resolution agent prob vs market price (bestBid); skill = 1 - agent/market, >0 beats the market"
       : "尚无已结算市场，Brier 暂不可计",
-    rows: [...rows].sort((a, b) => (a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0)).slice(0, 30)
+    rows: [...rows].sort((a, b) => (a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0)).slice(0, 30),
+    horizon: horizonViews(scored),
+    clusters: clusterViews(scored),
+    pending: await buildPending(units, scoredKeys, getMarket, portfolio, nowMs)
   };
 }
 
@@ -467,7 +754,7 @@ export async function buildReflection(): Promise<Reflection> {
   const portfolio = loadPortfolio();
   const getMarket = memoizedMarketGetter();
 
-  const calibration = await buildCalibration(ledger, getMarket);
+  const calibration = await buildCalibration(ledger, getMarket, portfolio);
   const { episodes, totalAlphaUsd } = await buildExits(ledger, getMarket);
   const hybrid = buildHybrid(ledger);
   const engineFlags = buildEngineFlags(ledger);
