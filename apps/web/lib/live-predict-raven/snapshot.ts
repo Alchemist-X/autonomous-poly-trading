@@ -64,6 +64,78 @@ export interface BrierRow {
   marketProb: number;
   happened: boolean;
   resolvedUtc: string;
+  /** Days between the scored call and resolution; null when unknown. */
+  horizonDays?: number | null;
+}
+
+/** A pooled agent-vs-market Brier over one slice of the scored calls. */
+export interface BrierBlock {
+  n: number;
+  brierAgent: number | null;
+  brierMarket: number | null;
+  skill: number | null;
+  medianHorizonDays: number | null;
+}
+
+export interface HorizonBucket extends BrierBlock {
+  label: string;
+  minDays: number;
+  maxDays: number | null;
+}
+
+export interface CalibrationCluster {
+  eventSlug: string;
+  label: string;
+  n: number;
+  skill: number | null;
+}
+
+/** An evaluated market that has not resolved — never enters any Brier. */
+export interface PendingCalibrationRow {
+  question: string;
+  slug: string;
+  side: string | null;
+  agentProb: number;
+  marketProb: number;
+  horizonDays: number | null;
+  unrealizedUsd: number | null;
+}
+
+/** One position's life, split into the entry decision and the exit decision. */
+export interface DecisionEpisode {
+  positionId: string;
+  slug: string;
+  question: string;
+  side: string;
+  status: "open" | "closed";
+  openedUtc: string;
+  closedUtc: string | null;
+  holdDays: number | null;
+  shares: number;
+  entryPrice: number;
+  costUsd: number;
+  exitPrice: number | null;
+  benchmarkPrice: number | null;
+  benchmarkSource: "settled" | "live" | "mark" | "exit";
+  entryAlphaUsd: number | null;
+  exitAlphaUsd: number | null;
+  pnlUsd: number | null;
+  exitReason: string | null;
+  exitStyle: string | null;
+  entryEdgePp: number | null;
+  agentProbAtEntry: number | null;
+  marketProbAtEntry: number | null;
+  roundsAtEntry: number | null;
+  evidenceAtEntry: number | null;
+  reviewCount: number;
+}
+
+export interface DecisionQuality {
+  benchmarkAsOfUtc: string | null;
+  entry: { totalUsd: number; openUsd: number; closedUsd: number; scored: number; unscored: number };
+  exit: { totalUsd: number; scored: number; unscored: number };
+  reconciliation: { closedPnlUsd: number; realizedPnlUsd: number; deltaUsd: number };
+  episodes: readonly DecisionEpisode[];
 }
 
 export interface PaperParams {
@@ -116,7 +188,18 @@ export interface PaperSnapshot {
     marketScore: number;
     skillScore: number;
     rows: readonly BrierRow[];
+    /** Fairness views; null on payloads from an API build without them. */
+    horizon: {
+      atEntry: BrierBlock | null;
+      atLast: BrierBlock | null;
+      buckets: readonly HorizonBucket[];
+      weighted: { exponent: number; skill: number | null; n: number } | null;
+    } | null;
+    clusters: { effectiveN: number; rows: readonly CalibrationCluster[] } | null;
+    pending: readonly PendingCalibrationRow[];
   };
+  /** Entry-vs-exit contribution split; null on payloads without it. */
+  decisionQuality: DecisionQuality | null;
   engineQuality: {
     evaluations: number;
     saturated: number;
@@ -788,8 +871,14 @@ export const PAPER_SNAPSHOT: PaperSnapshot = {
         happened: true,
         resolvedUtc: "2026-07-04"
       }
-    ]
+    ],
+    // The baked fallback predates the fairness views; the page hides those
+    // sections rather than inventing numbers for them.
+    horizon: null,
+    clusters: null,
+    pending: []
   },
+  decisionQuality: null,
   // Ledger-count basis (same basis the live endpoint uses, so live and
   // fallback never disagree on the counting method).
   engineQuality: {
