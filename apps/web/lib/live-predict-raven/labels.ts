@@ -43,6 +43,11 @@ const QUESTION_ZH: Record<string, string> = {
     "霍尔木兹海峡 9/30 前恢复正常通航？",
   "will-nicols-maduro-be-the-leader-of-venezuela-end-of-2026": "马杜罗 2026 年底仍是委内瑞拉领导人？",
   "us-announces-end-of-iranian-blockade-by-august-7-2026-20260727171523690": "美国 8/7 前宣布解除对伊封锁？",
+  "us-announces-end-of-iranian-blockade-by-august-15-2026-20260713152715083-347-987-697-628-574-676":
+    "美国 8/15 前宣布解除对伊封锁？",
+  "us-announces-end-of-iranian-blockade-by-august-31-2026-20260713152715084-642-513-584-641-939-632-729":
+    "美国 8/31 前宣布解除对伊封锁？",
+  "us-x-iran-ceasefire-continues-through-august-31": "美国对伊停火延续至 8/31？",
   "US x Iran Effective Ceasefire by July 31?": "美伊 7/31 前达成有效停火？",
   "Israel x Iran ceasefire continues through July 31?": "以伊停火延续至 7/31？",
   "Israel x Iran ceasefire continues through August 15?": "以伊停火延续至 8/15？",
@@ -54,6 +59,9 @@ const QUESTION_ZH: Record<string, string> = {
   "Strait of Hormuz traffic returns to normal by September 30?": "霍尔木兹海峡 9/30 前恢复正常通航？",
   "Will Nicolás Maduro be the leader of Venezuela end of 2026?": "马杜罗 2026 年底仍是委内瑞拉领导人？",
   "US announces end of Iranian blockade by August 7, 2026?": "美国 8/7 前宣布解除对伊封锁？",
+  "US announces end of Iranian blockade by August 15, 2026?": "美国 8/15 前宣布解除对伊封锁？",
+  "US announces end of Iranian blockade by August 31, 2026?": "美国 8/31 前宣布解除对伊封锁？",
+  "US ceasefire against Iran continues through August 31?": "美国对伊停火延续至 8/31？",
   "Will WTI Crude Oil (WTI) hit (HIGH) $95 in July?": "WTI 原油 7 月最高价触及 $95？"
 };
 

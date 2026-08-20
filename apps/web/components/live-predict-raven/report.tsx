@@ -1,6 +1,10 @@
+import type { PaperCases } from "../../lib/live-predict-raven/cases";
+import { deriveFindings } from "../../lib/live-predict-raven/findings";
 import type { PaperSnapshot } from "../../lib/live-predict-raven/snapshot";
 import { deriveReportStats } from "../../lib/live-predict-raven/stats";
+import { CaseWalkthrough } from "./case-walkthrough";
 import { EquityChart } from "./equity-chart";
+import { CalibrationSection, DecisionQualitySection, FindingsSection } from "./quality-sections";
 import { fmtSignedPct, fmtSignedUsd, fmtUsd } from "./format";
 import {
   BrierTable,
@@ -26,12 +30,16 @@ const fmtUtcMinute = (iso: string): string => (iso.length >= 16 ? `${iso.slice(0
 
 export function PaperReport({
   snapshot,
-  dataSource
+  dataSource,
+  cases
 }: {
   snapshot: PaperSnapshot;
   dataSource: "live" | "baked";
+  /** Case walk-throughs from the VM; omitted when that endpoint is unavailable. */
+  cases?: PaperCases | null;
 }) {
   const s = snapshot;
+  const findings = deriveFindings(s);
   const { trade, equity, openBook } = deriveReportStats(s);
   const rawDays = Math.round((Date.parse(s.lastEvalCycleUtc) - Date.parse(s.startedUtc)) / 86_400_000);
   const runDaysLabel = Number.isFinite(rawDays) ? `${Math.max(1, rawDays)} 天` : "—";
@@ -129,9 +137,8 @@ export function PaperReport({
           <EquityChart curve={s.equityCurve} bankrollUsd={s.bankrollUsd} />
         </div>
         <p className={styles.sectionNote}>
-          复盘注（2026-08-05）：两段行情。7/14 冲到峰值 +8.0%（$10,799）后靠浮盈横盘到
-          7/24；7/25 起连续下台阶——11 天里 10 次止损，几乎全是以伊停火题材，8/4 跌到
-          $8,112，自峰值最大回撤 −26%。
+          峰值 {fmtUsd(equity.peakUsd)}（{equity.peakDate}），自峰值最大回撤 {fmtSignedPct(equity.maxDrawdownPct)}，
+          当前 {fmtUsd(equity.currentUsd)}（{fmtSignedPct(equity.returnPct)}）。每个点是当日反思报告的收盘权益，最后一点是最近一次评估。
         </p>
         <details className={styles.details}>
           <summary>查看逐日数值表</summary>
@@ -145,11 +152,9 @@ export function PaperReport({
         </h2>
         <ClosedTradesTable trades={s.closedTrades} />
         <p className={styles.callout}>
-          复盘注（2026-08-05）：7/24 时"4 胜 2 负"的结构已被 7/26–8/4 的止损串彻底改写——新增 11
-          回合里 10 次止损。7/24 复盘提出的"止损后同市场冷却期"未落地，同样的错误以更大规模重演："以伊停火延续至
-          7/31"同一市场三进三止损（合计 −$601），"美伊 7/31 有效停火"二进二止损（−$400）。最贵的一笔是英伟达：0.22 买
-          YES 一天后止损，市场最终以 YES 结算（反事实 α −$1,838）。唯一亮点：霍尔木兹 7/31 被 saturated-hold
-          护着持有到临近结算，+$170 落袋。
+          {trade.wins} 笔盈利平均 {fmtUsd(trade.avgWinUsd)}，{trade.losses} 笔亏损平均 {fmtUsd(trade.avgLossUsd)}，
+          已实现合计 {fmtSignedUsd(trade.realizedPnlUsd)}。每一笔"卖得对不对"的评价见下面的
+          <strong>决策质量</strong>一节——那里把同一笔拆成建仓和退出两部分。
         </p>
       </section>
 
@@ -164,39 +169,46 @@ export function PaperReport({
           mark，随每次评估周期更新。
         </p>
         <p className={styles.callout}>
-          复盘注（2026-08-05）风险集中：满仓 10/10，全是地缘政治 NO，其中五仓共享"伊朗局势"单一驱动（霍尔木兹
-          ×2 + 核协议 + 入侵伊朗 + 解除封锁）——正是这个题材在 7 月末打穿了已平仓账。亮点仍是霍尔木兹
-          12/31：市场定价 72% 会恢复通航时逆势买 NO @ 0.28，现价 0.38（+$179），是唯一在赢的真正逆市场立场（未结算）。8/4
-          新开的"解除封锁"仓一天浮亏 −$116，是当前最大的红仓。
+          仓位占用 {s.openPositions.length} / {s.config.maxPositions}，现金占总权益 {openBook.cashSharePct.toFixed(1)}%。
+          这些仓位都还没结算，因此不进入下面的 Brier 校准——它们的表现只体现在<strong>建仓贡献</strong>里。
+          题材集中度与方向一致性见页尾「结论与建议」。
         </p>
       </section>
+
+      {s.decisionQuality ? <DecisionQualitySection dq={s.decisionQuality} /> : null}
+
+      {cases && (cases.winners.length > 0 || cases.losers.length > 0) ? (
+        <section className={styles.section} aria-labelledby="sec-cases">
+          <h2 id="sec-cases" className={styles.sectionTitle}>
+            四个案例：它当时到底看到了什么
+          </h2>
+          <p className={styles.sectionNote}>
+            盈利最大和亏损最大的各两笔。每一笔都摊开：引擎每一轮搜了什么、找到哪条源、那条源把概率推了多少、
+            它当时怎么想的，以及 harness 在同一时间轴上做了什么。所有链接都是引擎当时真正引用的原文。
+          </p>
+          {[...cases.winners, ...cases.losers].map((c) => (
+            <CaseWalkthrough key={`${c.positionId}-${c.openedUtc}`} paperCase={c} />
+          ))}
+        </section>
+      ) : null}
 
       <section className={styles.section} aria-labelledby="sec-quality">
         <h2 id="sec-quality" className={styles.sectionTitle}>
           预测与执行质量
         </h2>
 
-        <h3 className={styles.subTitle}>退出质量：α 合计 {fmtSignedUsd(s.exitAlpha.totalUsd)}</h3>
+        <h3 className={styles.subTitle}>退出明细：逐次退出 vs 不卖的对照</h3>
         <p className={styles.sectionNote}>
-          α = 卖出所得 −（若持有到现在/结算的价值），正数 = 卖对了。
-          {s.exitAlpha.totalUsd >= 0
-            ? "合计为正：退出决策整体加分。"
-            : "合计为负：退出决策整体在减分。"}{" "}
-          复盘注（2026-08-05）：合计从 7/24 的 +$1,077 转负——英伟达（止损后市场以 YES 结算，−$1,838）与哈马斯（止损后
-          NO 价反弹近 4 倍，−$869）两笔反事实巨亏，压过了停火系列止损救回的约 +$1,400。
+          α = 卖出所得 −（若持有到现在/结算的价值），正数 = 卖对了。合计与上面「决策质量」一节的退出贡献同源，
+          这里按每次退出的方式（市价 / 限价 / 混合）展开。
         </p>
         <ExitAlphaTable rows={s.exitAlpha.rows} />
 
-        <h3 className={styles.subTitle}>
-          校准（Brier）：skill score {s.brier.skillScore.toFixed(2)}，n={s.brier.n}
-        </h3>
-        <p className={styles.sectionNote}>
-          skill score = 1 − Brier_agent / Brier_market，&gt;0 才算跑赢市场。当前为负（agent {s.brier.agentScore.toFixed(3)} vs 市场{" "}
-          {s.brier.marketScore.toFixed(3)}，n={s.brier.n}）。复盘注（2026-08-05）：7/31
-          结算潮后样本首次够量，初步结论是 agent 落后于市场——大额失分集中在以伊停火系列（对"停火延续"的方向判断与结果相反）与"停止对伊军事行动"（agent
-          15% vs 市场 94%，事件发生）。
-        </p>
-        <BrierTable rows={s.brier.rows} />
+        <CalibrationSection snapshot={s} />
+        <details className={styles.details}>
+          <summary>逐条已结算判断（{s.brier.rows.length} 条）</summary>
+          <BrierTable rows={s.brier.rows} />
+        </details>
 
         <h3 className={styles.subTitle}>引擎与执行</h3>
         <ul className={styles.list}>
@@ -235,35 +247,7 @@ export function PaperReport({
         <ParamsTable config={s.config} />
       </section>
 
-      <section className={styles.section} aria-labelledby="sec-verdict">
-        <h2 id="sec-verdict" className={styles.sectionTitle}>
-          结论与建议（2026-08-05 复盘）
-        </h2>
-        <ul className={styles.list}>
-          <li>
-            <strong>亏损构成：</strong>−20% ≈ 已实现 −$2,114（12 个负回合、其中 10
-            次止损）+ 浮盈 +$134 的微弱缓冲。7 月上旬收权利金攒下的 +8%
-            浮盈，在 7/25 后的止损串里全部回吐并转亏。
-          </li>
-          <li>
-            <strong>与基准：</strong>Brier skill −0.53（n=12）——首批足量样本显示独立判断整体落后市场。7/24
-            时"贴市场小修正稳定小赚"的通道，在短到期、高波动的停火系列上失效：agent 反复给出与市场大幅背离的方向判断，结果站在错的一边。
-          </li>
-          <li>
-            <strong>建议 ①（7/24 已提、仍未落地，代价已现）：</strong>止损后对同市场/同事件加冷却期。以伊停火 7/31
-            三进三止损（−$601）、美伊停火二进二止损（−$400）、哈马斯止损后 24 小时内重进（现持仓中）——全部是这一个缺口。
-          </li>
-          <li>
-            <strong>建议 ②：</strong>题材级相关性敞口上限。事件级 maxPerEvent=1 没挡住停火/封锁/军事行动这组强相关市场同向暴露，7
-            月末一个题材打穿整本账；当前在持 10 仓里仍有 5 仓共享伊朗驱动。
-          </li>
-          <li>
-            <strong>建议 ③：</strong>止损规则与低价单适配。−35% 价格止损对 0.1–0.3
-            区间的单子过于敏感（波动天然大），英伟达止损后市场以 YES 结算（α
-            −$1,838）；考虑按剩余净 edge 退出而非纯价格回撤，或对低价单缩小仓位而不是收紧止损。
-          </li>
-        </ul>
-      </section>
+      <FindingsSection findings={findings} asOfUtc={s.lastEvalCycleUtc} />
 
       <footer className={styles.footer}>
         <p>

@@ -5,7 +5,19 @@
 // baked snapshot, so the page never breaks when the VM is unreachable.
 
 import { tradeNote, shortUtc, zhExitReason, zhExitStyle, zhQuestion } from "./labels";
-import type { ClosedTrade, ExitReasonKind, OpenPosition, PaperParams, PaperSnapshot } from "./snapshot";
+import type {
+  BrierBlock,
+  CalibrationCluster,
+  ClosedTrade,
+  DecisionEpisode,
+  DecisionQuality,
+  ExitReasonKind,
+  HorizonBucket,
+  OpenPosition,
+  PaperParams,
+  PaperSnapshot,
+  PendingCalibrationRow
+} from "./snapshot";
 import { PAPER_PARAMS_FALLBACK } from "./snapshot";
 
 const DEFAULT_UPSTREAM = "http://34.85.97.32:8787";
@@ -88,6 +100,153 @@ function parseConfig(raw: unknown): PaperParams {
       typeof raw.saturatedHoldEnabled === "boolean"
         ? raw.saturatedHoldEnabled
         : PAPER_PARAMS_FALLBACK.saturatedHoldEnabled
+  };
+}
+
+
+// ---- Optional analytics blocks -------------------------------------------
+// All lenient: an older API build simply omits them and the page hides the
+// matching sections instead of falling back to the baked snapshot wholesale.
+
+function parseBrierBlock(raw: unknown): BrierBlock | null {
+  if (!isRec(raw)) return null;
+  const n = num(raw.n);
+  if (n === null) return null;
+  return {
+    n,
+    brierAgent: num(raw.brierAgent),
+    brierMarket: num(raw.brierMarket),
+    skill: num(raw.skill),
+    medianHorizonDays: num(raw.medianHorizonDays)
+  };
+}
+
+function parseHorizon(raw: unknown): PaperSnapshot["brier"]["horizon"] {
+  if (!isRec(raw)) return null;
+  const bucketsRaw = Array.isArray(raw.buckets) ? raw.buckets : [];
+  const buckets: HorizonBucket[] = bucketsRaw.flatMap((b) => {
+    const block = parseBrierBlock(b);
+    if (!block || !isRec(b)) return [];
+    return [{ ...block, label: str(b.label), minDays: num(b.minDays) ?? 0, maxDays: num(b.maxDays) }];
+  });
+  const weightedRaw = isRec(raw.weighted) ? raw.weighted : null;
+  return {
+    atEntry: parseBrierBlock(raw.atEntry),
+    atLast: parseBrierBlock(raw.atLast),
+    buckets,
+    weighted: weightedRaw
+      ? { exponent: num(weightedRaw.exponent) ?? 1.5, skill: num(weightedRaw.skill), n: num(weightedRaw.n) ?? 0 }
+      : null
+  };
+}
+
+function parseClusters(raw: unknown): PaperSnapshot["brier"]["clusters"] {
+  if (!isRec(raw)) return null;
+  const rowsRaw = Array.isArray(raw.rows) ? raw.rows : [];
+  const rows: CalibrationCluster[] = rowsRaw.flatMap((r) => {
+    if (!isRec(r)) return [];
+    return [
+      {
+        eventSlug: str(r.eventSlug),
+        label: zhQuestion(str(r.eventSlug), str(r.label)),
+        n: num(r.n) ?? 0,
+        skill: num(r.skill)
+      }
+    ];
+  });
+  return { effectiveN: num(raw.effectiveN) ?? rows.length, rows };
+}
+
+function parsePending(raw: unknown): PendingCalibrationRow[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((r) => {
+    if (!isRec(r)) return [];
+    const agentProb = num(r.agentProb);
+    const marketProb = num(r.marketProb);
+    if (agentProb === null || marketProb === null) return [];
+    const slug = str(r.slug);
+    return [
+      {
+        question: zhQuestion(slug, str(r.question)),
+        slug,
+        side: typeof r.side === "string" ? r.side.toUpperCase() : null,
+        agentProb,
+        marketProb,
+        horizonDays: num(r.horizonDays),
+        unrealizedUsd: num(r.unrealizedUsd)
+      }
+    ];
+  });
+}
+
+function parseDecisionQuality(raw: unknown): DecisionQuality | null {
+  if (!isRec(raw)) return null;
+  const entry = isRec(raw.entry) ? raw.entry : null;
+  const exit = isRec(raw.exit) ? raw.exit : null;
+  const rec = isRec(raw.reconciliation) ? raw.reconciliation : null;
+  const episodesRaw = Array.isArray(raw.episodes) ? raw.episodes : [];
+  if (!entry || !exit || episodesRaw.length === 0) return null;
+  const episodes: DecisionEpisode[] = episodesRaw.flatMap((e) => {
+    if (!isRec(e)) return [];
+    const shares = num(e.shares);
+    const entryPrice = num(e.entryPrice);
+    if (shares === null || entryPrice === null) return [];
+    const slug = str(e.slug);
+    const benchmarkSource = str(e.benchmarkSource);
+    return [
+      {
+        positionId: str(e.positionId),
+        slug,
+        question: zhQuestion(slug, str(e.question)),
+        side: toSide(e.side),
+        status: e.status === "open" ? "open" : "closed",
+        openedUtc: str(e.openedUtc),
+        closedUtc: typeof e.closedUtc === "string" ? e.closedUtc : null,
+        holdDays: num(e.holdDays),
+        shares,
+        entryPrice,
+        costUsd: num(e.costUsd) ?? 0,
+        exitPrice: num(e.exitPrice),
+        benchmarkPrice: num(e.benchmarkPrice),
+        benchmarkSource:
+          benchmarkSource === "settled" || benchmarkSource === "live" || benchmarkSource === "mark"
+            ? benchmarkSource
+            : "exit",
+        entryAlphaUsd: num(e.entryAlphaUsd),
+        exitAlphaUsd: num(e.exitAlphaUsd),
+        pnlUsd: num(e.pnlUsd),
+        exitReason: typeof e.exitReason === "string" ? e.exitReason : null,
+        exitStyle: typeof e.exitStyle === "string" ? e.exitStyle : null,
+        entryEdgePp: num(e.entryEdgePp),
+        agentProbAtEntry: num(e.agentProbAtEntry),
+        marketProbAtEntry: num(e.marketProbAtEntry),
+        roundsAtEntry: num(e.roundsAtEntry),
+        evidenceAtEntry: num(e.evidenceAtEntry),
+        reviewCount: num(e.reviewCount) ?? 0
+      }
+    ];
+  });
+  if (episodes.length === 0) return null;
+  return {
+    benchmarkAsOfUtc: typeof raw.benchmarkAsOfUtc === "string" ? raw.benchmarkAsOfUtc : null,
+    entry: {
+      totalUsd: num(entry.totalUsd) ?? 0,
+      openUsd: num(entry.openUsd) ?? 0,
+      closedUsd: num(entry.closedUsd) ?? 0,
+      scored: num(entry.scored) ?? 0,
+      unscored: num(entry.unscored) ?? 0
+    },
+    exit: {
+      totalUsd: num(exit.totalUsd) ?? 0,
+      scored: num(exit.scored) ?? 0,
+      unscored: num(exit.unscored) ?? 0
+    },
+    reconciliation: {
+      closedPnlUsd: num(rec?.closedPnlUsd) ?? 0,
+      realizedPnlUsd: num(rec?.realizedPnlUsd) ?? 0,
+      deltaUsd: num(rec?.deltaUsd) ?? 0
+    },
+    episodes
   };
 }
 
@@ -225,11 +384,16 @@ export function parseLivePayload(json: unknown): PaperSnapshot | null {
             agentProb: num(r.agentProb) ?? 0,
             marketProb: num(r.marketProb) ?? 0,
             happened: r.happened === true,
-            resolvedUtc: str(r.resolvedUtc)
+            resolvedUtc: str(r.resolvedUtc),
+            horizonDays: num(r.horizonDays)
           }
         ];
-      })
+      }),
+      horizon: parseHorizon(brierRec.horizon),
+      clusters: parseClusters(brierRec.clusters),
+      pending: parsePending(brierRec.pending)
     },
+    decisionQuality: parseDecisionQuality(json.decisionQuality),
     engineQuality: {
       evaluations: num(quality.evaluations) ?? 0,
       saturated: num(quality.saturated) ?? 0,

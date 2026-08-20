@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { PaperReport } from "../../components/live-predict-raven/report";
 import { UnlockGate } from "../../components/live-predict-raven/unlock-gate";
 import { ACCESS_COOKIE_NAME, isValidAccessToken } from "../../lib/live-predict-raven/access";
+import { fetchPaperCases } from "../../lib/live-predict-raven/cases";
 import { fetchLiveSnapshot } from "../../lib/live-predict-raven/live";
 import { PAPER_SNAPSHOT } from "../../lib/live-predict-raven/snapshot";
 
@@ -28,6 +29,9 @@ export default async function LivePredictRavenPage({
   }
   // Live book from the Tokyo VM (refreshed by the agent after every evaluation
   // cycle); the baked snapshot is the labeled fallback when the VM is down.
-  const live = await fetchLiveSnapshot();
-  return <PaperReport snapshot={live ?? PAPER_SNAPSHOT} dataSource={live ? "live" : "baked"} />;
+  // Case walk-throughs are a separate, heavier endpoint: fetched alongside the
+  // snapshot, and simply omitted when unavailable (no baked fallback — a stale
+  // walk-through would misrepresent decisions the agent has since revised).
+  const [live, cases] = await Promise.all([fetchLiveSnapshot(), fetchPaperCases()]);
+  return <PaperReport snapshot={live ?? PAPER_SNAPSHOT} dataSource={live ? "live" : "baked"} cases={cases} />;
 }

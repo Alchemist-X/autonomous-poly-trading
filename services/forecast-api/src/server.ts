@@ -9,6 +9,7 @@
 //   GET  /v1/forecasts/:id/pdf         answer as a PDF dossier
 //   POST /mcp                          MCP streamable-HTTP endpoint (stateless)
 //   GET  /paper/snapshot               paper-agent book snapshot (token OR invite code)
+//   GET  /paper/cases                  biggest winners/losers + research trail (same auth)
 //
 // Every /v1 + /mcp route is token-gated (Authorization: Bearer, x-api-key, or ?token=).
 
@@ -20,7 +21,7 @@ import type { ServiceConfig } from "./config";
 import { authorizeInviteUse, describeInviteState, inviteState } from "./invites";
 import { log } from "./log";
 import { handleMcpRequest } from "./mcp";
-import { getPaperSnapshot } from "./paper-snapshot";
+import { getPaperCases, getPaperSnapshot } from "./paper-snapshot";
 import { ensurePdf } from "./pdf";
 import { QuotaExceededError } from "./quota";
 import { renderHtml } from "./render-html";
@@ -275,6 +276,25 @@ async function route(req: IncomingMessage, res: ServerResponse, config: ServiceC
       return;
     }
     sendJson(res, 200, snapshot);
+    return;
+  }
+
+  // Case walk-throughs for the same review page: biggest winners/losers with
+  // their engine dossier and decision timeline. Same credential rules as the
+  // snapshot (simulation data only), same 503 when the book is missing.
+  if (url.pathname === "/paper/cases" && method === "GET") {
+    if (!isAuthorized(req, url, config.token) && !isAuthorized(req, url, config.inviteCode)) {
+      sendJson(res, 401, { error: "unauthorized — provide the access token or invite code (Authorization: Bearer, x-api-key, or ?token=)" });
+      return;
+    }
+    const requested = Number(url.searchParams.get("perBucket") ?? "2");
+    const perBucket = Number.isInteger(requested) && requested >= 1 && requested <= 5 ? requested : 2;
+    const cases = getPaperCases(perBucket);
+    if (cases.winners.length === 0 && cases.losers.length === 0) {
+      sendJson(res, 503, { error: "paper book not found on this host — check ARTIFACT_STORAGE_ROOT / volume mounts" });
+      return;
+    }
+    sendJson(res, 200, cases);
     return;
   }
 

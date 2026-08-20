@@ -224,3 +224,393 @@
     font-size: 22px;
   }
 }
+
+/* ---- Decision-quality split bars ---------------------------------------- */
+
+.splitBars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 18px;
+}
+
+.splitRow {
+  display: grid;
+  grid-template-columns: 92px 1fr 108px;
+  align-items: center;
+  gap: 12px;
+}
+
+.splitLabel {
+  font-size: 14.5px;
+  color: var(--muted);
+}
+
+.splitTrack {
+  height: 14px;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.splitFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.splitPos {
+  background: var(--positive);
+}
+
+.splitNeg {
+  background: var(--negative);
+}
+
+.splitValue {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+/* ---- Calibration fairness cards ----------------------------------------- */
+
+.fairGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin: 14px 0 8px;
+}
+
+.fairCard {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.fairCard p {
+  margin: 6px 0 0;
+  font-size: 15px;
+}
+
+.fairTitle {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* ---- Case walk-throughs -------------------------------------------------- */
+
+.caseCard {
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  padding: 20px 20px 16px;
+  margin-top: 20px;
+}
+
+.caseHead {
+  margin-bottom: 12px;
+}
+
+.caseBadge {
+  display: inline-block;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  padding: 3px 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line-strong);
+}
+
+.badgePos {
+  color: var(--positive);
+  border-color: var(--positive);
+}
+
+.badgeNeg {
+  color: var(--negative);
+  border-color: var(--negative);
+}
+
+.caseTitle {
+  font-family: var(--font-display);
+  font-size: 21px;
+  margin: 0 0 4px;
+}
+
+.caseSub {
+  color: var(--muted);
+  font-size: 14.5px;
+  margin: 0;
+}
+
+.caseSubTitle {
+  font-size: 17px;
+  margin: 20px 0 8px;
+}
+
+.caseTiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.caseTile {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.caseTileValue {
+  font-size: 21px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.chartLegend {
+  color: var(--muted);
+  font-size: 13.5px;
+  margin: 6px 4px 2px;
+}
+
+.roundList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.roundCard {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent-line);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.roundHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin-bottom: 8px;
+}
+
+.roundNo {
+  font-weight: 650;
+}
+
+.roundMove {
+  font-variant-numeric: tabular-nums;
+}
+
+.roundMeta {
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.roundLabel {
+  display: inline-block;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 1px 8px;
+  margin-right: 8px;
+}
+
+.roundQueries {
+  margin: 0 0 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.queryChip {
+  font-size: 13px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 2px 8px;
+  color: var(--muted);
+}
+
+.sourceList {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sourceItem {
+  display: grid;
+  grid-template-columns: 66px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.sourceDelta {
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  font-size: 14.5px;
+  text-align: right;
+  padding-top: 1px;
+}
+
+.sourceBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sourceLink {
+  color: var(--accent);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.sourceTags {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.sourceWhy {
+  font-size: 14.5px;
+}
+
+.roundReasoning {
+  margin: 8px 0 0;
+  font-size: 15px;
+}
+
+.verdictBox {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.verdictWhy {
+  font-weight: 650;
+}
+
+/* ---- Derived findings ---------------------------------------------------- */
+
+.findingList {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.findingCard {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line-strong);
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+
+.finding_headline {
+  border-left-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.finding_strength {
+  border-left-color: var(--positive);
+}
+
+.finding_risk {
+  border-left-color: var(--negative);
+}
+
+.finding_proposal {
+  border-left-color: var(--accent);
+  border-style: dashed;
+}
+
+.findingKind {
+  display: inline-block;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.findingTitle {
+  font-size: 17.5px;
+  margin: 0 0 6px;
+}
+
+.findingBody {
+  margin: 0;
+  font-size: 15.5px;
+}
+
+.metricChips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.metricChip {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 4px 10px;
+  max-width: 100%;
+}
+
+.metricLabel {
+  font-size: 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.metricValue {
+  font-size: 14.5px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+@media (max-width: 860px) {
+  .caseTiles {
+    grid-template-columns: 1fr;
+  }
+
+  .splitRow {
+    grid-template-columns: 76px 1fr 92px;
+    gap: 8px;
+  }
+
+  .sourceItem {
+    grid-template-columns: 56px 1fr;
+  }
+
+  .caseCard {
+    padding: 16px 14px 12px;
+  }
+}

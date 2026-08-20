@@ -11,6 +11,9 @@
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
+import { buildPaperCases, type PaperCasesPayload } from "./paper-cases";
+import { buildDecisionQuality, type DecisionQuality } from "./paper-decisions";
+import { readLedger, type PaperLedgerEvent } from "./paper-ledger";
 import { repoRoot } from "./repo";
 
 // The 2026-07-03 book-lock race dropped this buy fill from the portfolio
@@ -96,8 +99,48 @@ export interface PaperSnapshotPayload {
     agentScore: number | null;
     marketScore: number | null;
     skillScore: number | null;
-    rows: Array<{ question: string; agentProb: number; marketProb: number; happened: boolean; resolvedUtc: string }>;
+    rows: Array<{
+      question: string;
+      agentProb: number;
+      marketProb: number;
+      happened: boolean;
+      resolvedUtc: string;
+      horizonDays: number | null;
+    }>;
+    /**
+     * Fairness views written by the daily reflection (services/paper-agent).
+     * Null on books whose latest report predates them.
+     */
+    horizon: {
+      atEntry: BrierBlockView | null;
+      atLast: BrierBlockView | null;
+      buckets: Array<BrierBlockView & { label: string; minDays: number; maxDays: number | null }>;
+      weighted: { exponent: number; skill: number | null; n: number } | null;
+    } | null;
+    clusters: {
+      effectiveN: number;
+      rows: Array<{ eventSlug: string; label: string; n: number; skill: number | null }>;
+    } | null;
+    pending: Array<{
+      question: string;
+      slug: string;
+      side: string | null;
+      agentProb: number;
+      marketProb: number;
+      horizonDays: number | null;
+      unrealizedUsd: number | null;
+    }>;
   };
+  /** Entry-vs-exit contribution split; null when the ledger has no episodes. */
+  decisionQuality: DecisionQuality | null;
+}
+
+export interface BrierBlockView {
+  n: number;
+  brierAgent: number | null;
+  brierMarket: number | null;
+  skill: number | null;
+  medianHorizonDays: number | null;
 }
 
 const round2 = (n: number): number => Math.round(n * 100) / 100;
@@ -186,20 +229,6 @@ function readJson(file: string): Record<string, unknown> | null {
   } catch {
     return null;
   }
-}
-
-function readLedger(file: string): Array<Record<string, unknown>> {
-  if (!existsSync(file)) return [];
-  return readFileSync(file, "utf8")
-    .split("\n")
-    .filter((l) => l.trim().length > 0)
-    .flatMap((l) => {
-      try {
-        return [JSON.parse(l) as Record<string, unknown>];
-      } catch {
-        return [];
-      }
-    });
 }
 
 function isDroppedFill(e: Record<string, unknown>): boolean {
@@ -333,6 +362,7 @@ interface ReflectionLite {
   generatedAtUtc?: string;
   exitAlphaTotalUsd?: number | null;
   exits?: Array<Record<string, unknown>>;
+  positions?: Array<Record<string, unknown>>;
   calibration?: Record<string, unknown>;
   hybrid?: Record<string, unknown>;
 }
@@ -397,6 +427,64 @@ export function buildPaperSnapshot(rootDir: string = paperRoot()): PaperSnapshot
   const calRows = Array.isArray(calibration.rows) ? (calibration.rows as Array<Record<string, unknown>>) : [];
   const exits = Array.isArray(reflection?.exits) ? (reflection?.exits as Array<Record<string, unknown>>) : [];
 
+  // Decision-quality split. Benchmarks come from the same two places the rest
+  // of the page uses: the portfolio's live marks for open positions and the
+  // reflection's hold-counterfactual prices for positions already sold.
+  const markPrices = new Map<string, number>();
+  for (const p of positions) {
+    const lastEval = (p.lastEval ?? null) as Record<string, unknown> | null;
+    const id = String(p.id ?? "");
+    if (id && typeof lastEval?.mark === "number") markPrices.set(id, lastEval.mark);
+  }
+  const livePrices = new Map<string, number>();
+  for (const e of exits) {
+    const id = String(e.positionId ?? "");
+    if (id && typeof e.priceNow === "number") livePrices.set(id, e.priceNow);
+  }
+  const questions = new Map<string, string>();
+  for (const p of positions) {
+    const id = String(p.id ?? "");
+    const q = String(p.question ?? "");
+    if (id && q) questions.set(id, q);
+    if (p.slug && q) questions.set(String(p.slug), q);
+  }
+  for (const e of exits) {
+    const id = String(e.positionId ?? "");
+    const q = String(e.question ?? "");
+    if (id && q && !questions.has(id)) questions.set(id, q);
+  }
+  // Positions that settled without ever being sold have no exit episode, so
+  // their question text comes from the reflection's own position snapshot (and
+  // from its pending-calibration rows, which carry slug + question together).
+  for (const p of reflection?.positions ?? []) {
+    const id = String(p.positionId ?? "");
+    const q = String(p.question ?? "");
+    if (id && q && !questions.has(id)) questions.set(id, q);
+  }
+  const pendingRows = Array.isArray(calibration.pending) ? (calibration.pending as Array<Record<string, unknown>>) : [];
+  for (const r of pendingRows) {
+    const slug = String(r.slug ?? "");
+    const q = String(r.label ?? "");
+    if (slug && q && !questions.has(slug)) questions.set(slug, q);
+  }
+  const decisionQuality = buildDecisionQuality(
+    // The FULL ledger (minus the dropped fill), not just fills: entry context
+    // comes from the watchlist_eval that opened each position and the first
+    // review after it.
+    ledger.filter((e) => !isDroppedFill(e)),
+    {
+      livePrices,
+      markPrices,
+      questions,
+      benchmarkAsOfUtc: reflection?.generatedAtUtc ?? null
+    },
+    // Reconcile the CLOSED half against the book's own realized PnL — the one
+    // number both paths compute independently, so a replay bug shows up as a
+    // non-zero delta. (The open half cannot be reconciled the same way: the
+    // book's unrealized figure excludes entry fees, the decomposition doesn't.)
+    Number(portfolio.realizedPnlUsd ?? 0)
+  );
+
   return {
     generatedAtUtc: new Date().toISOString(),
     config: readPaperConfigView(),
@@ -457,10 +545,99 @@ export function buildPaperSnapshot(rootDir: string = paperRoot()): PaperSnapshot
         agentProb: Number(r.agentProb ?? 0),
         marketProb: Number(r.marketProb ?? 0),
         happened: r.outcome === 1,
-        resolvedUtc: typeof r.ts === "string" ? r.ts.slice(0, 10) : ""
-      }))
-    }
+        resolvedUtc: typeof r.ts === "string" ? r.ts.slice(0, 10) : "",
+        horizonDays: typeof r.horizonDays === "number" ? r.horizonDays : null
+      })),
+      horizon: readHorizonViews(calibration.horizon),
+      clusters: readClusters(calibration.clusters),
+      pending: readPending(calibration.pending)
+    },
+    decisionQuality: decisionQuality.episodes.length > 0 ? decisionQuality : null
   };
+}
+
+const numOrNull = (v: unknown): number | null => (typeof v === "number" && Number.isFinite(v) ? v : null);
+
+function readBrierBlock(raw: unknown): BrierBlockView | null {
+  if (typeof raw !== "object" || raw === null) return null;
+  const r = raw as Record<string, unknown>;
+  const n = numOrNull(r.n);
+  if (n === null) return null;
+  return {
+    n,
+    brierAgent: numOrNull(r.brierAgent),
+    brierMarket: numOrNull(r.brierMarket),
+    skill: numOrNull(r.skill),
+    medianHorizonDays: numOrNull(r.medianHorizonDays)
+  };
+}
+
+function readHorizonViews(raw: unknown): PaperSnapshotPayload["brier"]["horizon"] {
+  if (typeof raw !== "object" || raw === null) return null;
+  const r = raw as Record<string, unknown>;
+  const bucketsRaw = Array.isArray(r.buckets) ? r.buckets : [];
+  const weightedRaw = (typeof r.weighted === "object" && r.weighted !== null ? r.weighted : null) as Record<
+    string,
+    unknown
+  > | null;
+  return {
+    atEntry: readBrierBlock(r.atEntry),
+    atLast: readBrierBlock(r.atLast),
+    buckets: bucketsRaw.flatMap((b) => {
+      const block = readBrierBlock(b);
+      if (!block) return [];
+      const rec = b as Record<string, unknown>;
+      return [
+        {
+          ...block,
+          label: String(rec.label ?? ""),
+          minDays: numOrNull(rec.minDays) ?? 0,
+          maxDays: numOrNull(rec.maxDays)
+        }
+      ];
+    }),
+    weighted: weightedRaw
+      ? {
+          exponent: numOrNull(weightedRaw.exponent) ?? 1.5,
+          skill: numOrNull(weightedRaw.skill),
+          n: numOrNull(weightedRaw.n) ?? 0
+        }
+      : null
+  };
+}
+
+function readClusters(raw: unknown): PaperSnapshotPayload["brier"]["clusters"] {
+  if (typeof raw !== "object" || raw === null) return null;
+  const r = raw as Record<string, unknown>;
+  const rows = Array.isArray(r.rows) ? r.rows : [];
+  return {
+    effectiveN: numOrNull(r.effectiveN) ?? rows.length,
+    rows: rows.map((x) => {
+      const rec = x as Record<string, unknown>;
+      return {
+        eventSlug: String(rec.eventSlug ?? ""),
+        label: String(rec.label ?? ""),
+        n: numOrNull(rec.n) ?? 0,
+        skill: numOrNull(rec.skill)
+      };
+    })
+  };
+}
+
+function readPending(raw: unknown): PaperSnapshotPayload["brier"]["pending"] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((x) => {
+    const rec = x as Record<string, unknown>;
+    return {
+      question: String(rec.label ?? ""),
+      slug: String(rec.slug ?? ""),
+      side: typeof rec.direction === "string" ? rec.direction : null,
+      agentProb: numOrNull(rec.agentProb) ?? 0,
+      marketProb: numOrNull(rec.marketProb) ?? 0,
+      horizonDays: numOrNull(rec.horizonDays),
+      unrealizedUsd: numOrNull(rec.unrealizedUsd)
+    };
+  });
 }
 
 let cached: { at: number; payload: PaperSnapshotPayload } | null = null;
@@ -474,4 +651,28 @@ export function getPaperSnapshot(nowMs: number = Date.now()): PaperSnapshotPaylo
 
 export function resetPaperSnapshotCache(): void {
   cached = null;
+  cachedCases = null;
+}
+
+// ---------------------------------------------------------------------------
+// Case walk-throughs (biggest winners / losers, with their research trail).
+// Kept behind its own cache: reading dossiers is far heavier than the snapshot
+// and only the case endpoint needs it.
+// ---------------------------------------------------------------------------
+
+export function buildPaperCasesPayload(rootDir: string = paperRoot(), perBucket = 2): PaperCasesPayload {
+  const snapshot = buildPaperSnapshot(rootDir);
+  const ledger = readLedger(path.join(rootDir, "ledger.jsonl")).filter((e) => !isDroppedFill(e));
+  return buildPaperCases(snapshot.decisionQuality?.episodes ?? [], ledger, rootDir, perBucket);
+}
+
+let cachedCases: { at: number; perBucket: number; payload: PaperCasesPayload } | null = null;
+
+export function getPaperCases(perBucket = 2, nowMs: number = Date.now()): PaperCasesPayload {
+  if (cachedCases && cachedCases.perBucket === perBucket && nowMs - cachedCases.at < CACHE_TTL_MS) {
+    return cachedCases.payload;
+  }
+  const payload = buildPaperCasesPayload(paperRoot(), perBucket);
+  cachedCases = { at: nowMs, perBucket, payload };
+  return payload;
 }
