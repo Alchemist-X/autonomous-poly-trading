@@ -11,7 +11,9 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-08-05 by Claude（**模拟盘 8/5 数据刷新 + 回合盈亏计入入场费**，分支 `claude/raven-agent-yield-webpage-02513c`，**PR #98**，web + VM forecast-api 均已部署验收）。
+> 最后更新：2026-08-20 by Claude（**README 中英双版刷新到 2026-08 现状**，分支 `claude/readme-update-116867`，**PR #100** 已合并，纯文档）。README 上次刷新停在 6/14，本次补齐 6 月中旬以来的产品面：新增「Forecasting Engine（托管服务）」（/engine、/delta、forecast API+MCP、packages/forecast-engine 护栏）与「自主模拟盘交易」两节 + watch-live 四个新链接（含 /live-predict-raven、/world-cup/performance）；修掉 Norns 段指向已删除 /research 控制台的陈旧条目；标注 `forecast:*` 命名（pulse:* 为别名）；归档表补 paper-agent / raven-delta 行；**zh-CN 版顺带补上英文版早有而中文版一直缺的 Norns 整节（存量漂移）**。无代码改动、无部署动作。
+>
+> 上次更新：2026-08-05 by Claude（**模拟盘 8/5 数据刷新 + 回合盈亏计入入场费**，分支 `claude/raven-agent-yield-webpage-02513c`，**PR #98**，web + VM forecast-api 均已部署验收）。
 > ① **业绩剧变（截至 2026-08-05 02:33Z，第 101 周期，33 天）**：equity **$7,974.23（−20.3%）**，自 7/14 峰值 $10,799 最大回撤 −26.2%。已平 17 回合 **5 胜 12 负**——7/26–8/4 十一个新回合里十次止损，几乎全是以伊停火题材："以伊停火延续至 7/31"同一市场**三进三止损**（−$601）、美伊停火二进二止损（−$400）、哈马斯止损后 24h 重进（现持仓中）——7/24 提的"止损后冷却期"未落地，缺口以更大规模重演。**exit α 由 +$1,077 转 −$134**（NVDA 0.22 买 YES 止损后市场以 YES 结算 α −$1,838；哈马斯 −$869）；**Brier n=12、skill −0.53**，样本首次够量，初步结论 = agent 独立判断落后市场（失分集中在停火系列方向判断反）。饱和持有拦截累计 8 次；费用累计 $113.05（NVDA/Maduro 等新市场带真实费率，$45 入场费级别）。满仓 10/10，5 仓仍共享伊朗驱动。
 > ② **forecast-api 真 bug 修复（费用非零后暴露）**：`pairClosedTrades` 买入腿漏计 `feeUsd`（卖出腿有扣）→ 已平仓表合计与账面已实现差 $45（= NVDA 入场费）。现入场费计入回合 costUsd 与 pnlUsd（结算路径同步），`entryPrice` 保持真实成交价；fee-market 回归测试新增。**部署后已验证：闭仓表合计 −2114.36 vs 账面 −2114.37（1¢ 取整）对账一致**。
 > ③ **页面更新**：烘焙快照全量刷新到 8/5；11 个新市场中文标签 + 交易注；编者注/结论全部重写为 2026-08-05 复盘（费用文案改数据驱动，不再硬编码 $0；exit α 结论按正负动态）；BrierTable 行 key 去重（同一市场两行结算导致 React 重复 key 报错）。**页面上的三条建议（冷却期 / 题材敞口上限 / 止损与低价单适配）均为风控参数改动，需用户拍板后才实施。**
