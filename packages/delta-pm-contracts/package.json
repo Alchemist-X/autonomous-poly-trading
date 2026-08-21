@@ -1,0 +1,20 @@
+{
+  "name": "@autopoly/delta-pm-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Machine contracts for Delta PM (news-driven US-equity paper trading): NewsItem/NewsSignal/TradeThesis/PMDecision/ledger events/console status. Source-consumed (no build step), like forecast-engine.",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@autopoly/delta-pm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Delta PM — news-driven US-equity long/short agent (Phase 0 SHADOW mode): The Information feed -> materiality/priced-in gates -> price-blind impact analysis -> paper PM decisions. Market data read-only from Hyperliquid public info API; this service has no signing code and structurally cannot place real orders.",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@autopoly/delta-pm-contracts": "workspace:*",
+    "tsx": "4.20.6",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

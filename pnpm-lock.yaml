@@ -211,6 +211,16 @@ importers:
         specifier: 0.31.9
         version: 0.31.9
 
+  packages/delta-pm-contracts:
+    dependencies:
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
   packages/fifa-models:
     dependencies:
       '@autopoly/sports-model':
@@ -233,6 +243,22 @@ importers:
   packages/sports-model: {}
 
   packages/terminal-ui: {}
+
+  services/delta-pm:
+    dependencies:
+      '@autopoly/delta-pm-contracts':
+        specifier: workspace:*
+        version: link:../../packages/delta-pm-contracts
+      tsx:
+        specifier: 4.20.6
+        version: 4.20.6
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
 
   services/executor:
     dependencies:
