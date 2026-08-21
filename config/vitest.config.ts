@@ -13,7 +13,8 @@ export default defineConfig({
       "@autopoly/db": path.resolve(REPO_ROOT, "packages/db/src/index.ts"),
       "@autopoly/norns": path.resolve(REPO_ROOT, "packages/norns/src/index.ts"),
       "@autopoly/terminal-ui": path.resolve(REPO_ROOT, "packages/terminal-ui/src/index.ts"),
-      "@autopoly/sports-model": path.resolve(REPO_ROOT, "packages/sports-model/src/index.ts")
+      "@autopoly/sports-model": path.resolve(REPO_ROOT, "packages/sports-model/src/index.ts"),
+      "@autopoly/delta-pm-contracts": path.resolve(REPO_ROOT, "packages/delta-pm-contracts/src/index.ts")
     }
   },
   test: {

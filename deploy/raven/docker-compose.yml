@@ -89,6 +89,37 @@ services:
     env_file: .env
     mem_limit: 512m
 
+  # Delta PM — news-driven US-equity paper agent (Phase 0 SHADOW mode: no
+  # keys, no signer; market data read-only from Hyperliquid public info API;
+  # The Information feed via curl). Status/ingest API on 8792.
+  delta-pm:
+    image: raven-suite
+    depends_on:
+      - raven
+    restart: unless-stopped
+    command: ["pnpm", "--filter", "@autopoly/delta-pm", "start"]
+    ports:
+      - "127.0.0.1:8792:8792"
+    env_file: .env
+    volumes:
+      - raven-artifacts:/app/runtime-artifacts
+      - claude-config:/root/.claude
+    mem_limit: 2g
+
+  # Delta PM operator console (positions + live analysis progress, :3400).
+  delta-pm-console:
+    image: raven-suite
+    depends_on:
+      - delta-pm
+    restart: unless-stopped
+    command: ["pnpm", "--filter", "@autopoly/delta-pm-console", "start"]
+    environment:
+      DELTAPM_STATUS_URL: http://delta-pm:8792
+    ports:
+      - "127.0.0.1:3400:3400"
+    env_file: .env
+    mem_limit: 1g
+
 volumes:
   raven-artifacts:
   claude-config:

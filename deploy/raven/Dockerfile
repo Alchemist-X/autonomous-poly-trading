@@ -6,7 +6,11 @@ FROM node:20-slim
 
 # claude CLI = the engine's web-research provider (auth via CLAUDE_CODE_OAUTH_TOKEN
 # or ANTHROPIC_API_KEY at runtime — nothing is baked into the image).
-RUN npm install -g @anthropic-ai/claude-code && corepack enable
+# curl = delta-pm's feed fetcher: The Information's CDN rejects Node's TLS
+# fingerprint (403 for node fetch/https/http2 regardless of headers) while
+# curl passes, so the poller shells out to curl (services/delta-pm/src/feed.ts).
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* \
+  && npm install -g @anthropic-ai/claude-code && corepack enable
 
 # Chromium + system deps for the forecast-api PDF renderer. Installed before
 # COPY so the ~150MB browser layer stays cached across code changes; the
@@ -19,10 +23,11 @@ COPY . .
 RUN pnpm install --frozen-lockfile \
   && pnpm --filter @autopoly/raven build \
   && pnpm --filter @autopoly/raven-delta build \
+  && pnpm --filter @autopoly/delta-pm-console build \
   && pnpm store prune
 
 ENV NODE_ENV=production
-EXPOSE 3200 8787 3300 8791
+EXPOSE 3200 8787 3300 8791 8792 3400
 
 # next start -p 3200 (binds 0.0.0.0 inside the container); the engine runs as
 # child processes of this server and persists to /app/runtime-artifacts.
