@@ -52,7 +52,7 @@ repo 已有三块成熟积木(复用矩阵 §11):raven-delta(新闻分析 + firs
 - **动作空间收窄**:`open / add / trim / close / flip / no-trade`,默认 no-trade。复盘数据说明需要时再扩。
 - **一票一仓**:同标的最多一个净头寸,冲突由 PM 裁决,不做双向对冲持仓。
 
-## 3. 标的池(20 只,2026-08-22 定版)
+## 3. 标的池(21 只,2026-08-22 定版;SPCX 为用户当日追加)
 
 选池原则:**跟着新闻源走**——The Information 的报道主线是 AI 基础设施、大厂、半导体,标的池向它的 scoop 密度对齐(为此把原备选的加密簇 COIN/HOOD/MSTR 移出主池:其加密报道非主线,且 MSTR 无 growth-mode 低费率)。流动性数据 2026-08-22 实测:
 
@@ -63,8 +63,11 @@ repo 已有三块成熟积木(复用矩阵 §11):raven-delta(新闻分析 + firs
 | 半导体/供应链(4) | AMD AVGO TSM ARM | 10x isolated-only;24h $2–14M | 2 |
 | AI infra/云(4) | ORCL INTC CRWV NBIS | **The Information 核心报道带**;NBIS 24h $44.6M、INTC $23.1M(量深);CRWV 前 20 档买侧仅 ~$22K(盘口薄,sizing 须 book-aware) | INTC/NBIS=1;ORCL/CRWV=2 |
 | 叙事/媒体(2) | PLTR NFLX | PLTR 24h $5.8M;NFLX $1.9M | PLTR=2;NFLX=3 |
+| Pre-IPO(1) | **SPCX**(SpaceX) | **用户拍板追加(2026-08-22)**;The Information 头号报道对象之一;10–20x 可 cross | 2(上线后实测定档) |
 
-tier 说明:tier-1 = 11 只(Mag7 + MU SNDK + INTC NBIS),tier-2 = 7 只,tier-3 = 2 只(WDC NFLX);tier 决定单标的敞口上限(§9)。首日快照定档有噪音,上线后按当日多次采样均值定期重估;下单前一律读实时 l2Book(逐档盘口)与 impactPxs。
+tier 说明:tier-1 = 11 只(Mag7 + MU SNDK + INTC NBIS),tier-2 = 8 只(含 SPCX 暂定),tier-3 = 2 只(WDC NFLX);tier 决定单标的敞口上限(§9)。首日快照定档有噪音,上线后按当日多次采样均值定期重估;下单前一律读实时 l2Book(逐档盘口)与 impactPxs。
+
+**SPCX 特殊处理**(pre-IPO 永续,与股票 perp 行为不同):无外部股票 oracle(价格发现即 perp 本身)、无财报日历、无拆股/除权;M0 对它 `benchmark = none`——已定价判断用**原始价格反应**(仍分时段桶),不做 β 残差;fairImpact 的估值算术走"事件 → 估值增量 ÷ 上轮融资估值"而非 EPS 链条。oracle 配置上线时经 `perpDexs` 实测确认。
 
 **SKHY / KIOXIA / DRAM 指数:不入 V1**——SKHX 是 7/28 oracle 事故涉事市场(SKHY 为疑似重开盘,正主未确认);韩日行情时段与英文新闻源错位;The Information 报 HBM 也是从 NVDA/MU 视角。备选池(Phase 3 再议):COIN HOOD MSTR RDDT NOW NET MRVL QCOM DELL AMAT CRWD + SKHY/KIOXIA/DRAM。
 
@@ -113,8 +116,11 @@ flowchart LR
 - **首发性**:"Exclusive:" 前缀条目(多数)published 即全网首发,t0 可信;**"Reportedly" 前缀 = 转述他家报道**,t0 必须走 firstSeen 联网核实(约 1–3 条/天)。
 - **量级**:工作日 ~8–15 条(文章 4–9 + briefing 4–13),峰值日 22 条;周末 3–6 条。量薄但信噪比极高,LLM 成本可控(全量过闸门 1)。
 - **回填**:`sitemap-news.xml`(滚动 48h 窗,无需鉴权)在启动时与轮询中断 >1h 后补漏(feed 窗口只有 20 条 ≈ 1.5–2.5 天)。
-- **增强路径(延迟数小时,只做上下文补充与次日对账,绝不做触发)**:newsletter 解析邮箱——免费的 The Briefing / The Information AM / The Weekend 直接订阅到解析邮箱;订阅者专属的 AI Agenda、Dealmaker 由用户从自己邮箱设转发。**用户待办**见 §14。
-- **合规红线**:ToS 禁止任何自动化抓取(含登录态);feed 与邮箱是仅有的合规机器接缝,**不做登录态文章正文抓取**;若日后需要授权全文,走其 /corporate 内容授权通道。
+- **完整原文的获取(2026-08-22 用户确认执行,四层)**:合规红线是 ToS 禁止一切自动化抓取(含登录态),feed 与邮箱是仅有的合规自动化接缝,因此原文按四层拿,逐层降级:
+  1. **feed 自带**:briefing(短讯,多数可交易 scoop)~50 词已近全文;长文有标题+导语,The Information 惯例把核心信息前置——多数信号到这层就够;
+  2. **newsletter 解析邮箱**(自动、延迟数小时,做上下文补充与次日对账,不做触发):免费的 The Briefing / The Information AM / The Weekend 直接订阅到解析邮箱;订阅者专属的 AI Agenda、Dealmaker 由用户邮箱设转发;
+  3. **人工补全接缝(控制台功能)**:M1 判高重要性但关键数字在墙内时,控制台该信号卡出现「补全原文」输入框——用户(订阅者)自己打开文章、复制、粘贴,系统带全文重跑 M2。人读+个人使用粘贴,不碰自动化红线;每天预计 0–2 次;
+  4. **官方内容授权**(一劳永逸):The Information /corporate 明确开放内容授权,商务接触后可拿机器可读全文——**已列入用户批量解决清单**(§14)。
 
 ### 闸门 1:重要吗——类别优先
 
@@ -255,15 +261,17 @@ Thesis 构造:V1 全部为 `event_trade`(短线);falsifiers 必填可检验;pric
 
 ## 14. 决策记录与待办
 
-**已拍板(2026-08-22,用户)**:新闻源 = The Information;行情 = Hyperliquid API 唯一源(不购 Polygon);风控主规则 = 单仓 −20% 止损 + 组合 −25% 停机;周末正常开仓;先做短线;合规确认;部署东京 VM;HL API 凭证后续提供。
+**已拍板(2026-08-22,用户)**:新闻源 = The Information;行情 = Hyperliquid API 唯一源(不购 Polygon);风控主规则 = 单仓 −20% 止损 + 组合 −25% 停机;周末正常开仓;先做短线;合规确认;部署东京 VM;HL API 凭证后续提供;**SPCX 加入标的池(21 只)**;**订阅 + newsletter 邮箱方案确认执行("做呗")**;开发到完成,阻塞项集中列出由用户批量解决。
 
-**代拍并在此告知(2026-08-22,agent,可推翻)**:标的池 20 只定版与 tier(§3,加密簇移出、SKHY/KIOXIA/DRAM 不入 V1);The Information 接入架构(feed 轮询 + WebSub 尝试 + newsletter 增强,§5);基准用 XYZ100/SP500 弃 SMH(数据太年轻,§11);控制台与脚手架形态(§15)。
+**代拍并在此告知(2026-08-22,agent,可推翻)**:标的池 tier 划分(§3,加密簇移出、SKHY/KIOXIA/DRAM 不入 V1);The Information 接入架构(feed 轮询 + WebSub 尝试 + 四层原文,§5);基准用 XYZ100/SP500 弃 SMH(数据太年轻,§11);控制台与脚手架形态(§15)。
 
-**用户待办(不阻塞 Phase 0 开发,阻塞点已标注)**:
+**用户批量解决清单(开发不等这些;开发中新增阻塞随时追加到本清单)**:
 
-1. The Information 付费订阅(单一具名订阅人,ToS 禁共享)+ 免费 newsletter(The Briefing / The Information AM / The Weekend)订到解析邮箱 + 从自己邮箱转发 AI Agenda、Dealmaker——**只阻塞增强路径,触发路径(公开 feed)零依赖**;
-2. HL API 凭证(agent wallet)——**Phase 2 才需要**;
-3. 长线三条维护性修订的取舍——**Phase 3 才需要**。
+1. **The Information 订阅落地**:付费订阅(单一具名订阅人,ToS 禁共享);免费 newsletter(The Briefing / The Information AM / The Weekend)订到解析邮箱;从自己邮箱转发 AI Agenda、Dealmaker。解析邮箱端点(收件地址/IMAP)由开发侧给出具体接入说明后一并配置;
+2. **官方内容授权商务接触**(/corporate 表单)——拿机器可读全文的一劳永逸方案,顺带报备 LLM 处理用途;
+3. **HL API 凭证(agent wallet)**——Phase 2 真钱前;
+4. **东京 VM 部署确认**——VM 磁盘 81%(builder cache 清理待确认,见 7/20 handoff),部署 delta-pm 两容器前先清理;
+5. **长线三条维护性修订取舍**——Phase 3 开长线前。
 
 ## 15. 开发蓝图(v1,2026-08-22 recon 定)
 
