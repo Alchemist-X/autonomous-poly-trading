@@ -26,7 +26,9 @@ export function saveRun(run: DeltaRun): string {
   mkdirSync(dir, { recursive: true });
   const stamp = run.generatedAtUtc.replace(/[:.]/g, "-");
   const file = path.join(dir, `${stamp}-${run.id}.json`);
-  writeFileSync(file, JSON.stringify(run, null, 2));
+  // 0600: a run can carry engineFallbackReason (child-process stderr) — keep the
+  // durable archive owner-only, matching the temp mcp-config posture.
+  writeFileSync(file, JSON.stringify(run, null, 2), { mode: 0o600 });
   return file;
 }
 

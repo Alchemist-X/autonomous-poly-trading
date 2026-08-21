@@ -5,6 +5,7 @@
 import { headlineOf, type DeltaAnalysis, type DeltaRun, type EngineId, type NewsInput, type RunStage } from "./schema";
 import { buildAnalysisPrompt } from "./prompt";
 import { resolveEngine, runLlmAnalysis } from "./provider";
+import { resolveLongport } from "./longport-mcp";
 import { runRulesAnalysis } from "./rules-engine";
 import { getUniverse } from "./universe";
 import { saveRun } from "./store";
@@ -34,12 +35,16 @@ export async function runDeltaAnalysis(news: NewsInput, now = new Date()): Promi
   let engineFallbackReason: string | null = engine === "rules" ? resolution.reason : null;
   let analysis: DeltaAnalysis;
 
+  // LongPort live market data is only reachable by the claude-cli engine.
+  const longport = resolveLongport();
+  const promptEngine = engine; // the engine the prompt was built for (may fall back below)
+
   const engineStart = Date.now();
   if (engine === "rules") {
     analysis = runRulesAnalysis(news, nowIso);
   } else {
     try {
-      analysis = await runLlmAnalysis(engine, buildAnalysisPrompt(news));
+      analysis = await runLlmAnalysis(engine, buildAnalysisPrompt(news, engine));
     } catch (error) {
       engineFallbackReason = `${engine} failed: ${error instanceof Error ? error.message : String(error)}`;
       engine = "rules";
@@ -47,6 +52,22 @@ export async function runDeltaAnalysis(news: NewsInput, now = new Date()): Promi
     }
   }
   stages.push({ id: "engine", title: `engine:${engine}`, durationMs: Date.now() - engineStart });
+  // Record whether the analyst had live market data (surfaced to the reader so a
+  // price-grounded run is distinguishable from a news-text-only one — never a
+  // silent capability difference, repo rule §6). Computed on the FINAL engine:
+  // a claude run that fell back to rules never touched a live price.
+  const marketDataLive = engine === "claude-cli" && longport.enabled;
+  const marketDataOffReason =
+    promptEngine === "claude-cli" && longport.enabled
+      ? `fell back to ${engine}`
+      : engine === "claude-cli"
+        ? longport.reason
+        : "engine has no MCP tools";
+  stages.push({
+    id: "market-data",
+    title: marketDataLive ? "longport:live" : `longport:off (${marketDataOffReason})`,
+    durationMs: 0,
+  });
 
   const run: DeltaRun = {
     id: buildRunId(headline, nowIso),
