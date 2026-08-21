@@ -10,7 +10,9 @@ import { config } from "./config.js";
 import { backfillFromSitemap, pollFeed } from "./feed.js";
 import { marketState, sweepCandles, sweepCtxs } from "./market.js";
 import { acquireBookLock, appendLedger, pmRoot, releaseBookLock, repoRoot } from "./store.js";
-import { processNews, scheduleDailyReview, scheduleFastTick } from "./run-cycle.js";
+import { currentMarks, enqueueWriter, loadPortfolio, processNews, scheduleDailyReview, scheduleFastTick } from "./run-cycle.js";
+import { equityOf } from "./policy.js";
+import { runReflection } from "./reflect.js";
 import { startStatusServer } from "./status-server.js";
 
 function loadUniverse(): UniverseEntry[] {
@@ -104,6 +106,14 @@ async function main(): Promise<void> {
       lastReviewDay = day;
       console.log("[INFO] daily position review starting");
       scheduleDailyReview({ universe });
+      // Reflection runs after the review in the same slow lane: 24h signal
+      // follow-ups (incl. the archived/"wrongly killed" column) + the daily
+      // calibration report — the actual product of Phase 0.
+      enqueueWriter(false, async () => {
+        const portfolio = loadPortfolio();
+        const report = await runReflection(equityOf(portfolio, currentMarks(universe)), portfolio);
+        console.log(`[OK] daily reflection written: ${report}`);
+      });
     }
   }, 60_000);
 
