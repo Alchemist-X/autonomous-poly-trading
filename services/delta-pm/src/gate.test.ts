@@ -113,6 +113,14 @@ describe("M2 blindness plumbing", () => {
 
   it("detects hard contamination in analyst output", () => {
     expect(detectContamination("the stock has already moved 5% so fair value is reached")).toBe("hard");
+    expect(detectContamination("shares are already up 3.2% which captures most of this")).toBe("hard");
     expect(detectContamination("EPS revision of +4% vs consensus")).toBe("none");
+  });
+
+  it("expectations-channel language is NOT contamination (live false positive 2026-08-22)", () => {
+    expect(
+      detectContamination("Cannot cleanly separate 'genuinely incremental' from 'already priced' without the actual sell-side consensus model")
+    ).toBe("none");
+    expect(detectContamination("a premium is likely already priced into consensus estimates")).toBe("none");
   });
 });

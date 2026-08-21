@@ -33,13 +33,26 @@ export function scrubPriceReactions(text: string): { scrubbed: string; removed: 
 }
 
 // Output-side contamination detector: did the analyst anchor on the
-// realized reaction anyway?
-const HARD_CONTAMINATION = /\b(already (moved|priced|up|down)|current price reaction|since the news broke.*%|股价已(经)?(上涨|下跌))/i;
-const SOFT_CONTAMINATION = /\b(market has|price action|the move|盘面反应)\b/i;
+// realized PRICE reaction? Context matters (learned from a live false
+// positive on 2026-08-22): "already priced into consensus/estimates" is the
+// EXPECTATIONS channel — exactly the surprise-vs-consensus discipline we
+// demand — while "the stock has already moved/is already up 5%" is the price
+// channel we ban.
+const EXPECTATION_CONTEXT = /already priced[^.]{0,50}\b(consensus|estimates?|expectations?|models?|the street|guidance)\b/i;
+const HARD_CONTAMINATION = [
+  /\b(stock|shares?|price|market|equity|股价|盘面)\b[^.。]{0,50}\balready (moved|reacted|jumped|risen|fallen|rallied|sold off|priced)/i,
+  /\balready (up|down)\s+\d+(?:\.\d+)?%/i,
+  /\b(since|after) the (news|report|announcement)\b[^.。]{0,60}\d+(?:\.\d+)?%/i,
+  /股价已(经)?(上涨|下跌|反应|走)/,
+  /\bcurrent price reaction\b/i
+];
+const SOFT_CONTAMINATION = /\b(price action|the tape|盘面反应|市场已消化)\b/i;
 
 export function detectContamination(thesisText: string): "none" | "soft" | "hard" {
-  if (HARD_CONTAMINATION.test(thesisText)) return "hard";
-  if (SOFT_CONTAMINATION.test(thesisText)) return "soft";
+  // Strip expectation-channel phrases first so they can't trip price rules.
+  const cleaned = thesisText.replace(new RegExp(EXPECTATION_CONTEXT.source, "gi"), "[expectations-channel]");
+  if (HARD_CONTAMINATION.some((re) => re.test(cleaned))) return "hard";
+  if (SOFT_CONTAMINATION.test(cleaned)) return "soft";
   return "none";
 }
 
