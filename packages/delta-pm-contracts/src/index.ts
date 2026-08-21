@@ -318,6 +318,7 @@ export const LEDGER_EVENT_TYPES = [
   "hard_floor_stop",
   "halt",
   "resume",
+  "reflection_written",
   "error"
 ] as const;
 
