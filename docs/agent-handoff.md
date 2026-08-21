@@ -11,7 +11,9 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-08-22 by Claude（**美股交易系统 Delta PM 产品 PRD 草案**，分支 `claude/us-stock-trading-prd-df8bf7`，**PR #103 待用户审阅，勿合并，不进开发**）。
+> 最后更新：2026-08-22 by Claude v2（**Delta PM PRD 已拍板升 v1.1，进入开发**，同分支同 PR #103）。用户拍板：新闻源 = **The Information**（实测公开 Atom feed 60s 轮询触发 + WebSub 尝试 + newsletter 邮箱增强；t0=published、去重=条目 id、"Reportedly" 条目须走 firstSeen 核实、ToS 禁登录态抓取）；行情 = **Hyperliquid API 唯一源**（实测：WS "xyz:COIN" 全通、1m K 线只留 3.6 天→**归档必须 day-one 自建**、β 基准只能用 XYZ100/SP500、SMH 太年轻禁用、时段三桶分基线）；风控主规则 = **单仓 −20% 硬止损 + 组合 −25% 停机**；周末正常开仓；**先做短线**（长线三态机推迟 Phase 3）；合规确认；东京 VM；HL 凭证后续给（Phase 0 影子模式零凭证）。标的池 20 只定版（§3：Mag7 + MU/SNDK/WDC + AMD/AVGO/TSM/ARM + ORCL/INTC/CRWV/NBIS + PLTR/NFLX；加密簇移出、SKHY/KIOXIA/DRAM 不入 V1）。开发蓝图 §15：services/delta-pm(:8792) + packages/delta-pm-contracts + apps/delta-pm-console(:3400，进度条拷贝适配 apps/raven components/research)；测试走 root vitest glob（勿 per-workspace pin）。用户要求控制台（持仓 + 分析进度条）。**下一步：合并 #103 → 新分支脚手架开发。**英文版 PRD 与 handoff 此条待同步翻译。
+>
+> 上次更新：2026-08-22 by Claude（**美股交易系统 Delta PM 产品 PRD 草案**，分支 `claude/us-stock-trading-prd-df8bf7`，PR #103——已被 v2 条目取代，初版审阅流程完成）。
 > ① **需求**：用户要把 forecasting 能力迁移到美股多空，场地 = Hyperliquid 上 trade.xyz 的美股永续；两大模块 = 新闻「重要性 + 是否已定价」判断（结合最早 original 时间 × 价格反应）与影响路径/基本面量化分析。PRD 单文件 [`docs/us-stock-trading-prd.md`](us-stock-trading-prd.md)：analyst→PM 双角色（M1 两道闸门 / M2 盲于价格反应的估值 thesis / M3 PM 决策 / M4 执行），只优化胜率 + 盈亏比，短线双轨退出（估值/破位）+ 长线 thesis 三态（兑现且 price-in→卖、证伪→止损、否则硬拿）——全部来自用户 8/22 口述方法论。
 > ② **场地实测（2026-08-22 API 直查 dex=xyz，115 市场）**：Mag 7 全 20x cross；MU/SNDK 在线 OI $140M+；**STX/SMCI 未上线**；WDC 薄（前 20 档卖侧 ~$29k）；24/7 交易（周末 internal session：盘口 EMA oracle + Discovery Bounds ±5–10%）；growth-mode 费率 taker 0.009%；funding 全场 −0.049%~+0.021%/时；7/28 SKHX oracle 事故 ~$57M 强平（场地赔付）；拆股政策未公布；ToS 限美/加/英。
 > ③ **过程**：三路研究 workflow（场地/repo 资产/priced-in 业界做法）→ 初稿 → 三视角对抗评审（交易/工程/文风，35 条发现含 4 blocker）→ 全吸收。代表性修复：priced-in 2h 窗口 vs 15min 延迟矛盾 → 反应完成度曲线；15% 单标的上限压死 1% 风险预算 → tier 化上限 + 算例；oracle 背离守卫会冻结止损 → 只冻开仓；免费行情撑不起 Phase 0 → Polygon ~$199/月列为前置。repo 复用结论：~70% 积木已有，**Hyperliquid 适配器是最大缺口（repo 零代码）**。
