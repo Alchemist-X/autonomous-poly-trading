@@ -160,6 +160,7 @@ export const tradeThesisSchema = z.object({
   catalysts: z.array(z.string().min(1)).max(5),
   falsifiers: z.array(z.string().min(1)).min(1).max(5),
   limitations: z.array(z.string().min(1)).max(6),
+  confidence: z.enum(["high", "medium", "low"]),
   provider: z.string().min(1), // engine that produced this (deepseek/claude-cli/rules)
   createdAtUtc: z.string().datetime({ offset: true })
 });
@@ -291,6 +292,7 @@ export interface StatusSnapshot {
   recentRuns: RunStatus[];
   recentSignals: Array<{
     signalId: string;
+    newsId: string; // the paste-full-text seam re-ingests by news id
     title: string;
     tickers: string[];
     pricedInStatus: string | null;

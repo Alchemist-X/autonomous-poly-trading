@@ -1,0 +1,182 @@
+{
+  "service": {
+    "name": "delta-pm",
+    "version": "0.1.0-phase0",
+    "mode": "shadow",
+    "startedAtUtc": "2026-08-21T22:04:11.000Z",
+    "nowUtc": "2026-08-22T06:00:00.000Z"
+  },
+  "feed": {
+    "lastPollUtc": "2026-08-22T05:59:20.000Z",
+    "lastNewItemUtc": "2026-08-22T05:57:05.000Z",
+    "seenCount": 128,
+    "lastError": null
+  },
+  "market": {
+    "lastSweepUtc": "2026-08-22T05:59:30.000Z",
+    "archivedCoins": 18,
+    "lastError": null
+  },
+  "portfolio": {
+    "equityUsd": 100519.18,
+    "initialCapitalUsd": 100000,
+    "realizedPnlUsd": 342.18,
+    "unrealizedPnlUsd": 177.0,
+    "halted": false,
+    "haltedReason": null,
+    "positions": [
+      {
+        "ticker": "NVDA",
+        "direction": "long",
+        "qty": 40,
+        "entryPx": 178.4,
+        "markPx": 183.65,
+        "notionalUsd": 7136,
+        "unrealizedPnlUsd": 210.0,
+        "unrealizedPnlPct": 2.94,
+        "stopPx": 172.9,
+        "hardFloorPx": 142.72,
+        "horizonUtc": "2026-08-26T20:00:00.000Z",
+        "thesisId": "th-20260821-nvda-01"
+      },
+      {
+        "ticker": "MU",
+        "direction": "long",
+        "qty": 50,
+        "entryPx": 128.3,
+        "markPx": 127.4,
+        "notionalUsd": 6415,
+        "unrealizedPnlUsd": -45.0,
+        "unrealizedPnlPct": -0.7,
+        "stopPx": 122.55,
+        "hardFloorPx": 102.64,
+        "horizonUtc": "2026-08-28T20:00:00.000Z",
+        "thesisId": "th-20260820-mu-02"
+      },
+      {
+        "ticker": "SPCX",
+        "direction": "short",
+        "qty": 6,
+        "entryPx": 190.0,
+        "markPx": 188.0,
+        "notionalUsd": 1140,
+        "unrealizedPnlUsd": 12.0,
+        "unrealizedPnlPct": 1.05,
+        "stopPx": 205.2,
+        "hardFloorPx": 228.0,
+        "horizonUtc": "2026-09-04T20:00:00.000Z",
+        "thesisId": "th-20260819-spcx-01"
+      }
+    ]
+  },
+  "activeRuns": [
+    {
+      "runId": "run-20260822-0557-a1",
+      "newsId": "ti-2026-08-22-nvda-oracle",
+      "title": "英伟达据报获甲骨文追加 40 亿美元 GB300 订单",
+      "tickers": ["NVDA"],
+      "stage": "gate2",
+      "stagePct": 40,
+      "outcome": null,
+      "startedAtUtc": "2026-08-22T05:57:12.000Z",
+      "updatedAtUtc": "2026-08-22T05:59:48.000Z",
+      "stages": [
+        { "stage": "ingest", "status": "done", "note": "Atom 抓取" },
+        { "stage": "gate1", "status": "done", "note": "重要性 78 · 可交易" },
+        { "stage": "gate2", "status": "running", "note": "计算超额收益与成交量 Z 值" },
+        { "stage": "analysis", "status": "pending" },
+        { "stage": "decision", "status": "pending" }
+      ]
+    },
+    {
+      "runId": "run-20260822-0552-b7",
+      "newsId": "ti-2026-08-22-mu-hbm4",
+      "title": "美光 HBM4 提前量产,首批样品已送英伟达验证",
+      "tickers": ["MU", "NVDA"],
+      "stage": "analysis",
+      "stagePct": 70,
+      "outcome": null,
+      "startedAtUtc": "2026-08-22T05:52:30.000Z",
+      "updatedAtUtc": "2026-08-22T05:59:55.000Z",
+      "stages": [
+        { "stage": "ingest", "status": "done", "note": "Atom 抓取" },
+        { "stage": "gate1", "status": "done", "note": "重要性 64 · 可交易" },
+        { "stage": "gate2", "status": "done", "note": "partial · 超额 +1.1%" },
+        { "stage": "analysis", "status": "running", "note": "M2 影响路径推演中" },
+        { "stage": "decision", "status": "pending" }
+      ]
+    }
+  ],
+  "recentRuns": [
+    {
+      "runId": "run-20260822-0512-c3",
+      "newsId": "ti-2026-08-22-avgo-tapeout",
+      "title": "OpenAI 与博通合作定制芯片完成流片",
+      "tickers": ["AVGO"],
+      "stage": "done",
+      "stagePct": 100,
+      "outcome": "archived: full priced-in",
+      "startedAtUtc": "2026-08-22T05:12:05.000Z",
+      "updatedAtUtc": "2026-08-22T05:19:40.000Z",
+      "stages": [
+        { "stage": "ingest", "status": "done", "note": "Atom 抓取" },
+        { "stage": "gate1", "status": "done", "note": "重要性 71 · 可交易" },
+        { "stage": "gate2", "status": "done", "note": "full · 超额 +4.2% 已走完" },
+        { "stage": "analysis", "status": "skipped", "note": "已充分定价,归档" },
+        { "stage": "decision", "status": "skipped" }
+      ]
+    }
+  ],
+  "recentSignals": [
+    {
+      "signalId": "sig-20260822-0558-nvda",
+      "newsId": "ti-2026-08-22-nvda-oracle",
+      "title": "英伟达据报获甲骨文追加 40 亿美元 GB300 订单",
+      "tickers": ["NVDA"],
+      "pricedInStatus": "none",
+      "materialityScore": 78,
+      "tradeable": true,
+      "createdAtUtc": "2026-08-22T05:58:20.000Z"
+    },
+    {
+      "signalId": "sig-20260822-0556-mu",
+      "newsId": "ti-2026-08-22-mu-hbm4",
+      "title": "美光 HBM4 提前量产,首批样品已送英伟达验证",
+      "tickers": ["MU", "NVDA"],
+      "pricedInStatus": "partial",
+      "materialityScore": 64,
+      "tradeable": true,
+      "createdAtUtc": "2026-08-22T05:56:40.000Z"
+    },
+    {
+      "signalId": "sig-20260822-0519-avgo",
+      "newsId": "ti-2026-08-22-avgo-tapeout",
+      "title": "OpenAI 与博通合作定制芯片完成流片",
+      "tickers": ["AVGO"],
+      "pricedInStatus": "full",
+      "materialityScore": 71,
+      "tradeable": false,
+      "createdAtUtc": "2026-08-22T05:19:40.000Z"
+    },
+    {
+      "signalId": "sig-20260822-0441-tsla",
+      "newsId": "ti-2026-08-22-tsla-delivery",
+      "title": "特斯拉据报将下调 Q3 交付内部目标",
+      "tickers": ["TSLA"],
+      "pricedInStatus": "leaked",
+      "materialityScore": 55,
+      "tradeable": false,
+      "createdAtUtc": "2026-08-22T04:41:10.000Z"
+    },
+    {
+      "signalId": "sig-20260822-0312-amzn",
+      "newsId": "ti-2026-08-22-amzn-capex",
+      "title": "亚马逊传闻追加 250 亿美元数据中心资本开支",
+      "tickers": ["AMZN"],
+      "pricedInStatus": "awaiting_market",
+      "materialityScore": 47,
+      "tradeable": false,
+      "createdAtUtc": "2026-08-22T03:12:00.000Z"
+    }
+  ]
+}
