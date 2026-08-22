@@ -11,7 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-08-22 by Claude v3（**Delta PM Phase 0 全系统建成并实弹验证**，分支 `claude/delta-pm-dev`，PR 待合并）。
+> 最后更新：2026-08-22 by Claude v4（**forecast-engine 接入 Exa 搜索 + 修掉 DDG CAPTCHA 静默降级**，分支 `claude/exa-search-integration-2a477f`，PR 待开）。
+> ① **发现的 bug（比集成本身重要）**：DuckDuckGo 现在对我们的 scraper 返回 HTTP 200 的 CAPTCHA 挑战页，旧代码把它解析成"搜索成功、0 结果"——模型被告知"没有证据"而真相是"搜索没跑"。已在 `packages/forecast-engine/src/web-search.ts` fail-fast（识别 `anomaly-modal__`/`challenge-form` 标记即抛错，真 no-results 仍返回空数组）。实测 6 条 GPT-6 查询里 4 条被挡。
+> ② **Exa backend**：`EXA_API_KEY` 存在时自动选 exa（优先级 exa > tavily > duckduckgo，`FORECAST_WEB_SEARCH` 可 pin），请求走 Exa 官方 skill 推荐的最简形态（query + type:auto + contents.highlights，只加 numResults:8 对齐现有预算）；SearchHit 新增可选 publishedDate/author，tool 描述提示模型用它判断时效。12 单测新增全绿，全仓 1058 测试绿。
+> ③ **A/B 实测（GPT-6 released-by 市场，`scripts/forecast/search-backend-compare.ts`，归档 runtime-artifacts/search-compare/）**：DDG 2/6 成功、0 带日期、且 q2 的 8 条里 3 条是 SEO 假消息（"GPT-6 已于 4 月发布"）；Exa 6/6 成功、48 hits、50% 带日期、7 条 ≤7 天，抓到完整证据链（8/1 Astra 命名 → 8/7 网络安全放缓 → 8/19 "9 月或上线"），latency 相当（~1.2s）。
+> ④ **待用户拍板**：(a) `services/orchestrator/src/pulse/web-search.ts` 是第二个独立 DDG scraper，喂真钱 pulse 链路，同样有 CAPTCHA 静默降级——只修 fail-fast 还是连 backend 一起换 exa；(b) 生产 env（VM / .env.pizza）是否配 EXA_API_KEY 启用。本地 key 在 gitignored `.env.exa`（600 权限）。英文版 handoff 已同步。
+>
+> 上次更新：2026-08-22 by Claude v3（**Delta PM Phase 0 全系统建成并实弹验证**，分支 `claude/delta-pm-dev`，PR 待合并）。
 > ① **交付物**：`packages/delta-pm-contracts`（zod 机器契约）+ `services/delta-pm`（:8792，feed 轮询/HL 行情归档/M0 事件研究/M1 两道闸门/M2 盲测分析/M3 决策/纸面执行/状态服务,两层并发:分析并行+决策单写者双 lane）+ `apps/delta-pm-console`（:3400,持仓+五段进度条+补全原文接缝,subagent 构建）+ compose/Dockerfile 两容器接线 + .env.example DELTAPM_* 段。55 单测绿,全仓 typecheck 绿。
 > ② **实弹验证(全部真实端点)**:TI 公开 feed 解析 20 条真实新闻;**TI 的 CDN 封 Node TLS 指纹(node fetch/https/http2 全 403,curl 任意 UA 通过)→ feed 抓取改 shell 出 curl,Dockerfile 补装 curl**;HL API:metaAndAssetCtxs 名字自带 dex 前缀(修)、1m K 线只留 3.6 天(归档 sweeper day-one 跑)、**β 必须 RTH 对齐+截尾**(裸日线 AAPL~XYZ100 β=0.21,周日 bar 打过 −6.7%;修后带 weak_fit 降级);端到端:注入 SNDK 订单新闻 → 真 claude-cli gate1 → gate2 未定价 → 真 M2 thesis(EPS 链带假设)→ M3 residual 6.00%≥5.64% → **纸面开仓 $3,000(tier1_cap 裁剪、−20% 硬地板、意图/实现风险记账)**;重复注入被指纹去重拦下;真实 feed 的池外新闻零 LLM 成本归档、池内新闻真 LLM 判定、一条走到 gate2 判 reverse。**污染检测器实弹抓到误杀**:analyst 写 "already priced (into consensus)" 是预期通道合法语言,与价格通道区分后修复+回归测试。
 > ③ **运行事实**:本机后台 service+console 仍在跑(session 结束即停);universe 21 只含 SPCX(实测 24h $1.97 亿,比预期深);weekend session 数据实测正常。
