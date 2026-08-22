@@ -4,7 +4,7 @@
 
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import path from "node:path";
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import type { NewsItem, Portfolio, StatusSnapshot, UniverseEntry } from "@autopoly/delta-pm-contracts";
 import { config } from "./config.js";
 import { loadFeedState } from "./feed.js";
@@ -186,10 +186,35 @@ async function handleIngest(req: IncomingMessage, res: ServerResponse, universe:
   return json(res, 400, { error: "unknown mode (paste_full_text | manual_news)" });
 }
 
+function latestReflection(): { date: string; report: unknown; md: string | null } | null {
+  let files: string[] = [];
+  try {
+    files = readdirSync(paths.reportsDir())
+      .filter((f) => f.endsWith("-reflection.json"))
+      .sort();
+  } catch {
+    return null;
+  }
+  const latest = files.at(-1);
+  if (!latest) return null;
+  const report = readJson<unknown>(path.join(paths.reportsDir(), latest));
+  let md: string | null = null;
+  try {
+    md = readFileSync(path.join(paths.reportsDir(), latest.replace(/\.json$/, ".md")), "utf8");
+  } catch {
+    md = null;
+  }
+  return { date: latest.slice(0, 10), report, md };
+}
+
 export function startStatusServer(universe: UniverseEntry[]): void {
   const server = createServer((req, res) => {
     const url = req.url ?? "/";
     if (req.method === "GET" && url === "/healthz") return json(res, 200, { ok: true, mode: "shadow" });
+    if (req.method === "GET" && url === "/reflection") {
+      const r = latestReflection();
+      return r ? json(res, 200, r) : json(res, 404, { error: "no reflection report yet" });
+    }
     if (req.method === "GET" && (url === "/status" || url === "/snapshot")) {
       try {
         return json(res, 200, buildSnapshot(universe));
