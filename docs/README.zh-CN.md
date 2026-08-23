@@ -10,16 +10,33 @@
 
 > 英文主版见 [README.md](../README.md)。
 
-最后更新：2026-08-20
+最后更新：2026-08-24
 
 ---
 
-**predict-raven** 是一个开源的 **forecasting agent 框架**：让 AI agent 自主评估真实世界事件发生的概率，持续收集并权衡证据，并据此行动。同一套 agent 内核目前驱动一族应用：
+**predict-raven** 是一个开源的 **forecasting agent 框架**：让 AI agent 自主评估真实世界事件发生的概率，持续收集并权衡证据，并据此行动。同一套 forecasting 智能目前驱动一族产品：
 
 - **预测市场自主交易** — [Polymarket](https://polymarket.com) 上第一个自主、持续运行的交易 agent。它评估事件的 fair probability，与市场隐含赔率对比，在服务层硬风控约束下交易其中的 edge。
 - **市场盲测公开预测** — 对 2026 世界杯全部 48 支球队给出透明、用 Brier 公开记分的概率，全程**不读取任何市场价格**。线上：**[forecasting-agent.com](https://forecasting-agent.com/world-cup)**，并在[预测效果页](https://forecasting-agent.com/world-cup/performance)公开记分。
 - **托管 Forecasting Engine** — 同一套迭代式预测引擎的托管产品形态：交互式研究控制台 [/engine](https://forecasting-agent.com/engine)、Raven Delta 新闻影响引擎 [/delta](https://forecasting-agent.com/delta)，以及 forecast API + MCP 服务（概率 + 分析思路 + 证据，输出 JSON / 纯文字 / PDF）。详见下文 [Forecasting Engine（托管服务）](#forecasting-engine托管服务)。
 - **自主模拟盘交易** — 交易 agent 的纯模拟孪生体，在云端无人值守运行：每日 3 次市场盲测持仓评估、净 edge 退出、每日自省并给出相对市场的 Brier 技巧分。详见下文 [自主模拟盘交易](#自主模拟盘交易纯模拟)。
+- **Delta PM — 新闻驱动的美股影子交易** — 自主运行的 analyst→PM 管线：读真实新闻流，先过两道闸门（重不重要 / 是否已被定价），再写盲于价格反应的估值 thesis，最后在美股代币化永续的行情数据上记一笔带完整审计链的影子交易。详见下文 [Delta PM](#delta-pm--新闻驱动的美股影子交易)。
+- **多模型 forecast fleet** — 7 本相互独立的 $10k 模拟账本，每本换一个前沿模型，代码与规则完全一致——让各模型的净值曲线和 Brier 技巧分可以严格对比。详见下文 [多模型 forecast fleet](#多模型-forecast-fleet)。
+
+### 产品全家福（一张表）
+
+| 产品                      | 做什么                                                                       | 状态                                       | 代码                                                                                       | 在哪看                                                                                                                                          |
+| ------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Polymarket 实盘交易       | 真金自主交易，服务层硬风控                                                   | 实盘循环暂停（最后一次实盘 2026-06-10）    | `services/orchestrator` · `services/executor` · `scripts/pulse-live.ts`                    | [决策记录](https://autopoly-pizza-spectator.vercel.app) · [链上持仓](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e) |
+| 世界杯市场盲测预测        | 87 个问题公开 Brier 记分，预测时刻从不读市场价格                             | 小组赛 + 淘汰赛 32 强已公开记分            | `scripts/world-cup` · `packages/sports-data` / `sports-model` / `fifa-models` · `apps/web` | [/world-cup](https://forecasting-agent.com/world-cup) · [预测效果](https://forecasting-agent.com/world-cup/performance)                         |
+| Forecasting Engine 控制台 | 逐步看一次迭代预测如何展开：计划、证据卡、判决档案                           | 运行中                                     | `apps/raven`                                                                               | [/engine](https://forecasting-agent.com/engine)                                                                                                 |
+| Forecast API + MCP        | `POST /v1/forecasts` → 概率 + 分析思路 + 证据（JSON / 文字 / PDF）；MCP 工具 | 运行中                                     | `services/forecast-api`                                                                    | 托管 API                                                                                                                                        |
+| Raven Delta               | 粘贴一条新闻 → 关注度判定 + 0–5 只受影响美股 + 操作计划                      | 运行中                                     | `apps/raven-delta`                                                                         | [/delta](https://forecasting-agent.com/delta)                                                                                                   |
+| Delta PM                  | 自主的新闻→美股影子 PM，每个决策带完整审计链                                 | 运行中，影子模式（Phase 0，2026-08-23 起） | `services/delta-pm` · `apps/delta-pm-console` · `packages/delta-pm-contracts`              | [/live-delta-pm](https://forecasting-agent.com/live-delta-pm) · [/pm](https://forecasting-agent.com/pm)                                         |
+| 自主模拟盘交易            | 交易 agent 的 $10k 模拟孪生体，每日 3 次市场盲测评估                         | 2026-07-03 起持续运行                      | `services/paper-agent`                                                                     | [/live-predict-raven](https://forecasting-agent.com/live-predict-raven)                                                                         |
+| 多模型 forecast fleet     | 7 × $10k 模拟账本，一模型一本，规则完全一致                                  | 2026-08-23 起持续运行                      | `scripts/fleet`（+ `services/paper-agent`）                                                | 内部服务器（暂无公开页面）                                                                                                                      |
+
+> 命名说明：**Raven Delta**（`/delta`）和 **Delta PM** 是两个不同的产品。Raven Delta 是交互式界面——你贴一条新闻、读它的影响分析；Delta PM 是自主运行的影子基金经理——它自己消费整条新闻流，端到端记下带审计链的纸面交易。
 
 实盘 / 预测公开：
 
@@ -27,6 +44,8 @@
 - **Forecasting Engine 控制台**：[forecasting-agent.com/engine](https://forecasting-agent.com/engine)（浏览公开；发起新预测需邀请码）
 - **Raven Delta 新闻影响引擎**：[forecasting-agent.com/delta](https://forecasting-agent.com/delta)（邀请码门）
 - **模拟盘复盘页**：[forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven)（邀请码门，实时 VM 快照）
+- **Delta PM 决策审计页**：[forecasting-agent.com/live-delta-pm](https://forecasting-agent.com/live-delta-pm)（邀请码门，实时 VM 账本）
+- **Delta PM 运维控制台**：[forecasting-agent.com/pm](https://forecasting-agent.com/pm)（token 门）
 - **交易决策记录 / 净值曲线**：[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
 - **链上持仓 / 成交（Polymarket profile）**：[`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
@@ -40,9 +59,31 @@
 
 ## 系统设计
 
-交易侧围绕 **Market Pulse** 这一核心组件设计：让 AI 自主评估事件发生的概率，动态地从信息源收集证据，将其与市场隐含的赔率对比，综合交易的 edge 和资金回报效率给出交易指示。
+整个仓库围绕一个核心能力构建：让 AI agent 研究一个关于未来的问题、权衡带引用的证据、给出一个能自我辩护的概率。它最纯粹的形态是可复用的迭代式预测引擎 [`packages/forecast-engine`](../packages/forecast-engine)；多个产品直接运行这个引擎，且永远以独立子进程的方式：
 
-同一套证据收集内核已抽成独立引擎包（[`packages/forecast-engine`](../packages/forecast-engine)），也能以**市场盲测**模式运行——完全不读取任何赔率，用于公开的世界杯预测产品（见下文 [市场盲测预测](#市场盲测预测)）和托管的 Forecasting Engine 各产品面。
+```
+                  packages/forecast-engine
+                   （迭代式证据预测引擎）
+                            │
+              每个问题 spawn 一个独立子进程
+      （scripts/forecast/cli.ts —— 进程隔离同时也是
+        市场盲测的技术保证：子进程只看得到问题本身
+        和结算规则）
+                            │
+     ┌──────────────────────┼──────────────────────────┐
+     ▼                      ▼                          ▼
+ /engine 研究控制台    Forecast API + MCP        模拟盘账本群
+ (apps/raven)         (services/               (services/paper-agent：
+                       forecast-api)            东京 $10k 账本 +
+                                                7 本多模型 fleet)
+```
+
+其余产品线遵循同一套"证据优先"的纪律，但各自有为场景定制的管线：
+
+- **Polymarket 实盘交易** — **Market Pulse** 研究 + 服务层风控引擎（`services/orchestrator` / `services/executor`）：AI 自主评估事件概率、动态收集证据、与市场隐含赔率对比，综合 edge 和资金回报效率给出交易指示。
+- **世界杯盲测预测** — 统计内核（实时 Elo 先验、Davidson 三路模型、蒙特卡洛对阵树模拟）+ 有界、带引用来源的贝叶斯证据更新（`scripts/world-cup`、`packages/sports-*`）。
+- **Raven Delta** — 新闻→受影响个股分析器，自带 LLM provider 接缝，参照引擎的 adapter 模式实现（`apps/raven-delta`）。
+- **Delta PM** — 两道新闻闸门 + 盲于价格反应的估值 thesis + 带逐决策审计记录的 PM 决策引擎（`services/delta-pm`）。
 
 ### 为什么让 Agent 来做这件事
 
@@ -74,11 +115,11 @@
 
 三个托管产品面在云端 VM 上运行这套引擎，统一挂在 [forecasting-agent.com](https://forecasting-agent.com) 下：
 
-| 产品面 | 是什么 | 代码 |
-| --- | --- | --- |
-| [`/engine`](https://forecasting-agent.com/engine) | 交互式研究控制台（EN / 中文）——逐步看一次预测如何展开：计划清单、证据卡、判决档案 | `apps/raven` |
-| [`/delta`](https://forecasting-agent.com/delta) | **Raven Delta** 新闻影响引擎——粘贴一条新闻，得到关注度判定（含全网首现时间）、0–5 只受影响美股（方向 / 幅度 / 置信度）和操作计划；邮件 + WebSocket 推送 | `apps/raven-delta` |
-| Forecast API + MCP | `POST /v1/forecasts {question}` → 概率 + 分析思路 + 证据，输出 JSON、纯文字或 PDF 档案；同时以 MCP 工具形态暴露（`forecast_start` / `forecast_status` / `forecast_result`） | `services/forecast-api` |
+| 产品面                                            | 是什么                                                                                                                                                                      | 代码                    |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| [`/engine`](https://forecasting-agent.com/engine) | 交互式研究控制台（EN / 中文）——逐步看一次预测如何展开：计划清单、证据卡、判决档案                                                                                           | `apps/raven`            |
+| [`/delta`](https://forecasting-agent.com/delta)   | **Raven Delta** 新闻影响引擎——粘贴一条新闻，得到关注度判定（含全网首现时间）、0–5 只受影响美股（方向 / 幅度 / 置信度）和操作计划；邮件 + WebSocket 推送                     | `apps/raven-delta`      |
+| Forecast API + MCP                                | `POST /v1/forecasts {question}` → 概率 + 分析思路 + 证据，输出 JSON、纯文字或 PDF 档案；同时以 MCP 工具形态暴露（`forecast_start` / `forecast_status` / `forecast_result`） | `services/forecast-api` |
 
 引擎运行有计量：每日配额 + 文件事件库邀请码（每码可设次数上限并计量用量）。
 
@@ -92,6 +133,27 @@
 - **每日反思** — agent 每天写一份自省报告：退出决策的反事实 α、Brier 校准，以及**相对市场的 Brier 技巧分**——持续回答"agent 到底有没有跑赢市场"。
 
 模拟盘在 [forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven) 公开复盘（邀请码门）：请求时实时拉取 VM 快照、权益曲线、已平仓回合表、生效中的运行参数。
+
+## Delta PM — 新闻驱动的美股影子交易
+
+**Delta PM** 把 forecasting 纪律带进美股：一条自主运行的 analyst→PM 管线，读真实新闻流，为每条新闻判断值不值得交易——然后把交易记在**影子账本**上（纯纸面，零交易所凭证、零下单端点）。行情数据来自 Hyperliquid 上的美股代币化永续；标的池约 20 只美股科技大盘股。
+
+管线分阶段运行，每个阶段有自己的机器契约：
+
+- **分析开始前先过两道闸门** — 闸门 1：这条新闻对标的池到底重不重要？闸门 2：**是否已经被定价**——用消息全网首现时间 × 此后的真实价格反应交叉判断。大多数新闻在这里就被拦下，几乎不产生 LLM 成本。
+- **盲于价格的 thesis** — 幸存的新闻由 analyst 写一份估值 thesis（影响路径、EPS 链条、显式假设），**全程看不到价格反应**——保证 thesis 不是在给走势图找理由。
+- **PM 决策** — 确定性的决策层只在残差 edge（thesis 隐含的涨跌幅减去市场已经走掉的部分，β 按 RTH 对齐基准调整）过阈值时才开仓，受分层仓位上限、**单仓 −20% 硬止损**、**组合 −25% 停机**约束。
+- **完整审计链** — 每个决策（包括每次拒单）都记录 edge 的逐项分解、sizing 链每道 guard 的裁剪、否决标签。整条链在 [/live-delta-pm](https://forecasting-agent.com/live-delta-pm)（邀请码门）可端到端复查，数据实时来自 VM 账本。
+
+Phase 0（影子模式）自 2026-08-23 起在云端 VM 无人值守运行。代码：[`packages/delta-pm-contracts`](../packages/delta-pm-contracts)（机器契约）、[`services/delta-pm`](../services/delta-pm)（引擎，端口 8792）、[`apps/delta-pm-console`](../apps/delta-pm-console)（运维控制台，端口 3400，公网入口 [/pm](https://forecasting-agent.com/pm)，token 门）；运维手册见 [`delta-pm-operations.md`](delta-pm-operations.md)。不构成投资建议；不产生任何真实订单。
+
+## 多模型 forecast fleet
+
+模拟盘 agent 同时兼任**模型基准测试台**：7 本相互独立的 $10k 模拟账本跑完全相同的代码、规则与评估节奏——唯一的变量是做预测的模型（Claude Fable / Opus / Sonnet、GPT-5.6 ×2 走 Codex CLI provider、Kimi K3、DeepSeek v4-flash）。账本逐本隔离；评估时段全天错峰排开。
+
+它持续回答的问题是：**测试环境完全一致时，到底哪个模型预测得更好？** 每本账本各自积累净值曲线和相对市场的 Brier 技巧分，比一次性的 benchmark 跑分严格得多。
+
+Fleet 自 2026-08-23 起在一台独立的常驻服务器上无人值守运行。配套监控追踪各家 provider 的配额与烧钱水位并推送每日摘要；fleet 工具在 [`scripts/fleet`](../scripts/fleet)。暂无公开页面。
 
 ## 快速开始
 
@@ -153,9 +215,9 @@ OKX Agentic Wallet 模式不需要 `PRIVATE_KEY`，但要先用 `onchainos walle
 
 > 想看具体的 pnpm 命令（`forecast:*`；旧 `pulse:*` 名保留为兼容别名）、环境变量、归档目录，见 [diagrams/dev-reference.md](diagrams/dev-reference.md)。
 
-## 架构总览
+## 架构总览（交易管线）
 
-系统分为四层，数据从上到下流动：
+真金 Polymarket 线分为四层，数据从上到下流动。（其余产品线与共享预测内核的关系见上文[系统设计](#系统设计)。）
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -196,11 +258,11 @@ AGENT_RUNTIME_PROVIDER=codex        # 可选：codex / claude-code / openclaw
 
 模型能力按北欧命运三女神命名为三档，"用哪个模型"从散落在各处 env 的裸 model id 变成一个好记的选择：
 
-| 档位 | Norn | 用途 | Anthropic | OpenAI |
-| --- | --- | --- | --- | --- |
-| **Urd** | 过去 / 起源 | 轻快——预筛、高频调用 | `claude-haiku-4-5-20251001` | `gpt-4o-mini` |
-| **Verdandi** | 现在 | 均衡默认档 | `claude-sonnet-4-6` | `gpt-4o` |
-| **Skuld** | 未来 | 旗舰——最深推理、最高质量 | `claude-opus-4-8` | `gpt-4o` |
+| 档位         | Norn        | 用途                     | Anthropic                   | OpenAI        |
+| ------------ | ----------- | ------------------------ | --------------------------- | ------------- |
+| **Urd**      | 过去 / 起源 | 轻快——预筛、高频调用     | `claude-haiku-4-5-20251001` | `gpt-4o-mini` |
+| **Verdandi** | 现在        | 均衡默认档               | `claude-sonnet-4-6`         | `gpt-4o`      |
+| **Skuld**    | 未来        | 旗舰——最深推理、最高质量 | `claude-opus-4-8`           | `gpt-4o`      |
 
 这是一层轻薄的**别名 / 映射层**（`@autopoly/norns`），不是重写。任何读 model id 的地方都可以改用档位名，按 provider 家族解析成具体模型。**裸 model id 和空默认值原样透传**，所有既有配置行为不变——只有显式使用档位名时才生效。每档还带软深度参数（token 预算、证据/轮次数），驱动方可按档缩放。
 
@@ -238,29 +300,29 @@ Pulse markdown → 正则/表格解析 → PulseEntryPlan
 
 ### 系统级
 
-| 规则 | 阈值 | 效果 |
-| --- | --- | --- |
+| 规则          | 阈值                         | 效果                      |
+| ------------- | ---------------------------- | ------------------------- |
 | 组合回撤 halt | 净值相对高水位回撤 ≥ **30%** | 进入 `halted`，禁止新开仓 |
-| 恢复 | 仅管理员 `resume` | fail-closed 设计 |
+| 恢复          | 仅管理员 `resume`            | fail-closed 设计          |
 
 ### 仓位级
 
-| 规则 | 阈值 |
-| --- | --- |
-| 单仓止损 | 浮亏 ≥ **30%** |
+| 规则       | 阈值             |
+| ---------- | ---------------- |
+| 单仓止损   | 浮亏 ≥ **30%**   |
 | 止损优先级 | 高于常规策略动作 |
 
 ### 执行级
 
-| 规则 | 默认值 |
-| --- | --- |
-| 下单类型 | **FOK** 市价单 |
-| 单笔上限 | 资金的 **15%** |
-| 最大总敞口 | 资金的 **80%** |
+| 规则           | 默认值         |
+| -------------- | -------------- |
+| 下单类型       | **FOK** 市价单 |
+| 单笔上限       | 资金的 **15%** |
+| 最大总敞口     | 资金的 **80%** |
 | 单事件敞口上限 | 资金的 **30%** |
-| 最大并发持仓 | **22** 个 |
-| 最小交易额 | **$5** |
-| 最小有效额度 | 低于此直接丢弃 |
+| 最大并发持仓   | **22** 个      |
+| 最小交易额     | **$5**         |
+| 最小有效额度   | 低于此直接丢弃 |
 
 ### Pulse 级
 
@@ -276,12 +338,12 @@ Pulse markdown → 正则/表格解析 → PulseEntryPlan
 
 分四组理解：
 
-| 组 | 关键变量 | 说明 |
-| --- | --- | --- |
-| **共享** | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE` | 执行模式（paper/live）、基础设施连接 |
-| **Web** | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN` | 管理员鉴权 |
-| **Executor** | `WALLET_PROVIDER` `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` `ONCHAINOS_BIN` | Polymarket 钱包与链配置 |
-| **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*` | Provider 选择、Pulse 抓取、风控参数 |
+| 组               | 关键变量                                                                                     | 说明                                 |
+| ---------------- | -------------------------------------------------------------------------------------------- | ------------------------------------ |
+| **共享**         | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE`             | 执行模式（paper/live）、基础设施连接 |
+| **Web**          | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN`                                               | 管理员鉴权                           |
+| **Executor**     | `WALLET_PROVIDER` `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` `ONCHAINOS_BIN` | Polymarket 钱包与链配置              |
+| **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*`                       | Provider 选择、Pulse 抓取、风控参数  |
 
 如果 Polymarket 凭据放在相邻仓库，可以设 `ENV_FILE=../pm-PlaceOrder/.env.aizen`。真实资金测试建议固定使用独立的 `.env.live-test`。
 
@@ -316,13 +378,13 @@ Agent 每次 preflight 都会打印当前 `ENV_FILE`、钱包地址、collateral
 
 `vendor/manifest.json` 锁定了以下外部仓库的具体 commit：
 
-| 仓库 | 用途 |
-| --- | --- |
-| `polymarket-trading-TUI` | 交易终端和 CLOB 接线参考 |
-| `polymarket-market-pulse` | Pulse 研究输入 |
-| `alert-stop-loss-pm` | 止损逻辑参考 |
-| `all-polymarket-skill` | Backtesting、Monitor、Resolution 等 skill 参考 |
-| `pm-PlaceOrder` | 下单参考和本地凭据源 |
+| 仓库                      | 用途                                           |
+| ------------------------- | ---------------------------------------------- |
+| `polymarket-trading-TUI`  | 交易终端和 CLOB 接线参考                       |
+| `polymarket-market-pulse` | Pulse 研究输入                                 |
+| `alert-stop-loss-pm`      | 止损逻辑参考                                   |
+| `all-polymarket-skill`    | Backtesting、Monitor、Resolution 等 skill 参考 |
+| `pm-PlaceOrder`           | 下单参考和本地凭据源                           |
 
 运行 `pnpm vendor:sync` 把它们同步到 `vendor/repos/`。纯 `pnpm build` 不需要 vendor，但跑 pulse / trial / live 链路前必须先 sync。
 
@@ -330,18 +392,19 @@ Agent 每次 preflight 都会打印当前 `ENV_FILE`、钱包地址、collateral
 
 所有运行产物写入 `runtime-artifacts/`（已 `.gitignore`），由 `ARTIFACT_STORAGE_ROOT` 控制根目录。
 
-| 路径 | 内容 |
-| --- | --- |
-| `reports/pulse/YYYY/MM/DD/` | Pulse markdown + JSON |
-| `reports/review\|monitor\|rebalance/` | 组合报告 |
-| `reports/runtime-log/` | 决策运行时解释性日志 |
-| `pulse-live/<timestamp>-<runId>/` | Pulse Live 运行产物 |
-| `live-test/<timestamp>-<runId>/` | Stateful 运行产物（失败时含 `error.json`） |
-| `checkpoints/trial-recommend/` | Paper 推荐断点续跑检查点 |
-| `world-cup/` | 市场盲测预测归档、事件清单、Elo / 蒙特卡洛骨干 |
-| `paper-agent/` | 模拟盘账本、dossier、每日反思报告 |
-| `raven-delta/runs/` | Raven Delta 新闻影响分析归档 |
-| `local/paper-state.json` | Paper 默认状态文件 |
+| 路径                                  | 内容                                                                  |
+| ------------------------------------- | --------------------------------------------------------------------- |
+| `reports/pulse/YYYY/MM/DD/`           | Pulse markdown + JSON                                                 |
+| `reports/review\|monitor\|rebalance/` | 组合报告                                                              |
+| `reports/runtime-log/`                | 决策运行时解释性日志                                                  |
+| `pulse-live/<timestamp>-<runId>/`     | Pulse Live 运行产物                                                   |
+| `live-test/<timestamp>-<runId>/`      | Stateful 运行产物（失败时含 `error.json`）                            |
+| `checkpoints/trial-recommend/`        | Paper 推荐断点续跑检查点                                              |
+| `world-cup/`                          | 市场盲测预测归档、事件清单、Elo / 蒙特卡洛骨干                        |
+| `paper-agent/`                        | 模拟盘账本、dossier、每日反思报告                                     |
+| `delta-pm/`                           | Delta PM 影子账本：portfolio、ledger、信号/thesis 归档、自建 K 线归档 |
+| `raven-delta/runs/`                   | Raven Delta 新闻影响分析归档                                          |
+| `local/paper-state.json`              | Paper 默认状态文件                                                    |
 
 失败归档（按 AGENTS 约定）写入 `run-error/`，包含失败阶段、核心上下文、原因摘要和下一步命令。
 
@@ -349,6 +412,7 @@ Agent 每次 preflight 都会打印当前 `ENV_FILE`、钱包地址、collateral
 
 - [AGENTS.md](../AGENTS.md) / [CLAUDE.md](../CLAUDE.md) — Agent 协作约定（必读）
 - [risk-controls.md](risk-controls.md) — 风控硬规则完整说明
+- [delta-pm-operations.md](delta-pm-operations.md) — Delta PM 运维手册
 - [.env.example](../.env.example) — 环境变量模板
 - [diagrams/onboarding-architecture.md](diagrams/onboarding-architecture.md) — 架构图 + 模块地图
 - [diagrams/trading-modes-flowchart.md](diagrams/trading-modes-flowchart.md) — 下单模式流程图
