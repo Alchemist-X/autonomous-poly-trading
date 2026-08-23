@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  bar,
+  buildDailyCard,
+  digestDue,
   extractLatestRateLimits,
   extractPercentFields,
   parseCreditAnchor,
@@ -119,5 +122,59 @@ describe("extractPercentFields", () => {
       { label: "five_hour.utilization", percent: 42.5 },
       { label: "seven_day.used_percent", percent: 88 }
     ]);
+  });
+});
+
+describe("daily digest card", () => {
+  it("renders bars proportionally and clamps", () => {
+    expect(bar(0)).toBe("░░░░░░░░░░");
+    expect(bar(50)).toBe("▓▓▓▓▓░░░░░");
+    expect(bar(100)).toBe("▓▓▓▓▓▓▓▓▓▓");
+    expect(bar(250)).toBe("▓▓▓▓▓▓▓▓▓▓");
+    expect(bar(-5)).toBe("░░░░░░░░░░");
+  });
+
+  it("digestDue fires once per UTC day at/after the hour", () => {
+    expect(digestDue(undefined, new Date("2026-08-24T01:30:00Z"), 1)).toBe(true);
+    expect(digestDue("2026-08-24", new Date("2026-08-24T02:30:00Z"), 1)).toBe(false);
+    expect(digestDue("2026-08-23", new Date("2026-08-24T00:30:00Z"), 1)).toBe(false);
+    expect(digestDue("2026-08-23", new Date("2026-08-24T01:00:00Z"), 1)).toBe(true);
+  });
+
+  it("builds a green all-clear card with bars, book table, and human copy", () => {
+    const card = buildDailyCard(
+      {
+        deepseek: { balance: 194.83, currency: "CNY", runwayDays: 23.4 },
+        codex: { windows: [{ name: "primary", usedPercent: 1.0, windowMinutes: 10080, resetsAt: 1787846698 }], snapshotAgeHours: 0.2 },
+        claude: { status: "rate-limited" },
+        exa: { spentUsd: 0.12, entries: 17, anchorUsd: 10, remainingUsd: 9.88, perDayUsd: 0.04, runwayDays: 247 },
+        books: [
+          { name: "fable", alive: true, quotaHits: 0 },
+          { name: "gpt-sol", alive: false, quotaHits: 2 }
+        ]
+      },
+      [],
+      new Date("2026-08-24T01:00:00Z")
+    ) as { msg_type: string; card: { header: { template: string }; elements: Array<Record<string, unknown>> } };
+
+    expect(card.msg_type).toBe("interactive");
+    expect(card.card.header.template).toBe("green");
+    const blob = JSON.stringify(card);
+    expect(blob).toContain("Raven API 服务水位监控");
+    expect(blob).toContain("░░░░░░░░░░` 已用 1.0%"); // codex bar: 1% rounds to zero filled blocks
+    expect(blob).toContain("¥".replace("¥", "CNY")); // currency shown as CNY
+    expect(blob).toContain("约剩 $9.88 / $10");
+    expect(blob).toContain("✅ fable");
+    expect(blob).toContain("🔴 gpt-sol · 2 次配额报错");
+    expect(blob).toContain("今日无异常");
+  });
+
+  it("turns the header red when a critical finding exists", () => {
+    const card = buildDailyCard(
+      { books: [] },
+      [{ topic: "x", severity: "critical", message: "boom" }],
+      new Date("2026-08-24T01:00:00Z")
+    ) as { card: { header: { template: string } } };
+    expect(card.card.header.template).toBe("red");
   });
 });

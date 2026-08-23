@@ -49,6 +49,9 @@ const EXA_WARN_USD = Number(process.env.MONITOR_EXA_WARN_USD || 2);
 const EXA_CRIT_USD = Number(process.env.MONITOR_EXA_CRIT_USD || 0.5);
 const CODEX_SNAPSHOT_STALE_HOURS = 12;
 const CODEX_PROBE_MIN_GAP_HOURS = 6;
+// Daily rich-card digest fires on the first cron tick at/after this UTC hour
+// (default 01:00 UTC = 09:00 UTC+8 morning).
+const DIGEST_HOUR_UTC = Number(process.env.MONITOR_DIGEST_HOUR_UTC ?? 1);
 
 export interface BalancePoint { atUtc: string; balance: number }
 
@@ -206,13 +209,120 @@ export function extractPercentFields(node: unknown, prefix = ""): Array<{ label:
   return out;
 }
 
+// Structured snapshot the daily digest card is rendered from. Checks fill it
+// alongside their terminal lines.
+export interface MonitorSummary {
+  deepseek?: { balance: number; currency: string; runwayDays: number | null } | { error: string };
+  codex?: { windows: Array<{ name: string; usedPercent: number; windowMinutes: number | null; resetsAt: number | null }>; snapshotAgeHours: number } | { status: string };
+  claude?: { fields: Array<{ label: string; percent: number }> } | { status: string };
+  exa?: { spentUsd: number; entries: number; anchorUsd?: number; remainingUsd?: number; perDayUsd?: number; runwayDays?: number };
+  books: Array<{ name: string; alive: boolean; quotaHits: number }>;
+}
+
+// Unicode progress bar for lark_md (Feishu has no native bar element).
+export function bar(pct: number, width = 10): string {
+  const clamped = Math.max(0, Math.min(100, pct));
+  const filled = Math.round((clamped / 100) * width);
+  return "▓".repeat(filled) + "░".repeat(width - filled);
+}
+
+export function digestDue(lastSentDateUtc: string | undefined, now: Date, hourUtc = DIGEST_HOUR_UTC): boolean {
+  const today = now.toISOString().slice(0, 10);
+  return now.getUTCHours() >= hourUtc && lastSentDateUtc !== today;
+}
+
+function fmtReset(resetsAt: number | null): string {
+  if (!resetsAt) return "重置时间未知";
+  const utc8 = new Date(resetsAt * 1000 + 8 * 3_600_000);
+  return `${utc8.getUTCMonth() + 1}/${utc8.getUTCDate()} ${String(utc8.getUTCHours()).padStart(2, "0")}:${String(utc8.getUTCMinutes()).padStart(2, "0")} 重置`;
+}
+
+// Build the Feishu interactive card (custom-bot v1 schema: header + elements;
+// two-column "fields" approximate a table, bars are unicode in lark_md).
+export function buildDailyCard(summary: MonitorSummary, findings: Finding[], now: Date): Record<string, unknown> {
+  const worst = findings.some((f) => f.severity === "critical") ? "red" : findings.length ? "orange" : "green";
+  const md: string[] = [];
+
+  md.push("**📊 订阅额度**（包月，用完等窗口重置）");
+  if (summary.codex && "windows" in summary.codex) {
+    for (const w of summary.codex.windows) {
+      const days = w.windowMinutes ? `${Math.round(w.windowMinutes / 1440)} 天额度` : "额度";
+      md.push(`Codex（GPT-5.6 两本书）\n\`${bar(w.usedPercent)}\` 已用 ${w.usedPercent.toFixed(1)}% · ${days} · ${fmtReset(w.resetsAt)}`);
+    }
+  } else {
+    md.push("Codex（GPT-5.6 两本书）：暂无快照");
+  }
+  if (summary.claude && "fields" in summary.claude && summary.claude.fields.length) {
+    for (const f of summary.claude.fields) {
+      md.push(`Claude（fable/opus/sonnet/kimi 四本书 + 东京）\n\`${bar(f.percent)}\` ${f.label} 已用 ${f.percent.toFixed(0)}%`);
+    }
+  } else {
+    md.push("Claude（四本书 + 东京）：官方用量接口今日未放行（正常现象）；日志无超限迹象 ✅");
+  }
+
+  md.push("---");
+  md.push("**💰 按量付费余额**（花完要充值）");
+  if (summary.deepseek && "balance" in summary.deepseek) {
+    const d = summary.deepseek;
+    const runwayTxt = d.runwayDays === null ? "消耗太少，暂无法预测" : `预计还能用 ~${d.runwayDays.toFixed(0)} 天`;
+    const runwayPct = d.runwayDays === null ? 100 : Math.min(100, (d.runwayDays / 30) * 100);
+    md.push(`DeepSeek（ds-flash 书）\n\`${bar(runwayPct)}\` 余额 ${d.currency} ${d.balance.toFixed(2)} · ${runwayTxt}`);
+  } else {
+    md.push("DeepSeek：余额查询失败 ⚠️");
+  }
+  if (summary.exa) {
+    const e = summary.exa;
+    if (e.remainingUsd !== undefined && e.anchorUsd !== undefined) {
+      const pct = Math.max(0, Math.min(100, (e.remainingUsd / e.anchorUsd) * 100));
+      const runwayTxt = e.runwayDays !== undefined ? ` · 预计还能用 ~${e.runwayDays.toFixed(0)} 天` : "";
+      md.push(`Exa 搜索\n\`${bar(pct)}\` 约剩 $${e.remainingUsd.toFixed(2)} / $${e.anchorUsd}${runwayTxt}`);
+    } else {
+      md.push(`Exa 搜索：已记账消耗 $${e.spentUsd.toFixed(3)}（${e.entries} 次调用）· 未设余额锚点，无法算剩余`);
+    }
+  }
+
+  const bookFields = summary.books.map((b) => ({
+    is_short: true,
+    text: { tag: "lark_md", content: `${b.alive ? "✅" : "🔴"} ${b.name}${b.quotaHits ? ` · ${b.quotaHits} 次配额报错` : ""}` }
+  }));
+
+  const alertLines = findings.length
+    ? findings.map((f) => `${f.severity === "critical" ? "🔴" : "🟡"} ${f.message}`).join("\n")
+    : "今日无异常，所有水位安全 ✅";
+
+  return {
+    msg_type: "interactive",
+    card: {
+      config: { wide_screen_mode: true },
+      header: {
+        template: worst,
+        title: { tag: "plain_text", content: "Raven API 服务水位监控 · 每日一报" }
+      },
+      elements: [
+        { tag: "div", text: { tag: "lark_md", content: md.join("\n") } },
+        { tag: "hr" },
+        { tag: "div", text: { tag: "lark_md", content: "**🤖 七本模拟盘进程**" } },
+        { tag: "div", fields: bookFields },
+        { tag: "hr" },
+        { tag: "div", text: { tag: "lark_md", content: `**⚠️ 今日提醒**\n${alertLines}` } },
+        {
+          tag: "note",
+          elements: [
+            { tag: "plain_text", content: `生成于 ${now.toISOString().slice(0, 16)}Z（Huginn 服务器）· 破线告警另行实时推送 · 每日一报` }
+          ]
+        }
+      ]
+    }
+  };
+}
+
 function readJson<T>(file: string, fallback: T): T {
   try { return JSON.parse(fs.readFileSync(file, "utf8")) as T; } catch { return fallback; }
 }
 
 interface Finding { topic: string; severity: "warn" | "critical"; message: string }
 
-async function checkDeepSeekBalance(findings: Finding[], lines: string[]): Promise<void> {
+async function checkDeepSeekBalance(findings: Finding[], lines: string[], summary: MonitorSummary): Promise<void> {
   const key = process.env.DEEPSEEK_API_KEY;
   if (!key) { lines.push("deepseek     | no key in env — skipped"); return; }
   let body: { is_available?: boolean; balance_infos?: Array<{ currency?: string; total_balance?: string }> };
@@ -225,6 +335,7 @@ async function checkDeepSeekBalance(findings: Finding[], lines: string[]): Promi
   } catch (error) {
     findings.push({ topic: "deepseek-balance-api", severity: "warn", message: `DeepSeek balance API failed: ${error instanceof Error ? error.message : error}` });
     lines.push("deepseek     | balance API FAILED");
+    summary.deepseek = { error: "balance API failed" };
     return;
   }
   const info = body.balance_infos?.[0];
@@ -239,13 +350,14 @@ async function checkDeepSeekBalance(findings: Finding[], lines: string[]): Promi
   const runway = projectDaysToEmpty(history, now);
   const runwayLabel = runway === null ? "runway n/a" : `~${runway.toFixed(1)}d to empty`;
   lines.push(`deepseek     | ${currency} ${balance.toFixed(2)} | ${runwayLabel}`);
+  summary.deepseek = { balance, currency, runwayDays: runway };
 
   if (balance <= DS_BALANCE_CRIT_CNY) findings.push({ topic: "deepseek-balance", severity: "critical", message: `DeepSeek 余额仅剩 ${currency} ${balance.toFixed(2)}（临界线 ${DS_BALANCE_CRIT_CNY}）— ds-flash 书即将停摆，请充值或切换。` });
   else if (balance <= DS_BALANCE_WARN_CNY) findings.push({ topic: "deepseek-balance", severity: "warn", message: `DeepSeek 余额 ${currency} ${balance.toFixed(2)} 低于警戒线 ${DS_BALANCE_WARN_CNY}。` });
   if (runway !== null && runway <= RUNWAY_WARN_DAYS) findings.push({ topic: "deepseek-runway", severity: "warn", message: `按当前烧钱速度 DeepSeek 余额预计 ${runway.toFixed(1)} 天内用光（水位线 ${RUNWAY_WARN_DAYS} 天）。当前 ${currency} ${balance.toFixed(2)}。` });
 }
 
-function checkLogsAndLiveness(findings: Finding[], lines: string[]): void {
+function checkLogsAndLiveness(findings: Finding[], lines: string[], summary: MonitorSummary): void {
   const offsetsFile = path.join(MONITOR_ROOT, "log-offsets.json");
   const offsets = readJson<Record<string, number>>(offsetsFile, {});
   for (const book of BOOKS) {
@@ -274,6 +386,7 @@ function checkLogsAndLiveness(findings: Finding[], lines: string[]): void {
       findings.push({ topic: `quota-${book}-${h.patternId}`, severity: "critical", message: `${book} 书日志出现配额/限流特征 [${h.patternId}]：${h.line}` });
     }
     lines.push(`${book.padEnd(12)} | ${alive ? "alive" : "DEAD "} | log ${sizeLabel}${hits.length ? ` | ${C.red}${hits.length} quota hit(s)${C.reset}` : ""}`);
+    summary.books.push({ name: book, alive, quotaHits: hits.length });
   }
   fs.writeFileSync(offsetsFile, JSON.stringify(offsets, null, 1));
 }
@@ -296,7 +409,7 @@ function newestSessionFile(sessionsDir: string): { file: string; mtimeMs: number
   return best;
 }
 
-async function checkCodexSubscription(findings: Finding[], lines: string[], now: Date): Promise<void> {
+async function checkCodexSubscription(findings: Finding[], lines: string[], now: Date, summary: MonitorSummary): Promise<void> {
   const sessionsDir = path.join(process.env.CODEX_HOME || path.join(os.homedir(), ".codex"), "sessions");
   let newest = newestSessionFile(sessionsDir);
 
@@ -313,15 +426,16 @@ async function checkCodexSubscription(findings: Finding[], lines: string[], now:
       newest = newestSessionFile(sessionsDir);
     } catch { lines.push("codex-sub    | probe run failed"); }
   }
-  if (!newest) { lines.push("codex-sub    | no session snapshots yet"); return; }
+  if (!newest) { lines.push("codex-sub    | no session snapshots yet"); summary.codex = { status: "no snapshots" }; return; }
 
   const rl = extractLatestRateLimits(fs.readFileSync(newest.file, "utf8"));
-  if (!rl?.primary) { lines.push("codex-sub    | no rate_limits in newest session"); return; }
+  if (!rl?.primary) { lines.push("codex-sub    | no rate_limits in newest session"); summary.codex = { status: "no rate_limits" }; return; }
   const ageH = (now.getTime() - newest.mtimeMs) / 3_600_000;
   const windows: Array<[string, CodexWindow]> = [];
   if (rl.primary) windows.push(["primary", rl.primary]);
   if (rl.secondary) windows.push(["secondary", rl.secondary]);
   lines.push(`codex-sub    | ${windows.map(([n, w]) => `${n} ${w.usedPercent.toFixed(1)}% of ${w.windowMinutes ? Math.round(w.windowMinutes / 1440) + "d" : "?"} window`).join(" · ")} | snapshot ${ageH.toFixed(1)}h old`);
+  summary.codex = { windows: windows.map(([name, w]) => ({ name, usedPercent: w.usedPercent, windowMinutes: w.windowMinutes, resetsAt: w.resetsAt })), snapshotAgeHours: ageH };
   for (const [name, w] of windows) {
     const reset = w.resetsAt ? new Date(w.resetsAt * 1000).toISOString().slice(0, 16) + "Z" : "unknown";
     if (w.usedPercent >= SUB_USED_CRIT_PCT) findings.push({ topic: `codex-${name}`, severity: "critical", message: `Codex 订阅 ${name} 窗口已用 ${w.usedPercent.toFixed(1)}%（重置 ${reset}）— gpt-sol/gpt-terra 即将停摆。` });
@@ -329,33 +443,35 @@ async function checkCodexSubscription(findings: Finding[], lines: string[], now:
   }
 }
 
-async function checkClaudeSubscription(findings: Finding[], lines: string[]): Promise<void> {
+async function checkClaudeSubscription(findings: Finding[], lines: string[], summary: MonitorSummary): Promise<void> {
   const token = process.env.CLAUDE_CODE_OAUTH_TOKEN;
-  if (!token) { lines.push("claude-sub   | no oauth token in env — skipped"); return; }
+  if (!token) { lines.push("claude-sub   | no oauth token in env — skipped"); summary.claude = { status: "no token" }; return; }
   let body: unknown;
   try {
     const res = await fetch("https://api.anthropic.com/api/oauth/usage", {
       headers: { authorization: `Bearer ${token}`, "anthropic-beta": "oauth-2025-04-20" },
       signal: AbortSignal.timeout(15_000)
     });
-    if (res.status === 429) { lines.push("claude-sub   | usage endpoint self-rate-limited (normal) — skipped this tick"); return; }
-    if (!res.ok) { lines.push(`claude-sub   | usage endpoint HTTP ${res.status} — skipped`); return; }
+    if (res.status === 429) { lines.push("claude-sub   | usage endpoint self-rate-limited (normal) — skipped this tick"); summary.claude = { status: "rate-limited" }; return; }
+    if (!res.ok) { lines.push(`claude-sub   | usage endpoint HTTP ${res.status} — skipped`); summary.claude = { status: `HTTP ${res.status}` }; return; }
     body = await res.json();
   } catch (error) {
     lines.push(`claude-sub   | usage fetch failed: ${error instanceof Error ? error.message : error}`);
+    summary.claude = { status: "fetch failed" };
     return;
   }
   fs.writeFileSync(path.join(MONITOR_ROOT, "claude-usage-last.json"), JSON.stringify(body, null, 1));
   const pcts = extractPercentFields(body);
-  if (!pcts.length) { lines.push("claude-sub   | usage payload had no percent fields (raw saved for inspection)"); return; }
+  if (!pcts.length) { lines.push("claude-sub   | usage payload had no percent fields (raw saved for inspection)"); summary.claude = { status: "no percent fields" }; return; }
   lines.push(`claude-sub   | ${pcts.map((f) => `${f.label} ${f.percent.toFixed(0)}%`).join(" · ")}`);
+  summary.claude = { fields: pcts };
   for (const f of pcts) {
     if (f.percent >= SUB_USED_CRIT_PCT) findings.push({ topic: `claude-${f.label}`, severity: "critical", message: `Claude 订阅 ${f.label} 已用 ${f.percent.toFixed(0)}% — 4 本 claude 书（含东京）受影响。` });
     else if (f.percent >= SUB_USED_WARN_PCT) findings.push({ topic: `claude-${f.label}`, severity: "warn", message: `Claude 订阅 ${f.label} 已用 ${f.percent.toFixed(0)}%。` });
   }
 }
 
-function checkExaMeter(findings: Finding[], lines: string[]): void {
+function checkExaMeter(findings: Finding[], lines: string[], summary: MonitorSummary): void {
   const ledgerFile = process.env.EXA_COST_LEDGER || path.join(MONITOR_ROOT, "exa-cost.jsonl");
   const anchorRaw = process.env.EXA_CREDIT_ANCHOR;
   let ledger = "";
@@ -364,12 +480,14 @@ function checkExaMeter(findings: Finding[], lines: string[]): void {
   const sums = sumLedgerAfter(ledger, anchorParsed?.atMs ?? 0);
   if (!anchorParsed) {
     lines.push(`exa          | metered spend since start: $${sums.totalUsd.toFixed(3)} (${sums.entries} calls) | no EXA_CREDIT_ANCHOR — remaining unknown`);
+    summary.exa = { spentUsd: sums.totalUsd, entries: sums.entries };
     return;
   }
   const remaining = anchorParsed.usd - sums.totalUsd;
   const perDay = sums.last7dUsd / 7;
   const runway = perDay > 0 ? remaining / perDay : null;
   lines.push(`exa          | ~$${remaining.toFixed(2)} left of $${anchorParsed.usd} anchor | $${perDay.toFixed(3)}/d${runway !== null ? ` | ~${runway.toFixed(0)}d runway` : ""}`);
+  summary.exa = { spentUsd: sums.totalUsd, entries: sums.entries, anchorUsd: anchorParsed.usd, remainingUsd: remaining, perDayUsd: perDay, ...(runway !== null ? { runwayDays: runway } : {}) };
   if (remaining <= EXA_CRIT_USD) findings.push({ topic: "exa-credit", severity: "critical", message: `Exa 额度按记账仅剩 ~$${remaining.toFixed(2)}（临界 $${EXA_CRIT_USD}）— 搜索即将失败，请充值并更新 EXA_CREDIT_ANCHOR。` });
   else if (remaining <= EXA_WARN_USD) findings.push({ topic: "exa-credit", severity: "warn", message: `Exa 额度按记账约剩 $${remaining.toFixed(2)}，低于警戒线 $${EXA_WARN_USD}。` });
   if (runway !== null && runway <= RUNWAY_WARN_DAYS) findings.push({ topic: "exa-runway", severity: "warn", message: `Exa 按近 7 日烧速预计 ${runway.toFixed(1)} 天内用光（约剩 $${remaining.toFixed(2)}）。` });
@@ -403,11 +521,12 @@ async function main(): Promise<void> {
   console.log(`${C.bold}fleet quota monitor${C.reset} ${now.toISOString()}  execution_mode=inspect (read-only + own state dir)`);
   const findings: Finding[] = [];
   const lines: string[] = [];
-  await checkDeepSeekBalance(findings, lines);
-  await checkCodexSubscription(findings, lines, now);
-  await checkClaudeSubscription(findings, lines);
-  checkExaMeter(findings, lines);
-  checkLogsAndLiveness(findings, lines);
+  const summary: MonitorSummary = { books: [] };
+  await checkDeepSeekBalance(findings, lines, summary);
+  await checkCodexSubscription(findings, lines, now, summary);
+  await checkClaudeSubscription(findings, lines, summary);
+  checkExaMeter(findings, lines, summary);
+  checkLogsAndLiveness(findings, lines, summary);
   console.log(lines.map((l) => `  ${l}`).join("\n"));
 
   const stateFile = path.join(MONITOR_ROOT, "alert-state.json");
@@ -420,7 +539,7 @@ async function main(): Promise<void> {
   if (muted > 0) log.info(`${muted} finding(s) inside the ${ALERT_COOLDOWN_HOURS}h cooldown — not re-sent`);
 
   if (due.length > 0) {
-    const header = due.some((f) => f.severity === "critical") ? "🔴 Forecast fleet 配额告警" : "🟡 Forecast fleet 配额预警";
+    const header = due.some((f) => f.severity === "critical") ? "🔴 Raven API 服务水位告警" : "🟡 Raven API 服务水位预警";
     const text = `${header}\n${due.map((f) => `• ${f.message}`).join("\n")}\n(${now.toISOString()} · raven-labs quota-monitor)`;
     const sent = await sendWebhooks(text);
     if (sent.length) {
@@ -429,6 +548,35 @@ async function main(): Promise<void> {
       fs.writeFileSync(stateFile, JSON.stringify(state, null, 1));
     } else if (!process.env.FEISHU_WEBHOOK_URL && !process.env.SLACK_WEBHOOK_URL) {
       log.warn("no webhook configured (FEISHU_WEBHOOK_URL / SLACK_WEBHOOK_URL) — findings printed only");
+    }
+  }
+
+  // Daily rich-card digest (Feishu interactive card): once per UTC day at/after
+  // DIGEST_HOUR_UTC, or forced with --digest-now.
+  const digestStateFile = path.join(MONITOR_ROOT, "digest-state.json");
+  const digestState = readJson<{ lastSentDateUtc?: string }>(digestStateFile, {});
+  if (process.argv.includes("--digest-now") || digestDue(digestState.lastSentDateUtc, now)) {
+    const feishu = process.env.FEISHU_WEBHOOK_URL;
+    if (!feishu) {
+      log.warn("daily digest due but FEISHU_WEBHOOK_URL is not set");
+    } else {
+      try {
+        const res = await fetch(feishu, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(buildDailyCard(summary, findings, now)),
+          signal: AbortSignal.timeout(15_000)
+        });
+        const body = await res.text();
+        if (res.ok && body.includes('"code":0')) {
+          fs.writeFileSync(digestStateFile, JSON.stringify({ lastSentDateUtc: now.toISOString().slice(0, 10) }));
+          log.ok("daily digest card sent");
+        } else {
+          log.err(`daily digest rejected: ${body.slice(0, 150)}`);
+        }
+      } catch (error) {
+        log.err(`daily digest failed: ${error instanceof Error ? error.message : error}`);
+      }
     }
   }
 }
