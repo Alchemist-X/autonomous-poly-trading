@@ -320,6 +320,8 @@
 
 ## 🟡 P1 — 本周
 
+- [ ] **【P1 · 2026-08-23 用户提出】多模型 fleet：同一 harness × 6 模型每日独立跑（raven-labs）**：Claude Fable / Opus / Sonnet + GPT-5.6 + DeepSeek flash + Kimi K3，各一个独立 paper-agent 账本，同规则比 equity + Brier。**设计已验证零代码改动**：`ARTIFACT_STORAGE_ROOT` 隔离账本；claude 系 `FORECAST_PROVIDER=claude` + `FORECAST_MODEL`（CLI `--model`）；其余三家走 OpenAI 兼容座 `FORECAST_PROVIDER=deepseek` + `DEEPSEEK_BASE_URL`（openai/deepseek/moonshot）+ `FORECAST_DEEPSEEK_MODEL` + 各家 key；搜索统一 `FORECAST_WEB_SEARCH=1` + `EXA_API_KEY`。**开工前置（等用户）**：① OpenAI/Moonshot key、DS key 复用确认、Claude 订阅 token 上服务器；② raven-labs「严禁真实 key 上服务器」规则冲突——改规则（先关 SSH 密码/root 登录，key 放 ~yishu chmod 600）或改跑东京 VM；③ 确认三个模型精确 id；④ 6 个新账本进场方式（共享 watchlist 保可比 vs 各自扫描——现有 VM 账本是 evaluation-only 空 watchlist）。东京 VM 速查卡已建：`~/.claude/rules/tokyo-vm.md`。
+
 - [x] ~~**接 Polymarket Builder Code**~~ ✅ commit `a6513bc`（2026-05-04，Phase 3a.0）。executor 现在按 `POLYMARKET_BUILDER_*` 5 个 env 自动给 FOK/GTC 单挂 builderCode。**用户操作**：把 5 个 env vars 抄进 `.env.pizza`（或当前在跑的钱包 env），下次 `forecast:live` 自动开始累积 builder volume
 - [x] **【P1 · 已实现】Polymarket 读取默认 in-process + 订单簿去重预取**：2026-05-07 `POLY_CLI_ENABLED` 改成显式 `true` 才走 `pnpm exec tsx scripts/poly-cli.ts`，默认直接用 in-process SDK；`POLY_CLI_STRICT=true` 仍可强制隔离 bridge。`pulse-live` 新增单轮 `readBook` / `computeAvgCost` Promise cache；`buildExecutionPlan` 对 open/close/reduce 的 unique tokenId 做 bounded-concurrency prefetch，避免同一轮重复读 CLOB / 重复 spawn。
 - [ ] **wrap pizza 钱包 usdce → pUSD**：V2 cutover 后 collateral=0，必须 wrap。手动登 polymarket.com UI 找 "Migrate to pUSD"
