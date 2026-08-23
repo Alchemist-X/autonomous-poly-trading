@@ -5,6 +5,7 @@
 import { useState } from "react";
 import type { SignalRow } from "../lib/types";
 import { fmtRelative } from "../lib/format";
+import { withBasePath } from "../lib/base-path";
 
 const PI_CHIP: Record<string, { cls: string; label: string }> = {
   none: { cls: "pi-none", label: "未定价" },
@@ -32,7 +33,7 @@ function PasteBox({ signal, ingestConfigured }: { signal: SignalRow; ingestConfi
     setSending(true);
     setResult(null);
     try {
-      const res = await fetch("/api/paste", {
+      const res = await fetch(withBasePath("/api/paste"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({

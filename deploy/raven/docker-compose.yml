@@ -115,8 +115,10 @@ services:
     command: ["pnpm", "--filter", "@autopoly/delta-pm-console", "start"]
     environment:
       DELTAPM_STATUS_URL: http://delta-pm:8792
+    # Public bind: the console is reverse-proxied at forecasting-agent.com/pm
+    # and gated by DELTAPM_CONSOLE_TOKEN (proxy.ts); direct :3400 works too.
     ports:
-      - "127.0.0.1:3400:3400"
+      - "3400:3400"
     env_file: .env
     mem_limit: 1g
 

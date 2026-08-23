@@ -12,6 +12,7 @@ import { PositionsSection } from "../components/PositionsSection";
 import { SignalsSection } from "../components/SignalsSection";
 import { RecentRuns } from "../components/RecentRuns";
 import { FooterSection } from "../components/FooterSection";
+import { withBasePath } from "../lib/base-path";
 
 const POLL_MS = 2500;
 
@@ -30,7 +31,7 @@ export default function Page() {
       const ctrl = new AbortController();
       ctrlRef.current = ctrl;
       try {
-        const res = await fetch("/api/state", { cache: "no-store", signal: ctrl.signal });
+        const res = await fetch(withBasePath("/api/state"), { cache: "no-store", signal: ctrl.signal });
         const json = (await res.json()) as StateResponse;
         if (!disposed) setState(json);
       } catch (err) {

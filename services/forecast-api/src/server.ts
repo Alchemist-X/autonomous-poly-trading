@@ -18,7 +18,7 @@ import { z } from "zod";
 import { buildAnswer, verdictFor, pct } from "./answer";
 import { isAuthorized } from "./auth";
 import type { ServiceConfig } from "./config";
-import { getDeltaPmAudit } from "./delta-pm-audit";
+import { getDeltaPmAudit, getDeltaPmReflection } from "./delta-pm-audit";
 import { authorizeInviteUse, describeInviteState, inviteState } from "./invites";
 import { log } from "./log";
 import { handleMcpRequest } from "./mcp";
@@ -296,6 +296,21 @@ async function route(req: IncomingMessage, res: ServerResponse, config: ServiceC
       return;
     }
     sendJson(res, 200, audit);
+    return;
+  }
+
+  // Latest Delta PM daily calibration report — same credentials as the audit.
+  if (url.pathname === "/delta-pm/reflection" && method === "GET") {
+    if (!isAuthorized(req, url, config.token) && !isAuthorized(req, url, config.inviteCode)) {
+      sendJson(res, 401, { error: "unauthorized — provide the access token or invite code (Authorization: Bearer, x-api-key, or ?token=)" });
+      return;
+    }
+    const reflection = getDeltaPmReflection();
+    if (!reflection) {
+      sendJson(res, 503, { error: "no delta-pm reflection report yet" });
+      return;
+    }
+    sendJson(res, 200, reflection);
     return;
   }
 
