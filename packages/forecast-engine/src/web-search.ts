@@ -1,3 +1,5 @@
+import fs from "node:fs";
+
 // Pluggable web-search backend for the OpenAI-compatible providers
 // (DeepSeek/Kimi), used by the tool loop in deepseek-agent.ts.
 //
@@ -72,7 +74,8 @@ async function exaSearch(query: string, fetchFn: typeof fetch): Promise<SearchHi
     signal: AbortSignal.timeout(SEARCH_TIMEOUT_MS)
   });
   if (!res.ok) throw new Error(`exa search ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const data = (await res.json()) as { results?: ExaResult[] };
+  const data = (await res.json()) as { results?: ExaResult[]; costDollars?: { total?: number } };
+  recordExaCost(data.costDollars?.total);
   return (data.results ?? [])
     .filter((r) => r.url)
     .slice(0, MAX_HITS)
@@ -83,6 +86,20 @@ async function exaSearch(query: string, fetchFn: typeof fetch): Promise<SearchHi
       ...(r.publishedDate ? { publishedDate: r.publishedDate } : {}),
       ...(r.author ? { author: r.author } : {})
     }));
+}
+
+// Exa has no balance API, but every response reports its exact cost. When
+// EXA_COST_LEDGER points at a file, append one JSONL line per call so the
+// quota monitor can meter spend against a manually-anchored credit balance.
+// Never throws: metering must not break search.
+function recordExaCost(costDollars: number | undefined): void {
+  const ledger = process.env.EXA_COST_LEDGER;
+  if (!ledger || typeof costDollars !== "number" || !Number.isFinite(costDollars)) return;
+  try {
+    fs.appendFileSync(ledger, JSON.stringify({ atUtc: new Date().toISOString(), costDollars }) + "\n");
+  } catch {
+    /* metering is best-effort */
+  }
 }
 
 interface ExaResult {
