@@ -35,7 +35,7 @@
 预测器的联网搜索层静默劣化，污染了部分历史产物。可执行清单见 [docs/agent-handoff.md](agent-handoff.md)（P0）。
 
 - **坏在哪**：两条搜索路径都在爬免 key 的 DuckDuckGo，而 DDG 现在返回 HTTP-200 的 CAPTCHA 页，旧代码解析成"搜索成功、0 结果"——run 被告知"没有证据"，真相是"搜索没跑"。2026-08-22 实测 6 条查询 4 条被墙。
-- **污染窗口**：paper-agent 模拟盘**整个生命周期**（其 DeepSeek 工具循环 2026-07-03 上线即用此后端；2026-07-02 已有 DDG 403 记录）——其 Brier 技巧分与每日反思是在大量评估实际断网的情况下产出的，需重新评估。实盘最后一天（2026-06-10）每个 run 的 12 条 pulse 新闻查询有 6–8 条空（06-07 还只有 1/16）。世界杯盲测与 Delta PM **不受影响**（不同管线）。
+- **污染窗口（2026-08-23 VM 归档审计后纠偏）**：paper-agent 模拟盘是**干净的**——33 个引擎档案全部记录 `provider: "claude"`（原生 WebSearch），Brier 分数从未依赖 DDG scraper；此前"全生命周期被污染"的说法有误。真正受影响：deepseek/kimi provider 路径的 runs（raven app 切换、forecast-api 指定 deepseek、本地实验，2026-07-03 起）+ 实盘最后一天（2026-06-10）每 run 12 条 pulse 新闻查询 6–8 条空（06-07 还只有 1/16）。世界杯盲测与 Delta PM **不受影响**。
 - **已修**：DuckDuckGo 彻底删除；搜索改走 Exa（`EXA_API_KEY`，首选）或 Tavily，无 key 大声报错（PR #108）。2026-08-23 已部署生产：VM 的 paper-agent/forecast-api 带 key 跑新代码（容器内 Exa 调用实测通过）。待办：上 VM 审计归档 + 给受污染报告打 caveat。
 
 ## 系统设计
