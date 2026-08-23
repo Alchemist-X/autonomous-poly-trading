@@ -30,6 +30,14 @@
 - **交易决策记录 / 净值曲线**：[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
 - **链上持仓 / 成交（Polymarket profile）**：[`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
+## ⚠️ 已知问题 — 搜索证据质量（用户 2026-08-23 标记，下次重点修）
+
+预测器的联网搜索层静默劣化，污染了部分历史产物。可执行清单见 [docs/agent-handoff.md](agent-handoff.md)（P0）。
+
+- **坏在哪**：两条搜索路径都在爬免 key 的 DuckDuckGo，而 DDG 现在返回 HTTP-200 的 CAPTCHA 页，旧代码解析成"搜索成功、0 结果"——run 被告知"没有证据"，真相是"搜索没跑"。2026-08-22 实测 6 条查询 4 条被墙。
+- **污染窗口**：paper-agent 模拟盘**整个生命周期**（其 DeepSeek 工具循环 2026-07-03 上线即用此后端；2026-07-02 已有 DDG 403 记录）——其 Brier 技巧分与每日反思是在大量评估实际断网的情况下产出的，需重新评估。实盘最后一天（2026-06-10）每个 run 的 12 条 pulse 新闻查询有 6–8 条空（06-07 还只有 1/16）。世界杯盲测与 Delta PM **不受影响**（不同管线）。
+- **已修**（PR #108）：DuckDuckGo 彻底删除；搜索改走 Exa（`EXA_API_KEY`，首选）或 Tavily，无 key 大声报错。待办：生产环境配 key + 上 VM 审计归档 + 给受污染报告打 caveat。
+
 ## 系统设计
 
 交易侧围绕 **Market Pulse** 这一核心组件设计：让 AI 自主评估事件发生的概率，动态地从信息源收集证据，将其与市场隐含的赔率对比，综合交易的 edge 和资金回报效率给出交易指示。

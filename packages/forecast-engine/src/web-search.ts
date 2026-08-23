@@ -2,11 +2,15 @@
 // (DeepSeek/Kimi), used by the tool loop in deepseek-agent.ts.
 //
 // Backends, in preference order:
-//   - exa         when EXA_API_KEY is set (neural/semantic index; returns
-//                 query-anchored highlights and a publishedDate per result)
-//   - tavily      when TAVILY_API_KEY is set (reliable, 1k free credits/mo)
-//   - duckduckgo  keyless default (HTML endpoint; fine at this call volume)
-// The backend can be pinned via FORECAST_WEB_SEARCH=exa|tavily|duckduckgo.
+//   - exa     when EXA_API_KEY is set (neural/semantic index; returns
+//             query-anchored highlights and a publishedDate per result)
+//   - tavily  when TAVILY_API_KEY is set (reliable, 1k free credits/mo)
+// The backend can be pinned via FORECAST_WEB_SEARCH=exa|tavily.
+//
+// There is deliberately NO keyless fallback. The old DuckDuckGo HTML scraper
+// was removed 2026-08-22 (user decision): DDG bot-walls the scraper with
+// HTTP-200 CAPTCHA pages, which parsed as "0 results" and silently fed the
+// model "no evidence exists" when the search never ran. No key -> loud error.
 
 export interface SearchHit {
   title: string;
@@ -27,15 +31,26 @@ const PAGE_TEXT_CAP = 6_000;
 const SNIPPET_CAP = 300;
 const UA = "Mozilla/5.0 (X11; Linux x86_64) raven-forecast-research/1.0";
 
-export type SearchBackend = "exa" | "tavily" | "duckduckgo";
+export type SearchBackend = "exa" | "tavily";
 
+// Resolve the active backend or throw an actionable error. Throwing (rather
+// than degrading) is the contract: the tool loop surfaces the message to the
+// model as "[tool failed: ...]" and the run's search trace shows the truth.
 export function backendName(): SearchBackend {
   const pin = (process.env.FORECAST_WEB_SEARCH ?? "").trim().toLowerCase();
   if (pin === "exa") return "exa";
   if (pin === "tavily") return "tavily";
-  if (pin === "duckduckgo") return "duckduckgo";
+  if (pin === "duckduckgo") {
+    throw new Error(
+      "FORECAST_WEB_SEARCH=duckduckgo: the duckduckgo backend was removed 2026-08-22 " +
+        "(bot-walled scraper). Set EXA_API_KEY (preferred) or TAVILY_API_KEY and pin exa|tavily."
+    );
+  }
   if (process.env.EXA_API_KEY) return "exa";
-  return process.env.TAVILY_API_KEY ? "tavily" : "duckduckgo";
+  if (process.env.TAVILY_API_KEY) return "tavily";
+  throw new Error(
+    "web search enabled but no backend key found: set EXA_API_KEY (preferred) or TAVILY_API_KEY."
+  );
 }
 
 // Exa search endpoint. `contents.highlights` is what makes the result usable
@@ -93,65 +108,8 @@ async function tavilySearch(query: string, fetchFn: typeof fetch): Promise<Searc
     .map((r) => ({ title: r.title ?? "", url: r.url!, snippet: (r.content ?? "").slice(0, SNIPPET_CAP) }));
 }
 
-// DuckDuckGo's HTML endpoint wraps result hrefs as /l/?uddg=<encoded real url>.
-export function parseDuckDuckGoHtml(html: string): SearchHit[] {
-  const hits: SearchHit[] = [];
-  const linkRe = /<a[^>]+class="result__a"[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g;
-  const snippetRe = /<a[^>]+class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g;
-  const snippets: string[] = [];
-  let sm: RegExpExecArray | null;
-  while ((sm = snippetRe.exec(html)) && snippets.length < MAX_HITS * 2) {
-    snippets.push(stripTags(sm[1] ?? ""));
-  }
-  let m: RegExpExecArray | null;
-  while ((m = linkRe.exec(html)) && hits.length < MAX_HITS) {
-    const href = m[1] ?? "";
-    let url = href;
-    const uddg = href.match(/[?&]uddg=([^&]+)/);
-    if (uddg?.[1]) {
-      try {
-        url = decodeURIComponent(uddg[1]);
-      } catch {
-        url = href;
-      }
-    }
-    if (!/^https?:\/\//i.test(url)) continue;
-    hits.push({ title: stripTags(m[2] ?? ""), url, snippet: snippets[hits.length] ?? "" });
-  }
-  return hits;
-}
-
-// DuckDuckGo answers bot-detected requests with HTTP 200 and a CAPTCHA page
-// ("select all squares containing a duck") that carries no results. The result
-// parser reads that as zero hits, so a blocked scraper is indistinguishable
-// from a genuine empty result — the model is told "no evidence exists" when
-// the truth is "the search never ran". Detect the challenge and fail loudly.
-export function isDuckDuckGoChallenge(html: string): boolean {
-  return /anomaly-modal__|challenge-form/i.test(html);
-}
-
-async function duckDuckGoSearch(query: string, fetchFn: typeof fetch): Promise<SearchHit[]> {
-  const res = await fetchFn(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-    headers: { "user-agent": UA, accept: "text/html" },
-    signal: AbortSignal.timeout(SEARCH_TIMEOUT_MS)
-  });
-  if (!res.ok) throw new Error(`duckduckgo search ${res.status}`);
-  const html = await res.text();
-  if (isDuckDuckGoChallenge(html)) {
-    throw new Error("duckduckgo search blocked: bot-check challenge page (HTTP 200, no results)");
-  }
-  return parseDuckDuckGoHtml(html);
-}
-
 export async function webSearch(query: string, fetchFn: typeof fetch = fetch): Promise<SearchHit[]> {
-  switch (backendName()) {
-    case "exa":
-      return exaSearch(query, fetchFn);
-    case "tavily":
-      return tavilySearch(query, fetchFn);
-    default:
-      return duckDuckGoSearch(query, fetchFn);
-  }
+  return backendName() === "exa" ? exaSearch(query, fetchFn) : tavilySearch(query, fetchFn);
 }
 
 export function stripTags(html: string): string {

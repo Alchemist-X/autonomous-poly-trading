@@ -137,8 +137,9 @@ export async function evaluateMarket(market: MarketInfo, opts: EvaluateOptions):
     FORECAST_AGENT_TIMEOUT_MS: process.env.FORECAST_AGENT_TIMEOUT_MS ?? "600000"
   };
   // For the OpenAI-compatible path, web research is ON by default (function-
-  // calling loop; keyless DuckDuckGo unless TAVILY_API_KEY). Opt out with
-  // FORECAST_WEB_SEARCH=0. The claude provider has native WebSearch.
+  // calling loop; needs EXA_API_KEY or TAVILY_API_KEY — no keyless fallback
+  // since 2026-08-22). Opt out with FORECAST_WEB_SEARCH=0. The claude
+  // provider has native WebSearch.
   if (opts.provider === "deepseek" && !env.FORECAST_WEB_SEARCH) env.FORECAST_WEB_SEARCH = "1";
   // Backfill the key from the repo-root .env.deepseek in local dev.
   const envFile = path.join(root, ".env.deepseek");

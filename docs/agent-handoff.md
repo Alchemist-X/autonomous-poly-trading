@@ -15,7 +15,7 @@
 > ① **发现的 bug（比集成本身重要）**：DuckDuckGo 现在对我们的 scraper 返回 HTTP 200 的 CAPTCHA 挑战页，旧代码把它解析成"搜索成功、0 结果"——模型被告知"没有证据"而真相是"搜索没跑"。已在 `packages/forecast-engine/src/web-search.ts` fail-fast（识别 `anomaly-modal__`/`challenge-form` 标记即抛错，真 no-results 仍返回空数组）。实测 6 条 GPT-6 查询里 4 条被挡。
 > ② **Exa backend**：`EXA_API_KEY` 存在时自动选 exa（优先级 exa > tavily > duckduckgo，`FORECAST_WEB_SEARCH` 可 pin），请求走 Exa 官方 skill 推荐的最简形态（query + type:auto + contents.highlights，只加 numResults:8 对齐现有预算）；SearchHit 新增可选 publishedDate/author，tool 描述提示模型用它判断时效。12 单测新增全绿，全仓 1058 测试绿。
 > ③ **A/B 实测（GPT-6 released-by 市场，`scripts/forecast/search-backend-compare.ts`，归档 runtime-artifacts/search-compare/）**：DDG 2/6 成功、0 带日期、且 q2 的 8 条里 3 条是 SEO 假消息（"GPT-6 已于 4 月发布"）；Exa 6/6 成功、48 hits、50% 带日期、7 条 ≤7 天，抓到完整证据链（8/1 Astra 命名 → 8/7 网络安全放缓 → 8/19 "9 月或上线"），latency 相当（~1.2s）。
-> ④ **待用户拍板**：(a) `services/orchestrator/src/pulse/web-search.ts` 是第二个独立 DDG scraper，喂真钱 pulse 链路，同样有 CAPTCHA 静默降级——只修 fail-fast 还是连 backend 一起换 exa；(b) 生产 env（VM / .env.pizza）是否配 EXA_API_KEY 启用。本地 key 在 gitignored `.env.exa`（600 权限）。英文版 handoff 已同步。
+> ④ **已拍板（2026-08-23）**：DDG 兜底彻底删除（无 key 大声报错）；pulse 链路同样换 Exa + 无 key 预检失败。用户同日标记「搜索质量重点修」→ 见 P0 首条与 README 顶部已知问题节。本地 key 在 gitignored `.env.exa`（600 权限）。英文版 handoff 已同步。
 >
 > 上次更新：2026-08-22 by Claude v3（**Delta PM Phase 0 全系统建成并实弹验证**，分支 `claude/delta-pm-dev`，PR 待合并）。
 > ① **交付物**：`packages/delta-pm-contracts`（zod 机器契约）+ `services/delta-pm`（:8792，feed 轮询/HL 行情归档/M0 事件研究/M1 两道闸门/M2 盲测分析/M3 决策/纸面执行/状态服务,两层并发:分析并行+决策单写者双 lane）+ `apps/delta-pm-console`（:3400,持仓+五段进度条+补全原文接缝,subagent 构建）+ compose/Dockerfile 两容器接线 + .env.example DELTAPM_* 段。55 单测绿,全仓 typecheck 绿。
@@ -262,6 +262,12 @@
 
 
 ## 🔴 P0 — 现在/今天
+
+- [ ] **【P0 · 2026-08-23 用户标记 · 下次重点修】搜索证据质量重建**：DDG CAPTCHA 静默降级污染了历史产物（README 顶部有摘要）。已修部分见 PR #108（Exa backend + DDG 删除 + fail-fast + A/B harness `scripts/forecast/search-backend-compare.ts`）。剩余动作：
+  1. **生产配 key**：VM（paper-agent / forecast-api / raven app）与 `.env.pizza` 补 `EXA_API_KEY` 并部署——**不配 key 现在会大声失败**（paper-agent 评估默认开搜索、pulse web-search 默认 enabled，部署前必须先配）；
+  2. **VM 归档审计**：扫 paper-agent 自 2026-07-03 以来的评估归档，量化"空搜索/零源轮次"占比，给受污染窗口的 Brier 技巧分（−0.37/−0.53"独立判断落后市场"）与每日反思结论打 caveat——负技巧分可能部分是断网评估假象；
+  3. **pulse 查询语式重写**：`buildPulseWebSearchQueries` 的引号短语 + `site:` 语式是关键词引擎产物，Exa 语义搜索下改自然语言（A/B harness 可直接验证）；
+  4. 决定 Tavily 是留作 fallback 还是删掉；世界杯盲测与 Delta PM 已确认不受影响，不用查。
 
 - [x] **【P00 · 已实现】pulse-direct market binding 校验**：2026-05-05 已修复。`pulse-entry-planner` 不再用同 event URL 直接绑定多 strike 市场；`execution-planning` 增加 P00 gate：marketSlug / tokenId / outcomeLabel / rule threshold 严格一致，bestBid / bestAsk / decision price 允许 3% 以内误差；`pulse-live` 遇到 `blocked_by_market_binding` 在 live 模式 fail-fast。覆盖测试：`pulse-entry-planner.test.ts` / `execution-planning.test.ts` / 全量 `pnpm test` 392 pass。
 - [x] **【P0 · v1 已实现】现有仓位独立研究复审**：2026-05-07 `pulse-live` 会在随机 Pulse 候选之外为每个远端持仓生成 `position-research.json`，抓 Gamma event/market payload + held-token orderbook；`Position Review` 优先消费 `positionResearch`，无覆盖仓位不再默认 stale hold，而是标 `fresh-position-research` / `position-research-refreshed`（near stop-loss 仍 reduce）。**残余缺口**：还没有模型级概率重估、评论/外部来源 crawler；当前是 factual refresh + artifact，不要误当完整外部研究 agent。

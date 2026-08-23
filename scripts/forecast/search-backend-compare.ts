@@ -1,6 +1,7 @@
 // A/B harness for the forecast-engine web-search backends.
 //
-// Runs the SAME query set through two backends (default: duckduckgo vs exa)
+// Runs the SAME query set through one or more backends (default: exa; pass
+// --backends exa,tavily to A/B the keyed backends)
 // and reports what a forecaster actually cares about: how fast, how many
 // distinct sources, how many results carry a publish date, how fresh those
 // dates are, and how much usable text lands in the model's context.
@@ -10,7 +11,7 @@
 //
 // Usage:
 //   ENV_FILE=.env.exa tsx scripts/forecast/search-backend-compare.ts
-//   ... --backends duckduckgo,exa --label gpt-6
+//   ... --backends exa,tavily --label gpt-6
 
 import fs from "node:fs";
 import path from "node:path";
@@ -144,7 +145,7 @@ function summarize(backend: SearchBackend, runs: QueryRun[], now: number): Backe
 
 async function main(): Promise<void> {
   const envPath = loadEnvFile();
-  const backends = arg("backends", "duckduckgo,exa").split(",").map((b) => b.trim()) as SearchBackend[];
+  const backends = arg("backends", "exa").split(",").map((b) => b.trim()) as SearchBackend[];
   const label = arg("label", "compare");
   const now = Date.now();
   const stamp = new Date(now).toISOString().replace(/[:.]/g, "-");
@@ -153,14 +154,13 @@ async function main(): Promise<void> {
   log.info(`env file: ${envPath ?? "(none loaded — using process env)"}`);
   log.info(`backends: ${backends.join(" vs ")}`);
   for (const b of backends) {
-    const need = b === "exa" ? "EXA_API_KEY" : b === "tavily" ? "TAVILY_API_KEY" : null;
-    if (need && !process.env[need]) {
+    const need = b === "exa" ? "EXA_API_KEY" : "TAVILY_API_KEY";
+    if (!process.env[need]) {
       log.err(`backend "${b}" needs ${need}, which is not set. Aborting before spending any calls.`);
       process.exitCode = 1;
       return;
     }
-    if (need) log.ok(`${b}: ${need} present (len=${process.env[need]!.length})`);
-    else log.ok(`${b}: keyless`);
+    log.ok(`${b}: ${need} present (len=${process.env[need]!.length})`);
   }
 
   const runs: QueryRun[] = [];

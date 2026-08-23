@@ -33,7 +33,7 @@ The `full-pulse` prompt now requires the LLM to read `stage_flow` and organize m
 | --- | --- | --- |
 | 1. Clarify definition | Partial | Polymarket rules and question text are fetched, but Yes/No boundaries, representative authority, timezone, and edge cases are still mainly written by the LLM in Markdown rather than validated as JSON. |
 | 2. Base reasoning/query | Partial | Queries are template-built from question/category/tags; there is no LLM-generated node-specific query plan yet. |
-| 3. Evidence collection | Partial | Pulse has Polymarket page/comment/orderbook collection plus DuckDuckGo snippets; it does not reliably fetch full page bodies, Twitter/X, Reddit, Telegram, military maps, or some local/party media. |
+| 3. Evidence collection | Partial | Pulse has Polymarket page/comment/orderbook collection plus Exa semantic search (with publish dates; the DuckDuckGo scraper was removed 2026-08-22); it does not reliably fetch full page bodies, Twitter/X, Reddit, Telegram, military maps, or some local/party media. |
 | 4. Evidence weighting | Partial | Reports contain evidence chains and confidence language, but each evidence item's direction, strength, recency, primary-source status, and corroboration are not yet stored in a typed evidence ledger. |
 | 5. Structured model | Partial | The LLM can write `P(A) x P(B|A) x P(C|A,B)`, but model nodes and arithmetic checks are not forced into typed artifacts. |
 | 6. Bayesian update | Partial | The LLM can explain updates, but baseline, deltas, final probability, and credible interval are not independently audited; there is no second-pass verifier. |
