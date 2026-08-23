@@ -117,6 +117,29 @@ describe("decideEntry", () => {
     const d = decideEntry(ctx({ thesis: thesis({ fairImpactPct: { min: 0.5, max: 2, point: 1 } }), view: view({ realizedExcessSinceT0Pct: 0.4 }) }));
     expect(d.action).toBe("no_trade");
     expect(d.reason).toContain("residual edge");
+    // Audit carries the full rejection arithmetic (IC-memo view).
+    expect(d.audit?.edge?.residualPct).toBeCloseTo(0.1, 5);
+    expect(d.audit?.threshold?.thresholdPct).toBeGreaterThan(0);
+    expect(d.audit?.threshold?.volFloorPct).toBeGreaterThan(d.audit!.threshold!.costFloorPct);
+  });
+
+  it("open decision carries the complete audit trail", () => {
+    const d = decideEntry(ctx());
+    expect(d.action).toBe("open");
+    const a = d.audit!;
+    expect(a.vetoedBy).toBeNull();
+    expect(a.edge!.conservativePct).toBe(3);
+    expect(a.stopMenu!.chosenPx).toBeCloseTo(192);
+    expect(a.stopMenu!.hardFloorPx).toBeCloseTo(160);
+    expect(a.sizing!.intendedNotionalUsd).toBe(2500);
+    expect(a.sizing!.guards.length).toBeGreaterThanOrEqual(4);
+    expect(a.sizing!.guards.every((g) => typeof g.capUsd === "number")).toBe(true);
+    expect(a.sizing!.leverage.chosen).toBeLessThanOrEqual(3);
+  });
+
+  it("vetoes are tagged in the audit", () => {
+    const d = decideEntry(ctx({ portfolio: portfolio({ halted: true, haltedReason: "x" }) }));
+    expect(d.audit?.vetoedBy).toBe("portfolio_halt");
   });
 
   it("adverse drift reclassifies instead of chasing inflated edge", () => {

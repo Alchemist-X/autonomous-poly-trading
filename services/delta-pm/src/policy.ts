@@ -6,8 +6,24 @@
 // position; portfolio halt at −25% total loss from initial capital. Both are
 // enforced here and (the stop) mirrored venue-side in later phases.
 
-import type { PMDecision, Portfolio, Position, TradeThesis, UniverseEntry } from "@autopoly/delta-pm-contracts";
+import type { DecisionAudit, PMDecision, Portfolio, Position, TradeThesis, UniverseEntry } from "@autopoly/delta-pm-contracts";
 import { config } from "./config.js";
+
+// --- audit helpers: every decision carries its full arithmetic (IC-memo view)
+
+function auditMarketView(view: MarketView): NonNullable<DecisionAudit["marketView"]> {
+  return {
+    markPx: view.markPx,
+    dailyVolPct: view.dailyVolPct,
+    maxDailyMovePct: view.maxDailyMovePct,
+    fundingHourly: view.fundingHourly,
+    beta: view.beta
+  };
+}
+
+function vetoAudit(vetoedBy: string, view?: MarketView): DecisionAudit {
+  return { vetoedBy, edge: null, threshold: null, stopMenu: null, sizing: null, marketView: view ? auditMarketView(view) : null };
+}
 
 export interface MarketView {
   markPx: number;
@@ -53,8 +69,13 @@ function decisionBase(ctx: EntryContext, action: PMDecision["action"], reason: s
     bindingConstraint: null,
     residualEdgePct: null,
     reason,
+    audit: null,
     createdAtUtc: ctx.nowUtc
   };
+}
+
+function veto(ctx: EntryContext, reason: string, vetoedBy: string): PMDecision {
+  return { ...decisionBase(ctx, "no_trade", reason), audit: vetoAudit(vetoedBy, ctx.view) };
 }
 
 export function grossNotional(portfolio: Portfolio, marks: Map<string, number>): number {
@@ -85,21 +106,22 @@ export function decideEntry(ctx: EntryContext): PMDecision {
   const dirSign = thesis.direction === "long" ? 1 : -1;
 
   // Ordered vetoes — cheapest and most absolute first.
-  if (portfolio.halted) return decisionBase(ctx, "no_trade", `portfolio halted: ${portfolio.haltedReason ?? "unknown"}`);
-  if (thesis.contamination === "hard") return decisionBase(ctx, "no_trade", "thesis hard-contaminated by price reaction — analyst must re-run blind");
-  if (ctx.dayPnlPct <= -config.dailyLossStopPct) return decisionBase(ctx, "no_trade", `daily loss stop: day PnL ${(ctx.dayPnlPct * 100).toFixed(1)}% ≤ −${config.dailyLossStopPct * 100}%`);
+  if (portfolio.halted) return veto(ctx, `portfolio halted: ${portfolio.haltedReason ?? "unknown"}`, "portfolio_halt");
+  if (thesis.contamination === "hard") return veto(ctx, "thesis hard-contaminated by price reaction — analyst must re-run blind", "contamination_hard");
+  if (ctx.dayPnlPct <= -config.dailyLossStopPct)
+    return veto(ctx, `daily loss stop: day PnL ${(ctx.dayPnlPct * 100).toFixed(1)}% ≤ −${config.dailyLossStopPct * 100}%`, "daily_loss_stop");
 
   const existing = portfolio.positions.find((p) => p.ticker === thesis.ticker);
   if (existing) {
     if (existing.direction !== thesis.direction) {
-      return decisionBase(ctx, "no_trade", "conflicting direction vs open position — one net position per ticker; flip requires explicit review, not auto-entry");
+      return veto(ctx, "conflicting direction vs open position — one net position per ticker; flip requires explicit review, not auto-entry", "position_conflict");
     }
-    return decisionBase(ctx, "no_trade", "position already open in this direction (adds not enabled in V1)");
+    return veto(ctx, "position already open in this direction (adds not enabled in V1)", "position_exists");
   }
 
   const lastStop = portfolio.lastStopOutUtc[`${thesis.ticker}:${thesis.direction}`];
   if (lastStop && Date.parse(ctx.nowUtc) - Date.parse(lastStop) < config.cooldownHours * 3600_000) {
-    return decisionBase(ctx, "no_trade", `cooldown: stopped out same ticker+direction ${lastStop}, ${config.cooldownHours}h lockout`);
+    return veto(ctx, `cooldown: stopped out same ticker+direction ${lastStop}, ${config.cooldownHours}h lockout`, "cooldown");
   }
 
   // Earnings-calendar guard: never hold a fresh event trade into the name's
@@ -107,7 +129,7 @@ export function decideEntry(ctx: EntryContext): PMDecision {
   // so the guard is absolute; ops maintains nextEarningsUtc).
   const horizonUtc = new Date(Date.parse(ctx.nowUtc) + thesis.horizonHours * 3600_000).toISOString();
   if (entry.nextEarningsUtc && entry.nextEarningsUtc > ctx.nowUtc && entry.nextEarningsUtc < horizonUtc) {
-    return decisionBase(ctx, "no_trade", `scheduled earnings ${entry.nextEarningsUtc} inside horizon — event-gap risk exceeds the risk budget`);
+    return veto(ctx, `scheduled earnings ${entry.nextEarningsUtc} inside horizon — event-gap risk exceeds the risk budget`, "earnings_calendar");
   }
 
   // Residual edge on the CONSERVATIVE end of the fair-impact interval.
@@ -119,7 +141,7 @@ export function decideEntry(ctx: EntryContext): PMDecision {
   // Adverse-drift guard: market moving against the thesis inflates the naive
   // residual — that is disagreement, not opportunity.
   if (realizedPct * dirSign < -config.adverseDriftVolFraction * view.dailyVolPct * 100) {
-    return decisionBase(ctx, "no_trade", `adverse drift: market moved ${realizedPct.toFixed(2)}% against the thesis since t0 — reclassify, don't chase`);
+    return veto(ctx, `adverse drift: market moved ${realizedPct.toFixed(2)}% against the thesis since t0 — reclassify, don't chase`, "adverse_drift");
   }
 
   const holdDays = thesis.horizonHours / 24;
@@ -129,14 +151,36 @@ export function decideEntry(ctx: EntryContext): PMDecision {
   const fundingCostPct = Math.max(0, hourlyFunding * dirSign * thesis.horizonHours * 100);
   const slippagePct = config.slippageBudgetPctByTier[entry.liquidityTier] * 100;
   const roundTripPct = 2 * config.takerFeeRate * 100 + 2 * slippagePct + fundingCostPct;
-  const threshold = Math.max(config.entryCostMultiple * roundTripPct, config.entryVolFraction * view.dailyVolPct * 100 * Math.min(1, holdDays));
+  const costFloorPct = config.entryCostMultiple * roundTripPct;
+  const volFloorPct = config.entryVolFraction * view.dailyVolPct * 100 * Math.min(1, holdDays);
+  const threshold = Math.max(costFloorPct, volFloorPct);
+
+  const auditEdge: NonNullable<DecisionAudit["edge"]> = {
+    conservativePct,
+    pointPct: thesis.fairImpactPct.point,
+    realizedPct,
+    residualPct: residualSigned
+  };
+  const auditThreshold: NonNullable<DecisionAudit["threshold"]> = {
+    takerFeePct: config.takerFeeRate * 100,
+    slippagePct,
+    fundingPct: fundingCostPct,
+    roundTripPct,
+    costFloorPct,
+    volFloorPct,
+    thresholdPct: threshold
+  };
 
   if (residualSigned < threshold) {
-    return decisionBase(
-      ctx,
-      "no_trade",
-      `residual edge ${residualSigned.toFixed(2)}% below threshold ${threshold.toFixed(2)}% (conservative ${conservativePct}%, realized ${realizedPct.toFixed(2)}%)`
-    );
+    return {
+      ...decisionBase(
+        ctx,
+        "no_trade",
+        `residual edge ${residualSigned.toFixed(2)}% below threshold ${threshold.toFixed(2)}% (conservative ${conservativePct}%, realized ${realizedPct.toFixed(2)}%)`
+      ),
+      residualEdgePct: residualSigned,
+      audit: { vetoedBy: null, edge: auditEdge, threshold: auditThreshold, stopMenu: null, sizing: null, marketView: auditMarketView(view) }
+    };
   }
 
   // --- stop menu (deterministic, replayable) ---
@@ -147,21 +191,37 @@ export function decideEntry(ctx: EntryContext): PMDecision {
       ? Math.max(mark - 1.5 * atr, view.swingLowPx ?? 0)
       : Math.min(mark + 1.5 * atr, view.swingHighPx ?? Infinity);
   const hardFloorPx = mark * (1 - dirSign * config.hardStopAdversePct);
+  const atrStopPx = thesis.direction === "long" ? mark - 1.5 * atr : mark + 1.5 * atr;
   // Stop can never be looser than the user's −20% hard floor.
   stopPx = thesis.direction === "long" ? Math.max(stopPx, hardFloorPx) : Math.min(stopPx, hardFloorPx);
   const stopDistPct = Math.abs(mark - stopPx) / mark;
-  if (stopDistPct < 0.003) return decisionBase(ctx, "no_trade", "stop distance under 0.3% — structure too tight to size sanely");
+  const auditStopMenu: NonNullable<DecisionAudit["stopMenu"]> = {
+    atr20d: round(atr),
+    atrStopPx: round(atrStopPx),
+    swingPx: thesis.direction === "long" ? view.swingLowPx : view.swingHighPx,
+    hardFloorPx: round(hardFloorPx),
+    chosenPx: round(stopPx),
+    stopDistPct
+  };
+  if (stopDistPct < 0.003)
+    return {
+      ...decisionBase(ctx, "no_trade", "stop distance under 0.3% — structure too tight to size sanely"),
+      audit: { vetoedBy: "stop_too_tight", edge: auditEdge, threshold: auditThreshold, stopMenu: auditStopMenu, sizing: null, marketView: auditMarketView(view) }
+    };
 
   // --- sizing: fixed risk, then guard clipping (downward only) ---
   const riskBudget = thesis.confidence === "high" ? config.riskBudgetHighConfPct : config.riskBudgetPct;
   const intendedNotional = (equityUsd * riskBudget) / stopDistPct;
   let notional = intendedNotional;
   let binding: string | null = null;
+  const guardLog: NonNullable<DecisionAudit["sizing"]>["guards"] = [];
   const clip = (cap: number, label: string) => {
-    if (notional > cap) {
+    const clipped = notional > cap;
+    if (clipped) {
       notional = cap;
       binding = label;
     }
+    guardLog.push({ name: label, capUsd: Math.round(cap), notionalAfterUsd: Math.round(notional), clipped });
   };
 
   clip(equityUsd * config.tierCapPct[entry.liquidityTier], `tier${entry.liquidityTier}_cap`);
@@ -175,7 +235,8 @@ export function decideEntry(ctx: EntryContext): PMDecision {
     clip(Math.max(0, equityUsd * config.clusterCapPct - clusterGross), `cluster_cap:${tag}`);
   }
 
-  const leverage = Math.min(config.maxLeverage, 1 / (2 * view.maxDailyMovePct), entry.maxLeverageOnVenue);
+  const volLeverageCap = 1 / (2 * view.maxDailyMovePct);
+  const leverage = Math.min(config.maxLeverage, volLeverageCap, entry.maxLeverageOnVenue);
   if (entry.marginMode === "isolated") {
     const isolatedMarginUsed = portfolio.positions
       .filter((p) => p.leverage > 0)
@@ -184,8 +245,28 @@ export function decideEntry(ctx: EntryContext): PMDecision {
     clip(marginHeadroom * leverage, "isolated_margin_cap");
   }
 
+  const auditSizing: NonNullable<DecisionAudit["sizing"]> = {
+    equityUsd: Math.round(equityUsd),
+    riskBudgetPct: riskBudget,
+    intendedNotionalUsd: Math.round(intendedNotional),
+    guards: guardLog,
+    finalNotionalUsd: Math.floor(notional),
+    leverage: { configCap: config.maxLeverage, volCap: round(volLeverageCap), venueCap: entry.maxLeverageOnVenue, chosen: round(leverage) }
+  };
+  const fullAudit: DecisionAudit = {
+    vetoedBy: null,
+    edge: auditEdge,
+    threshold: auditThreshold,
+    stopMenu: auditStopMenu,
+    sizing: auditSizing,
+    marketView: auditMarketView(view)
+  };
+
   if (notional < config.minTradeUsd) {
-    return decisionBase(ctx, "no_trade", `clipped notional $${notional.toFixed(0)} below min trade $${config.minTradeUsd} (binding: ${binding ?? "risk_budget"})`);
+    return {
+      ...decisionBase(ctx, "no_trade", `clipped notional $${notional.toFixed(0)} below min trade $${config.minTradeUsd} (binding: ${binding ?? "risk_budget"})`),
+      audit: { ...fullAudit, vetoedBy: "below_min_trade" }
+    };
   }
 
   const realizedRiskPct = (notional * stopDistPct) / equityUsd;
@@ -213,7 +294,8 @@ export function decideEntry(ctx: EntryContext): PMDecision {
     residualEdgePct: residualSigned,
     reason:
       `open ${thesis.direction} ${thesis.ticker}: residual ${residualSigned.toFixed(2)}% ≥ threshold ${threshold.toFixed(2)}%; ` +
-      `risk ${(realizedRiskPct * 100).toFixed(2)}% (intended ${(riskBudget * 100).toFixed(1)}%${binding ? `, clipped by ${binding}` : ""})`
+      `risk ${(realizedRiskPct * 100).toFixed(2)}% (intended ${(riskBudget * 100).toFixed(1)}%${binding ? `, clipped by ${binding}` : ""})`,
+    audit: fullAudit
   };
 }
 

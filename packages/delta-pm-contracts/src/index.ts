@@ -171,6 +171,68 @@ export type TradeThesis = z.infer<typeof tradeThesisSchema>;
 
 export const PM_ACTIONS = ["open", "add", "trim", "close", "flip", "no_trade"] as const;
 
+// Full decision arithmetic for human audit (the hedge-fund IC-memo view):
+// every number that produced the decision, itemized — never just a verdict.
+export const decisionAuditSchema = z.object({
+  vetoedBy: z.string().nullable(), // pre-arithmetic veto (halted/cooldown/earnings/...), null when arithmetic ran
+  edge: z
+    .object({
+      conservativePct: z.number(), // fairImpact conservative end
+      pointPct: z.number(),
+      realizedPct: z.number(), // excess realized since t0 at decision time
+      residualPct: z.number() // conservative − realized, signed toward trade direction
+    })
+    .nullable(),
+  threshold: z
+    .object({
+      takerFeePct: z.number(),
+      slippagePct: z.number(),
+      fundingPct: z.number(), // signed holding-period funding cost (floored at 0)
+      roundTripPct: z.number(),
+      costFloorPct: z.number(), // entryCostMultiple × roundTrip
+      volFloorPct: z.number(), // entryVolFraction × dailyVol × holdFactor
+      thresholdPct: z.number() // max(costFloor, volFloor)
+    })
+    .nullable(),
+  stopMenu: z
+    .object({
+      atr20d: z.number(),
+      atrStopPx: z.number(),
+      swingPx: z.number().nullable(),
+      hardFloorPx: z.number(),
+      chosenPx: z.number(),
+      stopDistPct: z.number()
+    })
+    .nullable(),
+  sizing: z
+    .object({
+      equityUsd: z.number(),
+      riskBudgetPct: z.number(),
+      intendedNotionalUsd: z.number(),
+      guards: z.array(
+        z.object({
+          name: z.string(), // tier1_cap / gross_cap / net_cap / cluster_cap:<tag> / isolated_margin_cap
+          capUsd: z.number(),
+          notionalAfterUsd: z.number(),
+          clipped: z.boolean()
+        })
+      ),
+      finalNotionalUsd: z.number(),
+      leverage: z.object({ configCap: z.number(), volCap: z.number(), venueCap: z.number(), chosen: z.number() })
+    })
+    .nullable(),
+  marketView: z
+    .object({
+      markPx: z.number(),
+      dailyVolPct: z.number(),
+      maxDailyMovePct: z.number(),
+      fundingHourly: z.number().nullable(),
+      beta: z.number().nullable()
+    })
+    .nullable()
+});
+export type DecisionAudit = z.infer<typeof decisionAuditSchema>;
+
 export const pmDecisionSchema = z.object({
   id: z.string().min(1),
   thesisId: z.string().nullable(), // null for pure risk-driven exits (stop/floor)
@@ -197,6 +259,7 @@ export const pmDecisionSchema = z.object({
   bindingConstraint: z.string().nullable(), // which guard clipped the size
   residualEdgePct: z.number().nullable(),
   reason: z.string().min(1),
+  audit: decisionAuditSchema.nullable().default(null),
   createdAtUtc: z.string().datetime({ offset: true })
 });
 export type PMDecision = z.infer<typeof pmDecisionSchema>;
