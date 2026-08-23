@@ -11,7 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-08-23 by Claude v2（**TI 收取通路修复:paste 三 bug + 新闻 source-of-truth 存档 + 闸门 1 跨源既有报道检索**，分支 `claude/theinformation-intake-fix-169e59`）。
+> 最后更新：2026-08-24 by Claude（**repo 复杂度评估 → 删除 managed 线与 rough-loop + README 双语补课**）。
+> ① **评估结论（用户问"repo 是否承载太多"）**：9 条产品线但包边界/部署边界健康，不拆 repo；真问题 = README 缺最活跃的 Delta PM/fleet 两条线 + 8k 行停摆代码。用户拍板：删 managed 线与 rough-loop，README 补课。
+> ② **删除（~1.6 万行）**：`apps/raven-managed` + `services/managed-trading` + `scripts/managed-pulse*.ts` + `deploy/managed-pulse.cron.example` + db 四张 `managed_*` 表（schema 层；无其他消费方，未生成 drop migration）；`services/rough-loop` + `packages/contracts/src/rough-loop.ts`（含 index 导出与测试）+ 根目录 `rough-loop.md`×2 + `docs/rough-loop-guide*` + `.env.example` ROUGH_LOOP 段 + root scripts 6 条；timeout-reference / dev-reference / onboarding 双语文档同步清理。
+> ③ **README 双语重构（把 forecasting 智能驱动的各产品讲清楚）**：新增"产品全家福"8 行状态表（含实盘"最后一次 live 2026-06-10"如实标注）、Delta PM 与多模型 fleet 两个新节、raven-delta vs delta-pm 命名说明、watch-live 加 /live-delta-pm；"系统设计"改为 forecast-engine 辐射图（进程隔离 = 盲测保证），四层图退居"架构总览（交易管线）"；归档表加 `delta-pm/` 行、文档索引加运维手册。
+> ④ **验证**：build 绿 / workspace typecheck 绿 / scripts tsc 基线 14→11（删掉的 managed 脚本占 3）/ 1020 测试全绿。⚠️ 踩坑：本机 Node 20.13.1 跑 `pnpm test` 会 ERR_REQUIRE_ESM（vitest 3 + vite 7 需 `require(esm)`，Node ≥20.19 或 22 才有）——非代码问题，CI 的新版 Node 不受影响。英文版 handoff 此条已同步。
+>
+> 上次更新：2026-08-23 by Claude v2（**TI 收取通路修复:paste 三 bug + 新闻 source-of-truth 存档 + 闸门 1 跨源既有报道检索**，分支 `claude/theinformation-intake-fix-169e59`）。
 > ① **paste(补全原文)通路三个实锤 bug 全修**——实测原通路比预想更糟:console 只传 `newsId+fullText`,构造出的 item 标题=`[补全原文] tag:...`、teaser 空 → matchUniverse 连池都匹配不上,**paste 之前是 100% 无效操作**(不止 t0 重置/去重抛硬币)。修法:新增 `runtime-artifacts/delta-pm/news/` **NewsItem source-of-truth 存档**(每条新闻一份,首条记录拥有身份+时间,后续 ingest 只补缺口,`store.upsertNewsItem`);paste 改为**对原信号的重跑**(`ingest.ts resolvePasteRerun`:news store → signalId 解引用 → ledger news_seen 兜底 → 全找不到就 404 拒绝,绝不猜 t0=粘贴时刻);去重抽成 `gate.findStaleDuplicate`(同 newsId 永不与自己旧信号相撞,跨 newsId 照旧拦)。`policy position_exists` 防重复开仓不变。
 > ② **闸门 1 跨源检索(用户 8/23 提出)**:池内新闻分析前先花 ~15s 搜"有没有人更早报过"(`coverage.ts`,复用 forecast-engine Exa/Tavily 后端;⚠️ forecast-engine 是 CJS 语境 TS,ESM 静态 import 命名导出探测失败,必须动态 import——coverage.ts 有注释)。命中更早同故事(>30min + 标题 Jaccard≥0.3)→ **t0 确定性前移(代码算,不交给 LLM;安全方向:算入更多已实现行情)**、firstSeen 升级(替代 Reportedly 的"published 上界"简化)、hit 列表进 gate1 prompt 让 LLM 判"是否炒冷饭"。无 key/失败 = signal `priorCoverage` 字段 + `coverage_check` ledger 行记**可见**跳过。实测真 Exa:2.1s、8 hits、5 月旧财报新闻(sim .05-.24)正确排除、昨日复述(sim .389)正确命中。
 > ③ **验证**:37 个新模块测试(gate1Rules 重要性判定表/去重/存档合并/paste 解析/coverage),全仓 1132 测试+typecheck 绿;本地实弹(rules 引擎+真 HL 行情):manual_news 全链 → console 式 paste → 响应 `rerun:true, t0Utc=原始时间, title=原标题`,同指纹重跑**未**被 stale 拦截,Δt 按真 t0 算(138min)。

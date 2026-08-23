@@ -10,16 +10,33 @@
 
 > English is the primary README. 中文版见 [docs/README.zh-CN.md](docs/README.zh-CN.md).
 
-Last updated: 2026-08-20
+Last updated: 2026-08-24
 
 ---
 
-**predict-raven** is an open-source **forecasting agent framework**: it lets an AI agent estimate the probability of real-world events, gather and weigh evidence continuously, and act on the result. The same agent core powers a family of applications today:
+**predict-raven** is an open-source **forecasting agent framework**: it lets an AI agent estimate the probability of real-world events, gather and weigh evidence continuously, and act on the result. The same forecasting intelligence powers a family of products today:
 
 - **Autonomous prediction-market trading** — the first autonomous, continuously-running trading agent on [Polymarket](https://polymarket.com). It estimates fair probabilities, compares them to market-implied odds, and trades the edge under hard, service-layer risk controls.
 - **Market-blind public forecasting** — transparent, Brier-scored probabilities for all 48 teams at the 2026 World Cup, deliberately produced **without ever reading a market price**. Live at **[forecasting-agent.com](https://forecasting-agent.com/world-cup)**, scored in public on the [track record page](https://forecasting-agent.com/world-cup/performance).
 - **Hosted Forecasting Engine** — the same iterative forecaster as hosted products: an interactive research console at [/engine](https://forecasting-agent.com/engine), the Raven Delta news-impact engine at [/delta](https://forecasting-agent.com/delta), and a forecast API + MCP service (probability + reasoning + evidence as JSON, plain text, or PDF). See [Forecasting Engine (hosted)](#forecasting-engine-hosted).
 - **Autonomous paper trading** — a simulation-only twin of the trading agent running unattended in the cloud: market-blind position evaluations three times a day, net-edge exits, and a daily self-review with a Brier skill score against the market. See [Autonomous paper trading](#autonomous-paper-trading-simulation).
+- **Delta PM — news-driven US-stock shadow trading** — an autonomous analyst→PM pipeline over US equities: a real news feed, two gates (does it matter / is it already priced in), a price-blind valuation thesis, and a fully audited shadow trade on tokenized US-stock perp market data. See [Delta PM](#delta-pm--news-driven-us-stock-shadow-trading).
+- **Multi-model forecast fleet** — seven independent $10k paper books, one per frontier model, running the identical harness so equity and Brier skill can be compared across models. See [Multi-model forecast fleet](#multi-model-forecast-fleet).
+
+### Product family at a glance
+
+| Product                          | What it does                                                                             | Status                                       | Code                                                                                       | Where to watch                                                                                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Polymarket live trading          | Real-money autonomous trading under hard risk controls                                   | Live loop paused (last live run 2026-06-10)  | `services/orchestrator` · `services/executor` · `scripts/pulse-live.ts`                    | [decision log](https://autopoly-pizza-spectator.vercel.app) · [on-chain profile](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e) |
+| World Cup market-blind forecasts | 87 Brier-scored questions, no market price ever read at forecast time                    | Group stage + knockout R32 scored in public  | `scripts/world-cup` · `packages/sports-data` / `sports-model` / `fifa-models` · `apps/web` | [/world-cup](https://forecasting-agent.com/world-cup) · [track record](https://forecasting-agent.com/world-cup/performance)                                 |
+| Forecasting Engine console       | Watch an iterative forecast unfold: plan, evidence cards, verdict dossier                | Live                                         | `apps/raven`                                                                               | [/engine](https://forecasting-agent.com/engine)                                                                                                             |
+| Forecast API + MCP               | `POST /v1/forecasts` → probability + reasoning + evidence (JSON / text / PDF); MCP tools | Live                                         | `services/forecast-api`                                                                    | hosted API                                                                                                                                                  |
+| Raven Delta                      | Paste a news item → attention verdict + 0–5 impacted US stocks + trading plan            | Live                                         | `apps/raven-delta`                                                                         | [/delta](https://forecasting-agent.com/delta)                                                                                                               |
+| Delta PM                         | Autonomous news→US-stock shadow PM with a full per-decision audit chain                  | Live, shadow mode (Phase 0 since 2026-08-23) | `services/delta-pm` · `apps/delta-pm-console` · `packages/delta-pm-contracts`              | [/live-delta-pm](https://forecasting-agent.com/live-delta-pm) · [/pm](https://forecasting-agent.com/pm)                                                     |
+| Autonomous paper trading         | $10k simulation twin of the trading agent, market-blind evals 3×/day                     | Live since 2026-07-03                        | `services/paper-agent`                                                                     | [/live-predict-raven](https://forecasting-agent.com/live-predict-raven)                                                                                     |
+| Multi-model forecast fleet       | 7 × $10k paper books, one per model, identical rules                                     | Live since 2026-08-23                        | `scripts/fleet` (+ `services/paper-agent`)                                                 | internal server (no public page yet)                                                                                                                        |
+
+> Naming note: **Raven Delta** (`/delta`) and **Delta PM** are different products. Raven Delta is the interactive surface — you paste one news item and read the impact analysis. Delta PM is the autonomous shadow portfolio manager — it consumes a live news feed end-to-end and books audited paper trades on its own.
 
 Watch live:
 
@@ -27,6 +44,8 @@ Watch live:
 - **Forecasting Engine console**: [forecasting-agent.com/engine](https://forecasting-agent.com/engine) (browsing is public; new runs are invite-gated)
 - **Raven Delta news-impact engine**: [forecasting-agent.com/delta](https://forecasting-agent.com/delta) (invite-gated)
 - **Paper-trading book review**: [forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven) (invite-gated, live VM snapshot)
+- **Delta PM decision-audit page**: [forecasting-agent.com/live-delta-pm](https://forecasting-agent.com/live-delta-pm) (invite-gated, live VM ledger)
+- **Delta PM operator console**: [forecasting-agent.com/pm](https://forecasting-agent.com/pm) (token-gated)
 - **Trading decision log / equity curve**: [autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
 - **On-chain positions / fills (Polymarket profile)**: [`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
@@ -40,9 +59,31 @@ The forecaster's web-search layer silently degraded and contaminated past output
 
 ## System Design
 
-The trading side is built around a single core component, **Market Pulse**: it lets the AI independently estimate the probability of an event, dynamically gathers evidence from information sources, compares that evidence against the market's implied odds, and issues trading instructions that combine edge with capital return efficiency.
+Everything in this repo is built around one capability: an AI agent that can research a question about the future, weigh cited evidence, and defend a probability. Its purest expression is the reusable iterative forecaster in [`packages/forecast-engine`](packages/forecast-engine); several products run that engine directly, always as an isolated child process:
 
-The same evidence-gathering core is packaged as a standalone engine ([`packages/forecast-engine`](packages/forecast-engine)) and also runs in a **market-blind** mode that never reads odds at all — used for the public World Cup forecasting product (see [Market-blind forecasting](#market-blind-forecasting) below) and the hosted Forecasting Engine surfaces.
+```
+                    packages/forecast-engine
+              (iterative evidence forecaster)
+                            │
+        spawned as an isolated process per question
+       (scripts/forecast/cli.ts — process isolation is
+        also what enforces market-blindness: the child
+        sees only the question and settlement rules)
+                            │
+     ┌──────────────────────┼──────────────────────────┐
+     ▼                      ▼                          ▼
+ /engine research     Forecast API + MCP     paper-trading books
+ console              (services/            (services/paper-agent:
+ (apps/raven)          forecast-api)         the Tokyo $10k book +
+                                             the 7-book model fleet)
+```
+
+The other product lines apply the same evidence-first discipline through their own purpose-built pipelines:
+
+- **Polymarket live trading** — **Market Pulse** research + a service-layer risk engine (`services/orchestrator` / `services/executor`): the AI independently estimates event probabilities, gathers evidence, compares against market-implied odds, and issues trading instructions that combine edge with capital return efficiency.
+- **World Cup blind forecasts** — a statistical core (live Elo prior, Davidson three-way model, Monte-Carlo bracket simulation) plus bounded, source-cited Bayesian evidence updates (`scripts/world-cup`, `packages/sports-*`).
+- **Raven Delta** — a news→impacted-stocks analyzer with its own LLM provider seam, modeled on the engine's adapters (`apps/raven-delta`).
+- **Delta PM** — a two-gate news judgment, a price-blind valuation thesis, and a PM decision engine with per-decision audit records (`services/delta-pm`).
 
 ### Why let an Agent do this
 
@@ -64,7 +105,7 @@ The 2026 World Cup deployment is the public showcase — 87 questions (champion,
 
 - **Statistical prior**: live Elo ratings feed a Davidson three-way model for single matches; tournament questions run 100,000 Monte-Carlo simulations over the official bracket.
 - **Bayesian update**: key evidence (injuries, lineups, form, venue/altitude/weather) is converted into a bounded adjustment on the prior — at most ±8 percentage points per match, and nothing moves without a cited source.
-- **Public scoring**: every forecast is Brier-scored in public after the match settles; wrong calls stay on the record. The [track record page](https://forecasting-agent.com/world-cup/performance) benchmarks the blind forecasts *after the fact* against Polymarket's implied probabilities at forecast time — Mock PNL, Brier skill score vs the market, calibration (ECE), and hit rate — for both the group stage and the knockout round of 32.
+- **Public scoring**: every forecast is Brier-scored in public after the match settles; wrong calls stay on the record. The [track record page](https://forecasting-agent.com/world-cup/performance) benchmarks the blind forecasts _after the fact_ against Polymarket's implied probabilities at forecast time — Mock PNL, Brier skill score vs the market, calibration (ECE), and hit rate — for both the group stage and the knockout round of 32.
 
 Market data is used only for event structure and settlement mapping (slug / conditionId / resolution rules); price fields are stripped at cache-write time. Code lives in `scripts/world-cup/`, `packages/sports-data/`, `packages/sports-model/`, and `apps/web/app/world-cup/`. This is probability research, not betting advice.
 
@@ -74,11 +115,11 @@ The evidence-gathering core is packaged as a reusable **iterative event forecast
 
 Three hosted surfaces run this engine on a cloud VM, all under [forecasting-agent.com](https://forecasting-agent.com):
 
-| Surface | What it is | Code |
-| --- | --- | --- |
-| [`/engine`](https://forecasting-agent.com/engine) | Interactive research console (EN / 中文) — watch a run unfold step by step: plan checklist, evidence cards, verdict dossier | `apps/raven` |
-| [`/delta`](https://forecasting-agent.com/delta) | **Raven Delta** news-impact engine — paste a news item, get an attention verdict (with first-seen timing), 0–5 impacted US stocks with direction / magnitude / confidence, and a trading plan; email + WebSocket push | `apps/raven-delta` |
-| Forecast API + MCP | `POST /v1/forecasts {question}` → probability + reasoning + evidence as JSON, plain text, or a PDF dossier; also exposed as MCP tools (`forecast_start` / `forecast_status` / `forecast_result`) | `services/forecast-api` |
+| Surface                                           | What it is                                                                                                                                                                                                            | Code                    |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| [`/engine`](https://forecasting-agent.com/engine) | Interactive research console (EN / 中文) — watch a run unfold step by step: plan checklist, evidence cards, verdict dossier                                                                                           | `apps/raven`            |
+| [`/delta`](https://forecasting-agent.com/delta)   | **Raven Delta** news-impact engine — paste a news item, get an attention verdict (with first-seen timing), 0–5 impacted US stocks with direction / magnitude / confidence, and a trading plan; email + WebSocket push | `apps/raven-delta`      |
+| Forecast API + MCP                                | `POST /v1/forecasts {question}` → probability + reasoning + evidence as JSON, plain text, or a PDF dossier; also exposed as MCP tools (`forecast_start` / `forecast_status` / `forecast_result`)                      | `services/forecast-api` |
 
 Engine runs are metered: a daily quota plus file-backed invite codes with per-code limits and usage metering.
 
@@ -92,6 +133,27 @@ A **simulation-only** twin of the trading agent ([`services/paper-agent`](servic
 - **Daily reflection** — the agent writes a daily self-review: counterfactual exit alpha, Brier calibration, and a **Brier skill score vs the market** — the standing answer to "is the agent actually beating the market?".
 
 The book is reviewed publicly at [forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven) (invite-gated): a live snapshot pulled from the VM at request time, the equity curve, the closed-round table, and the effective run parameters.
+
+## Delta PM — news-driven US-stock shadow trading
+
+**Delta PM** takes the forecasting discipline into US equities: an autonomous analyst→PM pipeline that reads a real news feed and decides, for each item, whether it is worth a trade — then books that trade on a **shadow ledger** (paper only, zero exchange credentials, no order endpoints). Market data comes from tokenized US-stock perpetuals on Hyperliquid; the tradable universe is ~20 large-cap US tech names.
+
+The pipeline runs in stages, each with its own contract:
+
+- **Two gates before any analysis money is spent** — gate 1: does this news matter for the universe at all? gate 2: is it _already priced in_, judged by first-seen timing of the story crossed with the actual price reaction since then. Most items die here at near-zero LLM cost.
+- **Price-blind thesis** — for survivors, an analyst pass writes a valuation thesis (impact path, EPS linkage, stated assumptions) **without seeing the price reaction**, so the thesis can't rationalize the chart.
+- **PM decision** — a deterministic decision layer sizes the trade only if the residual edge (thesis-implied move minus what the market already moved, β-adjusted against an RTH-aligned benchmark) clears a threshold, under tiered position caps, a **−20% per-position hard stop**, and a **−25% portfolio halt**.
+- **Full audit chain** — every decision (including every rejection) records the edge decomposition, each sizing guard it passed through, and veto tags. The chain is reviewable end-to-end at [/live-delta-pm](https://forecasting-agent.com/live-delta-pm) (invite-gated), pulled live from the VM ledger.
+
+Phase 0 (shadow mode) has been running unattended on the cloud VM since 2026-08-23. Code: [`packages/delta-pm-contracts`](packages/delta-pm-contracts) (machine contracts), [`services/delta-pm`](services/delta-pm) (engine, port 8792), [`apps/delta-pm-console`](apps/delta-pm-console) (operator console, port 3400, public at [/pm](https://forecasting-agent.com/pm) behind a token gate); operations manual at [`docs/delta-pm-operations.md`](docs/delta-pm-operations.md). Not investment advice; no real orders are placed.
+
+## Multi-model forecast fleet
+
+The paper-trading agent doubles as a **model benchmark harness**: seven independent $10k paper books run the identical code, rules, and evaluation cadence — the only variable is the model doing the forecasting (Claude Fable / Opus / Sonnet, GPT-5.6 ×2 via the Codex CLI provider, Kimi K3, DeepSeek v4-flash). Ledgers are fully isolated per book; evaluation slots are staggered around the clock.
+
+The standing question it answers: **with the harness held constant, which model actually forecasts better?** Each book accrues its own equity curve and Brier skill score against the market, so the comparison is apples-to-apples in a way one-off benchmark runs are not.
+
+The fleet runs unattended on a separate always-on server (live since 2026-08-23). A monitor tracks each provider's quota and burn-rate waterlines and posts a daily digest; fleet tooling lives in [`scripts/fleet`](scripts/fleet). There is no public page for the fleet yet.
 
 ## Quick Start
 
@@ -153,9 +215,9 @@ Expected: the Agent places real orders based on the recommendations from step 3 
 
 > For concrete pnpm commands (`forecast:*`; the old `pulse:*` names remain as compatibility aliases), env vars, and archive directories, see [docs/diagrams/dev-reference.md](docs/diagrams/dev-reference.md).
 
-## Architecture Overview
+## Architecture Overview (trading pipeline)
 
-The system has four layers; data flows top to bottom:
+The real-money Polymarket line is organised in four layers; data flows top to bottom. (For how the other product lines relate to the shared forecasting core, see [System Design](#system-design) above.)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -196,11 +258,11 @@ Custom Agents are plugged in via a template command configured through `<PROVIDE
 
 Model capability is named in three tiers after the Norse Norns, so "which model" is one memorable choice instead of a raw model id scattered across env vars:
 
-| Tier | Norn | Use | Anthropic | OpenAI |
-| --- | --- | --- | --- | --- |
-| **Urd** | past / origin | light & fast — prescreen, high-frequency calls | `claude-haiku-4-5-20251001` | `gpt-4o-mini` |
-| **Verdandi** | present | balanced default | `claude-sonnet-4-6` | `gpt-4o` |
-| **Skuld** | future | flagship — deepest reasoning, highest quality | `claude-opus-4-8` | `gpt-4o` |
+| Tier         | Norn          | Use                                            | Anthropic                   | OpenAI        |
+| ------------ | ------------- | ---------------------------------------------- | --------------------------- | ------------- |
+| **Urd**      | past / origin | light & fast — prescreen, high-frequency calls | `claude-haiku-4-5-20251001` | `gpt-4o-mini` |
+| **Verdandi** | present       | balanced default                               | `claude-sonnet-4-6`         | `gpt-4o`      |
+| **Skuld**    | future        | flagship — deepest reasoning, highest quality  | `claude-opus-4-8`           | `gpt-4o`      |
 
 This is a thin **alias / mapping layer** (`@autopoly/norns`), not a rewrite. Anywhere a model id is read, a tier name may be used instead and is resolved to a concrete model for that provider family. **Raw model ids and empty defaults pass through unchanged**, so every existing config keeps working — behaviour changes only when a tier name is explicitly used. Each tier also carries soft depth knobs (token budget, evidence/pass counts) that drivers can scale by.
 
@@ -238,28 +300,28 @@ Spawns an external process (Codex / OpenClaw / Claude Code CLI), passes Pulse + 
 
 ### System level
 
-| Rule | Threshold | Effect |
-| --- | --- | --- |
+| Rule                    | Threshold                       | Effect                              |
+| ----------------------- | ------------------------------- | ----------------------------------- |
 | Portfolio drawdown halt | NAV drawdown from HWM ≥ **30%** | Enter `halted`, block all new opens |
-| Recovery | Admin `resume` only | Fail-closed by design |
+| Recovery                | Admin `resume` only             | Fail-closed by design               |
 
 ### Position level
 
-| Rule | Threshold |
-| --- | --- |
-| Per-position stop-loss | Unrealized loss ≥ **30%** |
-| Stop-loss priority | Higher than regular strategy actions |
+| Rule                   | Threshold                            |
+| ---------------------- | ------------------------------------ |
+| Per-position stop-loss | Unrealized loss ≥ **30%**            |
+| Stop-loss priority     | Higher than regular strategy actions |
 
 ### Execution level
 
-| Rule | Default |
-| --- | --- |
-| Order type | **FOK** market orders |
-| Per-trade cap | **15%** of bankroll |
-| Max total exposure | **80%** of bankroll |
-| Max per-event exposure | **30%** of bankroll |
-| Max concurrent positions | **22** |
-| Minimum trade notional | **$5** |
+| Rule                       | Default                   |
+| -------------------------- | ------------------------- |
+| Order type                 | **FOK** market orders     |
+| Per-trade cap              | **15%** of bankroll       |
+| Max total exposure         | **80%** of bankroll       |
+| Max per-event exposure     | **30%** of bankroll       |
+| Max concurrent positions   | **22**                    |
+| Minimum trade notional     | **$5**                    |
 | Minimum effective notional | Below threshold → discard |
 
 ### Pulse level
@@ -276,12 +338,12 @@ Full template: [.env.example](.env.example)
 
 Organised into four groups:
 
-| Group | Key Variables | Purpose |
-| --- | --- | --- |
-| **Shared** | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE` | Execution mode (paper/live), infra connections |
-| **Web** | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN` | Admin authentication |
-| **Executor** | `WALLET_PROVIDER` `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` `ONCHAINOS_BIN` | Polymarket wallet and chain config |
-| **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*` | Provider selection, Pulse fetching, risk parameters |
+| Group            | Key Variables                                                                                | Purpose                                             |
+| ---------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **Shared**       | `AUTOPOLY_EXECUTION_MODE` `DATABASE_URL` `REDIS_URL` `AUTOPOLY_LOCAL_STATE_FILE`             | Execution mode (paper/live), infra connections      |
+| **Web**          | `ADMIN_PASSWORD` `ORCHESTRATOR_INTERNAL_TOKEN`                                               | Admin authentication                                |
+| **Executor**     | `WALLET_PROVIDER` `PRIVATE_KEY` `FUNDER_ADDRESS` `SIGNATURE_TYPE` `CHAIN_ID` `ONCHAINOS_BIN` | Polymarket wallet and chain config                  |
+| **Orchestrator** | `AGENT_RUNTIME_PROVIDER` `AGENT_DECISION_STRATEGY` `PULSE_*` `CODEX_*`                       | Provider selection, Pulse fetching, risk parameters |
 
 If your Polymarket credentials live in an adjacent repo, you can set `ENV_FILE=../pm-PlaceOrder/.env.aizen`. For real-money testing, stick to a dedicated `.env.live-test`.
 
@@ -316,13 +378,13 @@ Every preflight prints the current `ENV_FILE`, wallet address, and collateral am
 
 `vendor/manifest.json` pins the following external repos to specific commits:
 
-| Repository | Purpose |
-| --- | --- |
-| `polymarket-trading-TUI` | Trading terminal and CLOB wiring reference |
-| `polymarket-market-pulse` | Pulse research input |
-| `alert-stop-loss-pm` | Stop-loss logic reference |
-| `all-polymarket-skill` | Backtesting, monitor, resolution skill references |
-| `pm-PlaceOrder` | Order placement reference and local credential source |
+| Repository                | Purpose                                               |
+| ------------------------- | ----------------------------------------------------- |
+| `polymarket-trading-TUI`  | Trading terminal and CLOB wiring reference            |
+| `polymarket-market-pulse` | Pulse research input                                  |
+| `alert-stop-loss-pm`      | Stop-loss logic reference                             |
+| `all-polymarket-skill`    | Backtesting, monitor, resolution skill references     |
+| `pm-PlaceOrder`           | Order placement reference and local credential source |
 
 Run `pnpm vendor:sync` to sync them into `vendor/repos/`. A plain `pnpm build` does not need vendor, but the pulse / trial / live paths must sync first.
 
@@ -330,18 +392,19 @@ Run `pnpm vendor:sync` to sync them into `vendor/repos/`. A plain `pnpm build` d
 
 All run artifacts are written to `runtime-artifacts/` (already in `.gitignore`), rooted at `ARTIFACT_STORAGE_ROOT`.
 
-| Path | Contents |
-| --- | --- |
-| `reports/pulse/YYYY/MM/DD/` | Pulse markdown + JSON |
-| `reports/review\|monitor\|rebalance/` | Portfolio reports |
-| `reports/runtime-log/` | Decision runtime explanatory logs |
-| `pulse-live/<timestamp>-<runId>/` | Pulse Live run artifacts |
-| `live-test/<timestamp>-<runId>/` | Stateful run artifacts (includes `error.json` on failure) |
-| `checkpoints/trial-recommend/` | Paper recommendation resume checkpoints |
-| `world-cup/` | Market-blind forecast archive, event list, Elo / Monte-Carlo backbone |
-| `paper-agent/` | Paper-trading book: ledger, dossiers, daily reflection reports |
-| `raven-delta/runs/` | Raven Delta news-impact analysis archive |
-| `local/paper-state.json` | Default paper state file |
+| Path                                  | Contents                                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `reports/pulse/YYYY/MM/DD/`           | Pulse markdown + JSON                                                                      |
+| `reports/review\|monitor\|rebalance/` | Portfolio reports                                                                          |
+| `reports/runtime-log/`                | Decision runtime explanatory logs                                                          |
+| `pulse-live/<timestamp>-<runId>/`     | Pulse Live run artifacts                                                                   |
+| `live-test/<timestamp>-<runId>/`      | Stateful run artifacts (includes `error.json` on failure)                                  |
+| `checkpoints/trial-recommend/`        | Paper recommendation resume checkpoints                                                    |
+| `world-cup/`                          | Market-blind forecast archive, event list, Elo / Monte-Carlo backbone                      |
+| `paper-agent/`                        | Paper-trading book: ledger, dossiers, daily reflection reports                             |
+| `delta-pm/`                           | Delta PM shadow book: portfolio, ledger, signal/thesis archives, self-built candle archive |
+| `raven-delta/runs/`                   | Raven Delta news-impact analysis archive                                                   |
+| `local/paper-state.json`              | Default paper state file                                                                   |
 
 Failure archives (per the AGENTS convention) go to `run-error/` with the failing stage, core context, root-cause summary, and next-step command.
 
@@ -349,6 +412,7 @@ Failure archives (per the AGENTS convention) go to `run-error/` with the failing
 
 - [AGENTS.md](AGENTS.md) / [CLAUDE.md](CLAUDE.md) — Agent collaboration conventions (required reading)
 - [docs/risk-controls.md](docs/risk-controls.md) — Full write-up of the hard risk rules
+- [docs/delta-pm-operations.md](docs/delta-pm-operations.md) — Delta PM operations manual
 - [.env.example](.env.example) — Environment variable template
 - [docs/diagrams/onboarding-architecture.md](docs/diagrams/onboarding-architecture.md) — Architecture diagram + module map
 - [docs/diagrams/trading-modes-flowchart.md](docs/diagrams/trading-modes-flowchart.md) — Trading mode flowchart

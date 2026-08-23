@@ -15,7 +15,7 @@ A few names look different but mean the same thing. Spelled out here so each new
 - **Three-layer product / package naming (accreted history, each internally consistent):**
   - `predict-raven` = the repository (GitHub repo / local dir).
   - `@autopoly/*` = the npm workspace scope (legacy; every package uses it, no functional impact).
-  - `raven` = the product codename (`apps/raven-managed`, `raven-agent-loop`, etc.).
+  - `raven` = the product codename (`apps/raven`, `apps/raven-delta`, etc.).
 
 ## Monorepo Structure
 
@@ -28,7 +28,6 @@ autonomous-poly-trading/
 ├── services/
 │   ├── orchestrator/                 # Scheduling, Pulse, decision runtime, risk, reports
 │   ├── executor/                     # Polymarket CLOB integration, orders, sync, queue worker
-│   └── rough-loop/                   # Standalone code-task loop (not on the trading path)
 ├── packages/
 │   ├── contracts/                    # Zod schemas: TradeDecisionSet and shared contracts
 │   ├── db/                           # Drizzle schema, migrations, queries, local-state
@@ -57,7 +56,6 @@ autonomous-poly-trading/
 | `packages/db` | DB schema + queries; file-backed local state for paper mode | `src/queries.ts`, `src/local-state.ts` |
 | `packages/terminal-ui` | Terminal UI utility library | `src/index.ts` |
 | `scripts/` | CLI entry points that wire up different run modes | `daily-pulse.ts`, `pulse-live.ts`, `live-test.ts` |
-| `services/rough-loop` | Automated code-task loop (not involved in trading) | `src/cli.ts` |
 
 ## Command Cheatsheet
 
@@ -132,14 +130,6 @@ pnpm --filter @autopoly/executor ops:trade -- --slug <market-slug> --max-usd 1
 pnpm e2e:install-browsers
 pnpm e2e:local-lite
 AUTOPOLY_E2E_REMOTE=1 pnpm e2e:remote-real
-```
-
-### Rough Loop
-
-```bash
-pnpm rough-loop:doctor
-pnpm rough-loop:once
-pnpm rough-loop:start
 ```
 
 ### Vendor

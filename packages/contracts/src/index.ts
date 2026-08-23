@@ -4,9 +4,7 @@
 // - public-api: read-only shapes for the public web API
 // - paper-trading: paper-fill simulation logic
 // - recommendation-file: wire shape of the per-run recommendation.json
-// - rough-loop: dev-tool task schemas (consumed only by services/rough-loop)
 export * from "./trade-decision.js";
 export * from "./public-api.js";
 export * from "./paper-trading.js";
 export * from "./recommendation-file.js";
-export * from "./rough-loop.js";

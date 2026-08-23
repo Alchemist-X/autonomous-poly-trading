@@ -1,6 +1,6 @@
 // Wire shape of runtime-artifacts/pulse-live/<run>/recommendation.json — the
 // "order basis" file written once per forecast run and consumed by the report
-// renderers and the managed-trading bridge.
+// renderers.
 //
 // IMPORTANT (see docs/internal/recommendation-json-operations-map.md):
 // - The file is a camelCase WRAPPER; decisions[] inside it are snake_case
@@ -40,9 +40,8 @@ export const plannedExecutionSchema = z.object({
 });
 export type PlannedExecutionWire = z.infer<typeof plannedExecutionSchema>;
 
-// Mirrors execution-planning.ts SkippedDecision. Named "SkippedExecution*" to
-// avoid worsening the existing name collision with managed-trading's own,
-// structurally different SkippedDecision.
+// Mirrors execution-planning.ts SkippedDecision, exported as "SkippedExecution*"
+// to keep the wire name distinct from the planner's in-memory type.
 export const skippedExecutionSchema = z.object({
   action: actionSchema.nullable(),
   marketSlug: z.string(),

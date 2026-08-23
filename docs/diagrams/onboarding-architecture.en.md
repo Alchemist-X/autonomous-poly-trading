@@ -57,7 +57,6 @@ flowchart LR
   pulseDirect --> reports
   providerRuntime --> reports
 
-  roughLoop[services/rough-loop] -. separate loop .-> human
 
   classDef primary fill:#e8fff1,stroke:#147a3f,stroke-width:2px,color:#0d3b21;
   classDef legacy fill:#fff1f1,stroke:#b42318,stroke-width:2px,color:#5c1111;
@@ -69,7 +68,6 @@ flowchart LR
   class providerRuntime legacy;
   class stateful,infraPreflight,queueExec,db stateful;
   class localState,artifacts,reports storage;
-  class roughLoop auxiliary;
 ```
 
 How to read the diagram:
@@ -120,7 +118,6 @@ One more clarification:
 | [`packages/terminal-ui/`](../packages/terminal-ui) | colored terminal output, summaries, and tables | [`packages/terminal-ui/src`](../packages/terminal-ui/src) |
 | [`apps/web/`](../apps/web) | public read-only pages and admin console, not the main execution hot path | [`apps/web/lib/internal-api.ts`](../apps/web/lib/internal-api.ts), [`apps/web/app`](../apps/web/app) |
 | [`runtime-artifacts/`](../runtime-artifacts) | the traceable archive of every important run output | `reports/`, `pulse-live/`, `live-test/`, `checkpoints/`, `local/` |
-| [`services/rough-loop/`](../services/rough-loop) | independent coding loop, not part of the trading path | [`services/rough-loop/src/cli.ts`](../services/rough-loop/src/cli.ts) |
 
 ## Source Of Truth vs Runtime Archive
 
@@ -163,7 +160,6 @@ One more note:
 - `apps/web` reads data and triggers admin actions; it does not sit in the main trading hot path, and its data source is not always the DB.
 - `paper` and `live` reuse the same Pulse and decision core; the main difference is where execution lands and which state source is used.
 - `runtime-artifacts` is not a unified state store; only a small subset is state, while most of it is archive/report output.
-- `services/rough-loop` is a coding loop, not the trading daemon.
 
 ## Suggested Reading Order
 
