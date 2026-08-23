@@ -274,6 +274,16 @@ describe("M2 blindness plumbing", () => {
     expect(detectContamination("EPS revision of +4% vs consensus")).toBe("none");
   });
 
+  it("product-price wording + expectations haircut is NOT contamination (live false positive #2, 2026-08-24)", () => {
+    expect(
+      detectContamination(
+        "costs that could partially offset the price increase The 'already priced in' haircut (55-60%) is a subjective judgment given no visible consensus"
+      )
+    ).toBe("none");
+    // The real price channel still trips.
+    expect(detectContamination("the market has already priced this move")).toBe("hard");
+  });
+
   it("expectations-channel language is NOT contamination (live false positive 2026-08-22)", () => {
     expect(
       detectContamination("Cannot cleanly separate 'genuinely incremental' from 'already priced' without the actual sell-side consensus model")
