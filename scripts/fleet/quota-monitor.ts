@@ -43,6 +43,12 @@ const DS_BALANCE_WARN_CNY = Number(process.env.MONITOR_DS_WARN_CNY || 30);
 const DS_BALANCE_CRIT_CNY = Number(process.env.MONITOR_DS_CRIT_CNY || 10);
 const RUNWAY_WARN_DAYS = Number(process.env.MONITOR_RUNWAY_WARN_DAYS || 5);
 const ALERT_COOLDOWN_HOURS = Number(process.env.MONITOR_COOLDOWN_HOURS || 6);
+const SUB_USED_WARN_PCT = Number(process.env.MONITOR_SUB_WARN_PCT || 80);
+const SUB_USED_CRIT_PCT = Number(process.env.MONITOR_SUB_CRIT_PCT || 92);
+const EXA_WARN_USD = Number(process.env.MONITOR_EXA_WARN_USD || 2);
+const EXA_CRIT_USD = Number(process.env.MONITOR_EXA_CRIT_USD || 0.5);
+const CODEX_SNAPSHOT_STALE_HOURS = 12;
+const CODEX_PROBE_MIN_GAP_HOURS = 6;
 
 export interface BalancePoint { atUtc: string; balance: number }
 
@@ -97,6 +103,107 @@ export function shouldAlert(state: AlertState, topic: string, now: Date, cooldow
   const last = state.lastSentUtc[topic];
   if (!last) return true;
   return now.getTime() - Date.parse(last) >= cooldownHours * 3_600_000;
+}
+
+// ---- Codex subscription waterline -----------------------------------------
+// Every persisted codex session rollout records rate_limits snapshots:
+//   {"rate_limits":{"primary":{"used_percent":1.0,"window_minutes":10080,
+//    "resets_at":<unix>},"secondary":...}}
+// The fleet's codex books persist sessions (no --ephemeral), so reading the
+// newest rollout gives a free waterline; a throttled probe run refreshes it
+// when the fleet has been idle too long.
+
+export interface CodexWindow { usedPercent: number; windowMinutes: number | null; resetsAt: number | null }
+export interface CodexRateLimits { primary: CodexWindow | null; secondary: CodexWindow | null }
+
+function toWindow(node: unknown): CodexWindow | null {
+  if (!node || typeof node !== "object") return null;
+  const r = node as Record<string, unknown>;
+  const used = Number(r.used_percent);
+  if (!Number.isFinite(used)) return null;
+  return {
+    usedPercent: used,
+    windowMinutes: Number.isFinite(Number(r.window_minutes)) ? Number(r.window_minutes) : null,
+    resetsAt: Number.isFinite(Number(r.resets_at)) ? Number(r.resets_at) : null
+  };
+}
+
+function deepFindRateLimits(node: unknown): CodexRateLimits | null {
+  if (!node || typeof node !== "object") return null;
+  const rec = node as Record<string, unknown>;
+  if (rec.rate_limits && typeof rec.rate_limits === "object") {
+    const rl = rec.rate_limits as Record<string, unknown>;
+    return { primary: toWindow(rl.primary), secondary: toWindow(rl.secondary) };
+  }
+  for (const v of Object.values(rec)) {
+    const found = deepFindRateLimits(v);
+    if (found) return found;
+  }
+  return null;
+}
+
+// Last rate_limits snapshot in a session rollout JSONL (later lines win).
+export function extractLatestRateLimits(jsonl: string): CodexRateLimits | null {
+  let latest: CodexRateLimits | null = null;
+  for (const line of jsonl.split("\n")) {
+    const t = line.trim();
+    if (!t || t[0] !== "{") continue;
+    try {
+      const found = deepFindRateLimits(JSON.parse(t));
+      if (found) latest = found;
+    } catch { /* skip */ }
+  }
+  return latest;
+}
+
+// ---- Exa metered balance ---------------------------------------------------
+// Exa has no balance API, but each search response reports costDollars, which
+// the engine appends to EXA_COST_LEDGER. Anchor the meter once from the
+// dashboard: EXA_CREDIT_ANCHOR="12.34@2026-08-23T08:00:00Z" (dollars@ISO).
+
+export function parseCreditAnchor(raw: string | undefined): { usd: number; atMs: number } | null {
+  if (!raw) return null;
+  const at = raw.indexOf("@");
+  if (at === -1) return null;
+  const usd = Number(raw.slice(0, at));
+  const atMs = Date.parse(raw.slice(at + 1));
+  return Number.isFinite(usd) && Number.isFinite(atMs) ? { usd, atMs } : null;
+}
+
+export function sumLedgerAfter(jsonl: string, sinceMs: number): { totalUsd: number; last7dUsd: number; entries: number } {
+  let totalUsd = 0, last7dUsd = 0, entries = 0;
+  const weekAgo = Date.now() - 7 * 86_400_000;
+  for (const line of jsonl.split("\n")) {
+    const t = line.trim();
+    if (!t) continue;
+    try {
+      const rec = JSON.parse(t) as { atUtc?: string; costDollars?: number };
+      const ts = Date.parse(rec.atUtc ?? "");
+      const cost = Number(rec.costDollars);
+      if (!Number.isFinite(ts) || !Number.isFinite(cost)) continue;
+      if (ts >= sinceMs) { totalUsd += cost; entries += 1; }
+      if (ts >= weekAgo) last7dUsd += cost;
+    } catch { /* skip */ }
+  }
+  return { totalUsd, last7dUsd, entries };
+}
+
+// ---- Claude subscription usage (OAuth endpoint, shape-defensive) -----------
+// api.anthropic.com/api/oauth/usage exists but rate-limits itself hard; when
+// it answers, walk the payload for percent-like numeric fields.
+
+export function extractPercentFields(node: unknown, prefix = ""): Array<{ label: string; percent: number }> {
+  if (!node || typeof node !== "object") return [];
+  const out: Array<{ label: string; percent: number }> = [];
+  for (const [k, v] of Object.entries(node as Record<string, unknown>)) {
+    const label = prefix ? `${prefix}.${k}` : k;
+    if (typeof v === "number" && /percent|utilization/i.test(k) && v >= 0 && v <= 100) {
+      out.push({ label, percent: v });
+    } else if (v && typeof v === "object") {
+      out.push(...extractPercentFields(v, label));
+    }
+  }
+  return out;
 }
 
 function readJson<T>(file: string, fallback: T): T {
@@ -171,6 +278,103 @@ function checkLogsAndLiveness(findings: Finding[], lines: string[]): void {
   fs.writeFileSync(offsetsFile, JSON.stringify(offsets, null, 1));
 }
 
+function newestSessionFile(sessionsDir: string): { file: string; mtimeMs: number } | null {
+  let best: { file: string; mtimeMs: number } | null = null;
+  const walk = (dir: string, depth: number): void => {
+    let entries: fs.Dirent[];
+    try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      const full = path.join(dir, e.name);
+      if (e.isDirectory() && depth < 4) walk(full, depth + 1);
+      else if (e.isFile() && e.name.endsWith(".jsonl")) {
+        const m = fs.statSync(full).mtimeMs;
+        if (!best || m > best.mtimeMs) best = { file: full, mtimeMs: m };
+      }
+    }
+  };
+  walk(sessionsDir, 0);
+  return best;
+}
+
+async function checkCodexSubscription(findings: Finding[], lines: string[], now: Date): Promise<void> {
+  const sessionsDir = path.join(process.env.CODEX_HOME || path.join(os.homedir(), ".codex"), "sessions");
+  let newest = newestSessionFile(sessionsDir);
+
+  // Fleet idle too long → one throttled probe run to refresh the snapshot.
+  const probeState = path.join(MONITOR_ROOT, "codex-probe.json");
+  const lastProbe = readJson<{ atUtc?: string }>(probeState, {});
+  const staleMs = CODEX_SNAPSHOT_STALE_HOURS * 3_600_000;
+  const probeGapOk = !lastProbe.atUtc || now.getTime() - Date.parse(lastProbe.atUtc) >= CODEX_PROBE_MIN_GAP_HOURS * 3_600_000;
+  if ((!newest || now.getTime() - newest.mtimeMs > staleMs) && probeGapOk) {
+    try {
+      const { execFileSync } = await import("node:child_process");
+      execFileSync("codex", ["exec", "--skip-git-repo-check", "-s", "read-only", "-m", "gpt-5.6-terra", "Reply with: ok"], { timeout: 120_000, stdio: "ignore" });
+      fs.writeFileSync(probeState, JSON.stringify({ atUtc: now.toISOString() }));
+      newest = newestSessionFile(sessionsDir);
+    } catch { lines.push("codex-sub    | probe run failed"); }
+  }
+  if (!newest) { lines.push("codex-sub    | no session snapshots yet"); return; }
+
+  const rl = extractLatestRateLimits(fs.readFileSync(newest.file, "utf8"));
+  if (!rl?.primary) { lines.push("codex-sub    | no rate_limits in newest session"); return; }
+  const ageH = (now.getTime() - newest.mtimeMs) / 3_600_000;
+  const windows: Array<[string, CodexWindow]> = [];
+  if (rl.primary) windows.push(["primary", rl.primary]);
+  if (rl.secondary) windows.push(["secondary", rl.secondary]);
+  lines.push(`codex-sub    | ${windows.map(([n, w]) => `${n} ${w.usedPercent.toFixed(1)}% of ${w.windowMinutes ? Math.round(w.windowMinutes / 1440) + "d" : "?"} window`).join(" · ")} | snapshot ${ageH.toFixed(1)}h old`);
+  for (const [name, w] of windows) {
+    const reset = w.resetsAt ? new Date(w.resetsAt * 1000).toISOString().slice(0, 16) + "Z" : "unknown";
+    if (w.usedPercent >= SUB_USED_CRIT_PCT) findings.push({ topic: `codex-${name}`, severity: "critical", message: `Codex 订阅 ${name} 窗口已用 ${w.usedPercent.toFixed(1)}%（重置 ${reset}）— gpt-sol/gpt-terra 即将停摆。` });
+    else if (w.usedPercent >= SUB_USED_WARN_PCT) findings.push({ topic: `codex-${name}`, severity: "warn", message: `Codex 订阅 ${name} 窗口已用 ${w.usedPercent.toFixed(1)}%（重置 ${reset}）。` });
+  }
+}
+
+async function checkClaudeSubscription(findings: Finding[], lines: string[]): Promise<void> {
+  const token = process.env.CLAUDE_CODE_OAUTH_TOKEN;
+  if (!token) { lines.push("claude-sub   | no oauth token in env — skipped"); return; }
+  let body: unknown;
+  try {
+    const res = await fetch("https://api.anthropic.com/api/oauth/usage", {
+      headers: { authorization: `Bearer ${token}`, "anthropic-beta": "oauth-2025-04-20" },
+      signal: AbortSignal.timeout(15_000)
+    });
+    if (res.status === 429) { lines.push("claude-sub   | usage endpoint self-rate-limited (normal) — skipped this tick"); return; }
+    if (!res.ok) { lines.push(`claude-sub   | usage endpoint HTTP ${res.status} — skipped`); return; }
+    body = await res.json();
+  } catch (error) {
+    lines.push(`claude-sub   | usage fetch failed: ${error instanceof Error ? error.message : error}`);
+    return;
+  }
+  fs.writeFileSync(path.join(MONITOR_ROOT, "claude-usage-last.json"), JSON.stringify(body, null, 1));
+  const pcts = extractPercentFields(body);
+  if (!pcts.length) { lines.push("claude-sub   | usage payload had no percent fields (raw saved for inspection)"); return; }
+  lines.push(`claude-sub   | ${pcts.map((f) => `${f.label} ${f.percent.toFixed(0)}%`).join(" · ")}`);
+  for (const f of pcts) {
+    if (f.percent >= SUB_USED_CRIT_PCT) findings.push({ topic: `claude-${f.label}`, severity: "critical", message: `Claude 订阅 ${f.label} 已用 ${f.percent.toFixed(0)}% — 4 本 claude 书（含东京）受影响。` });
+    else if (f.percent >= SUB_USED_WARN_PCT) findings.push({ topic: `claude-${f.label}`, severity: "warn", message: `Claude 订阅 ${f.label} 已用 ${f.percent.toFixed(0)}%。` });
+  }
+}
+
+function checkExaMeter(findings: Finding[], lines: string[]): void {
+  const ledgerFile = process.env.EXA_COST_LEDGER || path.join(MONITOR_ROOT, "exa-cost.jsonl");
+  const anchorRaw = process.env.EXA_CREDIT_ANCHOR;
+  let ledger = "";
+  try { ledger = fs.readFileSync(ledgerFile, "utf8"); } catch { /* no calls metered yet */ }
+  const anchorParsed = parseCreditAnchor(anchorRaw);
+  const sums = sumLedgerAfter(ledger, anchorParsed?.atMs ?? 0);
+  if (!anchorParsed) {
+    lines.push(`exa          | metered spend since start: $${sums.totalUsd.toFixed(3)} (${sums.entries} calls) | no EXA_CREDIT_ANCHOR — remaining unknown`);
+    return;
+  }
+  const remaining = anchorParsed.usd - sums.totalUsd;
+  const perDay = sums.last7dUsd / 7;
+  const runway = perDay > 0 ? remaining / perDay : null;
+  lines.push(`exa          | ~$${remaining.toFixed(2)} left of $${anchorParsed.usd} anchor | $${perDay.toFixed(3)}/d${runway !== null ? ` | ~${runway.toFixed(0)}d runway` : ""}`);
+  if (remaining <= EXA_CRIT_USD) findings.push({ topic: "exa-credit", severity: "critical", message: `Exa 额度按记账仅剩 ~$${remaining.toFixed(2)}（临界 $${EXA_CRIT_USD}）— 搜索即将失败，请充值并更新 EXA_CREDIT_ANCHOR。` });
+  else if (remaining <= EXA_WARN_USD) findings.push({ topic: "exa-credit", severity: "warn", message: `Exa 额度按记账约剩 $${remaining.toFixed(2)}，低于警戒线 $${EXA_WARN_USD}。` });
+  if (runway !== null && runway <= RUNWAY_WARN_DAYS) findings.push({ topic: "exa-runway", severity: "warn", message: `Exa 按近 7 日烧速预计 ${runway.toFixed(1)} 天内用光（约剩 $${remaining.toFixed(2)}）。` });
+}
+
 async function sendWebhooks(text: string): Promise<string[]> {
   const sent: string[] = [];
   const feishu = process.env.FEISHU_WEBHOOK_URL;
@@ -200,6 +404,9 @@ async function main(): Promise<void> {
   const findings: Finding[] = [];
   const lines: string[] = [];
   await checkDeepSeekBalance(findings, lines);
+  await checkCodexSubscription(findings, lines, now);
+  await checkClaudeSubscription(findings, lines);
+  checkExaMeter(findings, lines);
   checkLogsAndLiveness(findings, lines);
   console.log(lines.map((l) => `  ${l}`).join("\n"));
 

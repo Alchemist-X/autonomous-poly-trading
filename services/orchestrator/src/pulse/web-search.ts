@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import type { OrchestratorConfig } from "../config.js";
 import type { ProgressReporter } from "../lib/terminal-progress.js";
 import type { PulseCandidate } from "./market-pulse.js";
@@ -91,7 +92,15 @@ export async function searchExa(
   if (!response.ok) {
     throw new Error(`exa search ${response.status}: ${(await response.text()).slice(0, 200)}`);
   }
-  const data = (await response.json()) as { results?: ExaSearchResult[] };
+  const data = (await response.json()) as { results?: ExaSearchResult[]; costDollars?: { total?: number } };
+  const ledger = process.env.EXA_COST_LEDGER;
+  if (ledger && typeof data.costDollars?.total === "number") {
+    try {
+      fs.appendFileSync(ledger, JSON.stringify({ atUtc: new Date().toISOString(), costDollars: data.costDollars.total }) + "\n");
+    } catch {
+      /* metering is best-effort */
+    }
+  }
   const results: PulseWebSearchResult[] = [];
   for (const item of data.results ?? []) {
     if (!item.url) {

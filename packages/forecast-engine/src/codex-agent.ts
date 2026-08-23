@@ -1,10 +1,14 @@
 // Codex CLI provider — GPT-5.x through the user's ChatGPT/Codex subscription.
 //
 // We drive `codex exec --json` headless: prompt on stdin, JSONL events on
-// stdout. Sandbox is read-only and sessions are ephemeral (no ~/.codex/session
-// files) so parallel paper-agent books stay isolated. Web search is force-
-// enabled (-c tools.web_search=true): the engine's research rounds depend on
-// it, and codex runs the search server-side.
+// stdout. Sandbox is read-only. Sessions are deliberately PERSISTED (no
+// --ephemeral): each rollout file under ~/.codex/sessions records a
+// rate_limits snapshot (used_percent + resets_at for the subscription
+// windows), which the fleet quota monitor reads as its Codex waterline —
+// ephemeral runs would blind it. Session files are uuid-named, so parallel
+// books do not collide. Web search is force-enabled (-c
+// tools.web_search=true): the engine's research rounds depend on it, and
+// codex runs the search server-side.
 //
 // The event stream carries the model's search QUERIES but not the result
 // URLs, so there is no trace to check citations against. Citation
@@ -72,7 +76,6 @@ export async function runCodexRaw(
     "exec",
     "--json",
     "--skip-git-repo-check",
-    "--ephemeral",
     "-s",
     "read-only",
     "-c",
