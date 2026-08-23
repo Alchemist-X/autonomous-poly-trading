@@ -38,9 +38,13 @@ export function scrubPriceReactions(text: string): { scrubbed: string; removed: 
 // EXPECTATIONS channel — exactly the surprise-vs-consensus discipline we
 // demand — while "the stock has already moved/is already up 5%" is the price
 // channel we ban.
-const EXPECTATION_CONTEXT = /already priced[^.]{0,50}\b(consensus|estimates?|expectations?|models?|the street|guidance)\b/i;
+const EXPECTATION_CONTEXT =
+  /(['\u2018\u2019"]?already priced[ -]?in['\u2018\u2019"]?)[^.]{0,60}\b(haircut|consensus|estimates?|expectations?|models?|the street|guidance|judgment|assumption)\b/i;
 const HARD_CONTAMINATION = [
-  /\b(stock|shares?|price|market|equity|股价|盘面)\b[^.。]{0,50}\balready (moved|reacted|jumped|risen|fallen|rallied|sold off|priced)/i,
+  // NOTE: bare "price" removed from the subject list — PRODUCT prices in the
+  // news itself ("the price increase") kept colliding with expectations-channel
+  // phrases downstream (live false positive #2, 2026-08-24).
+  /\b(stock|shares?|market|equity|股价|盘面)\b[^.。]{0,50}\balready (moved|reacted|jumped|risen|fallen|rallied|sold off|priced)/i,
   /\balready (up|down)\s+\d+(?:\.\d+)?%/i,
   /\b(since|after) the (news|report|announcement)\b[^.。]{0,60}\d+(?:\.\d+)?%/i,
   /股价已(经)?(上涨|下跌|反应|走)/,
