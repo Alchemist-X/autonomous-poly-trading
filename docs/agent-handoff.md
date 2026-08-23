@@ -11,7 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-08-22 by Claude v4（**forecast-engine 接入 Exa 搜索 + 修掉 DDG CAPTCHA 静默降级**，分支 `claude/exa-search-integration-2a477f`，PR 待开）。
+> 最后更新：2026-08-23 by Claude（**Delta PM 上线东京 VM + 决策链审计页 /live-delta-pm 全链发布**，PR #103/104/106/107/115/117 全合并）。
+> ① **VM 部署(正式 Phase 0 账本起点 2026-08-23 06:33 UTC)**：磁盘清理(builder cache 8.6GB,74%→59%)后 clean-untar(备份 `~/predict-raven.pre-delta-pm.bak` 与 `.pre-audit-chain.bak`)+ 重建 raven-suite + `up -d --no-deps delta-pm delta-pm-console forecast-api`,其余容器零接触。冒烟全过;首日周末流:30 条真实新闻、3 次真实 claude 分析全部规范拒单(residual < 门槛)。**本机 soak 已停**(本机 claude OAuth 被吊销 401 → 只剩 rules 引擎;修复命令在运维手册 §1.4)。
+> ② **审计链(用户诉求「抽象写法没法审计」,PR #117)**:policy 决策记录新增 decisionAudit(edge 四数/门槛逐项分解/止损菜单/sizing 链每道 guard 上限与裁剪/杠杆三帽/否决标签);forecast-api 新增 `GET /delta-pm/audit`(六环 join,双凭证同 /paper/snapshot);**apps/web 新增 `/live-delta-pm`**(六台席对冲基金决策链版式,subagent 构建,15 web 测试),已发 forecasting-agent.com,**线上实弹验收过**:表单解锁(⚠️ unlock 收 form-encoded 不收 JSON)→ 实时徽标 + VM 账本时间 + 30 条链。运维手册 `docs/delta-pm-operations.md`(PR #115):setup 清单/真实案例走查/token 实测(单次 15.6k 新 token,30 新闻 15 调用——不贵)。
+> ③ **raven-labs 并发测试场结论**:实测 4vCPU/30G 空载 vs 东京 2vCPU/7.8G 满载生产——大规模并发测试放美西,执行链路留东京(HL 延迟 25ms vs 155ms + 美 IP 对 trade.xyz ToS 合规硬伤);claude CLI 已在(2.1.241,凭证在 `/home/yishu/forecast-fleet/env/.secrets.env`,fleet 正用)。
+> ④ **待办**:P1 = 周一工作日新闻流首考(看 VM 反思报告);P2 = newsletter 邮箱轮询器(等用户建邮箱,手册 §1.1)、`/live-delta-pm` 案例分页(30 条上限)、东京 VM 升配评估(Phase 1 前)。英文版 handoff 此条待同步翻译。
+>
+> 上次更新：2026-08-22 by Claude v4（**forecast-engine 接入 Exa 搜索 + 修掉 DDG CAPTCHA 静默降级**，分支 `claude/exa-search-integration-2a477f`，PR 待开）。
 > ① **发现的 bug（比集成本身重要）**：DuckDuckGo 现在对我们的 scraper 返回 HTTP 200 的 CAPTCHA 挑战页，旧代码把它解析成"搜索成功、0 结果"——模型被告知"没有证据"而真相是"搜索没跑"。已在 `packages/forecast-engine/src/web-search.ts` fail-fast（识别 `anomaly-modal__`/`challenge-form` 标记即抛错，真 no-results 仍返回空数组）。实测 6 条 GPT-6 查询里 4 条被挡。
 > ② **Exa backend**：`EXA_API_KEY` 存在时自动选 exa（优先级 exa > tavily > duckduckgo，`FORECAST_WEB_SEARCH` 可 pin），请求走 Exa 官方 skill 推荐的最简形态（query + type:auto + contents.highlights，只加 numResults:8 对齐现有预算）；SearchHit 新增可选 publishedDate/author，tool 描述提示模型用它判断时效。12 单测新增全绿，全仓 1058 测试绿。
 > ③ **A/B 实测（GPT-6 released-by 市场，`scripts/forecast/search-backend-compare.ts`，归档 runtime-artifacts/search-compare/）**：DDG 2/6 成功、0 带日期、且 q2 的 8 条里 3 条是 SEO 假消息（"GPT-6 已于 4 月发布"）；Exa 6/6 成功、48 hits、50% 带日期、7 条 ≤7 天，抓到完整证据链（8/1 Astra 命名 → 8/7 网络安全放缓 → 8/19 "9 月或上线"），latency 相当（~1.2s）。
