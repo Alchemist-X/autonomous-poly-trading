@@ -13,6 +13,7 @@ import {
   type NewsItem,
   type NewsSignal,
   type PricedIn,
+  type PriorCoverage,
   type UniverseEntry
 } from "@autopoly/delta-pm-contracts";
 import { config } from "./config.js";
@@ -23,7 +24,9 @@ import { callJson, type ProviderResult } from "./providers.js";
 // --- universe matching (rules prefilter) -----------------------------------
 
 export function matchUniverse(item: NewsItem, universe: UniverseEntry[]): UniverseEntry[] {
-  const text = `${item.title}\n${item.teaser}`.toLowerCase();
+  // fullText matters for pasted articles: the company may be named only in
+  // the body (headline actors still get filtered later by the gate-1 LLM).
+  const text = `${item.title}\n${item.teaser}\n${item.fullText ?? ""}`.toLowerCase();
   const hits: UniverseEntry[] = [];
   for (const entry of universe) {
     const names = [entry.ticker.toLowerCase(), entry.company.toLowerCase(), ...entry.aliases.map((a) => a.toLowerCase())];
@@ -58,12 +61,13 @@ const GATE1_SYSTEM = `You are the materiality gate of an event-driven US-equity 
 4) surprise: score what is BEYOND the provided consensus baseline (or state "baseline missing" and judge novelty conservatively). Never score the absolute size of a number.
 5) coarseImpactBand: |excess move| the news could justify — small 0.5-2%, medium 2-6%, large 6-20%.
 6) fingerprintEntities/Magnitudes: canonical entities (companies/products/people) and key magnitudes ("$6B", "20% capacity cut") for repeat-detection hashing.
+7) freshness: when a cross-source coverage search is provided, check whether the SAME story already ran meaningfully earlier elsewhere. A restatement of hours-old widely-covered news is NOT tradeable (tradeable=false, reason "already covered by ..."), unless THIS item adds material new facts beyond the earlier coverage. Ignore hits that are about a different story despite similar wording.
 Return ONLY JSON matching the schema described by the user message.`;
 
-function gate1Rules(item: NewsItem, matched: UniverseEntry[]): Gate1Output {
+export function gate1Rules(item: NewsItem, matched: UniverseEntry[]): Gate1Output {
   // Deliberately conservative: without an LLM the gate only lets through
   // clearly-typed hard-news patterns; everything else is archived.
-  const text = `${item.title} ${item.teaser}`.toLowerCase();
+  const text = `${item.title} ${item.fullText ?? item.teaser}`.toLowerCase();
   const typed: Array<[Gate1Output["eventType"], RegExp]> = [
     ["earnings_guidance", /\b(earnings|guidance|revenue|eps|forecast(s)? (raised|cut)|quarterly)\b/],
     ["mna", /\b(acquire|acquisition|merger|buyout|takeover|to buy)\b/],
@@ -90,7 +94,27 @@ function gate1Rules(item: NewsItem, matched: UniverseEntry[]): Gate1Output {
   };
 }
 
-export async function runGate1(item: NewsItem, universe: UniverseEntry[]): Promise<ProviderResult<Gate1Output>> {
+// Coverage block for the gate-1 prompt. Skips/errors are stated explicitly:
+// "search did not run" must never read like "no prior coverage exists".
+export function formatCoverageForPrompt(coverage: PriorCoverage | null): string {
+  if (!coverage) return "Cross-source coverage search: not performed for this item.";
+  if (!coverage.searched) {
+    const why = coverage.error ? `failed: ${coverage.error}` : `skipped: ${coverage.skippedReason ?? "unknown"}`;
+    return `Cross-source coverage search: DID NOT RUN (${why}). Judge freshness from the item alone; do not assume the story is fresh or stale.`;
+  }
+  if (!coverage.hits.length) return "Cross-source coverage search: ran; no other outlet found covering this story.";
+  const lines = coverage.hits.map(
+    (h) => `- [${h.publishedUtc ?? "undated"}] ${h.domain} — ${h.title} (title similarity ${h.titleSimilarity})`
+  );
+  return `Cross-source coverage search (${coverage.priorHitCount} hit(s) predate this item by >30min):
+${lines.join("\n")}`;
+}
+
+export async function runGate1(
+  item: NewsItem,
+  universe: UniverseEntry[],
+  coverage: PriorCoverage | null = null
+): Promise<ProviderResult<Gate1Output>> {
   const matched = matchUniverse(item, universe);
   if (!matched.length) {
     // No universe entity — archive without spending an LLM call.
@@ -102,6 +126,8 @@ export async function runGate1(item: NewsItem, universe: UniverseEntry[]): Promi
   const user = `News (source ${item.source}, kind ${item.kind}, published ${item.publishedUtc}, title prefix ${item.prefix}):
 TITLE: ${item.title}
 BODY: ${item.fullText ?? item.teaser ?? "(no body — headline only)"}
+
+${formatCoverageForPrompt(coverage)}
 
 Universe candidates and consensus baselines:
 ${baselines}
@@ -136,6 +162,30 @@ export function tokenJaccard(a: string, b: string): number {
   let inter = 0;
   for (const t of ta) if (tb.has(t)) inter++;
   return inter / (ta.size + tb.size - inter);
+}
+
+export interface RecentSignalDigest {
+  signalId: string;
+  fingerprint: string;
+  newsId: string;
+  title?: string;
+}
+
+// Staleness decision, rerun-aware: signals born from the SAME news id never
+// count as duplicates — re-ingesting a news item (the console's 补全原文 paste)
+// is a rerun of the original signal, not fresh news, so it must not collide
+// with its own earlier pass. Different-news collisions (same fingerprint or
+// near-identical headline) are the real "old news resurfacing" case.
+export function findStaleDuplicate(
+  recent: RecentSignalDigest[],
+  fingerprint: string,
+  item: Pick<NewsItem, "id" | "title">
+): { dup: RecentSignalDigest; basis: "fingerprint" | "similar_text" } | null {
+  const others = recent.filter((s) => s.newsId !== item.id);
+  const byFp = others.find((s) => s.fingerprint === fingerprint);
+  if (byFp) return { dup: byFp, basis: "fingerprint" };
+  const byText = others.find((s) => tokenJaccard(s.title ?? "", item.title) > 0.6);
+  return byText ? { dup: byText, basis: "similar_text" } : null;
 }
 
 // --- gate 2: priced-in classification --------------------------------------
@@ -274,18 +324,33 @@ export function buildSignal(
   gate1: Gate1Output,
   fingerprint: string,
   pricedIn: PricedIn | null,
-  baselineAsOf: string | null
+  baselineAsOf: string | null,
+  priorCoverage: PriorCoverage | null = null
 ): NewsSignal {
+  // First-seen: a verified earlier appearance from the coverage search beats
+  // our item's published time (for "Reportedly" items it replaces the old
+  // "published as upper bound" simplification).
+  const verifiedEarlier = priorCoverage?.earliestPriorUtc ?? null;
+  let firstSeenUtc: string | null;
+  let firstSeenBasis: string;
+  if (verifiedEarlier) {
+    firstSeenUtc = verifiedEarlier;
+    firstSeenBasis = `coverage search found ${priorCoverage!.priorHitCount} earlier same-story hit(s); earliest ${verifiedEarlier} — used as t0`;
+  } else if (item.prefix === "reportedly") {
+    firstSeenUtc = null;
+    firstSeenBasis = priorCoverage?.searched
+      ? "aggregated report ('Reportedly'): coverage search found no earlier appearance; t0 uses published as an upper bound"
+      : "aggregated report ('Reportedly'): original ran earlier elsewhere; t0 uses published as an upper bound (coverage search unavailable this run)";
+  } else {
+    firstSeenUtc = item.publishedUtc;
+    firstSeenBasis = `The Information ${item.prefix === "exclusive" ? "exclusive" : "item"} — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)`;
+  }
   return {
     id: `sig-${fingerprint}-${Date.now().toString(36)}`,
     newsId: item.id,
     fingerprint,
-    // "Reportedly" items restate another outlet — published is NOT first-seen.
-    firstSeenUtc: item.prefix === "reportedly" ? null : item.publishedUtc,
-    firstSeenBasis:
-      item.prefix === "reportedly"
-        ? "aggregated report ('Reportedly'): original ran earlier elsewhere; t0 uses published as an upper bound (Phase 0 simplification — online first-seen verification arrives with the claude-cli engine)"
-        : `The Information ${item.prefix === "exclusive" ? "exclusive" : "item"} — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)`,
+    firstSeenUtc,
+    firstSeenBasis,
     expectedDirection: gate1.expectedDirection,
     coarseImpactBand: gate1.coarseImpactBand,
     consensusBaselineAsOf: baselineAsOf,
@@ -299,6 +364,7 @@ export function buildSignal(
       reason: gate1.reason
     },
     pricedIn,
+    priorCoverage,
     createdAtUtc: new Date().toISOString()
   };
 }

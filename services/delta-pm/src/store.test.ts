@@ -2,7 +2,18 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mkdtempSync, rmSync, appendFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { acquireBookLock, appendLedger, paths, readJson, readLedger, releaseBookLock, writeJsonAtomic } from "./store.js";
+import type { NewsItem } from "@autopoly/delta-pm-contracts";
+import {
+  acquireBookLock,
+  appendLedger,
+  loadNewsItem,
+  paths,
+  readJson,
+  readLedger,
+  releaseBookLock,
+  upsertNewsItem,
+  writeJsonAtomic
+} from "./store.js";
 
 let dir: string;
 
@@ -47,5 +58,59 @@ describe("store", () => {
     releaseBookLock();
     expect(acquireBookLock()).toBe(true);
     releaseBookLock();
+  });
+});
+
+describe("news source-of-truth archive", () => {
+  function item(over: Partial<NewsItem> = {}): NewsItem {
+    return {
+      id: "tag:www.theinformation.com,2005:Article/17689", // real ids carry / and :
+      source: "the-information",
+      kind: "article",
+      title: "Nvidia Nears $6 Billion Cloud Deal",
+      teaser: "teaser text",
+      fullText: null,
+      url: "https://www.theinformation.com/articles/x",
+      author: "Reporter",
+      publishedUtc: "2026-08-23T08:00:00.000Z",
+      updatedUtc: null,
+      prefix: "exclusive",
+      fetchedAtUtc: "2026-08-23T08:05:00.000Z",
+      ...over
+    };
+  }
+
+  it("round-trips ids with slashes and colons", () => {
+    upsertNewsItem(item());
+    expect(loadNewsItem(item().id)?.title).toBe("Nvidia Nears $6 Billion Cloud Deal");
+    expect(loadNewsItem("tag:other/1")).toBeNull();
+  });
+
+  it("first record owns identity+timing; re-ingest only fills gaps", () => {
+    upsertNewsItem(item());
+    const res = upsertNewsItem(
+      item({
+        title: "[补全原文] tag:...", // garbage from a paste must not win
+        publishedUtc: "2026-08-23T12:00:00.000Z", // paste time must not win
+        url: null,
+        teaser: "",
+        fullText: "the pasted full article"
+      })
+    );
+    expect(res.existed).toBe(true);
+    expect(res.fullTextAttached).toBe(true);
+    expect(res.item.title).toBe("Nvidia Nears $6 Billion Cloud Deal");
+    expect(res.item.publishedUtc).toBe("2026-08-23T08:00:00.000Z");
+    expect(res.item.url).toBe("https://www.theinformation.com/articles/x");
+    expect(res.item.teaser).toBe("teaser text");
+    expect(res.item.fullText).toBe("the pasted full article");
+    expect(loadNewsItem(item().id)?.fullText).toBe("the pasted full article");
+  });
+
+  it("a re-ingest without full text never erases previously attached full text", () => {
+    upsertNewsItem(item({ fullText: "attached earlier" }));
+    const res = upsertNewsItem(item({ fullText: null }));
+    expect(res.fullTextAttached).toBe(false);
+    expect(res.item.fullText).toBe("attached earlier");
   });
 });

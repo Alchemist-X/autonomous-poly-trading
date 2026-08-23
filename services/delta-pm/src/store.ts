@@ -1,6 +1,7 @@
 // On-disk state under the shared artifacts volume (PRD §10):
 //   <artifacts>/delta-pm/portfolio.json      — paper book (atomic writes)
 //   <artifacts>/delta-pm/ledger.jsonl        — append-only event journal
+//   <artifacts>/delta-pm/news/<hash>.json    — NewsItem source-of-truth archive
 //   <artifacts>/delta-pm/signals/<id>.json   — NewsSignal archive
 //   <artifacts>/delta-pm/theses/<id>.json    — TradeThesis archive
 //   <artifacts>/delta-pm/runs/<id>.json      — per-run progress state (console)
@@ -21,7 +22,9 @@ import {
   rmSync,
   writeFileSync
 } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
+import { newsItemSchema, type NewsItem } from "@autopoly/delta-pm-contracts";
 
 export function repoRoot(): string {
   let dir = process.cwd();
@@ -44,12 +47,56 @@ export const paths = {
   portfolio: () => path.join(pmRoot(), "portfolio.json"),
   ledger: () => path.join(pmRoot(), "ledger.jsonl"),
   feedState: () => path.join(pmRoot(), "feed-state.json"),
+  newsDir: () => path.join(pmRoot(), "news"),
   signalsDir: () => path.join(pmRoot(), "signals"),
   thesesDir: () => path.join(pmRoot(), "theses"),
   runsDir: () => path.join(pmRoot(), "runs"),
   reportsDir: () => path.join(pmRoot(), "reports"),
   marketDir: () => path.join(pmRoot(), "market")
 };
+
+// --- news source-of-truth archive ------------------------------------------
+// One canonical record per news id. Feed ids contain `/` and `:` (Atom tag
+// URIs), so files are keyed by a hash of the id; the id lives inside the JSON.
+
+function newsFile(newsId: string): string {
+  return path.join(paths.newsDir(), `${createHash("sha1").update(newsId).digest("hex").slice(0, 24)}.json`);
+}
+
+export function loadNewsItem(newsId: string): NewsItem | null {
+  const raw = readJson<unknown>(newsFile(newsId));
+  if (!raw) return null;
+  const parsed = newsItemSchema.safeParse(raw);
+  return parsed.success && parsed.data.id === newsId ? parsed.data : null;
+}
+
+export interface NewsUpsertResult {
+  item: NewsItem; // the merged record actually persisted
+  existed: boolean; // a record for this id was already on disk (=> this is a re-ingest)
+  fullTextAttached: boolean; // this upsert added full text the record didn't have
+}
+
+// Merge rule: the FIRST record for an id is the source of truth for identity
+// and timing (title/url/publishedUtc/prefix/...); later ingests may only fill
+// gaps (fullText, updatedUtc, a url the original lacked). publishedUtc = t0 is
+// never overwritten — that is the whole point of the archive.
+export function upsertNewsItem(incoming: NewsItem): NewsUpsertResult {
+  const existing = loadNewsItem(incoming.id);
+  if (!existing) {
+    writeJsonAtomic(newsFile(incoming.id), incoming);
+    return { item: incoming, existed: false, fullTextAttached: Boolean(incoming.fullText) };
+  }
+  const merged: NewsItem = {
+    ...existing,
+    fullText: incoming.fullText ?? existing.fullText,
+    url: existing.url ?? incoming.url,
+    author: existing.author ?? incoming.author,
+    teaser: existing.teaser || incoming.teaser,
+    updatedUtc: incoming.updatedUtc ?? existing.updatedUtc
+  };
+  writeJsonAtomic(newsFile(incoming.id), merged);
+  return { item: merged, existed: true, fullTextAttached: Boolean(incoming.fullText && !existing.fullText) };
+}
 
 export function readJson<T>(file: string): T | null {
   if (!existsSync(file)) return null;

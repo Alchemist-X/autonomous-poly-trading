@@ -15,18 +15,20 @@ import {
   type NewsItem,
   type Portfolio,
   type Position,
+  type PriorCoverage,
   type TradeThesis,
   type UniverseEntry
 } from "@autopoly/delta-pm-contracts";
 import { runM2 } from "./analyzer.js";
 import { config } from "./config.js";
-import { buildSignal, classifyPricedIn, fingerprintOf, runGate1, tokenJaccard } from "./gate.js";
+import { checkPriorCoverage, effectiveT0Ms } from "./coverage.js";
+import { buildSignal, classifyPricedIn, findStaleDuplicate, fingerprintOf, matchUniverse, runGate1, type RecentSignalDigest } from "./gate.js";
 import type { Candle } from "./hyperliquid.js";
 import { candles1m, candlesDaily, computeAtr, computeBeta, computeDailyVolPct, computeExcessMove, computeMaxDailyMovePct } from "./m0.js";
 import { marketState } from "./market.js";
 import { checkHalt, decideEntry, equityOf, reviewPosition, updateTrailingStop, type MarketView } from "./policy.js";
 import { advance, finishRun, setTickers, startRun } from "./progress.js";
-import { appendLedger, paths, readJson, writeJsonAtomic } from "./store.js";
+import { appendLedger, paths, readJson, upsertNewsItem, writeJsonAtomic } from "./store.js";
 import { fetchCandles } from "./hyperliquid.js";
 
 // --- two-lane writer -------------------------------------------------------
@@ -173,35 +175,67 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
     appendLedger({ type: "error", where: "ingest", message: `news item failed schema: ${parsed.error.issues[0]?.message}` });
     return;
   }
-  const item: NewsItem = parsed.data;
-  appendLedger({ type: "news_seen", newsId: item.id, title: item.title, publishedUtc: item.publishedUtc, kind: item.kind, prefix: item.prefix });
+  // Source-of-truth upsert: the first record for an id owns identity and
+  // timing; a re-ingest (console 补全原文 paste) only fills gaps and becomes a
+  // RERUN of the original signal, driven by the merged record.
+  const upsert = upsertNewsItem(parsed.data);
+  const item: NewsItem = upsert.item;
+  appendLedger({
+    type: "news_seen",
+    newsId: item.id,
+    title: item.title,
+    publishedUtc: item.publishedUtc,
+    kind: item.kind,
+    prefix: item.prefix,
+    rerun: upsert.existed,
+    hasFullText: Boolean(item.fullText)
+  });
   const run = startRun(item.id, item.title);
 
   await withAnalysisSlot(async () => {
     try {
-      // --- gate 1 ---
+      // --- gate 1 (universe-matched items get a prior-coverage search first) ---
       advance(run, "gate1");
-      const g1 = await runGate1(item, deps.universe);
+      let coverage: PriorCoverage | null = null;
+      if (matchUniverse(item, deps.universe).length) {
+        advance(run, "gate1", "跨源检索既有报道中(≤15s)");
+        coverage = await checkPriorCoverage(item);
+        appendLedger({
+          type: "coverage_check",
+          newsId: item.id,
+          searched: coverage.searched,
+          priorHitCount: coverage.priorHitCount,
+          earliestPriorUtc: coverage.earliestPriorUtc,
+          skippedReason: coverage.skippedReason,
+          error: coverage.error
+        });
+      }
+      const g1 = await runGate1(item, deps.universe, coverage);
       const gate1 = g1.value!;
       setTickers(run, gate1.tickers);
       const fingerprint = fingerprintOf(gate1);
 
       if (!gate1.tradeable || !gate1.tickers.length) {
-        const signal = buildSignal(item, gate1, fingerprint, null, null);
+        const signal = buildSignal(item, gate1, fingerprint, null, null, coverage);
         writeJsonAtomic(path.join(paths.signalsDir(), `${signal.id}.json`), { ...signal, title: item.title });
         appendLedger({ type: "signal_archived", signalId: signal.id, newsId: item.id, why: gate1.reason, engine: g1.engine });
         finishRun(run, `归档:未过重要性闸门(${gate1.reason.slice(0, 80)})`);
         return;
       }
 
-      // Staleness: same fingerprint or high text similarity in recent signals.
+      // Staleness: same fingerprint or high text similarity in recent signals
+      // from OTHER news ids (same-id = rerun, allowed through by design).
       const recentSignals = loadRecentSignals(40);
-      const dupFp = recentSignals.find((s) => s.fingerprint === fingerprint && s.newsId !== item.id);
-      const dupText = recentSignals.find((s) => s.newsId !== item.id && tokenJaccard(s.title ?? "", item.title) > 0.6);
-      if (dupFp || dupText) {
-        const signal = buildSignal(item, gate1, fingerprint, null, null);
+      const stale = findStaleDuplicate(recentSignals, fingerprint, item);
+      if (stale) {
+        const signal = buildSignal(item, gate1, fingerprint, null, null, coverage);
         writeJsonAtomic(path.join(paths.signalsDir(), `${signal.id}.json`), { ...signal, title: item.title });
-        appendLedger({ type: "signal_archived", signalId: signal.id, newsId: item.id, why: `stale: duplicate of ${dupFp ? "fingerprint" : "similar text"} ${(dupFp ?? dupText)!.signalId}` });
+        appendLedger({
+          type: "signal_archived",
+          signalId: signal.id,
+          newsId: item.id,
+          why: `stale: duplicate of ${stale.basis === "fingerprint" ? "fingerprint" : "similar text"} ${stale.dup.signalId}`
+        });
         finishRun(run, "归档:旧闻/重复(指纹或文本相似)");
         return;
       }
@@ -210,7 +244,9 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
       advance(run, "gate2");
       const primary = deps.universe.find((u) => u.ticker === gate1.tickers[0])!;
       const stats = await tickerStats(primary);
-      const t0Ms = Date.parse(item.publishedUtc);
+      // t0 = published, or the earliest verified prior appearance when the
+      // coverage search found one (safe direction: counts more of the move).
+      const t0Ms = effectiveT0Ms(item, coverage);
       const pricedIn = await classifyPricedIn({
         entry: primary,
         benchmark1h: null,
@@ -222,9 +258,18 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
         coarseImpactBand: gate1.coarseImpactBand,
         eventType: gate1.eventType
       });
-      const signal = buildSignal(item, gate1, fingerprint, pricedIn, primary.consensusBaseline?.asOfUtc ?? null);
+      const signal = buildSignal(item, gate1, fingerprint, pricedIn, primary.consensusBaseline?.asOfUtc ?? null, coverage);
       writeJsonAtomic(path.join(paths.signalsDir(), `${signal.id}.json`), { ...signal, title: item.title });
-      appendLedger({ type: "signal_created", signalId: signal.id, newsId: item.id, tickers: gate1.tickers, pricedIn: pricedIn.status, deltaTMinutes: pricedIn.deltaTMinutes, engine: g1.engine });
+      appendLedger({
+        type: "signal_created",
+        signalId: signal.id,
+        newsId: item.id,
+        tickers: gate1.tickers,
+        pricedIn: pricedIn.status,
+        deltaTMinutes: pricedIn.deltaTMinutes,
+        t0Utc: new Date(t0Ms).toISOString(),
+        engine: g1.engine
+      });
 
       if (!["none", "partial", "leaked"].includes(pricedIn.status)) {
         finishRun(run, `归档:已定价判定 ${pricedIn.status}(${pricedIn.note.slice(0, 60)})`);
@@ -268,14 +313,7 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
   });
 }
 
-interface StoredSignalDigest {
-  signalId: string;
-  fingerprint: string;
-  newsId: string;
-  title?: string;
-}
-
-function loadRecentSignals(limit: number): StoredSignalDigest[] {
+function loadRecentSignals(limit: number): RecentSignalDigest[] {
   let files: string[] = [];
   try {
     files = readdirSync(paths.signalsDir())
@@ -285,7 +323,7 @@ function loadRecentSignals(limit: number): StoredSignalDigest[] {
   } catch {
     return [];
   }
-  const out: StoredSignalDigest[] = [];
+  const out: RecentSignalDigest[] = [];
   for (const f of files) {
     const s = readJson<Record<string, unknown>>(path.join(paths.signalsDir(), f));
     if (s) out.push({ signalId: String(s.id), fingerprint: String(s.fingerprint), newsId: String(s.newsId), title: s.title ? String(s.title) : undefined });
