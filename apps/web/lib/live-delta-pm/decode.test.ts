@@ -15,7 +15,7 @@ describe("live-delta-pm lenient decoder", () => {
   it("sorts cases newest-first by seenAtUtc", () => {
     const times = payload!.cases.map((c) => Date.parse(c.news.seenAtUtc));
     for (let i = 1; i < times.length; i += 1) {
-      expect(times[i - 1]).toBeGreaterThanOrEqual(times[i]);
+      expect(times[i - 1]!).toBeGreaterThanOrEqual(times[i]!);
     }
   });
 
