@@ -1,5 +1,5 @@
 // DeepSeek provider — OpenAI-compatible chat completion, with OPTIONAL web
-// search via function calling (FORECAST_WEB_SEARCH=1|duckduckgo|tavily).
+// search via function calling (FORECAST_WEB_SEARCH=1|exa|tavily).
 //
 // Default (search off): one HTTP POST per round, structured JSON via
 // json_object mode, no tool trace — the fabrication guard degrades to a
@@ -22,7 +22,10 @@ import { fetchPageText, webSearch } from "./web-search";
 
 export function webSearchEnabled(): boolean {
   const v = (process.env.FORECAST_WEB_SEARCH ?? "").trim().toLowerCase();
-  return v === "1" || v === "true" || v === "duckduckgo" || v === "tavily";
+  // "duckduckgo" still *enables* search even though the backend was removed
+  // (2026-08-22): enabling makes backendName() throw loudly at tool time,
+  // which beats silently downgrading a configured run to no-research mode.
+  return v === "1" || v === "true" || v === "exa" || v === "duckduckgo" || v === "tavily";
 }
 
 export interface DeepSeekDeps {
@@ -124,7 +127,10 @@ const RESEARCH_TOOLS = [
     type: "function",
     function: {
       name: "web_search",
-      description: "Search the live web. Returns up to 8 results with title, url and snippet.",
+      description:
+        "Search the live web for information beyond your training data. Returns up to 8 results " +
+        "with title, url, snippet, and — when the backend supplies it — publishedDate and author. " +
+        "Prefer a result's publishedDate over guessing how current a claim is.",
       parameters: {
         type: "object",
         properties: { query: { type: "string", description: "search query" } },

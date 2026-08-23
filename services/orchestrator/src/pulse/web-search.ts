@@ -11,6 +11,9 @@ export interface PulseWebSearchResult {
   sourceHost: string;
   snippet: string;
   rank: number;
+  // Exa supplies this; it flows into the pulse evidence JSON so the render
+  // stage can weigh fresh reporting over stale pages.
+  publishedDate?: string;
 }
 
 export interface PulseWebSearchQueryEvidence {
@@ -41,41 +44,8 @@ export type PulseWebSearchRunner = (
   options: { signal: AbortSignal }
 ) => Promise<PulseWebSearchResult[]>;
 
-function htmlDecode(value: string): string {
-  return value
-    .replaceAll("&amp;", "&")
-    .replaceAll("&quot;", "\"")
-    .replaceAll("&#x27;", "'")
-    .replaceAll("&#39;", "'")
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">");
-}
-
-function stripTags(value: string): string {
-  return htmlDecode(value.replace(/<[^>]+>/g, " "))
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 function truncate(value: string, maxChars: number): string {
   return value.length <= maxChars ? value : `${value.slice(0, maxChars - 3)}...`;
-}
-
-function normalizeSearchUrl(rawHref: string): string | null {
-  const decoded = htmlDecode(rawHref.trim());
-  try {
-    const parsed = new URL(decoded, "https://duckduckgo.com");
-    const redirected = parsed.searchParams.get("uddg");
-    if (redirected) {
-      return new URL(redirected).toString();
-    }
-    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-      return parsed.toString();
-    }
-  } catch {
-    return null;
-  }
-  return null;
 }
 
 function hostFromUrl(url: string): string {
@@ -86,36 +56,59 @@ function hostFromUrl(url: string): string {
   }
 }
 
-export function parseDuckDuckGoHtml(html: string): PulseWebSearchResult[] {
-  const linkMatches = [...html.matchAll(
-    /<a[^>]*class=["'][^"']*result__a[^"']*["'][^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi
-  )];
-  const snippetMatches = [...html.matchAll(
-    /<(?:a|div)[^>]*class=["'][^"']*result__snippet[^"']*["'][^>]*>([\s\S]*?)<\/(?:a|div)>/gi
-  )];
-  const seen = new Set<string>();
-  const results: PulseWebSearchResult[] = [];
+// Exa search runner (the default backend). The old keyless DuckDuckGo scraper
+// was removed 2026-08-22: DDG bot-walls it with HTTP-200 CAPTCHA pages that
+// parsed as "0 results", silently feeding the pulse prompt "no evidence" when
+// the search never ran. Exa needs EXA_API_KEY; without it the collector
+// reports a loud "failed" summary instead of degrading.
+interface ExaSearchResult {
+  title?: string | null;
+  url?: string;
+  publishedDate?: string | null;
+  highlights?: string[];
+}
 
-  for (const [index, match] of linkMatches.entries()) {
-    const url = normalizeSearchUrl(match[1] ?? "");
-    if (!url || seen.has(url)) {
-      continue;
-    }
-    seen.add(url);
-    const title = stripTags(match[2] ?? "");
-    if (!title) {
-      continue;
-    }
-    const snippet = stripTags(snippetMatches[index]?.[1] ?? "");
-    results.push({
-      title: truncate(title, 180),
-      url,
-      sourceHost: hostFromUrl(url),
-      snippet: truncate(snippet, 420),
-      rank: results.length + 1
-    });
+export async function searchExa(
+  query: string,
+  options: { signal: AbortSignal },
+  fetchFn: typeof fetch = fetch
+): Promise<PulseWebSearchResult[]> {
+  const apiKey = process.env.EXA_API_KEY;
+  if (!apiKey) {
+    throw new Error("exa search: EXA_API_KEY is not set");
   }
-
+  const response = await fetchFn("https://api.exa.ai/search", {
+    method: "POST",
+    signal: options.signal,
+    headers: { "content-type": "application/json", "x-api-key": apiKey },
+    body: JSON.stringify({
+      query,
+      type: "auto",
+      numResults: DEFAULT_RESULTS_PER_QUERY,
+      contents: { highlights: true }
+    })
+  });
+  if (!response.ok) {
+    throw new Error(`exa search ${response.status}: ${(await response.text()).slice(0, 200)}`);
+  }
+  const data = (await response.json()) as { results?: ExaSearchResult[] };
+  const results: PulseWebSearchResult[] = [];
+  for (const item of data.results ?? []) {
+    if (!item.url) {
+      continue;
+    }
+    results.push({
+      title: truncate((item.title ?? "").trim() || item.url, 180),
+      url: item.url,
+      sourceHost: hostFromUrl(item.url),
+      snippet: truncate((item.highlights ?? []).join(" … ").replace(/\s+/g, " ").trim(), 420),
+      rank: results.length + 1,
+      ...(item.publishedDate ? { publishedDate: item.publishedDate } : {})
+    });
+    if (results.length >= DEFAULT_RESULTS_PER_QUERY) {
+      break;
+    }
+  }
   return results;
 }
 
@@ -155,22 +148,6 @@ export function resolvePulseWebSearchTimeoutMs(config: Pick<OrchestratorConfig, 
   return Math.max(1, config.pulse.webSearchTimeoutSeconds) * 1000;
 }
 
-async function searchDuckDuckGo(query: string, options: { signal: AbortSignal }): Promise<PulseWebSearchResult[]> {
-  const url = `https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
-  const response = await fetch(url, {
-    signal: options.signal,
-    headers: {
-      "accept": "text/html",
-      "user-agent": "predict-raven-pulse-web-search/1.0"
-    }
-  });
-  if (!response.ok) {
-    throw new Error(`DuckDuckGo search failed: ${response.status}`);
-  }
-  const html = await response.text();
-  return parseDuckDuckGoHtml(html).slice(0, DEFAULT_RESULTS_PER_QUERY);
-}
-
 function isAbortError(error: unknown): boolean {
   return error instanceof Error && error.name === "AbortError";
 }
@@ -206,9 +183,25 @@ export async function collectPulseWebSearchEvidence(input: {
     };
   }
 
+  // Fail loudly up front when the default backend cannot run at all: a missing
+  // key would otherwise fail every query one by one for the full timeout.
+  if (!input.search && !process.env.EXA_API_KEY) {
+    const reason = "EXA_API_KEY is not set — pulse web search cannot run (keyless DuckDuckGo scraper removed 2026-08-22).";
+    input.progress?.stage({ percent: 49, label: "Pulse web-search failed", detail: reason });
+    return {
+      enabled: true,
+      status: "failed",
+      searchedAtUtc: searchedAt.toISOString(),
+      timeoutMs,
+      elapsedMs: 0,
+      candidates: [],
+      failureReason: reason
+    };
+  }
+
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
-  const search = input.search ?? searchDuckDuckGo;
+  const search = input.search ?? searchExa;
   const evidence: PulseWebSearchCandidateEvidence[] = [];
   let queryCount = 0;
   let queryFailures = 0;

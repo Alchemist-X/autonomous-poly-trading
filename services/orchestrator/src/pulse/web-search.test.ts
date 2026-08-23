@@ -4,8 +4,8 @@ import type { PulseCandidate } from "./market-pulse.js";
 import {
   buildPulseWebSearchQueries,
   collectPulseWebSearchEvidence,
-  parseDuckDuckGoHtml,
   resolvePulseWebSearchTimeoutMs,
+  searchExa,
   type PulseWebSearchResult
 } from "./web-search.js";
 
@@ -63,25 +63,81 @@ describe("Pulse web-search", () => {
     expect(queries.some((query) => query.includes("site:state.gov"))).toBe(true);
   });
 
-  it("parses DuckDuckGo HTML results and unwraps uddg redirects", () => {
-    const html = `
-      <div class="result">
-        <a class="result__a" href="/l/?uddg=https%3A%2F%2Fexample.com%2Fstory%3Fx%3D1&amp;rut=abc">Example &amp; Story</a>
-        <a class="result__snippet">This is <b>the</b> snippet.</a>
-      </div>
-    `;
+  it("searchExa sends the recommended request and maps results incl. publishedDate", async () => {
+    const savedKey = process.env.EXA_API_KEY;
+    process.env.EXA_API_KEY = "exa-test-key";
+    try {
+      let seen: { url: string; init: RequestInit } | null = null;
+      const fakeFetch = (async (url: string, init: RequestInit) => {
+        seen = { url, init };
+        return {
+          ok: true,
+          json: async () => ({
+            results: [
+              {
+                title: "Iran deal reached",
+                url: "https://www.reuters.com/world/iran-deal/",
+                publishedDate: "2026-06-04T10:00:00.000Z",
+                highlights: ["Negotiators reached   a deal", "signing expected Friday"]
+              },
+              { title: "no url, dropped", highlights: ["x"] }
+            ]
+          })
+        };
+      }) as unknown as typeof fetch;
 
-    const results = parseDuckDuckGoHtml(html);
+      const results = await searchExa("iran deal", { signal: new AbortController().signal }, fakeFetch);
 
-    expect(results).toEqual([
-      {
-        title: "Example & Story",
-        url: "https://example.com/story?x=1",
-        sourceHost: "example.com",
-        snippet: "This is the snippet.",
-        rank: 1
-      }
-    ]);
+      const body = JSON.parse(String(seen!.init.body));
+      expect(seen!.url).toBe("https://api.exa.ai/search");
+      expect((seen!.init.headers as Record<string, string>)["x-api-key"]).toBe("exa-test-key");
+      expect(body).toEqual({ query: "iran deal", type: "auto", numResults: 4, contents: { highlights: true } });
+      expect(results).toEqual([
+        {
+          title: "Iran deal reached",
+          url: "https://www.reuters.com/world/iran-deal/",
+          sourceHost: "reuters.com",
+          snippet: "Negotiators reached a deal … signing expected Friday",
+          rank: 1,
+          publishedDate: "2026-06-04T10:00:00.000Z"
+        }
+      ]);
+    } finally {
+      if (savedKey === undefined) delete process.env.EXA_API_KEY;
+      else process.env.EXA_API_KEY = savedKey;
+    }
+  });
+
+  it("searchExa surfaces API errors instead of returning empty results", async () => {
+    const savedKey = process.env.EXA_API_KEY;
+    process.env.EXA_API_KEY = "exa-test-key";
+    try {
+      const failing = (async () => ({ ok: false, status: 429, text: async () => "rate limited" })) as unknown as typeof fetch;
+      await expect(searchExa("q", { signal: new AbortController().signal }, failing)).rejects.toThrow(
+        /exa search 429: rate limited/
+      );
+    } finally {
+      if (savedKey === undefined) delete process.env.EXA_API_KEY;
+      else process.env.EXA_API_KEY = savedKey;
+    }
+  });
+
+  it("reports a loud failed summary when EXA_API_KEY is missing (no keyless fallback)", async () => {
+    const savedKey = process.env.EXA_API_KEY;
+    delete process.env.EXA_API_KEY;
+    try {
+      const summary = await collectPulseWebSearchEvidence({
+        candidates: [createCandidate()],
+        config: createConfig(),
+        now: () => new Date("2026-06-05T00:00:00.000Z")
+      });
+      expect(summary.status).toBe("failed");
+      expect(summary.failureReason).toContain("EXA_API_KEY is not set");
+      expect(summary.candidates).toEqual([]);
+    } finally {
+      if (savedKey === undefined) delete process.env.EXA_API_KEY;
+      else process.env.EXA_API_KEY = savedKey;
+    }
   });
 
   it("collects injected search results without touching the network", async () => {

@@ -33,7 +33,7 @@ Pulse research context 现在会写入 `stage_flow` 字段，显式对齐图片�
 | --- | --- | --- |
 | 1. 理清定义 | 部分实现 | Polymarket 规则和问题已抓取，但 Yes/No 边界、代表主体、时区、边界案例仍主要由 LLM 在 Markdown 中写出；还不是机器可校验 JSON。 |
 | 2. 基础推理/query | 部分实现 | 当前 query 由模板从问题、分类、标签生成；还没有让 LLM 先按事件必要条件生成 node-specific query plan。 |
-| 3. 证据收集 | 部分实现 | 已有 Polymarket 页面/评论/订单簿 + DuckDuckGo snippet 搜索；还没有稳定抓取全文、Twitter/X、Reddit、Telegram、军事地图或部分本地媒体。 |
+| 3. 证据收集 | 部分实现 | 已有 Polymarket 页面/评论/订单簿 + Exa 语义搜索（带发布日期；DuckDuckGo scraper 已于 2026-08-22 移除）；还没有稳定抓取全文、Twitter/X、Reddit、Telegram、军事地图或部分本地媒体。 |
 | 4. 证据权重 | 部分实现 | 报告会写证据链和置信度，但每条证据的方向、强度、时效、一手性、交叉印证还没有落成 typed evidence ledger。 |
 | 5. 结构化模型 | 部分实现 | LLM 可写 `P(A) x P(B|A) x P(C|A,B)`，但模型节点和乘法校验还没有被代码强制保存和验证。 |
 | 6. 贝叶斯更新 | 部分实现 | LLM 可解释更新过程，但基线、delta、最终概率、置信区间没有独立机器审计；也没有第二 LLM verifier。 |

@@ -30,6 +30,14 @@ Watch live:
 - **Trading decision log / equity curve**: [autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
 - **On-chain positions / fills (Polymarket profile)**: [`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
+## ⚠️ Known issue — search evidence quality (priority fix, flagged 2026-08-23)
+
+The forecaster's web-search layer silently degraded and contaminated past outputs. Flagged by the user for a dedicated fix next session; actionable checklist lives in [docs/agent-handoff.md](docs/agent-handoff.md) (P0).
+
+- **What broke**: both search paths scraped keyless DuckDuckGo, and DDG now serves HTTP-200 CAPTCHA pages that parsed as "search succeeded, 0 results" — runs were told "no evidence exists" when the search never ran. Measured 2026-08-22: 4 of 6 queries blocked.
+- **Contamination window**: the paper-trading agent's *entire* lifetime (its DeepSeek tool loop shipped 2026-07-03 on this backend; first recorded DDG 403 on 2026-07-02) — its Brier skill scores and daily reflections were produced while many evaluations were effectively offline and must be re-assessed. The final live-trading day (2026-06-10) had 6–8 of 12 pulse news queries return empty per run (vs 1/16 on 06-07). World Cup forecasts and Delta PM are **not** affected (different pipelines).
+- **Fixed so far** (PR #108): DuckDuckGo removed entirely; search now runs on Exa (`EXA_API_KEY`, preferred) or Tavily, and fails loudly with no key. Pending: production keys + VM archive audit + re-scoring the contaminated reports.
+
 ## System Design
 
 The trading side is built around a single core component, **Market Pulse**: it lets the AI independently estimate the probability of an event, dynamically gathers evidence from information sources, compares that evidence against the market's implied odds, and issues trading instructions that combine edge with capital return efficiency.

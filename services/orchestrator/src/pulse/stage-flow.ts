@@ -205,7 +205,7 @@ export function buildPulseStageFlowReport(input: {
       implementation: "partial",
       currentImplementation: [
         "Pulse scrapes Polymarket rules, context, comments, and CLOB order books.",
-        "Pulse web-search stores DuckDuckGo result titles, URLs, hosts, snippets, status, and timeout/failure details."
+        "Pulse web-search stores Exa result titles, URLs, hosts, snippets, publish dates, status, and timeout/failure details."
       ],
       gaps: [
         "Current web-search does not fetch and compare full article/page bodies.",

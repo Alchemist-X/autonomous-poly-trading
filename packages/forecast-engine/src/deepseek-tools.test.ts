@@ -1,5 +1,5 @@
 // Tool-loop orchestration test: a scripted fetchFn plays the OpenAI endpoint,
-// the DuckDuckGo backend and a cited page, verifying that the loop executes
+// the Exa backend and a cited page, verifying that the loop executes
 // tools, records the search trace, and returns parsed JSON with trace-based
 // verification (not the liveness fallback).
 
@@ -29,21 +29,34 @@ const ROUND_JSON = {
   notes: ""
 };
 
-const DDG_HTML = `<a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.reuters.com%2Fmarkets%2Fbitcoin-2026%2F">Reuters</a>`;
+const EXA_RESPONSE = {
+  results: [
+    {
+      title: "Reuters",
+      url: "https://www.reuters.com/markets/bitcoin-2026/",
+      publishedDate: "2026-01-05T00:00:00.000Z",
+      highlights: ["BTC fell below $60,000"]
+    }
+  ]
+};
 
 function jsonResponse(body: unknown): Response {
   return new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
 }
 
 describe("runDeepSeekRaw with FORECAST_WEB_SEARCH", () => {
+  const savedExaKey = process.env.EXA_API_KEY;
   beforeEach(() => {
-    process.env.FORECAST_WEB_SEARCH = "duckduckgo";
+    process.env.FORECAST_WEB_SEARCH = "exa";
     process.env.DEEPSEEK_API_KEY = "test-key";
+    process.env.EXA_API_KEY = "test-exa-key";
     delete process.env.TAVILY_API_KEY;
   });
   afterEach(() => {
     delete process.env.FORECAST_WEB_SEARCH;
     delete process.env.DEEPSEEK_API_KEY;
+    if (savedExaKey === undefined) delete process.env.EXA_API_KEY;
+    else process.env.EXA_API_KEY = savedExaKey;
   });
 
   it("executes tools, records the trace, returns parsed JSON", async () => {
@@ -75,8 +88,8 @@ describe("runDeepSeekRaw with FORECAST_WEB_SEARCH", () => {
           usage: { prompt_tokens: 200, completion_tokens: 80 }
         });
       }
-      if (url.includes("duckduckgo.com")) {
-        return new Response(DDG_HTML, { status: 200, headers: { "content-type": "text/html" } });
+      if (url.includes("api.exa.ai")) {
+        return jsonResponse(EXA_RESPONSE);
       }
       throw new Error(`unexpected fetch: ${url}`);
     }) as typeof fetch;

@@ -103,7 +103,7 @@ docker exec raven-forecast-api-1 pnpm --filter @autopoly/forecast-api invite rev
 `paper-agent` 服务是一个**只做模拟**的全自主 Polymarket 交易 agent：没有私钥、没有签名器、代码里不存在下单端点——只读公开行情（Gamma / CLOB order book），成交全部按真实盘口模拟并记账手续费（复用仓库校准的品类费率模型）。
 
 **运行逻辑**（第一期）：
-1. 每天 3 次（`PAPER_EVAL_TIMES_UTC`，默认 UTC 00:10/08:10/16:10）评估每个持仓：**隔离进程**跑 DeepSeek（或 Kimi）迭代预测引擎——prompt 只含市场问题与结算标准，**不含持仓、成本价、盘口价**——得到独立概率。**评估默认开联网搜索**（function-calling 工具循环，免 key DuckDuckGo 后端，配 `TAVILY_API_KEY` 自动升级；`FORECAST_WEB_SEARCH=0` 关闭），引用按真实搜索痕迹验真；
+1. 每天 3 次（`PAPER_EVAL_TIMES_UTC`，默认 UTC 00:10/08:10/16:10）评估每个持仓：**隔离进程**跑 DeepSeek（或 Kimi）迭代预测引擎——prompt 只含市场问题与结算标准，**不含持仓、成本价、盘口价**——得到独立概率。**评估默认开联网搜索**（function-calling 工具循环，需配 `EXA_API_KEY`（首选）或 `TAVILY_API_KEY`，无 key 时大声报错——免 key DuckDuckGo 后端已于 2026-08-22 移除；`FORECAST_WEB_SEARCH=0` 关闭），引用按真实搜索痕迹验真；
 2. Harness 拿概率对比可成交价：**持有净 edge（扣退出费）< 阈值 → 平仓**；止损（默认 −35%）优先级最高；
 3. 平仓执行**混合策略**：50% 市价吃单（taker 费）+ 50% 挂限价单（maker 免费，TTL 到期回落市价）；止损例外——100% 市价；
 4. 每天最后一个周期后自动写**反思报告**（`runtime-artifacts/paper-agent/reports/`）：每笔退出的"卖出 vs 假如持有"反事实差值、Brier 校准分、费用拖累、限价/市价两半的执行质量对比。
