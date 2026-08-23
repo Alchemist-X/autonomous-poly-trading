@@ -111,6 +111,8 @@ SNDK "$9B 独家 NAND 合同"(手动注入):gate1 tradeable 88 分 → gate2 未
 | 每个决策为什么开/不开 | `runtime-artifacts/delta-pm/ledger.jsonl` 里 `"type":"decision"` 行(含裁剪与 binding constraint) |
 | 系统实际发给 LLM 的 prompt | 代码即真相:`services/delta-pm/src/gate.ts`(GATE1_SYSTEM)、`src/analyzer.ts`(M2_SYSTEM + 清洗规则) |
 | 自己注入一条新闻测试 | `curl -X POST localhost:8792/ingest -H "x-delta-pm-token: <VM .env 里的 DELTAPM_INGEST_TOKEN>" -H "content-type: application/json" -d '{"mode":"manual_news","title":"...","text":"..."}'` |
+| 补全某条新闻的原文(控制台"补全原文"框,或 curl `{"mode":"paste_full_text","newsId":"...","fullText":"..."}`) | **语义 = 对原信号的重跑,不是新信号**(2026-08-23 修):news id 不变、t0 保持原始 published 时间、标题/URL 从 `runtime-artifacts/delta-pm/news/` 存档(source of truth)回填;原始记录找不到时 404 拒绝(绝不猜 t0=粘贴时刻),可带 `title`+`publishedAtUtc` 强制 |
+| 闸门 1 的跨源既有报道检索 | 每条池内新闻分析前先花 ~15s 搜"有没有人更早报过"(`"type":"coverage_check"` ledger 行 + signal 的 `priorCoverage` 字段);发现更早同故事 → t0 前移(安全方向)。需要 VM `.env` 有 `EXA_API_KEY`(或 TAVILY);无 key 记可见跳过,`DELTAPM_COVERAGE_CHECK=0` 可关 |
 
 ### 检查时建议盯的四个点(按价值排序)
 

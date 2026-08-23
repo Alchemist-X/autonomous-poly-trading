@@ -8,6 +8,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import type { NewsItem, Portfolio, StatusSnapshot, UniverseEntry } from "@autopoly/delta-pm-contracts";
 import { config } from "./config.js";
 import { loadFeedState } from "./feed.js";
+import { resolvePasteRerun } from "./ingest.js";
 import { archivedDayCount, marketState } from "./market.js";
 import { equityOf } from "./policy.js";
 import { activeRuns, recentRuns } from "./progress.js";
@@ -140,26 +141,26 @@ async function handleIngest(req: IncomingMessage, res: ServerResponse, universe:
 
   if (body.mode === "paste_full_text") {
     if (!body.newsId || !body.fullText) return json(res, 400, { error: "newsId and fullText required" });
-    // Re-run the pipeline for this news with the pasted full text attached.
-    // t0 stays the ORIGINAL published time (pasting never resets the clock);
-    // dedupe is bypassed via a fresh manual id suffix.
-    const nowIso = new Date().toISOString();
-    const item: NewsItem = {
-      id: `${body.newsId}#fulltext-${Date.now().toString(36)}`,
-      source: "the-information",
-      kind: "manual",
-      title: body.title ?? `[补全原文] ${body.newsId}`,
-      teaser: "",
-      fullText: body.fullText.slice(0, 50_000),
-      url: body.url ?? null,
-      author: null,
-      publishedUtc: body.publishedAtUtc ?? nowIso,
-      updatedUtc: null,
-      prefix: "none",
-      fetchedAtUtc: nowIso
-    };
+    // Rerun of the ORIGINAL news with the pasted full text attached: same
+    // news id (so staleness treats it as a rerun, not fresh news), original
+    // title/url, and t0 = original published time. All of that comes from the
+    // news source-of-truth archive; when it cannot be resolved we refuse
+    // rather than guess t0 = paste time (see ingest.ts).
+    const resolution = resolvePasteRerun(
+      { newsId: body.newsId, fullText: body.fullText, title: body.title, url: body.url, publishedAtUtc: body.publishedAtUtc },
+      new Date().toISOString()
+    );
+    if (!resolution.ok) return json(res, 404, { error: resolution.error });
+    const item = resolution.item;
     void processNews(item, { universe });
-    return json(res, 202, { accepted: true, id: item.id });
+    return json(res, 202, {
+      accepted: true,
+      id: item.id,
+      rerun: true,
+      resolvedFrom: resolution.resolvedFrom,
+      t0Utc: item.publishedUtc,
+      title: item.title
+    });
   }
 
   if (body.mode === "manual_news") {

@@ -113,6 +113,31 @@ export const pricedInSchema = z.object({
 });
 export type PricedIn = z.infer<typeof pricedInSchema>;
 
+// Result of the gate-time cross-source coverage search: did anyone publish
+// this story BEFORE our item's timestamp? Powers first-seen verification for
+// "Reportedly" items and shifts gate-2 t0 earlier (the safe direction: an
+// earlier t0 counts more of the realized move as already-priced).
+export const priorCoverageSchema = z.object({
+  searched: z.boolean(), // false = skipped (no key/disabled) or errored
+  skippedReason: z.string().nullable(),
+  error: z.string().nullable(),
+  query: z.string().nullable(),
+  priorHitCount: z.number().int().min(0), // same-story hits published before t0
+  earliestPriorUtc: z.string().datetime({ offset: true }).nullable(),
+  hits: z
+    .array(
+      z.object({
+        title: z.string(),
+        url: z.string(),
+        domain: z.string(),
+        publishedUtc: z.string().datetime({ offset: true }).nullable(),
+        titleSimilarity: z.number().min(0).max(1)
+      })
+    )
+    .max(8)
+});
+export type PriorCoverage = z.infer<typeof priorCoverageSchema>;
+
 export const newsSignalSchema = z.object({
   id: z.string().min(1),
   newsId: z.string().min(1),
@@ -124,6 +149,7 @@ export const newsSignalSchema = z.object({
   consensusBaselineAsOf: z.string().nullable(), // baseline version the surprise was scored against
   materiality: materialitySchema,
   pricedIn: pricedInSchema.nullable(), // null until gate 2 ran (immaterial items skip it)
+  priorCoverage: priorCoverageSchema.nullable().default(null), // null on pre-coverage-check archives
   createdAtUtc: z.string().datetime({ offset: true })
 });
 export type NewsSignal = z.infer<typeof newsSignalSchema>;
@@ -371,6 +397,7 @@ export interface StatusSnapshot {
 export const LEDGER_EVENT_TYPES = [
   "service_start",
   "news_seen",
+  "coverage_check",
   "signal_created",
   "signal_archived",
   "thesis_created",

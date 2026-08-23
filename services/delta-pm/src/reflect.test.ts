@@ -34,6 +34,7 @@ function signal(over: Partial<StoredSignal> = {}): StoredSignal {
       confidence: "high",
       note: "n"
     },
+    priorCoverage: null,
     createdAtUtc: "2026-08-20T14:10:00.000Z",
     ...over
   };

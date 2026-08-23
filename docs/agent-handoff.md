@@ -11,7 +11,13 @@
 >
 > 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
 >
-> 最后更新：2026-08-23 by Claude（**Delta PM 上线东京 VM + 决策链审计页 /live-delta-pm 全链发布**，PR #103/104/106/107/115/117 全合并）。
+> 最后更新：2026-08-23 by Claude v2（**TI 收取通路修复:paste 三 bug + 新闻 source-of-truth 存档 + 闸门 1 跨源既有报道检索**，分支 `claude/theinformation-intake-fix-169e59`）。
+> ① **paste(补全原文)通路三个实锤 bug 全修**——实测原通路比预想更糟:console 只传 `newsId+fullText`,构造出的 item 标题=`[补全原文] tag:...`、teaser 空 → matchUniverse 连池都匹配不上,**paste 之前是 100% 无效操作**(不止 t0 重置/去重抛硬币)。修法:新增 `runtime-artifacts/delta-pm/news/` **NewsItem source-of-truth 存档**(每条新闻一份,首条记录拥有身份+时间,后续 ingest 只补缺口,`store.upsertNewsItem`);paste 改为**对原信号的重跑**(`ingest.ts resolvePasteRerun`:news store → signalId 解引用 → ledger news_seen 兜底 → 全找不到就 404 拒绝,绝不猜 t0=粘贴时刻);去重抽成 `gate.findStaleDuplicate`(同 newsId 永不与自己旧信号相撞,跨 newsId 照旧拦)。`policy position_exists` 防重复开仓不变。
+> ② **闸门 1 跨源检索(用户 8/23 提出)**:池内新闻分析前先花 ~15s 搜"有没有人更早报过"(`coverage.ts`,复用 forecast-engine Exa/Tavily 后端;⚠️ forecast-engine 是 CJS 语境 TS,ESM 静态 import 命名导出探测失败,必须动态 import——coverage.ts 有注释)。命中更早同故事(>30min + 标题 Jaccard≥0.3)→ **t0 确定性前移(代码算,不交给 LLM;安全方向:算入更多已实现行情)**、firstSeen 升级(替代 Reportedly 的"published 上界"简化)、hit 列表进 gate1 prompt 让 LLM 判"是否炒冷饭"。无 key/失败 = signal `priorCoverage` 字段 + `coverage_check` ledger 行记**可见**跳过。实测真 Exa:2.1s、8 hits、5 月旧财报新闻(sim .05-.24)正确排除、昨日复述(sim .389)正确命中。
+> ③ **验证**:37 个新模块测试(gate1Rules 重要性判定表/去重/存档合并/paste 解析/coverage),全仓 1132 测试+typecheck 绿;本地实弹(rules 引擎+真 HL 行情):manual_news 全链 → console 式 paste → 响应 `rerun:true, t0Utc=原始时间, title=原标题`,同指纹重跑**未**被 stale 拦截,Δt 按真 t0 算(138min)。
+> ④ **待办/待用户**:VM 部署(clean-untar,老规矩)——**部署前需决定是否给 VM `.env` 加 `EXA_API_KEY`**(不加则 coverage 全记跳过,管线照跑);console 的 paste UI 未动(服务端兼容旧载荷)。英文版 handoff 此条待同步翻译。
+>
+> 上次更新：2026-08-23 by Claude（**Delta PM 上线东京 VM + 决策链审计页 /live-delta-pm 全链发布**，PR #103/104/106/107/115/117 全合并）。
 > ① **VM 部署(正式 Phase 0 账本起点 2026-08-23 06:33 UTC)**：磁盘清理(builder cache 8.6GB,74%→59%)后 clean-untar(备份 `~/predict-raven.pre-delta-pm.bak` 与 `.pre-audit-chain.bak`)+ 重建 raven-suite + `up -d --no-deps delta-pm delta-pm-console forecast-api`,其余容器零接触。冒烟全过;首日周末流:30 条真实新闻、3 次真实 claude 分析全部规范拒单(residual < 门槛)。**本机 soak 已停**(本机 claude OAuth 被吊销 401 → 只剩 rules 引擎;修复命令在运维手册 §1.4)。
 > ② **审计链(用户诉求「抽象写法没法审计」,PR #117)**:policy 决策记录新增 decisionAudit(edge 四数/门槛逐项分解/止损菜单/sizing 链每道 guard 上限与裁剪/杠杆三帽/否决标签);forecast-api 新增 `GET /delta-pm/audit`(六环 join,双凭证同 /paper/snapshot);**apps/web 新增 `/live-delta-pm`**(六台席对冲基金决策链版式,subagent 构建,15 web 测试),已发 forecasting-agent.com,**线上实弹验收过**:表单解锁(⚠️ unlock 收 form-encoded 不收 JSON)→ 实时徽标 + VM 账本时间 + 30 条链。运维手册 `docs/delta-pm-operations.md`(PR #115):setup 清单/真实案例走查/token 实测(单次 15.6k 新 token,30 新闻 15 调用——不贵)。
 > ③ **raven-labs 并发测试场结论**:实测 4vCPU/30G 空载 vs 东京 2vCPU/7.8G 满载生产——大规模并发测试放美西,执行链路留东京(HL 延迟 25ms vs 155ms + 美 IP 对 trade.xyz ToS 合规硬伤);claude CLI 已在(2.1.241,凭证在 `/home/yishu/forecast-fleet/env/.secrets.env`,fleet 正用)。

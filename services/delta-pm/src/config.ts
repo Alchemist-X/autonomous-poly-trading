@@ -48,6 +48,10 @@ export const config = {
   claudeCliPath: str("DELTAPM_CLAUDE_CLI", "claude"),
   analysisConcurrency: num("DELTAPM_ANALYSIS_CONCURRENCY", 3),
   analysisTimeoutMs: num("DELTAPM_ANALYSIS_TIMEOUT_MS", 600_000),
+  // Gate-time prior-coverage web search (~15s, universe-matched items only).
+  // Uses the forecast-engine backend keys (EXA_API_KEY / TAVILY_API_KEY);
+  // without a key it degrades to a recorded skip, never a silent pass.
+  coverageCheckEnabled: bool("DELTAPM_COVERAGE_CHECK", true),
 
   // --- paper book
   initialCapitalUsd: num("DELTAPM_INITIAL_CAPITAL_USD", 10_000),
