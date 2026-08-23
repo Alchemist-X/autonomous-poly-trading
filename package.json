@@ -14,10 +14,6 @@
     "test": "vitest run --config config/vitest.config.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "rough-loop:once": "pnpm --filter @autopoly/rough-loop run once",
-    "rough-loop:dev": "pnpm --filter @autopoly/rough-loop run dev",
-    "rough-loop:start": "pnpm --filter @autopoly/rough-loop run start",
-    "rough-loop:doctor": "pnpm --filter @autopoly/rough-loop run doctor",
     "trial:recommend": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/orchestrator trial:recommend",
     "trial:approve": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/orchestrator trial:approve",
     "trial:reset-paper": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && pnpm --filter @autopoly/orchestrator trial:reset-paper",
@@ -33,7 +29,6 @@
     "delta:build": "pnpm --filter @autopoly/raven-delta build",
     "delta:ws": "tsx scripts/delta-ws/server.ts",
     "delta:test-email": "tsx scripts/delta-email-test.ts",
-    "managed:forecast": "pnpm --filter @autopoly/contracts build && pnpm --filter @autopoly/db build && tsx scripts/managed-pulse.ts",
     "poly:cache-order-limits": "tsx scripts/cache-polymarket-order-limits.ts",
     "poly:aw:check": "pnpm --filter @autopoly/executor ops:check",
     "poly:aw:trade": "pnpm --filter @autopoly/executor ops:trade",
@@ -54,8 +49,7 @@
     "daily:pulse": "pnpm daily:forecast",
     "pulse:live": "pnpm forecast:live",
     "pulse:recommend": "pnpm forecast:recommend",
-    "pulse:positions": "pnpm forecast:positions",
-    "managed:pulse": "pnpm managed:forecast"
+    "pulse:positions": "pnpm forecast:positions"
   },
   "dependencies": {
     "@autopoly/contracts": "workspace:*",

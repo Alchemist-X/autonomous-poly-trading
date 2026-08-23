@@ -57,7 +57,6 @@ flowchart LR
   pulseDirect --> reports
   providerRuntime --> reports
 
-  roughLoop[services/rough-loop] -. separate loop .-> human
 
   classDef primary fill:#e8fff1,stroke:#147a3f,stroke-width:2px,color:#0d3b21;
   classDef legacy fill:#fff1f1,stroke:#b42318,stroke-width:2px,color:#5c1111;
@@ -69,7 +68,6 @@ flowchart LR
   class providerRuntime legacy;
   class stateful,infraPreflight,queueExec,db stateful;
   class localState,artifacts,reports storage;
-  class roughLoop auxiliary;
 ```
 
 图怎么读：
@@ -120,7 +118,6 @@ flowchart LR
 | [`packages/terminal-ui/`](../packages/terminal-ui) | 终端彩色输出、错误摘要、表格 | [`packages/terminal-ui/src`](../packages/terminal-ui/src) |
 | [`apps/web/`](../apps/web) | 公开展示和管理员控制台，不是主执行热路径 | [`apps/web/lib/internal-api.ts`](../apps/web/lib/internal-api.ts)、[`apps/web/app`](../apps/web/app) |
 | [`runtime-artifacts/`](../runtime-artifacts) | 一切可追溯归档 | `reports/`、`pulse-live/`、`live-test/`、`checkpoints/`、`local/` |
-| [`services/rough-loop/`](../services/rough-loop) | 独立的代码任务循环器，不是交易主链路 | [`services/rough-loop/src/cli.ts`](../services/rough-loop/src/cli.ts) |
 
 ## 真实状态源 vs 运行归档
 
@@ -163,7 +160,6 @@ flowchart LR
 - `apps/web` 主要负责读数据和触发管理动作，不负责主交易执行，而且它的读源不一定总是 DB。
 - `paper` 和 `live` 不是两套策略内核，它们复用同一套 Pulse 和 decision core，主要区别在执行落点和状态源。
 - `runtime-artifacts` 不是统一状态库，只有少数文件是状态，大多数是归档和报告。
-- `services/rough-loop` 是代码任务 loop，不是交易 daemon，不在主下单链路里。
 
 ## 推荐阅读顺序
 

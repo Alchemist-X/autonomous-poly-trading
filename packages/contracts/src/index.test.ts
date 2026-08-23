@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  applyPaperTradeDecision,
-  roughLoopRunRecordSchema,
-  roughLoopTaskSchema,
-  tradeDecisionSetSchema
-} from "./index.js";
+import { applyPaperTradeDecision, tradeDecisionSetSchema } from "./index.js";
 
 describe("tradeDecisionSetSchema", () => {
   it("accepts a valid decision set", () => {
@@ -75,60 +70,6 @@ describe("tradeDecisionSetSchema", () => {
         artifacts: []
       })
     ).toThrow();
-  });
-});
-
-describe("roughLoopTaskSchema", () => {
-  it("accepts a valid rough loop task", () => {
-    const parsed = roughLoopTaskSchema.parse({
-      id: "RL-001",
-      title: "Implement rough loop parser",
-      status: "todo",
-      priority: "P1",
-      dependsOn: [],
-      allowedPaths: ["services/rough-loop"],
-      definitionOfDone: ["Parser can round-trip markdown tasks."],
-      verification: ["pnpm test"],
-      context: ["Start from the rough-loop guide template."],
-      latestResult: ["Not started."],
-      attempts: 0,
-      section: "queue",
-      createdOrder: 0
-    });
-
-    expect(parsed.status).toBe("todo");
-  });
-});
-
-describe("roughLoopRunRecordSchema", () => {
-  it("accepts a run record with verification results", () => {
-    const parsed = roughLoopRunRecordSchema.parse({
-      runId: "run-123",
-      taskId: "RL-001",
-      provider: "codex",
-      status: "done",
-      attempt: 1,
-      startedAtUtc: "2026-03-14T08:00:00.000Z",
-      finishedAtUtc: "2026-03-14T08:05:00.000Z",
-      summary: "Task completed.",
-      changedFiles: ["services/rough-loop/src/lib/markdown.ts"],
-      artifactsDir: "runtime-artifacts/rough-loop/runs/2026/03/14/run-123",
-      verification: {
-        passed: true,
-        summary: "All verification commands passed.",
-        commandResults: [
-          {
-            command: "pnpm test",
-            exitCode: 0,
-            passed: true,
-            stdout: "",
-            stderr: ""
-          }
-        ]
-      }
-    });
-
-    expect(parsed.verification?.passed).toBe(true);
   });
 });
 

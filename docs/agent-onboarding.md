@@ -70,7 +70,6 @@ pnpm test    # 应该 317/317 全过
 | 坑 | 怎么避免 |
 | --- | --- |
 | 直接 `forecast:live` 不加 `--recommend-only` 想"看一下" | 这会**真扣钱**。除非用户明说要 live 才省略 `--recommend-only` |
-| 想把 `rough-loop.md` 挪到 `docs/` 显得整洁 | 不行，`services/rough-loop/src/lib/{loop,prompt,doctor}.ts` 硬编码了根路径 |
 | `claude --print` 子进程 0 字节挂 5 分钟 | **不是失败**，等它，Pulse 渲染内部 timeout 是 30 分钟 |
 | 看到 `[WARN] Fee mismatch ...` | 不是错误，是本地静态 fee 表跟链上不一致的告警，不阻断下单 |
 | 一上来就改架构、瘦身根目录 | 先问用户。这种改动有 cascade 风险（vitest config 路径、Vercel 自动部署等） |
@@ -85,7 +84,6 @@ apps/web/        ← Next.js 前端（公开 spectator 页 + admin）
 services/
   ├── orchestrator/   ← Pulse 抓取 + 决策运行时 + 风控裁剪 + 报告
   ├── executor/       ← Polymarket CLOB 下单 + 同步 + 止损
-  └── rough-loop/     ← 独立任务循环器（不参与交易）
 packages/        ← 共享 contracts/db/terminal-ui
 scripts/         ← CLI 入口（daily-pulse、pulse-live 等）
 ```
@@ -100,7 +98,7 @@ docs/
   │   └── review/          ← 历史 review/decision 笔记
   ├── diagrams/            ← 架构图 + 操作手册
   ├── en/                  ← 英文镜像
-  └── *.md                 ← progress / risk-controls / rough-loop-guide / ...
+  └── *.md                 ← progress / risk-controls / ...
 ```
 
 ## 8. 当前阶段的关键信息（可能很快过期）

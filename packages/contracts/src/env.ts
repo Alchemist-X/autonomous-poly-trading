@@ -1,5 +1,5 @@
 // Canonical .env loader, shared by every service (executor / orchestrator /
-// rough-loop) so ENV_FILE precedence can never silently diverge between them.
+// scripts) so ENV_FILE precedence can never silently diverge between them.
 // This matters on the real-money path: `ENV_FILE=.env.pizza` must win — if it's
 // set but missing we fail closed rather than quietly loading a different wallet.
 //

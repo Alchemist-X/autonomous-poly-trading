@@ -70,7 +70,6 @@ Win or lose:
 | Landmine | How to avoid |
 | --- | --- |
 | Running `forecast:live` without `--recommend-only` "just to see" | This **places real orders**. Unless the user explicitly said live, keep `--recommend-only` |
-| Moving `rough-loop.md` into `docs/` for tidiness | Don't — `services/rough-loop/src/lib/{loop,prompt,doctor}.ts` hardcode the root path |
 | `claude --print` subprocess hanging at 0 bytes for 5+ min | **Not a failure** — Pulse render has a 30-minute internal timeout, let it finish |
 | Seeing `[WARN] Fee mismatch ...` | Not an error, just a static-table vs on-chain divergence warning, does not block orders |
 | Refactoring or slimming the root layout on day 1 | Ask the user first. Cascade risk (vitest config paths, Vercel auto-deploy, etc.) is real |
@@ -85,7 +84,6 @@ apps/web/        ← Next.js frontend (public spectator + admin)
 services/
   ├── orchestrator/   ← Pulse fetch + decision runtime + risk trim + reports
   ├── executor/       ← Polymarket CLOB orders + sync + stop-loss
-  └── rough-loop/     ← Independent task loop (not part of trading)
 packages/        ← Shared contracts/db/terminal-ui
 scripts/         ← CLI entry points (daily-pulse, pulse-live, etc.)
 ```
@@ -100,7 +98,7 @@ docs/
   │   └── review/          ← Historical review / decision notes
   ├── diagrams/            ← Architecture diagrams + operations runbooks
   ├── en/                  ← English mirrors
-  └── *.md                 ← progress / risk-controls / rough-loop-guide / ...
+  └── *.md                 ← progress / risk-controls / ...
 ```
 
 ## 8. Current-phase facts (may go stale fast)

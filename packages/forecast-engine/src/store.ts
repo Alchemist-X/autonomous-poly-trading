@@ -5,7 +5,7 @@
 //   report.md   — the audit log a human reads: per round, per source, prob from->to
 //
 // We persist after every round so a crash mid-loop resumes from the last
-// committed state (the persist-after-each-transition discipline from rough-loop).
+// committed state (persist after each transition).
 
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, renameSync, writeFileSync, existsSync } from "node:fs";
