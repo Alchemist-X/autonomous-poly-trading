@@ -36,7 +36,7 @@ The forecaster's web-search layer silently degraded and contaminated past output
 
 - **What broke**: both search paths scraped keyless DuckDuckGo, and DDG now serves HTTP-200 CAPTCHA pages that parsed as "search succeeded, 0 results" — runs were told "no evidence exists" when the search never ran. Measured 2026-08-22: 4 of 6 queries blocked.
 - **Contamination window**: the paper-trading agent's *entire* lifetime (its DeepSeek tool loop shipped 2026-07-03 on this backend; first recorded DDG 403 on 2026-07-02) — its Brier skill scores and daily reflections were produced while many evaluations were effectively offline and must be re-assessed. The final live-trading day (2026-06-10) had 6–8 of 12 pulse news queries return empty per run (vs 1/16 on 06-07). World Cup forecasts and Delta PM are **not** affected (different pipelines).
-- **Fixed so far** (PR #108): DuckDuckGo removed entirely; search now runs on Exa (`EXA_API_KEY`, preferred) or Tavily, and fails loudly with no key. Pending: production keys + VM archive audit + re-scoring the contaminated reports.
+- **Fixed so far**: DuckDuckGo removed entirely; search now runs on Exa (`EXA_API_KEY`, preferred) or Tavily, and fails loudly with no key (PR #108). Production deployed 2026-08-23: the VM's paper-agent/forecast-api run the fix with a working key (in-container Exa call verified). Pending: VM archive audit + re-scoring the contaminated reports.
 
 ## System Design
 

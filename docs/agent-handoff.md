@@ -264,7 +264,7 @@
 ## 🔴 P0 — 现在/今天
 
 - [ ] **【P0 · 2026-08-23 用户标记 · 下次重点修】搜索证据质量重建**：DDG CAPTCHA 静默降级污染了历史产物（README 顶部有摘要）。已修部分见 PR #108（Exa backend + DDG 删除 + fail-fast + A/B harness `scripts/forecast/search-backend-compare.ts`）。剩余动作：
-  1. **生产配 key**：VM（paper-agent / forecast-api / raven app）与 `.env.pizza` 补 `EXA_API_KEY` 并部署——**不配 key 现在会大声失败**（paper-agent 评估默认开搜索、pulse web-search 默认 enabled，部署前必须先配）；
+  1. ~~**生产配 key**~~ ✅ 2026-08-23 完成：`EXA_API_KEY` 已入 VM `deploy/raven/.env` 与本地 `.env.pizza`；东京 VM clean-untar 到 merge `1082303`（备份 `~/predict-raven.pre-exa-search.bak`），`raven-suite` 重建 + `up -d --no-deps forecast-api paper-agent`；**容器内实测 Exa HTTP 200 带 publishedDate**、forecast-api /healthz 200、paper-agent 重启正常（bankroll $10000，eval UTC 02/10/18）。delta-pm/raven/delta 容器未动（raven 仍旧镜像，claude provider 不受影响）。首批带 Exa 搜索的评估 = 2026-08-23 10:00 UTC 周期；
   2. **VM 归档审计**：扫 paper-agent 自 2026-07-03 以来的评估归档，量化"空搜索/零源轮次"占比，给受污染窗口的 Brier 技巧分（−0.37/−0.53"独立判断落后市场"）与每日反思结论打 caveat——负技巧分可能部分是断网评估假象；
   3. **pulse 查询语式重写**：`buildPulseWebSearchQueries` 的引号短语 + `site:` 语式是关键词引擎产物，Exa 语义搜索下改自然语言（A/B harness 可直接验证）；
   4. 决定 Tavily 是留作 fallback 还是删掉；世界杯盲测与 Delta PM 已确认不受影响，不用查。
