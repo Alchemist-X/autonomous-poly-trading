@@ -142,6 +142,7 @@
 | 风控完整规则 | [`docs/risk-controls.md`](docs/risk-controls.md) |
 | forecasting 流程开销画像 | [`docs/diagrams/forecasting-cost-profile.md`](docs/diagrams/forecasting-cost-profile.md) |
 | 命令速查 / 部署形态 / 依赖矩阵 | [`docs/diagrams/dev-reference.md`](docs/diagrams/dev-reference.md) |
+| 上线页面前端样式样本（对外指标页优先套用） | [`docs/diagrams/dashboard-style-reference.md`](docs/diagrams/dashboard-style-reference.md) |
 | 资金与账号配置（4 字段） | README "Wallet and Account Setup" 节 |
 | 实盘运行总结归档 | `runtime-artifacts/pulse-live/<ts>-<runId>/run-summary.md` |
 | Forecasting AI 推理报告 | `runtime-artifacts/reports/pulse/YYYY/MM/DD/pulse-*.md` |

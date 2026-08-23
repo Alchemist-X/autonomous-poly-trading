@@ -142,6 +142,7 @@ For any user-visible change, close out with: **screenshot → read the image →
 | Full risk-control rules | [`docs/risk-controls.en.md`](../risk-controls.en.md) |
 | Forecasting cost profile | [`docs/diagrams/forecasting-cost-profile.en.md`](../diagrams/forecasting-cost-profile.en.md) |
 | Command cheatsheet / deployment / dependency matrix | [`docs/diagrams/dev-reference.en.md`](../diagrams/dev-reference.en.md) |
+| Launch-page front-end style sample (default for public metrics pages) | [`docs/diagrams/dashboard-style-reference.en.md`](../diagrams/dashboard-style-reference.en.md) |
 | Wallet & account setup (4 fields) | README "Wallet and Account Setup" section |
 | Live run summary archive | `runtime-artifacts/pulse-live/<ts>-<runId>/run-summary.md` |
 | Forecasting AI reasoning report | `runtime-artifacts/reports/pulse/YYYY/MM/DD/pulse-*.md` |
