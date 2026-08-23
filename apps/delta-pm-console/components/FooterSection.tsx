@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import type { StatusSnapshot } from "../lib/types";
+import { withBasePath } from "../lib/base-path";
 
 export function FooterSection({
   snapshot,
@@ -23,7 +24,7 @@ export function FooterSection({
     setSending(true);
     setResult(null);
     try {
-      const res = await fetch("/api/paste", {
+      const res = await fetch(withBasePath("/api/paste"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ mode: "manual_news", title, text, url: url.trim() || undefined })

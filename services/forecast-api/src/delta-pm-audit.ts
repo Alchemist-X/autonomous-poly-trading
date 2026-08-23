@@ -195,3 +195,27 @@ export function getDeltaPmAudit(limit = 30): DeltaPmAuditPayload | null {
   if (payload) cache = { at: Date.now(), payload };
   return payload;
 }
+
+// Latest daily reflection (calibration report) for public consumption behind
+// the same credentials — mirrors delta-pm's internal /reflection.
+export function getDeltaPmReflection(): { date: string; report: Json; md: string | null } | null {
+  const rootDir = process.env.DELTA_PM_ARTIFACTS_DIR?.trim()
+    ? (process.env.DELTA_PM_ARTIFACTS_DIR as string)
+    : process.env.ARTIFACT_STORAGE_ROOT?.trim()
+      ? path.join(process.env.ARTIFACT_STORAGE_ROOT as string, "delta-pm")
+      : path.join(repoRoot(), "runtime-artifacts", "delta-pm");
+  const reportsDir = path.join(rootDir, "reports");
+  if (!existsSync(reportsDir)) return null;
+  const files = readdirSync(reportsDir).filter((f) => f.endsWith("-reflection.json")).sort();
+  const latest = files.at(-1);
+  if (!latest) return null;
+  const report = readJson(path.join(reportsDir, latest));
+  if (!report) return null;
+  let md: string | null = null;
+  try {
+    md = readFileSync(path.join(reportsDir, latest.replace(/\.json$/, ".md")), "utf8");
+  } catch {
+    md = null;
+  }
+  return { date: latest.slice(0, 10), report, md };
+}
