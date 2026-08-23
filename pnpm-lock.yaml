@@ -14,6 +14,9 @@ importers:
       '@autopoly/db':
         specifier: workspace:*
         version: link:packages/db
+      '@autopoly/forecast-engine':
+        specifier: workspace:*
+        version: link:packages/forecast-engine
       '@autopoly/terminal-ui':
         specifier: workspace:*
         version: link:packages/terminal-ui
@@ -82,6 +85,9 @@ importers:
 
   apps/raven:
     dependencies:
+      '@autopoly/forecast-engine':
+        specifier: workspace:*
+        version: link:../../packages/forecast-engine
       next:
         specifier: 16.1.6
         version: 16.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -277,6 +283,9 @@ importers:
 
   services/forecast-api:
     dependencies:
+      '@autopoly/forecast-engine':
+        specifier: workspace:*
+        version: link:../../packages/forecast-engine
       '@modelcontextprotocol/sdk':
         specifier: 1.29.0
         version: 1.29.0(zod@3.25.76)

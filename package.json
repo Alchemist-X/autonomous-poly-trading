@@ -54,6 +54,7 @@
   "dependencies": {
     "@autopoly/contracts": "workspace:*",
     "@autopoly/db": "workspace:*",
+    "@autopoly/forecast-engine": "workspace:*",
     "@autopoly/terminal-ui": "workspace:*",
     "bullmq": "5.71.0",
     "drizzle-orm": "0.45.1",

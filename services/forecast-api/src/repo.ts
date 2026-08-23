@@ -7,7 +7,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
-import type { ForecastState } from "../../../packages/forecast-engine/src/types";
+import type { ForecastState } from "@autopoly/forecast-engine/types";
 
 export type { ForecastState };
 

@@ -6,7 +6,7 @@
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
-import type { ForecastState } from "../../../../packages/forecast-engine/src/types";
+import type { ForecastState } from "@autopoly/forecast-engine/types";
 
 export function repoRoot(): string {
   let dir = process.cwd();
@@ -33,7 +33,7 @@ export function forecastsRoot(): string {
 // spawning the CLI) and the engine (recomputes it from the same question
 // string). Importing the engine's implementation directly makes that contract
 // hold by construction — it is the same code.
-export { makeEventId } from "../../../../packages/forecast-engine/src/store";
+export { makeEventId } from "@autopoly/forecast-engine/store";
 
 export function eventDir(eventId: string): string {
   return path.join(forecastsRoot(), eventId);

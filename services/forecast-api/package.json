@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Hosted forecast service: ask any binary event question, get probability + reasoning + evidence as JSON, plain text, or PDF — over HTTP or MCP.",
+  "description": "Hosted forecast service: ask any binary event question, get probability + reasoning + evidence as JSON, plain text, or PDF \u2014 over HTTP or MCP.",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
@@ -11,6 +11,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@autopoly/forecast-engine": "workspace:*",
     "@modelcontextprotocol/sdk": "1.29.0",
     "playwright": "1.56.1",
     "tsx": "4.20.6",

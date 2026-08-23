@@ -3,4 +3,4 @@
 // (raven run-manager, forecast-api run-manager, paper-agent evaluator, the
 // `pnpm forecast:event` script) keeps working through this path. The CLI has
 // no main guard — importing it runs it.
-import "../../packages/forecast-engine/src/cli.ts";
+import "@autopoly/forecast-engine/cli";

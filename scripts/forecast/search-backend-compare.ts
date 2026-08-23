@@ -16,7 +16,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { loadEnvFile } from "@autopoly/contracts/env";
-import { webSearch, type SearchBackend, type SearchHit } from "../../packages/forecast-engine/src/web-search.ts";
+import { webSearch, type SearchBackend, type SearchHit } from "@autopoly/forecast-engine/web-search";
 
 const C = {
   reset: "\x1b[0m", dim: "\x1b[2m", bold: "\x1b[1m",
