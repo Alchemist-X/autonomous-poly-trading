@@ -18,6 +18,7 @@ import { z } from "zod";
 import { buildAnswer, verdictFor, pct } from "./answer";
 import { isAuthorized } from "./auth";
 import type { ServiceConfig } from "./config";
+import { getDeltaPmAudit } from "./delta-pm-audit";
 import { authorizeInviteUse, describeInviteState, inviteState } from "./invites";
 import { log } from "./log";
 import { handleMcpRequest } from "./mcp";
@@ -276,6 +277,25 @@ async function route(req: IncomingMessage, res: ServerResponse, config: ServiceC
       return;
     }
     sendJson(res, 200, snapshot);
+    return;
+  }
+
+  // Delta PM audit chain for the /live-delta-pm review page: per-news IC-memo
+  // cases (news → analyst thesis → market check → PM arithmetic → guards →
+  // execution). Simulation data only; same credential rules as /paper/snapshot.
+  if (url.pathname === "/delta-pm/audit" && method === "GET") {
+    if (!isAuthorized(req, url, config.token) && !isAuthorized(req, url, config.inviteCode)) {
+      sendJson(res, 401, { error: "unauthorized — provide the access token or invite code (Authorization: Bearer, x-api-key, or ?token=)" });
+      return;
+    }
+    const requestedLimit = Number(url.searchParams.get("limit") ?? "30");
+    const limit = Number.isInteger(requestedLimit) && requestedLimit >= 1 && requestedLimit <= 100 ? requestedLimit : 30;
+    const audit = getDeltaPmAudit(limit);
+    if (!audit) {
+      sendJson(res, 503, { error: "delta-pm book not found on this host — check ARTIFACT_STORAGE_ROOT / volume mounts" });
+      return;
+    }
+    sendJson(res, 200, audit);
     return;
   }
 

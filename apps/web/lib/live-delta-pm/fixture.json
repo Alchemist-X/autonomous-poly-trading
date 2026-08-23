@@ -1,0 +1,1720 @@
+{
+  "generatedAtUtc": "2026-08-23T08:57:06.731Z",
+  "bookStartedUtc": "2026-08-21T18:53:20.930Z",
+  "equitySource": "portfolio.json",
+  "portfolio": {
+    "mode": "shadow",
+    "initialCapitalUsd": 10000,
+    "realizedPnlUsd": 0,
+    "positions": [
+      {
+        "ticker": "SNDK",
+        "hlSymbol": "xyz:SNDK",
+        "direction": "long",
+        "qty": 1.8710225568608436,
+        "entryPx": 1603.4012999999998,
+        "entryUtc": "2026-08-21T19:07:33.238Z",
+        "notionalUsdAtEntry": 3000,
+        "leverage": 1.4657076431269982,
+        "stopPx": 1580.4,
+        "hardFloorPx": 1282.08,
+        "targetPctExcess": {
+          "lo": 6,
+          "hi": 13
+        },
+        "horizonUtc": "2026-08-26T19:07:33.238Z",
+        "extendedOnce": false,
+        "thesisId": "th-6429a40c70377956-SNDK-mt3bn65v",
+        "decisionId": "pmd-th-6429a40c70377956-SNDK-mt3bn65v-mt3bn65y",
+        "signalT0Utc": "2026-08-21T19:04:42.567Z",
+        "baselinePx": 1600.2,
+        "benchmarkBaselinePx": 29291,
+        "beta": 3.303858631847057,
+        "trailArmed": false,
+        "highestClosePx": 1603.4012999999998
+      }
+    ],
+    "halted": false,
+    "haltedReason": null,
+    "lastStopOutUtc": {},
+    "updatedAtUtc": "2026-08-23T08:31:53.740Z"
+  },
+  "latestReflection": {
+    "date": "2026-08-22",
+    "generatedAtUtc": "2026-08-22T13:01:52.493Z",
+    "funnel": {
+      "newsSeen": 30,
+      "signals": 30,
+      "archivedNoTicker": 21,
+      "archivedNotMaterial": 5,
+      "archivedStale": 1,
+      "archivedPricedIn": 1,
+      "theses": 2,
+      "decisionsOpen": 1,
+      "decisionsNoTrade": 1
+    },
+    "pricedInDistribution": {
+      "not_evaluated": 27,
+      "none": 2,
+      "reverse": 1
+    },
+    "deltaT": {
+      "n": 3,
+      "medianMinutes": 1.3509333333333333
+    },
+    "m1Calibration": {
+      "forwarded": {
+        "n": 0,
+        "hits": 0,
+        "hitRate": null
+      },
+      "archivedFullReverse": {
+        "n": 1,
+        "movedWithNews": 0
+      }
+    },
+    "contamination": {
+      "theses": 2,
+      "hard": 1,
+      "soft": 0,
+      "rate": 0.5
+    },
+    "engines": {
+      "rules": 19,
+      "claude-cli": 12
+    },
+    "noTradeReasons": [
+      {
+        "reason": "thesis hard-contaminated by price reaction — analyst must re",
+        "count": 1
+      }
+    ],
+    "book": {
+      "equityUsd": 9992.887681954606,
+      "realizedPnlUsd": 0,
+      "positions": 1,
+      "halted": false
+    }
+  },
+  "cases": [
+    {
+      "news": {
+        "newsId": "tag:www.theinformation.com,2005:Article/17689",
+        "title": "Nvidia AI Chip Prices to Rise About 17%, Server Makers Tell Customers",
+        "publishedUtc": "2026-08-22T23:45:39.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-23T00:25:07.227Z"
+      },
+      "signal": {
+        "id": "sig-038ffa18507d9d00-mt52k88l",
+        "newsId": "tag:www.theinformation.com,2005:Article/17689",
+        "fingerprint": "038ffa18507d9d00",
+        "firstSeenUtc": "2026-08-22T23:45:39.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": true,
+          "score": 55,
+          "eventType": "product_tech",
+          "factLevel": "forecast",
+          "tickers": [
+            "NVDA"
+          ],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "rules fallback matched category product_tech"
+        },
+        "pricedIn": {
+          "status": "none",
+          "tEvalUtc": "2026-08-23T00:28:51.395Z",
+          "deltaTMinutes": 43.206583333333334,
+          "realizedExcessPct": 0.10691968343732312,
+          "volumeZ": null,
+          "dataBasis": "hl_perp",
+          "sessionBucket": "weekend",
+          "benchmarkUsed": "XYZ100",
+          "betaUsed": 1.2330231096757356,
+          "confidence": "low",
+          "note": "realized 0.11% vs band-mid 1.3% (expected-by-now 0.23% at Δt=43min; volume baseline too young)"
+        },
+        "createdAtUtc": "2026-08-23T00:28:51.765Z",
+        "title": "Nvidia AI Chip Prices to Rise About 17%, Server Makers Tell Customers"
+      },
+      "thesis": {
+        "id": "th-038ffa18507d9d00-NVDA-mt52kc23",
+        "signalId": "sig-038ffa18507d9d00-mt52k88l",
+        "ticker": "NVDA",
+        "direction": "long",
+        "tradeType": "event",
+        "fairImpactPct": {
+          "min": 0.2,
+          "max": 1,
+          "point": 0.5
+        },
+        "impactPath": [
+          {
+            "step": "rules fallback — no analyst model available",
+            "value": "band placeholder from coarse impact band floor"
+          }
+        ],
+        "evidence": [],
+        "contamination": "none",
+        "horizonHours": 48,
+        "catalysts": [],
+        "falsifiers": [
+          "rules fallback thesis — must not trade"
+        ],
+        "limitations": [
+          "produced by rules fallback; entry threshold will reject"
+        ],
+        "confidence": "low",
+        "provider": "rules",
+        "createdAtUtc": "2026-08-23T00:28:56.715Z"
+      },
+      "decision": {
+        "id": "pmd-th-038ffa18507d9d00-NVDA-mt52kc23-mt52kc6g",
+        "thesisId": "th-038ffa18507d9d00-NVDA-mt52kc23",
+        "ticker": "NVDA",
+        "action": "no_trade",
+        "direction": null,
+        "refPx": 216.17,
+        "sizeUsd": 0,
+        "leverage": null,
+        "stop": null,
+        "targetPctExcess": null,
+        "horizonUtc": null,
+        "intendedRiskPct": null,
+        "realizedRiskPct": null,
+        "bindingConstraint": null,
+        "residualEdgePct": null,
+        "reason": "residual edge 0.09% below threshold 1.19% (conservative 0.2%, realized 0.11%)",
+        "createdAtUtc": "2026-08-23T00:28:56.872Z",
+        "ts": "2026-08-23T00:28:56.873Z"
+      },
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "tag:www.theinformation.com,2005:Article/17687",
+        "title": "No, AI Probably Won’t Cure Cancer Anytime Soon, Scientists Say",
+        "publishedUtc": "2026-08-22T14:17:10.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-22T15:45:56.507Z"
+      },
+      "signal": null,
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "tag:www.theinformation.com,2005:Article/17688",
+        "title": "America Really, Really Hates Data Centers",
+        "publishedUtc": "2026-08-22T15:00:59.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-22T15:45:56.504Z"
+      },
+      "signal": {
+        "id": "sig-2f729ee850c9540e-mt4jvqxq",
+        "newsId": "tag:www.theinformation.com,2005:Article/17688",
+        "fingerprint": "2f729ee850c9540e",
+        "firstSeenUtc": "2026-08-22T15:00:59.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "order_contract",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-22T15:45:56.510Z",
+        "title": "America Really, Really Hates Data Centers"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/ai-infrastructure/nvidia-using-land-electricity-deals-lock-hardware-bundle",
+        "title": "Nvidia is Using Land and Electricity Deals to Lock In Its Hardware Bundle",
+        "publishedUtc": "2026-08-21T21:40:11.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-22T08:21:57.415Z"
+      },
+      "signal": {
+        "id": "sig-d51c2a29d9eabcc1-mt441nsq",
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/ai-infrastructure/nvidia-using-land-electricity-deals-lock-hardware-bundle",
+        "fingerprint": "d51c2a29d9eabcc1",
+        "firstSeenUtc": "2026-08-21T21:40:11.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "mixed",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 16,
+          "eventType": "supply_chain",
+          "factLevel": "opinion",
+          "tickers": [
+            "NVDA"
+          ],
+          "surpriseNote": "Baseline missing. Investigative strategy framing ('is using land/electricity deals to lock in its hardware bundle') describes an ongoing, widely-discussed ecosystem/moat narrative rather than a discrete new transaction. No specific deal, counterparty, size, or timing disclosed — low novelty beyond known lock-in theme.",
+          "reason": "Category-wise this touches supply_chain (datacenter land/power for AI infrastructure), but the item is an analytical/investigative think-piece, not a discrete catalyst: no announced deal, no counterparties, no magnitudes, empty body. factLevel is opinion/interpretation, which is never tradeable alone. NVDA is the clear headline actor but there is no consensus-beating surprise to price. Not tradeable."
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-22T08:22:38.522Z",
+        "title": "Nvidia is Using Land and Electricity Deals to Lock In Its Hardware Bundle"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/tiktok-reaches-400-million-settlement-doj-child-privacy-lawsuit",
+        "title": "TikTok Reaches $400 Million Settlement With DOJ Over Child Privacy Lawsuit",
+        "publishedUtc": "2026-08-22T06:14:22.000Z",
+        "kind": "briefing",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-22T08:21:57.412Z"
+      },
+      "signal": {
+        "id": "sig-ce2da531aabe3bb3-mt440s2y",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/tiktok-reaches-400-million-settlement-doj-child-privacy-lawsuit",
+        "fingerprint": "ce2da531aabe3bb3",
+        "firstSeenUtc": "2026-08-22T06:14:22.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bearish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "regulatory_legal",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-22T08:21:57.418Z",
+        "title": "TikTok Reaches $400 Million Settlement With DOJ Over Child Privacy Lawsuit"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/exclusive-openai-explored-stake-stargate-power-developer-lancium",
+        "title": "Exclusive: OpenAI Explored Stake in Stargate Power Developer Lancium",
+        "publishedUtc": "2026-08-21T23:32:58.000Z",
+        "kind": "briefing",
+        "prefix": "exclusive",
+        "seenAtUtc": "2026-08-22T08:21:57.389Z"
+      },
+      "signal": {
+        "id": "sig-8ed53e841b9753f2-mt440vf1",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/exclusive-openai-explored-stake-stargate-power-developer-lancium",
+        "fingerprint": "8ed53e841b9753f2",
+        "firstSeenUtc": "2026-08-21T23:32:58.000Z",
+        "firstSeenBasis": "The Information exclusive — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [
+            "ORCL"
+          ],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "rules fallback: no tradeable category pattern"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-22T08:22:01.741Z",
+        "title": "Exclusive: OpenAI Explored Stake in Stargate Power Developer Lancium"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "tag:www.theinformation.com,2005:Briefing/17912",
+        "title": "TikTok Reaches $400 Million Settlement With DOJ Over Child Privacy Lawsuit",
+        "publishedUtc": "2026-08-22T06:14:22.000Z",
+        "kind": "briefing",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-22T08:18:30.341Z"
+      },
+      "signal": {
+        "id": "sig-6532989c94286643-mt43wcb1",
+        "newsId": "tag:www.theinformation.com,2005:Briefing/17912",
+        "fingerprint": "6532989c94286643",
+        "firstSeenUtc": "2026-08-22T06:14:22.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bearish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "order_contract",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-22T08:18:30.349Z",
+        "title": "TikTok Reaches $400 Million Settlement With DOJ Over Child Privacy Lawsuit"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "tag:www.theinformation.com,2005:Briefing/17911",
+        "title": "Exclusive: OpenAI Explored Stake in Stargate Power Developer Lancium",
+        "publishedUtc": "2026-08-21T23:32:58.000Z",
+        "kind": "briefing",
+        "prefix": "exclusive",
+        "seenAtUtc": "2026-08-21T23:34:33.994Z"
+      },
+      "signal": {
+        "id": "sig-8f40c09070ddc9a6-mt3l76ru",
+        "newsId": "tag:www.theinformation.com,2005:Briefing/17911",
+        "fingerprint": "8f40c09070ddc9a6",
+        "firstSeenUtc": "2026-08-21T23:32:58.000Z",
+        "firstSeenBasis": "The Information exclusive — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "mixed",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 12,
+          "eventType": "mna",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "Baseline missing. Story is corporate-development chatter about private entities: OpenAI explored a stake in/acquisition of private power developer Lancium. Nvidia's billions-dollar stake is stated as already-completed backward context, not fresh news, and is immaterial versus NVDA's multi-trillion cap. ORCL is not mentioned at all.",
+          "reason": "Headline actors are OpenAI (private, not in universe) and Lancium (private). NVDA appears only as a secondary, already-reported financing detail — not the headline actor, and a 'billions' stake is negligible relative to NVDA scale, so no excess move justified. ORCL absent from the item entirely. No tradeable event for any universe symbol; empty ticker list."
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T23:35:03.690Z",
+        "title": "Exclusive: OpenAI Explored Stake in Stargate Power Developer Lancium"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "tag:www.theinformation.com,2005:Article/17685",
+        "title": "Nvidia is Using Land and Electricity Deals to Lock In Its Hardware Bundle",
+        "publishedUtc": "2026-08-21T21:40:11.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T21:40:33.945Z"
+      },
+      "signal": {
+        "id": "sig-571ed2afb17ab409-mt3h4qya",
+        "newsId": "tag:www.theinformation.com,2005:Article/17685",
+        "fingerprint": "571ed2afb17ab409",
+        "firstSeenUtc": "2026-08-21T21:40:11.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 22,
+          "eventType": "supply_chain",
+          "factLevel": "fact",
+          "tickers": [
+            "NVDA"
+          ],
+          "surpriseNote": "Baseline missing; judged conservatively on novelty. This is the THIRD minority infra stake in rapid succession (after Lancium and SB Energy), so the power-securing strategy is already known and priced as an ongoing theme — low incremental surprise. Terms undisclosed, stake is non-controlling in a two-year-old firm, and 'chip overhang' framing is analyst forecast, not a disclosed financial event.",
+          "reason": "NVDA is the clear headline actor, and securing power/land capacity so its chips aren't left idle is a genuine supply_chain-category event at fact level. But materiality fails the gate: a small, undisclosed, non-controlling minority stake — third in a repeated pattern — is immaterial against a ~$4T market cap and does not justify an excess move. Category present, surprise absent → not tradeable alone."
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T21:41:11.410Z",
+        "title": "Nvidia is Using Land and Electricity Deals to Lock In Its Hardware Bundle"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/exclusive-key-openai-sales-executive-kaylin-voss-resigns",
+        "title": "Exclusive: Key OpenAI Sales Executive Kaylin Voss Resigns",
+        "publishedUtc": "2026-08-21T19:20:07.000Z",
+        "kind": "briefing",
+        "prefix": "exclusive",
+        "seenAtUtc": "2026-08-21T19:57:31.456Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3dffm0",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/exclusive-key-openai-sales-executive-kaylin-voss-resigns",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-21T19:20:07.000Z",
+        "firstSeenBasis": "The Information exclusive — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T19:57:31.464Z",
+        "title": "Exclusive: Key OpenAI Sales Executive Kaylin Voss Resigns"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "tag:www.theinformation.com,2005:Briefing/17910",
+        "title": "Exclusive: Key OpenAI Sales Executive Kaylin Voss Resigns",
+        "publishedUtc": "2026-08-21T19:20:07.000Z",
+        "kind": "briefing",
+        "prefix": "exclusive",
+        "seenAtUtc": "2026-08-21T19:20:56.576Z"
+      },
+      "signal": {
+        "id": "sig-dced744333a3f851-mt3c4e10",
+        "newsId": "tag:www.theinformation.com,2005:Briefing/17910",
+        "fingerprint": "dced744333a3f851",
+        "firstSeenUtc": "2026-08-21T19:20:07.000Z",
+        "firstSeenBasis": "The Information exclusive — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "earnings_guidance",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T19:20:56.580Z",
+        "title": "Exclusive: Key OpenAI Sales Executive Kaylin Voss Resigns"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "manual:mt3bjih3",
+        "title": "E2E TEST 2: SanDisk wins exclusive 3-year enterprise NAND contract with hyperscaler, worth about $9 billion",
+        "publishedUtc": "2026-08-21T19:04:42.567Z",
+        "kind": "manual",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T19:04:42.567Z"
+      },
+      "signal": {
+        "id": "sig-6429a40c70377956-mt3bke15",
+        "newsId": "manual:mt3bjih3",
+        "fingerprint": "6429a40c70377956",
+        "firstSeenUtc": "2026-08-21T19:04:42.567Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "large",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": true,
+          "score": 84,
+          "eventType": "order_contract",
+          "factLevel": "fact",
+          "tickers": [
+            "SNDK"
+          ],
+          "surpriseNote": "Baseline missing — judged on novelty, not absolute size. What is beyond routine: the deal is exclusive, previously unreported, multi-year, priced ~20% ABOVE current enterprise NAND spot (margin-accretive, not a discount grab), and carries prepayments funding a dedicated line (demand + capex de-risking). These structural terms, not the $9B headline number, are the surprise. Scored conservatively absent consensus.",
+          "reason": "Order/contract win with SanDisk as the sole headline actor. Fact-level (reported as an executed agreement via people familiar), not forecast or opinion, so it clears the materiality gate. A ~$9B exclusive 3-year supply lock at premium pricing with prepayments is a multi-year revenue and margin event large relative to SNDK, justifying a large excess-move band. MU excluded: Micron is a NAND peer that could see sympathy/read-through, but it is not a headline actor of THIS news, so it is not tagged per the actor rule."
+        },
+        "pricedIn": {
+          "status": "none",
+          "tEvalUtc": "2026-08-21T19:05:23.462Z",
+          "deltaTMinutes": 0.6815833333333333,
+          "realizedExcessPct": 0,
+          "volumeZ": null,
+          "dataBasis": "hl_perp",
+          "sessionBucket": "rth",
+          "benchmarkUsed": "XYZ100",
+          "betaUsed": 3.303858631847057,
+          "confidence": "high",
+          "note": "realized 0.00% vs band-mid 13.0% (expected-by-now 0.65% at Δt=1min; volume baseline too young)"
+        },
+        "createdAtUtc": "2026-08-21T19:05:23.465Z",
+        "title": "E2E TEST 2: SanDisk wins exclusive 3-year enterprise NAND contract with hyperscaler, worth about $9 billion"
+      },
+      "thesis": {
+        "id": "th-6429a40c70377956-SNDK-mt3bn65v",
+        "signalId": "sig-6429a40c70377956-mt3bke15",
+        "ticker": "SNDK",
+        "direction": "long",
+        "tradeType": "event",
+        "fairImpactPct": {
+          "min": 6,
+          "max": 24,
+          "point": 13
+        },
+        "impactPath": [
+          {
+            "step": "Deal scope → annual revenue run-rate",
+            "value": "$9B total over 3 years ≈ $3.0B/yr of enterprise NAND revenue. This is very large vs an assumed ~$8–9B/yr total company revenue (~33–38% of sales at full run-rate)."
+          },
+          {
+            "step": "Incrementality (net-new vs reallocated)",
+            "value": "Prepayments fund a DEDICATED production line ⇒ mostly new capacity, not cannibalized existing wafers. Assume ~75–80% incremental → ~$2.3–2.4B/yr net-new revenue at steady state."
+          },
+          {
+            "step": "Margin impact (20% above spot)",
+            "value": "Premium pricing + upcycle: est. incremental gross ~40%, incremental operating margin ~28% after opex/depreciation on the new line → ~$670M/yr steady-state EBIT; after tax (~20%) ≈ $540M/yr net. (Prepayments cut cash capex but the line still carries depreciation.)"
+          },
+          {
+            "step": "Ramp timing",
+            "value": "A dedicated NAND line takes ~12–24 months to reach full output. Next-FY (FY27) contribution assumed ~40% of run-rate ≈ $215M after-tax; full run-rate (FY28–29) ≈ $540M/yr."
+          },
+          {
+            "step": "EPS revision vs consensus (assumed baseline)",
+            "value": "Assume ~145M shares and baseline EPS ~$10 (upcycle net income ~$1.5B). Incremental after-tax: next-FY +$1.5/sh ≈ +15% vs consensus; steady-state +$3.7/sh ≈ +35%. Baseline is an EXPLICIT ASSUMPTION — consensus was MISSING."
+          },
+          {
+            "step": "Valuation → fair excess move",
+            "value": "Contract is FINITE (3 yrs), so the market will NOT capitalize the run-rate at a full P/E. Blend: 3-yr after-tax profit NPV ≈ $1.0–1.2B ≈ +6–9% of an assumed ~$18B market cap, PLUS a partial re-rate for a demonstrated exclusive hyperscaler win / renewal optionality / reduced cyclicality, NET of single-customer concentration risk. → point ≈ +13% excess move; multiple only modestly re-rated (most of the move is NPV/earnings, not re-rating)."
+          }
+        ],
+        "evidence": [
+          {
+            "point": "$9B total, exclusive, 3-year enterprise NAND supply contract with a major US hyperscaler",
+            "source": "News text (single-sourced, 'people familiar with the deal')",
+            "url": null,
+            "credibility": "medium"
+          },
+          {
+            "point": "Pricing locked ~20% above current enterprise NAND spot → margin-accretive, not a discount grab",
+            "source": "News text",
+            "url": null,
+            "credibility": "medium"
+          },
+          {
+            "point": "Prepayments fund a dedicated production line → demand + capex de-risking, implies incremental capacity",
+            "source": "News text",
+            "url": null,
+            "credibility": "medium"
+          },
+          {
+            "point": "Baseline financials (market cap ~$18B, ~145M shares, revenue ~$8–9B, EPS ~$10) — ASSUMED because consensus was MISSING",
+            "source": "Analyst assumption (SanDisk standalone post-WD spin, NAND upcycle)",
+            "url": null,
+            "credibility": "low"
+          }
+        ],
+        "contamination": "none",
+        "horizonHours": 120,
+        "catalysts": [
+          "8-K / material-contract SEC filing confirming the deal and terms",
+          "Company press release or on-record confirmation from SanDisk or the hyperscaler",
+          "Sell-side estimate revisions to FY27–FY29 revenue/EPS",
+          "Next earnings call: management guidance on the dedicated line, ramp schedule, and margin uplift",
+          "Hyperscaler capex/AI-storage commentary corroborating enterprise NAND demand"
+        ],
+        "falsifiers": [
+          "Within a week, no 8-K / material-contract filing appears despite a deal this size for a company this size (would normally require disclosure) — suggests the report is overstated or inaccurate",
+          "SanDisk or the hyperscaler denies the report, or a filing reveals value/term materially below ~$9B or NOT exclusive",
+          "Disclosure reveals the volume largely reallocates existing capacity (not incremental) and/or the '20% above spot' premium is contradicted by margin guidance — collapsing the net revenue/EPS add"
+        ],
+        "limitations": [
+          "Consensus and baseline (market cap, shares, EPS, revenue) were MISSING — all baseline figures are explicit assumptions; fairImpactPct is anchored on the % EPS-revision method to reduce sensitivity to the market-cap guess, but the NPV cross-check depends directly on it",
+          "Single-sourced, unconfirmed report ('people familiar') — existence and exact terms not yet corroborated by filing",
+          "Ramp timing and the incremental-vs-reallocated split (~75–80%) are estimates; slower ramp or more reallocation pushes toward the min",
+          "Assumed incremental operating margin (~28%) and tax rate (~20%) are estimates; NAND is highly cyclical so out-year earnings are uncertain",
+          "Single-customer concentration and the finite 3-year term cap the fair re-rate; a renewal/expansion (not assumed) would justify the max"
+        ],
+        "confidence": "medium",
+        "provider": "claude-cli",
+        "createdAtUtc": "2026-08-21T19:07:33.235Z"
+      },
+      "decision": {
+        "id": "pmd-th-6429a40c70377956-SNDK-mt3bn65v-mt5kpvdz",
+        "thesisId": "th-6429a40c70377956-SNDK-mt3bn65v",
+        "ticker": "SNDK",
+        "action": "open",
+        "direction": "long",
+        "refPx": 1593.7,
+        "sizeUsd": 3000,
+        "leverage": 1.4657076431269982,
+        "stop": {
+          "initialPx": 1585,
+          "hardFloorPx": 1274.96,
+          "rule": "max(entry ∓ 1.5×ATR20d, recent RTH swing) bounded by −20% user hard floor; trail chandelier(2.5×ATR) arms at 50% of target",
+          "atr20d": 182.9525,
+          "trailArmed": false
+        },
+        "targetPctExcess": {
+          "lo": 6,
+          "hi": 13
+        },
+        "horizonUtc": "2026-08-28T08:57:08.135Z",
+        "intendedRiskPct": 0.01,
+        "realizedRiskPct": 0.0016376984375980508,
+        "bindingConstraint": "tier1_cap",
+        "residualEdgePct": 5.9,
+        "reason": "open long SNDK: residual 5.90% ≥ threshold 5.64%; risk 0.16% (intended 1.0%, clipped by tier1_cap)",
+        "audit": {
+          "vetoedBy": null,
+          "edge": {
+            "conservativePct": 6,
+            "pointPct": 13,
+            "realizedPct": 0.1,
+            "residualPct": 5.9
+          },
+          "threshold": {
+            "takerFeePct": 0.009000000000000001,
+            "slippagePct": 0.05,
+            "fundingPct": 0.075,
+            "roundTripPct": 0.193,
+            "costFloorPct": 0.579,
+            "volFloorPct": 5.642843237781729,
+            "thresholdPct": 5.642843237781729
+          },
+          "stopMenu": {
+            "atr20d": 182.9525,
+            "atrStopPx": 1319.2713,
+            "swingPx": 1585,
+            "hardFloorPx": 1274.96,
+            "chosenPx": 1585,
+            "stopDistPct": 0.005458994791993503
+          },
+          "sizing": {
+            "equityUsd": 10000,
+            "riskBudgetPct": 0.01,
+            "intendedNotionalUsd": 18318,
+            "guards": [
+              {
+                "name": "tier1_cap",
+                "capUsd": 3000,
+                "notionalAfterUsd": 3000,
+                "clipped": true
+              },
+              {
+                "name": "gross_cap",
+                "capUsd": 15000,
+                "notionalAfterUsd": 3000,
+                "clipped": false
+              },
+              {
+                "name": "net_cap",
+                "capUsd": 10000,
+                "notionalAfterUsd": 3000,
+                "clipped": false
+              },
+              {
+                "name": "cluster_cap:storage",
+                "capUsd": 4000,
+                "notionalAfterUsd": 3000,
+                "clipped": false
+              },
+              {
+                "name": "cluster_cap:semiconductors",
+                "capUsd": 4000,
+                "notionalAfterUsd": 3000,
+                "clipped": false
+              },
+              {
+                "name": "cluster_cap:nand",
+                "capUsd": 4000,
+                "notionalAfterUsd": 3000,
+                "clipped": false
+              }
+            ],
+            "finalNotionalUsd": 3000,
+            "leverage": {
+              "configCap": 3,
+              "volCap": 1.4657,
+              "venueCap": 10,
+              "chosen": 1.4657
+            }
+          },
+          "marketView": {
+            "markPx": 1593.7,
+            "dailyVolPct": 0.11285686475563457,
+            "maxDailyMovePct": 0.3411321502924556,
+            "fundingHourly": 0.00000625,
+            "beta": 3.363273167517224
+          }
+        },
+        "createdAtUtc": "2026-08-23T08:57:08.135Z",
+        "ts": "2026-08-23T08:57:08.136Z"
+      },
+      "execution": {
+        "ts": "2026-08-21T19:07:33.238Z",
+        "type": "paper_open",
+        "ticker": "SNDK",
+        "direction": "long",
+        "qty": 1.8710225568608436,
+        "fillPx": 1603.4012999999998,
+        "sizeUsd": 3000,
+        "decisionId": "pmd-th-6429a40c70377956-SNDK-mt3bn65v-mt3bn65y",
+        "signalId": "sig-6429a40c70377956-mt3bke15"
+      },
+      "positionNow": {
+        "ticker": "SNDK",
+        "hlSymbol": "xyz:SNDK",
+        "direction": "long",
+        "qty": 1.8710225568608436,
+        "entryPx": 1603.4012999999998,
+        "entryUtc": "2026-08-21T19:07:33.238Z",
+        "notionalUsdAtEntry": 3000,
+        "leverage": 1.4657076431269982,
+        "stopPx": 1580.4,
+        "hardFloorPx": 1282.08,
+        "targetPctExcess": {
+          "lo": 6,
+          "hi": 13
+        },
+        "horizonUtc": "2026-08-26T19:07:33.238Z",
+        "extendedOnce": false,
+        "thesisId": "th-6429a40c70377956-SNDK-mt3bn65v",
+        "decisionId": "pmd-th-6429a40c70377956-SNDK-mt3bn65v-mt3bn65y",
+        "signalT0Utc": "2026-08-21T19:04:42.567Z",
+        "baselinePx": 1600.2,
+        "benchmarkBaselinePx": 29291,
+        "beta": 3.303858631847057,
+        "trailArmed": false,
+        "highestClosePx": 1603.4012999999998
+      },
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "manual:mt3bi4j9",
+        "title": "E2E TEST: Micron signs multi-year HBM4 supply agreement with major AI accelerator maker, capacity fully booked through 2028",
+        "publishedUtc": "2026-08-21T19:03:37.845Z",
+        "kind": "manual",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T19:03:37.846Z"
+      },
+      "signal": {
+        "id": "sig-684d9cad33c14c08-mt3bj1xr",
+        "newsId": "manual:mt3bi4j9",
+        "fingerprint": "684d9cad33c14c08",
+        "firstSeenUtc": "2026-08-21T19:03:37.845Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "medium",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": true,
+          "score": 72,
+          "eventType": "order_contract",
+          "factLevel": "fact",
+          "tickers": [
+            "MU"
+          ],
+          "surpriseNote": "Baseline missing — judging novelty conservatively. Beyond-consensus elements are the multi-year HBM4 lock-up booking the MAJORITY of MU's 2027-2028 output (forward revenue visibility) and, most notably, contract pricing ~15% ABOVE current HBM3E (pricing power / margin signal). HBM4 ramp and strong AI-memory demand are already consensus; the incremental surprise is the pricing uplift and multi-year capacity commitment, not the deal's existence. Not scoring the absolute output/price figures, only the delta vs the known narrative.",
+          "reason": "Named customer supply contract with MU as the clear headline actor; reported as a signed agreement ('direct knowledge'), so factLevel=fact, not forecast/opinion. order_contract is a tradeable category. Positive on both visibility (majority of 2027-28 booked) and margins (15% price premium), hence bullish. Medium band: incrementally positive but directionally in line with the existing AI-HBM narrative and baseline is missing, so conservative. Counterparty accelerator maker is unnamed and not in universe → only MU tagged."
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T19:04:21.135Z",
+        "title": "E2E TEST: Micron signs multi-year HBM4 supply agreement with major AI accelerator maker, capacity fully booked through 2028"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "manual:mt3b9y7w",
+        "title": "E2E TEST: Micron signs multi-year HBM4 supply agreement with major AI accelerator maker, capacity fully booked through 2028",
+        "publishedUtc": "2026-08-21T18:57:16.412Z",
+        "kind": "manual",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:57:16.413Z"
+      },
+      "signal": {
+        "id": "sig-3c9e0023b96116f8-mt3bbrab",
+        "newsId": "manual:mt3b9y7w",
+        "fingerprint": "3c9e0023b96116f8",
+        "firstSeenUtc": "2026-08-21T18:57:16.412Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "large",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": true,
+          "score": 82,
+          "eventType": "order_contract",
+          "factLevel": "fact",
+          "tickers": [
+            "MU"
+          ],
+          "surpriseNote": "Baseline missing for MU; judged conservatively on novelty. Previously unreported multi-year HBM4 deal locking the majority of 2027-2028 output at ~15% premium to HBM3E — signals durable pricing power and demand visibility well beyond a routine supply update.",
+          "reason": "Micron is the headline actor in a newly signed, not-previously-reported multi-year HBM4 supply agreement covering most of its 2027-2028 output, plus a ~15% price premium and stated capacity expansion. Concrete signed-fact order/contract event with clear revenue and margin implications — tradeable on category, not sentiment."
+        },
+        "pricedIn": {
+          "status": "none",
+          "tEvalUtc": "2026-08-21T18:58:37.468Z",
+          "deltaTMinutes": 1.3509333333333333,
+          "realizedExcessPct": 0,
+          "volumeZ": null,
+          "dataBasis": "hl_perp",
+          "sessionBucket": "rth",
+          "benchmarkUsed": "XYZ100",
+          "betaUsed": 2.8998126714562686,
+          "confidence": "high",
+          "note": "realized 0.00% vs band-mid 13.0% (expected-by-now 0.65% at Δt=1min; volume baseline too young)"
+        },
+        "createdAtUtc": "2026-08-21T18:58:40.739Z",
+        "title": "E2E TEST: Micron signs multi-year HBM4 supply agreement with major AI accelerator maker, capacity fully booked through 2028"
+      },
+      "thesis": {
+        "id": "th-3c9e0023b96116f8-MU-mt3bdsvb",
+        "signalId": "sig-3c9e0023b96116f8-mt3bbrab",
+        "ticker": "MU",
+        "direction": "long",
+        "tradeType": "event",
+        "fairImpactPct": {
+          "min": 3,
+          "max": 13,
+          "point": 7
+        },
+        "impactPath": [
+          {
+            "step": "News → affected line item: HBM4 volume. A single leading AI-accelerator customer books the majority of Micron's 2027–2028 HBM4 output; capacity said fully booked through 2028.",
+            "value": "De-risks 2 years of HBM demand; converts an expected-but-uncertain revenue stream into a contracted one. Primarily a risk/visibility effect, not new volume vs. consensus (Street already models Micron as a 3rd HBM supplier)."
+          },
+          {
+            "step": "News → ASP/margin: HBM4 contracted ~15% above current HBM3E pricing.",
+            "value": "Next-gen HBM normally carries a premium, so assume Street already baked in roughly half of this step-up. Incremental ASP surprise ≈ +5–8% on the HBM segment only."
+          },
+          {
+            "step": "Revenue/gross profit: apply to assumed FY2027 HBM revenue base.",
+            "value": "ASSUMPTION: HBM ≈ $15B of FY2027 revenue (Micron ~20–25% share of a ~$60–80B HBM TAM). +5–8% ASP surprise → +$0.75–1.2B revenue; HBM GM >50% → +$0.4–0.7B incremental gross profit, mostly drop-through."
+          },
+          {
+            "step": "Next-FY (FY2027, Sept'26–Aug'27) EPS revision vs consensus.",
+            "value": "ASSUMPTION: FY2027 net income base ≈ $10B (mkt cap ~$140B ÷ fwd P/E ~14x). +$0.4–0.7B after-tax ≈ +4–7% EPS. Base case +5%."
+          },
+          {
+            "step": "Fair price move at unchanged multiple ≈ EPS revision.",
+            "value": "≈ +5% (base)."
+          },
+          {
+            "step": "Multiple re-rate: durable pricing power + 2-year demand visibility reduces the cyclical trough-earnings risk premium that caps memory multiples.",
+            "value": "Modest re-rate, +2–3%. Justified because for a cyclical memory name, visibility de-risks the multiple; but one contract does not remove cyclicality, so kept small. Partly offset by single-customer concentration risk."
+          },
+          {
+            "step": "Total fair EXCESS move vs semiconductor benchmark (idiosyncratic, MU-specific contract).",
+            "value": "≈ +5% EPS-driven + ~+2% re-rate = +7% base; +3% if largely pre-modeled, +13% if ASP surprise + HBM base + de-risk re-rate all run high (e.g., customer is Nvidia, volume above Street)."
+          }
+        ],
+        "evidence": [
+          {
+            "point": "Deal covers majority of 2027–2028 HBM4 output at ~15% premium to HBM3E; capacity booked through 2028.",
+            "source": "News text (single-sourced, 'people with direct knowledge'; company-unconfirmed, 'not previously reported').",
+            "url": null,
+            "credibility": "medium"
+          },
+          {
+            "point": "HBM is Micron's primary growth and margin driver; HBM gross margin runs above corporate average.",
+            "source": "Micron disclosures / sell-side consensus on HBM economics.",
+            "url": null,
+            "credibility": "high"
+          },
+          {
+            "point": "Micron is one of three HBM suppliers, so Street already models material HBM4 revenue in 2027–2028 — the incremental is the ASP/visibility delta, not the whole segment.",
+            "source": "Industry structure / analyst models.",
+            "url": null,
+            "credibility": "high"
+          },
+          {
+            "point": "Consensus EPS, market cap, forward multiple, and FY2027 HBM revenue used here are stated assumptions, not confirmed baselines.",
+            "source": "Analyst assumption (baseline MISSING in input).",
+            "url": null,
+            "credibility": "low"
+          }
+        ],
+        "contamination": "hard",
+        "horizonHours": 72,
+        "catalysts": [
+          "Micron official confirmation (8-K / press release) of the agreement",
+          "Disclosure of the customer's identity (Nvidia would be a materially larger signal)",
+          "Next earnings call: FY2027 HBM4 booking %, pricing, and updated capex guidance for Boise/Taichung",
+          "Sell-side estimate revisions to FY2027–FY2028 HBM revenue/ASP"
+        ],
+        "falsifiers": [
+          "Within a week, Micron or the customer denies the agreement or declines to confirm, or company IR calls the report inaccurate.",
+          "Sell-side notes state the ~15% HBM4 premium is in line with or below the HBM3E→HBM4 step-up already in estimates (i.e., no upward revisions follow).",
+          "Follow-up reporting contradicts 'majority of output to one customer' (multiple customers / smaller allocation), weakening both the visibility and concentration read.",
+          "No published FY2027/FY2028 estimate revisions from major brokers within a week, indicating the deal was already modeled."
+        ],
+        "limitations": [
+          "No consensus baseline supplied — EPS revision % rests on assumed FY2027 net income (~$10B), HBM revenue (~$15B), fwd P/E (~14x), and market cap (~$140B); real figures could shift the point estimate by several points.",
+          "Single-sourced, company-unconfirmed report; existence/terms could be overstated.",
+          "Cannot cleanly separate 'genuinely incremental' from 'already priced' without the actual sell-side model — the pre-modeled share is the biggest swing factor.",
+          "Single-customer concentration (majority of output to one buyer) is a real downside risk that partially offsets the visibility premium and is hard to quantify blind.",
+          "The 'E2E TEST' headline prefix suggests this may be synthetic test input; analysis is on its stated merits regardless."
+        ],
+        "confidence": "medium",
+        "provider": "claude-cli",
+        "createdAtUtc": "2026-08-21T19:00:16.103Z"
+      },
+      "decision": {
+        "id": "pmd-th-3c9e0023b96116f8-MU-mt3bdsvb-mt3bdsve",
+        "thesisId": "th-3c9e0023b96116f8-MU-mt3bdsvb",
+        "ticker": "MU",
+        "action": "no_trade",
+        "direction": null,
+        "refPx": 969.04,
+        "sizeUsd": 0,
+        "leverage": null,
+        "stop": null,
+        "targetPctExcess": null,
+        "horizonUtc": null,
+        "intendedRiskPct": null,
+        "realizedRiskPct": null,
+        "bindingConstraint": null,
+        "residualEdgePct": null,
+        "reason": "thesis hard-contaminated by price reaction — analyst must re-run blind",
+        "createdAtUtc": "2026-08-21T19:00:16.106Z",
+        "ts": "2026-08-21T19:00:16.106Z",
+        "audit": {
+          "vetoedBy": null,
+          "edge": {
+            "conservativePct": 6,
+            "pointPct": 13,
+            "realizedPct": 0.4,
+            "residualPct": 5.6
+          },
+          "threshold": {
+            "takerFeePct": 0.009000000000000001,
+            "slippagePct": 0.05,
+            "fundingPct": 0.075,
+            "roundTripPct": 0.193,
+            "costFloorPct": 0.579,
+            "volFloorPct": 5.642843237781729,
+            "thresholdPct": 5.642843237781729
+          },
+          "stopMenu": null,
+          "sizing": null,
+          "marketView": {
+            "markPx": 1593.7,
+            "dailyVolPct": 0.11285686475563457,
+            "maxDailyMovePct": 0.3411321502924556,
+            "fundingHourly": 0.00000625,
+            "beta": 3.363273167517224
+          }
+        }
+      },
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/dealmaker/barclays-loses-tech-bankers-vcs-get-exits-poolside-openrouter",
+        "title": "Barclays Loses Tech Bankers; VCs Get Exits From Poolside, OpenRouter",
+        "publishedUtc": "2026-08-21T00:15:33.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.482Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3b6m97",
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/dealmaker/barclays-loses-tech-bankers-vcs-get-exits-poolside-openrouter",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-21T00:15:33.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:40.939Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-22T13:01:52.479Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/articles/new-robotics-arms-race-can-craziest-hype-video",
+        "title": "The New Robotics ‘Arms Race’: Who Can Do the Craziest Hype Video?",
+        "publishedUtc": "2026-08-21T14:12:21.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.482Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3b6m96",
+        "newsId": "sitemap:https://www.theinformation.com/articles/new-robotics-arms-race-can-craziest-hype-video",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-21T14:12:21.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:40.938Z"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/the-briefing/walmarts-slowdown-spotlights-amazons-strength",
+        "title": "Walmart’s Slowdown Spotlights Amazon’s Strength",
+        "publishedUtc": "2026-08-21T00:00:35.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.482Z"
+      },
+      "signal": {
+        "id": "sig-6a29b33dcc0d7e5e-mt3b6wcw",
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/the-briefing/walmarts-slowdown-spotlights-amazons-strength",
+        "fingerprint": "6a29b33dcc0d7e5e",
+        "firstSeenUtc": "2026-08-21T00:00:35.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 12,
+          "eventType": "other",
+          "factLevel": "opinion",
+          "tickers": [],
+          "surpriseNote": "Baseline missing. This is a well-worn narrative (Walmart deceleration vs. Amazon relative strength) with an empty body and no new datum — no earnings figure, guidance, contract, or disclosed metric beyond the existing consensus story. Novelty judged conservatively as near-zero.",
+          "reason": "Opinion/analysis comparison piece, not a tradeable event category. No fact-level catalyst: Amazon is characterized ('strength'), not shown taking a concrete material action, and the actual subject of the 'slowdown' (Walmart) is not in the universe. Category gate fails and factLevel=opinion is never tradeable, so no ticker attribution."
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:54.032Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-22T13:01:52.479Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/applied-ai/t-using-open-source-models-curb-anthropic-bills",
+        "title": "AT&T is Using Open Source Models to Curb Anthropic Bills",
+        "publishedUtc": "2026-08-20T18:55:44.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.482Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3b698e",
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/applied-ai/t-using-open-source-models-curb-anthropic-bills",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-20T18:55:44.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:24.062Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/articles/nvidia-plots-china-comeback-new-ai-chip",
+        "title": "Nvidia Plots China Comeback With New AI Chip",
+        "publishedUtc": "2026-08-20T16:58:10.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.481Z"
+      },
+      "signal": {
+        "id": "sig-b17ab5344d169241-mt3b6sx1",
+        "newsId": "sitemap:https://www.theinformation.com/articles/nvidia-plots-china-comeback-new-ai-chip",
+        "fingerprint": "b17ab5344d169241",
+        "firstSeenUtc": "2026-08-20T16:58:10.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": true,
+          "score": 42,
+          "eventType": "product_tech",
+          "factLevel": "forecast",
+          "tickers": [
+            "NVDA"
+          ],
+          "surpriseNote": "Baseline missing — judging novelty conservatively. A China-compliant Nvidia chip is a long-running, already-reported theme (post-H20 export-control saga), and 'plots' signals a plan, not a shipped product or approved sale. Novelty beyond the known narrative is low; no confirmed chip specs, volume, or regulatory clearance disclosed.",
+          "reason": "Nvidia is the headline actor and a new AI chip is a product_tech event, so it clears the category gate. But factLevel is forecast (a reported plan/intention, not a done deal), and the China-comeback storyline is well-worn and contingent on export-control approval. Tradeable but low materiality — a plan-stage headline on a priced-in theme."
+        },
+        "pricedIn": {
+          "status": "reverse",
+          "tEvalUtc": "2026-08-21T18:54:47.580Z",
+          "deltaTMinutes": 1556.6263333333334,
+          "realizedExcessPct": -1.2377563957456847,
+          "volumeZ": null,
+          "dataBasis": "hl_perp",
+          "sessionBucket": "rth",
+          "benchmarkUsed": "XYZ100",
+          "betaUsed": 1.2546653553875757,
+          "confidence": "high",
+          "note": "realized -1.24% vs band-mid 1.3% (expected-by-now 1.25% at Δt=1557min; volume baseline too young)"
+        },
+        "createdAtUtc": "2026-08-21T18:54:49.573Z",
+        "title": "Nvidia Plots China Comeback With New AI Chip",
+        "followUp24h": {
+          "realizedExcessPct": -1.1053886951074812,
+          "directionHit": false,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/ai-agenda/robots-gpt-2-era",
+        "title": "Robots Are in Their GPT-2 Era",
+        "publishedUtc": "2026-08-20T14:00:39.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.481Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3b5v2o",
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/ai-agenda/robots-gpt-2-era",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-20T14:00:39.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:05.712Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/articles/anthropics-enterprise-ai-venture-buys-consultancy",
+        "title": "Anthropic’s Enterprise AI Venture Buys Consultancy",
+        "publishedUtc": "2026-08-20T13:00:42.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.481Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3b5v2n",
+        "newsId": "sitemap:https://www.theinformation.com/articles/anthropics-enterprise-ai-venture-buys-consultancy",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-20T13:00:42.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:05.711Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/the-briefing/stripe-takes-openrouter",
+        "title": "Stripe Takes OpenRouter",
+        "publishedUtc": "2026-08-20T00:00:42.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.480Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3b5v2m",
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/the-briefing/stripe-takes-openrouter",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-20T00:00:42.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:05.710Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/the-electric/enovix-next-gen-batteries-terrific-obsolete",
+        "title": "Enovix Next-Gen Batteries Are Terrific. Are They Also Obsolete?",
+        "publishedUtc": "2026-08-19T19:01:05.000Z",
+        "kind": "article",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.480Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3b5v2k",
+        "newsId": "sitemap:https://www.theinformation.com/newsletters/the-electric/enovix-next-gen-batteries-terrific-obsolete",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-19T19:01:05.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:05.708Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/openai-integrates-chatgpt-apple-messages-mac",
+        "title": "OpenAI Integrates ChatGPT into Apple Messages on Mac",
+        "publishedUtc": "2026-08-21T17:55:36.000Z",
+        "kind": "briefing",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.480Z"
+      },
+      "signal": {
+        "id": "sig-8ddd7a90e22f9076-mt3b5v2g",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/openai-integrates-chatgpt-apple-messages-mac",
+        "fingerprint": "8ddd7a90e22f9076",
+        "firstSeenUtc": "2026-08-21T17:55:36.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "mixed",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 12,
+          "eventType": "product_tech",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "baseline missing. Extends the already-known Apple–OpenAI/ChatGPT partnership (Apple Intelligence) to Mac Messages — an incremental feature rollout, not new strategic ground. Low novelty.",
+          "reason": "Headline actor is OpenAI (a private company, not in the universe); Apple/Messages is the passive integration surface, not the initiating actor. A single client-app integration feature is immaterial to AAPL fundamentals and carries no meaningful surprise beyond the existing partnership, so no tradeable AAPL edge. No universe symbol is a headline actor."
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:05.704Z"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/dragoneer-founder-stad-buy-timberwolves-controlling-stake",
+        "title": "Dragoneer Founder Stad to Buy Timberwolves Controlling Stake",
+        "publishedUtc": "2026-08-21T17:48:10.000Z",
+        "kind": "briefing",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.480Z"
+      },
+      "signal": {
+        "id": "sig-d2469b7d3604b546-mt3b50t6",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/dragoneer-founder-stad-buy-timberwolves-controlling-stake",
+        "fingerprint": "d2469b7d3604b546",
+        "firstSeenUtc": "2026-08-21T17:48:10.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "mna",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:53:26.490Z"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/nvidia-reportedly-pay-6-billion-licensing-hiring-deal-ai-model-startup-poolside",
+        "title": "Nvidia to Reportedly Pay $6 Billion in Licensing and Hiring Deal with AI Model Startup Poolside",
+        "publishedUtc": "2026-08-20T20:35:30.000Z",
+        "kind": "briefing",
+        "prefix": "reportedly",
+        "seenAtUtc": "2026-08-21T18:53:26.479Z"
+      },
+      "signal": {
+        "id": "sig-aad9073003a3cbfe-mt3b698b",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/nvidia-reportedly-pay-6-billion-licensing-hiring-deal-ai-model-startup-poolside",
+        "fingerprint": "aad9073003a3cbfe",
+        "firstSeenUtc": null,
+        "firstSeenBasis": "aggregated report ('Reportedly'): original ran earlier elsewhere; t0 uses published as an upper bound (Phase 0 simplification — online first-seen verification arrives with the claude-cli engine)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 27,
+          "eventType": "mna",
+          "factLevel": "fact",
+          "tickers": [
+            "NVDA"
+          ],
+          "surpriseNote": "Baseline missing → judged conservatively. Never scoring the raw $6B: relative to NVDA's ~$4T market cap it is ~0.15%, immaterial to earnings/cash. Structure is a reverse-acquihire (licensing + hiring, not an equity acquisition), and it is unconfirmed ('reportedly'/The Information briefing). Novelty is modest — Nvidia deepening into AI-model talent/IP fits its known ecosystem-investment pattern, not a surprise on strategy.",
+          "reason": "NVDA is the headline actor (the payer), so it qualifies on category (mna-style strategic transaction) and factLevel (reported deal terms = fact, though hedged 'reportedly'). But materiality fails: a $6B acquihire is a rounding error for a ~$4T company, and the excess move it could justify sits at the low end of the small band. Not material enough to trade on alone; Poolside is private and not in the universe."
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:54:24.060Z"
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/walmarts-u-s-sales-slowdown-sends-stock-tumbling-9",
+        "title": "Walmart’s U.S. Sales Slowdown Sends Stock Tumbling 9%",
+        "publishedUtc": "2026-08-20T18:15:47.000Z",
+        "kind": "briefing",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.479Z"
+      },
+      "signal": {
+        "id": "sig-6dfe46508302b1ea-mt3b50t4",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/walmarts-u-s-sales-slowdown-sends-stock-tumbling-9",
+        "fingerprint": "6dfe46508302b1ea",
+        "firstSeenUtc": "2026-08-20T18:15:47.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:53:26.488Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/alibaba-ceo-expects-ai-related-arr-reach-10-billion-september",
+        "title": "Alibaba CEO Expects AI-Related ARR to Reach $10 Billion by September",
+        "publishedUtc": "2026-08-20T13:54:11.000Z",
+        "kind": "briefing",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.479Z"
+      },
+      "signal": {
+        "id": "sig-934643caf01b320f-mt3b50t4",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/alibaba-ceo-expects-ai-related-arr-reach-10-billion-september",
+        "fingerprint": "934643caf01b320f",
+        "firstSeenUtc": "2026-08-20T13:54:11.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "management",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:53:26.488Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/exclusive-ubs-hires-jp-morgan-banker-su-ramp-ai-banking-efforts",
+        "title": "Exclusive: UBS Hires JP Morgan Banker Su to Ramp Up AI Banking Efforts",
+        "publishedUtc": "2026-08-20T13:05:42.000Z",
+        "kind": "briefing",
+        "prefix": "exclusive",
+        "seenAtUtc": "2026-08-21T18:53:26.479Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3b50t3",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/exclusive-ubs-hires-jp-morgan-banker-su-ramp-ai-banking-efforts",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-20T13:05:42.000Z",
+        "firstSeenBasis": "The Information exclusive — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:53:26.487Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    },
+    {
+      "news": {
+        "newsId": "sitemap:https://www.theinformation.com/briefings/veteran-barclays-semiconductor-banker-tim-luke-join-morgan-stanley",
+        "title": "Veteran Barclays Semiconductor Banker Tim Luke to Join Morgan Stanley",
+        "publishedUtc": "2026-08-20T01:56:01.000Z",
+        "kind": "briefing",
+        "prefix": "none",
+        "seenAtUtc": "2026-08-21T18:53:26.478Z"
+      },
+      "signal": {
+        "id": "sig-e539dd1b780ff3b4-mt3b50t2",
+        "newsId": "sitemap:https://www.theinformation.com/briefings/veteran-barclays-semiconductor-banker-tim-luke-join-morgan-stanley",
+        "fingerprint": "e539dd1b780ff3b4",
+        "firstSeenUtc": "2026-08-20T01:56:01.000Z",
+        "firstSeenBasis": "The Information item — published timestamp equals first public appearance (feed <published> verified against sitemap publication_date)",
+        "expectedDirection": "bullish",
+        "coarseImpactBand": "small",
+        "consensusBaselineAsOf": null,
+        "materiality": {
+          "tradeable": false,
+          "score": 10,
+          "eventType": "other",
+          "factLevel": "fact",
+          "tickers": [],
+          "surpriseNote": "rules fallback: no consensus comparison performed",
+          "reason": "no universe ticker matched"
+        },
+        "pricedIn": null,
+        "createdAtUtc": "2026-08-21T18:53:26.486Z",
+        "followUp24h": {
+          "realizedExcessPct": null,
+          "directionHit": null,
+          "computedAtUtc": "2026-08-21T19:55:15.989Z"
+        }
+      },
+      "thesis": null,
+      "decision": null,
+      "execution": null,
+      "positionNow": null,
+      "postEvents": []
+    }
+  ]
+}
