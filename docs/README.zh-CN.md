@@ -25,29 +25,30 @@
 
 ### 产品全家福（一张表）
 
-| 产品                      | 做什么                                                                       | 状态                                       | 代码                                                                                       | 在哪看                                                                                                                                          |
-| ------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Polymarket 实盘交易       | 真金自主交易，服务层硬风控                                                   | 实盘循环暂停（最后一次实盘 2026-06-10）    | `services/orchestrator` · `services/executor` · `scripts/pulse-live.ts`                    | [决策记录](https://autopoly-pizza-spectator.vercel.app) · [链上持仓](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e) |
-| 世界杯市场盲测预测        | 87 个问题公开 Brier 记分，预测时刻从不读市场价格                             | 小组赛 + 淘汰赛 32 强已公开记分            | `scripts/world-cup` · `packages/sports-data` / `sports-model` / `fifa-models` · `apps/web` | [/world-cup](https://forecasting-agent.com/world-cup) · [预测效果](https://forecasting-agent.com/world-cup/performance)                         |
-| Forecasting Engine 控制台 | 逐步看一次迭代预测如何展开：计划、证据卡、判决档案                           | 运行中                                     | `apps/raven`                                                                               | [/engine](https://forecasting-agent.com/engine)                                                                                                 |
-| Forecast API + MCP        | `POST /v1/forecasts` → 概率 + 分析思路 + 证据（JSON / 文字 / PDF）；MCP 工具 | 运行中                                     | `services/forecast-api`                                                                    | 托管 API                                                                                                                                        |
-| Raven Delta               | 粘贴一条新闻 → 关注度判定 + 0–5 只受影响美股 + 操作计划                      | 运行中                                     | `apps/raven-delta`                                                                         | [/delta](https://forecasting-agent.com/delta)                                                                                                   |
-| Delta PM                  | 自主的新闻→美股影子 PM，每个决策带完整审计链                                 | 运行中，影子模式（Phase 0，2026-08-23 起） | `services/delta-pm` · `apps/delta-pm-console` · `packages/delta-pm-contracts`              | [/live-delta-pm](https://forecasting-agent.com/live-delta-pm) · [/pm](https://forecasting-agent.com/pm)                                         |
-| 自主模拟盘交易            | 交易 agent 的 $10k 模拟孪生体，每日 3 次市场盲测评估                         | 2026-07-03 起持续运行                      | `services/paper-agent`                                                                     | [/live-predict-raven](https://forecasting-agent.com/live-predict-raven)                                                                         |
-| 多模型 forecast fleet     | 7 × $10k 模拟账本，一模型一本，规则完全一致                                  | 2026-08-23 起持续运行                      | `scripts/fleet`（+ `services/paper-agent`）                                                | 内部服务器（暂无公开页面）                                                                                                                      |
+| 产品                      | 做什么                                                                       | 状态                                       | 代码                                                                                       | 在哪看                                                                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Polymarket 实盘交易       | 真金自主交易，服务层硬风控                                                   | 实盘循环暂停（最后一次实盘 2026-06-10）    | `services/orchestrator` · `services/executor` · `scripts/pulse-live.ts`                    | [链上持仓](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)                                   |
+| 世界杯市场盲测预测        | 87 个问题公开 Brier 记分，预测时刻从不读市场价格                             | 小组赛 + 淘汰赛 32 强已公开记分            | `scripts/world-cup` · `packages/sports-data` / `sports-model` / `fifa-models` · `apps/web` | [/world-cup](https://forecasting-agent.com/world-cup) · [预测效果](https://forecasting-agent.com/world-cup/performance) |
+| Forecasting Engine 控制台 | 逐步看一次迭代预测如何展开：计划、证据卡、判决档案                           | 运行中                                     | `apps/raven`                                                                               | [/engine](https://forecasting-agent.com/engine)                                                                         |
+| Forecast API + MCP        | `POST /v1/forecasts` → 概率 + 分析思路 + 证据（JSON / 文字 / PDF）；MCP 工具 | 运行中                                     | `services/forecast-api`                                                                    | 托管 API                                                                                                                |
+| Raven Delta               | 粘贴一条新闻 → 关注度判定 + 0–5 只受影响美股 + 操作计划                      | 运行中                                     | `apps/raven-delta`                                                                         | [/delta](https://forecasting-agent.com/delta)                                                                           |
+| Delta PM                  | 自主的新闻→美股影子 PM，每个决策带完整审计链                                 | 运行中，影子模式（Phase 0，2026-08-23 起） | `services/delta-pm` · `apps/delta-pm-console` · `packages/delta-pm-contracts`              | [/live-delta-pm](https://forecasting-agent.com/live-delta-pm) · [/pm](https://forecasting-agent.com/pm)                 |
+| 自主模拟盘交易            | 交易 agent 的 $10k 模拟孪生体，每日 3 次市场盲测评估                         | 2026-07-03 起持续运行                      | `services/paper-agent`                                                                     | [/live-predict-raven](https://forecasting-agent.com/live-predict-raven)                                                 |
+| 多模型 forecast fleet     | 7 × $10k 模拟账本，一模型一本，规则完全一致                                  | 2026-08-23 起持续运行                      | `scripts/fleet`（+ `services/paper-agent`）                                                | 内部服务器（暂无公开页面）                                                                                              |
 
 > 命名说明：**Raven Delta**（`/delta`）和 **Delta PM** 是两个不同的产品。Raven Delta 是交互式界面——你贴一条新闻、读它的影响分析；Delta PM 是自主运行的影子基金经理——它自己消费整条新闻流，端到端记下带审计链的纸面交易。
 
 实盘 / 预测公开：
 
-- **世界杯预测（市场盲测）**：[forecasting-agent.com/world-cup](https://forecasting-agent.com/world-cup) · [预测效果](https://forecasting-agent.com/world-cup/performance)
-- **Forecasting Engine 控制台**：[forecasting-agent.com/engine](https://forecasting-agent.com/engine)（浏览公开；发起新预测需邀请码）
-- **Raven Delta 新闻影响引擎**：[forecasting-agent.com/delta](https://forecasting-agent.com/delta)（邀请码门）
-- **模拟盘复盘页**：[forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven)（邀请码门，实时 VM 快照）
-- **Delta PM 决策审计页**：[forecasting-agent.com/live-delta-pm](https://forecasting-agent.com/live-delta-pm)（邀请码门，实时 VM 账本）
-- **Delta PM 运维控制台**：[forecasting-agent.com/pm](https://forecasting-agent.com/pm)（token 门）
-- **交易决策记录 / 净值曲线**：[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app)
+- **世界杯预测（市场盲测）**：[forecasting-agent.com/world-cup](https://forecasting-agent.com/world-cup) · [预测效果](https://forecasting-agent.com/world-cup/performance) — 英文 / 简中 / 繁中
+- **Forecasting Engine 控制台**：[forecasting-agent.com/engine](https://forecasting-agent.com/engine)（浏览公开；发起新预测需邀请码）— 中英切换
+- **Raven Delta 新闻影响引擎**：[forecasting-agent.com/delta](https://forecasting-agent.com/delta)（邀请码门）— 中英切换
+- **模拟盘复盘页**：[forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven)（邀请码门，实时 VM 快照）— 仅中文
+- **Delta PM 决策审计页**：[forecasting-agent.com/live-delta-pm](https://forecasting-agent.com/live-delta-pm)（邀请码门，实时 VM 账本）— 仅中文
+- **Delta PM 运维控制台**：[forecasting-agent.com/pm](https://forecasting-agent.com/pm)（token 门）— 仅中文
 - **链上持仓 / 成交（Polymarket profile）**：[`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
+
+历史上的交易决策记录页已在 2026-07 清理中下线；实盘线的公开记录以上面的链上 profile 为准。[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app) 现在会跳转到世界杯站。
 
 ## ⚠️ 已知问题 — 搜索证据质量（用户 2026-08-23 标记，下次重点修）
 
