@@ -1,5 +1,5 @@
 {
-  "generatedAtUtc": "2026-08-23T08:57:06.731Z",
+  "generatedAtUtc": "2026-08-23T12:27:06.539Z",
   "bookStartedUtc": "2026-08-21T18:53:20.930Z",
   "equitySource": "portfolio.json",
   "portfolio": {
@@ -104,7 +104,18 @@
         "publishedUtc": "2026-08-22T23:45:39.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-23T00:25:07.227Z"
+        "seenAtUtc": "2026-08-23T00:25:07.227Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 2368227,
+        "seenToSignal": 224538,
+        "signalToThesis": 4950,
+        "thesisToDecision": 158,
+        "seenToDecision": 229646
       },
       "signal": {
         "id": "sig-038ffa18507d9d00-mt52k88l",
@@ -204,7 +215,18 @@
         "publishedUtc": "2026-08-22T14:17:10.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-22T15:45:56.507Z"
+        "seenAtUtc": "2026-08-22T15:45:56.507Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 5326507,
+        "seenToSignal": null,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": null,
       "thesis": null,
@@ -220,7 +242,18 @@
         "publishedUtc": "2026-08-22T15:00:59.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-22T15:45:56.504Z"
+        "seenAtUtc": "2026-08-22T15:45:56.504Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 2697504,
+        "seenToSignal": 6,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-2f729ee850c9540e-mt4jvqxq",
@@ -257,7 +290,18 @@
         "publishedUtc": "2026-08-21T21:40:11.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-22T08:21:57.415Z"
+        "seenAtUtc": "2026-08-22T08:21:57.415Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 38506415,
+        "seenToSignal": 41107,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-d51c2a29d9eabcc1-mt441nsq",
@@ -296,7 +340,18 @@
         "publishedUtc": "2026-08-22T06:14:22.000Z",
         "kind": "briefing",
         "prefix": "none",
-        "seenAtUtc": "2026-08-22T08:21:57.412Z"
+        "seenAtUtc": "2026-08-22T08:21:57.412Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 7655412,
+        "seenToSignal": 6,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-ce2da531aabe3bb3-mt440s2y",
@@ -333,7 +388,18 @@
         "publishedUtc": "2026-08-21T23:32:58.000Z",
         "kind": "briefing",
         "prefix": "exclusive",
-        "seenAtUtc": "2026-08-22T08:21:57.389Z"
+        "seenAtUtc": "2026-08-22T08:21:57.389Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 31739389,
+        "seenToSignal": 4352,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-8ed53e841b9753f2-mt440vf1",
@@ -372,7 +438,18 @@
         "publishedUtc": "2026-08-22T06:14:22.000Z",
         "kind": "briefing",
         "prefix": "none",
-        "seenAtUtc": "2026-08-22T08:18:30.341Z"
+        "seenAtUtc": "2026-08-22T08:18:30.341Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 7448341,
+        "seenToSignal": 8,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-6532989c94286643-mt43wcb1",
@@ -409,7 +486,18 @@
         "publishedUtc": "2026-08-21T23:32:58.000Z",
         "kind": "briefing",
         "prefix": "exclusive",
-        "seenAtUtc": "2026-08-21T23:34:33.994Z"
+        "seenAtUtc": "2026-08-21T23:34:33.994Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 95994,
+        "seenToSignal": 29696,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-8f40c09070ddc9a6-mt3l76ru",
@@ -446,7 +534,18 @@
         "publishedUtc": "2026-08-21T21:40:11.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T21:40:33.945Z"
+        "seenAtUtc": "2026-08-21T21:40:33.945Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 22945,
+        "seenToSignal": 37465,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-571ed2afb17ab409-mt3h4qya",
@@ -485,7 +584,18 @@
         "publishedUtc": "2026-08-21T19:20:07.000Z",
         "kind": "briefing",
         "prefix": "exclusive",
-        "seenAtUtc": "2026-08-21T19:57:31.456Z"
+        "seenAtUtc": "2026-08-21T19:57:31.456Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 2244456,
+        "seenToSignal": 8,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3dffm0",
@@ -522,7 +632,18 @@
         "publishedUtc": "2026-08-21T19:20:07.000Z",
         "kind": "briefing",
         "prefix": "exclusive",
-        "seenAtUtc": "2026-08-21T19:20:56.576Z"
+        "seenAtUtc": "2026-08-21T19:20:56.576Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 49576,
+        "seenToSignal": 4,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-dced744333a3f851-mt3c4e10",
@@ -559,7 +680,18 @@
         "publishedUtc": "2026-08-21T19:04:42.567Z",
         "kind": "manual",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T19:04:42.567Z"
+        "seenAtUtc": "2026-08-21T19:04:42.567Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 0,
+        "seenToSignal": 40898,
+        "signalToThesis": 129770,
+        "thesisToDecision": 3,
+        "seenToDecision": 170671
       },
       "signal": {
         "id": "sig-6429a40c70377956-mt3bke15",
@@ -843,7 +975,18 @@
         "publishedUtc": "2026-08-21T19:03:37.845Z",
         "kind": "manual",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T19:03:37.846Z"
+        "seenAtUtc": "2026-08-21T19:03:37.846Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 1,
+        "seenToSignal": 43289,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-684d9cad33c14c08-mt3bj1xr",
@@ -882,7 +1025,18 @@
         "publishedUtc": "2026-08-21T18:57:16.412Z",
         "kind": "manual",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:57:16.413Z"
+        "seenAtUtc": "2026-08-21T18:57:16.413Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 1,
+        "seenToSignal": 84326,
+        "signalToThesis": 95364,
+        "thesisToDecision": 3,
+        "seenToDecision": 179693
       },
       "signal": {
         "id": "sig-3c9e0023b96116f8-mt3bbrab",
@@ -1070,7 +1224,18 @@
         "publishedUtc": "2026-08-21T00:15:33.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.482Z"
+        "seenAtUtc": "2026-08-21T18:53:26.482Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 67073482,
+        "seenToSignal": 74457,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3b6m97",
@@ -1111,7 +1276,18 @@
         "publishedUtc": "2026-08-21T14:12:21.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.482Z"
+        "seenAtUtc": "2026-08-21T18:53:26.482Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 16865482,
+        "seenToSignal": 74456,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3b6m96",
@@ -1147,7 +1323,18 @@
         "publishedUtc": "2026-08-21T00:00:35.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.482Z"
+        "seenAtUtc": "2026-08-21T18:53:26.482Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 67971482,
+        "seenToSignal": 87550,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-6a29b33dcc0d7e5e-mt3b6wcw",
@@ -1188,7 +1375,18 @@
         "publishedUtc": "2026-08-20T18:55:44.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.482Z"
+        "seenAtUtc": "2026-08-21T18:53:26.482Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 86262482,
+        "seenToSignal": 57580,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3b698e",
@@ -1229,7 +1427,18 @@
         "publishedUtc": "2026-08-20T16:58:10.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.481Z"
+        "seenAtUtc": "2026-08-21T18:53:26.481Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 93316481,
+        "seenToSignal": 83092,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-b17ab5344d169241-mt3b6sx1",
@@ -1285,7 +1494,18 @@
         "publishedUtc": "2026-08-20T14:00:39.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.481Z"
+        "seenAtUtc": "2026-08-21T18:53:26.481Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 103967481,
+        "seenToSignal": 39231,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3b5v2o",
@@ -1326,7 +1546,18 @@
         "publishedUtc": "2026-08-20T13:00:42.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.481Z"
+        "seenAtUtc": "2026-08-21T18:53:26.481Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 107564481,
+        "seenToSignal": 39230,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3b5v2n",
@@ -1367,7 +1598,18 @@
         "publishedUtc": "2026-08-20T00:00:42.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.480Z"
+        "seenAtUtc": "2026-08-21T18:53:26.480Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 154364480,
+        "seenToSignal": 39230,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3b5v2m",
@@ -1408,7 +1650,18 @@
         "publishedUtc": "2026-08-19T19:01:05.000Z",
         "kind": "article",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.480Z"
+        "seenAtUtc": "2026-08-21T18:53:26.480Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 172341480,
+        "seenToSignal": 39228,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3b5v2k",
@@ -1449,7 +1702,18 @@
         "publishedUtc": "2026-08-21T17:55:36.000Z",
         "kind": "briefing",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.480Z"
+        "seenAtUtc": "2026-08-21T18:53:26.480Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 3470480,
+        "seenToSignal": 39224,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-8ddd7a90e22f9076-mt3b5v2g",
@@ -1485,7 +1749,18 @@
         "publishedUtc": "2026-08-21T17:48:10.000Z",
         "kind": "briefing",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.480Z"
+        "seenAtUtc": "2026-08-21T18:53:26.480Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 3916480,
+        "seenToSignal": 10,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-d2469b7d3604b546-mt3b50t6",
@@ -1521,7 +1796,18 @@
         "publishedUtc": "2026-08-20T20:35:30.000Z",
         "kind": "briefing",
         "prefix": "reportedly",
-        "seenAtUtc": "2026-08-21T18:53:26.479Z"
+        "seenAtUtc": "2026-08-21T18:53:26.479Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 80276479,
+        "seenToSignal": 57581,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-aad9073003a3cbfe-mt3b698b",
@@ -1559,7 +1845,18 @@
         "publishedUtc": "2026-08-20T18:15:47.000Z",
         "kind": "briefing",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.479Z"
+        "seenAtUtc": "2026-08-21T18:53:26.479Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 88659479,
+        "seenToSignal": 9,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-6dfe46508302b1ea-mt3b50t4",
@@ -1600,7 +1897,18 @@
         "publishedUtc": "2026-08-20T13:54:11.000Z",
         "kind": "briefing",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.479Z"
+        "seenAtUtc": "2026-08-21T18:53:26.479Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 104355479,
+        "seenToSignal": 9,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-934643caf01b320f-mt3b50t4",
@@ -1641,7 +1949,18 @@
         "publishedUtc": "2026-08-20T13:05:42.000Z",
         "kind": "briefing",
         "prefix": "exclusive",
-        "seenAtUtc": "2026-08-21T18:53:26.479Z"
+        "seenAtUtc": "2026-08-21T18:53:26.479Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 107264479,
+        "seenToSignal": 8,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3b50t3",
@@ -1682,7 +2001,18 @@
         "publishedUtc": "2026-08-20T01:56:01.000Z",
         "kind": "briefing",
         "prefix": "none",
-        "seenAtUtc": "2026-08-21T18:53:26.478Z"
+        "seenAtUtc": "2026-08-21T18:53:26.478Z",
+        "url": null,
+        "teaser": null,
+        "fullText": null,
+        "source": null
+      },
+      "timingsMs": {
+        "publishToSeen": 147445478,
+        "seenToSignal": 8,
+        "signalToThesis": null,
+        "thesisToDecision": null,
+        "seenToDecision": null
       },
       "signal": {
         "id": "sig-e539dd1b780ff3b4-mt3b50t2",

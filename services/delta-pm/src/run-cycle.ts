@@ -26,6 +26,7 @@ import { candles1m, candlesDaily, computeAtr, computeBeta, computeDailyVolPct, c
 import { marketState } from "./market.js";
 import { checkHalt, decideEntry, equityOf, reviewPosition, updateTrailingStop, type MarketView } from "./policy.js";
 import { advance, finishRun, setTickers, startRun } from "./progress.js";
+import { push } from "./notify.js";
 import { appendLedger, paths, readJson, writeJsonAtomic } from "./store.js";
 import { fetchCandles } from "./hyperliquid.js";
 
@@ -175,6 +176,9 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
   }
   const item: NewsItem = parsed.data;
   appendLedger({ type: "news_seen", newsId: item.id, title: item.title, publishedUtc: item.publishedUtc, kind: item.kind, prefix: item.prefix });
+  // 原文存档: every received original (teaser or full text) is archived so the
+  // audit page and future push clients can render it. Filename = sanitized id.
+  writeJsonAtomic(path.join(paths.newsDir(), `${item.id.replace(/[^a-zA-Z0-9_.-]/g, "_").slice(-120)}.json`), item);
   const run = startRun(item.id, item.title);
 
   await withAnalysisSlot(async () => {
@@ -230,6 +234,12 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
         finishRun(run, `归档:已定价判定 ${pricedIn.status}(${pricedIn.note.slice(0, 60)})`);
         return;
       }
+
+      void push("signal", `信号过检:${gate1.tickers.join("/")} ${item.title.slice(0, 60)}`, [
+        `重要性 ${gate1.score}/100 · ${gate1.eventType} · 方向 ${gate1.expectedDirection}`,
+        `定价检查: ${pricedIn.status}(已实现 ${pricedIn.realizedExcessPct?.toFixed(2) ?? "?"}%,Δt ${pricedIn.deltaTMinutes.toFixed(0)} 分钟)`,
+        `进入深度分析…`
+      ]);
 
       // --- M2 ---
       advance(run, "analysis", `${primary.ticker} 影响分析中(${signal.materiality.eventType})`);
@@ -352,6 +362,10 @@ async function decideAndExecute(
   appendLedger({ type: "decision", decision });
 
   if (decision.action !== "open" || !decision.stop || !decision.direction) {
+    void push("decision", `不开仓:${thesis.ticker}`, [
+      `${thesis.direction} · fairImpact ${thesis.fairImpactPct.min}%/${thesis.fairImpactPct.point}%/${thesis.fairImpactPct.max}%`,
+      decision.reason.slice(0, 160)
+    ]);
     return `不开仓:${decision.reason.slice(0, 140)}`;
   }
 
@@ -384,6 +398,11 @@ async function decideAndExecute(
   portfolio.positions.push(position);
   savePortfolio(portfolio);
   appendLedger({ type: "paper_open", ticker: position.ticker, direction: position.direction, qty: position.qty, fillPx, sizeUsd: decision.sizeUsd, decisionId: decision.id, signalId });
+  void push("decision", `纸面开仓:${position.direction} ${position.ticker} $${decision.sizeUsd}`, [
+    `成交 ${fillPx.toFixed(2)} · 止损 ${position.stopPx} · 硬地板 ${position.hardFloorPx}(−20%)`,
+    `持有至 ${position.horizonUtc.slice(0, 16)}Z`,
+    decision.reason.slice(0, 140)
+  ]);
   return `开仓(纸面):${position.direction} ${position.ticker} $${decision.sizeUsd}(理由:${decision.reason.slice(0, 100)})`;
 }
 
@@ -408,6 +427,7 @@ export function scheduleFastTick(deps: PipelineDeps): void {
       portfolio.halted = true;
       portfolio.haltedReason = halt.reason;
       appendLedger({ type: "halt", reason: halt.reason });
+      void push("book_event", "⛔ 组合停机(−25% 用户红线)", [halt.reason ?? ""]);
     }
 
     const keep: Position[] = [];
@@ -426,15 +446,11 @@ export function scheduleFastTick(deps: PipelineDeps): void {
         const pnl = dirSign * (mark - p.entryPx) * p.qty;
         portfolio.realizedPnlUsd += pnl;
         portfolio.lastStopOutUtc[`${p.ticker}:${p.direction}`] = new Date().toISOString();
-        appendLedger({
-          type: adversePct >= config.hardStopAdversePct ? "hard_floor_stop" : "stop_loss",
-          ticker: p.ticker,
-          direction: p.direction,
-          exitPx: mark,
-          pnlUsd: pnl,
-          adversePct,
-          stopPx: p.stopPx
-        });
+        const stopType = adversePct >= config.hardStopAdversePct ? "hard_floor_stop" : "stop_loss";
+        appendLedger({ type: stopType, ticker: p.ticker, direction: p.direction, exitPx: mark, pnlUsd: pnl, adversePct, stopPx: p.stopPx });
+        void push("book_event", `${stopType === "hard_floor_stop" ? "硬地板止损(−20% 用户红线)" : "技术止损"}:${p.ticker}`, [
+          `${p.direction} 出场 ${mark.toFixed(2)} · 盈亏 $${pnl.toFixed(2)}`
+        ]);
         continue; // closed
       }
       // Trailing update needs excess-frame progress; approximate with raw when β cached stats are missing.
