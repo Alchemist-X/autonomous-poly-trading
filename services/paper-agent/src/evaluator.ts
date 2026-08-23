@@ -92,7 +92,7 @@ export function evaluationQuestion(market: MarketInfo): string {
 
 export interface EvaluateOptions {
   roundsPerEval: number;
-  provider: "claude" | "deepseek";
+  provider: "claude" | "codex" | "deepseek";
   timeoutMs?: number;
 }
 
@@ -100,9 +100,9 @@ export async function evaluateMarket(market: MarketInfo, opts: EvaluateOptions):
   const question = evaluationQuestion(market);
   const eventId = makeEventId(question);
   const root = repoRoot();
-  // Claude runs (framing + researched round + summary) take longer than the
-  // OpenAI-compatible path — give them more headroom before the SIGKILL.
-  const timeoutMs = opts.timeoutMs ?? (opts.provider === "claude" ? 25 * 60_000 : 15 * 60_000);
+  // CLI-driven runs (claude/codex: framing + researched round + summary) take
+  // longer than the OpenAI-compatible path — more headroom before the SIGKILL.
+  const timeoutMs = opts.timeoutMs ?? (opts.provider === "deepseek" ? 15 * 60_000 : 25 * 60_000);
 
   // TOTAL-cap fix: allow `roundsPerEval` NEW rounds on top of what the
   // resumed dossier has already completed.
