@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  aggregateBurn,
   bar,
   buildDailyCard,
   digestDue,
   extractLatestRateLimits,
   extractPercentFields,
+  fmtTokens,
+  parseTranscriptLine,
   parseCreditAnchor,
   projectDaysToEmpty,
   scanForQuotaErrors,
@@ -176,5 +179,59 @@ describe("daily digest card", () => {
       new Date("2026-08-24T01:00:00Z")
     ) as { card: { header: { template: string } } };
     expect(card.card.header.template).toBe("red");
+  });
+});
+
+describe("transcript burn accounting", () => {
+  it("parses a claude-code transcript line and sums the non-cache-read tokens", () => {
+    const line = JSON.stringify({
+      timestamp: "2026-08-23T08:57:19.585Z",
+      message: {
+        model: "claude-fable-5",
+        usage: { input_tokens: 2, cache_creation_input_tokens: 12428, cache_read_input_tokens: 19391, output_tokens: 575 }
+      }
+    });
+    expect(parseTranscriptLine(line)).toEqual({ tsMs: Date.parse("2026-08-23T08:57:19.585Z"), model: "claude-fable-5", tokens: 2 + 12428 + 575 });
+    expect(parseTranscriptLine(`{"timestamp":"2026-08-23T00:00:00Z","message":{"role":"user"}}`)).toBeNull();
+    expect(parseTranscriptLine("garbage")).toBeNull();
+  });
+
+  it("aggregates 5h/7d windows per vendor bucket", () => {
+    const now = Date.parse("2026-08-23T12:00:00Z");
+    const mk = (iso: string, model: string, tokens: number) => ({ tsMs: Date.parse(iso), model, tokens });
+    const entries = [
+      mk("2026-08-23T10:00:00Z", "claude-fable-5", 1000),   // inside 5h
+      mk("2026-08-23T01:00:00Z", "claude-opus-5", 2000),    // 7d only
+      mk("2026-08-20T00:00:00Z", "kimi-k3", 500),           // kimi, 7d only
+      mk("2026-08-10T00:00:00Z", "claude-fable-5", 9999)    // outside 7d
+    ];
+    const claude = aggregateBurn(entries, now, (m) => m.startsWith("claude"));
+    expect(claude).toEqual({ fiveHourTokens: 1000, fiveHourCalls: 1, sevenDayTokens: 3000, sevenDayCalls: 2 });
+    const kimi = aggregateBurn(entries, now, (m) => m.includes("kimi"));
+    expect(kimi.sevenDayTokens).toBe(500);
+  });
+
+  it("formats token counts for humans", () => {
+    expect(fmtTokens(532)).toBe("532");
+    expect(fmtTokens(53_200)).toBe("53k");
+    expect(fmtTokens(5_320_000)).toBe("5.3M");
+  });
+
+  it("burn stats render into the card when the official endpoint is silent", () => {
+    const card = buildDailyCard(
+      {
+        claude: { status: "rate-limited" },
+        claudeBurn: { fiveHourTokens: 1_200_000, fiveHourCalls: 40, sevenDayTokens: 9_800_000, sevenDayCalls: 300 },
+        kimiBurn: { fiveHourTokens: 0, fiveHourCalls: 0, sevenDayTokens: 350_000, sevenDayCalls: 12 },
+        books: []
+      },
+      [],
+      new Date("2026-08-24T01:00:00Z")
+    );
+    const blob = JSON.stringify(card);
+    expect(blob).toContain("按本机实测消耗");
+    expect(blob).toContain("近 5 小时 1.2M tokens（40 条消息）");
+    expect(blob).toContain("Kimi Code（kimi-k3 书）");
+    expect(blob).toContain("近 7 天 350k tokens");
   });
 });

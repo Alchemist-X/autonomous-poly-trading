@@ -216,7 +216,22 @@ export interface MonitorSummary {
   codex?: { windows: Array<{ name: string; usedPercent: number; windowMinutes: number | null; resetsAt: number | null }>; snapshotAgeHours: number } | { status: string };
   claude?: { fields: Array<{ label: string; percent: number }> } | { status: string };
   exa?: { spentUsd: number; entries: number; anchorUsd?: number; remainingUsd?: number; perDayUsd?: number; runwayDays?: number };
+  // Local transcript self-accounting: every claude-CLI run on this box logs
+  // per-message usage; summed here per vendor bucket (claude-* vs kimi-*).
+  claudeBurn?: BurnStats;
+  kimiBurn?: BurnStats;
   books: Array<{ name: string; alive: boolean; quotaHits: number }>;
+}
+
+export interface BurnStats {
+  fiveHourTokens: number;
+  fiveHourCalls: number;
+  sevenDayTokens: number;
+  sevenDayCalls: number;
+  // Empirical ceiling: the 5h token sum recorded the last time this vendor
+  // actually hit a limit error — turns burn into a percentage waterline.
+  ceilingTokens?: number;
+  usedPercent?: number;
 }
 
 // Unicode progress bar for lark_md (Feishu has no native bar element).
@@ -254,10 +269,21 @@ export function buildDailyCard(summary: MonitorSummary, findings: Finding[], now
   }
   if (summary.claude && "fields" in summary.claude && summary.claude.fields.length) {
     for (const f of summary.claude.fields) {
-      md.push(`Claude（fable/opus/sonnet/kimi 四本书 + 东京）\n\`${bar(f.percent)}\` ${f.label} 已用 ${f.percent.toFixed(0)}%`);
+      md.push(`Claude 订阅（三本书 + 本机其他任务）\n\`${bar(f.percent)}\` ${f.label} 已用 ${f.percent.toFixed(0)}%`);
+    }
+  } else if (summary.claudeBurn) {
+    const cb = summary.claudeBurn;
+    if (cb.usedPercent !== undefined) {
+      md.push(`Claude 订阅（按本机实测消耗）\n\`${bar(cb.usedPercent)}\` 5 小时窗已用约 ${cb.usedPercent.toFixed(0)}%（对照上次撞限水位）· 近 7 天 ${fmtTokens(cb.sevenDayTokens)} tokens`);
+    } else {
+      md.push(`Claude 订阅（按本机实测消耗，含 fleet 外任务）\n近 5 小时 ${fmtTokens(cb.fiveHourTokens)} tokens（${cb.fiveHourCalls} 条消息）· 近 7 天 ${fmtTokens(cb.sevenDayTokens)} tokens · 尚未撞过限，暂无百分比基准`);
     }
   } else {
-    md.push("Claude（四本书 + 东京）：官方用量接口今日未放行（正常现象）；日志无超限迹象 ✅");
+    md.push("Claude 订阅：本机暂无消耗记录");
+  }
+  if (summary.kimiBurn && (summary.kimiBurn.sevenDayTokens > 0 || summary.kimiBurn.fiveHourTokens > 0)) {
+    const kb = summary.kimiBurn;
+    md.push(`Kimi Code（kimi-k3 书）\n近 5 小时 ${fmtTokens(kb.fiveHourTokens)} tokens · 近 7 天 ${fmtTokens(kb.sevenDayTokens)} tokens（官方无额度接口，按消耗展示）`);
   }
 
   md.push("---");
@@ -314,6 +340,49 @@ export function buildDailyCard(summary: MonitorSummary, findings: Finding[], now
       ]
     }
   };
+}
+
+// One transcript line → usage entry. Claude Code transcript lines carry
+// {timestamp, message: {model, usage: {input_tokens, cache_creation_input_tokens,
+// cache_read_input_tokens, output_tokens}}}. Cache reads are excluded from the
+// burn number (they are the cheap path); input + cache-write + output is what
+// tracks subscription pressure.
+export interface UsageEntry { tsMs: number; model: string; tokens: number }
+
+export function parseTranscriptLine(line: string): UsageEntry | null {
+  const t = line.trim();
+  if (!t || t[0] !== "{") return null;
+  let obj: Record<string, unknown>;
+  try { obj = JSON.parse(t) as Record<string, unknown>; } catch { return null; }
+  const msg = obj.message as Record<string, unknown> | undefined;
+  const usage = msg?.usage as Record<string, unknown> | undefined;
+  if (!usage) return null;
+  const tsMs = Date.parse(String(obj.timestamp ?? ""));
+  if (!Number.isFinite(tsMs)) return null;
+  const n = (k: string): number => (Number.isFinite(Number(usage[k])) ? Number(usage[k]) : 0);
+  return {
+    tsMs,
+    model: String(msg?.model ?? "unknown"),
+    tokens: n("input_tokens") + n("cache_creation_input_tokens") + n("output_tokens")
+  };
+}
+
+export function aggregateBurn(entries: UsageEntry[], nowMs: number, modelMatch: (m: string) => boolean): BurnStats {
+  const h5 = nowMs - 5 * 3_600_000;
+  const d7 = nowMs - 7 * 86_400_000;
+  const out: BurnStats = { fiveHourTokens: 0, fiveHourCalls: 0, sevenDayTokens: 0, sevenDayCalls: 0 };
+  for (const e of entries) {
+    if (!modelMatch(e.model)) continue;
+    if (e.tsMs >= d7) { out.sevenDayTokens += e.tokens; out.sevenDayCalls += 1; }
+    if (e.tsMs >= h5) { out.fiveHourTokens += e.tokens; out.fiveHourCalls += 1; }
+  }
+  return out;
+}
+
+export function fmtTokens(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}k`;
+  return String(n);
 }
 
 function readJson<T>(file: string, fallback: T): T {
@@ -471,6 +540,73 @@ async function checkClaudeSubscription(findings: Finding[], lines: string[], sum
   }
 }
 
+// Sum usage from every claude-CLI transcript on this box (fleet books AND any
+// other consumer sharing the subscription — e.g. ad-hoc research runs). The
+// 5h/7d windows mirror Anthropic's limit windows; Kimi Code rides the same
+// CLI with model kimi-*, so it gets metered for free.
+function checkTranscriptBurn(findings: Finding[], lines: string[], summary: MonitorSummary, now: Date): void {
+  const projectsDir = path.join(os.homedir(), ".claude", "projects");
+  const entries: UsageEntry[] = [];
+  const cutoffMs = now.getTime() - 7 * 86_400_000;
+  let dirs: fs.Dirent[] = [];
+  try { dirs = fs.readdirSync(projectsDir, { withFileTypes: true }); } catch { /* no CLI use yet */ }
+  for (const d of dirs) {
+    if (!d.isDirectory()) continue;
+    let files: fs.Dirent[] = [];
+    try { files = fs.readdirSync(path.join(projectsDir, d.name), { withFileTypes: true }); } catch { continue; }
+    for (const f of files) {
+      if (!f.isFile() || !f.name.endsWith(".jsonl")) continue;
+      const full = path.join(projectsDir, d.name, f.name);
+      try {
+        if (fs.statSync(full).mtimeMs < cutoffMs) continue;
+        for (const line of fs.readFileSync(full, "utf8").split("\n")) {
+          const e = parseTranscriptLine(line);
+          if (e && e.tsMs >= cutoffMs) entries.push(e);
+        }
+      } catch { /* unreadable file */ }
+    }
+  }
+
+  const ceilingFile = path.join(MONITOR_ROOT, "burn-ceilings.json");
+  const ceilings = readJson<Record<string, number>>(ceilingFile, {});
+  const buckets: Array<{ key: "claudeBurn" | "kimiBurn"; label: string; match: (m: string) => boolean }> = [
+    { key: "claudeBurn", label: "claude-burn", match: (m) => m.startsWith("claude") },
+    { key: "kimiBurn", label: "kimi-burn", match: (m) => m.toLowerCase().includes("kimi") }
+  ];
+  for (const b of buckets) {
+    const stats = aggregateBurn(entries, now.getTime(), b.match);
+    const ceiling = ceilings[b.key];
+    if (ceiling && ceiling > 0) {
+      stats.ceilingTokens = ceiling;
+      stats.usedPercent = Math.min(100, (stats.fiveHourTokens / ceiling) * 100);
+    }
+    summary[b.key] = stats;
+    const pct = stats.usedPercent !== undefined ? ` | ~${stats.usedPercent.toFixed(0)}% of observed 5h ceiling` : "";
+    lines.push(`${b.label.padEnd(12)} | 5h ${fmtTokens(stats.fiveHourTokens)} tok / ${stats.fiveHourCalls} msg | 7d ${fmtTokens(stats.sevenDayTokens)} tok${pct}`);
+    if (stats.usedPercent !== undefined) {
+      if (stats.usedPercent >= SUB_USED_CRIT_PCT) findings.push({ topic: `${b.key}-ceiling`, severity: "critical", message: `${b.label} 5 小时窗消耗已达上次撞限水位的 ${stats.usedPercent.toFixed(0)}%。` });
+      else if (stats.usedPercent >= SUB_USED_WARN_PCT) findings.push({ topic: `${b.key}-ceiling`, severity: "warn", message: `${b.label} 5 小时窗消耗达上次撞限水位的 ${stats.usedPercent.toFixed(0)}%。` });
+    }
+  }
+
+  // Calibration: a quota error on a claude/kimi book stamps the current 5h sum
+  // as that vendor's observed ceiling (kept as a running max).
+  const claudeBooks = (process.env.FLEET_CLAUDE_BOOKS || "fable,opus,sonnet").split(",").map((x) => x.trim());
+  for (const f of findings) {
+    const m = f.topic.match(/^quota-([a-z0-9-]+)-/);
+    if (!m) continue;
+    const book = m[1]!;
+    const key = claudeBooks.includes(book) ? "claudeBurn" : book.includes("kimi") ? "kimiBurn" : null;
+    if (!key) continue;
+    const current = (summary[key as "claudeBurn" | "kimiBurn"])?.fiveHourTokens ?? 0;
+    if (current > (ceilings[key] ?? 0)) {
+      ceilings[key] = current;
+      fs.writeFileSync(ceilingFile, JSON.stringify(ceilings, null, 1));
+      log.info(`${key} ceiling calibrated to ${fmtTokens(current)} tokens (limit error observed)`);
+    }
+  }
+}
+
 function checkExaMeter(findings: Finding[], lines: string[], summary: MonitorSummary): void {
   const ledgerFile = process.env.EXA_COST_LEDGER || path.join(MONITOR_ROOT, "exa-cost.jsonl");
   const anchorRaw = process.env.EXA_CREDIT_ANCHOR;
@@ -527,6 +663,7 @@ async function main(): Promise<void> {
   await checkClaudeSubscription(findings, lines, summary);
   checkExaMeter(findings, lines, summary);
   checkLogsAndLiveness(findings, lines, summary);
+  checkTranscriptBurn(findings, lines, summary, now);
   console.log(lines.map((l) => `  ${l}`).join("\n"));
 
   const stateFile = path.join(MONITOR_ROOT, "alert-state.json");
