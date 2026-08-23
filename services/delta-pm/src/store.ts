@@ -1,6 +1,7 @@
 // On-disk state under the shared artifacts volume (PRD §10):
 //   <artifacts>/delta-pm/portfolio.json      — paper book (atomic writes)
 //   <artifacts>/delta-pm/ledger.jsonl        — append-only event journal
+//   <artifacts>/delta-pm/news/<id>.json      — raw NewsItem archive (原文存档)
 //   <artifacts>/delta-pm/signals/<id>.json   — NewsSignal archive
 //   <artifacts>/delta-pm/theses/<id>.json    — TradeThesis archive
 //   <artifacts>/delta-pm/runs/<id>.json      — per-run progress state (console)
@@ -44,6 +45,7 @@ export const paths = {
   portfolio: () => path.join(pmRoot(), "portfolio.json"),
   ledger: () => path.join(pmRoot(), "ledger.jsonl"),
   feedState: () => path.join(pmRoot(), "feed-state.json"),
+  newsDir: () => path.join(pmRoot(), "news"),
   signalsDir: () => path.join(pmRoot(), "signals"),
   thesesDir: () => path.join(pmRoot(), "theses"),
   runsDir: () => path.join(pmRoot(), "runs"),

@@ -81,7 +81,8 @@ export const zhContamination = (raw: string): string =>
 export const zhAction = (raw: string): string =>
   pick({ open: "开仓", add: "加仓", trim: "减仓", close: "平仓", flip: "反手", no_trade: "不开仓" }, raw);
 
-export const zhBenchmark = (raw: string): string => pick({ none: "无基准（原始反应）" }, raw);
+export const zhBenchmark = (raw: string): string =>
+  pick({ none: "无基准（原始反应）", XYZ100: "XYZ100 指数", SP500: "标普 500" }, raw);
 
 export const zhProvider = (raw: string): string =>
   pick({ rules: "规则回退（非分析引擎）", "claude-cli": "Claude CLI", deepseek: "DeepSeek" }, raw);
@@ -196,6 +197,24 @@ export function fmtHours(hours: number | null): string {
   const days = hours / 24;
   return `${hours} 小时（≈ ${Number.isInteger(days) ? days : days.toFixed(1)} 天）`;
 }
+
+/**
+ * Adaptive duration for the per-stage timing strip. Millisecond input:
+ * 158 => "0.2 秒", 43289 => "43 秒", 229646 => "3.8 分钟", 38506415 => "10.7 小时".
+ */
+export function fmtDurationMs(ms: number | null): string {
+  if (ms === null) return "—";
+  if (ms < 0) return "—";
+  if (ms < 9_950) return `${(ms / 1000).toFixed(1)} 秒`;
+  if (ms < 120_000) return `${Math.round(ms / 1000)} 秒`;
+  if (ms < 120 * 60_000) return `${(ms / 60_000).toFixed(1)} 分钟`;
+  if (ms < 48 * 3_600_000) return `${(ms / 3_600_000).toFixed(1)} 小时`;
+  return `${(ms / 86_400_000).toFixed(1)} 天`;
+}
+
+/** News source slug → display name. Falls back to the raw slug. */
+export const zhNewsSource = (raw: string): string =>
+  pick({ "the-information": "The Information" }, raw);
 
 /** Minutes between two ISO timestamps (b − a); null when either is invalid. */
 export function minutesBetween(a: string | null, b: string | null): number | null {

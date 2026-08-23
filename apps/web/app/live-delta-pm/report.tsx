@@ -1,19 +1,27 @@
 // /live-delta-pm — the shadow-trading decision chain rendered as a human
-// hedge-fund desk flow: per news item, six desk stations (情报台 → 重要性 →
-// 已定价 → 研究 memo → PM 台 → 执行/风控), every number itemized, nothing
+// hedge-fund desk flow: per news item, six desk stations (情报台 → 重要性检查 →
+// 定价检查 → 研究 memo → PM 台 → 执行与风控), every number itemized, nothing
 // abstracted. Server-rendered; the only interactivity is native <details>.
+//
+// Readability contract (operator review 2026-08-23): every case-level label
+// states the READER-FACING OUTCOME (e.g. 「重要性不足」「已被市场定价」), never the
+// internal mechanism (闸门1/入档); the raw enums stay visible in a small mono
+// line for ledger reconciliation. A glossary <details> sits under the header.
 
 import type {
   AuditPayload,
   CaseView,
   DecisionView,
+  NewsView,
   PositionNowView,
   ReflectionView,
   SignalView,
-  ThesisView
+  ThesisView,
+  TimingsMsView
 } from "../../lib/live-delta-pm/decode";
 import {
   fmtBeta,
+  fmtDurationMs,
   fmtFracPct,
   fmtHours,
   fmtInt,
@@ -38,6 +46,7 @@ import {
   zhImpactBand,
   zhKind,
   zhNewsDirection,
+  zhNewsSource,
   zhPostEvent,
   zhPrefix,
   zhPricedIn,
@@ -82,14 +91,18 @@ function Quote({ label, text }: { label: string; text: string }) {
 function Station({
   no,
   title,
+  sub,
   tag,
   skipReason,
   children
 }: {
   no: number;
   title: string;
+  /** Plain-language subtitle stating what this station answers. */
+  sub?: string;
+  /** Internal mechanism name, kept mono for ledger reconciliation. */
   tag: string;
-  /** When set, the station renders greyed as 未到达 with this reason. */
+  /** When set, the station renders greyed as 未进行 with this reason. */
   skipReason?: string | null;
   children?: React.ReactNode;
 }) {
@@ -100,9 +113,10 @@ function Station({
       <div className={styles.stationBody}>
         <div className={styles.stationHead}>
           <h4 className={styles.stationTitle}>{title}</h4>
+          {sub ? <span className={styles.stationSub}>{sub}</span> : null}
           <span className={styles.stationTag}>{tag}</span>
         </div>
-        {skipped ? <p className={styles.skipNote}>未到达 — {skipReason}</p> : children}
+        {skipped ? <p className={styles.skipNote}>未进行 — {skipReason}</p> : children}
       </div>
     </li>
   );
@@ -112,34 +126,92 @@ function Station({
 // Chain outcome / progress helpers
 
 interface Outcome {
+  /** Plain reader-facing outcome — what happened to this news item. */
   label: string;
-  raw?: string;
   tone: string;
+  /** Raw enums behind the label, shown as a small mono line (审计对账用). */
+  rawLine: string;
+  /** One-line plain reason shown next to the chip (no_trade cases). */
+  note?: string;
 }
+
+const ZH_VETO: Record<string, string> = {
+  halted: "账本熔断中",
+  cooldown: "止损冷却期",
+  earnings: "财报窗口",
+  earnings_window: "财报窗口"
+};
 
 const ARCHIVE_STATUSES = new Set(["full", "leaked", "reverse"]);
 
+function oneLine(text: string, max = 110): string {
+  const t = text.trim().replace(/\s+/g, " ");
+  return t.length <= max ? t : `${t.slice(0, max)}…`;
+}
+
 function caseOutcome(c: CaseView): Outcome {
   const d = c.decision;
-  if (d?.audit?.vetoedBy) return { label: "PM 否决", raw: `veto:${d.audit.vetoedBy}`, tone: "outRed" };
-  if (d) {
-    if (d.action === "open" || d.action === "add" || d.action === "flip") {
-      const dir = d.direction ? ` · ${zhTradeDirection(d.direction)}` : "";
-      return { label: `${zhAction(d.action)}${dir}`, raw: d.action, tone: "outGreen" };
-    }
-    if (d.action === "close" || d.action === "trim") return { label: zhAction(d.action), raw: d.action, tone: "outBlue" };
-    return { label: zhAction(d.action), raw: d.action, tone: "outGrey" };
+  const mat = c.signal?.materiality ?? null;
+  const pin = c.signal?.pricedIn ?? null;
+
+  // A real PM action (or veto) is the strongest outcome — report it first.
+  if (d?.audit?.vetoedBy) {
+    return {
+      label: `PM 否决 · ${ZH_VETO[d.audit.vetoedBy] ?? d.audit.vetoedBy}`,
+      tone: "outRed",
+      rawLine: `vetoedBy=${d.audit.vetoedBy}`
+    };
   }
-  if (c.thesis) return { label: "研究完成 · 无决策记录", tone: "outGrey" };
-  const pin = c.signal?.pricedIn;
-  if (pin && ARCHIVE_STATUSES.has(pin.status)) {
-    return { label: `闸门2入档（${zhPricedIn(pin.status)}）`, raw: pin.status, tone: "outAmber" };
+  if (d && (d.action === "open" || d.action === "add" || d.action === "flip")) {
+    const dir = d.direction ? ` · ${zhTradeDirection(d.direction)}` : "";
+    return {
+      label: `已开仓${dir}`,
+      tone: "outGreen",
+      rawLine: `action=${d.action}${d.direction ? ` direction=${d.direction}` : ""}`
+    };
   }
-  const mat = c.signal?.materiality;
-  if (mat && mat.tradeable === false) return { label: "闸门1入档（不可交易）", tone: "outGrey" };
-  if (c.signal && !mat) return { label: "无 M1 判定", tone: "outGrey" };
-  if (!c.signal) return { label: "未生成信号", tone: "outGrey" };
-  return { label: "闸门2未运行", tone: "outGrey" };
+  if (d && (d.action === "close" || d.action === "trim")) {
+    return { label: `已${zhAction(d.action)}`, tone: "outBlue", rawLine: `action=${d.action}` };
+  }
+  if (c.thesis && d && d.action === "no_trade") {
+    return {
+      label: "已分析 · 不开仓",
+      tone: "outAmber",
+      rawLine: "action=no_trade",
+      note: d.reason ? oneLine(d.reason) : undefined
+    };
+  }
+
+  // No decision — say where the pipeline stopped, in reader terms.
+  if (!c.signal || !mat || mat.tickers.length === 0) {
+    return {
+      label: "不相关 · 非股票池",
+      tone: "outGrey",
+      rawLine: c.signal ? (mat ? "materiality.tickers=[]" : "materiality=null") : "signal=null"
+    };
+  }
+  if (mat.factLevel === "opinion" || mat.tradeable === false) {
+    const reason = mat.reason.toLowerCase();
+    const isRepeat = reason.includes("stale") || reason.includes("duplicate");
+    return {
+      label: isRepeat ? "重复旧闻" : "重要性不足",
+      tone: "outGrey",
+      rawLine: `tradeable=${mat.tradeable === null ? "null" : String(mat.tradeable)} factLevel=${mat.factLevel || "—"} score=${mat.score ?? "—"}`
+    };
+  }
+  if (pin?.status === "full") return { label: "已被市场定价", tone: "outSlate", rawLine: "pricedIn=full" };
+  if (pin?.status === "reverse") return { label: "走势反向 · 仅记录", tone: "outPurple", rawLine: "pricedIn=reverse" };
+  if (pin?.status === "awaiting_market") return { label: "待行情", tone: "outBlue", rawLine: "pricedIn=awaiting_market" };
+  if (pin?.status === "leaked") {
+    return { label: "疑似提前泄露 · 已分析", tone: "outOrange", rawLine: "pricedIn=leaked" };
+  }
+  if (c.thesis) return { label: "已分析 · 无决策记录", tone: "outGrey", rawLine: "thesis!=null decision=null" };
+  if (!pin) return { label: "通过重要性检查 · 定价检查未运行", tone: "outGrey", rawLine: "pricedIn=null" };
+  return {
+    label: "通过两道检查 · 无研究记录",
+    tone: "outGrey",
+    rawLine: `pricedIn=${pin.status || "—"} thesis=null`
+  };
 }
 
 function stationsReached(c: CaseView): number {
@@ -153,22 +225,71 @@ function stationsReached(c: CaseView): number {
 }
 
 // ---------------------------------------------------------------------------
+// Per-stage timing strip (near the case header)
+
+const PUBLISH_TO_SEEN_NOTE = "含 CDN 60 秒缓存节奏——feed 每 60 秒才刷新一次，此段耗时里有固定的缓存等待";
+
+function TimingStrip({ t }: { t: TimingsMsView | null }) {
+  if (!t) return null;
+  const segs: Array<{ label: string; key: string; v: number | null; title?: string }> = [
+    { label: "发布→抓取*", key: "publishToSeen", v: t.publishToSeen, title: PUBLISH_TO_SEEN_NOTE },
+    { label: "检查", key: "seenToSignal", v: t.seenToSignal },
+    { label: "研究", key: "signalToThesis", v: t.signalToThesis },
+    { label: "决策", key: "thesisToDecision", v: t.thesisToDecision },
+    { label: "端到端", key: "seenToDecision", v: t.seenToDecision }
+  ];
+  return (
+    <div className={styles.timingStrip} aria-label="各阶段耗时">
+      <span className={styles.timingCaption}>耗时</span>
+      {segs.map((s) => (
+        <span key={s.key} className={styles.timingSeg} title={s.title}>
+          <span className={styles.timingLabel}>{s.label}</span>
+          <span className={styles.timingValue}>{fmtDurationMs(s.v)}</span>
+        </span>
+      ))}
+      <span className={styles.timingNote}>* 发布→抓取含 CDN 60 秒缓存节奏</span>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Station 1 — 情报台
 
-function NewsStation({ c }: { c: CaseView }) {
-  const { news, signal } = c;
-  const lagMin = minutesBetween(news.publishedUtc, news.seenAtUtc);
+/** Archived original text of the news item: full paste tier > feed teaser tier. */
+function ArchivedOriginal({ news }: { news: NewsView }) {
+  const body = news.fullText ?? news.teaser;
+  const tier = news.fullText ? "粘贴全文" : news.teaser ? "feed 导语" : null;
   return (
-    <Station no={1} title="情报台" tag="ingest">
-      <div className={styles.chipRow}>
-        <Chip zh={zhKind(news.kind)} raw={news.kind} />
-        <Chip zh={zhPrefix(news.prefix)} raw={news.prefix} tone={news.prefix === "reportedly" ? "outAmber" : undefined} />
+    <div className={styles.archive}>
+      <div className={styles.archiveHead}>
+        <span className={styles.archiveTitle}>存档原文</span>
+        {tier ? <Chip zh={tier} raw={news.fullText ? "fullText" : "teaser"} tone="outBlue" /> : null}
+        {news.source ? <Chip zh={zhNewsSource(news.source)} raw={news.source} /> : null}
         {news.url ? (
           <a className={styles.srcLink} href={news.url} target="_blank" rel="noopener noreferrer">
             原文链接 ↗
           </a>
         ) : null}
       </div>
+      {body ? (
+        <div className={styles.archiveBody}>{body}</div>
+      ) : (
+        <p className={styles.archiveEmpty}>该条早于原文存档功能（2026-08-23 起存档），无原文留档。</p>
+      )}
+    </div>
+  );
+}
+
+function NewsStation({ c }: { c: CaseView }) {
+  const { news, signal } = c;
+  const lagMin = minutesBetween(news.publishedUtc, news.seenAtUtc);
+  return (
+    <Station no={1} title="情报台" sub="新闻接收与溯源" tag="ingest">
+      <div className={styles.chipRow}>
+        <Chip zh={zhKind(news.kind)} raw={news.kind} />
+        <Chip zh={zhPrefix(news.prefix)} raw={news.prefix} tone={news.prefix === "reportedly" ? "outAmber" : undefined} />
+      </div>
+      <ArchivedOriginal news={news} />
       <div className={styles.kvGrid}>
         <KV label="发布时间 publishedUtc">{fmtUtc(news.publishedUtc)}</KV>
         <KV label="系统见到 seenAtUtc">{fmtUtc(news.seenAtUtc)}</KV>
@@ -187,21 +308,23 @@ function NewsStation({ c }: { c: CaseView }) {
 }
 
 // ---------------------------------------------------------------------------
-// Station 2 — 重要性判定 (M1 · 闸门1)
+// Station 2 — 重要性检查（原 M1 · 闸门1）
 
 function MaterialityStation({ signal, skipReason }: { signal: SignalView | null; skipReason: string | null }) {
   const mat = signal?.materiality ?? null;
   if (!signal || !mat) {
-    return <Station no={2} title="重要性判定" tag="M1 · 闸门1" skipReason={skipReason ?? "上游未记录 M1 判定"} />;
+    return (
+      <Station no={2} title="重要性检查" sub="值得动用分析资源吗" tag="原 M1 · 闸门1" skipReason={skipReason ?? "上游未记录重要性检查结果"} />
+    );
   }
   return (
-    <Station no={2} title="重要性判定" tag="M1 · 闸门1">
+    <Station no={2} title="重要性检查" sub="值得动用分析资源吗" tag="原 M1 · 闸门1">
       <div className={styles.chipRow}>
         {mat.tradeable === null ? (
-          <Chip zh="tradeable 未记录" tone="outGrey" />
+          <Chip zh="检查结论未记录" raw="tradeable:null" tone="outGrey" />
         ) : (
           <Chip
-            zh={mat.tradeable ? "可交易" : "不可交易"}
+            zh={mat.tradeable ? "通过 · 进入定价检查" : "不通过 · 归档"}
             raw={`tradeable:${mat.tradeable}`}
             tone={mat.tradeable ? "outGreen" : "outGrey"}
             strong
@@ -225,15 +348,17 @@ function MaterialityStation({ signal, skipReason }: { signal: SignalView | null;
 }
 
 // ---------------------------------------------------------------------------
-// Station 3 — 交易台 · 已定价检查 (M1 · 闸门2)
+// Station 3 — 定价检查（原 M1 · 闸门2）
 
 function PricedInStation({ signal, skipReason }: { signal: SignalView | null; skipReason: string | null }) {
   const pin = signal?.pricedIn ?? null;
   if (!pin) {
-    return <Station no={3} title="交易台 · 已定价检查" tag="M1 · 闸门2" skipReason={skipReason ?? "上游未记录已定价检查"} />;
+    return (
+      <Station no={3} title="定价检查" sub="市场是否已消化" tag="原 M1 · 闸门2" skipReason={skipReason ?? "上游未记录定价检查结果"} />
+    );
   }
   return (
-    <Station no={3} title="交易台 · 已定价检查" tag="M1 · 闸门2">
+    <Station no={3} title="定价检查" sub="市场是否已消化" tag="原 M1 · 闸门2">
       <div className={styles.chipRow}>
         <Chip zh={zhPricedIn(pin.status)} raw={pin.status} tone={pricedInTone(pin.status)} strong />
         <Chip zh={`判定信心：${zhConfidence(pin.confidence)}`} raw={pin.confidence} />
@@ -259,13 +384,13 @@ function PricedInStation({ signal, skipReason }: { signal: SignalView | null; sk
 
 function ThesisStation({ thesis, skipReason }: { thesis: ThesisView | null; skipReason: string | null }) {
   if (!thesis) {
-    return <Station no={4} title="研究 memo" tag="M2 · analysis" skipReason={skipReason ?? "上游未记录研究 memo"} />;
+    return <Station no={4} title="研究 memo" sub="分析师" tag="M2 · analysis" skipReason={skipReason ?? "上游未记录研究 memo"} />;
   }
   const fair = thesis.fairImpactPct;
   const contaminationTone =
     thesis.contamination === "hard" ? "outRed" : thesis.contamination === "soft" ? "outAmber" : "outGreen";
   return (
-    <Station no={4} title="研究 memo" tag="M2 · analysis">
+    <Station no={4} title="研究 memo" sub="分析师" tag="M2 · analysis">
       <div className={styles.chipRow}>
         <Chip zh={thesis.ticker || "—"} tone="outBlue" strong />
         <Chip
@@ -374,13 +499,6 @@ function ThesisStation({ thesis, skipReason }: { thesis: ThesisView | null; skip
 // ---------------------------------------------------------------------------
 // Station 5 — PM 台 (M3 · decision)
 
-const ZH_VETO: Record<string, string> = {
-  halted: "账本熔断中",
-  cooldown: "止损冷却期",
-  earnings: "财报窗口",
-  earnings_window: "财报窗口"
-};
-
 function actionTone(action: string): string {
   if (action === "open" || action === "add" || action === "flip") return "outGreen";
   if (action === "close" || action === "trim") return "outBlue";
@@ -389,7 +507,7 @@ function actionTone(action: string): string {
 
 function DecisionStation({ decision, skipReason }: { decision: DecisionView | null; skipReason: string | null }) {
   if (!decision) {
-    return <Station no={5} title="PM 台" tag="M3 · decision" skipReason={skipReason ?? "上游未记录 PM 决策"} />;
+    return <Station no={5} title="PM 台" sub="仓位决策" tag="M3 · decision" skipReason={skipReason ?? "上游未记录 PM 决策"} />;
   }
   const audit = decision.audit;
   const vetoed = audit?.vetoedBy ?? null;
@@ -407,7 +525,7 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
       ? edge.residualPct >= thr.thresholdPct
       : null;
   return (
-    <Station no={5} title="PM 台" tag="M3 · decision">
+    <Station no={5} title="PM 台" sub="仓位决策" tag="M3 · decision">
       <div className={styles.chipRow}>
         <Chip
           zh={vetoed ? `否决 · ${ZH_VETO[vetoed] ?? vetoed}` : zhAction(decision.action)}
@@ -660,6 +778,9 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
                   <KV label="杠杆三帽 configCap / volCap / venueCap → chosen">
                     {fmtX(sizing.leverage.configCap)} / {fmtX(sizing.leverage.volCap)} /{" "}
                     {fmtX(sizing.leverage.venueCap)} → <strong>{fmtX(sizing.leverage.chosen)}</strong>
+                    {sizing.leverage.chosen !== null && sizing.leverage.chosen <= 1 ? (
+                      <span className={styles.kvNote}>当前策略：不上杠杆（chosen=1，用户 2026-08-23 拍板）</span>
+                    ) : null}
                   </KV>
                 ) : (
                   <KV label="杠杆三帽">—</KV>
@@ -721,19 +842,19 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
 }
 
 // ---------------------------------------------------------------------------
-// Station 6 — 执行 / 风控后续
+// Station 6 — 执行与风控
 
 function PostStation({ c, skipReason }: { c: CaseView; skipReason: string | null }) {
   const { execution, positionNow, postEvents, decision } = c;
   if (!execution && !positionNow && postEvents.length === 0) {
-    return <Station no={6} title="执行 / 风控后续" tag="paper book" skipReason={skipReason ?? "无记录"} />;
+    return <Station no={6} title="执行与风控" tag="paper book" skipReason={skipReason ?? "无记录"} />;
   }
   const slippage =
     execution !== null && execution.fillPx !== null && decision !== null && decision.refPx !== null && decision.refPx !== 0
       ? (execution.fillPx - decision.refPx) / decision.refPx
       : null;
   return (
-    <Station no={6} title="执行 / 风控后续" tag="paper book">
+    <Station no={6} title="执行与风控" tag="paper book">
       {execution ? (
         <>
           <p className={styles.subHead}>模拟执行 execution</p>
@@ -835,32 +956,32 @@ function skipReasons(c: CaseView): { st2: string | null; st3: string | null; st4
   const pin = c.signal?.pricedIn ?? null;
   const notTradeable = mat !== null && mat.tradeable === false;
   const pinArchived = pin !== null && ARCHIVE_STATUSES.has(pin.status);
-  const st2 = c.signal && mat ? null : c.signal ? "上游未记录 M1 判定" : "该新闻未生成信号记录";
+  const st2 = c.signal && mat ? null : c.signal ? "上游未记录重要性检查结果" : "该新闻未生成信号记录";
   const st3 = pin
     ? null
     : !c.signal
-      ? "闸门1未运行（无信号）"
+      ? "前站已归档（无信号，重要性检查未运行）"
       : notTradeable
-        ? `闸门1判定不可交易（score ${mat?.score ?? "—"}），已入档，未进入已定价检查`
-        : "上游未记录已定价检查";
+        ? `前站已归档（重要性检查未通过，评分 ${mat?.score ?? "—"}/100）`
+        : "上游未记录定价检查结果";
   const st4 = c.thesis
     ? null
     : notTradeable
-      ? "闸门1入档，未进入研究"
+      ? "前站已归档（重要性检查未通过）"
       : pinArchived && pin
-        ? `已定价检查判定「${zhPricedIn(pin.status)}」，已入档，未进入研究`
+        ? `前站已归档（定价检查判定「${zhPricedIn(pin.status)}」）`
         : c.signal
           ? "上游未记录研究 memo"
-          : "无信号，未进入研究";
-  const st5 = c.decision ? null : c.thesis ? "上游未记录 PM 决策" : "无研究 memo，未进入 PM 台";
+          : "前站已归档（无信号）";
+  const st5 = c.decision ? null : c.thesis ? "上游未记录 PM 决策" : "前站已归档（无研究 memo）";
   const st6 =
     c.execution || c.positionNow || c.postEvents.length > 0
       ? null
       : c.decision
         ? c.decision.action === "open" || c.decision.action === "add" || c.decision.action === "flip"
           ? "上游未记录执行"
-          : `决策为「${zhAction(c.decision.action)}」，无执行`
-        : "无决策，未进入执行";
+          : `PM 决策为「${zhAction(c.decision.action)}」，无需执行`
+        : "前站已归档（无决策）";
   return { st2, st3, st4, st5, st6 };
 }
 
@@ -877,17 +998,20 @@ function CaseCard({ c, defaultOpen }: { c: CaseView; defaultOpen: boolean }) {
     <details className={styles.caseCard} open={defaultOpen}>
       <summary className={styles.caseSummary}>
         <div className={styles.sumTop}>
-          <Chip zh={outcome.label} raw={outcome.raw} tone={outcome.tone} strong />
+          <Chip zh={outcome.label} tone={outcome.tone} strong />
           <span className={styles.sumTitle}>{c.news.title}</span>
         </div>
+        {outcome.note ? <p className={styles.sumNote}>原因：{outcome.note}</p> : null}
         <div className={styles.sumMeta}>
           <span>见到 {fmtUtc(c.news.seenAtUtc)}</span>
           {tickers.length > 0 ? <span>{tickers.join(" · ")}</span> : null}
-          <span>到站 {reached}/6</span>
+          <span>流程 {reached}/6 站</span>
+          <span className={styles.mono}>{outcome.rawLine}</span>
           <span className={styles.sumChevron}>展开决策链 ▾</span>
         </div>
       </summary>
       <div className={styles.caseBody}>
+        <TimingStrip t={c.timingsMs} />
         <ol className={styles.chain}>
           <NewsStation c={c} />
           <MaterialityStation signal={c.signal} skipReason={skip.st2} />
@@ -920,8 +1044,8 @@ function ReflectionFooter({ r }: { r: ReflectionView }) {
           <span className={styles.funnelStep}>信号 {fmtInt(f.signals)}</span>
           <span className={styles.funnelArrow}>→</span>
           <span className={styles.funnelStep}>
-            入档：无标的 {fmtInt(f.archivedNoTicker)} · 不重要 {fmtInt(f.archivedNotMaterial)} · 过期{" "}
-            {fmtInt(f.archivedStale)} · 已定价 {fmtInt(f.archivedPricedIn)}
+            归档：非股票池 {fmtInt(f.archivedNoTicker)} · 重要性不足 {fmtInt(f.archivedNotMaterial)} · 重复旧闻{" "}
+            {fmtInt(f.archivedStale)} · 已被市场定价 {fmtInt(f.archivedPricedIn)}
           </span>
           <span className={styles.funnelArrow}>→</span>
           <span className={styles.funnelStep}>研究 memo {fmtInt(f.theses)}</span>
@@ -949,7 +1073,7 @@ function ReflectionFooter({ r }: { r: ReflectionView }) {
         ) : null}
         {m1?.archivedFullReverse ? (
           <Chip
-            zh={`错杀检查：入档「已定价/反向」${fmtInt(m1.archivedFullReverse.n)} 条，其中随新闻方向走 ${fmtInt(m1.archivedFullReverse.movedWithNews)} 条`}
+            zh={`错杀检查：归档「已被市场定价/走势反向」${fmtInt(m1.archivedFullReverse.n)} 条，其中随新闻方向走 ${fmtInt(m1.archivedFullReverse.movedWithNews)} 条`}
             raw="m1Calibration.archivedFullReverse"
           />
         ) : null}
@@ -962,7 +1086,7 @@ function ReflectionFooter({ r }: { r: ReflectionView }) {
       </div>
       {r.pricedInDistribution.length > 0 ? (
         <p className={styles.sectionNote}>
-          已定价检查分布：
+          定价检查分布：
           {r.pricedInDistribution
             .map((d) => `${d.status === "not_evaluated" ? "未评估" : zhPricedIn(d.status)} ${d.count}`)
             .join(" · ")}
@@ -984,6 +1108,70 @@ function ReflectionFooter({ r }: { r: ReflectionView }) {
 }
 
 // ---------------------------------------------------------------------------
+// Glossary (术语表) — plain definitions for every term of art on this page.
+
+const GLOSSARY: Array<{ term: string; en: string; def: string }> = [
+  {
+    term: "重要性检查",
+    en: "materiality gate",
+    def: "判断新闻是否属于可交易事件类别、主角是否在 21 只股票池内、内容是否超出市场共识。不通过 = 归档，不再消耗任何分析资源。"
+  },
+  {
+    term: "定价检查",
+    en: "priced-in gate",
+    def: "用新闻最早出现时间之后的真实价格走势（β 调整后的超额涨跌），判断市场是否已经消化这条新闻。已定价 / 走势反向 = 归档。"
+  },
+  {
+    term: "残余空间",
+    en: "residual",
+    def: "分析师保守估计的合理涨跌幅，减去市场已经走掉的部分——决定开不开仓的核心数字。"
+  },
+  {
+    term: "门槛",
+    en: "threshold",
+    def: "开仓要求的最小残余空间 = max(3×往返交易成本, 0.5×日波动)，防止为噪音下单。"
+  },
+  {
+    term: "硬地板",
+    en: "hard floor",
+    def: "用户红线——持仓对入场价反向 20% 无条件平仓，优先级高于一切模型判断。"
+  },
+  {
+    term: "风控闸",
+    en: "guard",
+    def: "六道敞口上限（单标的 / 总多空 / 同题材簇 / 隔离保证金等），只会把仓位向下裁剪，从不放大。"
+  },
+  {
+    term: "β / 超额",
+    en: "beta / excess",
+    def: "个股涨跌扣掉大盘（XYZ100 指数）联动后的剩余部分——避免把大盘行情误认成新闻反应。"
+  },
+  {
+    term: "影子模式",
+    en: "shadow mode",
+    def: "全流程真实运行但只记账，不向任何交易所发订单。"
+  }
+];
+
+function Glossary() {
+  return (
+    <details className={styles.glossary}>
+      <summary className={styles.glossarySummary}>术语表 — 本页所有行话的白话解释（点开）</summary>
+      <dl className={styles.glossaryList}>
+        {GLOSSARY.map((g) => (
+          <div key={g.term} className={styles.glossaryItem}>
+            <dt className={styles.glossaryTerm}>
+              {g.term} <span className={styles.mono}>{g.en}</span>
+            </dt>
+            <dd className={styles.glossaryDef}>{g.def}</dd>
+          </div>
+        ))}
+      </dl>
+    </details>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Page shell
 
 export function DeltaPmReport({ payload, dataSource }: { payload: AuditPayload; dataSource: "live" | "baked" }) {
@@ -999,8 +1187,8 @@ export function DeltaPmReport({ payload, dataSource }: { payload: AuditPayload; 
         <span className={styles.kicker}>Tokyo VM · services/delta-pm · 内部审计页</span>
         <h1 className={styles.title}>Delta PM 决策链审计</h1>
         <p className={styles.meta}>
-          每条新闻一份 IC memo：情报台 → 重要性判定 → 已定价检查 → 研究 memo → PM 台 → 执行/风控。
-          每个数字逐项摊开，不做抽象汇总；中文标签旁保留原始枚举值，便于与账本核对。
+          每条新闻一份 IC memo：情报台 → 重要性检查 → 定价检查 → 研究 memo → PM 台 → 执行与风控。
+          每个数字逐项摊开，不做抽象汇总；白话标签旁保留原始枚举值（小号等宽字），便于与账本核对。
         </p>
         <div className={styles.bannerRow}>
           <span className={`${styles.banner} ${styles.bannerShadow}`}>Phase 0 影子模式 · 只记账，不下真实订单</span>
@@ -1053,12 +1241,15 @@ export function DeltaPmReport({ payload, dataSource }: { payload: AuditPayload; 
         </div>
       </header>
 
+      <Glossary />
+
       <section className={styles.section} aria-labelledby="sec-cases">
         <h2 id="sec-cases" className={styles.sectionTitle}>
           决策链（{payload.cases.length} 条新闻，新 → 旧）
         </h2>
         <p className={styles.sectionNote}>
-          点击任意卡片展开六站决策链；灰色站点表示该新闻止步于此，卡片会写明入档原因。
+          每张卡片的大标签 = 这条新闻的最终结果（不相关 / 重要性不足 / 已被市场定价 / 已分析不开仓 / 已开仓……）；
+          点开卡片看六站决策链，灰色站点表示流程在前站已归档、未进行。
         </p>
         {payload.cases.length === 0 ? (
           <p className={styles.sectionNote}>暂无案例数据。</p>

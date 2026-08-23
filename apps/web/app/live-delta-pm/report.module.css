@@ -214,8 +214,155 @@
   font-size: 13px;
 }
 
+/* One-line plain reason under the outcome chip (no_trade cases). */
+.sumNote {
+  margin: 0;
+  font-size: 13.5px;
+  color: #8a5a18;
+}
+
 .caseBody {
   padding: 8px 18px 20px;
+}
+
+/* ---- Per-stage timing strip ---------------------------------------------- */
+
+.timingStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 10px 0 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.timingCaption {
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--muted);
+}
+
+.timingSeg {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 3px 10px;
+}
+
+.timingLabel {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.timingValue {
+  font-size: 13.5px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.timingNote {
+  flex-basis: 100%;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---- Archived original text (存档原文) ------------------------------------ */
+
+.archive {
+  margin: 8px 0;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent-line);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.archiveHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.archiveTitle {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.archiveBody {
+  font-size: 14.5px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.archiveEmpty {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+/* ---- Glossary (术语表) ---------------------------------------------------- */
+
+.glossary {
+  margin: 18px 0 0;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.glossarySummary {
+  cursor: pointer;
+  list-style: none;
+  padding: 12px 18px;
+  font-weight: 650;
+  font-size: 15px;
+}
+
+.glossarySummary::-webkit-details-marker {
+  display: none;
+}
+
+.glossarySummary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.glossary[open] > .glossarySummary {
+  border-bottom: 1px solid var(--line);
+  background: var(--panel-strong);
+}
+
+.glossaryList {
+  margin: 0;
+  padding: 6px 18px 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 24px;
+}
+
+.glossaryItem {
+  min-width: 0;
+}
+
+.glossaryTerm {
+  font-size: 15px;
+  font-weight: 650;
+  margin-top: 6px;
+}
+
+.glossaryDef {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
 }
 
 /* Outcome / generic chips */
@@ -269,6 +416,24 @@
   color: #275e7a;
   border-color: rgba(39, 94, 122, 0.5);
   background: rgba(39, 94, 122, 0.08);
+}
+
+.outSlate {
+  color: #4a5568;
+  border-color: rgba(74, 85, 104, 0.5);
+  background: rgba(74, 85, 104, 0.08);
+}
+
+.outPurple {
+  color: #7a2775;
+  border-color: rgba(122, 39, 117, 0.5);
+  background: rgba(122, 39, 117, 0.08);
+}
+
+.outOrange {
+  color: #a04a12;
+  border-color: rgba(160, 74, 18, 0.55);
+  background: rgba(214, 116, 43, 0.12);
 }
 
 /* Priced-in six-state chips */
@@ -387,6 +552,11 @@
   margin: 0;
 }
 
+.stationSub {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
 .stationTag {
   font-family: var(--font-mono), monospace;
   font-size: 12px;
@@ -433,6 +603,13 @@
   font-size: 15px;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
+}
+
+/* Inline policy note inside a KV value (e.g. no-leverage policy). */
+.kvNote {
+  display: block;
+  font-size: 12.5px;
+  color: var(--muted);
 }
 
 /* Verbatim quotes (原文) */
@@ -711,6 +888,10 @@
 
   .kvGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .glossaryList {
+    grid-template-columns: 1fr;
   }
 }
 

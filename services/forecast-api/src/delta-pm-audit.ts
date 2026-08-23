@@ -75,6 +75,17 @@ export function buildDeltaPmAudit(rootDir: string = deltaPmRoot(), limit = 30): 
   const theses = readDir(path.join(rootDir, "theses"));
   const portfolio = readJson(path.join(rootDir, "portfolio.json"));
 
+  // 原文存档: news/<sanitized id>.json written by the service on ingest.
+  const newsDir = path.join(rootDir, "news");
+  const newsBodies = new Map<string, Json>();
+  if (existsSync(newsDir)) {
+    for (const f of readdirSync(newsDir)) {
+      if (!f.endsWith(".json")) continue;
+      const v = readJson(path.join(newsDir, f));
+      if (v && typeof v.id === "string") newsBodies.set(v.id, v);
+    }
+  }
+
   const signalsByNews = new Map<string, Json>();
   for (const s of signals) if (typeof s.newsId === "string") signalsByNews.set(s.newsId, s);
   const thesesBySignal = new Map<string, Json>();
@@ -114,8 +125,39 @@ export function buildDeltaPmAudit(rootDir: string = deltaPmRoot(), limit = 30): 
       ticker && portfolio && Array.isArray(portfolio.positions)
         ? ((portfolio.positions as Json[]).find((p) => p.ticker === ticker) ?? null)
         : null;
+    // Per-stage latency (性能监控): computed from ledger timestamps, ms.
+    const ms = (v: unknown): number | null => {
+      const t = typeof v === "string" ? Date.parse(v) : NaN;
+      return Number.isFinite(t) ? t : null;
+    };
+    const tPub = ms(n.publishedUtc);
+    const tSeen = ms(n.ts);
+    const tSignal = ms(signal?.createdAtUtc);
+    const tThesis = ms(thesis?.createdAtUtc);
+    const tDecision = ms((decision as Json | null)?.ts);
+    const span = (a: number | null, b: number | null) => (a !== null && b !== null && b >= a ? b - a : null);
+    const timingsMs = {
+      publishToSeen: span(tPub, tSeen),
+      seenToSignal: span(tSeen, tSignal),
+      signalToThesis: span(tSignal, tThesis),
+      thesisToDecision: span(tThesis, tDecision),
+      seenToDecision: span(tSeen, tDecision)
+    };
+    const body = newsBodies.get(newsId) ?? null;
     cases.push({
-      news: { newsId, title: n.title ?? null, publishedUtc: n.publishedUtc ?? null, kind: n.kind ?? null, prefix: n.prefix ?? null, seenAtUtc: n.ts ?? null },
+      news: {
+        newsId,
+        title: n.title ?? null,
+        publishedUtc: n.publishedUtc ?? null,
+        kind: n.kind ?? null,
+        prefix: n.prefix ?? null,
+        seenAtUtc: n.ts ?? null,
+        url: (body?.url as string | undefined) ?? null,
+        teaser: (body?.teaser as string | undefined) ?? null,
+        fullText: (body?.fullText as string | undefined) ?? null,
+        source: (body?.source as string | undefined) ?? null
+      },
+      timingsMs,
       signal,
       thesis,
       decision,
