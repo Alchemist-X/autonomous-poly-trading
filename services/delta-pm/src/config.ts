@@ -70,7 +70,9 @@ export const config = {
   netCapPct: num("DELTAPM_NET_CAP_PCT", 1.0),
   clusterCapPct: num("DELTAPM_CLUSTER_CAP_PCT", 0.4),
   isolatedMarginCapPct: num("DELTAPM_ISOLATED_MARGIN_CAP_PCT", 0.5),
-  maxLeverage: num("DELTAPM_MAX_LEVERAGE", 3),
+  // USER-DECIDED 2026-08-23: plain long/short, NO leverage. Raising this
+  // needs explicit user sign-off.
+  maxLeverage: num("DELTAPM_MAX_LEVERAGE", 1),
   dailyLossStopPct: num("DELTAPM_DAILY_LOSS_STOP_PCT", 0.03),
   cooldownHours: num("DELTAPM_COOLDOWN_HOURS", 72),
   minTradeUsd: num("DELTAPM_MIN_TRADE_USD", 50),
@@ -87,6 +89,10 @@ export const config = {
   // --- scheduling
   fastTickMinutes: num("DELTAPM_FAST_TICK_MINUTES", 10),
   dailyReviewUtc: str("DELTAPM_DAILY_REVIEW_UTC", "13:00"), // pre-RTH daily position review
+
+  // --- push notifications (Feishu custom-bot webhook; empty = disabled)
+  feishuWebhook: str("DELTAPM_FEISHU_WEBHOOK", ""),
+  auditPageUrl: str("DELTAPM_AUDIT_PAGE_URL", "https://forecasting-agent.com/live-delta-pm"),
 
   // --- switches
   feedEnabled: bool("DELTAPM_FEED_ENABLED", true),

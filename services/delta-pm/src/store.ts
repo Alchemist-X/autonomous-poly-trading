@@ -1,7 +1,7 @@
 // On-disk state under the shared artifacts volume (PRD §10):
 //   <artifacts>/delta-pm/portfolio.json      — paper book (atomic writes)
 //   <artifacts>/delta-pm/ledger.jsonl        — append-only event journal
-//   <artifacts>/delta-pm/news/<hash>.json    — NewsItem source-of-truth archive
+//   <artifacts>/delta-pm/news/<sanitized-id>.json — NewsItem source-of-truth archive (原文存档)
 //   <artifacts>/delta-pm/signals/<id>.json   — NewsSignal archive
 //   <artifacts>/delta-pm/theses/<id>.json    — TradeThesis archive
 //   <artifacts>/delta-pm/runs/<id>.json      — per-run progress state (console)
@@ -22,7 +22,6 @@ import {
   rmSync,
   writeFileSync
 } from "node:fs";
-import { createHash } from "node:crypto";
 import path from "node:path";
 import { newsItemSchema, type NewsItem } from "@autopoly/delta-pm-contracts";
 
@@ -57,10 +56,13 @@ export const paths = {
 
 // --- news source-of-truth archive ------------------------------------------
 // One canonical record per news id. Feed ids contain `/` and `:` (Atom tag
-// URIs), so files are keyed by a hash of the id; the id lives inside the JSON.
+// URIs), so filenames are the sanitized id tail (PR #121 convention — the
+// audit endpoint indexes by the id INSIDE the JSON, not the filename); the
+// id-equality guard below turns any tail collision into a miss, never a
+// wrong record.
 
 function newsFile(newsId: string): string {
-  return path.join(paths.newsDir(), `${createHash("sha1").update(newsId).digest("hex").slice(0, 24)}.json`);
+  return path.join(paths.newsDir(), `${newsId.replace(/[^a-zA-Z0-9_.-]/g, "_").slice(-120)}.json`);
 }
 
 export function loadNewsItem(newsId: string): NewsItem | null {

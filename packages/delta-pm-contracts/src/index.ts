@@ -397,6 +397,7 @@ export interface StatusSnapshot {
 export const LEDGER_EVENT_TYPES = [
   "service_start",
   "news_seen",
+  "coverage_check",
   "signal_created",
   "signal_archived",
   "thesis_created",
@@ -408,6 +409,7 @@ export const LEDGER_EVENT_TYPES = [
   "halt",
   "resume",
   "reflection_written",
+  "push_sent",
   "error"
 ] as const;
 

@@ -31,6 +31,20 @@ export interface NewsView {
   prefix: string; // exclusive | reportedly | none (raw)
   seenAtUtc: string;
   url: string | null;
+  /** Archived original text, feed teaser tier. Null on records older than the archive feature (2026-08-23). */
+  teaser: string | null;
+  /** Archived original text, manual full-paste tier. */
+  fullText: string | null;
+  source: string | null; // e.g. "the-information"
+}
+
+/** Per-stage pipeline latency in milliseconds; every span optional. */
+export interface TimingsMsView {
+  publishToSeen: number | null;
+  seenToSignal: number | null;
+  signalToThesis: number | null;
+  thesisToDecision: number | null;
+  seenToDecision: number | null;
 }
 
 export interface MaterialityView {
@@ -228,6 +242,7 @@ export interface PostEventView {
 
 export interface CaseView {
   news: NewsView;
+  timingsMs: TimingsMsView | null;
   signal: SignalView | null;
   thesis: ThesisView | null;
   decision: DecisionView | null;
@@ -566,7 +581,21 @@ function parseNews(raw: unknown): NewsView | null {
     kind: str(raw.kind),
     prefix: str(raw.prefix),
     seenAtUtc: str(raw.seenAtUtc),
-    url: strOrNull(raw.url)
+    url: strOrNull(raw.url),
+    teaser: strOrNull(raw.teaser),
+    fullText: strOrNull(raw.fullText),
+    source: strOrNull(raw.source)
+  };
+}
+
+function parseTimings(raw: unknown): TimingsMsView | null {
+  if (!isRec(raw)) return null;
+  return {
+    publishToSeen: num(raw.publishToSeen),
+    seenToSignal: num(raw.seenToSignal),
+    signalToThesis: num(raw.signalToThesis),
+    thesisToDecision: num(raw.thesisToDecision),
+    seenToDecision: num(raw.seenToDecision)
   };
 }
 
@@ -576,6 +605,7 @@ function parseCase(raw: unknown): CaseView | null {
   if (!news) return null;
   return {
     news,
+    timingsMs: parseTimings(raw.timingsMs),
     signal: parseSignal(raw.signal),
     thesis: parseThesis(raw.thesis),
     decision: parseDecision(raw.decision),

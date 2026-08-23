@@ -3,6 +3,7 @@
 > 最后更新:2026-08-23 · 英文版:待同步翻译
 > 面向:操作员(你)。目的:①你把外部依赖 setup 好;②你能人工检查系统每一步在干什么(全部用**真实运行数据**填充,不是示意);③回答"这个是不是很消耗 token"。
 > 系统现状:Phase 0 影子模式,正式账本在东京 VM(2026-08-23 06:33 UTC 起),本机 soak 已停用(见 §1.4)。
+> 2026-08-23 用户追加拍板:**不上杠杆**(`DELTAPM_MAX_LEVERAGE` 默认改为 1,纯多空)。
 
 ---
 
@@ -35,6 +36,7 @@
 3. 在 https://www.theinformation.com/newsletters 把**免费三档**直接用专用邮箱订阅:The Briefing(每周 5 期)、The Information AM(工作日晨)、The Weekend。
 4. 订阅者专属的 **AI Agenda**(每周 4 期)与 **Dealmaker**(每周 2 期):在你自己的订阅邮箱里设置自动转发到专用邮箱(Gmail:设置 → 转发和 POP/IMAP → 添加转发地址)。
 5. 给专用 Gmail 开 **IMAP + 应用专用密码**(Google 账户 → 安全 → 两步验证 → 应用专用密码)。
+   **权限分级说明**:应用专用密码没有 scope 概念(给了就是全信箱),但用两道结构隔离达到同等效果:①**你的转发规则本身就是筛选器**——主邮箱只对 `from:theinformation.com` 设转发,专用信箱结构性只有这一类内容;②专用信箱内建 Gmail filter「来自 theinformation.com → 打标签 `TI-ingest`」,**轮询器只读该 label 对应的 IMAP 文件夹**(实现层约束,代码不打开 INBOX)——即使垃圾邮件落进来,机器也碰不到。
 6. **凭证直接写进 VM 的 `deploy/raven/.env`**(SSH 上去自己加,不要贴进任何对话):
 
 ```
@@ -50,6 +52,10 @@ DELTAPM_MAIL_IMAP_PASS=<应用专用密码>
 入口:https://www.theinformation.com/corporate 的 Content Licensing 表单。建议措辞(可直接复制):
 
 > We operate an internal research system for our own trading desk. We'd like to license machine-readable full-text access to The Information's articles and briefings for internal analysis (including LLM-assisted summarization — no redistribution, no training). Could you share licensing terms and technical delivery options?
+
+### 1.2b 手机推送:建一个飞书群 + 自定义机器人(5 分钟)
+
+系统已内置推送(信号过检 / 开仓与拒单 / 止损与停机,每条附审计页链接):飞书群 → 设置 → 群机器人 → 添加「自定义机器人(webhook)」→ 把 webhook URL 写进 VM `deploy/raven/.env` 的 `DELTAPM_FEISHU_WEBHOOK=` 并重启 delta-pm 容器。App/网页端原生推送在 roadmap(所有原文与决策已本地存档,`news/` 目录,前端随时可渲染)。
 
 ### 1.3 Hyperliquid API 凭证(Phase 2 真钱前才需要)
 
@@ -67,9 +73,9 @@ security delete-generic-password -s "Claude Code-credentials"
 claude auth login
 ```
 
-### 1.5 raven-labs 装 claude CLI(将来并发测试前)
+### 1.5 raven-labs 装 claude CLI —— ✅ 已解决(2026-08-23 核实,无需操作)
 
-美西机器(30G 内存、空载)适合当并发测试场,但目前只有 Codex 凭证。跑 LLM 并发测试前需要:`npm i -g @anthropic-ai/claude-code` + `claude setup-token`(用你的订阅)。
+CLI 已装(`~/.npm-global/bin/claude`,2.1.241),有效凭证在 fleet 的 env(`/home/yishu/forecast-fleet/env/.secrets.env` 的 `CLAUDE_CODE_OAUTH_TOKEN`,3 个引擎进程正在用)。将来并发测试 source 该 env 即可;注意非交互 SSH 需自行 `export PATH="$HOME/.npm-global/bin:$PATH"`。
 
 ---
 

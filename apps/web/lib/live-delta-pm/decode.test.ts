@@ -8,8 +8,34 @@ describe("live-delta-pm lenient decoder", () => {
   it("decodes the baked fixture (real run data)", () => {
     expect(payload).not.toBeNull();
     expect(payload!.cases).toHaveLength(30);
-    expect(payload!.generatedAtUtc).toBe("2026-08-23T08:57:06.731Z");
+    expect(payload!.generatedAtUtc).toBe("2026-08-23T12:27:06.539Z");
     expect(payload!.bookStartedUtc).toBe("2026-08-21T18:53:20.930Z");
+  });
+
+  it("decodes per-stage timings and the archived-original news fields", () => {
+    // Fixture predates the original-text archive (2026-08-23) — all four archive
+    // fields decode to null, and the page shows the "早于存档功能" note.
+    for (const c of payload!.cases) {
+      expect(c.news.teaser).toBeNull();
+      expect(c.news.fullText).toBeNull();
+      expect(c.news.source).toBeNull();
+    }
+    // Every fixture case carries timingsMs; the SNDK open case has all five spans.
+    const sndk = payload!.cases.find((c) => c.decision?.action === "open");
+    expect(sndk).toBeDefined();
+    expect(sndk!.timingsMs).toEqual({
+      publishToSeen: 0,
+      seenToSignal: 40898,
+      signalToThesis: 129770,
+      thesisToDecision: 3,
+      seenToDecision: 170671
+    });
+    // A gated-out case keeps the recorded spans and nulls the rest.
+    const stalled = payload!.cases.find((c) => c.timingsMs?.seenToSignal !== null && c.timingsMs?.signalToThesis === null);
+    expect(stalled).toBeDefined();
+    expect(stalled!.timingsMs!.publishToSeen).not.toBeNull();
+    expect(stalled!.timingsMs!.thesisToDecision).toBeNull();
+    expect(stalled!.timingsMs!.seenToDecision).toBeNull();
   });
 
   it("sorts cases newest-first by seenAtUtc", () => {
@@ -107,6 +133,11 @@ describe("live-delta-pm lenient decoder", () => {
     expect(bare.signal).toBeNull();
     expect(bare.thesis).toBeNull();
     expect(bare.postEvents).toEqual([]);
+    // New optional fields default to null when absent (pre-archive records).
+    expect(bare.timingsMs).toBeNull();
+    expect(bare.news.teaser).toBeNull();
+    expect(bare.news.fullText).toBeNull();
+    expect(bare.news.source).toBeNull();
     const drifted = decoded!.cases.find((c) => c.news.title === "drifted enums")!;
     // Unknown enums survive verbatim; wrong scalar types decode to null.
     expect(drifted.news.kind).toBe("podcast");
@@ -115,6 +146,45 @@ describe("live-delta-pm lenient decoder", () => {
     expect(drifted.decision!.action).toBe("hedge");
     expect(drifted.decision!.audit!.vetoedBy).toBe("halted");
     expect(drifted.decision!.audit!.edge).toBeNull();
+  });
+
+  it("is lenient on partial timingsMs and archived-original fields", () => {
+    const decoded = parseAuditPayload({
+      cases: [
+        {
+          news: {
+            title: "archived with teaser",
+            seenAtUtc: "2026-08-24T00:00:00Z",
+            teaser: "Feed teaser paragraph.",
+            fullText: null,
+            url: "https://example.com/a",
+            source: "the-information"
+          },
+          timingsMs: { publishToSeen: 61000, seenToSignal: "fast", signalToThesis: null } // wrong type → null
+        },
+        {
+          news: { title: "full paste", seenAtUtc: "2026-08-24T01:00:00Z", teaser: "", fullText: "Full body text." },
+          timingsMs: "garbage" // not an object → null
+        }
+      ]
+    });
+    expect(decoded).not.toBeNull();
+    const teaserCase = decoded!.cases.find((c) => c.news.title === "archived with teaser")!;
+    expect(teaserCase.news.teaser).toBe("Feed teaser paragraph.");
+    expect(teaserCase.news.fullText).toBeNull();
+    expect(teaserCase.news.url).toBe("https://example.com/a");
+    expect(teaserCase.news.source).toBe("the-information");
+    expect(teaserCase.timingsMs).toEqual({
+      publishToSeen: 61000,
+      seenToSignal: null,
+      signalToThesis: null,
+      thesisToDecision: null,
+      seenToDecision: null
+    });
+    const fullCase = decoded!.cases.find((c) => c.news.title === "full paste")!;
+    expect(fullCase.news.teaser).toBeNull(); // empty string normalizes to null
+    expect(fullCase.news.fullText).toBe("Full body text.");
+    expect(fullCase.timingsMs).toBeNull();
   });
 
   it("collects unknown post-event fields as verbatim extras", () => {
