@@ -38,9 +38,11 @@ export interface PaperConfig {
   // Engine rounds per evaluation (state resumes, so belief accumulates).
   evalMaxRounds: number;
   // Which engine provider evaluates positions. "claude" = Claude Code CLI
-  // with native WebSearch (subscription quota); "deepseek" = OpenAI-compatible
-  // endpoint (DeepSeek/Kimi) with the function-calling research loop.
-  evalProvider: "claude" | "deepseek";
+  // with native WebSearch (subscription quota); "codex" = Codex CLI (GPT-5.x
+  // on the ChatGPT subscription, server-side web search); "deepseek" =
+  // OpenAI-compatible endpoint (DeepSeek/Kimi) with the function-calling
+  // research loop.
+  evalProvider: "claude" | "codex" | "deepseek";
   // Market universe: when set, each cycle auto-scans these Gamma tag
   // categories for entry candidates (merged with the watchlist file).
   categories: string[];
@@ -79,7 +81,10 @@ export function loadPaperConfig(env: NodeJS.ProcessEnv = process.env): PaperConf
     maxPerEvent: num("PAPER_MAX_PER_EVENT", 1, 1),
     maxEvalsPerCycle: num("PAPER_MAX_EVALS_PER_CYCLE", 12, 1),
     evalMaxRounds: num("PAPER_EVAL_MAX_ROUNDS", 1, 1),
-    evalProvider: env.PAPER_EVAL_PROVIDER?.trim() === "deepseek" ? "deepseek" : "claude",
+    evalProvider: ((): "claude" | "codex" | "deepseek" => {
+      const v = env.PAPER_EVAL_PROVIDER?.trim();
+      return v === "deepseek" ? "deepseek" : v === "codex" ? "codex" : "claude";
+    })(),
     categories: (env.PAPER_CATEGORIES ?? "")
       .split(",")
       .map((c) => c.trim().toLowerCase())
