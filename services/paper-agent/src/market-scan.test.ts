@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_SCAN_OPTIONS, filterScanRows, type ScanRow } from "./market-scan";
+import { DEFAULT_SCAN_OPTIONS, filterScanRows, scanMarkets, type ScanRow } from "./market-scan";
 
 const NOW = Date.parse("2026-07-03T00:00:00Z");
 const FUTURE = "2026-09-01T00:00:00Z";
@@ -57,5 +57,32 @@ describe("filterScanRows", () => {
     const rows = Array.from({ length: 20 }, (_, i) => ({ ...base, slug: `m${i}` }));
     const out = filterScanRows(rows, "geopolitics", { ...DEFAULT_SCAN_OPTIONS, perCategory: 3 }, NOW);
     expect(out).toHaveLength(3);
+  });
+});
+
+describe("scanMarkets", () => {
+  // Same shortlist behind every category tag — only the rng differs between cases.
+  const rows = Array.from({ length: 5 }, (_, i) => ({ ...base, slug: `m${i}`, volume24hr: 50_000 - i * 1000 }));
+  const fetchFn = (async () => ({ ok: true, json: async () => rows })) as unknown as typeof fetch;
+
+  it("draws exactly one candidate per category, not the whole shortlist", async () => {
+    const out = await scanMarkets(["finance", "tech"], DEFAULT_SCAN_OPTIONS, fetchFn, () => 0);
+    expect(out).toHaveLength(2);
+  });
+
+  it("a different rng draws a different candidate from the same shortlist", async () => {
+    const first = await scanMarkets(["finance"], DEFAULT_SCAN_OPTIONS, fetchFn, () => 0);
+    const last = await scanMarkets(["finance"], DEFAULT_SCAN_OPTIONS, fetchFn, () => 0.999);
+    expect(first[0]?.slug).toBe("m0");
+    expect(last[0]?.slug).toBe("m4");
+    expect(first[0]?.slug).not.toBe(last[0]?.slug);
+  });
+
+  it("never draws the same slug twice across categories that see overlapping rows", async () => {
+    // rng pinned at 0 would pick "m0" for both categories if dedup didn't apply —
+    // assert the second category's pick is excluded from repeating the first's.
+    const out = await scanMarkets(["finance", "tech"], DEFAULT_SCAN_OPTIONS, fetchFn, () => 0);
+    const slugs = out.map((c) => c.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
   });
 });
