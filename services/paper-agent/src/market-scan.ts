@@ -4,6 +4,12 @@
 // Filters mirror the repo's standing risk gates: liquidity ≥ $5k hard floor,
 // binary Yes/No only, sane price band (no longshot junk), open + not expiring
 // imminently.
+//
+// Selection is a random draw of one candidate per category (2026-08-24), not
+// the top-of-list walk it used to be: always evaluating the same handful of
+// highest-24h-volume markets meant the fleet's new-entry attention converged
+// on a narrow, repeat set of "usual suspects" instead of sampling the wider
+// pool that clears the risk gates.
 
 import { log } from "./log";
 
@@ -58,7 +64,7 @@ export const DEFAULT_SCAN_OPTIONS: ScanOptions = {
   perCategory: 12, // widened with the volume gate: the top-8 cap was binding before the gate could
 
   minHoursToEnd: 48, // skip markets resolving imminently — no time to re-evaluate
-  priceBand: [0.05, 0.95]
+  priceBand: [0.02, 0.98] // widened from [0.05, 0.95] (user 2026-08-24) — only cut the true no-edge extremes
 };
 
 function parseArray(raw: unknown): string[] {
@@ -104,10 +110,17 @@ export function filterScanRows(rows: ScanRow[], category: string, opts: ScanOpti
   return out;
 }
 
+// Uniform pick — swappable for a seeded RNG in tests without touching callers.
+function pickRandom<T>(items: readonly T[], rng: () => number = Math.random): T | undefined {
+  if (!items.length) return undefined;
+  return items[Math.floor(rng() * items.length)];
+}
+
 export async function scanMarkets(
   categories: string[],
   opts: ScanOptions = DEFAULT_SCAN_OPTIONS,
-  fetchFn: typeof fetch = fetch
+  fetchFn: typeof fetch = fetch,
+  rng: () => number = Math.random
 ): Promise<ScanCandidate[]> {
   const seen = new Set<string>();
   const all: ScanCandidate[] = [];
@@ -119,21 +132,26 @@ export async function scanMarkets(
     }
     try {
       const res = await fetchFn(
-        `${GAMMA}/markets?closed=false&tag_id=${tagId}&order=volume24hr&ascending=false&limit=40`,
+        `${GAMMA}/markets?closed=false&tag_id=${tagId}&order=volume24hr&ascending=false&limit=100`,
         { headers: { accept: "application/json" }, signal: AbortSignal.timeout(15_000) }
       );
       if (!res.ok) throw new Error(`gamma scan ${res.status}`);
       const rows = (await res.json()) as ScanRow[];
-      for (const c of filterScanRows(rows, category, opts, Date.now())) {
-        if (!seen.has(c.slug)) {
-          seen.add(c.slug);
-          all.push(c);
-        }
+      // Filter first (still capped at opts.perCategory, still ranked by 24h
+      // volume within the filter step), THEN draw one at random from that
+      // shortlist — the ranking decides who clears the risk gate, not who
+      // gets evaluated.
+      const shortlist = filterScanRows(rows, category, opts, Date.now()).filter((c) => !seen.has(c.slug));
+      const pick = pickRandom(shortlist, rng);
+      if (pick) {
+        seen.add(pick.slug);
+        all.push(pick);
       }
     } catch (error) {
       log.error(`scan failed for ${category}: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
-  // Highest 24h volume first — evaluation budget goes to the liveliest books.
+  // Highest 24h volume first among this cycle's random draws — ties in
+  // remaining eval budget still go to the livelier pick.
   return all.sort((a, b) => b.volume24hUsd - a.volume24hUsd);
 }
