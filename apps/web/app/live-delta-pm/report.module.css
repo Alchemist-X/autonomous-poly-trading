@@ -23,6 +23,28 @@
   margin-bottom: 14px;
 }
 
+/* EN/中文 toggle — a plain link to lang?to=<other>, styled as a kicker-shaped pill. */
+.langToggle {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--panel-strong);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 5px 14px;
+  margin: 0 0 14px 10px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.langToggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
 .title {
   font-family: var(--font-display);
   font-size: clamp(30px, 5vw, 44px);

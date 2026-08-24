@@ -43,9 +43,9 @@ Watch live:
 - **World Cup forecasts (market-blind)**: [forecasting-agent.com/world-cup](https://forecasting-agent.com/world-cup) · [track record](https://forecasting-agent.com/world-cup/performance) — EN / 简中 / 繁中
 - **Forecasting Engine console**: [forecasting-agent.com/engine](https://forecasting-agent.com/engine) (browsing is public; new runs are invite-gated) — EN / 中文 toggle
 - **Raven Delta news-impact engine**: [forecasting-agent.com/delta](https://forecasting-agent.com/delta) (invite-gated) — EN / 中文 toggle
-- **Paper-trading book review**: [forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven) (invite-gated, live VM snapshot) — Chinese only
-- **Delta PM decision-audit page**: [forecasting-agent.com/live-delta-pm](https://forecasting-agent.com/live-delta-pm) (invite-gated, live VM ledger) — Chinese only
-- **Delta PM operator console**: [forecasting-agent.com/pm](https://forecasting-agent.com/pm) (token-gated) — Chinese only
+- **Paper-trading book review**: [forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven) (invite-gated, live VM snapshot) — EN / 中文 toggle
+- **Delta PM decision-audit page**: [forecasting-agent.com/live-delta-pm](https://forecasting-agent.com/live-delta-pm) (invite-gated, live VM ledger) — EN / 中文 toggle
+- **Delta PM operator console**: [forecasting-agent.com/pm](https://forecasting-agent.com/pm) (token-gated) — EN / 中文 toggle
 - **On-chain positions / fills (Polymarket profile)**: [`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
 The historical trading decision-log page was retired in the 2026-07 cleanup; the live-trading line's public record is the on-chain profile above. [autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app) now redirects to the World Cup site.

@@ -1,3 +1,4 @@
+import type { Lang } from "../../lib/live-predict-raven/i18n";
 import type { EquityPoint } from "../../lib/live-predict-raven/snapshot";
 
 // Server-rendered SVG line chart of the paper book's equity curve.
@@ -58,9 +59,7 @@ function placePoints(curve: readonly EquityPoint[], scale: YScale): readonly Pla
 }
 
 function linePath(points: readonly PlacedPoint[]): string {
-  return points
-    .map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
-    .join(" ");
+  return points.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
 }
 
 function areaPath(points: readonly PlacedPoint[], first: PlacedPoint, last: PlacedPoint): string {
@@ -68,7 +67,15 @@ function areaPath(points: readonly PlacedPoint[], first: PlacedPoint, last: Plac
   return `${linePath(points)} L${last.x.toFixed(1)},${bottom} L${first.x.toFixed(1)},${bottom} Z`;
 }
 
-export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoint[]; bankrollUsd: number }) {
+export function EquityChart({
+  curve,
+  bankrollUsd,
+  lang
+}: {
+  curve: readonly EquityPoint[];
+  bankrollUsd: number;
+  lang: Lang;
+}) {
   if (curve.length === 0) {
     return null;
   }
@@ -80,10 +87,7 @@ export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoin
     return null;
   }
   const peak = points.reduce((best, p) => (p.equityUsd > best.equityUsd ? p : best), first);
-  const trough = points.reduce(
-    (worst, p) => (p.index > peak.index && p.equityUsd < worst.equityUsd ? p : worst),
-    end
-  );
+  const trough = points.reduce((worst, p) => (p.index > peak.index && p.equityUsd < worst.equityUsd ? p : worst), end);
   const bankrollY = MARGIN.top + ((scale.max - bankrollUsd) / (scale.max - scale.min)) * PLOT_H;
   const featured = [peak, trough, end].filter((p, i, arr) => arr.indexOf(p) === i);
 
@@ -91,21 +95,18 @@ export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoin
     <svg
       viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
       role="img"
-      aria-label={`权益曲线：${first.date} ${usd0.format(first.equityUsd)} 起步，${peak.date} 最高 ${usd0.format(peak.equityUsd)}，${trough.date} 低点 ${usd0.format(trough.equityUsd)}，最新 ${usd0.format(end.equityUsd)}`}
+      aria-label={
+        lang === "zh"
+          ? `权益曲线：${first.date} ${usd0.format(first.equityUsd)} 起步，${peak.date} 最高 ${usd0.format(peak.equityUsd)}，${trough.date} 低点 ${usd0.format(trough.equityUsd)}，最新 ${usd0.format(end.equityUsd)}`
+          : `Equity curve: started ${first.date} at ${usd0.format(first.equityUsd)}, peaked ${peak.date} at ${usd0.format(peak.equityUsd)}, trough ${trough.date} at ${usd0.format(trough.equityUsd)}, latest ${usd0.format(end.equityUsd)}`
+      }
       style={{ width: "100%", height: "auto", display: "block" }}
     >
       {scale.ticks.map((tick) => {
         const y = MARGIN.top + ((scale.max - tick) / (scale.max - scale.min)) * PLOT_H;
         return (
           <g key={tick}>
-            <line
-              x1={MARGIN.left}
-              x2={MARGIN.left + PLOT_W}
-              y1={y}
-              y2={y}
-              stroke="var(--line)"
-              strokeWidth={1}
-            />
+            <line x1={MARGIN.left} x2={MARGIN.left + PLOT_W} y1={y} y2={y} stroke="var(--line)" strokeWidth={1} />
             <text
               x={MARGIN.left - 8}
               y={y + 4}
@@ -129,7 +130,7 @@ export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoin
         strokeWidth={1}
       />
       <text x={MARGIN.left + 4} y={bankrollY - 5} fontSize={11.5} fill="var(--muted)">
-        本金 $10,000
+        {lang === "zh" ? "本金 $10,000" : `Bankroll ${usd0.format(bankrollUsd)}`}
       </text>
 
       {points
@@ -158,7 +159,7 @@ export function EquityChart({ curve, bankrollUsd }: { curve: readonly EquityPoin
         <circle key={p.index} cx={p.x} cy={p.y} r={5} fill="var(--accent)" stroke="var(--paper)" strokeWidth={2} />
       ))}
       <text x={peak.x} y={peak.y - 12} textAnchor="middle" fontSize={13} fontWeight={600} fill="var(--ink)">
-        峰值 {usd0.format(peak.equityUsd)}
+        {lang === "zh" ? "峰值" : "Peak"} {usd0.format(peak.equityUsd)}
       </text>
       <text x={trough.x} y={trough.y + 22} textAnchor="middle" fontSize={13} fontWeight={600} fill="var(--ink)">
         {usd0.format(trough.equityUsd)}

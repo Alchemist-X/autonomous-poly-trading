@@ -1,4 +1,5 @@
 import type { CaseTimelineEvent, PaperCase } from "../../lib/live-predict-raven/cases";
+import type { Lang } from "../../lib/live-predict-raven/i18n";
 import styles from "./report.module.css";
 
 // Belief-vs-price chart for one case: what the engine thought our side was
@@ -21,12 +22,21 @@ interface Pt {
   v: number;
 }
 
-const MARKERS: Record<string, { glyph: string; label: string }> = {
-  buy: { glyph: "▲", label: "买入" },
-  sell: { glyph: "▼", label: "卖出" },
-  stop_loss: { glyph: "✕", label: "止损" },
-  resolution: { glyph: "◆", label: "结算" },
-  screen_enter: { glyph: "◇", label: "选中" }
+const MARKERS: Record<Lang, Record<string, { glyph: string; label: string }>> = {
+  zh: {
+    buy: { glyph: "▲", label: "买入" },
+    sell: { glyph: "▼", label: "卖出" },
+    stop_loss: { glyph: "✕", label: "止损" },
+    resolution: { glyph: "◆", label: "结算" },
+    screen_enter: { glyph: "◇", label: "选中" }
+  },
+  en: {
+    buy: { glyph: "▲", label: "buy" },
+    sell: { glyph: "▼", label: "sell" },
+    stop_loss: { glyph: "✕", label: "stop" },
+    resolution: { glyph: "◆", label: "settled" },
+    screen_enter: { glyph: "◇", label: "screened" }
+  }
 };
 
 function toPath(points: readonly Pt[], t0: number, t1: number): string {
@@ -43,7 +53,7 @@ function toPath(points: readonly Pt[], t0: number, t1: number): string {
 
 const dayLabel = (ms: number): string => new Date(ms).toISOString().slice(5, 10);
 
-export function CaseChart({ paperCase }: { paperCase: PaperCase }): React.ReactElement | null {
+export function CaseChart({ paperCase, lang }: { paperCase: PaperCase; lang: Lang }): React.ReactElement | null {
   const isNo = paperCase.side === "NO";
   // Dossier probabilities are P(YES); mirror them onto the held side.
   const belief: Pt[] = (paperCase.dossier?.beliefCurve ?? []).flatMap((p) => {
@@ -55,7 +65,7 @@ export function CaseChart({ paperCase }: { paperCase: PaperCase }): React.ReactE
     return Number.isFinite(t) ? [{ t, v: p.price }] : [];
   });
   const markers = paperCase.timeline.flatMap((e: CaseTimelineEvent) => {
-    const marker = MARKERS[e.kind];
+    const marker = MARKERS[lang][e.kind];
     const t = Date.parse(e.ts);
     return marker && Number.isFinite(t) ? [{ ...e, t, marker }] : [];
   });
@@ -79,7 +89,11 @@ export function CaseChart({ paperCase }: { paperCase: PaperCase }): React.ReactE
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         width="100%"
         role="img"
-        aria-label={`${paperCase.question}：引擎对我方方向的概率判断与市场报价随时间的对比`}
+        aria-label={
+          lang === "zh"
+            ? `${paperCase.question}：引擎对我方方向的概率判断与市场报价随时间的对比`
+            : `${paperCase.question}: the engine's probability for our side vs. the market's quote over time`
+        }
       >
         {gridlines.map((g) => (
           <g key={g}>
@@ -97,14 +111,7 @@ export function CaseChart({ paperCase }: { paperCase: PaperCase }): React.ReactE
           </g>
         ))}
         {xTicks.map((t) => (
-          <text
-            key={t}
-            x={xOf(t)}
-            y={MARGIN.top + PLOT_H + 20}
-            textAnchor="middle"
-            fontSize="11"
-            fill="var(--muted)"
-          >
+          <text key={t} x={xOf(t)} y={MARGIN.top + PLOT_H + 20} textAnchor="middle" fontSize="11" fill="var(--muted)">
             {dayLabel(t)}
           </text>
         ))}
@@ -138,19 +145,36 @@ export function CaseChart({ paperCase }: { paperCase: PaperCase }): React.ReactE
 
         {lastBelief ? (
           <text x={MARGIN.left + PLOT_W + 8} y={yOf(lastBelief.v) + 4} fontSize="12" fill="var(--accent)">
-            {`引擎 ${(lastBelief.v * 100).toFixed(0)}%`}
+            {lang === "zh" ? `引擎 ${(lastBelief.v * 100).toFixed(0)}%` : `engine ${(lastBelief.v * 100).toFixed(0)}%`}
           </text>
         ) : null}
         {lastPrice ? (
           <text x={MARGIN.left + PLOT_W + 8} y={yOf(lastPrice.v) + 4} fontSize="12" fill="var(--muted)">
-            {`市场 ${(lastPrice.v * 100).toFixed(0)}¢`}
+            {lang === "zh" ? `市场 ${(lastPrice.v * 100).toFixed(0)}¢` : `market ${(lastPrice.v * 100).toFixed(0)}¢`}
           </text>
         ) : null}
       </svg>
-      <p className={styles.chartLegend}>
-        实线 = 引擎认为「{paperCase.side}」这一边成立的概率（每轮研究后更新）；虚线 = 市场当时愿意为这一边出的价。
-        竖线标记依次是 {markers.map((m) => `${m.marker.glyph} ${m.marker.label}`).filter((v, i, a) => a.indexOf(v) === i).join("、") || "无"}。
-      </p>
+      {lang === "zh" ? (
+        <p className={styles.chartLegend}>
+          实线 = 引擎认为「{paperCase.side}」这一边成立的概率（每轮研究后更新）；虚线 = 市场当时愿意为这一边出的价。
+          竖线标记依次是{" "}
+          {markers
+            .map((m) => `${m.marker.glyph} ${m.marker.label}`)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .join("、") || "无"}
+          。
+        </p>
+      ) : (
+        <p className={styles.chartLegend}>
+          Solid = the engine&apos;s probability that the {paperCase.side} side is right (updated after each research
+          round); dashed = what the market was paying for that side. Vertical markers:{" "}
+          {markers
+            .map((m) => `${m.marker.glyph} ${m.marker.label}`)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .join(", ") || "none"}
+          .
+        </p>
+      )}
     </div>
   );
 }

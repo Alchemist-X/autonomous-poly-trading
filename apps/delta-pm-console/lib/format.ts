@@ -1,5 +1,8 @@
-// Display formatting helpers. All Chinese-facing, all crash-proof: invalid
-// timestamps render as "—" instead of NaN.
+// Display formatting helpers, all crash-proof: invalid timestamps render as
+// "—" instead of NaN. Numeric formatters are language-neutral; fmtRelative
+// takes the UI language because it emits unit words.
+
+import type { Lang } from "./i18n";
 
 export function parseUtc(iso: string | null | undefined): number | null {
   if (!iso) return null;
@@ -28,17 +31,18 @@ export function fmtPct(v: number | null, opts: { sign?: boolean } = {}): string 
   return `${sign}${v.toFixed(2)}%`;
 }
 
-/** "42 秒前" / "6 分钟前" / "3 小时前" / "2 天前"; "—" when unknown. */
-export function fmtRelative(iso: string | null | undefined, nowMs: number): string {
+/** zh: "42 秒前" / "6 分钟前" / "3 小时前" / "2 天前"; en: "42s ago" / "6m ago" / "3h ago" / "2d ago"; "—" when unknown. */
+export function fmtRelative(iso: string | null | undefined, nowMs: number, lang: Lang): string {
   const t = parseUtc(iso);
   if (t === null) return "—";
   const diffS = Math.max(0, Math.round((nowMs - t) / 1000));
-  if (diffS < 60) return `${diffS} 秒前`;
+  if (diffS < 60) return lang === "zh" ? `${diffS} 秒前` : `${diffS}s ago`;
   const diffM = Math.floor(diffS / 60);
-  if (diffM < 60) return `${diffM} 分钟前`;
+  if (diffM < 60) return lang === "zh" ? `${diffM} 分钟前` : `${diffM}m ago`;
   const diffH = Math.floor(diffM / 60);
-  if (diffH < 24) return `${diffH} 小时前`;
-  return `${Math.floor(diffH / 24)} 天前`;
+  if (diffH < 24) return lang === "zh" ? `${diffH} 小时前` : `${diffH}h ago`;
+  const diffD = Math.floor(diffH / 24);
+  return lang === "zh" ? `${diffD} 天前` : `${diffD}d ago`;
 }
 
 /** Live elapsed timer, "mm:ss" (or "h:mm:ss" past an hour). */

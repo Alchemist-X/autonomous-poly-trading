@@ -4,20 +4,26 @@
 
 import { useState } from "react";
 import type { StatusSnapshot } from "../lib/types";
+import { t, type Lang } from "../lib/i18n";
 import { withBasePath } from "../lib/base-path";
 
 export function FooterSection({
   snapshot,
-  ingestConfigured
+  ingestConfigured,
+  lang
 }: {
   snapshot: StatusSnapshot;
   ingestConfigured: boolean;
+  lang: Lang;
 }) {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [url, setUrl] = useState("");
   const [sending, setSending] = useState(false);
-  const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null);
+  // Store the outcome, not a pre-rendered message, so the note re-renders in
+  // the active language if the operator toggles after submitting.
+  const [result, setResult] = useState<{ ok: boolean; detail?: string } | null>(null);
+  const tt = t(lang);
 
   const submit = async () => {
     if (sending || !title.trim() || !text.trim()) return;
@@ -31,15 +37,15 @@ export function FooterSection({
       });
       const json = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
       if (res.ok && json?.ok) {
-        setResult({ ok: true, msg: "已注入,等待分析" });
+        setResult({ ok: true });
         setTitle("");
         setText("");
         setUrl("");
       } else {
-        setResult({ ok: false, msg: `注入失败:${json?.error ?? `HTTP ${res.status}`}` });
+        setResult({ ok: false, detail: json?.error ?? `HTTP ${res.status}` });
       }
     } catch (err) {
-      setResult({ ok: false, msg: `注入失败:${err instanceof Error ? err.message : String(err)}` });
+      setResult({ ok: false, detail: err instanceof Error ? err.message : String(err) });
     } finally {
       setSending(false);
     }
@@ -49,14 +55,14 @@ export function FooterSection({
     <footer className="dpc-ftr">
       <div className="inject-form">
         <h2 className="dpc-sec-title" style={{ marginBottom: 4 }}>
-          手动注入新闻
+          {tt("injectTitle")}
         </h2>
         <div className="fld">
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="标题(必填)"
+            placeholder={tt("titlePlaceholder")}
             disabled={!ingestConfigured || sending}
           />
         </div>
@@ -64,7 +70,7 @@ export function FooterSection({
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="正文(必填)"
+            placeholder={tt("bodyPlaceholder")}
             disabled={!ingestConfigured || sending}
           />
         </div>
@@ -73,7 +79,7 @@ export function FooterSection({
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="来源链接(可选)"
+            placeholder={tt("urlPlaceholder")}
             disabled={!ingestConfigured || sending}
           />
         </div>
@@ -83,17 +89,21 @@ export function FooterSection({
             onClick={() => void submit()}
             disabled={!ingestConfigured || sending || !title.trim() || !text.trim()}
           >
-            {sending ? "注入中…" : "注入并分析"}
+            {sending ? tt("injecting") : tt("injectBtn")}
           </button>
-          {!ingestConfigured ? <span className="form-hint">未配置 DELTAPM_INGEST_TOKEN</span> : null}
-          {result ? <span className={result.ok ? "msg-ok" : "msg-err"}>{result.msg}</span> : null}
+          {!ingestConfigured ? <span className="form-hint">{tt("noIngestToken")}</span> : null}
+          {result ? (
+            <span className={result.ok ? "msg-ok" : "msg-err"}>
+              {result.ok ? tt("injectOk") : tt("injectFail", { detail: result.detail ?? "" })}
+            </span>
+          ) : null}
         </div>
       </div>
       <div className="ftr-meta">
         <div>
           {snapshot.service.name} v{snapshot.service.version} · mode: {snapshot.service.mode}
         </div>
-        <div className="disclaimer">Phase 0 影子模式:不下真实订单</div>
+        <div className="disclaimer">{tt("disclaimer")}</div>
       </div>
     </footer>
   );

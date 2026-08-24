@@ -103,7 +103,6 @@ function parseConfig(raw: unknown): PaperParams {
   };
 }
 
-
 // ---- Optional analytics blocks -------------------------------------------
 // All lenient: an older API build simply omits them and the page hides the
 // matching sections instead of falling back to the baked snapshot wholesale.

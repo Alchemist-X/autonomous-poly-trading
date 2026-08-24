@@ -4,6 +4,7 @@ import { PaperReport } from "../../components/live-predict-raven/report";
 import { UnlockGate } from "../../components/live-predict-raven/unlock-gate";
 import { ACCESS_COOKIE_NAME, isValidAccessToken } from "../../lib/live-predict-raven/access";
 import { fetchPaperCases } from "../../lib/live-predict-raven/cases";
+import { LANG_COOKIE_NAME, parseLang } from "../../lib/live-predict-raven/i18n";
 import { fetchLiveSnapshot } from "../../lib/live-predict-raven/live";
 import { PAPER_SNAPSHOT } from "../../lib/live-predict-raven/snapshot";
 
@@ -22,10 +23,12 @@ export default async function LivePredictRavenPage({
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const cookieStore = await cookies();
+  // Display language (zh default); set by the /live-predict-raven/lang toggle.
+  const lang = parseLang(cookieStore.get(LANG_COOKIE_NAME)?.value);
   const token = cookieStore.get(ACCESS_COOKIE_NAME)?.value;
   if (!isValidAccessToken(token)) {
     const params = await searchParams;
-    return <UnlockGate showError={params?.error === "1"} />;
+    return <UnlockGate showError={params?.error === "1"} lang={lang} />;
   }
   // Live book from the Tokyo VM (refreshed by the agent after every evaluation
   // cycle); the baked snapshot is the labeled fallback when the VM is down.
@@ -33,5 +36,7 @@ export default async function LivePredictRavenPage({
   // snapshot, and simply omitted when unavailable (no baked fallback — a stale
   // walk-through would misrepresent decisions the agent has since revised).
   const [live, cases] = await Promise.all([fetchLiveSnapshot(), fetchPaperCases()]);
-  return <PaperReport snapshot={live ?? PAPER_SNAPSHOT} dataSource={live ? "live" : "baked"} cases={cases} />;
+  return (
+    <PaperReport snapshot={live ?? PAPER_SNAPSHOT} dataSource={live ? "live" : "baked"} cases={cases} lang={lang} />
+  );
 }

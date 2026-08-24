@@ -5,28 +5,33 @@
 import { useState } from "react";
 import type { SignalRow } from "../lib/types";
 import { fmtRelative } from "../lib/format";
+import { t, type Lang, type MsgKey } from "../lib/i18n";
 import { withBasePath } from "../lib/base-path";
 
-const PI_CHIP: Record<string, { cls: string; label: string }> = {
-  none: { cls: "pi-none", label: "未定价" },
-  partial: { cls: "pi-partial", label: "部分定价" },
-  full: { cls: "pi-full", label: "已定价" },
-  leaked: { cls: "pi-leaked", label: "疑似泄露" },
-  reverse: { cls: "pi-reverse", label: "反向" },
-  awaiting_market: { cls: "pi-awaiting", label: "待行情" }
+const PI_CHIP: Record<string, { cls: string; labelKey: MsgKey }> = {
+  none: { cls: "pi-none", labelKey: "piNone" },
+  partial: { cls: "pi-partial", labelKey: "piPartial" },
+  full: { cls: "pi-full", labelKey: "piFull" },
+  leaked: { cls: "pi-leaked", labelKey: "piLeaked" },
+  reverse: { cls: "pi-reverse", labelKey: "piReverse" },
+  awaiting_market: { cls: "pi-awaiting", labelKey: "piAwaiting" }
 };
 
-function PricedInChip({ status }: { status: string | null }) {
-  if (!status) return <span className="chip pi-unknown">待评估</span>;
+function PricedInChip({ status, lang }: { status: string | null; lang: Lang }) {
+  const tt = t(lang);
+  if (!status) return <span className="chip pi-unknown">{tt("piPending")}</span>;
   const meta = PI_CHIP[status];
   if (!meta) return <span className="chip pi-unknown">{status}</span>;
-  return <span className={`chip ${meta.cls}`}>{meta.label}</span>;
+  return <span className={`chip ${meta.cls}`}>{tt(meta.labelKey)}</span>;
 }
 
-function PasteBox({ signal, ingestConfigured }: { signal: SignalRow; ingestConfigured: boolean }) {
+function PasteBox({ signal, ingestConfigured, lang }: { signal: SignalRow; ingestConfigured: boolean; lang: Lang }) {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
-  const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null);
+  // Store the outcome, not a pre-rendered message, so the note re-renders in
+  // the active language if the operator toggles after submitting.
+  const [result, setResult] = useState<{ ok: boolean; detail?: string } | null>(null);
+  const tt = t(lang);
 
   const submit = async () => {
     if (sending || !text.trim()) return;
@@ -46,13 +51,13 @@ function PasteBox({ signal, ingestConfigured }: { signal: SignalRow; ingestConfi
       });
       const json = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
       if (res.ok && json?.ok) {
-        setResult({ ok: true, msg: "已提交,等待重新分析" });
+        setResult({ ok: true });
         setText("");
       } else {
-        setResult({ ok: false, msg: `提交失败:${json?.error ?? `HTTP ${res.status}`}` });
+        setResult({ ok: false, detail: json?.error ?? `HTTP ${res.status}` });
       }
     } catch (err) {
-      setResult({ ok: false, msg: `提交失败:${err instanceof Error ? err.message : String(err)}` });
+      setResult({ ok: false, detail: err instanceof Error ? err.message : String(err) });
     } finally {
       setSending(false);
     }
@@ -60,20 +65,24 @@ function PasteBox({ signal, ingestConfigured }: { signal: SignalRow; ingestConfi
 
   return (
     <details className="paste-box">
-      <summary>补全原文</summary>
+      <summary>{tt("pasteSummary")}</summary>
       <div className="paste-body">
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="粘贴这条新闻的完整原文,提交后会触发重新分析"
+          placeholder={tt("pastePlaceholder")}
           disabled={!ingestConfigured || sending}
         />
         <div className="form-row">
           <button className="btn" onClick={() => void submit()} disabled={!ingestConfigured || sending || !text.trim()}>
-            {sending ? "提交中…" : "提交原文"}
+            {sending ? tt("submitting") : tt("submitText")}
           </button>
-          {!ingestConfigured ? <span className="form-hint">未配置 DELTAPM_INGEST_TOKEN</span> : null}
-          {result ? <span className={result.ok ? "msg-ok" : "msg-err"}>{result.msg}</span> : null}
+          {!ingestConfigured ? <span className="form-hint">{tt("noIngestToken")}</span> : null}
+          {result ? (
+            <span className={result.ok ? "msg-ok" : "msg-err"}>
+              {result.ok ? tt("pasteOk") : tt("pasteFail", { detail: result.detail ?? "" })}
+            </span>
+          ) : null}
         </div>
       </div>
     </details>
@@ -83,19 +92,22 @@ function PasteBox({ signal, ingestConfigured }: { signal: SignalRow; ingestConfi
 export function SignalsSection({
   signals,
   nowMs,
-  ingestConfigured
+  ingestConfigured,
+  lang
 }: {
   signals: SignalRow[];
   nowMs: number;
   ingestConfigured: boolean;
+  lang: Lang;
 }) {
+  const tt = t(lang);
   return (
     <section className="dpc-sec">
       <h2 className="dpc-sec-title">
-        最近信号 <span className="cnt">{signals.length}</span>
+        {tt("signalsTitle")} <span className="cnt">{signals.length}</span>
       </h2>
       {signals.length === 0 ? (
-        <div className="empty">暂无信号</div>
+        <div className="empty">{tt("signalsEmpty")}</div>
       ) : (
         signals.map((sig) => (
           <article className="sig-card" key={sig.signalId}>
@@ -103,19 +115,19 @@ export function SignalsSection({
               <h3 className="sig-title" style={{ margin: 0 }}>
                 {sig.title}
               </h3>
-              <span className="sig-time">{fmtRelative(sig.createdAtUtc, nowMs)}</span>
+              <span className="sig-time">{fmtRelative(sig.createdAtUtc, nowMs, lang)}</span>
             </div>
             <div className="sig-chips">
-              {sig.tickers.map((t) => (
-                <span key={t} className="chip ticker">
-                  {t}
+              {sig.tickers.map((tk) => (
+                <span key={tk} className="chip ticker">
+                  {tk}
                 </span>
               ))}
-              <PricedInChip status={sig.pricedInStatus} />
-              {sig.tradeable ? <span className="chip tradeable">可交易</span> : null}
-              <span className="sig-score">重要性 {Math.round(sig.materialityScore)}</span>
+              <PricedInChip status={sig.pricedInStatus} lang={lang} />
+              {sig.tradeable ? <span className="chip tradeable">{tt("tradeableChip")}</span> : null}
+              <span className="sig-score">{tt("materiality", { n: Math.round(sig.materialityScore) })}</span>
             </div>
-            <PasteBox signal={sig} ingestConfigured={ingestConfigured} />
+            <PasteBox signal={sig} ingestConfigured={ingestConfigured} lang={lang} />
           </article>
         ))
       )}

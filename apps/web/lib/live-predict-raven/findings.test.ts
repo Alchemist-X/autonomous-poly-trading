@@ -36,11 +36,11 @@ function snapshotWith(over: Partial<PaperSnapshot>): PaperSnapshot {
   return { ...PAPER_SNAPSHOT, ...over } as PaperSnapshot;
 }
 
-const idsOf = (s: PaperSnapshot): string[] => deriveFindings(s).map((f) => f.id);
+const idsOf = (s: PaperSnapshot): string[] => deriveFindings(s, "zh").map((f) => f.id);
 
 describe("deriveFindings", () => {
   it("always leads with the pnl composition, using the live numbers", () => {
-    const findings = deriveFindings(PAPER_SNAPSHOT);
+    const findings = deriveFindings(PAPER_SNAPSHOT, "zh");
     expect(findings[0]?.id).toBe("pnl-composition");
     expect(findings[0]?.title).toContain("$10,000");
   });
@@ -111,18 +111,50 @@ describe("deriveFindings", () => {
   });
 
   it("names the dominant theme when open positions cluster on one story", () => {
-    const finding = deriveFindings(PAPER_SNAPSHOT).find((f) => f.id === "theme-concentration");
+    const finding = deriveFindings(PAPER_SNAPSHOT, "zh").find((f) => f.id === "theme-concentration");
     // The baked snapshot is an all-Iran geopolitics book.
     expect(finding?.title).toContain("伊朗");
     expect(finding?.kind).toBe("risk");
   });
 
   it("keeps every risk-parameter change as a proposal, never an applied change", () => {
-    for (const f of deriveFindings(PAPER_SNAPSHOT)) {
+    for (const f of deriveFindings(PAPER_SNAPSHOT, "zh")) {
       if (f.id.startsWith("proposal-")) {
         expect(f.kind).toBe("proposal");
         expect(f.body).toMatch(/确认/);
       }
     }
+  });
+
+  it("defaults to Chinese when lang is omitted", () => {
+    expect(deriveFindings(PAPER_SNAPSHOT)[0]?.title).toBe(deriveFindings(PAPER_SNAPSHOT, "zh")[0]?.title);
+  });
+
+  describe("en mode", () => {
+    it("emits the same finding ids and kinds in both languages", () => {
+      const zhFindings = deriveFindings(PAPER_SNAPSHOT, "zh");
+      const enFindings = deriveFindings(PAPER_SNAPSHOT, "en");
+      expect(enFindings.map((f) => f.id)).toEqual(zhFindings.map((f) => f.id));
+      expect(enFindings.map((f) => f.kind)).toEqual(zhFindings.map((f) => f.kind));
+    });
+
+    it("translates the headline and theme label, keeping the numbers", () => {
+      const findings = deriveFindings(PAPER_SNAPSHOT, "en");
+      expect(findings[0]?.title).toContain("Bankroll $10,000");
+      expect(findings[0]?.title).toContain("equity $7,974");
+      const theme = findings.find((f) => f.id === "theme-concentration");
+      expect(theme?.title).toContain("Iran / Mideast standoff");
+      expect(theme?.title).not.toMatch(/[一-鿿]/);
+      expect(findings[0]?.metrics.map((m) => m.label)).toContain("Max drawdown");
+    });
+
+    it("keeps proposals gated on the owner's confirmation in English too", () => {
+      for (const f of deriveFindings(PAPER_SNAPSHOT, "en")) {
+        if (f.id.startsWith("proposal-")) {
+          expect(f.kind).toBe("proposal");
+          expect(f.body).toMatch(/confirm/);
+        }
+      }
+    });
   });
 });

@@ -28,19 +28,15 @@ const QUESTION_ZH: Record<string, string> = {
   "Will Ukraine recapture Crimean territory by December 31, 2026?": "乌克兰 12/31 前收复克里米亚领土？",
   "Will the U.S. invade Iran before 2027?": "美国 2027 年前入侵伊朗？",
   "us-x-iran-effective-ceasfire-by-july-31-20260715194822045": "美伊 7/31 前达成有效停火？",
-  "israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243":
-    "以伊停火延续至 7/31？",
-  "israel-x-iran-ceasefire-continues-through-august-15-20260716224448969-246-815-987-693":
-    "以伊停火延续至 8/15？",
+  "israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243": "以伊停火延续至 7/31？",
+  "israel-x-iran-ceasefire-continues-through-august-15-20260716224448969-246-815-987-693": "以伊停火延续至 8/15？",
   "will-the-us-announce-an-iran-ceasefire-by-july-31-20260718000915875": "美国 7/31 前宣布停止对伊军事行动？",
   "will-nvidia-be-the-largest-company-in-the-world-by-market-cap-on-july-31-20260624192329841":
     "英伟达 7/31 全球市值第一？",
   "will-hamas-agree-to-disarm-by-december-31": "哈马斯 12/31 前同意解除武装？",
   "iran-leadership-change-by-august-31-669": "伊朗 8/31 前领导层更替？",
-  "strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320":
-    "霍尔木兹海峡 8/31 前恢复正常通航？",
-  "strait-of-hormuz-traffic-returns-to-normal-by-september-30-20260702154339440":
-    "霍尔木兹海峡 9/30 前恢复正常通航？",
+  "strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320": "霍尔木兹海峡 8/31 前恢复正常通航？",
+  "strait-of-hormuz-traffic-returns-to-normal-by-september-30-20260702154339440": "霍尔木兹海峡 9/30 前恢复正常通航？",
   "will-nicols-maduro-be-the-leader-of-venezuela-end-of-2026": "马杜罗 2026 年底仍是委内瑞拉领导人？",
   "us-announces-end-of-iranian-blockade-by-august-7-2026-20260727171523690": "美国 8/7 前宣布解除对伊封锁？",
   "us-announces-end-of-iranian-blockade-by-august-15-2026-20260713152715083-347-987-697-628-574-676":
@@ -123,4 +119,121 @@ export function zhExitReason(reason: string): string {
 /** ISO timestamp → "MM-DD HH:mm" (UTC). */
 export function shortUtc(iso: string): string {
   return iso.length >= 16 ? `${iso.slice(5, 10)} ${iso.slice(11, 16)}` : iso;
+}
+
+// ---- English localization (EN page mode) -----------------------------------
+// Both data paths bake the Chinese decoration in (live.ts/cases.ts at parse
+// time, the snapshot at authoring time), so EN mode maps decorated strings
+// back through the same table. Every Chinese label above sits next to an
+// English-question key, so the reverse lookup returns exactly the raw title
+// the VM API sent; unknown strings pass through untouched (new markets arrive
+// as raw English anyway, and slugs stay slugs in both languages).
+
+const QUESTION_EN_BY_ZH: Record<string, string> = {};
+for (const [key, zh] of Object.entries(QUESTION_ZH)) {
+  // English-question keys contain spaces; slug keys never do.
+  if (key.includes(" ") && !(zh in QUESTION_EN_BY_ZH)) QUESTION_EN_BY_ZH[zh] = key;
+}
+
+// Round-trip suffixes the baked snapshot appends to hand-label repeat entries.
+const ROUND_SUFFIX_EN: ReadonlyArray<[string, string]> = [
+  ["（第一次）", " (1st entry)"],
+  ["（第二次）", " (2nd entry)"],
+  ["（第三次）", " (3rd entry)"],
+  ["（第一回合）", " (round 1)"],
+  ["（第二回合）", " (round 2)"]
+];
+
+/** Chinese label / slug / raw English → English market title (fallback: input). */
+export function enQuestion(labelOrSlug: string): string {
+  const direct = QUESTION_EN_BY_ZH[labelOrSlug];
+  if (direct) return direct;
+  for (const [zhSuffix, enSuffix] of ROUND_SUFFIX_EN) {
+    if (labelOrSlug.endsWith(zhSuffix)) {
+      const base = QUESTION_EN_BY_ZH[labelOrSlug.slice(0, -zhSuffix.length)];
+      if (base) return base + enSuffix;
+    }
+  }
+  // Closed trades carry no question text, only the slug: slug → zh → en.
+  const viaSlug = QUESTION_ZH[labelOrSlug];
+  if (viaSlug) {
+    const en = QUESTION_EN_BY_ZH[viaSlug];
+    if (en) return en;
+  }
+  return labelOrSlug;
+}
+
+// English trade notes, keyed like TRADE_NOTES (slug@closedDate).
+const TRADE_NOTES_EN: Record<string, string> = {
+  "us-x-iran-diplomatic-meeting-by-july-31-2026-20260622191708361@2026-07-05":
+    "Market settled NO after the exit — the most profitable regular exit in the counterfactual test (α +$594)",
+  "mojtaba-khamenei-seen-in-public-by-july-15-155@2026-07-15":
+    "Held 12 days to near settlement; the 0.994 sale was forced by the 99% clamp (the origin of the saturated-hold fix)",
+  "will-iran-announce-withdrawal-from-mou-negotiations-by-july-17@2026-07-15":
+    "Agent said 19.5% vs market 6.4%; stopped out 4 hours later",
+  "will-iran-announce-withdrawal-from-mou-negotiations-by-july-17@2026-07-16":
+    "Re-entered the same way 4 hours after the stop; stopped out again — the event never happened",
+  "strait-of-hormuz-traffic-returns-to-normal-by-july-31@2026-07-27":
+    "Saturated-hold repeatedly vetoed negative-edge forced sales; held to near settlement, closed at 0.9945 — the flagship winner after the PR #91 fix",
+  "us-x-iran-effective-ceasfire-by-july-31-20260715194822045@2026-07-26":
+    "Stopped out the day after entry; re-entered the same market at 0.466 on 7/27 (round 2 stopped again 8/4)",
+  "israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243@2026-07-27":
+    "First stop-loss in the Israel–Iran ceasefire series",
+  "will-the-us-announce-an-iran-ceasefire-by-july-31-20260718000915875@2026-07-27":
+    "Stopped out 73 minutes after entry — the fastest of the run",
+  "israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243@2026-07-28":
+    "Re-entered the same way 7 hours after the stop; stopped again (the cooldown gap replays)",
+  "will-nvidia-be-the-largest-company-in-the-world-by-market-cap-on-july-31-20260624192329841@2026-07-29":
+    "Market ultimately settled YES after the stop — the worst exit in the counterfactual (α −$1,838); cost includes a $45 entry fee",
+  "israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243@2026-07-30":
+    "Third entry, third stop on the same market; −$601 across the three rounds",
+  "israel-x-iran-ceasefire-continues-through-august-15-20260716224448969-246-815-987-693@2026-07-31":
+    "Same ceasefire theme rolled to the 8/15 expiry — fourth stop",
+  "will-hamas-agree-to-disarm-by-december-31@2026-07-31":
+    "Stopped at 0.11, then NO rebounded to ~0.40 (α −$869); re-entered at 0.36 on 8/1 (currently held)",
+  "us-x-iran-effective-ceasfire-by-july-31-20260715194822045@2026-08-04":
+    "Round 2 of the 7/27 re-entry; dragged past expiry, stopped out 8/4"
+};
+
+/** English trade note; falls back to the Chinese note rather than dropping it. */
+export function tradeNoteEn(slug: string, closedUtc: string): string | undefined {
+  const key = `${slug}@${closedUtc.slice(0, 10)}`;
+  return TRADE_NOTES_EN[key] ?? TRADE_NOTES[key];
+}
+
+/** Reverse of zhExitStyle (unknown styles pass through). */
+export function enExitStyle(style: string): string {
+  if (style === "市价+限价两腿") return "market + limit legs";
+  if (style === "市价") return "market";
+  if (style === "限价") return "limit";
+  return style;
+}
+
+/** Reverse of zhExitReason (unknown reasons pass through). */
+export function enExitReason(reason: string): string {
+  if (reason === "止损") return "stop-loss";
+  if (reason === "负 edge 退出+限价单超时回落") return "negative-edge exit + limit TTL fallback";
+  if (reason === "负 edge 退出") return "negative-edge exit";
+  return reason;
+}
+
+// The VM's /paper/cases decision-log labels arrive in Chinese; translate the
+// known patterns and pass anything new through untouched.
+const TIMELINE_LABEL_EN: Record<string, string> = {
+  选中建仓: "screened → entry",
+  扫描后放弃: "screened, passed",
+  "复审：继续持有": "review: hold",
+  触发止损: "stop-loss triggered",
+  "评估失败（安全默认持有）": "eval error (fail-safe hold)",
+  "市场结算：我方获胜": "settled: our side won",
+  "市场结算：我方判负": "settled: our side lost",
+  "市场结算：作废": "settled: voided"
+};
+
+export function enTimelineLabel(label: string): string {
+  const fill = label.match(/^(市价|限价)(买入|卖出) ([\d.,]+) 股 @ ([\d.]+)$/);
+  if (fill) {
+    return `${fill[1] === "限价" ? "limit" : "market"} ${fill[2] === "买入" ? "buy" : "sell"} ${fill[3]} sh @ ${fill[4]}`;
+  }
+  return TIMELINE_LABEL_EN[label] ?? label;
 }

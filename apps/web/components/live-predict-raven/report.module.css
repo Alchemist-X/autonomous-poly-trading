@@ -10,6 +10,39 @@
   margin-bottom: 8px;
 }
 
+/* Kicker row with the EN/中文 toggle pinned to the right. */
+.headerTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.langToggle {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 5px 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.langToggle:hover,
+.langToggle:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent-line);
+}
+
+/* Same toggle on the dark unlock gate (auth-panel), aligned with its kicker. */
+.gateTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .kicker {
   display: inline-block;
   font-size: 13px;
