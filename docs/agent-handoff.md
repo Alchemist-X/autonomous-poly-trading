@@ -16,7 +16,7 @@
 > ① **范围（用户指令）**：/live-predict-raven、/live-delta-pm（apps/web，cookie + lang 路由 handler，`lpr_lang`/`ldp_lang` 各自 path-scoped）、/pm 控制台（apps/delta-pm-console，客户端 localStorage `deltapm_lang`）。统一约定：默认 zh、现有中文一字未改（live-delta-pm 用 renderToStaticMarkup 对 30 案例 fixture 逐字节证明 188KB HTML 与旧版相同）、数据载荷（新闻标题/ticker/账本 note）不翻、EN 模式下 live-predict-raven 市场名直接用数据自带英文原题（labels.ts 反查表）。
 > ② **实现**：三份 i18n.ts 词典 + labels/format 层 lang 化；findings.ts 自动推导结论句双语模板；console 的 stage/priced-in 徽章映射改 key-based。新增测试 ~50 条（zh 断言保留 + en 断言），全仓 **1076 测试绿**、build/typecheck 绿。
 > ③ **验证**：三面 × 桌面/移动 × 中/英截图全部读图自评，零 console error/pageerror；console 用自带 `DELTAPM_CONSOLE_MOCK=1`、live-delta-pm 用 `LIVE_DELTA_PM_MOCK=1` 渲染满数据视图（零代码 hack）；live-predict-raven 直连 VM 实时数据验证；发现并修掉一个 EN 泄漏（VM horizon 桶标签"7–30 天"→"7–30d"）。
-> ④ **部署**：web 两页随 merge 后 `gh workflow run wc-results.yml` 发布；/pm 切换需东京 VM 重建 delta-pm-console 容器（clean-untar + `up -d --no-deps delta-pm-console`，不碰 delta-pm 账本容器）。README 两版三条"仅中文"标注已改"中英切换"。英文版 handoff 此条已同步。
+> ④ **部署（全部完成，2026-08-24 09:20Z 前后）**：web 两页经 wc-results workflow 发布并线上实测（lang 路由 302/303 + cookie 正确、带 cookie 出英文门页）；东京 VM clean-untar（备份 `~/predict-raven.pre-gated-i18n.bak`）+ 重建 raven-suite + `up -d --no-deps delta-pm-console`（**console 无独立 Dockerfile，跑共享 raven-suite 镜像——build 用 `compose build raven`**），容器内 token 门实测 307→页面含 lang-toggle、无 token 401、公网代理 401。**镜像漂移：delta-pm-console 在新镜像（含 #128/#130/#131），raven/forecast-api/paper-agent/delta-pm 等仍旧镜像**——行为无差（那些容器代码未变），下次全量 up 会切齐。README 两版三条"仅中文"标注已改"中英切换"。英文版 handoff 此条已同步。
 >
 > 上次更新：2026-08-24 by Claude（**repo 复杂度评估 → 删除 managed 线与 rough-loop + README 双语补课**）。
 > ① **评估结论（用户问"repo 是否承载太多"）**：9 条产品线但包边界/部署边界健康，不拆 repo；真问题 = README 缺最活跃的 Delta PM/fleet 两条线 + 8k 行停摆代码。用户拍板：删 managed 线与 rough-loop，README 补课。
