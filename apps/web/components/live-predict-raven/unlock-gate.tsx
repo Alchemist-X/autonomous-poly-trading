@@ -1,13 +1,23 @@
+import type { Lang } from "../../lib/live-predict-raven/i18n";
+import { otherLang, t } from "../../lib/live-predict-raven/i18n";
+import styles from "./report.module.css";
+
 // Invite-code gate shown before the paper-trading review page. Mirrors the
 // /invite look (auth-* classes from globals.css); the code is checked
 // server-side by /api/live-predict-raven/unlock.
-export function UnlockGate({ showError }: { showError: boolean }) {
+export function UnlockGate({ showError, lang }: { showError: boolean; lang: Lang }) {
+  const tt = t(lang);
   return (
     <section className="auth-shell">
       <div className="auth-panel">
-        <span className="auth-kicker">Private review</span>
-        <h1>Paper trading 复盘</h1>
-        <p>这是东京 VM 模拟盘的内部复盘页。输入访问码解锁（与 /engine 门相同的口令）。</p>
+        <div className={styles.gateTop}>
+          <span className="auth-kicker">Private review</span>
+          <a className={styles.langToggle} href={`/live-predict-raven/lang?to=${otherLang(lang)}`}>
+            {tt("langToggle")}
+          </a>
+        </div>
+        <h1>{tt("gateTitle")}</h1>
+        <p>{tt("gateBody")}</p>
         <form action="/api/live-predict-raven/unlock" method="post" className="auth-form">
           <label htmlFor="lpr-code">Access code</label>
           <input
@@ -19,9 +29,9 @@ export function UnlockGate({ showError }: { showError: boolean }) {
             required
             autoFocus
           />
-          <button type="submit">解锁 Unlock</button>
+          <button type="submit">{tt("gateSubmit")}</button>
         </form>
-        {showError ? <p className="auth-error">访问码不对，再试一次。</p> : null}
+        {showError ? <p className="auth-error">{tt("gateError")}</p> : null}
       </div>
     </section>
   );

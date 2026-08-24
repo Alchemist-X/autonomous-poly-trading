@@ -74,6 +74,25 @@ body {
   font-size: 11px;
   color: var(--faint);
 }
+.lang-toggle {
+  background: transparent;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--fm);
+  font-size: 11px;
+  line-height: 1.7;
+  padding: 1px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+.lang-toggle:hover {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
 
 /* ---------- banners ---------- */
 .dpc-banner {

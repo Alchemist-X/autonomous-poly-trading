@@ -7,6 +7,11 @@
 // states the READER-FACING OUTCOME (e.g. 「重要性不足」「已被市场定价」), never the
 // internal mechanism (闸门1/入档); the raw enums stay visible in a small mono
 // line for ledger reconciliation. A glossary <details> sits under the header.
+//
+// i18n (2026-08-24): the page renders zh (default, byte-identical to the
+// original) or en, chosen by the ldp_lang cookie via the header toggle. Static
+// copy lives in lib/live-delta-pm/i18n.ts; enum labels in labels.ts; payload
+// content (headlines, tickers, ledger reasons) is data and never translated.
 
 import type {
   AuditPayload,
@@ -19,6 +24,7 @@ import type {
   ThesisView,
   TimingsMsView
 } from "../../lib/live-delta-pm/decode";
+import { LANG_TOGGLE_LABEL, otherLang, t, type Lang } from "../../lib/live-delta-pm/i18n";
 import {
   fmtBeta,
   fmtDurationMs,
@@ -33,38 +39,40 @@ import {
   fmtUsd,
   fmtUtc,
   fmtX,
+  labelAction,
+  labelBenchmark,
+  labelConfidence,
+  labelContamination,
+  labelCredibility,
+  labelEventType,
+  labelFactLevel,
+  labelGuard,
+  labelImpactBand,
+  labelKind,
+  labelNewsDirection,
+  labelPostEvent,
+  labelPrefix,
+  labelPricedIn,
+  labelProvider,
+  labelSession,
+  labelTradeDirection,
   minutesBetween,
-  pricedInTone,
-  zhAction,
-  zhBenchmark,
-  zhConfidence,
-  zhContamination,
-  zhCredibility,
-  zhEventType,
-  zhFactLevel,
-  zhGuard,
-  zhImpactBand,
-  zhKind,
-  zhNewsDirection,
-  zhNewsSource,
-  zhPostEvent,
-  zhPrefix,
-  zhPricedIn,
-  zhProvider,
-  zhSession,
-  zhTradeDirection
+  newsSourceName,
+  pricedInTone
 } from "../../lib/live-delta-pm/labels";
 import styles from "./report.module.css";
+
+type Bi = { zh: string; en: string };
 
 // ---------------------------------------------------------------------------
 // Small building blocks
 
-function Chip({ zh, raw, tone, strong }: { zh: string; raw?: string; tone?: string; strong?: boolean }) {
-  const toneClass = tone ? styles[tone] ?? "" : "";
+function Chip({ label, raw, tone, strong }: { label: string; raw?: string; tone?: string; strong?: boolean }) {
+  const toneClass = tone ? (styles[tone] ?? "") : "";
   return (
     <span className={`${styles.chip} ${toneClass} ${strong ? styles.chipStrong : ""}`}>
-      {zh}
-      {raw && raw !== zh ? <span className={styles.chipRaw}>{raw}</span> : null}
+      {label}
+      {raw && raw !== label ? <span className={styles.chipRaw}>{raw}</span> : null}
     </span>
   );
 }
@@ -89,6 +97,7 @@ function Quote({ label, text }: { label: string; text: string }) {
 }
 
 function Station({
+  lang,
   no,
   title,
   sub,
@@ -96,6 +105,7 @@ function Station({
   skipReason,
   children
 }: {
+  lang: Lang;
   no: number;
   title: string;
   /** Plain-language subtitle stating what this station answers. */
@@ -116,7 +126,11 @@ function Station({
           {sub ? <span className={styles.stationSub}>{sub}</span> : null}
           <span className={styles.stationTag}>{tag}</span>
         </div>
-        {skipped ? <p className={styles.skipNote}>未进行 — {skipReason}</p> : children}
+        {skipped ? (
+          <p className={styles.skipNote}>{lang === "zh" ? `未进行 — ${skipReason}` : `Not run — ${skipReason}`}</p>
+        ) : (
+          children
+        )}
       </div>
     </li>
   );
@@ -135,12 +149,14 @@ interface Outcome {
   note?: string;
 }
 
-const ZH_VETO: Record<string, string> = {
-  halted: "账本熔断中",
-  cooldown: "止损冷却期",
-  earnings: "财报窗口",
-  earnings_window: "财报窗口"
+const VETO_LABELS: Record<string, Bi> = {
+  halted: { zh: "账本熔断中", en: "book halted" },
+  cooldown: { zh: "止损冷却期", en: "stop-loss cooldown" },
+  earnings: { zh: "财报窗口", en: "earnings window" },
+  earnings_window: { zh: "财报窗口", en: "earnings window" }
 };
+
+const vetoLabel = (lang: Lang, raw: string): string => VETO_LABELS[raw]?.[lang] ?? raw;
 
 const ARCHIVE_STATUSES = new Set(["full", "leaked", "reverse"]);
 
@@ -149,33 +165,38 @@ function oneLine(text: string, max = 110): string {
   return t.length <= max ? t : `${t.slice(0, max)}…`;
 }
 
-function caseOutcome(c: CaseView): Outcome {
+function caseOutcome(lang: Lang, c: CaseView): Outcome {
   const d = c.decision;
   const mat = c.signal?.materiality ?? null;
   const pin = c.signal?.pricedIn ?? null;
+  const zh = lang === "zh";
 
   // A real PM action (or veto) is the strongest outcome — report it first.
   if (d?.audit?.vetoedBy) {
     return {
-      label: `PM 否决 · ${ZH_VETO[d.audit.vetoedBy] ?? d.audit.vetoedBy}`,
+      label: zh ? `PM 否决 · ${vetoLabel("zh", d.audit.vetoedBy)}` : `PM veto · ${vetoLabel("en", d.audit.vetoedBy)}`,
       tone: "outRed",
       rawLine: `vetoedBy=${d.audit.vetoedBy}`
     };
   }
   if (d && (d.action === "open" || d.action === "add" || d.action === "flip")) {
-    const dir = d.direction ? ` · ${zhTradeDirection(d.direction)}` : "";
+    const dir = d.direction ? ` · ${labelTradeDirection(lang, d.direction)}` : "";
     return {
-      label: `已开仓${dir}`,
+      label: zh ? `已开仓${dir}` : `Opened${dir}`,
       tone: "outGreen",
       rawLine: `action=${d.action}${d.direction ? ` direction=${d.direction}` : ""}`
     };
   }
   if (d && (d.action === "close" || d.action === "trim")) {
-    return { label: `已${zhAction(d.action)}`, tone: "outBlue", rawLine: `action=${d.action}` };
+    return {
+      label: zh ? `已${labelAction("zh", d.action)}` : d.action === "close" ? "Closed" : "Trimmed",
+      tone: "outBlue",
+      rawLine: `action=${d.action}`
+    };
   }
   if (c.thesis && d && d.action === "no_trade") {
     return {
-      label: "已分析 · 不开仓",
+      label: zh ? "已分析 · 不开仓" : "Analyzed · no trade",
       tone: "outAmber",
       rawLine: "action=no_trade",
       note: d.reason ? oneLine(d.reason) : undefined
@@ -185,7 +206,7 @@ function caseOutcome(c: CaseView): Outcome {
   // No decision — say where the pipeline stopped, in reader terms.
   if (!c.signal || !mat || mat.tickers.length === 0) {
     return {
-      label: "不相关 · 非股票池",
+      label: zh ? "不相关 · 非股票池" : "Irrelevant · outside universe",
       tone: "outGrey",
       rawLine: c.signal ? (mat ? "materiality.tickers=[]" : "materiality=null") : "signal=null"
     };
@@ -194,21 +215,47 @@ function caseOutcome(c: CaseView): Outcome {
     const reason = mat.reason.toLowerCase();
     const isRepeat = reason.includes("stale") || reason.includes("duplicate");
     return {
-      label: isRepeat ? "重复旧闻" : "重要性不足",
+      label: isRepeat ? (zh ? "重复旧闻" : "Stale repeat") : zh ? "重要性不足" : "Below importance bar",
       tone: "outGrey",
       rawLine: `tradeable=${mat.tradeable === null ? "null" : String(mat.tradeable)} factLevel=${mat.factLevel || "—"} score=${mat.score ?? "—"}`
     };
   }
-  if (pin?.status === "full") return { label: "已被市场定价", tone: "outSlate", rawLine: "pricedIn=full" };
-  if (pin?.status === "reverse") return { label: "走势反向 · 仅记录", tone: "outPurple", rawLine: "pricedIn=reverse" };
-  if (pin?.status === "awaiting_market") return { label: "待行情", tone: "outBlue", rawLine: "pricedIn=awaiting_market" };
-  if (pin?.status === "leaked") {
-    return { label: "疑似提前泄露 · 已分析", tone: "outOrange", rawLine: "pricedIn=leaked" };
+  if (pin?.status === "full") {
+    return { label: zh ? "已被市场定价" : "Already priced in", tone: "outSlate", rawLine: "pricedIn=full" };
   }
-  if (c.thesis) return { label: "已分析 · 无决策记录", tone: "outGrey", rawLine: "thesis!=null decision=null" };
-  if (!pin) return { label: "通过重要性检查 · 定价检查未运行", tone: "outGrey", rawLine: "pricedIn=null" };
+  if (pin?.status === "reverse") {
+    return {
+      label: zh ? "走势反向 · 仅记录" : "Reverse move · logged only",
+      tone: "outPurple",
+      rawLine: "pricedIn=reverse"
+    };
+  }
+  if (pin?.status === "awaiting_market") {
+    return { label: zh ? "待行情" : "Awaiting market", tone: "outBlue", rawLine: "pricedIn=awaiting_market" };
+  }
+  if (pin?.status === "leaked") {
+    return {
+      label: zh ? "疑似提前泄露 · 已分析" : "Possible leak · analyzed",
+      tone: "outOrange",
+      rawLine: "pricedIn=leaked"
+    };
+  }
+  if (c.thesis) {
+    return {
+      label: zh ? "已分析 · 无决策记录" : "Analyzed · no decision recorded",
+      tone: "outGrey",
+      rawLine: "thesis!=null decision=null"
+    };
+  }
+  if (!pin) {
+    return {
+      label: zh ? "通过重要性检查 · 定价检查未运行" : "Passed importance gate · priced-in gate not run",
+      tone: "outGrey",
+      rawLine: "pricedIn=null"
+    };
+  }
   return {
-    label: "通过两道检查 · 无研究记录",
+    label: zh ? "通过两道检查 · 无研究记录" : "Passed both gates · no research recorded",
     tone: "outGrey",
     rawLine: `pricedIn=${pin.status || "—"} thesis=null`
   };
@@ -227,27 +274,26 @@ function stationsReached(c: CaseView): number {
 // ---------------------------------------------------------------------------
 // Per-stage timing strip (near the case header)
 
-const PUBLISH_TO_SEEN_NOTE = "含 CDN 60 秒缓存节奏——feed 每 60 秒才刷新一次，此段耗时里有固定的缓存等待";
-
-function TimingStrip({ t }: { t: TimingsMsView | null }) {
-  if (!t) return null;
+function TimingStrip({ lang, t: timings }: { lang: Lang; t: TimingsMsView | null }) {
+  if (!timings) return null;
+  const s = t(lang);
   const segs: Array<{ label: string; key: string; v: number | null; title?: string }> = [
-    { label: "发布→抓取*", key: "publishToSeen", v: t.publishToSeen, title: PUBLISH_TO_SEEN_NOTE },
-    { label: "检查", key: "seenToSignal", v: t.seenToSignal },
-    { label: "研究", key: "signalToThesis", v: t.signalToThesis },
-    { label: "决策", key: "thesisToDecision", v: t.thesisToDecision },
-    { label: "端到端", key: "seenToDecision", v: t.seenToDecision }
+    { label: s("timingPublish"), key: "publishToSeen", v: timings.publishToSeen, title: s("timingTitle") },
+    { label: s("timingGates"), key: "seenToSignal", v: timings.seenToSignal },
+    { label: s("timingResearch"), key: "signalToThesis", v: timings.signalToThesis },
+    { label: s("timingDecision"), key: "thesisToDecision", v: timings.thesisToDecision },
+    { label: s("timingE2E"), key: "seenToDecision", v: timings.seenToDecision }
   ];
   return (
-    <div className={styles.timingStrip} aria-label="各阶段耗时">
-      <span className={styles.timingCaption}>耗时</span>
-      {segs.map((s) => (
-        <span key={s.key} className={styles.timingSeg} title={s.title}>
-          <span className={styles.timingLabel}>{s.label}</span>
-          <span className={styles.timingValue}>{fmtDurationMs(s.v)}</span>
+    <div className={styles.timingStrip} aria-label={s("timingAria")}>
+      <span className={styles.timingCaption}>{s("timingCaption")}</span>
+      {segs.map((seg) => (
+        <span key={seg.key} className={styles.timingSeg} title={seg.title}>
+          <span className={styles.timingLabel}>{seg.label}</span>
+          <span className={styles.timingValue}>{fmtDurationMs(lang, seg.v)}</span>
         </span>
       ))}
-      <span className={styles.timingNote}>* 发布→抓取含 CDN 60 秒缓存节奏</span>
+      <span className={styles.timingNote}>{s("timingNote")}</span>
     </div>
   );
 }
@@ -256,53 +302,59 @@ function TimingStrip({ t }: { t: TimingsMsView | null }) {
 // Station 1 — 情报台
 
 /** Archived original text of the news item: full paste tier > feed teaser tier. */
-function ArchivedOriginal({ news }: { news: NewsView }) {
+function ArchivedOriginal({ lang, news }: { lang: Lang; news: NewsView }) {
+  const s = t(lang);
   const body = news.fullText ?? news.teaser;
-  const tier = news.fullText ? "粘贴全文" : news.teaser ? "feed 导语" : null;
+  const tier = news.fullText ? s("archiveFull") : news.teaser ? s("archiveTeaser") : null;
   return (
     <div className={styles.archive}>
       <div className={styles.archiveHead}>
-        <span className={styles.archiveTitle}>存档原文</span>
-        {tier ? <Chip zh={tier} raw={news.fullText ? "fullText" : "teaser"} tone="outBlue" /> : null}
-        {news.source ? <Chip zh={zhNewsSource(news.source)} raw={news.source} /> : null}
+        <span className={styles.archiveTitle}>{s("archiveTitle")}</span>
+        {tier ? <Chip label={tier} raw={news.fullText ? "fullText" : "teaser"} tone="outBlue" /> : null}
+        {news.source ? <Chip label={newsSourceName(news.source)} raw={news.source} /> : null}
         {news.url ? (
           <a className={styles.srcLink} href={news.url} target="_blank" rel="noopener noreferrer">
-            原文链接 ↗
+            {s("archiveLink")}
           </a>
         ) : null}
       </div>
       {body ? (
         <div className={styles.archiveBody}>{body}</div>
       ) : (
-        <p className={styles.archiveEmpty}>该条早于原文存档功能（2026-08-23 起存档），无原文留档。</p>
+        <p className={styles.archiveEmpty}>{s("archiveEmpty")}</p>
       )}
     </div>
   );
 }
 
-function NewsStation({ c }: { c: CaseView }) {
+function NewsStation({ lang, c }: { lang: Lang; c: CaseView }) {
+  const s = t(lang);
   const { news, signal } = c;
   const lagMin = minutesBetween(news.publishedUtc, news.seenAtUtc);
   return (
-    <Station no={1} title="情报台" sub="新闻接收与溯源" tag="ingest">
+    <Station lang={lang} no={1} title={s("st1Title")} sub={s("st1Sub")} tag="ingest">
       <div className={styles.chipRow}>
-        <Chip zh={zhKind(news.kind)} raw={news.kind} />
-        <Chip zh={zhPrefix(news.prefix)} raw={news.prefix} tone={news.prefix === "reportedly" ? "outAmber" : undefined} />
+        <Chip label={labelKind(lang, news.kind)} raw={news.kind} />
+        <Chip
+          label={labelPrefix(lang, news.prefix)}
+          raw={news.prefix}
+          tone={news.prefix === "reportedly" ? "outAmber" : undefined}
+        />
       </div>
-      <ArchivedOriginal news={news} />
+      <ArchivedOriginal lang={lang} news={news} />
       <div className={styles.kvGrid}>
-        <KV label="发布时间 publishedUtc">{fmtUtc(news.publishedUtc)}</KV>
-        <KV label="系统见到 seenAtUtc">{fmtUtc(news.seenAtUtc)}</KV>
-        <KV label="发布 → 见到 Δ">{fmtMinutes(lagMin)}</KV>
-        <KV label="首次公开 firstSeenUtc">{signal ? fmtUtc(signal.firstSeenUtc) : "—"}</KV>
-        <KV label="信号指纹 fingerprint">
+        <KV label={s("kvPublished")}>{fmtUtc(news.publishedUtc)}</KV>
+        <KV label={s("kvSeen")}>{fmtUtc(news.seenAtUtc)}</KV>
+        <KV label={s("kvPubSeenDelta")}>{fmtMinutes(lang, lagMin)}</KV>
+        <KV label={s("kvFirstSeen")}>{signal ? fmtUtc(signal.firstSeenUtc) : "—"}</KV>
+        <KV label={s("kvFingerprint")}>
           <span className={styles.mono}>{signal?.fingerprint || "—"}</span>
         </KV>
-        <KV label="新闻 id">
+        <KV label={s("kvNewsId")}>
           <span className={styles.mono}>{news.newsId || "—"}</span>
         </KV>
       </div>
-      {signal?.firstSeenBasis ? <Quote label="firstSeenBasis 原文（t0 依据）" text={signal.firstSeenBasis} /> : null}
+      {signal?.firstSeenBasis ? <Quote label={s("quoteFirstSeenBasis")} text={signal.firstSeenBasis} /> : null}
     </Station>
   );
 }
@@ -310,39 +362,70 @@ function NewsStation({ c }: { c: CaseView }) {
 // ---------------------------------------------------------------------------
 // Station 2 — 重要性检查（原 M1 · 闸门1）
 
-function MaterialityStation({ signal, skipReason }: { signal: SignalView | null; skipReason: string | null }) {
+function MaterialityStation({
+  lang,
+  signal,
+  skipReason
+}: {
+  lang: Lang;
+  signal: SignalView | null;
+  skipReason: string | null;
+}) {
+  const s = t(lang);
   const mat = signal?.materiality ?? null;
   if (!signal || !mat) {
     return (
-      <Station no={2} title="重要性检查" sub="值得动用分析资源吗" tag="原 M1 · 闸门1" skipReason={skipReason ?? "上游未记录重要性检查结果"} />
+      <Station
+        lang={lang}
+        no={2}
+        title={s("st2Title")}
+        sub={s("st2Sub")}
+        tag={s("st2Tag")}
+        skipReason={skipReason ?? s("matNotRecorded")}
+      />
     );
   }
   return (
-    <Station no={2} title="重要性检查" sub="值得动用分析资源吗" tag="原 M1 · 闸门1">
+    <Station lang={lang} no={2} title={s("st2Title")} sub={s("st2Sub")} tag={s("st2Tag")}>
       <div className={styles.chipRow}>
         {mat.tradeable === null ? (
-          <Chip zh="检查结论未记录" raw="tradeable:null" tone="outGrey" />
+          <Chip label={s("matVerdictMissing")} raw="tradeable:null" tone="outGrey" />
         ) : (
           <Chip
-            zh={mat.tradeable ? "通过 · 进入定价检查" : "不通过 · 归档"}
+            label={mat.tradeable ? s("matPass") : s("matFail")}
             raw={`tradeable:${mat.tradeable}`}
             tone={mat.tradeable ? "outGreen" : "outGrey"}
             strong
           />
         )}
-        <Chip zh={`评分 ${mat.score === null ? "—" : mat.score}/100`} raw="score" strong />
-        <Chip zh={zhEventType(mat.eventType)} raw={mat.eventType} />
-        <Chip zh={zhFactLevel(mat.factLevel)} raw={mat.factLevel} />
-        <Chip zh={zhNewsDirection(signal.expectedDirection)} raw={signal.expectedDirection} />
-        <Chip zh={`预估幅度：${zhImpactBand(signal.coarseImpactBand)}`} raw={signal.coarseImpactBand} />
+        <Chip
+          label={
+            lang === "zh"
+              ? `评分 ${mat.score === null ? "—" : mat.score}/100`
+              : `Score ${mat.score === null ? "—" : mat.score}/100`
+          }
+          raw="score"
+          strong
+        />
+        <Chip label={labelEventType(lang, mat.eventType)} raw={mat.eventType} />
+        <Chip label={labelFactLevel(lang, mat.factLevel)} raw={mat.factLevel} />
+        <Chip label={labelNewsDirection(lang, signal.expectedDirection)} raw={signal.expectedDirection} />
+        <Chip
+          label={
+            lang === "zh"
+              ? `预估幅度：${labelImpactBand("zh", signal.coarseImpactBand)}`
+              : `Est. move: ${labelImpactBand("en", signal.coarseImpactBand)}`
+          }
+          raw={signal.coarseImpactBand}
+        />
         {mat.tickers.length > 0 ? (
-          mat.tickers.map((t) => <Chip key={t} zh={t} tone="outBlue" strong />)
+          mat.tickers.map((ticker) => <Chip key={ticker} label={ticker} tone="outBlue" strong />)
         ) : (
-          <Chip zh="无标的命中" tone="outGrey" />
+          <Chip label={s("matNoTicker")} tone="outGrey" />
         )}
       </div>
-      <Quote label="surpriseNote 原文（超出共识基线的部分）" text={mat.surpriseNote} />
-      <Quote label="reason 原文" text={mat.reason} />
+      <Quote label={s("quoteSurprise")} text={mat.surpriseNote} />
+      <Quote label={s("quoteReason")} text={mat.reason} />
     </Station>
   );
 }
@@ -350,31 +433,59 @@ function MaterialityStation({ signal, skipReason }: { signal: SignalView | null;
 // ---------------------------------------------------------------------------
 // Station 3 — 定价检查（原 M1 · 闸门2）
 
-function PricedInStation({ signal, skipReason }: { signal: SignalView | null; skipReason: string | null }) {
+function PricedInStation({
+  lang,
+  signal,
+  skipReason
+}: {
+  lang: Lang;
+  signal: SignalView | null;
+  skipReason: string | null;
+}) {
+  const s = t(lang);
   const pin = signal?.pricedIn ?? null;
   if (!pin) {
     return (
-      <Station no={3} title="定价检查" sub="市场是否已消化" tag="原 M1 · 闸门2" skipReason={skipReason ?? "上游未记录定价检查结果"} />
+      <Station
+        lang={lang}
+        no={3}
+        title={s("st3Title")}
+        sub={s("st3Sub")}
+        tag={s("st3Tag")}
+        skipReason={skipReason ?? s("pinNotRecorded")}
+      />
     );
   }
   return (
-    <Station no={3} title="定价检查" sub="市场是否已消化" tag="原 M1 · 闸门2">
+    <Station lang={lang} no={3} title={s("st3Title")} sub={s("st3Sub")} tag={s("st3Tag")}>
       <div className={styles.chipRow}>
-        <Chip zh={zhPricedIn(pin.status)} raw={pin.status} tone={pricedInTone(pin.status)} strong />
-        <Chip zh={`判定信心：${zhConfidence(pin.confidence)}`} raw={pin.confidence} />
-        <Chip zh={zhSession(pin.sessionBucket)} raw={pin.sessionBucket} />
-        <Chip zh={`行情源：${pin.dataBasis || "—"}`} raw={pin.dataBasis} />
+        <Chip label={labelPricedIn(lang, pin.status)} raw={pin.status} tone={pricedInTone(pin.status)} strong />
+        <Chip
+          label={
+            lang === "zh"
+              ? `判定信心：${labelConfidence("zh", pin.confidence)}`
+              : `Verdict confidence: ${labelConfidence("en", pin.confidence)}`
+          }
+          raw={pin.confidence}
+        />
+        <Chip label={labelSession(lang, pin.sessionBucket)} raw={pin.sessionBucket} />
+        <Chip
+          label={lang === "zh" ? `行情源：${pin.dataBasis || "—"}` : `Data basis: ${pin.dataBasis || "—"}`}
+          raw={pin.dataBasis}
+        />
       </div>
       <div className={styles.kvGrid}>
-        <KV label="已实现超额涨跌 realizedExcessPct">{fmtPct(pin.realizedExcessPct, { signed: true })}</KV>
-        <KV label="β（基准）">
-          {fmtBeta(pin.betaUsed)}（{zhBenchmark(pin.benchmarkUsed) || "—"}）
+        <KV label={s("kvRealizedExcess")}>{fmtPct(pin.realizedExcessPct, { signed: true })}</KV>
+        <KV label={s("kvBetaBench")}>
+          {lang === "zh"
+            ? `${fmtBeta(pin.betaUsed)}（${labelBenchmark("zh", pin.benchmarkUsed) || "—"}）`
+            : `${fmtBeta(pin.betaUsed)} (${labelBenchmark("en", pin.benchmarkUsed) || "—"})`}
         </KV>
-        <KV label="成交量 Z 分位 volumeZ">{pin.volumeZ === null ? "—" : pin.volumeZ.toFixed(2)}</KV>
-        <KV label="评估时刻 tEvalUtc">{fmtUtc(pin.tEvalUtc)}</KV>
-        <KV label="距 t0 时长 deltaTMinutes">{fmtMinutes(pin.deltaTMinutes)}</KV>
+        <KV label={s("kvVolumeZ")}>{pin.volumeZ === null ? "—" : pin.volumeZ.toFixed(2)}</KV>
+        <KV label={s("kvTEval")}>{fmtUtc(pin.tEvalUtc)}</KV>
+        <KV label={s("kvDeltaT")}>{fmtMinutes(lang, pin.deltaTMinutes)}</KV>
       </div>
-      <Quote label="note 原文（内含反应完成度算式）" text={pin.note} />
+      <Quote label={s("quotePinNote")} text={pin.note} />
     </Station>
   );
 }
@@ -382,49 +493,92 @@ function PricedInStation({ signal, skipReason }: { signal: SignalView | null; sk
 // ---------------------------------------------------------------------------
 // Station 4 — 研究 memo (M2)
 
-function ThesisStation({ thesis, skipReason }: { thesis: ThesisView | null; skipReason: string | null }) {
+function ThesisStation({
+  lang,
+  thesis,
+  skipReason
+}: {
+  lang: Lang;
+  thesis: ThesisView | null;
+  skipReason: string | null;
+}) {
+  const s = t(lang);
   if (!thesis) {
-    return <Station no={4} title="研究 memo" sub="分析师" tag="M2 · analysis" skipReason={skipReason ?? "上游未记录研究 memo"} />;
+    return (
+      <Station
+        lang={lang}
+        no={4}
+        title={s("st4Title")}
+        sub={s("st4Sub")}
+        tag="M2 · analysis"
+        skipReason={skipReason ?? s("thesisNotRecorded")}
+      />
+    );
   }
   const fair = thesis.fairImpactPct;
   const contaminationTone =
     thesis.contamination === "hard" ? "outRed" : thesis.contamination === "soft" ? "outAmber" : "outGreen";
   return (
-    <Station no={4} title="研究 memo" sub="分析师" tag="M2 · analysis">
+    <Station lang={lang} no={4} title={s("st4Title")} sub={s("st4Sub")} tag="M2 · analysis">
       <div className={styles.chipRow}>
-        <Chip zh={thesis.ticker || "—"} tone="outBlue" strong />
+        <Chip label={thesis.ticker || "—"} tone="outBlue" strong />
         <Chip
-          zh={zhTradeDirection(thesis.direction)}
+          label={labelTradeDirection(lang, thesis.direction)}
           raw={thesis.direction}
           tone={thesis.direction === "long" ? "outGreen" : thesis.direction === "short" ? "outRed" : undefined}
           strong
         />
-        <Chip zh={`信心：${zhConfidence(thesis.confidence)}`} raw={thesis.confidence} />
-        <Chip zh={zhContamination(thesis.contamination)} raw={thesis.contamination} tone={contaminationTone} />
-        <Chip zh={`分析引擎：${zhProvider(thesis.provider)}`} raw={thesis.provider} />
-        <Chip zh={`持有窗口 ${fmtHours(thesis.horizonHours)}`} raw="horizonHours" />
+        <Chip
+          label={
+            lang === "zh"
+              ? `信心：${labelConfidence("zh", thesis.confidence)}`
+              : `Confidence: ${labelConfidence("en", thesis.confidence)}`
+          }
+          raw={thesis.confidence}
+        />
+        <Chip
+          label={labelContamination(lang, thesis.contamination)}
+          raw={thesis.contamination}
+          tone={contaminationTone}
+        />
+        <Chip
+          label={
+            lang === "zh"
+              ? `分析引擎：${labelProvider("zh", thesis.provider)}`
+              : `Engine: ${labelProvider("en", thesis.provider)}`
+          }
+          raw={thesis.provider}
+        />
+        <Chip
+          label={
+            lang === "zh"
+              ? `持有窗口 ${fmtHours("zh", thesis.horizonHours)}`
+              : `Horizon ${fmtHours("en", thesis.horizonHours)}`
+          }
+          raw="horizonHours"
+        />
       </div>
       {fair ? (
         <div className={styles.bigNums}>
           <div className={styles.bigNum}>
-            <span className={styles.bigNumLabel}>公允冲击下限 min</span>
+            <span className={styles.bigNumLabel}>{s("bigMin")}</span>
             <span className={styles.bigNumValue}>{fmtPct(fair.min, { signed: true })}</span>
           </div>
           <div className={`${styles.bigNum} ${styles.bigNumMain}`}>
-            <span className={styles.bigNumLabel}>点估计 point</span>
+            <span className={styles.bigNumLabel}>{s("bigPoint")}</span>
             <span className={styles.bigNumValue}>{fmtPct(fair.point, { signed: true })}</span>
           </div>
           <div className={styles.bigNum}>
-            <span className={styles.bigNumLabel}>公允冲击上限 max</span>
+            <span className={styles.bigNumLabel}>{s("bigMax")}</span>
             <span className={styles.bigNumValue}>{fmtPct(fair.max, { signed: true })}</span>
           </div>
         </div>
       ) : (
-        <p className={styles.skipNote}>fairImpactPct 未记录</p>
+        <p className={styles.skipNote}>{s("fairMissing")}</p>
       )}
       {thesis.impactPath.length > 0 ? (
         <>
-          <p className={styles.subHead}>影响传导路径 impactPath（全文，不截断）</p>
+          <p className={styles.subHead}>{s("subImpactPath")}</p>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
               <thead>
@@ -434,10 +588,10 @@ function ThesisStation({ thesis, skipReason }: { thesis: ThesisView | null; skip
                 </tr>
               </thead>
               <tbody>
-                {thesis.impactPath.map((s, i) => (
+                {thesis.impactPath.map((step, i) => (
                   <tr key={i}>
-                    <td>{s.step}</td>
-                    <td>{s.value}</td>
+                    <td>{step.step}</td>
+                    <td>{step.value}</td>
                   </tr>
                 ))}
               </tbody>
@@ -447,14 +601,14 @@ function ThesisStation({ thesis, skipReason }: { thesis: ThesisView | null; skip
       ) : null}
       {thesis.evidence.length > 0 ? (
         <>
-          <p className={styles.subHead}>证据 evidence</p>
+          <p className={styles.subHead}>{s("subEvidence")}</p>
           <ul className={styles.plainList}>
             {thesis.evidence.map((e, i) => (
               <li key={i}>
                 {e.point}
                 <span className={styles.srcMeta}>
-                  {e.source ? `来源：${e.source} · ` : ""}
-                  {zhCredibility(e.credibility)}
+                  {e.source ? (lang === "zh" ? `来源：${e.source} · ` : `Source: ${e.source} · `) : ""}
+                  {labelCredibility(lang, e.credibility)}
                   <span className={styles.mono}> {e.credibility}</span>
                 </span>
               </li>
@@ -464,7 +618,7 @@ function ThesisStation({ thesis, skipReason }: { thesis: ThesisView | null; skip
       ) : null}
       {thesis.catalysts.length > 0 ? (
         <>
-          <p className={styles.subHead}>催化剂 catalysts</p>
+          <p className={styles.subHead}>{s("subCatalysts")}</p>
           <ul className={styles.plainList}>
             {thesis.catalysts.map((x, i) => (
               <li key={i}>{x}</li>
@@ -474,7 +628,7 @@ function ThesisStation({ thesis, skipReason }: { thesis: ThesisView | null; skip
       ) : null}
       {thesis.falsifiers.length > 0 ? (
         <>
-          <p className={styles.subHead}>证伪条件 falsifiers</p>
+          <p className={styles.subHead}>{s("subFalsifiers")}</p>
           <ul className={styles.plainList}>
             {thesis.falsifiers.map((x, i) => (
               <li key={i}>{x}</li>
@@ -484,7 +638,7 @@ function ThesisStation({ thesis, skipReason }: { thesis: ThesisView | null; skip
       ) : null}
       {thesis.limitations.length > 0 ? (
         <>
-          <p className={styles.subHead}>局限 limitations</p>
+          <p className={styles.subHead}>{s("subLimitations")}</p>
           <ul className={styles.plainList}>
             {thesis.limitations.map((x, i) => (
               <li key={i}>{x}</li>
@@ -505,9 +659,27 @@ function actionTone(action: string): string {
   return "outGrey";
 }
 
-function DecisionStation({ decision, skipReason }: { decision: DecisionView | null; skipReason: string | null }) {
+function DecisionStation({
+  lang,
+  decision,
+  skipReason
+}: {
+  lang: Lang;
+  decision: DecisionView | null;
+  skipReason: string | null;
+}) {
+  const s = t(lang);
   if (!decision) {
-    return <Station no={5} title="PM 台" sub="仓位决策" tag="M3 · decision" skipReason={skipReason ?? "上游未记录 PM 决策"} />;
+    return (
+      <Station
+        lang={lang}
+        no={5}
+        title={s("st5Title")}
+        sub={s("st5Sub")}
+        tag="M3 · decision"
+        skipReason={skipReason ?? s("decNotRecorded")}
+      />
+    );
   }
   const audit = decision.audit;
   const vetoed = audit?.vetoedBy ?? null;
@@ -525,40 +697,51 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
       ? edge.residualPct >= thr.thresholdPct
       : null;
   return (
-    <Station no={5} title="PM 台" sub="仓位决策" tag="M3 · decision">
+    <Station lang={lang} no={5} title={s("st5Title")} sub={s("st5Sub")} tag="M3 · decision">
       <div className={styles.chipRow}>
         <Chip
-          zh={vetoed ? `否决 · ${ZH_VETO[vetoed] ?? vetoed}` : zhAction(decision.action)}
+          label={
+            vetoed
+              ? lang === "zh"
+                ? `否决 · ${vetoLabel("zh", vetoed)}`
+                : `Veto · ${vetoLabel("en", vetoed)}`
+              : labelAction(lang, decision.action)
+          }
           raw={vetoed ? `vetoedBy:${vetoed}` : decision.action}
           tone={vetoed ? "outRed" : actionTone(decision.action)}
           strong
         />
-        {decision.direction ? <Chip zh={zhTradeDirection(decision.direction)} raw={decision.direction} /> : null}
-        <Chip zh={decision.ticker || "—"} tone="outBlue" />
-        <Chip zh={`决策参考价 ${fmtPx(decision.refPx)}`} raw="refPx" />
-        <Chip zh={fmtUtc(decision.createdAtUtc)} raw="createdAtUtc" />
+        {decision.direction ? (
+          <Chip label={labelTradeDirection(lang, decision.direction)} raw={decision.direction} />
+        ) : null}
+        <Chip label={decision.ticker || "—"} tone="outBlue" />
+        <Chip
+          label={lang === "zh" ? `决策参考价 ${fmtPx(decision.refPx)}` : `Ref px ${fmtPx(decision.refPx)}`}
+          raw="refPx"
+        />
+        <Chip label={fmtUtc(decision.createdAtUtc)} raw="createdAtUtc" />
       </div>
 
       {audit ? (
         <>
           {edge ? (
             <>
-              <p className={styles.subHead}>Edge 表（%，超额口径）</p>
+              <p className={styles.subHead}>{s("subEdge")}</p>
               <div className={styles.tableWrap}>
                 <table className={styles.table}>
                   <thead>
                     <tr>
                       <th>
-                        保守口径 <span className={styles.mono}>conservativePct</span>
+                        {s("thConservative")} <span className={styles.mono}>conservativePct</span>
                       </th>
                       <th>
-                        点估计 <span className={styles.mono}>pointPct</span>
+                        {s("thPoint")} <span className={styles.mono}>pointPct</span>
                       </th>
                       <th>
-                        已实现 <span className={styles.mono}>realizedPct</span>
+                        {s("thRealized")} <span className={styles.mono}>realizedPct</span>
                       </th>
                       <th>
-                        残余 edge <span className={styles.mono}>residualPct</span>
+                        {s("thResidual")} <span className={styles.mono}>residualPct</span>
                       </th>
                     </tr>
                   </thead>
@@ -576,70 +759,71 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
               </div>
             </>
           ) : (
-            <p className={styles.skipNote}>Edge 算术未记录（决策在此之前终止）</p>
+            <p className={styles.skipNote}>{s("edgeMissing")}</p>
           )}
 
           {thr ? (
             <>
-              <p className={styles.subHead}>门槛分解表</p>
+              <p className={styles.subHead}>{s("subThreshold")}</p>
               <div className={styles.tableWrap}>
                 <table className={styles.table}>
                   <thead>
                     <tr>
-                      <th>成本项</th>
-                      <th>算式</th>
-                      <th className={styles.num}>数值</th>
+                      <th>{s("thCostItem")}</th>
+                      <th>{s("thFormula")}</th>
+                      <th className={styles.num}>{s("thValue")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td>
-                        taker 手续费 <span className={styles.mono}>takerFeePct</span>
+                        {s("rowTakerFee")} <span className={styles.mono}>takerFeePct</span>
                       </td>
-                      <td className={styles.formulaCell}>单边</td>
+                      <td className={styles.formulaCell}>{s("fOneWay")}</td>
                       <td className={styles.num}>{fmtPct(thr.takerFeePct)}</td>
                     </tr>
                     <tr>
                       <td>
-                        滑点 <span className={styles.mono}>slippagePct</span>
+                        {s("rowSlippage")} <span className={styles.mono}>slippagePct</span>
                       </td>
-                      <td className={styles.formulaCell}>单边估计</td>
+                      <td className={styles.formulaCell}>{s("fOneWayEst")}</td>
                       <td className={styles.num}>{fmtPct(thr.slippagePct)}</td>
                     </tr>
                     <tr>
                       <td>
-                        资金费 <span className={styles.mono}>fundingPct</span>
+                        {s("rowFunding")} <span className={styles.mono}>fundingPct</span>
                       </td>
-                      <td className={styles.formulaCell}>持有期合计（下限 0）</td>
+                      <td className={styles.formulaCell}>{s("fFunding")}</td>
                       <td className={styles.num}>{fmtPct(thr.fundingPct)}</td>
                     </tr>
                     <tr>
                       <td>
-                        往返成本 <span className={styles.mono}>roundTripPct</span>
+                        {s("rowRoundTrip")} <span className={styles.mono}>roundTripPct</span>
                       </td>
-                      <td className={styles.formulaCell}>2×(手续费+滑点)+资金费</td>
+                      <td className={styles.formulaCell}>{s("fRoundTrip")}</td>
                       <td className={styles.num}>{fmtPct(thr.roundTripPct)}</td>
                     </tr>
                     <tr className={costBinds ? styles.hlRow : undefined}>
                       <td>
-                        成本地板 <span className={styles.mono}>costFloorPct</span>
+                        {s("rowCostFloor")} <span className={styles.mono}>costFloorPct</span>
                       </td>
-                      <td className={styles.formulaCell}>= 3 × 往返成本</td>
+                      <td className={styles.formulaCell}>{s("fCostFloor")}</td>
                       <td className={styles.num}>{fmtPct(thr.costFloorPct)}</td>
                     </tr>
                     <tr className={volBinds ? styles.hlRow : undefined}>
                       <td>
-                        波动地板 <span className={styles.mono}>volFloorPct</span>
+                        {s("rowVolFloor")} <span className={styles.mono}>volFloorPct</span>
                       </td>
-                      <td className={styles.formulaCell}>= 0.5 × 日波动 × 持有折算</td>
+                      <td className={styles.formulaCell}>{s("fVolFloor")}</td>
                       <td className={styles.num}>{fmtPct(thr.volFloorPct)}</td>
                     </tr>
                     <tr className={styles.hlRow}>
                       <td>
-                        门槛 <span className={styles.mono}>thresholdPct</span>
+                        {s("rowThreshold")} <span className={styles.mono}>thresholdPct</span>
                       </td>
                       <td className={styles.formulaCell}>
-                        = max(成本地板, 波动地板){volBinds ? " → 波动地板生效" : costBinds ? " → 成本地板生效" : ""}
+                        {s("fThreshold")}
+                        {volBinds ? s("fVolBinds") : costBinds ? s("fCostBinds") : ""}
                       </td>
                       <td className={styles.num}>{fmtPct(thr.thresholdPct)}</td>
                     </tr>
@@ -648,61 +832,67 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
               </div>
               {passed !== null && edge ? (
                 <p className={styles.verdictLine}>
-                  残余 edge {fmtPct(edge.residualPct, { signed: true })}{" "}
-                  {passed ? "≥" : "<"} 门槛 {fmtPct(thr.thresholdPct)} →{" "}
-                  <Chip zh={passed ? "通过门槛" : "不过门槛"} tone={passed ? "outGreen" : "outRed"} strong />
+                  {lang === "zh"
+                    ? `残余 edge ${fmtPct(edge.residualPct, { signed: true })} ${passed ? "≥" : "<"} 门槛 ${fmtPct(thr.thresholdPct)} → `
+                    : `Residual edge ${fmtPct(edge.residualPct, { signed: true })} ${passed ? "≥" : "<"} threshold ${fmtPct(thr.thresholdPct)} → `}
+                  <Chip
+                    label={passed ? s("verdictPass") : s("verdictFail")}
+                    tone={passed ? "outGreen" : "outRed"}
+                    strong
+                  />
                 </p>
               ) : null}
             </>
           ) : (
-            <p className={styles.skipNote}>门槛分解未记录（决策在此之前终止）</p>
+            <p className={styles.skipNote}>{s("thresholdMissing")}</p>
           )}
 
           {stop ? (
             <>
-              <p className={styles.subHead}>止损菜单 stopMenu</p>
+              <p className={styles.subHead}>{s("subStopMenu")}</p>
               <div className={styles.tableWrap}>
                 <table className={styles.table}>
                   <thead>
                     <tr>
-                      <th>候选</th>
-                      <th className={styles.num}>价格 / 数值</th>
+                      <th>{s("thCandidate")}</th>
+                      <th className={styles.num}>{s("thPxValue")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td>
-                        ATR(20 日) <span className={styles.mono}>atr20d</span>
+                        {s("rowAtr")} <span className={styles.mono}>atr20d</span>
                       </td>
                       <td className={styles.num}>{fmtPx(stop.atr20d)}</td>
                     </tr>
                     <tr>
                       <td>
-                        ATR 止损价 <span className={styles.mono}>atrStopPx</span>
+                        {s("rowAtrStop")} <span className={styles.mono}>atrStopPx</span>
                       </td>
                       <td className={styles.num}>{fmtPx(stop.atrStopPx)}</td>
                     </tr>
                     <tr>
                       <td>
-                        摆动位 <span className={styles.mono}>swingPx</span>
+                        {s("rowSwing")} <span className={styles.mono}>swingPx</span>
                       </td>
                       <td className={styles.num}>{fmtPx(stop.swingPx)}</td>
                     </tr>
                     <tr>
                       <td>
-                        硬性红线价 <span className={styles.mono}>hardFloorPx</span>（−20% 用户红线）
+                        {s("rowHardFloor")} <span className={styles.mono}>hardFloorPx</span>
+                        {s("hardFloorSuffix")}
                       </td>
                       <td className={styles.num}>{fmtPx(stop.hardFloorPx)}</td>
                     </tr>
                     <tr className={styles.hlRow}>
                       <td>
-                        选用止损价 <span className={styles.mono}>chosenPx</span>
+                        {s("rowChosenStop")} <span className={styles.mono}>chosenPx</span>
                       </td>
                       <td className={styles.num}>{fmtPx(stop.chosenPx)}</td>
                     </tr>
                     <tr>
                       <td>
-                        止损距离 <span className={styles.mono}>stopDistPct</span>
+                        {s("rowStopDist")} <span className={styles.mono}>stopDistPct</span>
                       </td>
                       <td className={styles.num}>{fmtFracPct(stop.stopDistPct)}</td>
                     </tr>
@@ -711,31 +901,31 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
               </div>
             </>
           ) : (
-            <p className={styles.skipNote}>止损菜单未记录（决策在此之前终止）</p>
+            <p className={styles.skipNote}>{s("stopMenuMissing")}</p>
           )}
 
           {sizing ? (
             <>
-              <p className={styles.subHead}>Sizing 链</p>
+              <p className={styles.subHead}>{s("subSizing")}</p>
               <div className={styles.eqLine}>
                 <span className={styles.eqPart}>
                   <span className={styles.eqValue}>{fmtUsd(sizing.equityUsd)}</span>
-                  <span className={styles.eqLabel}>权益 equityUsd</span>
+                  <span className={styles.eqLabel}>{s("eqEquity")}</span>
                 </span>
                 <span className={styles.eqOp}>×</span>
                 <span className={styles.eqPart}>
                   <span className={styles.eqValue}>{fmtFracPct(sizing.riskBudgetPct)}</span>
-                  <span className={styles.eqLabel}>风险预算 riskBudgetPct</span>
+                  <span className={styles.eqLabel}>{s("eqRiskBudget")}</span>
                 </span>
                 <span className={styles.eqOp}>÷</span>
                 <span className={styles.eqPart}>
                   <span className={styles.eqValue}>{fmtFracPct(stop?.stopDistPct ?? null)}</span>
-                  <span className={styles.eqLabel}>止损距离 stopDistPct</span>
+                  <span className={styles.eqLabel}>{s("eqStopDist")}</span>
                 </span>
                 <span className={styles.eqOp}>=</span>
                 <span className={`${styles.eqPart} ${styles.eqPartHl}`}>
                   <span className={styles.eqValue}>{fmtUsd(sizing.intendedNotionalUsd)}</span>
-                  <span className={styles.eqLabel}>意向名义 intendedNotionalUsd</span>
+                  <span className={styles.eqLabel}>{s("eqIntended")}</span>
                 </span>
               </div>
               {sizing.guards.length > 0 ? (
@@ -743,10 +933,10 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
                   <table className={styles.table}>
                     <thead>
                       <tr>
-                        <th>风控闸 guard</th>
-                        <th className={styles.num}>上限 capUsd</th>
-                        <th className={styles.num}>过闸后名义 notionalAfterUsd</th>
-                        <th>状态</th>
+                        <th>{s("thGuard")}</th>
+                        <th className={styles.num}>{s("thCap")}</th>
+                        <th className={styles.num}>{s("thNotionalAfter")}</th>
+                        <th>{s("thStatus")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -755,12 +945,12 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
                         return (
                           <tr key={i} className={g.clipped ? styles.hlRow : undefined}>
                             <td>
-                              {zhGuard(g.name)} <span className={styles.mono}>{g.name}</span>
+                              {labelGuard(lang, g.name)} <span className={styles.mono}>{g.name}</span>
                             </td>
                             <td className={styles.num}>{fmtUsd(g.capUsd)}</td>
                             <td className={styles.num}>{fmtUsd(g.notionalAfterUsd)}</td>
                             <td>
-                              {g.clipped ? <span className={styles.tagClipped}>裁剪</span> : "通过"}
+                              {g.clipped ? <span className={styles.tagClipped}>{s("tagClipped")}</span> : s("tagPass")}
                               {binding ? <span className={styles.tagBinding}>binding</span> : null}
                             </td>
                           </tr>
@@ -771,71 +961,92 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
                 </div>
               ) : null}
               <div className={styles.kvGrid}>
-                <KV label="最终名义 finalNotionalUsd">
+                <KV label={s("kvFinalNotional")}>
                   <strong>{fmtUsd(sizing.finalNotionalUsd)}</strong>
                 </KV>
                 {sizing.leverage ? (
-                  <KV label="杠杆三帽 configCap / volCap / venueCap → chosen">
+                  <KV label={s("kvLevCaps")}>
                     {fmtX(sizing.leverage.configCap)} / {fmtX(sizing.leverage.volCap)} /{" "}
                     {fmtX(sizing.leverage.venueCap)} → <strong>{fmtX(sizing.leverage.chosen)}</strong>
                     {sizing.leverage.chosen !== null && sizing.leverage.chosen <= 1 ? (
-                      <span className={styles.kvNote}>当前策略：不上杠杆（chosen=1，用户 2026-08-23 拍板）</span>
+                      <span className={styles.kvNote}>{s("levNote")}</span>
                     ) : null}
                   </KV>
                 ) : (
-                  <KV label="杠杆三帽">—</KV>
+                  <KV label={s("kvLevCapsShort")}>—</KV>
                 )}
               </div>
             </>
           ) : (
-            <p className={styles.skipNote}>Sizing 链未记录（决策在此之前终止）</p>
+            <p className={styles.skipNote}>{s("sizingMissing")}</p>
           )}
 
           {mkt ? (
             <div className={styles.chipRow}>
-              <Chip zh={`mark ${fmtPx(mkt.markPx)}`} raw="markPx" />
-              <Chip zh={`日波动 ${fmtFracPct(mkt.dailyVolPct)}`} raw="dailyVolPct" />
-              <Chip zh={`最大日内波动 ${fmtFracPct(mkt.maxDailyMovePct)}`} raw="maxDailyMovePct" />
-              <Chip zh={`资金费率 ${fmtFracPct(mkt.fundingHourly)}/小时`} raw="fundingHourly" />
-              <Chip zh={`β ${fmtBeta(mkt.beta)}`} raw="beta" />
+              <Chip label={`mark ${fmtPx(mkt.markPx)}`} raw="markPx" />
+              <Chip
+                label={
+                  lang === "zh" ? `日波动 ${fmtFracPct(mkt.dailyVolPct)}` : `daily vol ${fmtFracPct(mkt.dailyVolPct)}`
+                }
+                raw="dailyVolPct"
+              />
+              <Chip
+                label={
+                  lang === "zh"
+                    ? `最大日内波动 ${fmtFracPct(mkt.maxDailyMovePct)}`
+                    : `max daily move ${fmtFracPct(mkt.maxDailyMovePct)}`
+                }
+                raw="maxDailyMovePct"
+              />
+              <Chip
+                label={
+                  lang === "zh"
+                    ? `资金费率 ${fmtFracPct(mkt.fundingHourly)}/小时`
+                    : `funding ${fmtFracPct(mkt.fundingHourly)}/h`
+                }
+                raw="fundingHourly"
+              />
+              <Chip label={`β ${fmtBeta(mkt.beta)}`} raw="beta" />
             </div>
           ) : null}
         </>
       ) : (
-        <p className={styles.skipNote}>此决策无逐项审计——审计字段自 2026-08-23 起记录，早于该时点的决策仅有 reason 原文。</p>
+        <p className={styles.skipNote}>{s("noAuditNote")}</p>
       )}
 
       {decision.action !== "no_trade" || decision.sizeUsd ? (
         <div className={styles.kvGrid}>
-          <KV label="下单规模 sizeUsd">{fmtUsd(decision.sizeUsd)}</KV>
-          <KV label="杠杆 leverage">{fmtX(decision.leverage)}</KV>
-          <KV label="意向风险 intendedRiskPct">{fmtFracPct(decision.intendedRiskPct)}</KV>
-          <KV label="实际风险 realizedRiskPct">{fmtFracPct(decision.realizedRiskPct)}</KV>
-          <KV label="残余 edge residualEdgePct">{fmtPct(decision.residualEdgePct)}</KV>
-          <KV label="被裁剪于 bindingConstraint">
+          <KV label={s("kvSizeUsd")}>{fmtUsd(decision.sizeUsd)}</KV>
+          <KV label={s("kvLeverage")}>{fmtX(decision.leverage)}</KV>
+          <KV label={s("kvIntendedRisk")}>{fmtFracPct(decision.intendedRiskPct)}</KV>
+          <KV label={s("kvRealizedRisk")}>{fmtFracPct(decision.realizedRiskPct)}</KV>
+          <KV label={s("kvResidualEdge")}>{fmtPct(decision.residualEdgePct)}</KV>
+          <KV label={s("kvBinding")}>
             {decision.bindingConstraint ? (
               <>
-                {zhGuard(decision.bindingConstraint)} <span className={styles.mono}>{decision.bindingConstraint}</span>
+                {labelGuard(lang, decision.bindingConstraint)}{" "}
+                <span className={styles.mono}>{decision.bindingConstraint}</span>
               </>
             ) : (
               "—"
             )}
           </KV>
-          <KV label="持有期限 horizonUtc">{fmtUtc(decision.horizonUtc)}</KV>
-          <KV label="目标超额区间 targetPctExcess">
+          <KV label={s("kvHorizon")}>{fmtUtc(decision.horizonUtc)}</KV>
+          <KV label={s("kvTarget")}>
             {decision.targetPctExcess
               ? `${fmtPct(decision.targetPctExcess.lo)} ~ ${fmtPct(decision.targetPctExcess.hi)}`
               : "—"}
           </KV>
           {decision.stop ? (
-            <KV label="止损 initialPx / hardFloorPx">
-              {fmtPx(decision.stop.initialPx)} / {fmtPx(decision.stop.hardFloorPx)}（−20% 用户红线）
+            <KV label={s("kvStopPair")}>
+              {fmtPx(decision.stop.initialPx)} / {fmtPx(decision.stop.hardFloorPx)}
+              {s("hardFloorSuffix")}
             </KV>
           ) : null}
         </div>
       ) : null}
-      {decision.stop?.rule ? <Quote label="止损规则 stop.rule 原文" text={decision.stop.rule} /> : null}
-      <Quote label="decision.reason 原文" text={decision.reason} />
+      {decision.stop?.rule ? <Quote label={s("quoteStopRule")} text={decision.stop.rule} /> : null}
+      <Quote label={s("quoteDecisionReason")} text={decision.reason} />
       <p className={styles.mono}>decision id: {decision.id || "—"}</p>
     </Station>
   );
@@ -844,61 +1055,73 @@ function DecisionStation({ decision, skipReason }: { decision: DecisionView | nu
 // ---------------------------------------------------------------------------
 // Station 6 — 执行与风控
 
-function PostStation({ c, skipReason }: { c: CaseView; skipReason: string | null }) {
+function PostStation({ lang, c, skipReason }: { lang: Lang; c: CaseView; skipReason: string | null }) {
+  const s = t(lang);
   const { execution, positionNow, postEvents, decision } = c;
   if (!execution && !positionNow && postEvents.length === 0) {
-    return <Station no={6} title="执行与风控" tag="paper book" skipReason={skipReason ?? "无记录"} />;
+    return (
+      <Station lang={lang} no={6} title={s("st6Title")} tag="paper book" skipReason={skipReason ?? s("postNoRecord")} />
+    );
   }
   const slippage =
-    execution !== null && execution.fillPx !== null && decision !== null && decision.refPx !== null && decision.refPx !== 0
+    execution !== null &&
+    execution.fillPx !== null &&
+    decision !== null &&
+    decision.refPx !== null &&
+    decision.refPx !== 0
       ? (execution.fillPx - decision.refPx) / decision.refPx
       : null;
   return (
-    <Station no={6} title="执行与风控" tag="paper book">
+    <Station lang={lang} no={6} title={s("st6Title")} tag="paper book">
       {execution ? (
         <>
-          <p className={styles.subHead}>模拟执行 execution</p>
+          <p className={styles.subHead}>{s("subExecution")}</p>
           <div className={styles.kvGrid}>
-            <KV label="类型 type">
-              {zhPostEvent(execution.type)} <span className={styles.mono}>{execution.type}</span>
+            <KV label={s("kvExecType")}>
+              {labelPostEvent(lang, execution.type)} <span className={styles.mono}>{execution.type}</span>
             </KV>
-            <KV label="成交时间 ts">{fmtUtc(execution.ts)}</KV>
-            <KV label="方向 / 数量">
-              {execution.direction ? zhTradeDirection(execution.direction) : "—"} · {fmtQty(execution.qty)}
+            <KV label={s("kvExecTs")}>{fmtUtc(execution.ts)}</KV>
+            <KV label={s("kvDirQty")}>
+              {execution.direction ? labelTradeDirection(lang, execution.direction) : "—"} · {fmtQty(execution.qty)}
             </KV>
-            <KV label="成交价 fillPx">{fmtPx(execution.fillPx)}</KV>
-            <KV label="名义规模 sizeUsd">{fmtUsd(execution.sizeUsd)}</KV>
-            <KV label="滑点（fillPx vs 决策 refPx）">
+            <KV label={s("kvFillPx")}>{fmtPx(execution.fillPx)}</KV>
+            <KV label={s("kvExecNotional")}>{fmtUsd(execution.sizeUsd)}</KV>
+            <KV label={s("kvSlippage")}>
               {slippage === null ? (
                 "—"
               ) : (
                 <>
-                  {fmtPx(execution.fillPx)} vs {fmtPx(decision?.refPx ?? null)} = {fmtFracPct(slippage, { signed: true })}
+                  {fmtPx(execution.fillPx)} vs {fmtPx(decision?.refPx ?? null)} ={" "}
+                  {fmtFracPct(slippage, { signed: true })}
                 </>
               )}
             </KV>
           </div>
         </>
       ) : null}
-      {positionNow ? <PositionBlock p={positionNow} /> : execution ? (
-        <p className={styles.skipNote}>当前账本无此仓位（可能已平仓，见下方事件；或账本已重置）。</p>
+      {positionNow ? (
+        <PositionBlock lang={lang} p={positionNow} />
+      ) : execution ? (
+        <p className={styles.skipNote}>{s("posGone")}</p>
       ) : null}
-      <p className={styles.subHead}>风控事件时间线 postEvents</p>
+      <p className={styles.subHead}>{s("subPostEvents")}</p>
       {postEvents.length === 0 ? (
-        <p className={styles.skipNote}>暂无 stop_loss / hard_floor_stop / paper_close 事件。</p>
+        <p className={styles.skipNote}>{s("postEventsEmpty")}</p>
       ) : (
         <ul className={styles.timeline}>
           {postEvents.map((e, i) => (
             <li key={i} className={styles.timelineItem}>
               <Chip
-                zh={zhPostEvent(e.type)}
+                label={labelPostEvent(lang, e.type)}
                 raw={e.type}
                 tone={e.type === "hard_floor_stop" ? "outRed" : e.type === "stop_loss" ? "outAmber" : "outBlue"}
                 strong
               />
               <span>{fmtUtc(e.ts)}</span>
               {e.pnlUsd !== null ? (
-                <span className={e.pnlUsd >= 0 ? styles.pos : styles.neg}>盈亏 {fmtSignedUsd(e.pnlUsd)}</span>
+                <span className={e.pnlUsd >= 0 ? styles.pos : styles.neg}>
+                  {lang === "zh" ? `盈亏 ${fmtSignedUsd(e.pnlUsd)}` : `PnL ${fmtSignedUsd(e.pnlUsd)}`}
+                </span>
               ) : null}
               {e.extras.map((x) => (
                 <span key={x.key} className={styles.mono}>
@@ -913,36 +1136,37 @@ function PostStation({ c, skipReason }: { c: CaseView; skipReason: string | null
   );
 }
 
-function PositionBlock({ p }: { p: PositionNowView }) {
+function PositionBlock({ lang, p }: { lang: Lang; p: PositionNowView }) {
+  const s = t(lang);
   return (
     <>
-      <p className={styles.subHead}>当前仓位 positionNow</p>
+      <p className={styles.subHead}>{s("subPosition")}</p>
       <div className={styles.kvGrid}>
-        <KV label="标的 / 方向">
-          {p.ticker} · {zhTradeDirection(p.direction)}
+        <KV label={s("kvTickerDir")}>
+          {p.ticker} · {labelTradeDirection(lang, p.direction)}
         </KV>
-        <KV label="开仓价 entryPx / 数量 qty">
+        <KV label={s("kvEntryQty")}>
           {fmtPx(p.entryPx)} · {fmtQty(p.qty)}
         </KV>
-        <KV label="开仓名义 notionalUsdAtEntry">{fmtUsd(p.notionalUsdAtEntry)}</KV>
-        <KV label="杠杆 leverage">{fmtX(p.leverage)}</KV>
-        <KV label="当前 mark">{p.markPx === null ? "—（快照未含实时 mark）" : fmtPx(p.markPx)}</KV>
-        <KV label="浮动盈亏 unrealizedPnlUsd">
-          {p.unrealizedPnlUsd === null ? "—（快照未含实时 mark）" : fmtSignedUsd(p.unrealizedPnlUsd)}
+        <KV label={s("kvEntryNotional")}>{fmtUsd(p.notionalUsdAtEntry)}</KV>
+        <KV label={s("kvLeverage")}>{fmtX(p.leverage)}</KV>
+        <KV label={s("kvCurMark")}>{p.markPx === null ? s("noLiveMark") : fmtPx(p.markPx)}</KV>
+        <KV label={s("kvUnrealized")}>
+          {p.unrealizedPnlUsd === null ? s("noLiveMark") : fmtSignedUsd(p.unrealizedPnlUsd)}
         </KV>
-        <KV label="止损价 stopPx">{fmtPx(p.stopPx)}</KV>
-        <KV label="硬性红线价 hardFloorPx（−20%）">{fmtPx(p.hardFloorPx)}</KV>
-        <KV label="持有期限 horizonUtc">{fmtUtc(p.horizonUtc)}</KV>
-        <KV label="t0 基准价 baselinePx">{fmtPx(p.baselinePx)}</KV>
-        <KV label="基准指数 t0 价 benchmarkBaselinePx">{fmtPx(p.benchmarkBaselinePx)}</KV>
-        <KV label="β / 追踪止损">
-          {fmtBeta(p.beta)} · {p.trailArmed === null ? "—" : p.trailArmed ? "追踪已启动" : "追踪未启动"}
+        <KV label={s("kvStopPx")}>{fmtPx(p.stopPx)}</KV>
+        <KV label={s("kvHardFloorPx")}>{fmtPx(p.hardFloorPx)}</KV>
+        <KV label={s("kvHorizon")}>{fmtUtc(p.horizonUtc)}</KV>
+        <KV label={s("kvBaseline")}>{fmtPx(p.baselinePx)}</KV>
+        <KV label={s("kvBenchBaseline")}>{fmtPx(p.benchmarkBaselinePx)}</KV>
+        <KV label={s("kvBetaTrail")}>
+          {fmtBeta(p.beta)} · {p.trailArmed === null ? "—" : p.trailArmed ? s("trailArmed") : s("trailNot")}
         </KV>
-        <KV label="目标超额区间 targetPctExcess">
+        <KV label={s("kvTarget")}>
           {p.targetPctExcess ? `${fmtPct(p.targetPctExcess.lo)} ~ ${fmtPct(p.targetPctExcess.hi)}` : "—"}
         </KV>
-        <KV label="最高收盘 highestClosePx">{fmtPx(p.highestClosePx)}</KV>
-        <KV label="开仓时间 entryUtc">{fmtUtc(p.entryUtc)}</KV>
+        <KV label={s("kvHighClose")}>{fmtPx(p.highestClosePx)}</KV>
+        <KV label={s("kvEntryUtc")}>{fmtUtc(p.entryUtc)}</KV>
       </div>
     </>
   );
@@ -951,74 +1175,111 @@ function PositionBlock({ p }: { p: PositionNowView }) {
 // ---------------------------------------------------------------------------
 // Case card: summary line + six-station chain
 
-function skipReasons(c: CaseView): { st2: string | null; st3: string | null; st4: string | null; st5: string | null; st6: string | null } {
+function skipReasons(
+  lang: Lang,
+  c: CaseView
+): { st2: string | null; st3: string | null; st4: string | null; st5: string | null; st6: string | null } {
+  const s = t(lang);
+  const zh = lang === "zh";
   const mat = c.signal?.materiality ?? null;
   const pin = c.signal?.pricedIn ?? null;
   const notTradeable = mat !== null && mat.tradeable === false;
   const pinArchived = pin !== null && ARCHIVE_STATUSES.has(pin.status);
-  const st2 = c.signal && mat ? null : c.signal ? "上游未记录重要性检查结果" : "该新闻未生成信号记录";
+  const st2 =
+    c.signal && mat
+      ? null
+      : c.signal
+        ? s("matNotRecorded")
+        : zh
+          ? "该新闻未生成信号记录"
+          : "no signal record for this item";
   const st3 = pin
     ? null
     : !c.signal
-      ? "前站已归档（无信号，重要性检查未运行）"
+      ? zh
+        ? "前站已归档（无信号，重要性检查未运行）"
+        : "archived upstream (no signal; importance gate never ran)"
       : notTradeable
-        ? `前站已归档（重要性检查未通过，评分 ${mat?.score ?? "—"}/100）`
-        : "上游未记录定价检查结果";
+        ? zh
+          ? `前站已归档（重要性检查未通过，评分 ${mat?.score ?? "—"}/100）`
+          : `archived upstream (failed the importance gate, score ${mat?.score ?? "—"}/100)`
+        : s("pinNotRecorded");
   const st4 = c.thesis
     ? null
     : notTradeable
-      ? "前站已归档（重要性检查未通过）"
+      ? zh
+        ? "前站已归档（重要性检查未通过）"
+        : "archived upstream (failed the importance gate)"
       : pinArchived && pin
-        ? `前站已归档（定价检查判定「${zhPricedIn(pin.status)}」）`
+        ? zh
+          ? `前站已归档（定价检查判定「${labelPricedIn("zh", pin.status)}」）`
+          : `archived upstream (priced-in gate: "${labelPricedIn("en", pin.status)}")`
         : c.signal
-          ? "上游未记录研究 memo"
-          : "前站已归档（无信号）";
-  const st5 = c.decision ? null : c.thesis ? "上游未记录 PM 决策" : "前站已归档（无研究 memo）";
+          ? s("thesisNotRecorded")
+          : zh
+            ? "前站已归档（无信号）"
+            : "archived upstream (no signal)";
+  const st5 = c.decision
+    ? null
+    : c.thesis
+      ? s("decNotRecorded")
+      : zh
+        ? "前站已归档（无研究 memo）"
+        : "archived upstream (no research memo)";
   const st6 =
     c.execution || c.positionNow || c.postEvents.length > 0
       ? null
       : c.decision
         ? c.decision.action === "open" || c.decision.action === "add" || c.decision.action === "flip"
-          ? "上游未记录执行"
-          : `PM 决策为「${zhAction(c.decision.action)}」，无需执行`
-        : "前站已归档（无决策）";
+          ? zh
+            ? "上游未记录执行"
+            : "execution not recorded upstream"
+          : zh
+            ? `PM 决策为「${labelAction("zh", c.decision.action)}」，无需执行`
+            : `PM decision was "${labelAction("en", c.decision.action)}" — nothing to execute`
+        : zh
+          ? "前站已归档（无决策）"
+          : "archived upstream (no decision)";
   return { st2, st3, st4, st5, st6 };
 }
 
-function CaseCard({ c, defaultOpen }: { c: CaseView; defaultOpen: boolean }) {
-  const outcome = caseOutcome(c);
+function CaseCard({ lang, c, defaultOpen }: { lang: Lang; c: CaseView; defaultOpen: boolean }) {
+  const s = t(lang);
+  const outcome = caseOutcome(lang, c);
   const reached = stationsReached(c);
   const tickers = c.thesis?.ticker
     ? [c.thesis.ticker]
     : c.signal?.materiality?.tickers?.length
       ? c.signal.materiality.tickers
       : [];
-  const skip = skipReasons(c);
+  const skip = skipReasons(lang, c);
   return (
     <details className={styles.caseCard} open={defaultOpen}>
       <summary className={styles.caseSummary}>
         <div className={styles.sumTop}>
-          <Chip zh={outcome.label} tone={outcome.tone} strong />
+          <Chip label={outcome.label} tone={outcome.tone} strong />
           <span className={styles.sumTitle}>{c.news.title}</span>
         </div>
-        {outcome.note ? <p className={styles.sumNote}>原因：{outcome.note}</p> : null}
+        {outcome.note ? (
+          <p className={styles.sumNote}>{lang === "zh" ? `原因：${outcome.note}` : `Why: ${outcome.note}`}</p>
+        ) : null}
         <div className={styles.sumMeta}>
-          <span>见到 {fmtUtc(c.news.seenAtUtc)}</span>
+          <span>{lang === "zh" ? `见到 ${fmtUtc(c.news.seenAtUtc)}` : `Seen ${fmtUtc(c.news.seenAtUtc)}`}</span>
           {tickers.length > 0 ? <span>{tickers.join(" · ")}</span> : null}
-          <span>流程 {reached}/6 站</span>
+          <span>{lang === "zh" ? `流程 ${reached}/6 站` : `${reached}/6 stations`}</span>
           <span className={styles.mono}>{outcome.rawLine}</span>
-          <span className={styles.sumChevron}>展开决策链 ▾</span>
+          <span className={styles.sumChevron}>{s("sumExpand")}</span>
         </div>
       </summary>
       <div className={styles.caseBody}>
-        <TimingStrip t={c.timingsMs} />
+        <TimingStrip lang={lang} t={c.timingsMs} />
         <ol className={styles.chain}>
-          <NewsStation c={c} />
-          <MaterialityStation signal={c.signal} skipReason={skip.st2} />
-          <PricedInStation signal={c.signal} skipReason={skip.st3} />
-          <ThesisStation thesis={c.thesis} skipReason={skip.st4} />
-          <DecisionStation decision={c.decision} skipReason={skip.st5} />
-          <PostStation c={c} skipReason={skip.st6} />
+          <NewsStation lang={lang} c={c} />
+          <MaterialityStation lang={lang} signal={c.signal} skipReason={skip.st2} />
+          <PricedInStation lang={lang} signal={c.signal} skipReason={skip.st3} />
+          <ThesisStation lang={lang} thesis={c.thesis} skipReason={skip.st4} />
+          <DecisionStation lang={lang} decision={c.decision} skipReason={skip.st5} />
+          <PostStation lang={lang} c={c} skipReason={skip.st6} />
         </ol>
       </div>
     </details>
@@ -1028,79 +1289,115 @@ function CaseCard({ c, defaultOpen }: { c: CaseView; defaultOpen: boolean }) {
 // ---------------------------------------------------------------------------
 // Reflection footer
 
-function ReflectionFooter({ r }: { r: ReflectionView }) {
+function ReflectionFooter({ lang, r }: { lang: Lang; r: ReflectionView }) {
+  const s = t(lang);
+  const zh = lang === "zh";
   const f = r.funnel;
   const cont = r.contamination;
   const m1 = r.m1Calibration;
   return (
     <section className={styles.section} aria-labelledby="sec-reflection">
       <h2 id="sec-reflection" className={styles.sectionTitle}>
-        当日反思关键数（{r.date || "—"}）
+        {zh ? `当日反思关键数（${r.date || "—"}）` : `Daily reflection key numbers (${r.date || "—"})`}
       </h2>
       {f ? (
         <div className={styles.funnelLine}>
-          <span className={styles.funnelStep}>新闻 {fmtInt(f.newsSeen)}</span>
+          <span className={styles.funnelStep}>{zh ? `新闻 ${fmtInt(f.newsSeen)}` : `News ${fmtInt(f.newsSeen)}`}</span>
           <span className={styles.funnelArrow}>→</span>
-          <span className={styles.funnelStep}>信号 {fmtInt(f.signals)}</span>
+          <span className={styles.funnelStep}>{zh ? `信号 ${fmtInt(f.signals)}` : `Signals ${fmtInt(f.signals)}`}</span>
           <span className={styles.funnelArrow}>→</span>
           <span className={styles.funnelStep}>
-            归档：非股票池 {fmtInt(f.archivedNoTicker)} · 重要性不足 {fmtInt(f.archivedNotMaterial)} · 重复旧闻{" "}
-            {fmtInt(f.archivedStale)} · 已被市场定价 {fmtInt(f.archivedPricedIn)}
+            {zh
+              ? `归档：非股票池 ${fmtInt(f.archivedNoTicker)} · 重要性不足 ${fmtInt(f.archivedNotMaterial)} · 重复旧闻 ${fmtInt(f.archivedStale)} · 已被市场定价 ${fmtInt(f.archivedPricedIn)}`
+              : `Archived: outside universe ${fmtInt(f.archivedNoTicker)} · below importance bar ${fmtInt(f.archivedNotMaterial)} · stale repeats ${fmtInt(f.archivedStale)} · already priced in ${fmtInt(f.archivedPricedIn)}`}
           </span>
           <span className={styles.funnelArrow}>→</span>
-          <span className={styles.funnelStep}>研究 memo {fmtInt(f.theses)}</span>
+          <span className={styles.funnelStep}>
+            {zh ? `研究 memo ${fmtInt(f.theses)}` : `Research memos ${fmtInt(f.theses)}`}
+          </span>
           <span className={styles.funnelArrow}>→</span>
           <span className={styles.funnelStep}>
-            开仓 {fmtInt(f.decisionsOpen)} · 不开仓 {fmtInt(f.decisionsNoTrade)}
+            {zh
+              ? `开仓 ${fmtInt(f.decisionsOpen)} · 不开仓 ${fmtInt(f.decisionsNoTrade)}`
+              : `Open ${fmtInt(f.decisionsOpen)} · no-trade ${fmtInt(f.decisionsNoTrade)}`}
           </span>
         </div>
       ) : (
-        <p className={styles.sectionNote}>反思报告未含漏斗数据。</p>
+        <p className={styles.sectionNote}>{s("reflectionNoFunnel")}</p>
       )}
       <div className={styles.chipRow}>
         {cont ? (
           <Chip
-            zh={`污染率 ${cont.rate === null ? "—" : `${(cont.rate * 100).toFixed(0)}%`}（研究 ${fmtInt(cont.theses)} 份：重度 ${fmtInt(cont.hard)} · 轻度 ${fmtInt(cont.soft)}）`}
+            label={
+              zh
+                ? `污染率 ${cont.rate === null ? "—" : `${(cont.rate * 100).toFixed(0)}%`}（研究 ${fmtInt(cont.theses)} 份：重度 ${fmtInt(cont.hard)} · 轻度 ${fmtInt(cont.soft)}）`
+                : `Contamination ${cont.rate === null ? "—" : `${(cont.rate * 100).toFixed(0)}%`} (${fmtInt(cont.theses)} memos: hard ${fmtInt(cont.hard)} · soft ${fmtInt(cont.soft)})`
+            }
             raw="contamination"
             tone={cont.rate !== null && cont.rate > 0 ? "outAmber" : "outGreen"}
           />
         ) : null}
         {m1?.forwarded ? (
           <Chip
-            zh={`放行样本方向命中 ${fmtInt(m1.forwarded.hits)}/${fmtInt(m1.forwarded.n)}${m1.forwarded.hitRate === null ? "（样本不足）" : ` = ${(m1.forwarded.hitRate * 100).toFixed(0)}%`}`}
+            label={
+              zh
+                ? `放行样本方向命中 ${fmtInt(m1.forwarded.hits)}/${fmtInt(m1.forwarded.n)}${m1.forwarded.hitRate === null ? "（样本不足）" : ` = ${(m1.forwarded.hitRate * 100).toFixed(0)}%`}`
+                : `Forwarded direction hits ${fmtInt(m1.forwarded.hits)}/${fmtInt(m1.forwarded.n)}${m1.forwarded.hitRate === null ? " (sample too small)" : ` = ${(m1.forwarded.hitRate * 100).toFixed(0)}%`}`
+            }
             raw="m1Calibration.forwarded"
           />
         ) : null}
         {m1?.archivedFullReverse ? (
           <Chip
-            zh={`错杀检查：归档「已被市场定价/走势反向」${fmtInt(m1.archivedFullReverse.n)} 条，其中随新闻方向走 ${fmtInt(m1.archivedFullReverse.movedWithNews)} 条`}
+            label={
+              zh
+                ? `错杀检查：归档「已被市场定价/走势反向」${fmtInt(m1.archivedFullReverse.n)} 条，其中随新闻方向走 ${fmtInt(m1.archivedFullReverse.movedWithNews)} 条`
+                : `False-kill check: ${fmtInt(m1.archivedFullReverse.n)} archived as priced-in/reverse; ${fmtInt(m1.archivedFullReverse.movedWithNews)} moved with the news`
+            }
             raw="m1Calibration.archivedFullReverse"
           />
         ) : null}
         {r.deltaT ? (
-          <Chip zh={`t0→评估延迟中位数 ${fmtMinutes(r.deltaT.medianMinutes)}（n=${fmtInt(r.deltaT.n)}）`} raw="deltaT" />
+          <Chip
+            label={
+              zh
+                ? `t0→评估延迟中位数 ${fmtMinutes("zh", r.deltaT.medianMinutes)}（n=${fmtInt(r.deltaT.n)}）`
+                : `Median t0→eval delay ${fmtMinutes("en", r.deltaT.medianMinutes)} (n=${fmtInt(r.deltaT.n)})`
+            }
+            raw="deltaT"
+          />
         ) : null}
         {r.engines.map((e) => (
-          <Chip key={e.name} zh={`${zhProvider(e.name)} ${e.count} 次`} raw={e.name} />
+          <Chip
+            key={e.name}
+            label={zh ? `${labelProvider("zh", e.name)} ${e.count} 次` : `${labelProvider("en", e.name)} ×${e.count}`}
+            raw={e.name}
+          />
         ))}
       </div>
       {r.pricedInDistribution.length > 0 ? (
         <p className={styles.sectionNote}>
-          定价检查分布：
+          {zh ? "定价检查分布：" : "Priced-in gate distribution: "}
           {r.pricedInDistribution
-            .map((d) => `${d.status === "not_evaluated" ? "未评估" : zhPricedIn(d.status)} ${d.count}`)
+            .map(
+              (d) =>
+                `${d.status === "not_evaluated" ? (zh ? "未评估" : "not evaluated") : labelPricedIn(lang, d.status)} ${d.count}`
+            )
             .join(" · ")}
         </p>
       ) : null}
       {r.noTradeReasons.length > 0 ? (
         <p className={styles.sectionNote}>
-          不开仓原因：{r.noTradeReasons.map((x) => `「${x.reason}」× ${x.count}`).join("；")}
+          {zh
+            ? `不开仓原因：${r.noTradeReasons.map((x) => `「${x.reason}」× ${x.count}`).join("；")}`
+            : `No-trade reasons: ${r.noTradeReasons.map((x) => `"${x.reason}" × ${x.count}`).join("; ")}`}
         </p>
       ) : null}
       {r.book ? (
         <p className={styles.sectionNote}>
-          反思时点账本：权益 {fmtUsd(r.book.equityUsd)} · 已实现 {fmtSignedUsd(r.book.realizedPnlUsd)} · 持仓{" "}
-          {fmtInt(r.book.positions)} · {r.book.halted ? "已熔断" : "未熔断"}
+          {zh
+            ? `反思时点账本：权益 ${fmtUsd(r.book.equityUsd)} · 已实现 ${fmtSignedUsd(r.book.realizedPnlUsd)} · 持仓 ${fmtInt(r.book.positions)} · ${r.book.halted ? "已熔断" : "未熔断"}`
+            : `Book at reflection: equity ${fmtUsd(r.book.equityUsd)} · realized ${fmtSignedUsd(r.book.realizedPnlUsd)} · positions ${fmtInt(r.book.positions)} · ${r.book.halted ? "halted" : "not halted"}`}
         </p>
       ) : null}
     </section>
@@ -1110,60 +1407,85 @@ function ReflectionFooter({ r }: { r: ReflectionView }) {
 // ---------------------------------------------------------------------------
 // Glossary (术语表) — plain definitions for every term of art on this page.
 
-const GLOSSARY: Array<{ term: string; en: string; def: string }> = [
+const GLOSSARY: Array<{ tag: string; term: Bi; def: Bi }> = [
   {
-    term: "重要性检查",
-    en: "materiality gate",
-    def: "判断新闻是否属于可交易事件类别、主角是否在 21 只股票池内、内容是否超出市场共识。不通过 = 归档，不再消耗任何分析资源。"
+    tag: "materiality gate",
+    term: { zh: "重要性检查", en: "Importance gate" },
+    def: {
+      zh: "判断新闻是否属于可交易事件类别、主角是否在 21 只股票池内、内容是否超出市场共识。不通过 = 归档，不再消耗任何分析资源。",
+      en: "Is this a tradeable event class, is the subject in the 21-stock universe, does it beat market consensus? Fail = archive — no further analyst spend."
+    }
   },
   {
-    term: "定价检查",
-    en: "priced-in gate",
-    def: "用新闻最早出现时间之后的真实价格走势（β 调整后的超额涨跌），判断市场是否已经消化这条新闻。已定价 / 走势反向 = 归档。"
+    tag: "priced-in gate",
+    term: { zh: "定价检查", en: "Priced-in gate" },
+    def: {
+      zh: "用新闻最早出现时间之后的真实价格走势（β 调整后的超额涨跌），判断市场是否已经消化这条新闻。已定价 / 走势反向 = 归档。",
+      en: "Uses the real price path after the news first surfaced (beta-adjusted excess move) to judge whether the market has already digested it. Fully priced / reverse move = archive."
+    }
   },
   {
-    term: "残余空间",
-    en: "residual",
-    def: "分析师保守估计的合理涨跌幅，减去市场已经走掉的部分——决定开不开仓的核心数字。"
+    tag: "residual",
+    term: { zh: "残余空间", en: "Residual edge" },
+    def: {
+      zh: "分析师保守估计的合理涨跌幅，减去市场已经走掉的部分——决定开不开仓的核心数字。",
+      en: "The analyst's conservative fair-impact estimate minus what the market has already moved — the single number that decides whether to open."
+    }
   },
   {
-    term: "门槛",
-    en: "threshold",
-    def: "开仓要求的最小残余空间 = max(3×往返交易成本, 0.5×日波动)，防止为噪音下单。"
+    tag: "threshold",
+    term: { zh: "门槛", en: "Threshold" },
+    def: {
+      zh: "开仓要求的最小残余空间 = max(3×往返交易成本, 0.5×日波动)，防止为噪音下单。",
+      en: "Minimum residual edge required to open = max(3× round-trip cost, 0.5× daily vol) — keeps noise from becoming orders."
+    }
   },
   {
-    term: "硬地板",
-    en: "hard floor",
-    def: "用户红线——持仓对入场价反向 20% 无条件平仓，优先级高于一切模型判断。"
+    tag: "hard floor",
+    term: { zh: "硬地板", en: "Hard floor" },
+    def: {
+      zh: "用户红线——持仓对入场价反向 20% 无条件平仓，优先级高于一切模型判断。",
+      en: "User red line — a position 20% against entry closes unconditionally, overriding every model view."
+    }
   },
   {
-    term: "风控闸",
-    en: "guard",
-    def: "六道敞口上限（单标的 / 总多空 / 同题材簇 / 隔离保证金等），只会把仓位向下裁剪，从不放大。"
+    tag: "guard",
+    term: { zh: "风控闸", en: "Sizing guard" },
+    def: {
+      zh: "六道敞口上限（单标的 / 总多空 / 同题材簇 / 隔离保证金等），只会把仓位向下裁剪，从不放大。",
+      en: "Six exposure caps (per-name / gross long-short / theme cluster / isolated margin, etc.); they only clip size down, never up."
+    }
   },
   {
-    term: "β / 超额",
-    en: "beta / excess",
-    def: "个股涨跌扣掉大盘（XYZ100 指数）联动后的剩余部分——避免把大盘行情误认成新闻反应。"
+    tag: "beta / excess",
+    term: { zh: "β / 超额", en: "Beta / excess" },
+    def: {
+      zh: "个股涨跌扣掉大盘（XYZ100 指数）联动后的剩余部分——避免把大盘行情误认成新闻反应。",
+      en: "The stock's move net of index (XYZ100) co-movement — keeps a market-wide move from being mistaken for news reaction."
+    }
   },
   {
-    term: "影子模式",
-    en: "shadow mode",
-    def: "全流程真实运行但只记账，不向任何交易所发订单。"
+    tag: "shadow mode",
+    term: { zh: "影子模式", en: "Shadow mode" },
+    def: {
+      zh: "全流程真实运行但只记账，不向任何交易所发订单。",
+      en: "The full pipeline runs for real but only writes to the book; no orders reach any exchange."
+    }
   }
 ];
 
-function Glossary() {
+function Glossary({ lang }: { lang: Lang }) {
+  const s = t(lang);
   return (
     <details className={styles.glossary}>
-      <summary className={styles.glossarySummary}>术语表 — 本页所有行话的白话解释（点开）</summary>
+      <summary className={styles.glossarySummary}>{s("glossarySummary")}</summary>
       <dl className={styles.glossaryList}>
         {GLOSSARY.map((g) => (
-          <div key={g.term} className={styles.glossaryItem}>
+          <div key={g.tag} className={styles.glossaryItem}>
             <dt className={styles.glossaryTerm}>
-              {g.term} <span className={styles.mono}>{g.en}</span>
+              {g.term[lang]} <span className={styles.mono}>{g.tag}</span>
             </dt>
-            <dd className={styles.glossaryDef}>{g.def}</dd>
+            <dd className={styles.glossaryDef}>{g.def[lang]}</dd>
           </div>
         ))}
       </dl>
@@ -1174,7 +1496,17 @@ function Glossary() {
 // ---------------------------------------------------------------------------
 // Page shell
 
-export function DeltaPmReport({ payload, dataSource }: { payload: AuditPayload; dataSource: "live" | "baked" }) {
+export function DeltaPmReport({
+  payload,
+  dataSource,
+  lang
+}: {
+  payload: AuditPayload;
+  dataSource: "live" | "baked";
+  lang: Lang;
+}) {
+  const s = t(lang);
+  const zh = lang === "zh";
   const p = payload.portfolio;
   const book = payload.latestReflection?.book ?? null;
   const initial = p?.initialCapitalUsd ?? null;
@@ -1184,88 +1516,100 @@ export function DeltaPmReport({ payload, dataSource }: { payload: AuditPayload; 
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <span className={styles.kicker}>Tokyo VM · services/delta-pm · 内部审计页</span>
-        <h1 className={styles.title}>Delta PM 决策链审计</h1>
-        <p className={styles.meta}>
-          每条新闻一份 IC memo：情报台 → 重要性检查 → 定价检查 → 研究 memo → PM 台 → 执行与风控。
-          每个数字逐项摊开，不做抽象汇总；白话标签旁保留原始枚举值（小号等宽字），便于与账本核对。
-        </p>
+        <span className={styles.kicker}>{s("kicker")}</span>
+        <a className={styles.langToggle} href={`/live-delta-pm/lang?to=${otherLang(lang)}`}>
+          {LANG_TOGGLE_LABEL[lang]}
+        </a>
+        <h1 className={styles.title}>{s("title")}</h1>
+        <p className={styles.meta}>{s("headerMeta")}</p>
         <div className={styles.bannerRow}>
-          <span className={`${styles.banner} ${styles.bannerShadow}`}>Phase 0 影子模式 · 只记账，不下真实订单</span>
+          <span className={`${styles.banner} ${styles.bannerShadow}`}>{s("bannerShadow")}</span>
           {dataSource === "live" ? (
-            <span className={`${styles.banner} ${styles.bannerLive}`}>实时数据 · VM /delta-pm/audit</span>
+            <span className={`${styles.banner} ${styles.bannerLive}`}>{s("bannerLive")}</span>
           ) : (
             <span className={`${styles.banner} ${styles.bannerBaked}`}>
-              烘焙快照回退 · 实时数据暂不可用，显示 {payload.generatedAtUtc.slice(0, 10) || "—"} 留档
+              {zh
+                ? `烘焙快照回退 · 实时数据暂不可用，显示 ${payload.generatedAtUtc.slice(0, 10) || "—"} 留档`
+                : `Baked snapshot fallback · live feed unavailable — showing the ${payload.generatedAtUtc.slice(0, 10) || "—"} archive`}
             </span>
           )}
         </div>
         <p className={styles.meta}>
-          账本起始 {fmtUtc(payload.bookStartedUtc)} · 数据生成 {fmtUtc(payload.generatedAtUtc)}
-          {p ? <> · 组合更新 {fmtUtc(p.updatedAtUtc)}</> : null}
+          {zh
+            ? `账本起始 ${fmtUtc(payload.bookStartedUtc)} · 数据生成 ${fmtUtc(payload.generatedAtUtc)}${p ? ` · 组合更新 ${fmtUtc(p.updatedAtUtc)}` : ""}`
+            : `Book started ${fmtUtc(payload.bookStartedUtc)} · data generated ${fmtUtc(payload.generatedAtUtc)}${p ? ` · portfolio updated ${fmtUtc(p.updatedAtUtc)}` : ""}`}
         </p>
         {p?.halted ? (
-          <div className={styles.haltBar}>账本已熔断 HALTED{p.haltedReason ? ` — ${p.haltedReason}` : ""}</div>
+          <div className={styles.haltBar}>
+            {zh ? "账本已熔断 HALTED" : "Book HALTED"}
+            {p.haltedReason ? ` — ${p.haltedReason}` : ""}
+          </div>
         ) : null}
         <div className={styles.tiles}>
           <div className={styles.tile}>
-            <span className={styles.tileLabel}>总权益（反思时点）</span>
+            <span className={styles.tileLabel}>{s("tileEquity")}</span>
             <strong className={styles.tileValue}>{fmtUsd(equity)}</strong>
             <span className={styles.tileSub}>
               {initial !== null && equity !== null
-                ? `${fmtPct(((equity - initial) / initial) * 100, { signed: true })} vs 初始`
+                ? `${fmtPct(((equity - initial) / initial) * 100, { signed: true })} ${zh ? "vs 初始" : "vs initial"}`
                 : "—"}
             </span>
           </div>
           <div className={styles.tile}>
-            <span className={styles.tileLabel}>初始本金</span>
+            <span className={styles.tileLabel}>{s("tileInitial")}</span>
             <strong className={styles.tileValue}>{fmtUsd(initial)}</strong>
             <span className={styles.tileSub}>mode: {p?.mode || "—"}</span>
           </div>
           <div className={styles.tile}>
-            <span className={styles.tileLabel}>已实现盈亏</span>
+            <span className={styles.tileLabel}>{s("tileRealized")}</span>
             <strong className={`${styles.tileValue} ${realized !== null && realized < 0 ? styles.neg : styles.pos}`}>
               {fmtSignedUsd(realized)}
             </strong>
-            <span className={styles.tileSub}>影子账本累计</span>
+            <span className={styles.tileSub}>{s("tileRealizedSub")}</span>
           </div>
           <div className={styles.tile}>
-            <span className={styles.tileLabel}>当前持仓</span>
+            <span className={styles.tileLabel}>{s("tilePositions")}</span>
             <strong className={styles.tileValue}>{p ? p.positions.length : "—"}</strong>
             <span className={styles.tileSub}>
               {p && p.positions.length > 0
-                ? p.positions.map((x) => `${x.ticker} ${zhTradeDirection(x.direction)}`).join(" · ")
-                : "空仓"}
+                ? p.positions.map((x) => `${x.ticker} ${labelTradeDirection(lang, x.direction)}`).join(" · ")
+                : s("tileFlat")}
             </span>
           </div>
         </div>
       </header>
 
-      <Glossary />
+      <Glossary lang={lang} />
 
       <section className={styles.section} aria-labelledby="sec-cases">
         <h2 id="sec-cases" className={styles.sectionTitle}>
-          决策链（{payload.cases.length} 条新闻，新 → 旧）
+          {zh
+            ? `决策链（${payload.cases.length} 条新闻，新 → 旧）`
+            : `Decision chains (${payload.cases.length} news items, newest → oldest)`}
         </h2>
-        <p className={styles.sectionNote}>
-          每张卡片的大标签 = 这条新闻的最终结果（不相关 / 重要性不足 / 已被市场定价 / 已分析不开仓 / 已开仓……）；
-          点开卡片看六站决策链，灰色站点表示流程在前站已归档、未进行。
-        </p>
+        <p className={styles.sectionNote}>{s("casesNote")}</p>
         {payload.cases.length === 0 ? (
-          <p className={styles.sectionNote}>暂无案例数据。</p>
+          <p className={styles.sectionNote}>{s("casesEmpty")}</p>
         ) : (
           payload.cases.map((c, i) => (
-            <CaseCard key={`${c.news.newsId}-${i}`} c={c} defaultOpen={i === (firstThesisIdx === -1 ? 0 : firstThesisIdx)} />
+            <CaseCard
+              key={`${c.news.newsId}-${i}`}
+              lang={lang}
+              c={c}
+              defaultOpen={i === (firstThesisIdx === -1 ? 0 : firstThesisIdx)}
+            />
           ))
         )}
       </section>
 
-      {payload.latestReflection ? <ReflectionFooter r={payload.latestReflection} /> : null}
+      {payload.latestReflection ? <ReflectionFooter lang={lang} r={payload.latestReflection} /> : null}
 
       <footer className={styles.footer}>
-        数据来自 Tokyo VM <span className={styles.mono}>/delta-pm/audit</span>（每次页面请求服务端拉取，成功后缓存 60
-        秒；连续失败退避 30 秒）。上游不可达时退回烘焙快照，页首会标注数据源。本页为 Phase 0
-        影子模式审计——所有决策仅记账，不向任何交易所下真实订单。
+        {zh ? "数据来自 Tokyo VM " : "Data from the Tokyo VM "}
+        <span className={styles.mono}>/delta-pm/audit</span>
+        {zh
+          ? "（每次页面请求服务端拉取，成功后缓存 60 秒；连续失败退避 30 秒）。上游不可达时退回烘焙快照，页首会标注数据源。本页为 Phase 0 影子模式审计——所有决策仅记账，不向任何交易所下真实订单。"
+          : " (server-side fetch on every page view; 60 s cache after success, 30 s backoff after failures). Falls back to the baked snapshot when the upstream is unreachable — the banner names the source. Phase 0 shadow-mode audit: decisions are book-only; no real orders reach any exchange."}
       </footer>
     </main>
   );

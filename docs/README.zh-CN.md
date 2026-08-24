@@ -43,9 +43,9 @@
 - **世界杯预测（市场盲测）**：[forecasting-agent.com/world-cup](https://forecasting-agent.com/world-cup) · [预测效果](https://forecasting-agent.com/world-cup/performance) — 英文 / 简中 / 繁中
 - **Forecasting Engine 控制台**：[forecasting-agent.com/engine](https://forecasting-agent.com/engine)（浏览公开；发起新预测需邀请码）— 中英切换
 - **Raven Delta 新闻影响引擎**：[forecasting-agent.com/delta](https://forecasting-agent.com/delta)（邀请码门）— 中英切换
-- **模拟盘复盘页**：[forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven)（邀请码门，实时 VM 快照）— 仅中文
-- **Delta PM 决策审计页**：[forecasting-agent.com/live-delta-pm](https://forecasting-agent.com/live-delta-pm)（邀请码门，实时 VM 账本）— 仅中文
-- **Delta PM 运维控制台**：[forecasting-agent.com/pm](https://forecasting-agent.com/pm)（token 门）— 仅中文
+- **模拟盘复盘页**：[forecasting-agent.com/live-predict-raven](https://forecasting-agent.com/live-predict-raven)（邀请码门，实时 VM 快照）— 中英切换
+- **Delta PM 决策审计页**：[forecasting-agent.com/live-delta-pm](https://forecasting-agent.com/live-delta-pm)（邀请码门，实时 VM 账本）— 中英切换
+- **Delta PM 运维控制台**：[forecasting-agent.com/pm](https://forecasting-agent.com/pm)（token 门）— 中英切换
 - **链上持仓 / 成交（Polymarket profile）**：[`0x6664...614e`](https://polymarket.com/profile/0x6664e32f79aee42639f73633e40b5a842b07614e)
 
 历史上的交易决策记录页已在 2026-07 清理中下线；实盘线的公开记录以上面的链上 profile 为准。[autopoly-pizza-spectator.vercel.app](https://autopoly-pizza-spectator.vercel.app) 现在会跳转到世界杯站。
