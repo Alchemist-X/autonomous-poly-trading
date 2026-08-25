@@ -29,7 +29,7 @@ import { marketState } from "./market.js";
 import { checkHalt, decideEntry, equityOf, reviewPosition, updateTrailingStop, type MarketView } from "./policy.js";
 import { advance, finishRun, setTickers, startRun } from "./progress.js";
 import { push } from "./notify.js";
-import { appendLedger, paths, readJson, upsertNewsItem, writeJsonAtomic } from "./store.js";
+import { appendLedger, findNewsIdByUrl, paths, readJson, upsertNewsItem, writeJsonAtomic } from "./store.js";
 import { fetchCandles } from "./hyperliquid.js";
 
 // --- two-lane writer -------------------------------------------------------
@@ -181,7 +181,13 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
   // identity and timing, so a re-ingest (console 补全原文 paste) only fills
   // gaps and becomes a RERUN of the original signal, driven by the merged
   // record.
-  const upsert = upsertNewsItem(parsed.data);
+  // Identity resolves by URL as well as by id: the feed and the sitemap gap
+  // backfill hand the SAME story two different ids, and only the first one may
+  // own t0. An alias therefore folds into the original record instead of
+  // starting a second signal with a later timestamp.
+  const canonicalId = findNewsIdByUrl(parsed.data.url);
+  const aliasOf = canonicalId && canonicalId !== parsed.data.id ? parsed.data.id : null;
+  const upsert = upsertNewsItem(aliasOf ? { ...parsed.data, id: canonicalId as string } : parsed.data);
   const item: NewsItem = upsert.item;
   appendLedger({
     type: "news_seen",
@@ -191,8 +197,16 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
     kind: item.kind,
     prefix: item.prefix,
     rerun: upsert.existed,
+    aliasOf,
     hasFullText: Boolean(item.fullText)
   });
+  // A cross-path duplicate that carries no new text has nothing to add: the
+  // original already ran the gates under this t0. Paste reruns (which DO carry
+  // full text) still go through.
+  if (aliasOf && !upsert.fullTextAttached) {
+    appendLedger({ type: "news_duplicate_url", newsId: item.id, duplicateId: aliasOf, url: item.url });
+    return;
+  }
   const run = startRun(item.id, item.title);
 
   await withAnalysisSlot(async () => {

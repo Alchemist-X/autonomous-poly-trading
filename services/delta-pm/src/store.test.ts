@@ -6,6 +6,7 @@ import type { NewsItem } from "@autopoly/delta-pm-contracts";
 import {
   acquireBookLock,
   appendLedger,
+  findNewsIdByUrl,
   loadNewsItem,
   paths,
   readJson,
@@ -112,5 +113,19 @@ describe("news source-of-truth archive", () => {
     const res = upsertNewsItem(item({ fullText: null }));
     expect(res.fullTextAttached).toBe(false);
     expect(res.item.fullText).toBe("attached earlier");
+  });
+
+  it("resolves identity by URL so a second id for the same story finds the original", () => {
+    upsertNewsItem(item());
+    expect(findNewsIdByUrl("https://www.theinformation.com/articles/x")).toBe(item().id);
+    expect(findNewsIdByUrl("https://www.theinformation.com/articles/x/?utm_campaign=rss")).toBe(item().id);
+    expect(findNewsIdByUrl("https://www.theinformation.com/articles/never-seen")).toBeNull();
+    expect(findNewsIdByUrl(null)).toBeNull();
+  });
+
+  it("the earliest arrival owns a URL when two ids already claim it", () => {
+    upsertNewsItem(item({ id: "sitemap:https://www.theinformation.com/articles/x", fetchedAtUtc: "2026-08-25T06:39:00.000Z" }));
+    upsertNewsItem(item({ fetchedAtUtc: "2026-08-23T08:05:00.000Z" }));
+    expect(findNewsIdByUrl("https://www.theinformation.com/articles/x")).toBe(item().id);
   });
 });

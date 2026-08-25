@@ -15,7 +15,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import type { NewsItem } from "@autopoly/delta-pm-contracts";
 import { config } from "./config.js";
-import { paths, readJson, writeJsonAtomic } from "./store.js";
+import { findNewsIdByUrl, paths, readJson, writeJsonAtomic } from "./store.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -208,23 +208,15 @@ export async function pollFeed(): Promise<PollResult> {
 // publication_date + title (no teaser). Items recovered here carry an empty
 // teaser and are flagged via kind detection only — still enough for gate 1
 // to decide whether a (delayed) analysis is worth it.
-export async function backfillFromSitemap(): Promise<NewsItem[]> {
-  const res = await curlFetch(config.sitemapNewsUrl, { accept: "application/xml" });
-  if (res.status !== 200) throw new Error(`GET sitemap-news → ${res.status}`);
-  const xml = res.body;
-  const state = loadFeedState();
-  const seen = new Set(state.seenIds);
-  const nowIso = new Date().toISOString();
+export function parseSitemap(xml: string, fetchedAtUtc: string): NewsItem[] {
   const out: NewsItem[] = [];
   for (const u of blocks(xml, "url")) {
     const loc = text(u, "loc");
     const pub = text(u, "news:publication_date") ?? text(u, "publication_date");
     const title = text(u, "news:title") ?? text(u, "title");
     if (!loc || !pub || !title) continue;
-    const id = `sitemap:${loc}`;
-    if (seen.has(id) || state.seenIds.some((s) => s.includes(loc))) continue;
     out.push({
-      id,
+      id: `sitemap:${loc}`,
       source: "the-information",
       kind: kindFromUrl(loc),
       title,
@@ -235,9 +227,28 @@ export async function backfillFromSitemap(): Promise<NewsItem[]> {
       publishedUtc: new Date(pub).toISOString(),
       updatedUtc: null,
       prefix: titlePrefix(title),
-      fetchedAtUtc: nowIso
+      fetchedAtUtc
     });
   }
+  return out;
+}
+
+// Items the sitemap re-offers must be filtered by URL, not just by id: the feed
+// knows a story as `tag:www.theinformation.com,2005:Briefing/17919` while the
+// sitemap knows the same story as `sitemap:<url>`, so an id-only check let every
+// restart re-ingest the whole 48h window (measured on the VM 2026-08-25: 16
+// duplicate re-analyses in one restart, each paying gate 1 + coverage search).
+export function selectSitemapBackfill(items: NewsItem[], seenIds: string[]): NewsItem[] {
+  const seen = new Set(seenIds);
+  return items.filter((i) => !seen.has(i.id) && !findNewsIdByUrl(i.url));
+}
+
+export async function backfillFromSitemap(): Promise<NewsItem[]> {
+  const res = await curlFetch(config.sitemapNewsUrl, { accept: "application/xml" });
+  if (res.status !== 200) throw new Error(`GET sitemap-news → ${res.status}`);
+  const state = loadFeedState();
+  const nowIso = new Date().toISOString();
+  const out = selectSitemapBackfill(parseSitemap(res.body, nowIso), state.seenIds);
   if (out.length) {
     state.seenIds = [...out.map((i) => i.id), ...state.seenIds].slice(0, SEEN_CAP);
     saveFeedState(state);
