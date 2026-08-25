@@ -235,7 +235,17 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
       if (!gate1.tradeable || !gate1.tickers.length) {
         const signal = buildSignal(item, gate1, fingerprint, null, null, coverage);
         writeJsonAtomic(path.join(paths.signalsDir(), `${signal.id}.json`), { ...signal, title: item.title });
-        appendLedger({ type: "signal_archived", signalId: signal.id, newsId: item.id, why: gate1.reason, engine: g1.engine });
+        // fallbackReason distinguishes the designed zero-LLM rules path
+        // (out-of-universe items) from a real claude-cli failure that degraded
+        // into it — without it both look identical in the ledger.
+        appendLedger({
+          type: "signal_archived",
+          signalId: signal.id,
+          newsId: item.id,
+          why: gate1.reason,
+          engine: g1.engine,
+          fallbackReason: g1.fallbackReason
+        });
         finishRun(run, `归档:未过重要性闸门(${gate1.reason.slice(0, 80)})`);
         return;
       }
@@ -285,7 +295,8 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
         pricedIn: pricedIn.status,
         deltaTMinutes: pricedIn.deltaTMinutes,
         t0Utc: new Date(t0Ms).toISOString(),
-        engine: g1.engine
+        engine: g1.engine,
+        fallbackReason: g1.fallbackReason
       });
 
       if (!["none", "partial", "leaked"].includes(pricedIn.status)) {
