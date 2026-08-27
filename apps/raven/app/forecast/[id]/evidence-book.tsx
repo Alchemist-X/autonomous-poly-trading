@@ -198,6 +198,35 @@ function EvidenceRow({ e }: { e: DecoratedEvidence }) {
           <span style={{ width: 1, height: 11, background: "var(--line2)" }} />
           <CredPill e={e} />
           <ValuePill e={e} />
+          {typeof e.qualityScore === "number" ? (
+            <span style={{ fontFamily: "var(--fm)", fontSize: 9, color: "var(--accent)" }}>
+              {t(V.claimQuality, { score: e.qualityScore })}
+            </span>
+          ) : null}
+          {e.crossCheck ? (
+            <span
+              style={{
+                fontFamily: "var(--fm)",
+                fontSize: 9,
+                color:
+                  e.crossCheck === "confirmed"
+                    ? "var(--verified)"
+                    : e.crossCheck === "contested"
+                      ? "var(--neg)"
+                      : "var(--faint)"
+              }}
+            >
+              {t(
+                e.crossCheck === "confirmed"
+                  ? V.crossChecked
+                  : e.crossCheck === "contested"
+                    ? V.contested
+                    : e.crossCheck === "single_source"
+                      ? V.singleSource
+                      : V.unverified
+              )}
+            </span>
+          ) : null}
         </div>
         <p style={{ margin: "9px 0 0", fontSize: 13, lineHeight: 1.55, color: "var(--muted)", maxWidth: "70ch" }}>
           {e.analysis}
@@ -277,6 +306,35 @@ function EvidencePopover({ e }: { e: DecoratedEvidence }) {
         {e.takeaway}
       </div>
       <p style={{ margin: "0 0 12px", fontSize: 12, lineHeight: 1.55, color: "var(--muted)" }}>{e.analysis}</p>
+      {e.supportingSources && e.supportingSources.length > 1 ? (
+        <div style={{ marginBottom: 12 }}>
+          <div
+            style={{
+              fontFamily: "var(--fm)",
+              fontSize: 8.5,
+              letterSpacing: ".1em",
+              textTransform: "uppercase",
+              color: "var(--faint)",
+              marginBottom: 6
+            }}
+          >
+            {t(V.selectedSources)} · {e.supportingSources.length}
+          </div>
+          <div style={{ display: "grid", gap: 5 }}>
+            {e.supportingSources.map((source) => (
+              <a
+                key={source.url}
+                href={source.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: 10.5, lineHeight: 1.35, color: "var(--accent)", textDecoration: "none" }}
+              >
+                {source.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : null}
       <div
         style={{
           display: "flex",

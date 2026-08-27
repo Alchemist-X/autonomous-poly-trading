@@ -30,7 +30,7 @@ function makeState(): ForecastState {
       priorProbability: 0.32,
       priorRationale: "Base rate for recoveries of this kind is roughly one in three.",
       framingCaveats: "The threshold is a partial-recovery bar, not full normalization.",
-      framingConfidence: "high",
+      framingConfidence: "high"
     },
     createdAtUtc: "2026-07-01T00:00:00.000Z",
     updatedAtUtc: "2026-07-06T00:00:00.000Z",
@@ -61,7 +61,7 @@ function makeState(): ForecastState {
         firstSeenRound: 1,
         verifiedInSearchTrace: true,
         sourceType: "official",
-        credibility: "high",
+        credibility: "high"
       },
       {
         id: "s2",
@@ -83,7 +83,7 @@ function makeState(): ForecastState {
         firstSeenRound: 1,
         verifiedInSearchTrace: false,
         sourceType: "press",
-        credibility: "medium",
+        credibility: "medium"
       },
       {
         id: "s3",
@@ -105,7 +105,7 @@ function makeState(): ForecastState {
         firstSeenRound: 2,
         verifiedInSearchTrace: true,
         sourceType: "press",
-        credibility: "medium",
+        credibility: "medium"
       },
       {
         id: "s4",
@@ -128,8 +128,8 @@ function makeState(): ForecastState {
         verifiedInSearchTrace: true,
         sourceType: "press",
         credibility: "low",
-        excluded: "market_price",
-      },
+        excluded: "market_price"
+      }
     ],
     roundHistory: [
       {
@@ -150,7 +150,7 @@ function makeState(): ForecastState {
             clusterFactor: 1,
             kind: "evidence",
             sourceType: "official",
-            credibility: "high",
+            credibility: "high"
           },
           {
             url: "https://example.com/echo",
@@ -164,8 +164,8 @@ function makeState(): ForecastState {
             clusterFactor: 0.5,
             kind: "evidence",
             sourceType: "press",
-            credibility: "medium",
-          },
+            credibility: "medium"
+          }
         ],
         newSourceCount: 2,
         duplicateCount: 0,
@@ -179,15 +179,14 @@ function makeState(): ForecastState {
           dominantUrl: "https://example.com/pipes",
           dominantTitle: PIPE_TITLE,
           dominantPp: -12,
-          dominantKind: "evidence",
+          dominantKind: "evidence"
         },
-        agentHolisticProb: 0.2,
         confidence: "medium",
         reasoning:
           "Found hard data showing the number is far below the bar.  Notes: Next round should check the official source directly.",
         searchQueries: ["q one", "q two", "q three"],
         searchResultUrlCount: 12,
-        costUsd: null,
+        costUsd: null
       },
       {
         round: 2,
@@ -207,7 +206,7 @@ function makeState(): ForecastState {
             clusterFactor: 1,
             kind: "reflection",
             sourceType: "press",
-            credibility: "medium",
+            credibility: "medium"
           },
           {
             url: "https://polymarket.com/market",
@@ -222,8 +221,8 @@ function makeState(): ForecastState {
             kind: "evidence",
             sourceType: "press",
             credibility: "low",
-            excluded: "market_price",
-          },
+            excluded: "market_price"
+          }
         ],
         newSourceCount: 1,
         duplicateCount: 0,
@@ -231,13 +230,12 @@ function makeState(): ForecastState {
         unverifiedPp: 0,
         confirmationRatio: 0.7,
         whyChanged: null,
-        agentHolisticProb: 0.05,
         confidence: "medium",
         reasoning: "Reflection walked back part of the echo weighting; the market source was excluded.",
         searchQueries: ["q four"],
         searchResultUrlCount: 4,
-        costUsd: null,
-      },
+        costUsd: null
+      }
     ],
     summary: {
       verdict:
@@ -245,12 +243,12 @@ function makeState(): ForecastState {
       keyFactorsYes: ["A reflection walked back part of the echo weighting [03]"],
       keyFactorsNo: [
         "Hard traffic data is far below the resolution bar [01]",
-        "Repeat coverage confirms the plateau [02]",
+        "Repeat coverage confirms the plateau [02]"
       ],
       mainUncertainties: "Whether clearance starts before the deadline.",
       calibrationNote: "",
-      whySentence: "P(YES) is pinned at the engine floor because the hard data [01] sits far below the resolution bar.",
-    },
+      whySentence: "P(YES) is pinned at the engine floor because the hard data [01] sits far below the resolution bar."
+    }
   };
 }
 
@@ -282,7 +280,7 @@ describe("renderReport (decision-first layout)", () => {
     const lines = renderReport(state).split("\n");
     expect(state.eventText.length).toBeGreaterThan(120); // fixture must exercise truncation
     expect(lines[0]).toBe(`# ${state.eventText.slice(0, 120)}…`);
-    const pIdx = lines.findIndex((l) => l.includes("**P(YES):"));
+    const pIdx = lines.findIndex((l) => l.includes("**Probability of YES (P(YES)):"));
     expect(pIdx).toBeGreaterThan(0);
     expect(pIdx).toBeLessThan(10);
   });
@@ -293,7 +291,9 @@ describe("renderReport (decision-first layout)", () => {
     const row = report.split("\n").find((l) => l.startsWith("|") && l.includes("IMF \\| Strait"));
     expect(row).toBeDefined();
     expect(row).toContain("\\[7-day MA\\]");
-    const headerPipes = ("| Source | Moved | From → To | Flags |".match(/\|/g) ?? []).length;
+    const headerPipes = (
+      "| # | Claim | Direction | Quality | Cross-check | Best and supporting sources |".match(/\|/g) ?? []
+    ).length;
     const rowPipes = ((row as string).match(/(?<!\\)\|/g) ?? []).length;
     expect(rowPipes).toBe(headerPipes);
   });
@@ -348,7 +348,7 @@ describe("renderReport (decision-first layout)", () => {
 
   it("annotates a floor-saturated P(YES) and renders the market-blind banner", () => {
     const report = renderReport(makeState());
-    expect(report).toContain("**P(YES): 1.0%**");
+    expect(report).toContain("**Probability of YES (P(YES)): 1.0%**");
     expect(report).toContain("engine floor");
     expect(report).toContain("Market-blind");
     expect(report).toContain("market-anchored");
@@ -364,7 +364,7 @@ describe("renderReport (decision-first layout)", () => {
   it("shows a still-researching note when summary is null (mid-run)", () => {
     const report = renderReport({ ...makeState(), summary: null });
     expect(report).toContain("round 2 — still researching");
-    expect(report).toContain("**P(YES):"); // the number still leads mid-run
+    expect(report).toContain("**Probability of YES (P(YES)):"); // the number still leads mid-run
   });
 
   it("renders zh template strings when FORECAST_LANGUAGE=zh", () => {

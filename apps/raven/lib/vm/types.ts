@@ -4,7 +4,7 @@
 
 export type Side = "support" | "counter" | "neutral";
 export type Tier = "high" | "med" | "low";
-export type SrcType = "official" | "press" | "insider";
+export type SrcType = "official" | "data" | "academic" | "original_reporting" | "press" | "insider" | "secondary";
 export type NetDir = "down" | "up" | "flat";
 
 export interface EvidenceVM {
@@ -24,6 +24,31 @@ export interface EvidenceVM {
   verified: boolean;
   takeaway: string; // one bold sentence
   analysis: string;
+  claimId?: string;
+  focusId?: string;
+  crossCheck?: "confirmed" | "single_source" | "contested" | "unverified";
+  qualityScore?: number;
+  sourceCount?: number;
+  supportingSources?: Array<{ title: string; url: string; qualityScore: number | null }>;
+}
+
+export interface ResearchFocusVM {
+  id: string;
+  question: string;
+  whyItMatters: string;
+  priority: "high" | "medium" | "low";
+  preferredSources: string[];
+  completionCriteria: string;
+}
+
+export interface ResearchPlanVM {
+  archetype: string;
+  modelKind: string;
+  modelRationale: string;
+  searchStrategy: string;
+  minimumSearchQueries: number;
+  focusAreas: ResearchFocusVM[];
+  sourcePriorities: Array<{ rank: number; sourceClass: string; useWhen: string; rejectWhen: string }>;
 }
 
 export interface IterationVM {
@@ -87,6 +112,12 @@ export interface DossierVM {
   maxRounds: number;
   startedAtUtc: string | null;
   summaryParagraphs: string[]; // narrative paragraphs (may reference [NN] evidence indices)
+  researchPlan?: ResearchPlanVM | null;
+  probabilityModelExplanation?: string;
+  scenarios?: Array<{ name: string; description: string; implication: string }>;
+  monitoringSignals?: Array<{ signal: string; direction: "raises" | "lowers" | "mixed"; component: string }>;
+  informationGaps?: Array<{ gap: string; importance: string; retrievalPath: string }>;
+  glossary?: Array<{ term: string; definition: string }>;
 }
 
 export interface RunListItem {

@@ -24,22 +24,24 @@ function buildSummaryPrompt(state: ForecastState): string {
       : state.evidenceLedger
           .map(
             (e, i) =>
-              `[${String(i + 1).padStart(2, "0")}] [${e.stance}, ${signed(e.deltaPp)}${
+              `[${String(i + 1).padStart(2, "0")}] [quality ${e.qualityScore ?? "unscored"}, ${e.crossCheckStatus ?? "legacy"}, ${e.stance}, ${signed(e.deltaPp)}${
                 e.kind === "reflection" ? ", reflection" : ""
-              }] ${e.title || e.url} — ${e.claim} (${e.url})`
+              }] ${e.claim} — best source: ${e.title || e.url} (${e.url}); ${e.sources?.length ?? 1} selected source(s)`
           )
           .join("\n");
-  const trajectory = state.roundHistory
-    .map((r) => `${pct(r.priorProb)}→${pct(r.postProb)}`)
-    .join(", ");
+  const trajectory = state.roundHistory.map((r) => `${pct(r.priorProb)}→${pct(r.postProb)}`).join(", ");
 
-  return `You are wrapping up a multi-round probability forecast. Below is the full picture. Write an OVERALL summary that EXPLAINS the final probability. Do NOT change the number, do NOT introduce new evidence, and do NOT search — synthesize only what is given.
+  const plan = state.researchPlan;
+  return `You are compiling a decision-first forecasting report from a completed research record. Explain the engine's single final probability. Do not change the number, do not introduce new evidence, do not search, and never offer an alternative probability or range.
 
 EVENT: ${state.framing.normalizedQuestion}
 RESOLUTION CRITERIA: ${state.framing.resolutionCriteria}
 RESOLUTION DATE: ${state.framing.resolutionDate ?? "(open-ended)"}
 FINAL P(YES): ${pct(state.currentProb)}
 ROUNDS: ${state.round}; trajectory: ${trajectory || "(none)"}
+QUESTION TYPE: ${plan?.archetype ?? "not classified"}
+SINGLE PROBABILITY MODEL: ${plan?.modelKind ?? "binary_bayesian"} — ${plan?.modelRationale ?? "one maintained binary estimate"}
+EVENT DECOMPOSITION: ${plan?.decomposition.join(" | ") ?? "not available"}
 
 EVIDENCE LEDGER (every counted source, numbered [NN], with its effect on P(YES)):
 ${ledger}
@@ -49,6 +51,10 @@ When the verdict prose references a specific source, cite it inline as [NN] — 
 RULES:
 - When comparing numbers, write the arithmetic explicitly (e.g. "32.57 of 60 ≈ 55%") — never a vague fraction like "roughly a third" without the division.
 - Every key_factors_yes / key_factors_no item must describe a scenario that would actually satisfy (or block) the RESOLUTION CRITERIA; if a factor concerns an excluded/non-qualifying scenario, either omit it or explicitly mark it "(indirect)".
+- Prefer the highest-quality, directly relevant, independently checked claims. Explain material source limitations instead of hiding them.
+- Scenarios explain paths and implications; they must not contain replacement probability estimates.
+- Monitoring signals must name an observable trigger and the model component it would affect.
+- Information gaps must say how a human or future run could retrieve the missing evidence.
 
 OUTPUT only a single JSON object — no prose, no code fence:
 {
@@ -59,7 +65,12 @@ OUTPUT only a single JSON object — no prose, no code fence:
   "calibration_note": "if you think the computed probability is materially mis-calibrated, say so and why — but do NOT assert a different number as the answer; otherwise empty string",
   "why_sentence": "ONE complete, self-explaining sentence — the single reason the number landed where it did, naming the decisive evidence; no fragment",
   "quip": "one short dry human aside reacting to the verdict — personality, not advice",
-  "confidence_reason": "one line on why confidence is high/medium/low"
+  "confidence_reason": "one line on why confidence is high/medium/low",
+  "probability_model_explanation": "plain-language explanation of the one adopted model and how the evidence enters it; no alternative number",
+  "scenarios": [{"name":"...","description":"...","implication":"how this path affects the adopted forecast without assigning another probability"}],
+  "monitoring_signals": [{"signal":"observable trigger","direction":"raises|lowers|mixed","component":"which part of the model changes"}],
+  "information_gaps": [{"gap":"missing evidence","importance":"why it matters","retrieval_path":"how to obtain it"}],
+  "glossary": [{"term":"an abbreviation or specialist term that had to be used","definition":"full plain-language meaning"}]
 }
 ${languageDirective()}`;
 }
@@ -71,6 +82,10 @@ function strArray(v: unknown): string[] {
 // New display fields are optional strings (default undefined); never throw on them.
 function optStr(v: unknown): string | undefined {
   return typeof v === "string" && v.trim() ? v.trim() : undefined;
+}
+
+function objectArray(v: unknown): Array<Record<string, unknown>> {
+  return Array.isArray(v) ? v.filter((x): x is Record<string, unknown> => Boolean(x) && typeof x === "object") : [];
 }
 
 export function validateSummary(raw: unknown): ForecastSummary {
@@ -86,6 +101,35 @@ export function validateSummary(raw: unknown): ForecastSummary {
     whySentence: optStr(o.why_sentence),
     quip: optStr(o.quip),
     confidenceReason: optStr(o.confidence_reason),
+    probabilityModelExplanation: optStr(o.probability_model_explanation),
+    scenarios: objectArray(o.scenarios)
+      .map((x) => ({
+        name: optStr(x.name) ?? "",
+        description: optStr(x.description) ?? "",
+        implication: optStr(x.implication) ?? ""
+      }))
+      .filter((x) => x.name && x.description),
+    monitoringSignals: objectArray(o.monitoring_signals)
+      .map((x) => {
+        const direction: "raises" | "lowers" | "mixed" =
+          x.direction === "raises" || x.direction === "lowers" || x.direction === "mixed" ? x.direction : "mixed";
+        return {
+          signal: optStr(x.signal) ?? "",
+          direction,
+          component: optStr(x.component) ?? ""
+        };
+      })
+      .filter((x) => x.signal),
+    informationGaps: objectArray(o.information_gaps)
+      .map((x) => ({
+        gap: optStr(x.gap) ?? "",
+        importance: optStr(x.importance) ?? "",
+        retrievalPath: optStr(x.retrieval_path) ?? ""
+      }))
+      .filter((x) => x.gap),
+    glossary: objectArray(o.glossary)
+      .map((x) => ({ term: optStr(x.term) ?? "", definition: optStr(x.definition) ?? "" }))
+      .filter((x) => x.term && x.definition)
   };
 }
 

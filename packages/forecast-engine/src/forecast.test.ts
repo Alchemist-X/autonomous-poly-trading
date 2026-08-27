@@ -9,7 +9,7 @@ import {
   credibleInterval,
   effectiveLlr,
   invLogit,
-  logit,
+  logit
 } from "./bayes";
 import { canonicalizeUrl } from "./url";
 import { extractJsonObject, extractToolUrls, validateRoundOutput } from "./claude-agent";
@@ -131,14 +131,19 @@ describe("url canonicalization (dedupe key)", () => {
 describe("extractToolUrls (fabrication-guard capture, P0-4)", () => {
   const webfetch = JSON.stringify({
     type: "assistant",
-    message: { content: [{ type: "tool_use", name: "WebFetch", input: { url: "https://en.wikipedia.org/wiki/Bitcoin" } }] },
+    message: {
+      content: [{ type: "tool_use", name: "WebFetch", input: { url: "https://en.wikipedia.org/wiki/Bitcoin" } }]
+    }
   });
   const websearch = JSON.stringify({
     type: "user",
-    message: { content: [{ type: "tool_result", content: [{ title: "Foo", url: "https://example.com/foo" }] }] },
+    message: { content: [{ type: "tool_result", content: [{ title: "Foo", url: "https://example.com/foo" }] }] }
   });
   // a bare url with no title and not under tool_use (e.g. a link embedded in page text) must NOT be captured
-  const pageLink = JSON.stringify({ type: "user", message: { content: [{ type: "tool_result", content: [{ url: "https://random.com/embedded" }] }] } });
+  const pageLink = JSON.stringify({
+    type: "user",
+    message: { content: [{ type: "tool_result", content: [{ url: "https://random.com/embedded" }] }] }
+  });
 
   it("captures WebFetch tool_use.input.url (the prior false-negative)", () => {
     const urls = extractToolUrls([webfetch, "noise line", websearch].join("\n"));
@@ -181,23 +186,26 @@ describe("validateRoundOutput (fail-closed)", () => {
         stance: "supports_yes",
         strength: "moderate",
         llr: 0.5,
-        rationale: "r",
-      },
+        rationale: "r"
+      }
     ],
     agent_holistic_probability: 0.5,
     confidence: "medium",
     found_new_information: true,
-    notes: "",
+    notes: ""
   };
 
   it("accepts a well-formed output", () => {
     expect(() => validateRoundOutput(good)).not.toThrow();
   });
   it("rejects invalid stance", () => {
-    expect(() => validateRoundOutput({ ...good, new_evidence: [{ ...good.new_evidence[0], stance: "bull" }] })).toThrow();
+    expect(() =>
+      validateRoundOutput({ ...good, new_evidence: [{ ...good.new_evidence[0], stance: "bull" }] })
+    ).toThrow();
   });
-  it("rejects out-of-range probability", () => {
-    expect(() => validateRoundOutput({ ...good, agent_holistic_probability: 1.7 })).toThrow();
+  it("ignores a legacy alternative probability so the engine remains the only probability authority", () => {
+    const out = validateRoundOutput({ ...good, agent_holistic_probability: 1.7 });
+    expect(out).not.toHaveProperty("agent_holistic_probability");
   });
   it("rejects non-finite llr", () => {
     expect(() => validateRoundOutput({ ...good, new_evidence: [{ ...good.new_evidence[0], llr: "high" }] })).toThrow();
@@ -219,8 +227,8 @@ describe("validateRoundOutput (fail-closed)", () => {
       reflection: [
         { target_url: "https://a.com", llr_adjustment: -0.6, reason: "stale", new_source_url: "https://b.com" },
         { target_url: "https://a.com", llr_adjustment: -0.6, reason: "no new source" }, // missing new_source_url
-        { target_url: "https://a.com", llr_adjustment: "lots", reason: "bad adj", new_source_url: "https://c.com" }, // non-finite
-      ],
+        { target_url: "https://a.com", llr_adjustment: "lots", reason: "bad adj", new_source_url: "https://c.com" } // non-finite
+      ]
     });
     expect(out.reflection).toHaveLength(1);
     expect(out.reflection[0].new_source_url).toBe("https://b.com");
@@ -237,7 +245,7 @@ describe("validateFraming (Round 0)", () => {
     forecastable: true,
     clarification_needed: "",
     prior_probability: 0.55,
-    prior_rationale: "Pre-announced products ship on time ~half the time.",
+    prior_rationale: "Pre-announced products ship on time ~half the time."
   };
 
   it("accepts a well-formed frame and parses the prior", () => {
@@ -273,7 +281,7 @@ describe("validateFraming (Round 0)", () => {
       ...good,
       resolution_criteria: "YES iff X ships, intraday touch counts (corrected).",
       framing_caveats: "original bar was ambiguous on touch-vs-close",
-      framing_confidence: "high",
+      framing_confidence: "high"
     });
     expect(a.framingCaveats).toContain("ambiguous");
     expect(a.framingConfidence).toBe("high");
@@ -296,7 +304,7 @@ describe("newForecastState prior seeding (P0-2)", () => {
     priorProbability,
     priorRationale: "r",
     framingCaveats: "",
-    framingConfidence: "medium",
+    framingConfidence: "medium"
   });
 
   it("seeds currentProb from the base-rate prior, not 0.5", () => {
@@ -304,8 +312,14 @@ describe("newForecastState prior seeding (P0-2)", () => {
   });
   it("keeps rare/near-certain priors, clamped only to [0.01, 0.99]", () => {
     // an M9-quake-style ~0.03% prior must NOT be flattened toward 0.5
-    expect(newForecastState({ eventId: "e", eventText: "t", framing: framing(0.0003) }).currentProb).toBeCloseTo(0.01, 6);
-    expect(newForecastState({ eventId: "e", eventText: "t", framing: framing(0.999) }).currentProb).toBeCloseTo(0.99, 6);
+    expect(newForecastState({ eventId: "e", eventText: "t", framing: framing(0.0003) }).currentProb).toBeCloseTo(
+      0.01,
+      6
+    );
+    expect(newForecastState({ eventId: "e", eventText: "t", framing: framing(0.999) }).currentProb).toBeCloseTo(
+      0.99,
+      6
+    );
   });
 });
 
@@ -315,7 +329,7 @@ describe("validateSummary (final synthesis)", () => {
     key_factors_yes: ["one supportive signal", ""],
     key_factors_no: ["strong opposing evidence"],
     main_uncertainties: "the resolution date is far off",
-    calibration_note: "",
+    calibration_note: ""
   };
   it("accepts a well-formed summary and filters empty factor strings", () => {
     const s = validateSummary(good);

@@ -1,3 +1,5 @@
+import type { SrcType } from "../lib/vm/types";
+
 // Inline SVG symbol defs shared by the Research and Verdict screens — path
 // data copied exactly from the design handoff. Render <IconDefs /> once per
 // page, then reference via <use href="#ic-…"/>.
@@ -28,10 +30,16 @@ export function IconDefs() {
   );
 }
 
-export function SrcIcon({ type, className = "srcic" }: { type: "official" | "press" | "insider"; className?: string }) {
+export function SrcIcon({ type, className = "srcic" }: { type: SrcType; className?: string }) {
+  const symbol =
+    type === "official" || type === "data" || type === "academic"
+      ? "official"
+      : type === "insider"
+        ? "insider"
+        : "press";
   return (
     <svg className={className} aria-hidden="true">
-      <use href={`#ic-${type}`} />
+      <use href={`#ic-${symbol}`} />
     </svg>
   );
 }

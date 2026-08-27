@@ -26,7 +26,7 @@ const framing = (priorProbability: number): EventFraming => ({
   priorProbability,
   priorRationale: "r",
   framingCaveats: "",
-  framingConfidence: "medium",
+  framingConfidence: "medium"
 });
 
 const ledgerEntry = (id: string, url: string, claim: string): LedgerEntry => ({
@@ -49,7 +49,7 @@ const ledgerEntry = (id: string, url: string, claim: string): LedgerEntry => ({
   firstSeenRound: 1,
   verifiedInSearchTrace: true,
   sourceType: "press",
-  credibility: "medium",
+  credibility: "medium"
 });
 
 describe("validateRoundOutput source_type/credibility (lenient, never throws)", () => {
@@ -63,35 +63,99 @@ describe("validateRoundOutput source_type/credibility (lenient, never throws)", 
         stance: "supports_yes",
         strength: "moderate",
         llr: 0.5,
-        rationale: "r",
-      },
+        rationale: "r"
+      }
     ],
     agent_holistic_probability: 0.5,
     confidence: "medium",
     found_new_information: true,
-    notes: "",
+    notes: ""
   };
 
   it("defaults missing source_type to press and credibility to medium", () => {
     const out = validateRoundOutput(good);
-    expect(out.new_evidence[0].source_type).toBe("press");
-    expect(out.new_evidence[0].credibility).toBe("medium");
+    expect(out.newClaims[0].sources[0].sourceType).toBe("press");
+    expect(out.newClaims[0].sources[0].credibility).toBe("medium");
   });
   it("accepts valid values", () => {
     const out = validateRoundOutput({
       ...good,
-      new_evidence: [{ ...good.new_evidence[0], source_type: "official", credibility: "high" }],
+      new_evidence: [{ ...good.new_evidence[0], source_type: "official", credibility: "high" }]
     });
-    expect(out.new_evidence[0].source_type).toBe("official");
-    expect(out.new_evidence[0].credibility).toBe("high");
+    expect(out.newClaims[0].sources[0].sourceType).toBe("official");
+    expect(out.newClaims[0].sources[0].credibility).toBe("high");
   });
   it("falls back to defaults on invalid values instead of throwing", () => {
     const out = validateRoundOutput({
       ...good,
-      new_evidence: [{ ...good.new_evidence[0], source_type: "blog", credibility: "certain" }],
+      new_evidence: [{ ...good.new_evidence[0], source_type: "blog", credibility: "certain" }]
     });
-    expect(out.new_evidence[0].source_type).toBe("press");
-    expect(out.new_evidence[0].credibility).toBe("medium");
+    expect(out.newClaims[0].sources[0].sourceType).toBe("press");
+    expect(out.newClaims[0].sources[0].credibility).toBe("medium");
+  });
+});
+
+describe("validateRoundOutput claim graph", () => {
+  it("ranks the best supporting source first and keeps corroboration on one claim", () => {
+    const out = validateRoundOutput({
+      round_summary: "Two independent records support one factual claim.",
+      new_claims: [
+        {
+          claim_id: "shipment-date",
+          focus_id: "resolution-state",
+          claim: "The product shipped on 20 August 2026.",
+          stance: "supports_yes",
+          strength: "strong",
+          llr: 0.9,
+          rationale: "This directly satisfies the date condition.",
+          cluster_id: "shipment-event",
+          category: "resolution",
+          resolution_relevance: "direct",
+          selection_rationale: "The official record is direct; the registry independently corroborates it.",
+          sources: [
+            {
+              url: "https://commentary.example/denial",
+              title: "A high-quality contradiction",
+              source_type: "original_reporting",
+              credibility: "high",
+              relation: "contradicts",
+              support_quality: "direct",
+              is_primary: false,
+              independence_group: "reporter-a"
+            },
+            {
+              url: "https://official.example/release",
+              title: "Official release record",
+              source_type: "official",
+              credibility: "high",
+              relation: "supports",
+              support_quality: "direct",
+              is_primary: true,
+              independence_group: "issuer"
+            },
+            {
+              url: "https://registry.example/record",
+              title: "Independent registry record",
+              source_type: "data",
+              credibility: "high",
+              relation: "supports",
+              support_quality: "direct",
+              is_primary: true,
+              independence_group: "registry"
+            }
+          ]
+        }
+      ],
+      reflection: [],
+      confidence: "high",
+      found_new_information: true,
+      notes: ""
+    });
+
+    expect(out.newClaims).toHaveLength(1);
+    expect(out.newClaims[0].source_url).toBe("https://registry.example/record");
+    expect(out.newClaims[0].sources).toHaveLength(3);
+    expect(out.newClaims[0].cross_check_status).toBe("contested");
   });
 });
 
@@ -115,7 +179,7 @@ describe("deepseek-agent", () => {
         return new Response(
           JSON.stringify({
             choices: [{ message: { content: JSON.stringify(content) } }],
-            usage: { prompt_tokens: 100, completion_tokens: 50 },
+            usage: { prompt_tokens: 100, completion_tokens: 50 }
           }),
           { status: 200 }
         );
@@ -142,7 +206,7 @@ describe("deepseek-agent", () => {
     const obj = {
       new_evidence: [{ source_url: "https://a.com/x" }],
       reflection: [{ target_url: "https://ignored.com", new_source_url: "https://b.com/y" }],
-      nested: { deeper: [{ source_url: "https://c.com/z" }] },
+      nested: { deeper: [{ source_url: "https://c.com/z" }] }
     };
     const urls = collectCitedUrls(obj);
     expect(urls).toContain("https://a.com/x");
@@ -160,10 +224,7 @@ describe("deepseek-agent", () => {
       if (init?.method === "HEAD") throw new Error("HEAD not supported");
       return { status: 200 } as unknown as Response;
     }) as unknown as typeof fetch;
-    const v = await verifyCitedUrls(
-      ["https://ok.com/a", "https://gone.com/b", "https://headless.com/c"],
-      fetchFn
-    );
+    const v = await verifyCitedUrls(["https://ok.com/a", "https://gone.com/b", "https://headless.com/c"], fetchFn);
     expect(v.has("https://ok.com/a")).toBe(true);
     expect(v.has("https://gone.com/b")).toBe(false);
     expect(v.has("https://headless.com/c")).toBe(true);
@@ -193,16 +254,21 @@ describe("buildPrompt (provider- and analyst-aware)", () => {
 
   it("contains the source_type/credibility contract", () => {
     const p = buildPrompt(mkState(), 1, 3, { hasWebSearch: true, analyst: null });
-    expect(p).toContain('"source_type": "official" | "press" | "insider"');
+    expect(p).toContain('"source_type": "official" | "data" | "academic"');
     expect(p).toContain('"credibility": "high" | "medium" | "low"');
+    expect(p).toContain("FOCUS CENTER");
+    expect(p).toContain("BREADTH BEFORE SELECTION");
+    expect(p).toContain("at least 6 meaningfully different searches");
+    expect(p).toContain("Prefer full, plain-language names over abbreviations");
+    expect(p).toContain("the engine alone owns the probability");
   });
 
   it("no-web variant mentions no WebSearch and forbids fabricated URLs", () => {
     const p = buildPrompt(mkState(), 1, 3, { hasWebSearch: false, analyst: null });
     expect(p.includes("WebSearch")).toBe(false);
-    expect(p).toContain("You have NO web access");
-    expect(p).toContain("never fabricate or guess URLs");
-    expect(p).toContain("DISCONFIRMATION"); // kept, as reasoning
+    expect(p).toContain("You have no web access");
+    expect(p).toContain("never invent a URL");
+    expect(p).toContain("strongest countercase");
   });
 
   it("renders analyst notes and doubt marks into the ANALYST INPUT section", () => {
@@ -216,7 +282,7 @@ describe("buildPrompt (provider- and analyst-aware)", () => {
           stance: "no",
           targetId: "led-1",
           createdAtUtc: "2026-01-01T00:00:00Z",
-          consumedRound: null,
+          consumedRound: null
         },
         {
           id: "note-0",
@@ -224,10 +290,10 @@ describe("buildPrompt (provider- and analyst-aware)", () => {
           stance: "yes",
           targetId: null,
           createdAtUtc: "2026-01-01T00:00:00Z",
-          consumedRound: 1,
-        },
+          consumedRound: 1
+        }
       ],
-      marks: { "led-1": "doubt" },
+      marks: { "led-1": "doubt" }
     };
     const p = buildPrompt(state, 2, 3, { hasWebSearch: true, analyst });
     expect(p).toContain("ANALYST INPUT");
@@ -243,7 +309,7 @@ describe("buildPrompt (provider- and analyst-aware)", () => {
     // "keep" marks alone are endorsements, not injectable input
     const p2 = buildPrompt(mkState(), 1, 3, {
       hasWebSearch: true,
-      analyst: { notes: [], marks: { "led-1": "keep" } },
+      analyst: { notes: [], marks: { "led-1": "keep" } }
     });
     expect(p2).not.toContain("ANALYST INPUT");
   });
@@ -267,12 +333,12 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
     rawFinalText: JSON.stringify(out),
     jsonObject: out,
     jsonError: null,
-    searchQueries: [],
+    searchQueries: urls.length ? ["q1", "q2", "q3", "q4", "q5", "q6"] : [],
     searchResultUrls: new Set(urls),
     costUsd: null,
     numTurns: 1,
     exitCode: 0,
-    stderrTail: "",
+    stderrTail: ""
   });
 
   const evidence = (url: string, llr: number, extra: Record<string, unknown> = {}) => ({
@@ -284,7 +350,7 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
     llr,
     rationale: "r",
     cluster_id: "",
-    ...extra,
+    ...extra
   });
 
   const roundOut = (evs: unknown[]) => ({
@@ -294,7 +360,7 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
     agent_holistic_probability: 0.6,
     confidence: "medium",
     found_new_information: evs.length > 0,
-    notes: "",
+    notes: ""
   });
 
   const summaryOut = {
@@ -305,20 +371,81 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
     calibration_note: "",
     why_sentence: "The decisive filing pushed it up.",
     quip: "Markets hate suspense.",
-    confidence_reason: "Two independent sources agree.",
+    confidence_reason: "Two independent sources agree."
   };
+
+  it("applies one probability update to one claim even when two independent sources support it", async () => {
+    const state = newForecastState({ eventId: "evt-claim-graph", eventText: "t", framing: framing(0.5) });
+    const claimRound = {
+      round_summary: "The filing and registry independently establish the same event.",
+      new_claims: [
+        {
+          claim_id: "event-occurred",
+          focus_id: "resolution-state",
+          claim: "The event occurred before the deadline.",
+          stance: "supports_yes",
+          strength: "strong",
+          llr: 1,
+          rationale: "This directly meets the resolution rule.",
+          cluster_id: "event-occurrence",
+          category: "resolution",
+          resolution_relevance: "direct",
+          cross_check_status: "confirmed",
+          selection_rationale: "An official filing and an independent registry are the strongest available records.",
+          sources: [
+            {
+              url: "https://issuer.example/filing",
+              title: "Official filing",
+              source_type: "official",
+              credibility: "high",
+              relation: "supports",
+              support_quality: "direct",
+              is_primary: true,
+              independence_group: "issuer"
+            },
+            {
+              url: "https://registry.example/event",
+              title: "Registry event record",
+              source_type: "data",
+              credibility: "high",
+              relation: "supports",
+              support_quality: "direct",
+              is_primary: true,
+              independence_group: "registry"
+            }
+          ]
+        }
+      ],
+      reflection: [],
+      confidence: "high",
+      found_new_information: true,
+      notes: ""
+    };
+    const fakeAgent = async (prompt: string): Promise<AgentRunResult> =>
+      prompt.includes("compiling a decision-first forecasting report")
+        ? agentResult(summaryOut)
+        : agentResult(claimRound, ["https://issuer.example/filing", "https://registry.example/event"]);
+
+    const final = await runForecast(state, { maxRounds: 1, runAgentFn: fakeAgent });
+    expect(final.evidenceLedger).toHaveLength(1);
+    expect(final.roundHistory[0].perSourceUpdates).toHaveLength(1);
+    expect(final.roundHistory[0].newClaimCount).toBe(1);
+    expect(final.roundHistory[0].newSourceCount).toBe(2);
+    expect(final.evidenceLedger[0].crossCheckStatus).toBe("confirmed");
+    expect(final.evidenceLedger[0].sources).toHaveLength(2);
+  });
 
   it("two-round run: converges, persists state.json, ledger carries sourceType/credibility", async () => {
     const state = newForecastState({ eventId: "evt-loop", eventText: "t", framing: framing(0.5) });
     let round = 0;
     const fakeAgent = async (prompt: string): Promise<AgentRunResult> => {
-      if (prompt.includes("wrapping up")) return agentResult(summaryOut);
+      if (prompt.includes("compiling a decision-first forecasting report")) return agentResult(summaryOut);
       round++;
       if (round === 1)
         return agentResult(
           roundOut([
             evidence("https://a.com/1", 0.8, { source_type: "official", credibility: "high" }),
-            evidence("https://b.com/2", 0.4),
+            evidence("https://b.com/2", 0.4)
           ]),
           ["https://a.com/1", "https://b.com/2"]
         );
@@ -350,7 +477,7 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
     const state = newForecastState({ eventId: "evt-minrounds", eventText: "t", framing: framing(0.5) });
     let round = 0;
     const fakeAgent = async (prompt: string): Promise<AgentRunResult> => {
-      if (prompt.includes("wrapping up")) return agentResult(summaryOut);
+      if (prompt.includes("compiling a decision-first forecasting report")) return agentResult(summaryOut);
       round++;
       if (round === 1)
         // offsetting evidence: net move ~0pp — would converge under minRounds 1
@@ -376,14 +503,14 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
           stance: "question",
           targetId: null,
           createdAtUtc: "2026-01-01T00:00:00Z",
-          consumedRound: null,
-        },
+          consumedRound: null
+        }
       ],
-      marks: { "led-x": "doubt" },
+      marks: { "led-x": "doubt" }
     });
     const prompts: string[] = [];
     const fakeAgent = async (prompt: string): Promise<AgentRunResult> => {
-      if (prompt.includes("wrapping up")) return agentResult(summaryOut);
+      if (prompt.includes("compiling a decision-first forecasting report")) return agentResult(summaryOut);
       prompts.push(prompt);
       return agentResult(roundOut([evidence("https://d.com/4", 0.5)]), ["https://d.com/4"]);
     };
@@ -420,7 +547,7 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
       firstSeenRound: 1,
       verifiedInSearchTrace: true,
       sourceType: "press",
-      credibility: "medium",
+      credibility: "medium"
     });
     state.round = 1;
     state.currentProb = 0.6;
@@ -429,7 +556,7 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
     const prompts: string[] = [];
     let n = 0;
     const fakeAgent = async (prompt: string): Promise<AgentRunResult> => {
-      if (prompt.includes("wrapping up")) return agentResult(summaryOut);
+      if (prompt.includes("compiling a decision-first forecasting report")) return agentResult(summaryOut);
       prompts.push(prompt);
       n++;
       return agentResult(roundOut([evidence(`https://r${n}.com/x`, 0.6)]), [`https://r${n}.com/x`]);
@@ -448,7 +575,7 @@ describe("runForecast loop (injected agent, tmp artifact root)", () => {
     const state = newForecastState({ eventId: "evt-resume", eventText: "t", framing: framing(0.5) });
     let calls = 0;
     const fakeAgent = async (prompt: string): Promise<AgentRunResult> => {
-      if (prompt.includes("wrapping up")) return agentResult(summaryOut);
+      if (prompt.includes("compiling a decision-first forecasting report")) return agentResult(summaryOut);
       calls++;
       return agentResult(roundOut([evidence(`https://s${calls}.com/x`, 0.6)]), [`https://s${calls}.com/x`]);
     };
@@ -473,7 +600,7 @@ describe("validateSummary new display fields", () => {
       verdict: "v",
       why_sentence: "Because the filing landed.",
       quip: "Dry aside.",
-      confidence_reason: "Two independent sources agree.",
+      confidence_reason: "Two independent sources agree."
     });
     expect(s.whySentence).toBe("Because the filing landed.");
     expect(s.quip).toBe("Dry aside.");

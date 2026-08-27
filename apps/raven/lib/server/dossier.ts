@@ -21,7 +21,7 @@ import type { Job } from "./run-manager";
 // The engine may or may not have populated the newer optional fields
 // (sourceType/credibility/provider/summary presentation fields) depending on
 // when the run was produced — read them defensively.
-type LedgerX = LedgerEntry & { sourceType?: "official" | "press" | "insider"; credibility?: "high" | "medium" | "low" };
+type LedgerX = LedgerEntry;
 type StateX = ForecastState & {
   provider?: string;
   summary?: (ForecastState["summary"] & { whySentence?: string; quip?: string; confidenceReason?: string }) | null;
@@ -47,7 +47,7 @@ function toEvidence(entry: LedgerX, leanYes: boolean): EvidenceVM {
   const to = r100(entry.probAfter);
   const d = to - from;
   const isReflection = entry.kind === "reflection";
-  const srcType = entry.sourceType ?? (isReflection ? "press" : "press");
+  const srcType = entry.sourceType ?? "press";
   return {
     id: entry.id,
     title: isReflection ? reflectionTitle(entry) : entry.title || domainOf(entry.url),
@@ -64,7 +64,17 @@ function toEvidence(entry: LedgerX, leanYes: boolean): EvidenceVM {
     revises: isReflection,
     verified: entry.verifiedInSearchTrace,
     takeaway: entry.claim,
-    analysis: entry.rationale || entry.claim
+    analysis: entry.rationale || entry.claim,
+    claimId: entry.claimId,
+    focusId: entry.focusId,
+    crossCheck: entry.crossCheckStatus,
+    qualityScore: entry.qualityScore,
+    sourceCount: entry.sources?.length ?? 1,
+    supportingSources: entry.sources?.map((source) => ({
+      title: source.title || domainOf(source.url),
+      url: source.url,
+      qualityScore: source.qualityScore ?? null
+    }))
   };
 }
 
@@ -123,7 +133,11 @@ export function adaptState(state: StateX, job: Job | null): DossierVM {
     quip: summary?.quip ?? "",
     prior: pct(state.framing.priorProbability),
     duration: formatDuration(state.createdAtUtc, state.updatedAtUtc),
-    sources: String(allEvidence.length),
+    sources: String(
+      new Set(
+        ledger.flatMap((entry) => (entry.sources?.length ? entry.sources.map((source) => source.url) : [entry.url]))
+      ).size
+    ),
     nSupport: String(nSupport),
     nCounter: String(nCounter),
     nNeutral: String(nNeutral),
@@ -142,7 +156,9 @@ export function adaptState(state: StateX, job: Job | null): DossierVM {
   // Core signals: the biggest mover, the strongest reversal (if any), then the
   // next biggest mover — matching the demo's "Biggest move / Key reversal /
   // On the record" pattern with computable stand-ins.
-  const movers = [...allEvidence].filter((e) => e.d !== 0).sort((a, b) => Math.abs(b.d) - Math.abs(a.d));
+  const movers = [...allEvidence]
+    .filter((e) => e.d !== 0)
+    .sort((a, b) => (b.qualityScore ?? 0) - (a.qualityScore ?? 0) || Math.abs(b.d) - Math.abs(a.d));
   const core: DossierVM["core"] = [];
   const used = new Set<string>();
   const take = (ev: EvidenceVM | undefined, rank: string) => {
@@ -186,7 +202,23 @@ export function adaptState(state: StateX, job: Job | null): DossierVM {
     priorProb: state.framing.priorProbability,
     maxRounds: Math.max(job?.maxRounds ?? 3, state.roundHistory.length),
     startedAtUtc: state.createdAtUtc,
-    summaryParagraphs: summary ? summary.verdict.split(/\n\n+/).filter(Boolean).map(cleanPct) : []
+    summaryParagraphs: summary ? summary.verdict.split(/\n\n+/).filter(Boolean).map(cleanPct) : [],
+    researchPlan: state.researchPlan
+      ? {
+          archetype: state.researchPlan.archetype,
+          modelKind: state.researchPlan.modelKind,
+          modelRationale: state.researchPlan.modelRationale,
+          searchStrategy: state.researchPlan.searchStrategy,
+          minimumSearchQueries: state.researchPlan.minimumSearchQueries,
+          focusAreas: state.researchPlan.focusAreas,
+          sourcePriorities: state.researchPlan.sourcePriorities
+        }
+      : null,
+    probabilityModelExplanation: summary?.probabilityModelExplanation,
+    scenarios: summary?.scenarios,
+    monitoringSignals: summary?.monitoringSignals,
+    informationGaps: summary?.informationGaps,
+    glossary: summary?.glossary
   };
 }
 
@@ -205,7 +237,11 @@ export function listRuns(): RunListItem[] {
       question: s.framing?.normalizedQuestion || s.eventText,
       prob: pct(s.currentProb),
       status: s.status === "open" ? "running" : s.status === "aborted" ? "failed" : "complete",
-      sources: s.evidenceLedger.length,
+      sources: new Set(
+        s.evidenceLedger.flatMap((entry) =>
+          entry.sources?.length ? entry.sources.map((source) => source.url) : [entry.url]
+        )
+      ).size,
       updatedAtUtc: s.updatedAtUtc,
       verdict: verdictFor(s.currentProb),
       quip: summary?.quip ?? null,

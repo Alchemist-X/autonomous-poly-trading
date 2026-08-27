@@ -1,7 +1,7 @@
 // Shared display helpers, lifted verbatim from the design handoff's decorator
 // logic so both demo and live data render identically.
 
-import type { NetDir, Tier } from "./types";
+import type { NetDir, SrcType, Tier } from "./types";
 
 export const arrowFor = (d: number): string => (d < 0 ? "▼" : d > 0 ? "▲" : "—");
 
@@ -50,8 +50,16 @@ export function domainOf(url: string): string {
   }
 }
 
-export const srcLabelFor = (t: "official" | "press" | "insider"): string =>
-  ({ official: "Official source", press: "Press", insider: "Insider report" })[t];
+export const srcLabelFor = (t: SrcType): string =>
+  ({
+    official: "Official source",
+    data: "Original data",
+    academic: "Academic research",
+    original_reporting: "Original reporting",
+    press: "Press",
+    insider: "Insider report",
+    secondary: "Secondary source"
+  })[t];
 
 export const credWord = (c: "high" | "medium" | "low"): Tier => (c === "medium" ? "med" : c);
 

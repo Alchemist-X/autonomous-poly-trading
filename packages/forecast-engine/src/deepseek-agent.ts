@@ -32,8 +32,8 @@ export interface DeepSeekDeps {
   fetchFn?: typeof fetch; // injectable for tests
 }
 
-// Deep-scan the agent's structured output for every cited URL (source_url on
-// evidence, new_source_url on reflections) so their liveness can be checked.
+// Deep-scan the agent's structured output for every cited URL (claim sources,
+// legacy source_url fields, and reflection justifiers) so their liveness can be checked.
 export function collectCitedUrls(jsonObject: unknown): string[] {
   const urls: string[] = [];
   const seen = new Set<string>();
@@ -44,7 +44,7 @@ export function collectCitedUrls(jsonObject: unknown): string[] {
       return;
     }
     const rec = node as Record<string, unknown>;
-    for (const key of ["source_url", "new_source_url"]) {
+    for (const key of ["url", "source_url", "new_source_url"]) {
       const v = rec[key];
       if (typeof v === "string" && v.trim() && !seen.has(v)) {
         seen.add(v);
@@ -205,9 +205,9 @@ export async function runDeepSeekRaw(
         // json_object mode requires the word "json" in the prompt — every engine
         // prompt already demands a JSON object, so this is safe to always set.
         response_format: { type: "json_object" },
-        max_tokens: 6000,
+        max_tokens: 6000
       }),
-      signal: controller.signal,
+      signal: controller.signal
     });
     if (!res.ok) {
       const body = await res.text().catch(() => "");
@@ -222,11 +222,7 @@ export async function runDeepSeekRaw(
   }
   const rawFinalText = data.choices?.[0]?.message?.content ?? "";
   const jsonObject = rawFinalText ? extractJsonObject(rawFinalText) : null;
-  const jsonError = !rawFinalText
-    ? "empty completion"
-    : jsonObject
-      ? null
-      : "no JSON object found in agent final text";
+  const jsonError = !rawFinalText ? "empty completion" : jsonObject ? null : "no JSON object found in agent final text";
 
   // Cost is only computable when the operator supplies prices (per Mtok) via env.
   const priceIn = Number(process.env.DEEPSEEK_PRICE_IN_PER_MTOK);
@@ -249,7 +245,7 @@ export async function runDeepSeekRaw(
     costUsd,
     numTurns: 1,
     exitCode: 0,
-    stderrTail: "",
+    stderrTail: ""
   };
 }
 
@@ -350,7 +346,8 @@ async function runWithTools(prompt: string, ctx: ToolLoopCtx): Promise<AgentRunR
     // One repair turn: JSON only, no tools.
     messages.push({
       role: "user",
-      content: "Return ONLY the JSON object requested in the original instructions — no prose, no tool calls, valid json."
+      content:
+        "Return ONLY the JSON object requested in the original instructions — no prose, no tool calls, valid json."
     });
     const repaired = await call(messages, false, true);
     finalText = repaired.content ?? finalText;

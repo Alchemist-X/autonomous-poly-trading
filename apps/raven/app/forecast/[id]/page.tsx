@@ -17,6 +17,7 @@ import { rankEntry, STATUS_LABELS, V } from "../../../lib/i18n/verdict";
 import { cap, credWord } from "../../../lib/vm/format";
 import type { DossierVM } from "../../../lib/vm/types";
 import { decorateDossier, percentOf, roundUpTen } from "./decorate";
+import { DecisionSections } from "./decision-sections";
 import { EvidenceBook } from "./evidence-book";
 import { CredPill, DomChip, ValuePill } from "./pills";
 import { renderIdxRefs, renderRich } from "./rich-text";
@@ -258,7 +259,14 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
           <div className="rp-hero">
             <div className="rp-hero-left">
               <h1
-                style={{ margin: 0, fontWeight: 500, fontSize: 31, lineHeight: 1.16, letterSpacing: "-.01em", maxWidth: "17ch" }}
+                style={{
+                  margin: 0,
+                  fontWeight: 500,
+                  fontSize: 31,
+                  lineHeight: 1.16,
+                  letterSpacing: "-.01em",
+                  maxWidth: "17ch"
+                }}
               >
                 {meta.question}
               </h1>
@@ -277,11 +285,21 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                   {meta.prob}
                 </div>
                 <div style={{ paddingBottom: 9 }}>
-                  <div style={{ fontFamily: "var(--fd)", fontStyle: "italic", fontWeight: 500, fontSize: 27, lineHeight: 1 }}>
+                  <div
+                    style={{
+                      fontFamily: "var(--fd)",
+                      fontStyle: "italic",
+                      fontWeight: 500,
+                      fontSize: 27,
+                      lineHeight: 1
+                    }}
+                  >
                     {verdictLabel(meta.verdict, locale)}
                   </div>
                   {meta.quip ? (
-                    <div style={{ fontSize: 14, lineHeight: 1.4, color: "var(--muted)", marginTop: 7, maxWidth: "22ch" }}>
+                    <div
+                      style={{ fontSize: 14, lineHeight: 1.4, color: "var(--muted)", marginTop: 7, maxWidth: "22ch" }}
+                    >
                       {meta.quip}
                     </div>
                   ) : null}
@@ -485,8 +503,12 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
                       {c.from} → {c.to}
                     </span>
                   </div>
-                  <div style={{ fontFamily: "var(--fd)", fontWeight: 600, fontSize: 15.5, lineHeight: 1.26 }}>{c.title}</div>
-                  <div style={{ fontSize: 12.5, lineHeight: 1.44, color: "var(--muted)", marginTop: 5 }}>{c.takeaway}</div>
+                  <div style={{ fontFamily: "var(--fd)", fontWeight: 600, fontSize: 15.5, lineHeight: 1.26 }}>
+                    {c.title}
+                  </div>
+                  <div style={{ fontSize: 12.5, lineHeight: 1.44, color: "var(--muted)", marginTop: 5 }}>
+                    {c.takeaway}
+                  </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginTop: 10, flexWrap: "wrap" }}>
                     <DomChip e={c} />
                     <CredPill e={c} variant="core" />
@@ -606,6 +628,8 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
             </div>
           </div>
 
+          <DecisionSections dossier={dossier} />
+
           {/* the book */}
           <EvidenceBook iterations={iterations} meta={meta} />
 
@@ -626,7 +650,15 @@ function Report({ id, dossier }: { id: string; dossier: DossierVM }) {
             >
               <ArrowIcon className="rf-chev srcic" style={{ transition: "transform .18s", width: 12, height: 12 }} />
               {t(V.resolutionFraming)}
-              <span style={{ marginLeft: "auto", textTransform: "none", letterSpacing: 0, color: "var(--faint)", fontSize: 11 }}>
+              <span
+                style={{
+                  marginLeft: "auto",
+                  textTransform: "none",
+                  letterSpacing: 0,
+                  color: "var(--faint)",
+                  fontSize: 11
+                }}
+              >
                 {t(V.resolutionHint)}
               </span>
             </summary>

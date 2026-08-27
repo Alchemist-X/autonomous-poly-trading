@@ -51,7 +51,7 @@ export const RS = {
   roundSubDone: { en: "{sources} · {span}", zh: "{sources} · {span}" },
   verdictLabel: { en: "Weigh signals, deliver the verdict", zh: "权衡信号，给出判决" },
   verdictSubDone: { en: "dossier ready", zh: "档案已生成" },
-  verdictSubPending: { en: "P(YES) + confidence + open risks", zh: "P(YES) + 置信度 + 未决风险" },
+  verdictSubPending: { en: "YES probability + confidence + open risks", zh: "YES 概率 + 置信度 + 未决风险" },
 
   // --- block status words (view-model) ---
   statusRunningSpan: { en: "running · {from} → {to} so far", zh: "进行中 · {from} → {to}（至今）" },
@@ -80,8 +80,11 @@ export const RS = {
   framingQuestion: { en: "Framing the question…", zh: "正在界定问题…" },
   nowRoundBold: { en: "research round {n}", zh: "研究第 {n} 轮" },
   nowRoundRest: { en: " — gathering evidence and updating the estimate.", zh: "——收集证据并更新估计。" },
-  quantProvisional: { en: "P(YES) · provisional", zh: "P(YES) · 暂定" },
-  quantFinal: { en: "P(YES) · final", zh: "P(YES) · 最终" },
+  quantProvisional: {
+    en: "Probability of YES (P(YES)) · provisional",
+    zh: "YES 概率（P(YES)）· 暂定"
+  },
+  quantFinal: { en: "YES probability · final", zh: "YES 概率 · 最终" },
 
   // --- notices ---
   notFoundTitle: { en: "Forecast not found", zh: "未找到该预测" },
@@ -140,7 +143,7 @@ export const RS = {
   foldedAria: { en: "Iteration {n} (folded)", zh: "第 {n} 轮（已收起）" },
 
   // --- progress dock ---
-  dockComplete: { en: "Forecast complete — P(YES) {p}", zh: "预测完成——P(YES) {p}" },
+  dockComplete: { en: "Forecast complete — YES probability {p}", zh: "预测完成——YES 概率 {p}" },
   dockAborted: { en: "Run aborted — partial evidence kept", zh: "运行中止——已保留部分证据" },
   dockWorking: { en: "Working…", zh: "进行中…" },
   dockCta: { en: "Read the dossier →", zh: "阅读档案 →" },
@@ -148,13 +151,13 @@ export const RS = {
   dockHidePlan: { en: "Hide the run plan", zh: "收起运行计划" },
 
   // --- verdict digest ---
-  digestLead: { en: "Forecast complete — P(YES) {p}, {verdict}.", zh: "预测完成——P(YES) {p}，{verdict}。" },
+  digestLead: { en: "Forecast complete — YES probability {p}, {verdict}.", zh: "预测完成——YES 概率 {p}，{verdict}。" },
   chipVsPrior: { en: "vs the {prior} prior", zh: "相对先验 {prior}" },
   chipConfidence: { en: "confidence {c}", zh: "置信度{c}" },
   cardTitle: { en: "Dossier — {q}", zh: "档案——{q}" },
   cardSub: {
-    en: "{verdict} · P(YES) {p} · evidence book · resolution criteria",
-    zh: "{verdict} · P(YES) {p} · 证据书 · 判定标准"
+    en: "{verdict} · YES probability {p} · evidence book · resolution criteria",
+    zh: "{verdict} · YES 概率 {p} · 证据书 · 判定标准"
   },
   cardRead: { en: "READ →", zh: "查看 →" },
   messageAria: { en: "Raven's message", zh: "Raven 的消息" },

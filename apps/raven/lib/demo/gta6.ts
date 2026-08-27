@@ -30,7 +30,7 @@ const META = {
   criteria:
     "Resolves on the primary PS5 / Xbox Series X|S console launch status at end-of-day 2026-11-19. YES if Rockstar or Take-Two officially announce a date later than 2026-11-19 (or indefinite) beforehand, or if the console version simply isn’t commercially available by then (a de-facto slip counts). NO if it ships on or before 2026-11-19 — even buggy. PC-version timing and minor regional staggers don’t count.",
   priorWhy:
-    "Reference class: AAA blockbusters delayed ≥1 time then recommitted to a fresh date (Cyberpunk 2077, RDR2, GTA V, Starfield). Multi-delay history predicts further slippage; offset by a ~5-month window, a Nov-2025 recommitment, and pre-orders opening June 25.",
+    "Reference class: big-budget games (often called AAA games) delayed at least once and then recommitted to a fresh date, including Cyberpunk 2077, Red Dead Redemption 2, Grand Theft Auto V, and Starfield. Multi-delay history predicts further slippage; offset by a roughly five-month window, a November 2025 recommitment, and pre-orders opening June 25.",
   assumptions:
     "Verified 2026-06-22: the official date is 2026-11-19; no third delay announced; pre-orders open 2026-06-25. “The GTA 6 launch” means the primary console release, not the later, separately-dated PC version.",
   settlement:
@@ -63,6 +63,10 @@ const ITERATIONS: DossierVM["iterations"] = [
         d: -12,
         revises: false,
         verified: true,
+        focusId: "resolution-state",
+        crossCheck: "confirmed",
+        qualityScore: 96,
+        sourceCount: 2,
         takeaway: "A costly public commitment ~5 months out — publishers rarely make it before a slip.",
         analysis:
           "Opening retail/digital pre-orders and committing official cover art months ahead is a concrete, costly action, not cheap talk; the strong public response reinforces it as a genuine NO signal."
@@ -101,6 +105,10 @@ const ITERATIONS: DossierVM["iterations"] = [
         d: 7,
         revises: false,
         verified: true,
+        focusId: "strongest-countercase",
+        crossCheck: "single_source",
+        qualityScore: 68,
+        sourceCount: 1,
         takeaway: "The strongest live delay signal — a high-reliability insider flags incompleteness.",
         analysis:
           "Schreier is a high-reliability insider, so a content-incompleteness flag is real delay-risk evidence; tempered because “not content complete” months out doesn’t force a slip, and a buggy Nov-19 launch still resolves NO."
@@ -168,6 +176,10 @@ const ITERATIONS: DossierVM["iterations"] = [
         d: -7,
         revises: true,
         verified: true,
+        focusId: "strongest-countercase",
+        crossCheck: "contested",
+        qualityScore: 74,
+        sourceCount: 2,
         takeaway: "The prior YES pillar traces to early-2026 and is superseded.",
         analysis:
           "The +7% “not content complete” concern traces to early/January-2026 reporting and is superseded by newer content-complete reports; its YES weight is walked back."
@@ -322,7 +334,7 @@ const ITERATIONS: DossierVM["iterations"] = [
 // The Report summary narrative, with [NN] global-book-index references the UI
 // turns into colored anchor links (hs = supporting, hc = counter).
 const SUMMARY_PARAGRAPHS = [
-  "The forecast opened from a **38% prior** — GTA VI has slipped twice, and twice-delayed AAA titles slip again more often than not. Then the evidence stacked one way: [hs:01]official pre-orders with cover art (01)[/] and [hs:02]Take-Two's on-the-record reaffirmation (02)[/] committed Rockstar publicly to the date, while reliable insiders reported no red flags. The decisive shift was watching the **two strongest delay pillars fail on reflection**: the [hc:03]\"not content complete\" report (03)[/] traced to __stale early-2026 reporting__ and was [hs:06]superseded by newer content-complete accounts (06)[/], and the [hc:05]crunch narrative (05)[/] was __reframed by the CEO as a deliberate anti-crunch schedule (10)__. With both pillars walked back and confirmations still stacking, P(YES) settled at **7%**. The residual ~7% is honesty: a third delay is no longer base-rate-likely, but it isn't *impossible* this close to a hard date."
+  'The forecast opened from a **38% prior** — Grand Theft Auto VI has slipped twice, and twice-delayed big-budget games slip again more often than not. Then the evidence stacked one way: [hs:01]official pre-orders with cover art (01)[/] and [hs:02]Take-Two\'s on-the-record reaffirmation (02)[/] committed Rockstar publicly to the date, while reliable insiders reported no red flags. The decisive shift was watching the **two strongest delay pillars fail on reflection**: the [hc:03]"not content complete" report (03)[/] traced to __stale early-2026 reporting__ and was [hs:06]superseded by newer content-complete accounts (06)[/], and the [hc:05]crunch narrative (05)[/] was __reframed by the chief executive officer as a deliberate anti-crunch schedule (10)__. With both pillars walked back and confirmations still stacking, the probability of YES settled at **7%**. The residual 7% is honesty: a third delay is no longer base-rate-likely, but it is not impossible this close to a hard date.'
 ];
 
 export const GTA6_DEMO: DossierVM = {
@@ -346,5 +358,105 @@ export const GTA6_DEMO: DossierVM = {
   priorProb: 0.38,
   maxRounds: 3,
   startedAtUtc: null,
-  summaryParagraphs: SUMMARY_PARAGRAPHS
+  summaryParagraphs: SUMMARY_PARAGRAPHS,
+  researchPlan: {
+    archetype: "product release",
+    modelKind: "binary Bayesian update",
+    modelRationale:
+      "Maintain one probability for a further delay and update it only when an atomic factual claim adds information beyond the reference class.",
+    searchStrategy:
+      "Search broadly across official release records, investor statements, retailer commitments, high-quality original reporting, and the strongest evidence of schedule slippage; then retain only sources that add independent information.",
+    minimumSearchQueries: 6,
+    focusAreas: [
+      {
+        id: "resolution-state",
+        question: "What directly establishes whether the 19 November 2026 console date still stands?",
+        whyItMatters: "Official release and distribution records most directly answer the resolution rule.",
+        priority: "high",
+        preferredSources: ["Rockstar Games newswire", "Take-Two investor statements", "retailer availability records"],
+        completionCriteria: "One direct official record plus an independent distribution or reporting cross-check."
+      },
+      {
+        id: "outside-view",
+        question: "How often do comparable big-budget games slip again after two delays and a public recommitment?",
+        whyItMatters: "The outside view anchors the forecast before vivid current reporting is weighed.",
+        priority: "high",
+        preferredSources: [
+          "publisher release histories",
+          "archived official dates",
+          "structured game release datasets"
+        ],
+        completionCriteria:
+          "Comparable cases list exact recommitment dates, final ship dates, similarities, and differences."
+      },
+      {
+        id: "strongest-countercase",
+        question: "What is the strongest current evidence that development or distribution is still behind schedule?",
+        whyItMatters: "The low delay estimate should survive a deliberate search for the best contrary evidence.",
+        priority: "high",
+        preferredSources: [
+          "attributable original reporting",
+          "direct employee or publisher statements",
+          "retailer schedule changes"
+        ],
+        completionCriteria:
+          "The strongest delay claim is independently checked or explicitly retained as a single-source risk."
+      }
+    ],
+    sourcePriorities: [
+      {
+        rank: 1,
+        sourceClass: "Official release, investor, and retailer records",
+        useWhen: "The record directly dates launch, pre-orders, distribution, or a delay.",
+        rejectWhen: "It repeats promotional language without a concrete date or commitment."
+      },
+      {
+        rank: 2,
+        sourceClass: "Independent original reporting",
+        useWhen: "Named reporters provide attributable development or distribution information.",
+        rejectWhen: "The item merely rewrites an unnamed rumor."
+      },
+      {
+        rank: 3,
+        sourceClass: "Secondary summaries and fan commentary",
+        useWhen: "They identify a lead that can be verified elsewhere.",
+        rejectWhen: "They are the sole basis for a material probability change."
+      }
+    ]
+  },
+  probabilityModelExplanation:
+    "The model starts from the delay rate of comparable big-budget releases, then applies one update per independently checkable claim. Several articles repeating the same announcement only improve corroboration; they do not move the probability several times.",
+  scenarios: [
+    {
+      name: "Date holds",
+      description:
+        "Marketing, retail preparation, and final production continue without a new high-quality delay report.",
+      implication: "This is the path most consistent with the current low delay estimate."
+    },
+    {
+      name: "Late operational slip",
+      description:
+        "A certification, production, or distribution problem appears after the public marketing commitment.",
+      implication: "This is the main remaining path to a further postponement."
+    }
+  ],
+  monitoringSignals: [
+    {
+      signal: "Rockstar or Take-Two begins hedging or removes the 19 November date from official materials.",
+      direction: "raises",
+      component: "Direct settlement evidence"
+    },
+    {
+      signal: "Retailers publish confirmed inventory or delivery schedules tied to 19 November.",
+      direction: "lowers",
+      component: "Distribution readiness"
+    }
+  ],
+  informationGaps: [
+    {
+      gap: "No public first-party production-readiness record is available.",
+      importance: "Marketing can remain on schedule even when certification or manufacturing is late.",
+      retrievalPath: "Monitor official filings, retailer delivery systems, and attributable original reporting."
+    }
+  ]
 };

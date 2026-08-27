@@ -105,8 +105,7 @@ export function loadAnalyst(eventId: string): AnalystState {
       stance: n.stance as AnalystNote["stance"],
       targetId: typeof n.targetId === "string" && n.targetId ? n.targetId : null,
       createdAtUtc: typeof n.createdAtUtc === "string" ? n.createdAtUtc : "",
-      consumedRound:
-        typeof n.consumedRound === "number" && Number.isFinite(n.consumedRound) ? n.consumedRound : null,
+      consumedRound: typeof n.consumedRound === "number" && Number.isFinite(n.consumedRound) ? n.consumedRound : null
     }));
   const marks: AnalystState["marks"] = {};
   if (o.marks && typeof o.marks === "object" && !Array.isArray(o.marks)) {
@@ -260,8 +259,7 @@ const REPORT_DICTS: Record<ForecastLanguage, ReportDict> = {
     marketBlindPrefix: "⚠ Market-blind: ",
     marketBlindJoin: "; ",
     marketBlindBlocked: (n) => `${n} source(s) were zero-weighted as prediction-market prices`,
-    marketBlindPrior:
-      "the base-rate prior reads market-anchored — treat any market-edge comparison as contaminated",
+    marketBlindPrior: "the base-rate prior reads market-anchored — treat any market-edge comparison as contaminated",
     stillResearching: (round) => `round ${round} — still researching`,
     towardYes: "**Toward YES:**",
     towardNo: "**Toward NO:**",
@@ -309,10 +307,10 @@ const REPORT_DICTS: Record<ForecastLanguage, ReportDict> = {
       prior: "Base-rate prior",
       framingCaveats: "Framing caveats (audit)",
       framingConfidence: "Framing confidence",
-      lastUpdated: "Last updated",
+      lastUpdated: "Last updated"
     },
     footer:
-      "_Probabilities come from an AI agent's web research; every move is attributed to a cited source. Not betting advice._",
+      "_Probabilities come from an AI agent's web research; every move is attributed to a cited source. Not betting advice._"
   },
   zh: {
     floorNote: "（引擎可表达的下限——真实估计可能更低，勿当精确值）",
@@ -336,8 +334,7 @@ const REPORT_DICTS: Record<ForecastLanguage, ReportDict> = {
     dupSkipped: (n) => `（另跳过 ${n} 条重复）`,
     roundHeader: (round, from, to) => `## 第 ${round} 轮 — ${from} → ${to}`,
     searches: (n) => `*${n} 次搜索（详见 state.json）*`,
-    unverifiedWarning: (pp) =>
-      `> ⚠ 本轮 ${pp}pp 的概率变动来自软钳制的未验证来源（URL 未出现在 agent 的工具轨迹中）。`,
+    unverifiedWarning: (pp) => `> ⚠ 本轮 ${pp}pp 的概率变动来自软钳制的未验证来源（URL 未出现在 agent 的工具轨迹中）。`,
     confirmationLine: (share) => `*确认比：* ${share}% 的证据权重与先验方向一致`,
     oneSided: " ⚠ 单边（可能存在确认偏误）",
     noNewEvidence: "_本轮无新证据。_",
@@ -369,10 +366,10 @@ const REPORT_DICTS: Record<ForecastLanguage, ReportDict> = {
       prior: "基础先验",
       framingCaveats: "框架疑点（审计）",
       framingConfidence: "框架置信度",
-      lastUpdated: "最后更新",
+      lastUpdated: "最后更新"
     },
-    footer: "_概率由 AI 网络调研产生，每条来源的影响均可追溯。非投注建议。_",
-  },
+    footer: "_概率由 AI 网络调研产生，每条来源的影响均可追溯。非投注建议。_"
+  }
 };
 
 // The verdict block: H1 (truncated user prompt), P(YES) + band (+ saturation
@@ -383,15 +380,16 @@ function renderVerdictBlock(state: ForecastState, d: ReportDict, cite: (text: st
   const bound =
     state.saturatedAt === "floor" ? PROB_FLOOR : state.saturatedAt === "ceil" ? PROB_CEIL : state.currentProb;
   const saturationNote = state.saturatedAt === "floor" ? d.floorNote : state.saturatedAt === "ceil" ? d.ceilNote : "";
+  const probabilityLabel = forecastLanguage() === "zh" ? "YES 概率（P(YES)）" : "Probability of YES (P(YES))";
   lines.push(
-    `**P(YES): ${pct(bound)}**${saturationNote} — ${d.band(pct(state.credibleInterval[0]), pct(state.credibleInterval[1]))}`,
+    `**${probabilityLabel}: ${pct(bound)}**${saturationNote} — ${d.band(pct(state.credibleInterval[0]), pct(state.credibleInterval[1]))}`,
     ""
   );
   const mb = state.marketBlind;
   if (mb && (mb.blockedCount > 0 || mb.priorSuspect)) {
     const parts = [
       ...(mb.blockedCount > 0 ? [d.marketBlindBlocked(mb.blockedCount)] : []),
-      ...(mb.priorSuspect ? [d.marketBlindPrior] : []),
+      ...(mb.priorSuspect ? [d.marketBlindPrior] : [])
     ];
     lines.push(`> ${d.marketBlindPrefix}${parts.join(d.marketBlindJoin)}`, "");
   }
@@ -425,7 +423,7 @@ function renderSummaryDetail(state: ForecastState, d: ReportDict, cite: (text: s
     cite(s.verdict),
     "",
     ...(s.mainUncertainties ? [`${d.mainUncertainties} ${cite(s.mainUncertainties)}`, ""] : []),
-    ...(s.calibrationNote ? [`${d.calibrationNote} ${cite(s.calibrationNote)}`, ""] : []),
+    ...(s.calibrationNote ? [`${d.calibrationNote} ${cite(s.calibrationNote)}`, ""] : [])
   ];
 }
 
@@ -447,7 +445,7 @@ function sourceFlags(u: PerSourceUpdate, d: ReportDict): string {
     u.kind === "reflection" ? d.flagReflection : null,
     !u.verified ? d.flagNotInTrace : null,
     u.kind === "evidence" && u.clusterFactor < 1 ? d.flagCorrelated(u.clusterFactor) : null,
-    u.excluded ? d.flagExcluded : null,
+    u.excluded ? d.flagExcluded : null
   ]
     .filter((p): p is string => p !== null)
     .join(", ");
@@ -488,7 +486,9 @@ function renderRound(r: RoundRecord, d: ReportDict, ann: RoundAnnotations): stri
   lines.push(d.sourcesLine(evidence.length, clusters, r.reflectionCount), "");
   lines.push(d.sourceCols, "| --- | --- | --- | --- |");
   for (const u of r.perSourceUpdates) {
-    lines.push(`| ${sourceLabel(u.title, u.url)} | ${signed(u.deltaPp)} | ${pct(u.from)} → ${pct(u.to)} | ${sourceFlags(u, d)} |`);
+    lines.push(
+      `| ${sourceLabel(u.title, u.url)} | ${signed(u.deltaPp)} | ${pct(u.from)} → ${pct(u.to)} | ${sourceFlags(u, d)} |`
+    );
   }
   lines.push("");
   if (ann.showCorrelatedFootnote) lines.push(d.correlatedFootnote, "");
@@ -528,7 +528,7 @@ function renderRounds(state: ForecastState, d: ReportDict): string[] {
     renderRound(r, d, {
       showUnverifiedWarning: worstUnverified === r.round,
       decorateConfirmation: worstConfirmation === r.round,
-      showCorrelatedFootnote: firstCorrelated === r.round,
+      showCorrelatedFootnote: firstCorrelated === r.round
     })
   );
 }
@@ -543,6 +543,167 @@ function renderLedger(state: ForecastState, d: ReportDict): string[] {
     )} | ${e.firstSeenRound} |`;
   });
   return [d.ledgerHeader, "", d.ledgerCols, "| --- | --- | --- | --- | --- |", ...rows, ""];
+}
+
+function renderReaderSections(state: ForecastState, cite: (text: string) => string): string[] {
+  const zh = forecastLanguage() === "zh";
+  const frame = state.framing;
+  const plan = state.researchPlan;
+  const summary = state.summary;
+  const lines: string[] = [
+    zh ? "## 1. 结算口径" : "## 1. Resolution rules",
+    "",
+    `- **${zh ? "规范化问题" : "Normalized question"}:** ${frame.normalizedQuestion}`,
+    `- **${zh ? "YES 与 NO 的判定" : "YES and NO test"}:** ${frame.resolutionCriteria}`,
+    ...(frame.resolutionDate ? [`- **${zh ? "结算日期" : "Resolution date"}:** ${frame.resolutionDate}`] : []),
+    ...(frame.settlementSource ? [`- **${zh ? "结算依据" : "Settlement source"}:** ${frame.settlementSource}`] : []),
+    ""
+  ];
+
+  if (plan) {
+    lines.push(
+      zh ? "## 2. 研究焦点中心" : "## 2. Research Focus Center",
+      "",
+      plan.searchStrategy,
+      "",
+      `**${zh ? "搜索要求" : "Search standard"}:** ${
+        zh
+          ? `每轮至少规划 ${plan.minimumSearchQueries} 个不同检索方向；先广泛发现，再核对原始来源和最强反证，最后按质量甄选。`
+          : `Plan at least ${plan.minimumSearchQueries} distinct searches per round; discover broadly, verify primary sources and the strongest countercase, then select by quality.`
+      }`,
+      "",
+      `| ${zh ? "优先级" : "Priority"} | ${zh ? "研究问题" : "Research question"} | ${zh ? "首选来源" : "Preferred sources"} | ${zh ? "完成标准" : "Completion standard"} |`,
+      "| --- | --- | --- | --- |",
+      ...plan.focusAreas.map(
+        (focus) =>
+          `| ${focus.priority} | ${focus.question.replace(/\|/g, "\\|")} | ${focus.preferredSources.join("; ").replace(/\|/g, "\\|")} | ${focus.completionCriteria.replace(/\|/g, "\\|")} |`
+      ),
+      "",
+      `**${zh ? "来源排序" : "Source ranking"}**`,
+      "",
+      ...plan.sourcePriorities.map(
+        (source) =>
+          `${source.rank}. **${source.sourceClass}** — ${source.useWhen}${source.rejectWhen ? `; ${zh ? "淘汰条件" : "reject when"}: ${source.rejectWhen}` : ""}`
+      ),
+      "",
+      zh ? "## 3. 唯一采用的概率模型" : "## 3. Single adopted probability model",
+      "",
+      `**${plan.modelKind}** — ${summary?.probabilityModelExplanation ?? plan.modelRationale}`,
+      "",
+      `- **${zh ? "事件拆解" : "Event decomposition"}:** ${plan.decomposition.join("；")}`,
+      `- **${zh ? "概率权威" : "Probability authority"}:** ${
+        zh
+          ? "只有 Predict-Raven 引擎维护最终概率；研究代理只提交经过来源支持的断言及其更新强度，不输出第二套概率。"
+          : "Only the Predict-Raven engine maintains the final probability; the research agent submits sourced claims and update strength, never a second probability."
+      }`,
+      ""
+    );
+  }
+
+  const rankedClaims = state.evidenceLedger
+    .filter((entry) => entry.kind === "evidence")
+    .sort((a, b) => (b.qualityScore ?? 0) - (a.qualityScore ?? 0) || Math.abs(b.deltaPp) - Math.abs(a.deltaPp));
+  lines.push(
+    zh ? "## 4. 排序后的关键断言" : "## 4. Ranked key claims",
+    "",
+    `| # | ${zh ? "断言" : "Claim"} | ${zh ? "方向" : "Direction"} | ${zh ? "质量" : "Quality"} | ${zh ? "交叉核验" : "Cross-check"} | ${zh ? "最佳来源及补充来源" : "Best and supporting sources"} |`,
+    "| ---: | --- | --- | ---: | --- | --- |",
+    ...rankedClaims.map((entry, index) => {
+      const sources = entry.sources?.length
+        ? entry.sources.map((source) => sourceLabel(source.title, source.url)).join("<br>")
+        : sourceLabel(entry.title, entry.url);
+      const direction =
+        entry.stance === "supports_yes" ? "YES" : entry.stance === "supports_no" ? "NO" : zh ? "中性" : "Neutral";
+      return `| ${index + 1} | ${entry.claim.replace(/\|/g, "\\|")} | ${direction} | ${entry.qualityScore ?? "—"} | ${entry.crossCheckStatus ?? "legacy"} | ${sources} |`;
+    }),
+    ""
+  );
+
+  if (summary) {
+    lines.push(zh ? "## 5. 综合判断" : "## 5. Integrated judgment", "", cite(summary.verdict), "");
+    if (summary.scenarios?.length) {
+      lines.push(
+        zh ? "## 6. 情景分析" : "## 6. Scenario analysis",
+        "",
+        `| ${zh ? "情景" : "Scenario"} | ${zh ? "路径" : "Path"} | ${zh ? "对当前判断的含义" : "Implication for the current forecast"} |`,
+        "| --- | --- | --- |",
+        ...summary.scenarios.map(
+          (scenario) =>
+            `| ${scenario.name} | ${cite(scenario.description).replace(/\|/g, "\\|")} | ${cite(scenario.implication).replace(/\|/g, "\\|")} |`
+        ),
+        ""
+      );
+    }
+    if (summary.monitoringSignals?.length) {
+      lines.push(
+        zh ? "## 7. 后续监控指标" : "## 7. Monitoring signals",
+        "",
+        `| ${zh ? "可观察信号" : "Observable signal"} | ${zh ? "方向" : "Direction"} | ${zh ? "影响组件" : "Affected component"} |`,
+        "| --- | --- | --- |",
+        ...summary.monitoringSignals.map(
+          (signal) =>
+            `| ${cite(signal.signal).replace(/\|/g, "\\|")} | ${signal.direction} | ${signal.component.replace(/\|/g, "\\|")} |`
+        ),
+        ""
+      );
+    }
+    if (summary.informationGaps?.length) {
+      lines.push(
+        zh ? "## 8. 信息缺口" : "## 8. Information gaps",
+        "",
+        `| ${zh ? "缺口" : "Gap"} | ${zh ? "为什么重要" : "Why it matters"} | ${zh ? "获取方式" : "How to retrieve it"} |`,
+        "| --- | --- | --- |",
+        ...summary.informationGaps.map(
+          (gap) =>
+            `| ${gap.gap.replace(/\|/g, "\\|")} | ${gap.importance.replace(/\|/g, "\\|")} | ${gap.retrievalPath.replace(/\|/g, "\\|")} |`
+        ),
+        ""
+      );
+    }
+  }
+
+  const directLinks = state.evidenceLedger.every(
+    (entry) =>
+      /^https?:\/\//.test(entry.url) && (entry.sources ?? []).every((source) => /^https?:\/\//.test(source.url))
+  );
+  const oneSided = state.roundHistory.some((round) => (round.confirmationRatio ?? 0) >= 0.85);
+  lines.push(
+    zh ? "## 9. 质量校验" : "## 9. Quality checks",
+    "",
+    `| ${zh ? "检查项" : "Check"} | ${zh ? "结果" : "Result"} | ${zh ? "说明" : "Explanation"} |`,
+    "| --- | --- | --- |",
+    `| ${zh ? "单一概率来源" : "Single probability authority"} | ${zh ? "通过" : "Pass"} | ${zh ? "研究代理没有第二套概率输出" : "The research agent has no second-probability output"} |`,
+    `| ${zh ? "证据单位" : "Evidence unit"} | ${zh ? "通过" : "Pass"} | ${zh ? "每个断言只更新一次，多来源只用于核验" : "Each claim updates once; additional sources only verify it"} |`,
+    `| ${zh ? "直接网页链接" : "Direct web links"} | ${directLinks ? (zh ? "通过" : "Pass") : zh ? "需复核" : "Review"} | ${zh ? "来源指向原网页" : "Sources point to the original web page"} |`,
+    `| ${zh ? "反证覆盖" : "Counterevidence coverage"} | ${oneSided ? (zh ? "已预警" : "Flagged") : zh ? "通过" : "Pass"} | ${zh ? "单边轮次会在审计附录中显示" : "One-sided rounds remain visible in the audit appendix"} |`,
+    `| ${zh ? "语言要求" : "Language standard"} | ${zh ? "已应用" : "Applied"} | ${zh ? "优先使用完整名称；必要缩写首次出现时给出释义" : "Full names are preferred; necessary abbreviations are defined on first use"} |`,
+    ""
+  );
+
+  if (summary?.glossary?.length) {
+    lines.push(
+      zh ? "### 术语释义" : "### Glossary",
+      "",
+      ...summary.glossary.map((item) => `- **${item.term}** — ${item.definition}`),
+      ""
+    );
+  }
+  return lines;
+}
+
+function renderSourceList(state: ForecastState): string[] {
+  const zh = forecastLanguage() === "zh";
+  const unique = new Map<string, { title: string; url: string }>();
+  for (const entry of state.evidenceLedger) {
+    const sources = entry.sources?.length ? entry.sources : [{ title: entry.title, url: entry.url }];
+    for (const source of sources) if (!unique.has(source.url)) unique.set(source.url, source);
+  }
+  return [
+    zh ? "## 10. 来源清单" : "## 10. Source list",
+    "",
+    ...[...unique.values()].map((source, index) => `${index + 1}. ${sourceLabel(source.title, source.url)}`),
+    ""
+  ];
 }
 
 // Every framing field the old header dumped up front, relocated verbatim.
@@ -563,7 +724,7 @@ function renderAppendix(state: ForecastState, d: ReportDict): string[] {
     ...(f.framingCaveats ? [`- **${a.framingCaveats}**: ${f.framingCaveats}`] : []),
     `- **${a.framingConfidence}**: ${f.framingConfidence}`,
     `- **${a.lastUpdated}**: ${state.updatedAtUtc}`,
-    "",
+    ""
   ];
 }
 
@@ -572,12 +733,15 @@ export function renderReport(state: ForecastState): string {
   const cite = (text: string): string => linkCitations(text, state.evidenceLedger.length);
   return [
     ...renderVerdictBlock(state, d, cite),
-    ...renderSummaryDetail(state, d, cite),
+    ...renderReaderSections(state, cite),
+    ...renderSourceList(state),
+    forecastLanguage() === "zh" ? "## 附录：研究审计轨迹" : "## Appendix: research audit trail",
+    "",
     ...renderTrajectory(state, d),
     ...renderRounds(state, d),
     ...renderLedger(state, d),
     ...renderAppendix(state, d),
-    d.footer,
+    d.footer
   ].join("\n");
 }
 

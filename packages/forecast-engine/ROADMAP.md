@@ -10,14 +10,28 @@
   criteria + inferred date + settlement source; a second pass corrects an
   ambiguous bar; the prior seeds currentProb (clamped [0.01,0.99]) instead of 0.5.
   Refuse + ask clarification if not forecastable.
-- **Iterative loop**: each round the agent (Claude Code WebSearch) finds NEW
-  evidence and proposes a signed per-source LLR; engine threads it through a
-  Bayesian log-odds update (per-source percentage-point attribution).
-- **Independence-aware aggregation** (P0-3): per-source cluster_id; same-cluster
-  sources damped ×0.5^rank so correlated echoes aren't counted N times.
+- **Research Focus Center** (phase one, 2026-08-27): after framing, classify and
+  decompose the question, choose one probability model, require broad search
+  directions, rank source classes, and define completion criteria before research.
+- **Claim-level iterative loop**: each round searches broadly, performs a
+  primary-source pass, cross-checks decisive claims, tests the strongest
+  countercase, and selects the best evidence. One atomic claim receives one signed
+  log-likelihood-ratio update; additional pages only corroborate or contradict it.
+- **Engine-computed evidence quality**: direct sources are ranked; search-trace
+  verification and independent-origin groups determine confirmed, single-source,
+  contested, or unverified status. The research model cannot self-certify a claim.
+- **Single probability authority**: the research agent no longer emits a holistic
+  challenger probability. The engine alone maintains the estimate.
+- **Readable decision report**: resolution rules, Focus Center, the one adopted
+  model, ranked claims with direct links, scenarios, monitoring triggers,
+  information gaps, quality checks, and an audit appendix. User-facing prose avoids
+  abbreviations or defines them on first use.
+- **Independence-aware aggregation** (P0-3): per-claim cluster identifier;
+  correlated claims from the same causal story receive diminishing weight.
 - **Disconfirmation pass + confirmation-ratio** (P0-5): each round must search to
   falsify the current lean; one-sided rounds flagged.
-- **Cross-round dedupe** by canonical URL; **fabricated-source guard** (P0-4):
+- **Cross-round claim dedupe** by semantic claim identifier or normalized claim
+  text; **fabricated-source guard** (P0-4):
   cited URLs reconciled against the actual WebSearch+WebFetch tool trace;
   unverified sources soft-clamped to |llr|≤0.2 (not dropped).
 - **(a) Reflection / cross-check**: each round may correct a prior source
@@ -30,18 +44,15 @@
 - **Continuity invariant** (round N prior == N-1 posterior); stop on
   max-rounds / no-new-info / convergence. Resumable state + traceable report.
 
-## Future: agentic redesign (discussed 2026-06-21, NOT urgent)
+## Future: agentic redesign beyond phase one (NOT urgent)
 
 The per-round "score every source" cadence is somewhat rigid. Keep the core
 binding (engine owns the number; every move attributed via LLR — this prevents
 the demo's hallucinated-number problem), but loosen the *unit* and add
-cross-check as a first-class step:
-- **Level 1 (preferred first):** evidence unit = a reasoned CLAIM backed by 1+
-  sources (not one-source-one-LLR); add an explicit cross_check action so the
-  agent fetches + adjudicates conflicting sources before scoring. Directly targets
-  the oscillating/contested case (e.g. foldable iPhone). Evolution of new_evidence[],
-  not a rewrite.
-- **Level 2 (bigger):** a true action loop — agent picks search / fetch /
+cross-check as a first-class step. **Level 1 shipped in phase one**: the evidence
+unit is now a reasoned claim backed by one or more ranked sources. The remaining
+larger option is:
+- **Level 2:** a true action loop — agent picks search / fetch /
   cross_check / reason / update / reflect / finalize each step; only `update`
   moves the probability (still via engine LLR). Higher quality ceiling, much more
   orchestration. Do only if Level 1 proves insufficient.

@@ -15,6 +15,7 @@ import { providerName } from "./agent";
 import { runForecast, newForecastState } from "./engine";
 import { frameEvent } from "./framing";
 import { marketBlind } from "./market-blind";
+import { createResearchPlan } from "./research-plan";
 import { eventDir, loadState, makeEventId, saveState } from "./store";
 import type { ForecastState } from "./types";
 
@@ -52,7 +53,9 @@ const pct = (p: number): string => `${(p * 100).toFixed(1)}%`;
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   if (!args.question) {
-    console.error('Usage: pnpm forecast:event -- "<event prompt>" [--resolution ...] [--max-rounds N] [--model X] [--fresh]');
+    console.error(
+      'Usage: pnpm forecast:event -- "<event prompt>" [--resolution ...] [--max-rounds N] [--model X] [--fresh]'
+    );
     process.exit(1);
   }
   // Provider-aware key guard. The claude provider accepts three auth paths and
@@ -76,7 +79,9 @@ async function main(): Promise<void> {
   let state: ForecastState | null = args.fresh ? null : loadState(eventId);
 
   if (state) {
-    console.log(`↻ Resuming forecast \`${eventId}\` (already ran ${state.round} round(s), P(YES)=${pct(state.currentProb)})`);
+    console.log(
+      `↻ Resuming forecast \`${eventId}\` (already ran ${state.round} round(s), P(YES)=${pct(state.currentProb)})`
+    );
     state.status = "open";
     if (!state.provider) state.provider = provider;
   } else {
@@ -87,14 +92,16 @@ async function main(): Promise<void> {
     console.log(`\n▶ Round 0 — framing the question…`);
     const { framing, costUsd, priorSuspect } = await frameEvent(args.question, {
       userResolution: args.resolution,
-      model: args.model,
+      model: args.model
     });
     console.log(`  Question:   ${framing.normalizedQuestion}`);
     console.log(`  Resolution: ${framing.resolutionCriteria}`);
     if (framing.resolutionDate) console.log(`  By:         ${framing.resolutionDate}`);
     if (framing.settlementSource) console.log(`  Source:     ${framing.settlementSource}`);
     console.log(`  Prior:      ${pct(framing.priorProbability)} — ${framing.priorRationale}`);
-    console.log(`  Audit:      confidence=${framing.framingConfidence}${framing.framingCaveats ? `; ${framing.framingCaveats}` : ""}`);
+    console.log(
+      `  Audit:      confidence=${framing.framingConfidence}${framing.framingCaveats ? `; ${framing.framingCaveats}` : ""}`
+    );
     if (costUsd != null) console.log(`  (framing cost $${costUsd.toFixed(3)})`);
 
     if (!framing.forecastable) {
@@ -103,7 +110,15 @@ async function main(): Promise<void> {
       console.log(`\n  Refine your prompt (or pass --resolution "...") and re-run.`);
       process.exit(2);
     }
-    state = newForecastState({ eventId, eventText: args.question, framing });
+    console.log(`\n▶ Focus Center — planning the research…`);
+    const researchPlan = await createResearchPlan(framing, { model: args.model });
+    console.log(`  Question type: ${researchPlan.archetype}`);
+    console.log(`  Probability model: ${researchPlan.modelKind}`);
+    console.log(`  Research priorities: ${researchPlan.focusAreas.map((x) => `${x.priority}:${x.id}`).join(", ")}`);
+    console.log(
+      `  Search breadth: at least ${researchPlan.minimumSearchQueries} distinct queries per round; quality-ranked sources only`
+    );
+    state = newForecastState({ eventId, eventText: args.question, framing, researchPlan });
     state.provider = provider;
     if (marketBlind()) {
       state.marketBlind = { enabled: true, blockedCount: 0, priorSuspect };
@@ -117,7 +132,7 @@ async function main(): Promise<void> {
   const final = await runForecast(state, {
     maxRounds: args.maxRounds,
     model: args.model,
-    onLog: (m) => console.log(m),
+    onLog: (m) => console.log(m)
   });
 
   const dir = eventDir(final.eventId);

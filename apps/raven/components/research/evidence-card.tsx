@@ -60,7 +60,10 @@ export function EvidenceCard({
       />
       <div style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 13 }}>
         <div style={{ display: "flex", gap: 10 }}>
-          <span className={`sd-${ev.side}`} style={{ width: 3, alignSelf: "stretch", borderRadius: 2, opacity: 0.85 }} />
+          <span
+            className={`sd-${ev.side}`}
+            style={{ width: 3, alignSelf: "stretch", borderRadius: 2, opacity: 0.85 }}
+          />
           <span
             style={{
               fontFamily: "var(--fd)",
@@ -96,19 +99,24 @@ export function EvidenceCard({
             )}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 9, marginTop: 7, flexWrap: "wrap" }}>
-            <span
+            <a
+              href={ev.url ?? undefined}
+              target={ev.url ? "_blank" : undefined}
+              rel={ev.url ? "noopener noreferrer" : undefined}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 5,
                 fontFamily: "var(--fm)",
                 fontSize: 10,
-                color: "var(--faint)"
+                color: ev.url ? "var(--accent)" : "var(--faint)",
+                textDecoration: "none",
+                pointerEvents: ev.url ? "auto" : "none"
               }}
             >
               <SrcIcon type={ev.srcType} />
               {ev.dom}
-            </span>
+            </a>
             <span
               className={`cred-${ev.cred} bd-${ev.cred}`}
               title={t(RP.evCredTitle)}
@@ -146,6 +154,35 @@ export function EvidenceCard({
               <span style={{ letterSpacing: 1 }}>{ev.valDiamonds}</span>
               {t(RP.evValuePill, { tier: tierWord(ev.valueLabel, locale) })}
             </span>
+            {typeof ev.qualityScore === "number" ? (
+              <span style={{ fontFamily: "var(--fm)", fontSize: 9, color: "var(--accent)" }}>
+                {t(RP.evClaimQuality, { score: ev.qualityScore })}
+              </span>
+            ) : null}
+            {ev.crossCheck ? (
+              <span
+                style={{
+                  fontFamily: "var(--fm)",
+                  fontSize: 9,
+                  color:
+                    ev.crossCheck === "confirmed"
+                      ? "var(--verified)"
+                      : ev.crossCheck === "contested"
+                        ? "var(--neg)"
+                        : "var(--faint)"
+                }}
+              >
+                {t(
+                  ev.crossCheck === "confirmed"
+                    ? RP.evCrossChecked
+                    : ev.crossCheck === "contested"
+                      ? RP.evContested
+                      : ev.crossCheck === "single_source"
+                        ? RP.evSingleSource
+                        : RP.evUnverified
+                )}
+              </span>
+            ) : null}
           </div>
           <p style={{ margin: "9px 0 0", fontSize: 12.5, lineHeight: 1.55, color: "var(--muted)" }}>
             <b style={{ color: "var(--text)", fontWeight: 600 }}>{ev.takeaway}</b> {ev.analysis}

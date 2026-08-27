@@ -6,6 +6,27 @@
 import type { Entry } from "./index";
 
 export const RP = {
+  // --- research focus center ---
+  focusTitle: { en: "Research Focus Center", zh: "研究焦点中心" },
+  focusMotto: {
+    en: "Search wider. Select harder. Keep the source that best proves the claim.",
+    zh: "搜索要更广，甄选要更严，只保留最能证明断言的来源。"
+  },
+  focusSearchStandard: {
+    en: "At least {n} distinct search directions per round, including primary evidence and the strongest countercase.",
+    zh: "每轮至少规划 {n} 个不同检索方向，其中必须包含原始证据和最强反证。"
+  },
+  focusModel: { en: "Single probability model", zh: "唯一概率模型" },
+  focusSourceOrder: { en: "Source selection order", zh: "来源甄选顺序" },
+  focusOpen: { en: "OPEN", zh: "待研究" },
+  focusCovered: { en: "SOURCED", zh: "已有来源" },
+  focusChecked: { en: "CROSS-CHECKED", zh: "已交叉核验" },
+  focusClaims: { en: "{n} accepted claims", zh: "{n} 条已采纳断言" },
+  focusPreferred: { en: "Preferred", zh: "优先来源" },
+  focusCompleteWhen: { en: "Complete when", zh: "完成标准" },
+  focusUseWhen: { en: "Use when", zh: "适用条件" },
+  focusRejectWhen: { en: "Reject when", zh: "淘汰条件" },
+
   // --- analyst desk ---
   deskTitle: { en: "Analyst desk", zh: "分析师工作台" },
   // Helper copy is split around the inline <b> segment: pre + bold + post.
@@ -60,6 +81,11 @@ export const RP = {
   evCredPill: { en: "{tier} credibility", zh: "可信度{tier}" },
   evValueTitle: { en: "How much this source adds to the forecast", zh: "该来源对预测的增益程度" },
   evValuePill: { en: "{tier} value", zh: "价值{tier}" },
+  evClaimQuality: { en: "Claim quality {score}/100", zh: "断言质量 {score}/100" },
+  evCrossChecked: { en: "Cross-checked", zh: "已交叉核验" },
+  evSingleSource: { en: "Single source", zh: "单一来源" },
+  evContested: { en: "Contested", zh: "存在冲突" },
+  evUnverified: { en: "Unverified", zh: "未核实" },
   evYourNote: { en: "Your note", zh: "你的笔记" },
   evNotePlaceholder: { en: "Attach a note to this evidence…", zh: "给这条证据附加笔记…" },
   evNoteAria: { en: "Attach a note to this evidence", zh: "给这条证据附加笔记" },

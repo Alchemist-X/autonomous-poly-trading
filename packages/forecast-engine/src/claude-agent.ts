@@ -12,7 +12,17 @@
 // no secret is committed here.
 
 import { spawn } from "node:child_process";
-import type { AgentRoundOutput } from "./types";
+import { rankClaimSources } from "./claims";
+import type {
+  AgentRoundOutput,
+  ClaimCategory,
+  ClaimSource,
+  ClaimSupport,
+  CrossCheckStatus,
+  ResolutionRelevance,
+  SourceType,
+  SupportQuality
+} from "./types";
 
 export interface AgentRunResult {
   rawFinalText: string;
@@ -157,46 +167,129 @@ export function extractJsonObject(text: string): unknown | null {
 const STANCES = new Set(["supports_yes", "supports_no", "neutral"]);
 const STRENGTHS = new Set(["weak", "moderate", "strong"]);
 const CONFIDENCES = new Set(["low", "medium", "high"]);
-const SOURCE_TYPES = new Set(["official", "press", "insider"]);
+const SOURCE_TYPES = new Set<SourceType>([
+  "official",
+  "data",
+  "academic",
+  "original_reporting",
+  "press",
+  "insider",
+  "secondary"
+]);
+const CLAIM_CATEGORIES = new Set<ClaimCategory>([
+  "base_rate",
+  "resolution",
+  "current_state",
+  "causal_driver",
+  "counterevidence"
+]);
+const RELEVANCE = new Set<ResolutionRelevance>(["direct", "indirect", "context"]);
+const RELATIONS = new Set<ClaimSupport>(["supports", "contradicts", "context"]);
+const SUPPORT_QUALITY = new Set<SupportQuality>(["direct", "partial", "context"]);
+const CROSS_CHECK = new Set<CrossCheckStatus>(["confirmed", "single_source", "contested", "unverified"]);
+
+function cleanId(value: unknown, fallback: string): string {
+  const raw = typeof value === "string" ? value : "";
+  return (
+    raw
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]+/g, "-")
+      .replace(/^-|-$/g, "") || fallback
+  );
+}
+
+function parseClaimSource(raw: unknown, fallback: Record<string, unknown>, index: number): ClaimSource | null {
+  const source = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : fallback;
+  const url =
+    typeof source.url === "string" ? source.url : typeof source.source_url === "string" ? source.source_url : "";
+  if (!url.trim()) return null;
+  const sourceType = SOURCE_TYPES.has(source.source_type as SourceType) ? (source.source_type as SourceType) : "press";
+  const credibility = CONFIDENCES.has(source.credibility as string)
+    ? (source.credibility as ClaimSource["credibility"])
+    : "medium";
+  return {
+    url: url.trim(),
+    title:
+      typeof source.title === "string"
+        ? source.title.trim()
+        : typeof source.source_title === "string"
+          ? source.source_title.trim()
+          : "",
+    sourceType,
+    credibility,
+    relation: RELATIONS.has(source.relation as ClaimSupport) ? (source.relation as ClaimSupport) : "supports",
+    supportQuality: SUPPORT_QUALITY.has(source.support_quality as SupportQuality)
+      ? (source.support_quality as SupportQuality)
+      : "direct",
+    publishedAt:
+      typeof source.published_at === "string" && source.published_at.trim() ? source.published_at.trim() : null,
+    isPrimary:
+      typeof source.is_primary === "boolean" ? source.is_primary : sourceType === "official" || sourceType === "data",
+    independenceGroup:
+      typeof source.independence_group === "string" && source.independence_group.trim()
+        ? source.independence_group.trim()
+        : `source-${index + 1}`
+  };
+}
 
 // Fail-closed validation: a malformed round throws rather than silently
 // degrading to a guessed number.
 export function validateRoundOutput(raw: unknown): AgentRoundOutput {
   if (!raw || typeof raw !== "object") throw new Error("agent output is not an object");
   const o = raw as Record<string, unknown>;
-  const evidenceRaw = Array.isArray(o.new_evidence) ? o.new_evidence : null;
-  if (!evidenceRaw) throw new Error("new_evidence missing or not an array");
-  const new_evidence = evidenceRaw.map((e, i) => {
+  const claimsRaw = Array.isArray(o.new_claims) ? o.new_claims : Array.isArray(o.new_evidence) ? o.new_evidence : null;
+  if (!claimsRaw) throw new Error("new_claims missing or not an array");
+  const newClaims = claimsRaw.map((e, i) => {
     const ev = e as Record<string, unknown>;
-    if (typeof ev.source_url !== "string" || !ev.source_url.trim())
-      throw new Error(`evidence[${i}].source_url missing`);
-    if (typeof ev.claim !== "string") throw new Error(`evidence[${i}].claim missing`);
-    if (!STANCES.has(ev.stance as string)) throw new Error(`evidence[${i}].stance invalid: ${ev.stance}`);
-    if (!STRENGTHS.has(ev.strength as string)) throw new Error(`evidence[${i}].strength invalid`);
-    if (typeof ev.llr !== "number" || !Number.isFinite(ev.llr))
-      throw new Error(`evidence[${i}].llr not a finite number`);
+    if (typeof ev.claim !== "string" || !ev.claim.trim()) throw new Error(`claim[${i}].claim missing`);
+    if (!STANCES.has(ev.stance as string)) throw new Error(`claim[${i}].stance invalid: ${ev.stance}`);
+    if (!STRENGTHS.has(ev.strength as string)) throw new Error(`claim[${i}].strength invalid`);
+    if (typeof ev.llr !== "number" || !Number.isFinite(ev.llr)) throw new Error(`claim[${i}].llr not a finite number`);
+    const rawSources = Array.isArray(ev.sources) && ev.sources.length ? ev.sources : [ev];
+    const sources = rankClaimSources(
+      rawSources
+        .map((source, sourceIndex) => parseClaimSource(source, ev, sourceIndex))
+        .filter((source): source is ClaimSource => source !== null)
+    );
+    if (!sources.length) throw new Error(`claim[${i}] has no source URL`);
+    const supportingSources = sources.filter((source) => source.relation === "supports");
+    if (!supportingSources.length) throw new Error(`claim[${i}] has no source that supports the factual claim`);
+    const best = supportingSources[0];
+    const independent = new Set(sources.map((source) => source.independenceGroup)).size;
+    const hasContradiction = sources.some((source) => source.relation === "contradicts");
+    const derivedStatus: CrossCheckStatus = hasContradiction
+      ? "contested"
+      : independent >= 2
+        ? "confirmed"
+        : "single_source";
+    const crossCheckStatus = CROSS_CHECK.has(ev.cross_check_status as CrossCheckStatus)
+      ? (ev.cross_check_status as CrossCheckStatus)
+      : derivedStatus;
     return {
-      claim: ev.claim,
-      source_url: ev.source_url,
-      source_title: typeof ev.source_title === "string" ? ev.source_title : "",
-      stance: ev.stance as AgentRoundOutput["new_evidence"][number]["stance"],
-      strength: ev.strength as AgentRoundOutput["new_evidence"][number]["strength"],
+      // When an older caller omits a semantic id, leave it empty so the
+      // engine derives the dedupe key from the claim text. A positional id
+      // such as claim-1 would incorrectly collide across research rounds.
+      claim_id: cleanId(ev.claim_id, ""),
+      focus_id: cleanId(ev.focus_id, "unassigned"),
+      claim: ev.claim.trim(),
+      source_url: best.url,
+      source_title: best.title,
+      stance: ev.stance as AgentRoundOutput["newClaims"][number]["stance"],
+      strength: ev.strength as AgentRoundOutput["newClaims"][number]["strength"],
       llr: ev.llr,
       rationale: typeof ev.rationale === "string" ? ev.rationale : "",
       cluster_id: typeof ev.cluster_id === "string" ? ev.cluster_id : "",
-      // Lenient with defaults (never throw): these enrich the evidence display
-      // but must not fail a round when a model omits or mangles them.
-      source_type: SOURCE_TYPES.has(ev.source_type as string)
-        ? (ev.source_type as AgentRoundOutput["new_evidence"][number]["source_type"])
-        : "press",
-      credibility: CONFIDENCES.has(ev.credibility as string)
-        ? (ev.credibility as AgentRoundOutput["new_evidence"][number]["credibility"])
-        : "medium",
+      source_type: best.sourceType,
+      credibility: best.credibility,
+      category: CLAIM_CATEGORIES.has(ev.category as ClaimCategory) ? (ev.category as ClaimCategory) : "current_state",
+      resolution_relevance: RELEVANCE.has(ev.resolution_relevance as ResolutionRelevance)
+        ? (ev.resolution_relevance as ResolutionRelevance)
+        : "direct",
+      cross_check_status: crossCheckStatus,
+      selection_rationale: typeof ev.selection_rationale === "string" ? ev.selection_rationale.trim() : "",
+      sources
     };
   });
-  const prob = Number(o.agent_holistic_probability);
-  if (!Number.isFinite(prob) || prob < 0 || prob > 1)
-    throw new Error("agent_holistic_probability must be 0..1");
   if (!CONFIDENCES.has(o.confidence as string)) throw new Error("confidence invalid");
   // (a) reflection is optional; keep only well-formed entries (target + new source + finite adj).
   const reflectionRaw = Array.isArray(o.reflection) ? o.reflection : [];
@@ -215,16 +308,15 @@ export function validateRoundOutput(raw: unknown): AgentRoundOutput {
       target_url: r.target_url as string,
       llr_adjustment: r.llr_adjustment as number,
       reason: typeof r.reason === "string" ? r.reason : "",
-      new_source_url: r.new_source_url as string,
+      new_source_url: r.new_source_url as string
     }));
   return {
     round_summary: typeof o.round_summary === "string" ? o.round_summary : "",
-    new_evidence,
+    newClaims,
     reflection,
-    agent_holistic_probability: prob,
     confidence: o.confidence as AgentRoundOutput["confidence"],
     found_new_information: Boolean(o.found_new_information),
-    notes: typeof o.notes === "string" ? o.notes : "",
+    notes: typeof o.notes === "string" ? o.notes : ""
   };
 }
 
@@ -252,8 +344,8 @@ export async function runAgentRaw(prompt: string, opts: RunAgentOptions = {}): P
       cwd: opts.cwd ?? process.cwd(),
       env: {
         ...process.env,
-        ...(baseUrl ? { ANTHROPIC_BASE_URL: baseUrl } : {}),
-      },
+        ...(baseUrl ? { ANTHROPIC_BASE_URL: baseUrl } : {})
+      }
     });
     let stdout = "";
     let stderr = "";
@@ -282,7 +374,7 @@ export async function runAgentRaw(prompt: string, opts: RunAgentOptions = {}): P
         costUsd: parsedStream.costUsd,
         numTurns: parsedStream.numTurns,
         exitCode: code ?? -1,
-        stderrTail: stderr.slice(-800),
+        stderrTail: stderr.slice(-800)
       });
     });
     child.stdin.write(prompt);

@@ -489,7 +489,7 @@ export default function HomePage() {
                   marginTop: 6
                 }}
               >
-                P(YES)
+                YES probability
               </div>
             </div>
             <div style={{ flex: 1, minWidth: 260, borderLeft: "1px solid var(--line)", paddingLeft: 22 }}>

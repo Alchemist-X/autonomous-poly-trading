@@ -2,10 +2,10 @@
 //
 // One forecast tracks ONE binary (yes/no) event. Its probability is maintained
 // across multiple rounds: each round the agent searches for NEW evidence and
-// proposes per-source log-likelihood-ratios; the engine threads those through a
-// Bayesian log-odds update so every probability move is attributable to a cited
-// source. State persists between rounds so the loop can resume and so the whole
-// decision process stays auditable.
+// proposes one log-likelihood ratio per atomic claim; the engine threads those
+// through a Bayesian log-odds update so every probability move is attributable
+// to a claim and its ranked source set. State persists between rounds so the
+// loop can resume and so the whole decision process stays auditable.
 
 export type Stance = "supports_yes" | "supports_no" | "neutral";
 export type Strength = "weak" | "moderate" | "strong";
@@ -13,7 +13,69 @@ export type Confidence = "low" | "medium" | "high";
 // Provenance class of a cited source: official = primary/company/government/
 // regulator statements; press = journalism; insider = leakers, analysts,
 // industry chatter.
-export type SourceType = "official" | "press" | "insider";
+export type SourceType = "official" | "data" | "academic" | "original_reporting" | "press" | "insider" | "secondary";
+
+export type QuestionArchetype =
+  | "personnel_transition"
+  | "product_release"
+  | "metric_threshold"
+  | "policy_regulation"
+  | "corporate_action"
+  | "geopolitical_event"
+  | "other";
+
+export type ProbabilityModelKind = "hazard" | "conjunction" | "scenario_mixture" | "binary_bayesian";
+export type ResearchPriority = "high" | "medium" | "low";
+
+export interface ResearchFocus {
+  id: string;
+  question: string;
+  whyItMatters: string;
+  priority: ResearchPriority;
+  preferredSources: string[];
+  completionCriteria: string;
+}
+
+export interface SourcePriorityRule {
+  rank: number;
+  sourceClass: string;
+  useWhen: string;
+  rejectWhen: string;
+}
+
+// The Focus Center contract. It is generated after framing and before the
+// first research round, then shown in the Raven interface and injected into
+// every round. The plan never emits a competing probability.
+export interface ResearchPlan {
+  archetype: QuestionArchetype;
+  modelKind: ProbabilityModelKind;
+  modelRationale: string;
+  decomposition: string[];
+  focusAreas: ResearchFocus[];
+  sourcePriorities: SourcePriorityRule[];
+  minimumSearchQueries: number;
+  searchStrategy: string;
+}
+
+export type ClaimCategory = "base_rate" | "resolution" | "current_state" | "causal_driver" | "counterevidence";
+export type ResolutionRelevance = "direct" | "indirect" | "context";
+export type ClaimSupport = "supports" | "contradicts" | "context";
+export type SupportQuality = "direct" | "partial" | "context";
+export type CrossCheckStatus = "confirmed" | "single_source" | "contested" | "unverified";
+
+export interface ClaimSource {
+  url: string;
+  title: string;
+  sourceType: SourceType;
+  credibility: Confidence;
+  relation: ClaimSupport;
+  supportQuality: SupportQuality;
+  publishedAt: string | null;
+  isPrimary: boolean;
+  independenceGroup: string;
+  verifiedInSearchTrace?: boolean;
+  qualityScore?: number;
+}
 
 // ---- The structured frame the agent writes BEFORE forecasting (Round 0). ----
 // A free-text user prompt is not a well-posed forecastable event; this step
@@ -39,17 +101,27 @@ export interface EventFraming {
   framingCaveats: string; // ambiguities / edge cases the audit flagged
   framingConfidence: "high" | "medium" | "low";
 }
-export interface AgentEvidence {
-  claim: string; // the specific fact found, in one sentence
-  source_url: string; // where it came from
+export interface AgentClaim {
+  claim_id: string; // stable, short semantic key; reused when the same factual claim returns
+  focus_id: string; // ResearchFocus.id this claim helps answer
+  claim: string; // one atomic, checkable factual statement
+  // The highest-ranked source is repeated in these compatibility fields so the
+  // existing ledger and user interface keep one canonical direct link. Sources
+  // below are corroboration or contradiction and never create extra LLR moves.
+  source_url: string;
   source_title: string;
   stance: Stance; // direction relative to the YES outcome
   strength: Strength; // how strongly it moves the belief
   llr: number; // signed log-likelihood ratio in nats; + favors YES, - favors NO
   rationale: string; // why this moves the probability and by how much
-  cluster_id: string; // P0-3: same id => sources share one underlying story/poll/origin
-  source_type: SourceType; // provenance class (validator defaults to "press")
-  credibility: Confidence; // reliability of this source for this claim (validator defaults to "medium")
+  cluster_id: string; // same underlying fact/causal story => same id across rounds
+  source_type: SourceType;
+  credibility: Confidence;
+  category: ClaimCategory;
+  resolution_relevance: ResolutionRelevance;
+  cross_check_status: CrossCheckStatus;
+  selection_rationale: string;
+  sources: ClaimSource[];
 }
 
 // (a) Reflection: an adjustment to a PRIOR-round source, proposed when this
@@ -65,9 +137,8 @@ export interface ReflectionAdjustment {
 
 export interface AgentRoundOutput {
   round_summary: string;
-  new_evidence: AgentEvidence[];
+  newClaims: AgentClaim[];
   reflection: ReflectionAdjustment[]; // (a) cross-round corrections; may be empty
-  agent_holistic_probability: number; // agent's own gut P(YES) 0..1 — sanity check only
   confidence: Confidence;
   found_new_information: boolean; // false => no fresh evidence this round (stop signal)
   notes: string;
@@ -97,6 +168,14 @@ export interface LedgerEntry {
   verifiedInSearchTrace: boolean; // was this URL actually returned by the agent's WebSearch?
   sourceType: SourceType; // provenance class of the cited source
   credibility: Confidence; // reliability of this source for this claim
+  claimId?: string;
+  focusId?: string;
+  category?: ClaimCategory;
+  resolutionRelevance?: ResolutionRelevance;
+  crossCheckStatus?: CrossCheckStatus;
+  selectionRationale?: string;
+  sources?: ClaimSource[];
+  qualityScore?: number;
   excluded?: "market_price"; // market-blind mode zero-weighted this source (kept in the ledger for the audit trail)
 }
 
@@ -134,13 +213,13 @@ export interface RoundRecord {
   priorProb: number; // MUST equal previous round's postProb (continuity invariant)
   postProb: number;
   perSourceUpdates: PerSourceUpdate[];
-  newSourceCount: number;
+  newSourceCount: number; // distinct cited pages across the new claims
+  newClaimCount?: number; // probability is updated once per claim, never once per page
   duplicateCount: number; // sources dropped because already counted in a prior round
   reflectionCount: number; // (a) prior-source corrections applied this round
   unverifiedPp: number; // total |pp| of this round's movement from unverified (soft-clamped) sources
   confirmationRatio: number | null; // P0-5: share of evidence weight reinforcing the current lean
   whyChanged: WhyChanged | null; // (b) decomposition of the round's net move
-  agentHolisticProb: number;
   confidence: Confidence;
   reasoning: string;
   searchQueries: string[];
@@ -173,6 +252,11 @@ export interface ForecastSummary {
   whySentence?: string; // ONE self-explaining sentence: the single reason the number landed here
   quip?: string; // one short dry human aside reacting to the verdict
   confidenceReason?: string; // one line on why confidence is high/medium/low
+  probabilityModelExplanation?: string;
+  scenarios?: Array<{ name: string; description: string; implication: string }>;
+  monitoringSignals?: Array<{ signal: string; direction: "raises" | "lowers" | "mixed"; component: string }>;
+  informationGaps?: Array<{ gap: string; importance: string; retrievalPath: string }>;
+  glossary?: Array<{ term: string; definition: string }>;
 }
 
 export interface ForecastState {
@@ -188,6 +272,7 @@ export interface ForecastState {
   evidenceLedger: LedgerEntry[];
   roundHistory: RoundRecord[];
   summary: ForecastSummary | null; // final whole-forecast synthesis (after the last round)
+  researchPlan?: ResearchPlan;
   provider?: string; // which LLM provider produced this run ("claude" | "deepseek")
   // Set when currentProb sits at PROB_FLOOR/PROB_CEIL because the unclamped
   // posterior crossed it — the number is a bound, not a point estimate.

@@ -73,7 +73,6 @@ const state: ForecastState = {
         dominantPp: 15,
         dominantKind: "evidence"
       },
-      agentHolisticProb: 0.6,
       confidence: "medium",
       reasoning: "solid official signal",
       searchQueries: ["x announcement"],
@@ -92,7 +91,6 @@ const state: ForecastState = {
       unverifiedPp: 0,
       confirmationRatio: 1,
       whyChanged: null,
-      agentHolisticProb: 0.62,
       confidence: "medium",
       reasoning: "no counter-evidence found",
       searchQueries: ["x delayed"],

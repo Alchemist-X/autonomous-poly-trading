@@ -9,6 +9,7 @@
 // computed, not guessed -> persist -> check stop conditions.
 
 import { providerHasWebSearch, runAgent } from "./agent";
+import { canonicalClaimKey, claimQualityScore, crossCheckWeight, rankClaimSources } from "./claims";
 import { languageDirective } from "./language";
 import {
   applyLlrs,
@@ -21,9 +22,10 @@ import {
   credibleInterval,
   effectiveLlr,
   PROB_CEIL,
-  PROB_FLOOR,
+  PROB_FLOOR
 } from "./bayes";
 import { isMarketPriceSource, marketBlind, marketBlindDirective } from "./market-blind";
+import { defaultResearchPlan } from "./research-plan";
 import { validateRoundOutput } from "./claude-agent";
 import type { AgentRunResult, RunAgentOptions } from "./claude-agent";
 import { loadAnalyst, saveAnalyst, saveState, writeDiagnostic, writeReport } from "./store";
@@ -37,12 +39,12 @@ import type {
   LedgerEntry,
   PerSourceUpdate,
   RoundRecord,
-  WhyChanged,
+  WhyChanged
 } from "./types";
 
 export interface RunForecastOptions {
   maxRounds?: number;
-  minRounds?: number; // convergence cannot stop the loop before this many rounds (env FORECAST_MIN_ROUNDS, default 1)
+  minRounds?: number; // convergence cannot stop the loop before this many rounds (env FORECAST_MIN_ROUNDS, default 2)
   convergenceEpsilon?: number; // stop if a round with new evidence moves prob by less than this
   model?: string;
   onLog?: (msg: string) => void;
@@ -72,9 +74,26 @@ export function buildPrompt(
       : state.evidenceLedger
           .map(
             (e) =>
-              `- [${e.stance}, ${e.deltaPp >= 0 ? "+" : ""}${e.deltaPp.toFixed(1)}pp] ${e.url} — ${e.claim}`
+              `- [${e.claimId ?? e.id}] [${e.stance}, ${e.deltaPp >= 0 ? "+" : ""}${e.deltaPp.toFixed(1)}pp] ${e.claim} — ${e.url}`
           )
           .join("\n");
+
+  const plan = state.researchPlan ?? defaultResearchPlan(state.framing);
+  const coveredFocus = new Map<string, number>();
+  for (const entry of state.evidenceLedger) {
+    if (entry.focusId) coveredFocus.set(entry.focusId, (coveredFocus.get(entry.focusId) ?? 0) + 1);
+  }
+  const focusPlan = plan.focusAreas
+    .map(
+      (focus) =>
+        `- [${focus.priority.toUpperCase()}] ${focus.id}: ${focus.question}\n  Why: ${focus.whyItMatters}\n  Preferred sources: ${focus.preferredSources.join(", ")}\n  Completion: ${focus.completionCriteria}\n  Current coverage: ${coveredFocus.get(focus.id) ?? 0} accepted claim(s)`
+    )
+    .join("\n");
+  const sourceRanking = plan.sourcePriorities
+    .map(
+      (source) => `${source.rank}. ${source.sourceClass} — use when ${source.useWhen}; reject when ${source.rejectWhen}`
+    )
+    .join("\n");
 
   // Analyst-in-the-loop: unconsumed notes become leads (never established
   // fact); "doubt" marks ask the agent to re-examine specific prior sources via
@@ -92,7 +111,7 @@ export function buildPrompt(
       s === "yes" ? "[PUSHES YES]" : s === "no" ? "[PUSHES NO]" : "[OPEN QUESTION]";
     const lines: string[] = [
       "",
-      "ANALYST INPUT — a human analyst reviewing this run left the following. Treat each item as a hypothesis or lead to INVESTIGATE this round — not as established fact. If a lead pans out, include it as evidence with a real source; if it does not, say so in round_summary.",
+      "ANALYST INPUT — a human analyst reviewing this run left the following. Treat each item as a hypothesis or lead to INVESTIGATE this round — not as established fact. If a lead pans out, include it as evidence with a real source; if it does not, say so in round_summary."
     ];
     for (const n of pendingNotes) {
       const target = n.targetId ? ledgerById.get(n.targetId) : undefined;
@@ -110,11 +129,11 @@ export function buildPrompt(
   // Research instructions are provider-aware: a search-less provider must never
   // be told to WebSearch, and must not fabricate URLs to satisfy the cite rule.
   const research = extras.hasWebSearch
-    ? "1. Use WebSearch to find NEW, relevant, recent evidence about whether this event will happen. Do not re-count any source already listed above. PRIMARY SOURCE FIRST: if the framing names a settlement source, target it directly at least once this round (e.g. a site: query or its exact page) before falling back to third-party mirrors — the resolution will be read off the primary source, not the mirrors. NATIVE LANGUAGE: when the question centers on a non-English-speaking country or actor, run at least one search in the locally relevant language (e.g. Persian for Iran, Chinese for Taiwan) — local/state media often reports before English outlets.\n2. DISCONFIRMATION (required): run at least ONE search aimed at FALSIFYING the current lean — if P(YES) above is >50%, search for the strongest reasons it will NOT happen; if <50%, search for the strongest reasons it WILL. Report what you find even if it is weak or comes up empty (say so in round_summary). Do not only look for evidence that confirms the current estimate."
-    : "1. You have NO web access. Use your own knowledge (respecting its cutoff) to surface NEW, relevant evidence about whether this event will happen. Do not re-count any source already listed above.\n2. DISCONFIRMATION (required): argue the strongest case against the current lean — if P(YES) above is >50%, the strongest reasons it will NOT happen; if <50%, the strongest reasons it WILL — and include it as evidence if it holds up. Report the attempt even if it comes up empty (say so in round_summary). Do not only reason toward what confirms the current estimate.";
+    ? `1. BREADTH BEFORE SELECTION: do not stop at the first plausible article. Run at least ${plan.minimumSearchQueries} meaningfully different searches unless access genuinely prevents it. Cover the highest-priority incomplete Focus Center items, a direct primary-source query, an outside-view or comparable-case query, and a disconfirmation query. Inspect multiple candidate pages before keeping evidence.\n2. PRIMARY SOURCE PASS: target the settlement source, official records, original data, direct statements, repositories, and original reporting. Search in the locally relevant language when the event centers on a non-English-speaking actor.\n3. CROSS-CHECK PASS: for every claim that could materially move the probability, seek an independent source or an explicit contradiction. Five rewrites of one announcement are one source group. If only one source exists, label the claim single_source.\n4. DISCONFIRMATION PASS: search specifically for the strongest evidence against the current lean. Report a failed search honestly instead of filling the output with weak material.\n5. SELECTION PASS: rank candidate sources using the Focus Center source priorities. Keep the best direct source plus useful independent corroboration or contradiction. Drop summaries that add no independent information.`
+    : "1. You have no web access. Use your own knowledge within its cutoff to address the highest-priority incomplete Focus Center items. Separate atomic claims, distinguish primary knowledge from recollection, argue the strongest countercase, and never invent a URL. Mark claims unverified when a real source cannot be named.";
   const citeRule = extras.hasWebSearch
-    ? "8. Only cite source_url values you actually retrieved via WebSearch."
-    : "8. Only cite source_url values you are confident actually exist — never fabricate or guess URLs; prefer canonical, stable URLs. If you cannot name a real URL for a claim, drop the claim.";
+    ? "Only cite source URLs you actually retrieved through the research tools."
+    : "Only cite URLs you are confident actually exist. Never fabricate or guess URLs; if a real URL cannot be named, drop the claim.";
 
   return `You are a forecasting research agent. You estimate the probability that a specific BINARY (yes/no) event will happen, ${extras.hasWebSearch ? "using live web research" : "using your own knowledge (no web access)"}, and you attribute every probability change to a cited source.
 
@@ -124,37 +143,65 @@ RESOLUTION DATE (must occur by): ${state.framing.resolutionDate ?? "(open-ended)
 SETTLEMENT SOURCE (the primary source the outcome will be read from): ${state.framing.settlementSource || "(unspecified)"}
 TODAY (UTC): ${nowUtc().slice(0, 10)} — date every claim against this. A scheduled future event (a visit, a deadline, a hearing) counts as a no-show ONLY once a source dated AFTER the scheduled date confirms it did not happen; never score a still-upcoming event as already missed.
 
+FOCUS CENTER
+Question type: ${plan.archetype}
+Single probability model: ${plan.modelKind} — ${plan.modelRationale}
+Event decomposition: ${plan.decomposition.join(" | ")}
+
+Research focus, ordered by priority:
+${focusPlan}
+
+Source quality ranking:
+${sourceRanking}
+Search strategy: ${plan.searchStrategy}
+
 CURRENT ESTIMATE (this is your PRIOR for this round): P(YES) = ${(state.currentProb * 100).toFixed(1)}%
 ROUND: ${roundNo} of ${maxRounds}
 
-SOURCES ALREADY COUNTED IN PREVIOUS ROUNDS — do NOT re-use or re-count these URLs; you must find NEW information:
+CLAIMS ALREADY COUNTED IN PREVIOUS ROUNDS — do not count the same factual claim again under a new URL. Reuse the listed claim id when research revises it:
 ${counted}
 ${analystSection}
 YOUR TASK THIS ROUND:
 ${research}
-3. For each NEW source, decide whether it makes YES more likely (supports_yes), less likely (supports_no), or neutral, and how strongly. In each rationale, state whether the scenario the source describes would itself satisfy the RESOLUTION CRITERIA above; a source about a scenario the criteria explicitly EXCLUDE (wrong category, wrong actor, below the stated bar) may only count via an argued escalation path to a qualifying scenario, with llr magnitude ≤ 0.3.
-4. Express each source's impact as a signed log-likelihood ratio "llr" in nats: POSITIVE favors YES, NEGATIVE favors NO. Magnitude guidance: weak ≈ 0.1–0.3, moderate ≈ 0.4–0.8, strong ≈ 0.9–1.5. Be conservative — a single web article is rarely "strong". A "nothing has changed / still no news" observation is weak by definition (llr ≤ 0.2): absence of news discriminates little on a horizon of weeks or months, and it must ALWAYS use the exact cluster_id "status-quo-continuation" so repeats are discounted.
-5. Tag each source's provenance and reliability: "source_type" — "official" (primary/company/government/regulator statements), "press" (journalism), or "insider" (leakers, analysts, industry chatter) — and "credibility" ("high" | "medium" | "low"): how reliable this specific source is for this claim (track record, primacy), independent of how much it moves the number. Low credibility caps the applied weight.
-6. Group correlated sources with cluster_id: give sources that trace to the SAME underlying story, wire report, poll, or primary actor the SAME cluster_id string; give genuinely independent sources DIFFERENT cluster_ids. (Five outlets re-reporting one announcement are one cluster, not five.) Reuse the same cluster_id you would have used in a previous round when the underlying story is the same — repeats of already-counted stories are automatically down-weighted.
-7. Start from the CURRENT ESTIMATE above and move it; do not restate a probability from scratch. The prior already reflects a base rate from general knowledge, so only count NEW, specific developments as evidence — do not re-add general facts the base rate already implies. CONSISTENCY: if a key number in a new claim differs by more than 2× from a number already in the ledger or framing (casualty counts, traffic levels, poll figures), reconcile the discrepancy in notes or downgrade the new claim to weak.
+6. CLAIM, NOT PAGE: one new_claims item is one atomic factual claim backed by one or more sources. Apply one probability impact to the claim. Extra sources improve verification; they do not create extra probability moves.
+7. RELEVANCE: state whether the claim directly answers the resolution, supports an indirect causal path, or is context only. Indirect claims must use log-likelihood ratio magnitude at most 0.3; context at most 0.1.
+8. WEIGHT: express the claim's impact as a signed log-likelihood ratio in nats using the JSON key llr. Positive favors YES, negative favors NO. Weak is about 0.1–0.3, moderate 0.4–0.8, strong 0.9–1.5. Be conservative. Absence of news is at most 0.2 and must use cluster_id status-quo-continuation.
+9. SOURCE METADATA: classify each source as official, data, academic, original_reporting, press, insider, or secondary. Distinguish direct support, partial support, and context; record whether it is primary and which independent origin it belongs to.
+10. CONTINUITY: the engine alone owns the probability. Do not output another probability, probability range, or gut estimate. Only propose claim-level llr updates from the current estimate.
+11. CONSISTENCY: reconcile material numeric conflicts with prior claims. Do not re-add general facts already contained in the base-rate prior.
 ${citeRule}
-9. REFLECTION (optional): each prior source above shows its [stance, ±pp effect]. If this round's research shows a PRIOR source was wrong, stale, or double-counted, add a reflection entry: its target_url, a signed llr_adjustment (the CHANGE to its weight — NEGATIVE to walk it back toward NO, POSITIVE toward YES), a reason, and a new_source_url citing the NEW information that justifies the change. Only adjust a prior source when you have a NEW cited reason; do not re-litigate the whole estimate. Leave reflection empty ([]) if nothing prior needs correcting.
+12. REFLECTION (optional): if new research shows a prior claim was wrong, stale, or double-counted, add a reflection with the prior source URL, a signed llr_adjustment, a reason, and a new source URL. Do not re-litigate the whole estimate.
 
 OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or after, no markdown code fence — of EXACTLY this shape:
 {
   "round_summary": "1-2 sentences on what you found this round",
-  "new_evidence": [
+  "new_claims": [
     {
-      "claim": "the specific fact, one sentence",
-      "source_url": "https://...",
-      "source_title": "page or site title",
+      "claim_id": "stable-semantic-key",
+      "focus_id": "one Focus Center id",
+      "claim": "one atomic, checkable fact",
       "stance": "supports_yes" | "supports_no" | "neutral",
       "strength": "weak" | "moderate" | "strong",
-      "source_type": "official" | "press" | "insider",
-      "credibility": "high" | "medium" | "low",
       "llr": -1.5,
-      "cluster_id": "okc-sweep",
-      "rationale": "why this moves the probability and by how much"
+      "cluster_id": "same underlying fact or causal story",
+      "category": "base_rate" | "resolution" | "current_state" | "causal_driver" | "counterevidence",
+      "resolution_relevance": "direct" | "indirect" | "context",
+      "cross_check_status": "confirmed" | "single_source" | "contested" | "unverified",
+      "selection_rationale": "why these are the best sources among the candidates",
+      "rationale": "why this claim moves the probability and why the magnitude is proportionate",
+      "sources": [
+        {
+          "url": "https://...",
+          "title": "page title",
+          "source_type": "official" | "data" | "academic" | "original_reporting" | "press" | "insider" | "secondary",
+          "credibility": "high" | "medium" | "low",
+          "relation": "supports" | "contradicts" | "context",
+          "support_quality": "direct" | "partial" | "context",
+          "published_at": "YYYY-MM-DD or empty",
+          "is_primary": true,
+          "independence_group": "originating organization, dataset, interview, or story"
+        }
+      ]
     }
   ],
   "reflection": [
@@ -165,12 +212,11 @@ OUTPUT FORMAT: Respond with ONLY a single JSON object — no prose before or aft
       "new_source_url": "https://... (the new source justifying this change)"
     }
   ],
-  "agent_holistic_probability": 0.42,
   "confidence": "low" | "medium" | "high",
   "found_new_information": true,
   "notes": "caveats, resolution assumptions, what to check next round"
 }
-If you genuinely found no new relevant information this round, return an empty new_evidence array, an empty reflection array, and set found_new_information to false.
+If you genuinely found no new relevant information this round, return an empty new_claims array, an empty reflection array, and set found_new_information to false.
 ${marketBlindDirective()}${languageDirective()}`;
 }
 
@@ -179,6 +225,7 @@ export function newForecastState(input: {
   eventText: string;
   framing: EventFraming;
   startProb?: number;
+  researchPlan?: ForecastState["researchPlan"];
 }): ForecastState {
   const ts = nowUtc();
   // P0-2: seed from the model's base-rate prior, not a blind 0.5. Clamp only to
@@ -199,6 +246,7 @@ export function newForecastState(input: {
     evidenceLedger: [],
     roundHistory: [],
     summary: null,
+    researchPlan: input.researchPlan ?? defaultResearchPlan(input.framing)
   };
 }
 
@@ -225,7 +273,7 @@ async function runOneRound(
   const hasAnalystInput = pendingNotes.length > 0 || pendingDoubtIds.length > 0;
   const prompt = buildPrompt(state, roundNo, maxRounds, {
     hasWebSearch: providerHasWebSearch(),
-    analyst: hasAnalystInput ? analyst : null,
+    analyst: hasAnalystInput ? analyst : null
   });
 
   // Run the agent, validating fail-closed with one retry on a parse/schema miss.
@@ -263,20 +311,69 @@ async function runOneRound(
   const traceCanonical = new Set<string>();
   for (const u of result.searchResultUrls) traceCanonical.add(canonicalizeUrl(u));
 
-  // Dedupe against already-counted sources AND within this round.
-  const counted = new Set(state.evidenceLedger.map((e) => e.urlCanonical));
+  // The probability unit is an atomic CLAIM. A page may support several
+  // distinct claims, while several pages may support one claim; neither case
+  // should turn raw link count into extra probability moves.
+  const counted = new Set(
+    state.evidenceLedger.flatMap((entry) => [
+      entry.urlCanonical,
+      ...(entry.sources ?? []).map((source) => canonicalizeUrl(source.url))
+    ])
+  );
+  const countedClaims = new Set(
+    state.evidenceLedger
+      .filter((entry) => entry.kind === "evidence")
+      .map((entry) => canonicalClaimKey(entry.claimId ?? "", entry.claim))
+      .filter(Boolean)
+  );
   const seenThisRound = new Set<string>();
-  const survivors: typeof out.new_evidence = [];
+  const seenClaims = new Set<string>();
+  const preparedClaims = out.newClaims.map((claim) => {
+    const sources = rankClaimSources(
+      claim.sources.map((source) => ({
+        ...source,
+        verifiedInSearchTrace: traceCanonical.has(canonicalizeUrl(source.url))
+      }))
+    );
+    const best = sources.find((source) => source.relation === "supports") ?? sources[0];
+    const verifiedSupportGroups = new Set(
+      sources
+        .filter((source) => source.relation === "supports" && source.verifiedInSearchTrace === true)
+        .map((source) => source.independenceGroup)
+    );
+    const hasVerifiedContradiction = sources.some(
+      (source) => source.relation === "contradicts" && source.verifiedInSearchTrace === true
+    );
+    const crossCheckStatus = hasVerifiedContradiction
+      ? ("contested" as const)
+      : verifiedSupportGroups.size >= 2
+        ? ("confirmed" as const)
+        : verifiedSupportGroups.size === 1
+          ? ("single_source" as const)
+          : ("unverified" as const);
+    return {
+      ...claim,
+      source_url: best?.url ?? claim.source_url,
+      source_title: best?.title ?? claim.source_title,
+      source_type: best?.sourceType ?? claim.source_type,
+      credibility: best?.credibility ?? claim.credibility,
+      // Cross-check status is computed from the captured search trace and
+      // independent origins. The research model cannot self-certify a claim.
+      cross_check_status: crossCheckStatus,
+      sources
+    };
+  });
+  const survivors: typeof preparedClaims = [];
   let duplicateCount = 0;
-  for (const ev of out.new_evidence) {
-    const canon = canonicalizeUrl(ev.source_url);
-    if (!canon) continue;
-    if (counted.has(canon) || seenThisRound.has(canon)) {
+  for (const claim of preparedClaims) {
+    const claimKey = canonicalClaimKey(claim.claim_id, claim.claim);
+    if (!claimKey || countedClaims.has(claimKey) || seenClaims.has(claimKey)) {
       duplicateCount++;
       continue;
     }
-    seenThisRound.add(canon);
-    survivors.push(ev);
+    seenClaims.add(claimKey);
+    for (const source of claim.sources) seenThisRound.add(canonicalizeUrl(source.url));
+    survivors.push(claim);
   }
 
   const priorProb = state.currentProb;
@@ -305,26 +402,37 @@ async function runOneRound(
     return reflVerified[i] ? a : clampUnverified(a);
   });
 
-  // P0-4 + P0-3: new evidence — market-blind exclusion, credibility cap,
-  // one-sided damping, cross-round cluster decay, verification clamp, in order.
-  const verifiedFlags = survivors.map((ev) => traceCanonical.has(canonicalizeUrl(ev.source_url)));
-  const excludedFlags = survivors.map((ev) => blind && isMarketPriceSource(ev.source_url));
-  const baseLlrs = survivors.map((ev, i) =>
-    excludedFlags[i] ? 0 : credibilityCap(ev.credibility, effectiveLlr(ev.stance, ev.llr))
+  // Claim-level weighting: source credibility and cross-checking cap the ONE
+  // update for the claim. Independent corroboration never creates a second LLR.
+  const verifiedFlags = survivors.map((claim) =>
+    claim.sources.some((source) => source.relation === "supports" && source.verifiedInSearchTrace === true)
   );
+  const excludedFlags = survivors.map(
+    (claim) =>
+      blind &&
+      claim.sources
+        .filter((source) => source.relation === "supports")
+        .every((source) => isMarketPriceSource(source.url))
+  );
+  const baseLlrs = survivors.map((claim, i) => {
+    if (excludedFlags[i]) return 0;
+    const relevanceCap =
+      claim.resolution_relevance === "context" ? 0.1 : claim.resolution_relevance === "indirect" ? 0.3 : 2;
+    const weighted =
+      credibilityCap(claim.credibility, effectiveLlr(claim.stance, claim.llr)) *
+      crossCheckWeight(claim.cross_check_status);
+    return Math.sign(weighted) * Math.min(Math.abs(weighted), relevanceCap);
+  });
 
   // Confirmation-bias tripwire with teeth (review 2026-07-06: the ⚠ used to be
   // decorative — 4/5 one-sided rounds still ground the posterior to the floor).
   // After two consecutive ≥90% one-sided rounds, same-direction evidence runs at
   // half weight until counter-evidence breaks the streak.
   const lastTwo = state.roundHistory.slice(-2);
-  const oneSidedStreak =
-    lastTwo.length === 2 && lastTwo.every((r) => (r.confirmationRatio ?? 0) >= 0.9);
+  const oneSidedStreak = lastTwo.length === 2 && lastTwo.every((r) => (r.confirmationRatio ?? 0) >= 0.9);
   const leanDir = priorProb > 0.5 ? 1 : priorProb < 0.5 ? -1 : 0;
   const dampedLlrs =
-    oneSidedStreak && leanDir !== 0
-      ? baseLlrs.map((l) => (Math.sign(l) === leanDir ? l * 0.5 : l))
-      : baseLlrs;
+    oneSidedStreak && leanDir !== 0 ? baseLlrs.map((l) => (Math.sign(l) === leanDir ? l * 0.5 : l)) : baseLlrs;
 
   // Cross-round independence: cluster ranks start after the cluster's
   // already-counted prior-round entries, so a story repeated across resumed
@@ -350,9 +458,7 @@ async function runOneRound(
   const evLlrs = clusteredLlrs.map((clustered, i) => {
     if (verifiedFlags[i]) return clustered;
     const capped = clampUnverified(clustered);
-    return maxVerifiedAbs > 0
-      ? Math.sign(capped) * Math.min(Math.abs(capped), maxVerifiedAbs)
-      : capped;
+    return maxVerifiedAbs > 0 ? Math.sign(capped) * Math.min(Math.abs(capped), maxVerifiedAbs) : capped;
   });
 
   // Thread reflection adjustments first, then this round's new evidence.
@@ -386,7 +492,7 @@ async function runOneRound(
       // The new source's own metadata isn't collected for reflections.
       sourceType: "press",
       credibility: "medium",
-      excluded,
+      excluded
     });
     newLedger.push({
       id: `${state.eventId}-r${roundNo}-refl-${i}`,
@@ -410,7 +516,7 @@ async function runOneRound(
       // The new source's own metadata isn't collected for reflections.
       sourceType: "press",
       credibility: "medium",
-      excluded,
+      excluded
     });
   });
 
@@ -433,7 +539,7 @@ async function runOneRound(
       kind: "evidence",
       sourceType: ev.source_type,
       credibility: ev.credibility,
-      excluded,
+      excluded
     });
     newLedger.push({
       id: `${state.eventId}-r${roundNo}-${i}`,
@@ -456,7 +562,15 @@ async function runOneRound(
       verifiedInSearchTrace: verified,
       sourceType: ev.source_type,
       credibility: ev.credibility,
-      excluded,
+      claimId: ev.claim_id,
+      focusId: ev.focus_id,
+      category: ev.category,
+      resolutionRelevance: ev.resolution_relevance,
+      crossCheckStatus: ev.cross_check_status,
+      selectionRationale: ev.selection_rationale,
+      sources: ev.sources,
+      qualityScore: claimQualityScore(ev.sources, ev.cross_check_status),
+      excluded
     });
   });
 
@@ -477,7 +591,7 @@ async function runOneRound(
         dominantUrl: dom.url,
         dominantTitle: dom.title,
         dominantPp: dom.deltaPp,
-        dominantKind: dom.kind,
+        dominantKind: dom.kind
       }
     : null;
 
@@ -495,8 +609,7 @@ async function runOneRound(
         ? "ceil"
         : null);
   if (blind) {
-    const blockedThisRound =
-      excludedFlags.filter(Boolean).length + reflBlocked.filter(Boolean).length;
+    const blockedThisRound = excludedFlags.filter(Boolean).length + reflBlocked.filter(Boolean).length;
     const prev = state.marketBlind ?? { enabled: true, blockedCount: 0, priorSuspect: false };
     state.marketBlind = { ...prev, enabled: true, blockedCount: prev.blockedCount + blockedThisRound };
   }
@@ -510,7 +623,9 @@ async function runOneRound(
     priorProb,
     postProb: post,
     perSourceUpdates,
-    newSourceCount: survivors.length,
+    newSourceCount: new Set(survivors.flatMap((claim) => claim.sources.map((source) => canonicalizeUrl(source.url))))
+      .size,
+    newClaimCount: survivors.length,
     duplicateCount,
     reflectionCount: reflItems.length,
     unverifiedPp,
@@ -518,12 +633,11 @@ async function runOneRound(
     // the ratio unauditable against the rendered table).
     confirmationRatio: confirmationRatio(priorProb, [...reflLlrs, ...baseLlrs]),
     whyChanged,
-    agentHolisticProb: out.agent_holistic_probability,
     confidence: out.confidence,
     reasoning: out.round_summary + (out.notes ? `  Notes: ${out.notes}` : ""),
     searchQueries: result.searchQueries,
     searchResultUrlCount: result.searchResultUrls.size,
-    costUsd: result.costUsd,
+    costUsd: result.costUsd
   };
 
   // Stamp consumed analyst input (success path only). Re-read fresh: the app may
@@ -542,7 +656,7 @@ async function runOneRound(
       notes: fresh.notes.map((n) =>
         injectedIds.has(n.id) && n.consumedRound == null ? { ...n, consumedRound: roundNo } : n
       ),
-      doubtsHandled: freshHandled,
+      doubtsHandled: freshHandled
     });
     if (pendingNotes.length > 0) record.analystConsumedIds = pendingNotes.map((n) => n.id);
   }
@@ -551,10 +665,7 @@ async function runOneRound(
   return record;
 }
 
-export async function runForecast(
-  state: ForecastState,
-  opts: RunForecastOptions = {}
-): Promise<ForecastState> {
+export async function runForecast(state: ForecastState, opts: RunForecastOptions = {}): Promise<ForecastState> {
   // Default 3: across a varied batch, round 1 does the bulk of the prior→evidence
   // correction and rounds beyond 3 moved <2pp (or oscillated without converging),
   // so 3 captures ~all the signal at ~1/2 the cost of higher caps.
@@ -563,8 +674,9 @@ export async function runForecast(
   // A single round with offsetting evidence can net ~0pp; before minRounds have
   // run, that is treated as "balanced so far", not convergence — the next
   // round's disconfirmation pass still gets its chance to break the tie.
-  // Default 1 preserves the original stop behavior.
-  const minRounds = opts.minRounds ?? (Number(process.env.FORECAST_MIN_ROUNDS) || 1);
+  // Phase-one research quality default: give the primary-source/cross-check
+  // pass a second round before a small net move can be called convergence.
+  const minRounds = opts.minRounds ?? (Number(process.env.FORECAST_MIN_ROUNDS) || Math.min(2, maxRounds));
   const log = opts.onLog ?? (() => {});
 
   const startRound = state.round + 1;
@@ -589,7 +701,7 @@ export async function runForecast(
     opts.onRoundComplete?.(state, record);
 
     log(
-      `  ✓ ${record.newSourceCount} new source(s)` +
+      `  ✓ ${record.newClaimCount ?? record.newSourceCount} new claim(s) from ${record.newSourceCount} selected source(s)` +
         (record.reflectionCount ? `, ${record.reflectionCount} reflection(s)` : "") +
         (record.duplicateCount ? `, ${record.duplicateCount} dup skipped` : "") +
         ` → P(YES) ${(record.priorProb * 100).toFixed(1)}% → ${(record.postProb * 100).toFixed(1)}%` +
@@ -597,19 +709,32 @@ export async function runForecast(
     );
 
     // Stop conditions.
-    if (record.newSourceCount === 0 && record.reflectionCount === 0) {
+    const plannedMinimum = state.researchPlan?.minimumSearchQueries ?? 0;
+    const searchBreadthMet = !providerHasWebSearch() || record.searchQueries.length >= plannedMinimum;
+    if (!searchBreadthMet) {
+      log(
+        `  ⚠ search breadth ${record.searchQueries.length}/${plannedMinimum}; another round should cover unresolved Focus Center items.`
+      );
+    }
+    if ((record.newClaimCount ?? record.newSourceCount) === 0 && record.reflectionCount === 0) {
+      if (roundNo < minRounds && roundNo < maxRounds) {
+        log(`  ↻ no accepted claim yet, but the minimum research depth is ${minRounds} rounds — continuing.`);
+        continue;
+      }
       state.status = "no_new_info";
       log(`  ■ no new evidence — stopping.`);
       break;
     }
-    if (Math.abs(record.postProb - record.priorProb) < epsilon && roundNo >= minRounds) {
+    if (Math.abs(record.postProb - record.priorProb) < epsilon && roundNo >= minRounds && searchBreadthMet) {
       // A pinned posterior trivially passes the epsilon test — that is
       // saturation (the number is the engine's expressible bound), not
       // convergence. Stop either way: burning more rounds at the bound is pure
       // cost, and the next resumed run re-researches with fresh rounds.
       if (state.saturatedAt) {
         state.status = "saturated";
-        log(`  ■ saturated at the ${state.saturatedAt} (${state.saturatedAt === "floor" ? PROB_FLOOR : PROB_CEIL}) — stopping; the true estimate lies beyond the engine's expressible range.`);
+        log(
+          `  ■ saturated at the ${state.saturatedAt} (${state.saturatedAt === "floor" ? PROB_FLOOR : PROB_CEIL}) — stopping; the true estimate lies beyond the engine's expressible range.`
+        );
       } else {
         state.status = "converged";
         log(`  ■ converged (move < ${(epsilon * 100).toFixed(1)}pp) — stopping.`);

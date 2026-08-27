@@ -34,6 +34,16 @@ export const V = {
   // Summary
   ravensSummary: { en: "Raven's summary", zh: "Raven 总结" },
   openRisk: { en: "Open risk", zh: "未决风险" },
+  adoptedModel: { en: "Single adopted probability model", zh: "唯一采用的概率模型" },
+  scenarios: { en: "Scenario analysis", zh: "情景分析" },
+  monitoringSignals: { en: "What to monitor next", zh: "后续监控指标" },
+  informationGaps: { en: "Information gaps", zh: "信息缺口" },
+  implication: { en: "Implication", zh: "对当前判断的含义" },
+  affectedComponent: { en: "Affected component", zh: "影响组件" },
+  retrievalPath: { en: "How to retrieve it", zh: "获取方式" },
+  directionRaises: { en: "Raises", zh: "上调" },
+  directionLowers: { en: "Lowers", zh: "下调" },
+  directionMixed: { en: "Mixed", zh: "双向" },
 
   // Evidence book
   evidenceInOrder: { en: "The evidence, in order — {src}", zh: "全部证据（按序）— {src}" },
@@ -44,6 +54,11 @@ export const V = {
   revisesPrior: { en: "↻ Revises a prior source", zh: "↻ 修正先前来源" },
   verified: { en: "Verified", zh: "已核实" },
   unverified: { en: "Unverified", zh: "未核实" },
+  claimQuality: { en: "Claim quality {score}/100", zh: "断言质量 {score}/100" },
+  crossChecked: { en: "Cross-checked", zh: "已交叉核验" },
+  singleSource: { en: "Single source", zh: "单一来源" },
+  contested: { en: "Contested", zh: "存在冲突" },
+  selectedSources: { en: "Selected sources", zh: "入选来源" },
   preview: { en: "Preview", zh: "预览" },
   openSource: { en: "Open {dom}", zh: "打开 {dom}" },
 
@@ -95,8 +110,12 @@ export const rankEntry = (rank: string): Entry => RANK_LABELS[rank] ?? { en: ran
 // VM's English srcLabel string never needs parsing).
 export const SRC_TYPE_LABELS: Record<SrcType, Entry> = {
   official: { en: "Official source", zh: "官方来源" },
+  data: { en: "Original data", zh: "原始数据" },
+  academic: { en: "Academic research", zh: "学术研究" },
+  original_reporting: { en: "Original reporting", zh: "原创报道" },
   press: { en: "Press", zh: "媒体报道" },
-  insider: { en: "Insider report", zh: "内部消息" }
+  insider: { en: "Insider report", zh: "内部消息" },
+  secondary: { en: "Secondary source", zh: "二手来源" }
 };
 
 // Templates for decorate.ts's sideLabelFor — {dir} is "YES" | "NO" (kept

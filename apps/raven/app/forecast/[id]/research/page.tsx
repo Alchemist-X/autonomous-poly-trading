@@ -10,6 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { RvShell } from "../../../../components/chrome/rv-shell";
 import { IconDefs } from "../../../../components/icons";
 import { AnalystDesk } from "../../../../components/research/analyst-desk";
+import { FocusCenter } from "../../../../components/research/focus-center";
 import { IterationBlock } from "../../../../components/research/iteration-block";
 import { PlanList, RavenMessage } from "../../../../components/research/plan";
 import { ProgressDock, type DockTone } from "../../../../components/research/progress-dock";
@@ -363,8 +364,19 @@ export default function ResearchPage() {
                 <PlanList steps={planSteps} />
               </div>
             </RavenMessage>
+            {dossier?.researchPlan ? (
+              <FocusCenter
+                plan={dossier.researchPlan}
+                evidence={dossier.iterations.flatMap((iteration) => iteration.evidence)}
+              />
+            ) : null}
             {aborted && (
-              <NoticeCard tone="error" title={t(RS.abortedTitle)} inline log={job?.status === "error" ? job.log.slice(-6) : undefined}>
+              <NoticeCard
+                tone="error"
+                title={t(RS.abortedTitle)}
+                inline
+                log={job?.status === "error" ? job.log.slice(-6) : undefined}
+              >
                 {t(RS.abortedBodyInline)}
               </NoticeCard>
             )}

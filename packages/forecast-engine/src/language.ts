@@ -13,8 +13,15 @@ export function forecastLanguage(): ForecastLanguage {
 }
 
 export function languageDirective(lang: ForecastLanguage = forecastLanguage()): string {
-  if (lang !== "zh") return "";
-  return `
-LANGUAGE: Write every free-text field of your output in Simplified Chinese (简体中文) — claims, rationales, summaries, criteria, assumptions, caveats, verdict prose, notes, quips. Keep JSON keys, enum values ("supports_yes", "weak", "official", "high", …), URLs, dates and numbers exactly as specified above, in English/ASCII.
+  const style = `
+WRITING STANDARD:
+- Prefer full, plain-language names over abbreviations and specialist shorthand.
+- If an abbreviation is genuinely useful, spell out the full term at its first appearance, immediately followed by the abbreviation in parentheses. Only then may later text use the abbreviation alone.
+- Do not expose internal engineering shorthand such as LLR, QA, API, GA, or SLA without first defining it for the reader.
+- Write complete sentences. Explain what a fact changes and why it matters to the resolution criteria.
+`;
+  if (lang !== "zh") return style;
+  return `${style}
+LANGUAGE: Write every free-text field of your output in Simplified Chinese (简体中文) — claims, rationales, summaries, criteria, assumptions, caveats, verdict prose, notes, quips. Keep JSON keys, enum values, URLs, dates and numbers exactly as specified above, in English/ASCII. Prefer ordinary Chinese wording. When an English abbreviation is necessary, write its full Chinese or English meaning before the abbreviation at first use.
 `;
 }
