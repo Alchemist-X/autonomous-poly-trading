@@ -1,564 +1,133 @@
-# Agent Handoff — 当前状态 + 待办
+# Agent Handoff — 当前状态与下一步
 
-> **每次接手项目都先看这份。** 这是 predict-raven 的"会话间共享笔记本"——上一个 agent 干到哪、当前重点是什么、下一步该做啥，都记在这里。
+> 最后更新：2026-08-29 by Codex。
 >
-> **更新时机**：
+> **新 agent 的启动约定：只读这份文件了解项目当前状态。** 不要在启动时读取旧 handoff 或按日期回放历史；需要背景时再查 git log、PR、[`docs/internal/review/`](internal/review/) 或 [`docs/agent-onboarding.md`](agent-onboarding.md)。
 >
-> - 每次会话 wrap-up 时（agent 自己更新）
-> - 用户说"记一下" / "save this" / "update handoff" 时（agent 立刻更新）
-> - 完成 P0 / P1 任务后（marking done + 加新条目）
->
-> **更新原则**：保持精简 + actionable，**不是流水账**。具体细节去看 git log / `docs/internal/review/`。
->
-> 英文版：[`docs/en/agent-handoff.md`](en/agent-handoff.md)
->
-> 最后更新：2026-08-29 by Codex（**新闻重复摄取与 Pulse 误开仓两道安全缺口已收口**）。
-> ① **Delta PM 新闻身份**：PR #133 已 squash merge；feed 与 sitemap 现在按标准化 URL 归并，同一新闻不会在重启/回填后重复支付 Gate 1、生成重复信号或污染校准数据；Gate 1 的规则路径与 LLM 失败降级现在有 `fallbackReason` 可审计。
-> ② **Pulse entry 安全门**：基于旧提交 `1272087` 在最新 `main` 重做；方向写有“观望/不参与/名义侧/no trade/pass”等否决词，或建议仓位明确为 `0%` 时，market-scan 不再生成真钱 entry plan。render-time parseability gate 与 planner 共用同一判断，避免前后状态不一致；position review 不受影响。
-> ③ **验证**：planner 定向 34 tests、orchestrator 全量 222 tests、orchestrator typecheck 全绿。未运行 forecasting 模型，未读取钱包、下单或部署服务。
->
-> 最后更新：2026-08-27 by Codex（**Predict-Raven 研究质量改造只完成第一阶段；第二、三阶段明确留待后续**）。
-> ① **第一阶段已完成**：框定后新增“研究焦点中心”，先做问题分类与因果/结算拆解，只选择一个概率模型；为每轮设定不少于 6 个不同检索方向，强制包含原始来源、基准率/可比案例、最强反证与本地语言搜索；来源按官方记录/原始数据/直接陈述、独立原创报道/学术研究、可核验专业分析、二手摘要/匿名线索排序。概率更新单位由“网页”改为“原子事实断言”：一个断言可带多条支持/反驳来源，但只更新一次；搜索轨迹和独立来源组由引擎计算交叉核验状态，研究模型不能自行宣称“已确认”；移除研究代理的第二个整体概率，引擎是唯一概率权威。报告与 Raven 界面新增来源排名、断言质量、交叉核验、唯一模型、情景、监控指标、信息缺口和直接网页链接；人类可读文本默认避免缩写，必须使用时首次出现先写全称和释义。默认至少研究 2 轮，检索广度不足时不能仅因净变化小而宣布收敛。
-> ② **第二阶段（未实施，待办）**：加入多期限联合预测族（例如 3 个月/6 个月/1 年/2 年）与期限单调性校验；对最高影响断言做“移除一个证据簇”敏感性分析；把后续运行升级为真正的增量更新（来源快照、网页变化、旧断言失效/修订），并根据未完成的焦点自动分配下一轮搜索预算。成功标准：能解释各期限差异，单一来源簇不能不透明地决定结论，更新报告明确展示“什么变了”。
-> ③ **第三阶段（未实施，待办）**：建立结算与离线评测闭环（Brier 分数、校准曲线、来源质量与断言权重的后验调参）；为常见问题类型增加专用监控适配器（公司公告、监管记录、论文/榜单、定价页等）；建立人类可读性评测集，持续检查结论优先、数字算式、缩写释义、证据链接和反证覆盖。成功标准：不仅单篇报告看起来好，还能用长期样本证明预测和研究质量持续改善。
-> ④ **本轮验证**：重放到最新 `main` 后，全仓 123 个测试文件、1088 项测试全部通过；18 个工作区项目类型检查通过；Raven 生产构建通过；桌面与移动端截图检查均为 0 控制台错误、0 页面错误且无横向溢出。本轮没有调用预测模型、没有读取钱包、没有下单，也没有部署服务。
->
-> 最后更新：2026-08-24 by Claude v2（**三个 gated 页全部补上 EN/中文 切换**，分支 `claude/gated-pages-i18n`）。
-> ① **范围（用户指令）**：/live-predict-raven、/live-delta-pm（apps/web，cookie + lang 路由 handler，`lpr_lang`/`ldp_lang` 各自 path-scoped）、/pm 控制台（apps/delta-pm-console，客户端 localStorage `deltapm_lang`）。统一约定：默认 zh、现有中文一字未改（live-delta-pm 用 renderToStaticMarkup 对 30 案例 fixture 逐字节证明 188KB HTML 与旧版相同）、数据载荷（新闻标题/ticker/账本 note）不翻、EN 模式下 live-predict-raven 市场名直接用数据自带英文原题（labels.ts 反查表）。
-> ② **实现**：三份 i18n.ts 词典 + labels/format 层 lang 化；findings.ts 自动推导结论句双语模板；console 的 stage/priced-in 徽章映射改 key-based。新增测试 ~50 条（zh 断言保留 + en 断言），全仓 **1076 测试绿**、build/typecheck 绿。
-> ③ **验证**：三面 × 桌面/移动 × 中/英截图全部读图自评，零 console error/pageerror；console 用自带 `DELTAPM_CONSOLE_MOCK=1`、live-delta-pm 用 `LIVE_DELTA_PM_MOCK=1` 渲染满数据视图（零代码 hack）；live-predict-raven 直连 VM 实时数据验证；发现并修掉一个 EN 泄漏（VM horizon 桶标签"7–30 天"→"7–30d"）。
-> ④ **部署（全部完成，2026-08-24 09:20Z 前后）**：web 两页经 wc-results workflow 发布并线上实测（lang 路由 302/303 + cookie 正确、带 cookie 出英文门页）；东京 VM clean-untar（备份 `~/predict-raven.pre-gated-i18n.bak`）+ 重建 raven-suite + `up -d --no-deps delta-pm-console`（**console 无独立 Dockerfile，跑共享 raven-suite 镜像——build 用 `compose build raven`**），容器内 token 门实测 307→页面含 lang-toggle、无 token 401、公网代理 401。**镜像漂移：delta-pm-console 在新镜像（含 #128/#130/#131），raven/forecast-api/paper-agent/delta-pm 等仍旧镜像**——行为无差（那些容器代码未变），下次全量 up 会切齐。README 两版三条"仅中文"标注已改"中英切换"。英文版 handoff 此条已同步。
->
-> 上次更新：2026-08-24 by Claude（**repo 复杂度评估 → 删除 managed 线与 rough-loop + README 双语补课**）。
-> ① **评估结论（用户问"repo 是否承载太多"）**：9 条产品线但包边界/部署边界健康，不拆 repo；真问题 = README 缺最活跃的 Delta PM/fleet 两条线 + 8k 行停摆代码。用户拍板：删 managed 线与 rough-loop，README 补课。
-> ② **删除（~1.6 万行）**：`apps/raven-managed` + `services/managed-trading` + `scripts/managed-pulse*.ts` + `deploy/managed-pulse.cron.example` + db 四张 `managed_*` 表（schema 层；无其他消费方，未生成 drop migration）；`services/rough-loop` + `packages/contracts/src/rough-loop.ts`（含 index 导出与测试）+ 根目录 `rough-loop.md`×2 + `docs/rough-loop-guide*` + `.env.example` ROUGH_LOOP 段 + root scripts 6 条；timeout-reference / dev-reference / onboarding 双语文档同步清理。
-> ③ **README 双语重构（把 forecasting 智能驱动的各产品讲清楚）**：新增"产品全家福"8 行状态表（含实盘"最后一次 live 2026-06-10"如实标注）、Delta PM 与多模型 fleet 两个新节、raven-delta vs delta-pm 命名说明、watch-live 加 /live-delta-pm；"系统设计"改为 forecast-engine 辐射图（进程隔离 = 盲测保证），四层图退居"架构总览（交易管线）"；归档表加 `delta-pm/` 行、文档索引加运维手册。
-> ④ **验证**：build 绿 / workspace typecheck 绿 / scripts tsc 基线 14→11（删掉的 managed 脚本占 3）/ 1020 测试全绿。⚠️ 踩坑：本机 Node 20.13.1 跑 `pnpm test` 会 ERR_REQUIRE_ESM（vitest 3 + vite 7 需 `require(esm)`，Node ≥20.19 或 22 才有）——非代码问题，CI 的新版 Node 不受影响。英文版 handoff 此条已同步。
-> ⑤ **同日续做（PR #128）**：forecast-engine 包边界正名——engine package.json 加 exports（types/store/web-search/cli 源码入口），forecast-api / raven / scripts 全部改 `@autopoly/forecast-engine` workspace 依赖（raven 加 transpilePackages + 删 tsconfig include hack）；4 个 `tsx scripts/forecast/cli.ts` spawn 接缝不动（shim 冒烟通过）。cli 进包这半件事 #75 早已做完。1057 测试绿。
->
-> 上次更新：2026-08-23 by Claude v2（**TI 收取通路修复:paste 三 bug + 新闻 source-of-truth 存档 + 闸门 1 跨源既有报道检索**，分支 `claude/theinformation-intake-fix-169e59`）。
-> ① **paste(补全原文)通路三个实锤 bug 全修**——实测原通路比预想更糟:console 只传 `newsId+fullText`,构造出的 item 标题=`[补全原文] tag:...`、teaser 空 → matchUniverse 连池都匹配不上,**paste 之前是 100% 无效操作**(不止 t0 重置/去重抛硬币)。修法:新增 `runtime-artifacts/delta-pm/news/` **NewsItem source-of-truth 存档**(每条新闻一份,首条记录拥有身份+时间,后续 ingest 只补缺口,`store.upsertNewsItem`);paste 改为**对原信号的重跑**(`ingest.ts resolvePasteRerun`:news store → signalId 解引用 → ledger news_seen 兜底 → 全找不到就 404 拒绝,绝不猜 t0=粘贴时刻);去重抽成 `gate.findStaleDuplicate`(同 newsId 永不与自己旧信号相撞,跨 newsId 照旧拦)。`policy position_exists` 防重复开仓不变。
-> ② **闸门 1 跨源检索(用户 8/23 提出)**:池内新闻分析前先花 ~15s 搜"有没有人更早报过"(`coverage.ts`,复用 forecast-engine Exa/Tavily 后端;⚠️ forecast-engine 是 CJS 语境 TS,ESM 静态 import 命名导出探测失败,必须动态 import——coverage.ts 有注释)。命中更早同故事(>30min + 标题 Jaccard≥0.3)→ **t0 确定性前移(代码算,不交给 LLM;安全方向:算入更多已实现行情)**、firstSeen 升级(替代 Reportedly 的"published 上界"简化)、hit 列表进 gate1 prompt 让 LLM 判"是否炒冷饭"。无 key/失败 = signal `priorCoverage` 字段 + `coverage_check` ledger 行记**可见**跳过。实测真 Exa:2.1s、8 hits、5 月旧财报新闻(sim .05-.24)正确排除、昨日复述(sim .389)正确命中。
-> ③ **验证**:37 个新模块测试(gate1Rules 重要性判定表/去重/存档合并/paste 解析/coverage),全仓 1132 测试+typecheck 绿;本地实弹(rules 引擎+真 HL 行情):manual_news 全链 → console 式 paste → 响应 `rerun:true, t0Utc=原始时间, title=原标题`,同指纹重跑**未**被 stale 拦截,Δt 按真 t0 算(138min)。
-> ④ **待办/待用户**:VM 部署(clean-untar,老规矩)——**部署前需决定是否给 VM `.env` 加 `EXA_API_KEY`**(不加则 coverage 全记跳过,管线照跑);console 的 paste UI 未动(服务端兼容旧载荷)。英文版 handoff 此条待同步翻译。
->
-> 上次更新：2026-08-23 by Claude（**Delta PM 上线东京 VM + 决策链审计页 /live-delta-pm 全链发布**，PR #103/104/106/107/115/117 全合并）。
-> ① **VM 部署(正式 Phase 0 账本起点 2026-08-23 06:33 UTC)**：磁盘清理(builder cache 8.6GB,74%→59%)后 clean-untar(备份 `~/predict-raven.pre-delta-pm.bak` 与 `.pre-audit-chain.bak`)+ 重建 raven-suite + `up -d --no-deps delta-pm delta-pm-console forecast-api`,其余容器零接触。冒烟全过;首日周末流:30 条真实新闻、3 次真实 claude 分析全部规范拒单(residual < 门槛)。**本机 soak 已停**(本机 claude OAuth 被吊销 401 → 只剩 rules 引擎;修复命令在运维手册 §1.4)。
-> ② **审计链(用户诉求「抽象写法没法审计」,PR #117)**:policy 决策记录新增 decisionAudit(edge 四数/门槛逐项分解/止损菜单/sizing 链每道 guard 上限与裁剪/杠杆三帽/否决标签);forecast-api 新增 `GET /delta-pm/audit`(六环 join,双凭证同 /paper/snapshot);**apps/web 新增 `/live-delta-pm`**(六台席对冲基金决策链版式,subagent 构建,15 web 测试),已发 forecasting-agent.com,**线上实弹验收过**:表单解锁(⚠️ unlock 收 form-encoded 不收 JSON)→ 实时徽标 + VM 账本时间 + 30 条链。运维手册 `docs/delta-pm-operations.md`(PR #115):setup 清单/真实案例走查/token 实测(单次 15.6k 新 token,30 新闻 15 调用——不贵)。
-> ③ **raven-labs 并发测试场结论**:实测 4vCPU/30G 空载 vs 东京 2vCPU/7.8G 满载生产——大规模并发测试放美西,执行链路留东京(HL 延迟 25ms vs 155ms + 美 IP 对 trade.xyz ToS 合规硬伤);claude CLI 已在(2.1.241,凭证在 `/home/yishu/forecast-fleet/env/.secrets.env`,fleet 正用)。
-> ⑤ **同日追加(PR #121,已部署 VM+web)**:用户四指令落地——**不上杠杆**(DELTAPM_MAX_LEVERAGE 默认 1);**飞书推送接缝**(信号过检/开仓拒单/止损停机五类,env `DELTAPM_FEISHU_WEBHOOK` 待用户建群填 webhook);**原文逐条存档**(`news/` 目录)+ 审计页「存档原文」块;**全环节耗时条**(发布→抓取→检查→研究→决策→端到端,ledger 时间戳推导);**审计页可读性重构**(结果徽章替换机制黑话、拒单原因明示、八词术语表、台席改名 重要性检查/定价检查,原始枚举 mono 保留)。Gmail 权限分级方案(转发筛选 + TI-ingest label 限读)入运维手册 §1.1;§1.5 raven-labs 标记已解决(CLI 2.1.241 + fleet env 凭证)。线上验证:VM /delta-pm/audit 新字段在线,forecasting-agent.com 页面旧黑话归零。
-> ④ **待办**:P1 = 周一工作日新闻流首考(看 VM 反思报告);P2 = newsletter 邮箱轮询器(等用户建邮箱,手册 §1.1)、`/live-delta-pm` 案例分页(30 条上限)、东京 VM 升配评估(Phase 1 前)。英文版 handoff 此条待同步翻译。
->
-> 上次更新：2026-08-22 by Claude v4（**forecast-engine 接入 Exa 搜索 + 修掉 DDG CAPTCHA 静默降级**，分支 `claude/exa-search-integration-2a477f`，PR 待开）。
-> ① **发现的 bug（比集成本身重要）**：DuckDuckGo 现在对我们的 scraper 返回 HTTP 200 的 CAPTCHA 挑战页，旧代码把它解析成"搜索成功、0 结果"——模型被告知"没有证据"而真相是"搜索没跑"。已在 `packages/forecast-engine/src/web-search.ts` fail-fast（识别 `anomaly-modal__`/`challenge-form` 标记即抛错，真 no-results 仍返回空数组）。实测 6 条 GPT-6 查询里 4 条被挡。
-> ② **Exa backend**：`EXA_API_KEY` 存在时自动选 exa（优先级 exa > tavily > duckduckgo，`FORECAST_WEB_SEARCH` 可 pin），请求走 Exa 官方 skill 推荐的最简形态（query + type:auto + contents.highlights，只加 numResults:8 对齐现有预算）；SearchHit 新增可选 publishedDate/author，tool 描述提示模型用它判断时效。12 单测新增全绿，全仓 1058 测试绿。
-> ③ **A/B 实测（GPT-6 released-by 市场，`scripts/forecast/search-backend-compare.ts`，归档 runtime-artifacts/search-compare/）**：DDG 2/6 成功、0 带日期、且 q2 的 8 条里 3 条是 SEO 假消息（"GPT-6 已于 4 月发布"）；Exa 6/6 成功、48 hits、50% 带日期、7 条 ≤7 天，抓到完整证据链（8/1 Astra 命名 → 8/7 网络安全放缓 → 8/19 "9 月或上线"），latency 相当（~1.2s）。
-> ④ **已拍板（2026-08-23）**：DDG 兜底彻底删除（无 key 大声报错）；pulse 链路同样换 Exa + 无 key 预检失败。用户同日标记「搜索质量重点修」→ 见 P0 首条与 README 顶部已知问题节。本地 key 在 gitignored `.env.exa`（600 权限）。英文版 handoff 已同步。
->
-> 上次更新：2026-08-22 by Claude v3（**Delta PM Phase 0 全系统建成并实弹验证**，分支 `claude/delta-pm-dev`，PR 待合并）。
-> ① **交付物**：`packages/delta-pm-contracts`（zod 机器契约）+ `services/delta-pm`（:8792，feed 轮询/HL 行情归档/M0 事件研究/M1 两道闸门/M2 盲测分析/M3 决策/纸面执行/状态服务,两层并发:分析并行+决策单写者双 lane）+ `apps/delta-pm-console`（:3400,持仓+五段进度条+补全原文接缝,subagent 构建）+ compose/Dockerfile 两容器接线 + .env.example DELTAPM\_\* 段。55 单测绿,全仓 typecheck 绿。
-> ② **实弹验证(全部真实端点)**:TI 公开 feed 解析 20 条真实新闻;**TI 的 CDN 封 Node TLS 指纹(node fetch/https/http2 全 403,curl 任意 UA 通过)→ feed 抓取改 shell 出 curl,Dockerfile 补装 curl**;HL API:metaAndAssetCtxs 名字自带 dex 前缀(修)、1m K 线只留 3.6 天(归档 sweeper day-one 跑)、**β 必须 RTH 对齐+截尾**(裸日线 AAPL~XYZ100 β=0.21,周日 bar 打过 −6.7%;修后带 weak_fit 降级);端到端:注入 SNDK 订单新闻 → 真 claude-cli gate1 → gate2 未定价 → 真 M2 thesis(EPS 链带假设)→ M3 residual 6.00%≥5.64% → **纸面开仓 $3,000(tier1_cap 裁剪、−20% 硬地板、意图/实现风险记账)**;重复注入被指纹去重拦下;真实 feed 的池外新闻零 LLM 成本归档、池内新闻真 LLM 判定、一条走到 gate2 判 reverse。**污染检测器实弹抓到误杀**:analyst 写 "already priced (into consensus)" 是预期通道合法语言,与价格通道区分后修复+回归测试。
-> ③ **运行事实**:本机后台 service+console 仍在跑(session 结束即停);universe 21 只含 SPCX(实测 24h $1.97 亿,比预期深);weekend session 数据实测正常。
-> ④ **待办**:P1 = VM 部署(等用户清磁盘,batch list #4);P1 = Phase 0 校准报告管线(reflect 骨架移植,M1 混淆矩阵/覆盖率/污染率——代码有数据无报告);P2 = WebSub 订阅实验、newsletter 解析邮箱(等用户 batch list #1)、财报日历数据源(现为 universe 手填字段);P2 = 归档信号 24h 追踪 job(契约有字段,追踪任务未排程)。风控参数全部 env 默认值,改动需用户确认。英文版 handoff 此条待同步翻译。
->
-> 上次更新：2026-08-22 by Claude v2（**Delta PM PRD 已拍板升 v1.1，进入开发**，同分支同 PR #103）。用户拍板：新闻源 = **The Information**（实测公开 Atom feed 60s 轮询触发 + WebSub 尝试 + newsletter 邮箱增强；t0=published、去重=条目 id、"Reportedly" 条目须走 firstSeen 核实、ToS 禁登录态抓取）；行情 = **Hyperliquid API 唯一源**（实测：WS "xyz:COIN" 全通、1m K 线只留 3.6 天→**归档必须 day-one 自建**、β 基准只能用 XYZ100/SP500、SMH 太年轻禁用、时段三桶分基线）；风控主规则 = **单仓 −20% 硬止损 + 组合 −25% 停机**；周末正常开仓；**先做短线**（长线三态机推迟 Phase 3）；合规确认；东京 VM；HL 凭证后续给（Phase 0 影子模式零凭证）。标的池 20 只定版（§3：Mag7 + MU/SNDK/WDC + AMD/AVGO/TSM/ARM + ORCL/INTC/CRWV/NBIS + PLTR/NFLX；加密簇移出、SKHY/KIOXIA/DRAM 不入 V1）。开发蓝图 §15：services/delta-pm(:8792) + packages/delta-pm-contracts + apps/delta-pm-console(:3400，进度条拷贝适配 apps/raven components/research)；测试走 root vitest glob（勿 per-workspace pin）。用户要求控制台（持仓 + 分析进度条）。**下一步：合并 #103 → 新分支脚手架开发。**（英文版 PRD 与 handoff 均已同日补齐。）
->
-> 上次更新：2026-08-22 by Claude（**美股交易系统 Delta PM 产品 PRD 草案**，分支 `claude/us-stock-trading-prd-df8bf7`，PR #103——已被 v2 条目取代，初版审阅流程完成）。
-> ① **需求**：用户要把 forecasting 能力迁移到美股多空，场地 = Hyperliquid 上 trade.xyz 的美股永续；两大模块 = 新闻「重要性 + 是否已定价」判断（结合最早 original 时间 × 价格反应）与影响路径/基本面量化分析。PRD 单文件 [`docs/us-stock-trading-prd.md`](us-stock-trading-prd.md)：analyst→PM 双角色（M1 两道闸门 / M2 盲于价格反应的估值 thesis / M3 PM 决策 / M4 执行），只优化胜率 + 盈亏比，短线双轨退出（估值/破位）+ 长线 thesis 三态（兑现且 price-in→卖、证伪→止损、否则硬拿）——全部来自用户 8/22 口述方法论。
-> ② **场地实测（2026-08-22 API 直查 dex=xyz，115 市场）**：Mag 7 全 20x cross；MU/SNDK 在线 OI $140M+；**STX/SMCI 未上线**；WDC 薄（前 20 档卖侧 ~$29k）；24/7 交易（周末 internal session：盘口 EMA oracle + Discovery Bounds ±5–10%）；growth-mode 费率 taker 0.009%；funding 全场 −0.049%~+0.021%/时；7/28 SKHX oracle 事故 ~$57M 强平（场地赔付）；拆股政策未公布；ToS 限美/加/英。
-> ③ **过程**：三路研究 workflow（场地/repo 资产/priced-in 业界做法）→ 初稿 → 三视角对抗评审（交易/工程/文风，35 条发现含 4 blocker）→ 全吸收。代表性修复：priced-in 2h 窗口 vs 15min 延迟矛盾 → 反应完成度曲线；15% 单标的上限压死 1% 风险预算 → tier 化上限 + 算例；oracle 背离守卫会冻结止损 → 只冻开仓；免费行情撑不起 Phase 0 → Polygon ~$199/月列为前置。repo 复用结论：~70% 积木已有，**Hyperliquid 适配器是最大缺口（repo 零代码）**。
-> ④ **待用户**：PRD §14 十个开放问题（标的池终版 / 新闻接口契约 / 行情数据预算 / 风控表逐行 + HWM 20%→15% / 长线硬拿三条修订 / 周末政策 / 短长线侧重 / 合规主体 / 部署与 agent-wallet / Phase 门槛）。审阅意见回来后修订定稿 + 补英文版再合并。本轮零代码、零部署、零交易动作。英文版 handoff 此条待同步翻译。
->
-> 上次更新：2026-08-21 by Claude（**模拟盘复盘页大改：建仓/退出决策拆分 + Brier 公平性口径 + 案例 walk-through + 结论自动推导**，分支 `claude/gcloud-simulated-disk-returns-f644dd`，**PR #102** 已合并，web + VM 均已部署）。
-> ① **业绩已翻正（截至 2026-08-20 10:33Z，第 147 周期，48 天）**：equity **$10,533.35（+5.3%）**，8/4 见底 $8,111.81（自 7/14 峰值最大回撤 −24.9%）后 15 天收复 +$2,421。已平 20 回合 8 胜 12 负；**8/5 之后只平 3 笔且全赚**（8/8 + 8/16 两个「解除对伊封锁」系列结算 NO +$351/+$594，8/19 霍尔木兹负边际退出 +$78），**零新增止损**（12 次止损全在 8/5 前）。已实现仍为 −$1,091.67，账面转正靠 10 个在持仓浮盈 +$1,670。
-> ② **决策质量拆分（用户 8/21 提出「其实你就这两个决定」）**：新增建仓/退出两分法，同一基准（结算值或最近观察价）下 `建仓α + 退出α = 盈亏` 逐仓位恒等。实测建仓 **+$988** / 退出 **−$455**——**选标的是赚钱的，提前退出在还钱**。最刺眼的是英伟达：建仓 α +$1,550（0.22 买 YES，市场最终 YES 结算），退出 α −$1,838（止损砍在最低点）；哈马斯同型（+$1,622 / −$1,798）。反过来，以伊停火系列的止损全是**正**退出 α（+$266 ~ +$321/笔）——那批的错在建仓不在退出。对账：已平 30 个 episode 合计 −$1,091.66 vs 账本 −$1,091.67。
-> ③ **Brier 三个结构性不公平（用户质疑「这样是不是不公平」，已上页）**：(a) 只算已结算——24 个已评估未结算市场不进样本，其中在持浮盈 +$1,670，这部分归到建仓 α；(b) 打分打在结算前最后一次（最容易的时刻）——换成**每个市场第一次**判断（中位提前 5.6 天）技巧分 **−0.37**，最后一次是 −0.75；按提前量分桶：≤1 天 −5.72（市场 Brier 仅 0.043，引擎被 1%/99% 钳位跟不上，是机制不是判断）、1–7 天 −0.77、**7–30 天 +0.23（跑赢市场）**、30 天以上 −1.07；(c) n=20 按 Gamma 事件归并后**只有 11 个独立事件**。另按用户提的「难度随天数增长」实现 horizon^1.5 加权（加权 Brier 和，不是把单条除以天数——后者会让长周期几乎不受罚）：加权技巧分 **−0.20**。主指标仍是相对市场基准的技巧分。
-> ④ **四个案例 walk-through**：新端点 `GET /paper/cases`（同 snapshot 双通道鉴权、60s 缓存）拼合引擎档案（信念曲线 + 按影响挑出的关键轮次：检索 query、每条源的标题/原链接/来源类型/可信度/是否验真/推了多少 pp/理由、该轮判断原文、最终整体结论）与账本决策记录（扫描→建仓→逐次复审 hold/sell + 净 edge→止损→结算），配「引擎概率 vs 市场报价」时间轴图（统一按持仓方向表达，NO 仓镜像）。136 轮档案挑轮次 + 等距抽稀不截断。
-> ⑤ **结论与建议改自动推导**（`apps/web/lib/live-predict-raven/findings.ts`）：旧的 2026-08-05 硬编码文字描述的是 −20% 账本，页面早已 +5.3%——现在每条结论按当前快照重算并带触发数字。当前触发：题材集中（伊朗/中东占在持成本 61%、10 仓方向全 NO）、止损后重进同市场（4 个市场 −$367）、低价合约止损被打脸（2 笔，退出贡献 −$3,636）、引擎饱和率 65%。**风控类一律标「待你拍板」，agent 不自行改参数——三条建议（冷却期 / 题材级敞口上限 / 止损按价位分档）仍未实施。**
-> ⑥ **验证与部署**：114 文件 / 994 测试全绿；web build 通过；本地起 forecast-api 指向 VM 真实账本副本做端到端，桌面 1280 / 移动 390 截图自评 0 console error、0 pageerror、无横向溢出（新增 `scripts/lpr-shots.mjs`——cookie 门页专用，解锁后展开所有 details 再截）。VM clean-untar（备份 `~/predict-raven.pre-paper-review.bak`）+ nohup 重建 + `up -d --no-deps forecast-api paper-agent`。⚠️ **新口径需要跑过一次 reflect 才有数据**（horizon/clusters/pending 写在日报里）。
->
-> 上次更新：2026-08-20 by Claude（**README 中英双版刷新到 2026-08 现状**，分支 `claude/readme-update-116867`，**PR #100** 已合并，纯文档）。README 上次刷新停在 6/14，本次补齐 6 月中旬以来的产品面：新增「Forecasting Engine（托管服务）」（/engine、/delta、forecast API+MCP、packages/forecast-engine 护栏）与「自主模拟盘交易」两节 + watch-live 四个新链接（含 /live-predict-raven、/world-cup/performance）；修掉 Norns 段指向已删除 /research 控制台的陈旧条目；标注 `forecast:*` 命名（pulse:\* 为别名）；归档表补 paper-agent / raven-delta 行；**zh-CN 版顺带补上英文版早有而中文版一直缺的 Norns 整节（存量漂移）**。无代码改动、无部署动作。
->
-> 上次更新：2026-08-05 by Claude（**模拟盘 8/5 数据刷新 + 回合盈亏计入入场费**，分支 `claude/raven-agent-yield-webpage-02513c`，**PR #98**，web + VM forecast-api 均已部署验收）。
-> ① **业绩剧变（截至 2026-08-05 02:33Z，第 101 周期，33 天）**：equity **$7,974.23（−20.3%）**，自 7/14 峰值 $10,799 最大回撤 −26.2%。已平 17 回合 **5 胜 12 负**——7/26–8/4 十一个新回合里十次止损，几乎全是以伊停火题材："以伊停火延续至 7/31"同一市场**三进三止损**（−$601）、美伊停火二进二止损（−$400）、哈马斯止损后 24h 重进（现持仓中）——7/24 提的"止损后冷却期"未落地，缺口以更大规模重演。**exit α 由 +$1,077 转 −$134**（NVDA 0.22 买 YES 止损后市场以 YES 结算 α −$1,838；哈马斯 −$869）；**Brier n=12、skill −0.53**，样本首次够量，初步结论 = agent 独立判断落后市场（失分集中在停火系列方向判断反）。饱和持有拦截累计 8 次；费用累计 $113.05（NVDA/Maduro 等新市场带真实费率，$45 入场费级别）。满仓 10/10，5 仓仍共享伊朗驱动。
-> ② **forecast-api 真 bug 修复（费用非零后暴露）**：`pairClosedTrades` 买入腿漏计 `feeUsd`（卖出腿有扣）→ 已平仓表合计与账面已实现差 $45（= NVDA 入场费）。现入场费计入回合 costUsd 与 pnlUsd（结算路径同步），`entryPrice` 保持真实成交价；fee-market 回归测试新增。**部署后已验证：闭仓表合计 −2114.36 vs 账面 −2114.37（1¢ 取整）对账一致**。
-> ③ **页面更新**：烘焙快照全量刷新到 8/5；11 个新市场中文标签 + 交易注；编者注/结论全部重写为 2026-08-05 复盘（费用文案改数据驱动，不再硬编码 $0；exit α 结论按正负动态）；BrierTable 行 key 去重（同一市场两行结算导致 React 重复 key 报错）。**页面上的三条建议（冷却期 / 题材敞口上限 / 止损与低价单适配）均为风控参数改动，需用户拍板后才实施。**
-> ④ **部署**：web 经 `gh workflow run wc-results.yml`；VM clean-untar（备份 `~/predict-raven.pre-fee-fix.bak`）+ nohup `compose build raven` + `up -d --no-deps forecast-api`（paper-agent 等其余容器零接触）。冒烟：healthz 200 / 无 token 401×2 / NVDA cost 495 pnl −287.55。生产 E2E：带码解锁 → 实时徽标 + $7,974.23 + NVDA −287.55（旧 −242.55 已消失）。**注意：镜像 raven-suite 已更新到 e36a4bb，raven/raven-delta/paper-agent 仍跑旧镜像**（#98 未动它们的代码，行为无差；下次全量 `up -d` 会切换）。VM 磁盘 **81%**（builder cache 清理仍待用户确认，见 7/20 条目）。
-> ⑤ **新发现 P2**：反思报告 calibration rows 里"以伊停火延续至 7/31"出现两行**相反结果**（7/29 happened=true vs 7/30 false）——疑似按 position episode 映射结算时的数据 quirk，待查 `services/paper-agent` 反思管线；NATO exit-α 行 priceNow/alpha 为 null（市场已下架）被渲染成 ±$0.00，观感待改。英文版 handoff 此条待同步翻译。
->
-> 上次更新：2026-07-24 by Claude（**/live-predict-raven 实时化：每次评估周期后自动更新**，分支 `feat/live-paper-snapshot`，**PR #93**）。
-> ① **背景**：用户要"更新最新收益 + GCloud 侧做到价格每次 review 后更新"。方案 = forecast-api（与 paper-agent 共享 runtime-artifacts 卷）加只读 `GET /paper/snapshot`（主 token **或** invite code `raven-labs` 双通道鉴权，60s 内存缓存）；apps/web 页面改为请求时服务端拉 VM（5s 超时 no-store），失败回退烘焙快照并在页顶显式标注数据源。
-> ② **端点聚合**（`services/forecast-api/src/paper-snapshot.ts`）：portfolio.json（现金/已实现/持仓+lastEval mark，equity=cash+lastEval 标记 = 恰好"截至上次 review"）+ ledger.jsonl（成交/周期/评估计数、saturatedHold 计数、**顺序重放配对已平仓回合**——支持同 positionId 再进场（MOU 双回合）、剔除 7/3 锁竞争丢单，产线数据复算 6 回合与手工分析分毫不差）+ 每日反思（权益曲线/退出 α/Brier/hybrid 透传）。web 侧 `live.ts` 解析校验 + 中文标签装饰（未知新市场回退英文）；图表 Y 域改数据驱动 + 刻度防碰撞。
-> ③ **最新业绩（截至 2026-07-24 10:23Z，第 66 周期，21 天）**：equity **$10,406（+4.1%）**（7/23 反思按实时盘口 $10,440）；已平 6 回合 4 胜 2 负不变；浮盈 +$585；**Brier n=4、skill −0.16**（新增中菲冲突：agent 8.8% vs 市场 13.5%、事件发生——从 −7.32 收敛但仍为负）；exit α +$1,077（NATO 行反事实翻正 +12.66）；饱和率 200/351（57%）；**saturated-hold 已实拦 1 次**（7/24 10:02 霍尔木兹 7/31：bid 0.992、netEdge −0.2pp，老逻辑必卖，新逻辑 `saturatedHold:true` 持有——修复上线 4 天首次生效）。
-> ④ **验收**：forecast-api 40/40 + web 27/27 vitest、web build 332 页绿；**真数据本地 E2E**（scp 产线账本→本地 :8788 起 forecast-api→web dev 指向它→页面"实时数据"徽标 + 全部数字与 VM 一致）；桌面/移动截图 0 pageerror。英文版 handoff 此条待同步翻译。
-> ⑤ **对抗评审 + 部署完成（2026-07-25/26）**：29-agent 评审工作流 25 条确认发现全部修复（关键 3 条 high：**结算平仓不入已平仓表**——pairClosedTrades 现消费 ledger `resolution` 事件，部分卖出+剩余结算合并为单一回合，7/31 结算潮前堵上；硬编码聚合与实时数字并排矛盾——标题/tile 全改派生、编者注加日期前缀；降级载荷渲染 NaN——解析器严格化时间戳/evalCycles/costUsd，坏载荷回退烘焙）。次级：曲线全日期键（跨年防覆盖）、`ARTIFACT_STORAGE_ROOT` 路径约定对齐 + 空账本 503、15s 成功 memo + 30s 失败退避（VM 宕机不再每次视图卡 5s）、**明文 HTTP 警告**（`LIVE_PREDICT_RAVEN_UPSTREAM_TOKEN` 槽位绝不可放真 API token，TLS 上 VM 前 invite code 是唯一可过线凭证——⚠️ P2：给 :8787 配 Caddy TLS）。**部署**：merge `331cd51`；VM clean-untar（备份 `~/predict-raven.pre-live-snapshot.bak`）+ nohup 重建 raven-suite + `up -d --no-deps forecast-api`（其余容器零接触，paper-agent 仍在 saturated-hold 镜像）；冒烟 healthz 200 / v1 无 token 401 / snapshot 三态鉴权正确；web 经 wc-results 发布。**生产 E2E**：带码解锁 → "实时数据"徽标 + equity $10,420.69 + 数据截至 07-25 10:23Z 与 VM 完全一致。**上线即验证价值：饱和持有拦截已累计 4 次**（7/24 首拦后 3 天又拦 3 次——霍尔木兹 7/31 等仓在 0.99+ 被系统性护住等结算）。
-> ⑥ **入场饥饿诊断 + 调参（2026-07-25 用户拍板，纯 VM env 无 PR）**：7/16 后 9 天零新开仓，根因 = **评估预算被在持仓位精确吃光**——`PAPER_MAX_EVALS_PER_CYCLE=6` 且恰好 6 仓，run-cycle 先评持仓再评候选（[:366](../services/paper-agent/src/run-cycle.ts) 预算尽即静默 break，无账本事件），最后一次 watchlist*eval = 7/16 10:22（开出第 6 仓的那次）；market_scan 每周期照跑纯属白扫。次因：maxPerEvent=1 + 4 仓共享伊朗题材，候选大量被事件去重预筛。**处置**：`deploy/raven/.env` 设 `PAPER_MAX_EVALS_PER_CYCLE=16`（备份 `.env.pre-evalcap-*.bak`），`up -d --no-deps paper-agent` 重启（顺带消掉镜像漂移——7/20 后 paper-agent 零代码变更，行为不变已核对）；容器内 env=16、账本无损、调度器重新武装均验证。生效 = 7/25 18:00Z 周期起每周期 6 仓复审 + 最多 10 个候选评估；成本上限 +30 evals/天 ≈ +$27/天 API 等值（订阅 $0 现金）。**待观察**：18:00Z 后账本应重新出现 watchlist_eval；仓位上限 PAPER_MAX_POSITIONS 未设（默认 10），还有 4 个 $500 仓位额度。英文版 handoff 此条待同步翻译。
-> ⑦ **用户确认目标 = 最多 10 仓 + 参数上页（2026-07-25，PR #96）**：`PAPER_MAX_POSITIONS=10` 显式写入 VM .env（与代码默认一致，纯自文档化）并重启 paper-agent（16:47Z，18:00Z 周期前安全窗口）；`/paper/snapshot` 新增 `config` 块——forecast-api 与 paper-agent 共享 `deploy/raven/.env`（compose 全服务 env_file 同源），按 `services/paper-agent/src/config.ts` 同款默认值镜像读取（⚠️ 新增 PAPER*\* 参数时两处同步）；页面新增"运行参数"区（15 个参数 + env 键，实时徽标下注明"实时读取自 VM 环境配置"，旧 API 载荷缺 config 时逐字段回退烘焙常量）。VM forecast-api 已重建部署 + 生产验证（参数区实时显示 cap=16 / maxPositions=10）。英文版 handoff 此条待同步翻译。
->
-> 上次更新：2026-07-20 by Claude（**模拟盘复盘页 `/live-predict-raven` 上线 forecasting-agent.com**，分支 `feat/live-predict-raven-report`）。
-> ① **背景**：用户先要模拟盘收益分析（SSH 拉 VM paper-agent 账本全量复盘），再要求发布成网页远程 review：挂 forecasting-agent.com`/live-predict-raven`、输入 `raven-labs` 解锁。
-> ② **业绩快照（截至 2026-07-20 02:20Z，第 53 周期）**：equity **$10,433.57（+4.3%，17 天）**= realized −$178.82 + 浮盈 +$611.71；32 笔成交 / 12 次开仓 / 已平 6 回合 **4 胜 2 负（66.7%）**，但平均亏损 $230 vs 平均盈利 $70（profit factor 0.61）；两笔亏损 = 同一市场（伊朗 MOU 7/17）止损后 4 小时原方向重进再止损（合计 −$460）；exit α +$990（退出决策整体加分）；Brier skill **−7.32 但 n=3** 不可下结论；6 仓全地缘 NO、4 仓共享伊朗驱动；峰值 $10,799（7/14）、最大回撤 −3.8%。**建议（未做）**：止损后同市场冷却期 > 题材级相关敞口上限 > 饱和评估 edge 不按名义值展示。
-> ③ **页面实现（apps/web 顶层路由，vercel.json catch-all 已覆盖零路由改动）**：服务端邀请码门（`lib/live-predict-raven/access.ts`，sha256+timingSafeEqual，httpOnly cookie 30 天，`LIVE_PREDICT_RAVEN_CODE` env 可换码、默认 raven-labs 与 /engine 门同码）+ `POST /api/live-predict-raven/unlock`；报告 = **烘焙快照** `lib/live-predict-raven/snapshot.ts` + 纯函数 `stats.ts`（20 个 vitest）；SVG 权益曲线服务端渲染零客户端 JS；`robots noindex`；中文为主（走 `/invite` 顶层工具页先例，未进 world-cup 三语系统）。**刷新数据 = 重拉 VM 账本改 snapshot.ts 重部署，非实时**——想升级成实时需 paper-agent 暴露 HTTP 只读端点再走 vercel 代理（未做）。
-> ④ **验收**：`pnpm --filter @autopoly/web build` 绿（332 页）；桌面+移动整页截图 0 pageerror；本地门流程实测（错码→提示、`raven-labs`→cookie→报告、刷新保持解锁）。部署走 merge 后 `gh workflow run wc-results.yml --ref main`。英文版 handoff 此条待同步翻译。
-> **v2 补充（同日，饱和钳位复盘 + saturated-hold 修复，分支 `feat/saturated-hold`）**：
-> ⑤ **饱和影响全量核查（6-agent 工作流，结论全部过对抗验证）**：`saturatedAt` 在决策层零特殊处理——钳位 99% 在入场/退出/限价定价/Brier 全按真 99% 用；**实锤钳位强卖**：mojtaba 7/15 退出评估 P 钳 0.99 vs bid 0.994 → netEdge −0.4pp 卖出，翻转点 P≥0.994 钳位下不可达（α −$3.21）；另两笔小负 α 是真实估计差一线，非钳位。Brier 用钳位值打分（答对的高置信题罚 25×，mojtaba 行输市场纯因钳位，但总分 −7.32 主因仍是 MOU）。"饱和即止"只省单 run 内轮次，跨周期无 skip——钳死 dossier 每 8h 照烧一轮（~$0.89）。**VPS 结论**：搜索+推理全在 Anthropic 远端，VM 每周期仅 ~49 CPU 秒（0.17% 单核）、容器 373MiB/2GiB、19 天零 OOM；唯一实际风险=磁盘 77%（docker build cache 10.13G 可回收，~3 周 runway；`docker builder prune -af` 即解，未执行待确认）。
-> ⑥ **saturated-hold 修复（用户指令"允许持有到期"）**：`policy.applySaturatedHold`——负 edge 退出信号来自"钳位绑在持仓有利侧"（YES+ceil / NO+floor）且非污染 → 改判持有到结算；例外：bid−fee ≥ 0.999 满值捕获仍卖；threshold 可达性守卫（真 P=1 都过不了 exitEdgePp 时不 veto，防 PAPER_EXIT_EDGE_PP>0 时挡住正确退出）。**14-agent 对抗评审后补修**：veto 时撤销该仓遗留挂单（否则 10-min tick/TTL 会把仓位照卖，账本记 `limit_cancelled/saturated_hold`）；kill switch `PAPER_SATURATED_HOLD` 收 0/false/off/no（默认开）；账本 evaluation 事件 + lastEval 新增 `saturatedHold` 字段 + 反思报告 engineFlags.saturatedHolds 计数（veto 生效可直接观测）。止损不受影响（model-free 优先）。**已知接受的 trade-off**：无 mark ratchet——veto 后若行情反转，模型不解除饱和的话要跌到入场价×0.65 才有模型无关退出（用户拍板的持有到期语义；纸面盘可承受，真钱化前需 trailing stop）；费率>0 的书满值逃生口实际不可达（就是持有到期，符合语义）。测试 956/956 绿。**已部署 VM（PR #91 merge `73d612f`，2026-07-20 11:00Z 容器重建）**：clean-untar（备份 `~/predict-raven.pre-saturated-hold.bak`）+ 回拷 .env/override，`compose build raven` + `up -d --no-deps paper-agent`（其余容器未动）；容器内冒烟测试重放 mojtaba 场景 `exit:negative_edge → hold, saturatedHold=true, enabled=true`，账本对账无损（$6,821.18 / −$178.82 / 6 仓）。18:00Z 起的周期跑新逻辑；观察点=账本出现 `saturatedHold:true` 与 `limit_cancelled/saturated_hold`、反思报告"饱和持有"计数。⚠️ build 期间 gcloud SSH 会因静默被远端掐线——长构建用 `nohup ... > /tmp/raven-build.log &` 脱离会话再轮询。英文版 handoff 此条待同步翻译。
->
-> 上次更新：2026-07-17 by Claude（**engine/delta 访问模型改为邀请码门**，纯 VM `.env` 改动无 PR，已部署+验收）。
-> ① **动机**：用户要"取消 access-token，改成 invite code `raven-labs`"。
-> ② **改动（VM `deploy/raven/.env`，备份 `deploy/raven/.env.pre-invite-20260717-*.bak`）**：注释掉 `RAVEN_ACCESS_TOKEN`（engine 站点门 fail-open → **/engine 现公开可浏览**，往期 dossier 免码可读）；`FORECAST_DAILY_QUOTA` 20→**0**（→ engine 每次 run 都需邀请码，走既有 quota→invite 机制）；`DELTA_ACCESS_TOKEN` 改为字面值 `raven-labs`（delta 无 invite 系统，入口码即 raven-labs）。`FORECAST_INVITE_CODE=raven-labs` 未动（invite 表里 `raven-labs` = ok·∞·无过期）；`FORECAST_API_TOKEN` 独立未动（:8787 API bearer 门不受影响）。
-> ③ **重启**：`docker compose up -d --no-deps raven raven-delta forecast-api`（无 --build，纯 env reload，镜像不变）。
-> ④ **验收**：/engine 无 token 200；/delta 无码 401、`?token=raven-labs`→307+cookie→200；/engine POST run 无邀请码→429 `quota_exceeded`（未真跑，没花钱）。⚠️ **回滚**：恢复 .env.bak 三个键（RAVEN_ACCESS_TOKEN 取消注释、QUOTA 回 20、DELTA_ACCESS_TOKEN 回原值）+ 重启三容器。⚠️ 邀请码 `raven-labs` 本就是 `.env.example` 里的公开种子码，非机密——如需真正限流请用 `invite-cli create` 建带次数/过期的专属码并吊销 seed。
->
-> 上次更新：2026-07-17 by Claude（**/engine 与 /delta 挂载到 forecasting-agent.com 路径**，分支 `feat/mount-engine-delta-paths`，**PR #87**，已全链路部署+验收）。
-> ① **改动**：apps/raven `basePath:'/engine'`、apps/raven-delta `basePath:'/delta'`（各自 `lib/base-path.ts` 单一事实源，手写 fetch/img 全部前缀化）；根 vercel.json 在 catch-all 前加 4 条代理路由（`/engine/*`→VM:80、`/delta/*`→VM:3300；源是明文 http，后续可升级 Caddy origin TLS）。**顺手修了两个 token 门存量漏洞**：Next 16 下 matcher 不匹配裸根路径（无 token 直接放行首页——raven-delta 的 proxy.ts 是 raven 的旧拷贝，两处一并修齐）；cookie path 收窄到各自 basePath（与主站同域后不再全站互发）。
-> ② **部署**：VM clean-untar（备份 `~/predict-raven.pre-mount-20260717-1349.bak`）+ 回拷 .env/override，`docker compose build raven raven-delta` + `up -d --no-deps`。**镜像漂移：raven 与 raven-delta 现均在 merged main（f5dfbe2）**，仍旧镜像的只剩 forecast-api。主站经 `gh workflow run wc-results.yml --ref main` 部署成功。
-> ③ **验收**：forecasting-agent.com/engine 与 /delta token 流（?token= → 307+Set-Cookie → 200）全通；/delta/api/health 公开 200；/world-cup/groups 200 无恙；桌面+移动截图自评通过，0 console error。⚠️ **旧直连 URL 已迁移**：`34.85.97.32/` → `/engine`、`:3300/` → `:3300/delta`（旧书签会 404）。
-> ④ **已知/待办**：raven-delta 的 vitest 存量全挂（vitest 3.2.4 用 CJS require 加载 ESM-only 的 vite 7，`ERR_REQUIRE_ESM`，与本次无关——建议升 vitest 或 pin vite 6）；delta-ws :8791 仍是直连端口不走域名（Vercel 路由不代理 WebSocket）；同 VM 上另有本人的 video-digest 服务（8931/443 Caddy `read.issuewys.com`），互不相干。
->
-> 上次更新：2026-07-12 by Claude（**淘汰赛 32 强预测效果上线预测效果页**，分支 `feat/wc-knockout-performance`，**PR #86**）。
-> ① **数据**：`pnpm tsx scripts/world-cup/fifa8-results.ts` **15/15 R32 全部结算**（90 分钟口径，5 场平局）；`fifa8-performance.ts` 重算 9 模型榜——发布的多重校准融合 **bestPick 11/15（73%）· Mock PNL +11.7% · Brier skill +3.5% · ECE 14.2%**；榜首 Dixon-Coles 贝叶斯（BSS +3.8%），垫底 PRODEGY（−20.7%）。市场盲测不变：价格只做事后基准。
-> ② **Web**：`/world-cup/performance` 新增「小组赛 / 淘汰赛 · 32 强」stage tab（`perf-stage-tabs.tsx` 客户端切换两个 SSG panel；`PerformanceDetail` 改接收数据 prop——淘汰赛 tab 与小组赛同版式同指标）；新 reader `apps/web/lib/world-cup/fifa8-performance.ts`（取 headline=multicalibrated）；i18n 新 key `perfTabGroups/perfTabKnockout/perfKnockoutScope`（en+zh-CN 手写，zh-TW 重新生成）。build 绿；桌面+移动 × en/zh-CN/zh-TW 验收，0 console error。
-> ③ **部署**：merge 后手动 `gh workflow run wc-results.yml --ref main`（forecasting-agent.com 唯一发布通道）。**待办**：R16 起的淘汰赛预测尚未生成（fifa8 管线只覆盖 R32）——生成后预测效果页加第三个 tab 或并入淘汰赛 tab；`wc-results.yml` 的 cron 仍停用（小组赛冻结时关的），淘汰赛结果更新目前靠手动跑 fifa8-results + 重部署。
->
-> 上次更新：2026-07-07 by Claude（**paper agent 业绩核查 + 报告质量三维评审与修复**，分支 `claude/heuristic-clarke-1a459e`，**PR #81**，已部署 VM paper-agent 容器）。
-> ① **业绩（截至 2026-07-06 UTC）**：$10k 模拟盘跑 3 天，权益 **$10,321.69（+3.22%）** = realized +$200.20（3 笔 negative_edge 退出全对账）+ 浮盈 +$121.49（5 仓）；**Brier / skill score 尚不可计（n=0，最早 7/10-7/15 才有市场结算）**。
-> ② **123-agent 对抗评审**（14 份 engine 报告 + 3 份反思 + search trace + 生成代码；104 发现 → 51 确认）：三大 P0 = **市场盲测失效**（engine 主动搜并锚定它要对赌的 Polymarket 价格，4/14 先验直接引市价，evidence 轮里也搜 `Polymarket odds`——edge 部分自指）；**P=99%/1% 是 bayes.ts PROB_FLOOR/CEIL 钳位**（5/14 dossier 打死在 floor 且伪装 "converged"，floor 后每轮照跑白烧 $4/轮）；**结论埋在 700 词框架墙后**。次级：status-quo 证据跨轮全权重重复 ~9 次、credibility 标签收集不使用、未验证引用可当最大 mover、hybrid 指标混池虚报（+14.7pp → 配对真值 +0.6pp）、`|` 未转义断表格。完整计划归档见 PR #81 描述。
-> ③ **修复全部落地（engine + paper-agent，924 测试绿 / 18 包 typecheck 绿）**：`FORECAST_MARKET_BLIND=1` 模式（三处 prompt 禁令 + 域名黑名单归零权重 + 先验重审 + state.json 污染标记 + paper-agent 对污染评估不开仓/不 negative_edge 退出）；`saturated` 新状态全链路透传（报告头注明"引擎下限非精确值"，floor 即止省 token）；跨轮 cluster decay + `status-quo-continuation` 规范 id；credibility 限幅 |llr|（low≤0.25）+ 未验证源不得超该轮最大 verified 贡献 + 连续 2 轮单边同向权重减半；**反思报告新增 Brier skill score = 1 − Brier_agent/Brier_market**（基线 = 同时刻 bestBid / watchlist 中价，覆盖所有已评估结算市场，watchlist_eval 开始记 `marketProbYes`）——**用户最关心的"是否跑赢市场"以后每日自动回答**；报告改 verdict-first + 引用可点击 + zh 模板，paper-agent dossier 默认中文（`PAPER_FORECAST_LANGUAGE` 可覆盖）。
-> ④ **部署**：clean-untar（备份 `~/predict-raven.pre-followups.bak`）+ 回拷 .env/override，`docker compose build raven` 后 `up -d --no-deps paper-agent`——**PR #81 已合 main（CI 绿后 merge），VM paper-agent 跑的就是合并后内容**；镜像漂移现状：raven 在 7-06 main；仍旧镜像的只剩 forecast-api。补了三个收尾项后再部署过一次：round prompt 注入 settlement source + 一手源优先规则、非英语地区问题至少一次本地语言搜索、evaluator FORECAST_MIN_ROUNDS 1→2（防单轮对冲净零被误判 converged，只有新 dossier 多花 1 轮）。
-> **v2 补充（2026-07-07 02:00-02:50Z，首两轮新代码运行评估 + PR #82）**：18:00Z/02:00Z 两轮验证新机制全部生效（`saturated` 状态替代假 converged、⚠饱和 进反思报告、`marketBlind.enabled=true` 且 blockedCount=0 = prompt 禁令足够、`marketProbYes` 开始记录、18:21Z 首份自动中文反思正常）。**暴露两个生产问题已修（PR #82，merge `0fa944b`，已部署）**：① Gamma 把在持市场 slug 原地改名（`putin-out-before-2027`→`-346`，conditionId 不变）→ 持仓评估/结算失联；修 `fetchMarket(slug, conditionId?)` 兜底 + 周期内 slug 自愈（ledger 记 `slug_renamed`）；部署后 12 分钟 tick 零报错验证通过。② 新 prompt 下 2/13 次评估 "no JSON object" 中止 + 1 次 360s 超时（旧代码 30+ 次零错）→ 失败原始输出落盘 dossier `invalid-round-N.txt`（**下次复发先看这个**）+ paper evaluator `FORECAST_AGENT_TIMEOUT_MS=600000`；此类失败均 fail-safe（当轮 hold、下轮自动续跑，02:14Z 已实证）。当前 6 仓（02:25Z 新开乌克兰收复克里米亚 NO $500）。**镜像漂移：paper-agent 已在 merged main；仍旧镜像只剩 forecast-api**。
-> ⑤ **未修（评审确认但留待后续）**：3×/day 对长期限问题的重评节奏未分层（saturated 即止已消掉 floor 后白烧，但调度策略本身没动）；"✓ in search trace" 底层仍是 URL 成员检查（展示层已只标异常，内容级核验未做）；agentHolisticProb 与引擎数字分歧未渲染警告；exit alpha 基线每日重标（已加解释未冻结）；limit fill-rate 按事件计数 >100%（应按 distinct limitId）。存量英文 dossier 续跑会中英混排（一次性过渡）；首批市场结算后（Khamenei 7/15、Hormuz 7/31）看首个真实 skill score。英文版 handoff 此条待同步翻译。
->
-> 上次更新：2026-07-05 by Claude（**Raven Delta 独立站点第一版**，分支 `claude/dreamy-ptolemy-8a4853`；重做了同日 Codex 的 stock-news demo——用户明确产品形态：不放 world-cup 站，做 forecasting engine 风格的**独立站点** + 维护股票池 + 真 agent 分析 + 0-5 只受影响股票 + 邮件/WS 推送）。
-> ① **旧 demo 处置**：分支先 rebase 到最新 main（落后 134 commit，7 文件冲突已解，navForecasts/navBracket/LegalFooter 跟随 main 删除不恢复）；对旧 demo 跑了 7 维多代理评审（102 原始发现 → 40 canonical → 逐条 2 名怀疑者对抗验证：14 confirmed / 24 contested），可迁移的修复全部带进新实现；apps/web 里 /stock-news 页面/API/组件/58 个 sni* i18n key 全部移除（typecheck + 17 测试仍绿）。
-> ② **新站点 `apps/raven-delta`**（端口 3300，`pnpm delta:dev`；视觉 = apps/raven 同款 token：暖棕 #15120c + 橙 #ee7130 + Newsreader/Plex Mono；en/zh 切换）：**zod 机器契约**（`lib/analyzer/schema.ts`：attention gate（worthAttention+0-100 分+理由+催化类型+可信度注记）→ marketReadout → **impactedStocks 0-5**（方向/幅度/**预期波动区间**/置信度/推理链/证据/操作/风险）→ tradingPlan → limitations，prompt 只引导思考、schema 强制正确、LLM 输出违约自动带 zod 错误重试一轮再降级）；**维护股票池** `config/stock-universe.json`（20 只种子含中文别名，运营直接编辑，池外股票 inUniverse=false 显式标注、served-side 覆写不信模型）；**provider 链** deepseek→claude-cli→rules（降级必带用户可见原因，规则引擎修了旧 demo 的 CJK 关键词碰撞/generic-alias 假直接命中/零信号假 verdict 等）；**推送层**带全部安全修复（出站超时、subject CRLF 消毒、回执不泄内部细节、真实送达数、**匿名调用者只能发 DELTA_EMAIL_ALLOWLIST 白名单**）；API = `POST /api/analyze`（控制台）/ `POST /api/ingest`（**token 门禁机器接缝，未来 Twitter/X 轮询器只需 POST 这里**，见 `lib/news-sources/types.ts`）/ `GET /api/runs`（归档在 `runtime-artifacts/raven-delta/runs/`）/ `GET /api/health`。
-> ③ **WS hub 重写** `scripts/delta-ws/`（`pnpm delta:ws`，端口 DELTA*WS_PORT=8791）：真 RFC 6455 帧解析（跨 TCP 分片+掩码）、完整关闭握手、30s 心跳踢线、`?topic=` 订阅过滤、可选 DELTA_WS_TOKEN 鉴权、去 CORS 通配、背压/100 客户端上限；14 帧编解码测试 + 16 项实时检查过。
-> ④ 验证：根 `pnpm test` **880/880**（新增 delta 42 个）、两 app typecheck/build 绿、桌面/移动截图 0 pageerror（`runtime-artifacts/screenshots/20260705-raven-delta/`）、浏览器→API→规则引擎→hub→浏览器 WS 全链路实测（en+zh 各一轮）。env 见 `.env.example` 新增 DELTA** 段。
-> **待办**：P1 = 配 LLM key 才有真 agent 分析（`DEEPSEEK_API_KEY` 或 VM 同款 `claude setup-token`；本机 claude CLI 无头调用 401，已实测降级链路正常）；P2 = Twitter/X 轮询 adapter（对着 /api/ingest 写即可）；P2 = 部署形态未做（建议并入 deploy/raven compose）；P2 = 邮件真实发送未实测（无 RESEND key）。本轮没有运行 forecast:live，没有加载钱包，没有下单。英文版 handoff 已同步。
-> **v3 补充（同日，已合 main + 上线东京 VM）**：PR #78 merge commit `64d6610`，main CI 绿。**部署**：镜像 raven-suite 重建（Dockerfile 增加 delta build），`docker compose up -d --no-deps raven-delta delta-ws` 只起两个新容器——**raven/forecast-api/paper-agent 仍跑旧镜像未动**（⚠️ 下次任何人全量 `compose up -d` 会把三者切到当前 main，先自行验证）；防火墙 `allow-raven-delta`（tcp:3300+8791）+ 实例标签。**入口 http://34.85.97.32:3300**（整站 token 门=`proxy.ts`，`?token=<RAVEN_ACCESS_TOKEN 同值>` 一次授权；/api/health 公开）；WS hub 公网 8791（订阅开放、/broadcast 需 DELTA*WS_TOKEN，值在 VM .env）。**线上引擎 = claude-cli**（DELTA_PROVIDER=claude，带 WebSearch）。公网验收全过：401 门/health/未授权 API+broadcast 401；**真 Claude 分析实测**——喂了一条仿造的"英伟达创纪录财报"，引擎联网识破为 2026-05-20 真实财报的旧闻翻炒：worthAttention=false(12/100)、firstSeenUtc 定位到 5-20 20:30Z、受影响股票 0 只（时效核实功能实锤）；WS 推送跨公网落到本地订阅者。**部署铁律再确认**：clean-untar（旧树备份 `~/predict-raven.pre-raven-delta.bak`）+ 回拷 .env/override。VM .env 新增 7 个 DELTA* 键（token 复用 RAVEN_ACCESS_TOKEN 值、DELTA_WS_BROADCAST_URL=http://delta-ws:8791/broadcast 走容器网络）。**剩余**：RESEND key 到位后 `pnpm delta:test-email` 即真发信；Twitter 轮询器对 `POST /api/ingest`（带 x-delta-token）写即可。
-> **v4 补充（2026-07-06，用户指令「forecasting engine 加中文选择并上线」）**：功能本就在 main（`1a3088d`，7-03 的 raven 全站 en/zh + 引擎中文输出），VM 旧镜像没带上而已。已 `up -d --no-deps raven` 切到当前 main 镜像（先确认无 engine-lock/无进行中运行）；验收：容器 Ready、带 token 首页 200、SSR 含「中文」toggle。**镜像漂移现状更新：raven 已在当前 main；仍在旧镜像的只剩 forecast-api + paper-agent**（升级前先验证）。用户可见效果：http://34.85.97.32 右上角切中文→界面全中文（专业名词按设计保留英文）；zh 界面下新发起的预测，引擎推理/摘要也输出中文（`language` 从 UI→API→子进程 env 全链路，7-03 已验证）；存量英文档案保持英文。
-> **v2 补充（同日，用户产品反馈六条全落地）**：① 输入简化为「粘贴文字 + 可选 URL」，**去掉来源字段**（核实是引擎的事：prompt 要求自行验证 + 建立最早出现时间）；② schema 新增 `timing.firstSeenUtc/basis`——**全网最早出现时间**成为一级指标：UI 时效横幅（>24h 红色「大概率已定价」警告，无法核实时诚实说明）、WS digest 带 firstSeenUtc；③ 文案凝练（"News that matters. Impact in minutes." / "最有价值的新闻，对市场意味着什么"）；④ `/api/ingest` 加**质量闸门**（`lib/analyzer/quality-gate.ts`，LLM 快评分→规则回退，`DELTA_GATE_MIN_SCORE` 默认 60，未达标不分析不推送、202 gated）——这就是未来推特轮询器的完整管线：新闻→质量判断→够大才 Delta 分析→第一时间邮件+WS；⑤ **邮件报告重排**（`lib/delivery/report-email.ts`，forecasting-agent 风格暖纸色、决策先行），三必含：原文链接 / ⏱ 首现距发送已过多久 / WHAT TO DO 操作块；⑥ **邮件订阅测试模块** `pnpm delta:test-email`（默认收件人 issue.00.gui@gmail.com，可 `--text/--url/--locale/--email` 覆盖；跑完整闸门→分析→推送管线，**每次都落 HTML/txt 预览**到 `runtime-artifacts/raven-delta/email-preview/`，无 RESEND key 时回执 simulated 并打印需要配什么）。验证：根测试 890/890（新增 timing/gate/渲染三必含断言）、typecheck/build 绿、scripts 门禁 13 基线不变、无头全新会话 0 pageerror（截图 `20260705-raven-delta-v2/` + 邮件模板 `20260705-delta-email/`）。
->
-> 上次更新：2026-07-05 by Codex。本会话按用户要求开发新的 **News Delta / stock-news impact** 产品原型：基于 Forecasting Engine 的“新闻到来→增量影响→受影响美股→推荐操作→邮件/WebSocket 推送”流程。新增入口 `/stock-news`（兼容 `/stock-news/zh-CN`、`/[locale]/stock-news`）、API `/api/stock-news-impact/run`、核心分析器 `apps/web/lib/stock-news-impact.ts`、delivery adapter `apps/web/lib/stock-news-delivery.ts`、本地 WS hub `pnpm stock-news:ws`（`scripts/stock-news-ws-server.ts`）。邮件默认 Resend / webhook，未配置时明确 `simulated`；WebSocket 本地默认 `ws://127.0.0.1:8791/ws` + `POST /broadcast`。验证：新增 `stock-news-impact.test.ts`，相关单测 12 pass；`@autopoly/web` typecheck pass；`@autopoly/web` build pass；桌面/移动截图 + 交互 WS 验收通过，归档见 `runtime-artifacts/screenshots/20260705-stock-news*` 与 `runtime-artifacts/screenshots/20260705-stock-news-interactive-fixed/`。本轮**没有运行 `forecast:live` / `daily:forecast`，没有加载钱包，没有下单**。
->
-> 最后更新：2026-07-04 by Claude（**Stage 2 收尾 + Stage 3 开工:forecast-engine 抽包第一步**，PR #73/#74/#75 全合入）。
-> ① **#73 Gamma 传输层**：executor 6 处硬编码 gamma host → `services/executor/src/lib/gamma.ts` 的 `gammaFetch`（只共享传输层——redeem 优雅降级/orderbook offset 分页各自保留，"6→1 换客户端"已被 endpoint 分析证伪）。合并前用只读探针实测 6/6 调用点（零 LLM/零下单）。
-> ② **#74 两个真钱相关漏项 + recommendation 编译期锁**：`calculatePositionPnlPct` 公式单源化（executor risk.ts 唯一公式,helpers 只做展示取整）；**managed-trading 改走 loadEnvFile**（原裸 dotenv 忽略 ENV_FILE = 多状态源风险,现与 executor/orchestrator 对齐）；contracts 新增 `recommendation-file.ts` wire schema——写盘方 `satisfies` 锁 + orchestrator 互赋值断言 + mapper 单向锁，**全程无 .parse()**（运行时校验按操作地图文档留给未来单点 safeParse）。
-> ③ **#75 forecast-engine 抽包（issue #56 第一步,lift-and-shift）**：17 文件 git-mv → `packages/forecast-engine/src/`;`scripts/forecast/cli.ts` 留 6 行 shim,raven/forecast-api/paper-agent/forecast:event 四条 spawn 接缝零改动;raven 的 makeEventId"逐字节契约"复制体消灭（re-export 同一份代码）,cwd 补偿的 forecastsRoot 有意保留并注释;包只 typecheck 不 build（源码消费,语义不变）。**#56 第二步待做**：dist 化 + provider/store 配置注入（env 直读 → config 对象）。
-> 验收：全程 typecheck/838 测试/raven build 绿,scripts 门禁 13 基线不变,CI 绿。plan 文档状态节已刷新（Stage 2 剩余项 + Stage 3 剩余项清单在 plan 头部）。英文版 handoff 此条待同步翻译。
->
-> 上次更新：2026-07-03 by Claude（**仓库复杂度三阶段重构计划 + Stage 1 全量执行 + 合并 PR #65/#67/#61**，分支 `claude/determined-murdock-1b1027`）。
-> 用户反馈"整仓复杂度太大"→ 10 路并行诊断（~84k 行）→ 计划落盘 [`docs/internal/plan/2026-07-03-repo-complexity-refactor-3stage.md`](internal/plan/2026-07-03-repo-complexity-refactor-3stage.md)（三阶段 + 8 项用户拍板决策全记录）→ **Stage 1 已完成**：
-> ① **门禁**：首个真 CI `.github/workflows/ci.yml`（build/typecheck/test；**依赖 PR #61 先合否则 provider-runtime 3 个 vendor 测试红**）；`scripts/tsconfig.json` + `pnpm typecheck:scripts`——scripts 1.26 万行首次有 tsc 检查（存量基线 14 错，CI 非阻塞，**`live-test.ts:125` `Cannot find name 'db'` 疑似真 bug**，Stage 2 清零后转阻塞）；三语 i18n key 一致性 vitest。
-> ② **删除 ~1.5 万行**（每项 grep 留证）：web lib/research 孤儿簇 2446 + public-run-pulse 757 + market-impact 1333 + globals.css 1519 + 生成 JSON 1.2MB；sports-model 7 零引用模块 + eval runner 2103；orchestrator raven-agent-loop 1004；position-monitor / forecast viewer / generate-wallet-envs / v2-smoke / e2e 整目录（workspace 死条目一并清）/ deploy/hostinger；executor okx `.js` shim；managed-trading clob-client v1 依赖。**用户决定保留**：raven-managed+managed-trading 线（待未来开发）、/api/prediction-engine/run + auth 链。
-> ③ **减构建**：apps/web prebuild 3 包→1 包（只剩 db），新 worktree 上手变快。④ **对齐**：AGENTS.md 与 CLAUDE.md 逐字节同步（原盲测政策/构建命令两处漂移已消）；settings.local.json 移出 git；dev-reference.md 仓库树重写（原为 autonomous-poly-trading 时代幽灵树）；world-cup 4 个一次性脚本入 archive/。
-> 验收：`pnpm -r build` 全绿（web 331 页）、`pnpm -r typecheck` 绿、`pnpm test` 759/762（3 失败=PR #61 既有 vendor 问题）、8 张桌面/移动截图 0 pageerror。**Stage 2 kickoff（同分支后续）**：修 live-test `db` 真 bug（门禁 14→13）、openclaw 命令模板三处→一常量、命名冻结策略入文档。**合并动作（2026-07-03，用户指令"先合 65/67"）**：#65（forecast-api）+ #67（paper-agent）已解冲突验证后合入 main（都用 merge commit 保 #67 栈序；apps/raven 的 invite/quota × language 冲突取并集，均 build/typecheck/test 绿）。**下一步**：#61（provider-runtime 测试 hermetic 化）已合入 main → **主干 CI 转绿（954/954）**；本分支 #68 待合 + Stage 2/3 续做。英文版 handoff 此条待同步翻译。
->
-> 最后更新：2026-07-02 by Claude（**修复 main 上 3 个 provider-runtime 测试失败**，分支 `claude/jovial-swanson-f6d92f`，即上一条 spawn 的 task）。
-> 诊断：是**测试**漂移而非实现——`provider-runtime.test.ts` 把 `skillRootDir` 指向 `vendor/repos/all-polymarket-skill`（gitignored，只有跑过 `pnpm vendor:sync` 的机器才有），clean checkout 上 `resolveSkillDescriptors` 找不到 SKILL.md 直接抛错。实现侧校验是对的（live 路径需要 skill 文件真实存在），replay 唯一生产调用方 `trial-recommend.ts` 也总在已 sync 的机器上跑。修法：测试改为在各自 temp dir 里搭 5 个 stub skill 目录（zh 命名规则同 `skillDirectoryName`）+ SKILL.md，彻底不依赖 vendor 状态。验证：该文件 4/4、全量 vitest 884/884、orchestrator tsc 绿。英文版 handoff 此条待同步翻译。
->
-> 最后更新：2026-07-03 by Claude（**全自主 Polymarket 纸面交易 agent 第一期上线 VPS**，分支 `feat/paper-polymarket-agent`，PR #67，栈在 #65 上）。
-> 用户指令：VPS 上部署全自主 Polymarket agent，第一期纯测试盘——记手续费模拟成交、每日 3 次重点评估持仓（DeepSeek/Kimi 独立进程隔离出概率）、概率与市价有差值就平仓、混合 50/50（限价+市价）对冲手续费摩擦、要有回测/反思。
-> ① **`services/paper-agent`**（第三个 compose 服务，共享镜像/卷；**零私钥零签名器零下单端点**，唯一网络面 = Gamma/CLOB 公开 GET）：模拟成交按真实盘口逐档 walk（真滑点）；**费率用 CLOB 逐市场实时元数据**（taker/maker bps + tick size，入场时存仓位、退出时刷新）；入场费计入成本基（现金与已实现 PnL 可对账）。
-> ② **持仓评估（重点）**：每日 3 次（`PAPER_EVAL_TIMES_UTC`）每仓 spawn 独立进程跑预测引擎（deepseek provider；Kimi 走同一 OpenAI 兼容适配器换 `DEEPSEEK_BASE_URL`）——prompt 只含市场问题+结算标准，**不含持仓/成本/盘口**；dossier 在 paper-agent 私有命名空间（不与 raven/API 混）。决策：持有净 edge（扣费）< 阈值 → 平仓；**止损（−35%）压过模型**——周期内先于 LLM 检查 + 每 10 分钟 tick 无模型扫描。
-> ③ **混合执行**：negative_edge 平仓 = 50% 市价 + 50% maker 限价（TTL 8h 回落市价，未成交余量滚入限价）；stop_loss = 100% 市价。④ **反思/回测**：每天最后一轮后自动出报告（`runtime-artifacts/paper-agent/reports/`）：逐笔"卖出 vs 假如持有"反事实 α、Brier 校准、费用拖累、限价/市价执行质量对比。
-> ⑤ **对抗式评审 22 项确认全修**，两个靠真实 API 探针抓到的硬伤值得记住：**Gamma `?slug=` 默认排除已关闭市场**（结算查询必须两步：先平查再 `&closed=true`；CLOB /book 关盘后 404 → 先结算后取盘口）；**Gamma 已无 `category` 字段**（静态费率表是死代码 → 全部改 CLOB 实时费率）。另修：作废盘 0.5/0.5 退款、`--max-rounds` 是总量帽（续跑必须传 已完成+增量）、单写者队列防 cycle/tick 竞态。
-> ⑧ **$10k Claude-provider 实盘测试盘开跑（2026-07-03 用户指令）**：evaluator 切 **Claude Code**（`PAPER_EVAL_PROVIDER=claude`，容器内 claude CLI + 订阅 token，native WebSearch）；本金 **$10,000**（$1k 试盘账本归档到 `runtime-artifacts/paper-agent/archive-1k-test/`）；**只做 finance/geopolitics/tech**（`PAPER_CATEGORIES`，Gamma tag scan：finance=120/geopolitics=100265/tech=1401，风控floor 流动性≥$5k+24h量≥$2k（2026-07-03 从 $10k 放宽，同时 perCategory 8→12，宇宙 21→31 候选）+二元 Yes/No+离结算>48h+价 0.05–0.95）；单仓 $500、每轮最多 6 次评估、三班 UTC 02/10/18:00。**首轮已实测**（`market-scan.ts` + `PAPER_EVAL_PROVIDER`）：扫出 21 个候选→Claude 逐个联网研究→开出 1 仓（Hormuz 7/31 恢复通航 押 NO 666.7 股 @0.75，fair 90.8% edge 15.8pp），NVDA 最大市值(fair 88% edge 4.3pp<8pp 阈值)/中国攻台/伊朗政权等均正确 pass；现金 $9,500 + 1 仓。容器 198MiB/2GiB。**已修 2 处**：① 单事件敞口护栏 `PAPER_MAX_PER_EVENT`（默认 1，按 Gamma event slug，评估前先卡省 LLM）——Hormuz 三到期日=同一 event；② **跨进程账本锁**（首轮踩坑：我手动 `paper cycle` 与常驻调度器并发 load-modify-save，last-save-wins 丢了 hormuz 那笔，账面仍自洽 $9.5k+$500=$10k）——`store.ts` O_EXCL 文件锁 + 30min stale 回收，`runEvaluationCycle`/`runFillTick`/CLI buy 都先抢锁。**运维铁律：VM 上调度器常驻，别再手动 `paper cycle`（会被锁挡掉，安全但没用）；要手动只在容器停了或本地跑。** 当前账本：$9,500 现金 + 1 仓（mojtaba-khamenei 7/15 露面 押 NO 584 股 @0.856）；下一轮调度 UTC 10:00 自动跑。测试 32/32（paper-agent）。英文版 handoff 此条待同步翻译。
->
-> > ⑦ **联网搜索已开（2026-07-03 用户指令）**：`scripts/forecast/web-search.ts` + deepseek-agent 工具循环——`FORECAST_WEB_SEARCH=1|duckduckgo|tavily` 给 DeepSeek/Kimi 标准 function calling 的 `web_search`/`fetch_page`（免 key DuckDuckGo 默认，`TAVILY_API_KEY` 自动升级）；引用验真从"存活检查"升级为**真实搜索痕迹成员判定**（与 claude provider 同语义）；工具轮不能带 `response_format:json_object`（会压制 tool_calls），仅修复轮强制。**默认全局关**（raven app 行为不变），只在 paper-agent 评估子进程默认开（`FORECAST_WEB_SEARCH=0` 可关）。实测：Spain 盲估 3.2% → 带搜索 9.0%（46 URL 痕迹 4/4 验真）；VM 上埃塞题续跑 round 2 从 45% 修正到 3.6%（50 URL 5/5 验真）。测试 94/94。
-> > ⑥ 验收：26/26 测试；本地+VM 双 E2E（预评估止损零 LLM 花费、$2.25 实时费率入账、负 edge 混合退出、反思报告落盘）；VM 三容器并存健康。**运维**：`sudo docker exec raven-paper-agent-1 pnpm --filter @autopoly/paper-agent paper status|buy|cycle|reflect`；观察几天每日反思报告后再定第二期（自动开仓 watchlist 已内建，`PAPER_WATCHLIST` 未启用）。英文版 handoff 此条待同步翻译。
->
-> 最后更新：2026-07-03 by Claude（**Forecast API + MCP 服务上线 GCP 东京 VM**，分支 `claude/bold-shamir-7903ab`，PR #65）。
-> 用户指令：把 forecasting agent 抽象成任何人可调用的 hosted API（答案 = 事件概率 + 分析思路 + 证据），交付 PDF + 纯文字两种形态，托管在 Google VPS，并做成 MCP。
-> ① **新服务 `services/forecast-api`**（raw node:http 零框架，~10 个小文件）：`POST /v1/forecasts {question}` spawn 现有引擎（与 apps/raven run-manager 同款接缝：`tsx scripts/forecast/cli.ts` + 读 state.json）；`GET /v1/forecasts/:id` = JSON、`/text` = 纯文字、`/pdf` = A4 档案（headless Chromium，pulse-decision-report 同管线，按 state 版本缓存于事件目录 answer.pdf）；`POST /mcp` = 无状态 streamable-HTTP MCP（工具 forecast_start/forecast_status/forecast_result）。token 门（Bearer/x-api-key/?token=，`FORECAST_API_TOKEN` 空值回落 `RAVEN_ACCESS_TOKEN`）；并发 run 上限默认 2（429）；**内部 credibleInterval 全表面不出现**（含 jobLogTail 消毒）。vitest 22/22 + typecheck 绿。
-> ② **对抗式评审后加固**（4 lens × 逐条验证）：空 token 回落用 `||`；跨容器状态判定按 recency（旧 error job 不再压住新完成的 state）；PDF 缓存 utimesSync 回写 state 版本防竞态；spawn 前 `.engine-lock` 盖住 framing 窗口防双跑；同问题重发不吃 429；MCP 链接按 Host 派生；错误日志脱敏 ?token=。
-> ③ **部署**：deploy/raven compose 加第二个服务共享镜像 `raven-suite` + artifacts 卷（API 发起的 run 网页也能看到）；Dockerfile 预烤 playwright chromium 层；服务器 override 绑 `0.0.0.0:8787`；GCP 防火墙规则 `allow-forecast-api`（tcp:8787，tag `forecast-api` 已加到实例）。**API base = http://34.85.97.32:8787**，token 在 VM `~/predict-raven/deploy/raven/.env` 的 `FORECAST_API_TOKEN`（对话中出现过，视为已泄漏，介意就轮换）。MCP 接入：`claude mcp add --transport http raven-forecast http://34.85.97.32:8787/mcp --header "Authorization: Bearer <token>"`。
-> ④ **部署方式踩坑**：VM `~/predict-raven` 不是 git repo（tar 部署）。**不能覆盖式解包**——旧树是 feat 分支产物，残留 main 没有的文件会混进 Docker build context 导致构建失败；正确姿势 = mv 旧树备份 → 干净解包 → 只回拷 `.env` + `docker-compose.override.yml`（备份留在 `~/predict-raven.pre-forecast-api.bak`）。
-> ⑤ 公网验收：healthz/401/MCP 握手/真实 claude run（BTC $200k before 2027 题）全过；无 TLS（同 raven，有域名后再上 Caddy）。README（CN/EN）已写 API+MCP 用法与公网暴露注意。**待办**：`.engine-lock` 只在 API 侧写（raven app 侧 framing 窗口仍有小概率双跑）。
-> ⑦ **分支扫描收尾（2026-07-03 用户四项指令，全部完成）**：(a) **删除 `/research` 重复控制台**（PR #66 已合并 + 线上验证 404）——apps/web 的 app/research + api/research/stream + components/research + BetaAccess 组件与 beta\* 三语键全删；`lib/research` 保留（自助页 demo 回放还在用）；`/prediction-engine` 自助页与 invite/access 体系未动。(b) **`packages/raven-ui` 删除**（13 组件零引用孤儿）。(c) **roadmap 停车场**：Raven Managed / 常驻自主 agent / World Monitor 信息源层三项存档进 `docs/raven-10x-roadmap.md`（中英），并对"明确砍掉"里被用户指令推翻的两条（Forecast API、SQLite）加了现实修正注记。(d) **邀请码升级为文件事件库**（`runtime-artifacts/invites/events.jsonl`，追加式 JSONL，两容器共用原子追加，零新依赖）：每码 label/次数上限/过期/吊销/用量计量，**超额解锁才扣次**；`FORECAST_INVITE_CODE` 降级为首启种子（无限次码 raven-labs）；CLI = `docker exec raven-forecast-api-1 pnpm --filter @autopoly/forecast-api invite list|create|revoke`。**资源开销实测**：容器内存 109→112MiB（噪声级）、店库文件 267 字节、零新进程/依赖（对比 Postgres 容器约 +70–150MiB 常驻）。远程验收：假码两端"not recognized"、raven-labs 解锁 202 且计量 1/∞、配额种子已清。英文版 handoff 此条待同步翻译。
-> ⑥ **每日配额 + 邀请码（2026-07-03 用户指令，已上线）**：网页 app 和 API **各自**每 UTC 日最多 `FORECAST_DAILY_QUOTA`（默认 20）个引擎 run——只有真实 spawn 计数（轮询/reattach/取结果免费），计数落盘 `runtime-artifacts/quota/<service>-<日期>.json` 重启不清零。超额需邀请码 `FORECAST_INVITE_CODE`（**暂定 `raven-labs`**，用户 2026-07-03 定）：网页在提问框下弹输入行（解锁成功才存 localStorage）；API 走 `x-invite-code` 头或 body `invite`；MCP `forecast_start` 传 `invite_code`。邀请码 bypass 不消耗计数。评审修正：两端 env 解析必须一致（`VAR=` 空值 = 未设而非 0）。远程验收：种 20 假计数 → 双端 429 → 邀请码放行 → 计数未涨 → 清零。英文版 handoff 此条待同步翻译（⑤ 已同步）。
->
-> 最后更新：2026-07-03 by Claude（**Raven 全站中英切换 + 引擎中文输出**，分支 `claude/kind-goodall-e0d263`）。
-> ① **UI i18n**：无依赖自研 locale 层（`apps/raven/lib/i18n/`：LocaleProvider（localStorage 持久化，Provider 挂在 `app/layout.tsx`）+ `useT(entry, vars)` + 判词/置信度/档位映射）；字典按域拆文件防冲突（ui/home/verdict/research-parts，约 170 键）。三屏 + chrome 全量翻译（导航/页脚/计划清单/进度坞/摘要/分析师工作台/证据 pill/判决页全部标签），头部新增「中文/EN」切换。GTA6 demo 内容保持英文（英文档案）。
-> ② **引擎输出语言（opt-in，交易管线不受影响）**：`scripts/forecast/language.ts` — `FORECAST_LANGUAGE=zh` 时向 framing/audit/round/summary 四个 prompt 注入「自由文本字段写简体中文、JSON 键/枚举/URL 保持 ASCII」指令；**默认（不设 env）prompt 逐字节不变**（已验证 + vitest 62/62 绿）。链路：首页 POST 带 `language: locale` → API zod → run-manager 子进程 env。zh 用户新起的 run，推理/证据 takeaway/summary 全中文；已有英文档案不动。
-> 验收：typecheck + build 绿；zh/en × 桌面/375px × 三屏截图自评全过，0 page error。英文版 handoff 待同步翻译。
-> 最后更新：2026-07-02 by Claude（**Raven 研究页 Manus 风格渐进呈现改版**，分支 `claude/kind-goodall-e0d263`，**改动未提交** working tree）。
-> 用户给了两个 Manus share 样例，要求学其「逐步揭示 + 证据强调」但保留 Raven 配色。Screen 02 · Research 改成对话式：① Raven 开场消息（头像 + provider 徽章 + 时间）自述计划，下面挂**实时任务清单**（Frame → Round 1..N → Verdict，虚线连接，✓/脉冲/待办三态，done 步骤带「N sources · 38%→30%」小结）；② **证据卡逐条入场动画**（`use-reveal.ts` 交错队列，只对 run 中新到的条目播动画，终态/加载即全显）；③ **底部固定进度坞**（当前步骤 + N/M + 可展开清单；完成变绿 ✓ + 「Read the dossier」CTA；修复了移动端此前完全看不到进度的问题——顺手把 `.rv-hdr-meta` 移动端隐藏加了 `!important`，原来被行内样式压过没生效）；④ **完成摘要消息**：结论先行（P(YES) + 判词 + whySentence）+ 统计 chips + Manus 式档案附件卡链到 Screen 03；⑤ 证据卡正文改为 **takeaway 加粗引领**（该字段之前研究页根本没渲染）。CoachBar/CompleteCta 已删（文案并入计划消息和进度坞）。新文件：`components/research/plan.tsx` / `progress-dock.tsx` / `use-reveal.ts` / `verdict-digest.tsx`；`research-vm.ts` 加 `buildPlanSteps/planStepNo`。
-> 验收：`pnpm --filter @autopoly/raven build` 绿 + typecheck 绿；demo（运行态）+ 完成态 fixture（临时 state.json，已删）× 桌面/375px 移动 × dark/light 截图自评全过，0 console/page error。**注意本 worktree 3200 被并行会话占用，本地预览用 `.claude/launch.json` 的 `raven-alt`（3211）**。英文版 handoff 此条待同步翻译。
-> **v3 补充（2026-07-03，用户指示「使用重看观察她的操作」）**：两个 Manus 样例都用「重看」逐帧录全（0.5s 采样 + 每帧全文 diff，重建了逐条 reveal 时间线）。新发现里可落地的一个已实现：**「analyst pushback folded in (N)」芯片**——对标 Manus 的「Knowledge recalled (1)」，当引擎把分析师批注注入某轮 prompt（`RoundRecord.analystConsumedIds`）时，该轮推理标签旁亮橙色小 pill（`IterationVM.analystFolded` → `BlockVM` → iteration-block；闭环「你的 pushback 被听到了」）。其余观察（每步桥接总结句、工具产出预览、中途追问扩展计划、Editing files 中间产物）评估后暂不做：Raven 已有等价物或引擎无对应数据。build/typecheck 绿，fixture 截图验证芯片渲染（fixture 已删）。
-> **v2 补充（同日，用户要求真看 Manus 回放而非静态终态）**：用 Playwright 点「重看」逐帧录了 Manus 分享页回放（≈11s 快进），提炼出 4 个静态截图看不到的机制并全部落地：① **完成即折叠**——旧轮次在新轮运行时塌缩成一行收据（✓ + 迭代号 + 区间 + 来源数 + 净移动），点击展开/再折叠（`FoldedRow`，terminal 全展开供批注）；② **已读来源轨迹**——运行轮 shimmer 上方堆最近 Read 过的域名行（client 侧从 job.log 轮询累积，`trail` state；demo 用 `DEMO_TRAIL`）；③ 进度坞加**运行计时**；④ **贴底自动跟随滚动**（读者上滚批注时不抢）。build/typecheck 绿，折叠/展开/移动端/完成态截图复验，0 page error。
->
-> 最后更新：2026-07-02 by Claude（**Forecast prompt 评审落地：prompt 只引导思考、harness 保证正确性**，分支 `claude/unruffled-jang-622f35`）。
-> 背景：用户要求 review「一次跑 3 个市场推荐」流程的全部 prompt（评审文档 [`docs/internal/review/2026-06-17-forecast-prompt-review.md`](internal/review/2026-06-17-forecast-prompt-review.md) + 文风方案 [`docs/internal/forecast-house-style.md`](internal/forecast-house-style.md)），随后指示「把改动都实现，prompt 主要用作引导思考，harness 确保正确实现，去掉对 forecasting 有负面影响的限制，合并 main」。
-> ① **确定性闸门（真钱安全）**：`pulse-entry-planner.ts` 新增 `assessPulseReportParseability`/`PULSE_NO_TRADE_MARKER`（导出 `parseRecommendationSections`），`full-pulse.ts` 渲染后 fail-closed 校验——market-scan 报告 0 个 entry-ready 章节且无 `NO-TRADE` 标记→直接抛错（此前概率表解析失败会 `aiProb=marketProb`→edge 0→**静默零交易**）；position-review 降级为响亮警告。5 个新单测。
-> ② **4 个 full-pulse prompt 变体重写**：告知模型 harness 真相（「你的概率是唯一进入交易的数字，代码层重算 Kelly」）；方法论/量化参数降级为「默认值，可写明理由偏离」；删「默认只用已给上下文/极少量补充核验」→ 鼓励自主补充检索；强制章节清单缩减为「程序接口」（链接/方向/概率表/置信度/建议仓位/流动性上限/推理逻辑——即 entry-planner 正则实际解析的字段）+ 校准优先的写法要点（结论先行+区间同句、每句硬信息、kill condition、「简洁≠自信,禁止为行文收窄区间」）；Top 3 改「最多 3 个，不凑数，可 NO-TRADE」。
-> ③ **SKILL.md（vendored zh）**：7 步「不可跳过」→推荐脚手架；贝叶斯更新幅度/edge 分档/排序公式→默认值可偏离；No 扫描配额→先验提醒；保留认知红线（A0 结算源查验/A1.5 溯源）+ 风控硬门槛（流动性 $5k）。⚠️ **上游 repo `Alchemist-X/polymarket-market-pulse` 需同步此改动**，否则 `pnpm vendor:sync` 会覆盖回旧版。
-> ④ **C 端 api-driver prompt**：去黑话（显式禁「节点/贝叶斯/置信区间/先验/后验/edge」）+ 决策优先（首行初步判断、末行最终概率+区间）+ 校准（禁为语气收窄区间）；prescreen SKIP 判据删「already efficiently priced」先验。
-> ⑤ **DeepSeek A/B 实证**（`.env.deepseek` key 在 amazing-mcnulty worktree）：同一 fixture，旧 scan prompt 输出 **0 行可解析概率**（概率写成 0.62 小数+「做多 Yes」→交易正则全 miss，静默零交易实锤）；新 prompt **4/4 行全解析** + 文风达标（首句方向+概率+区间、证据带来源日期、显式 kill condition）。C 端：旧 prompt 冒「贝叶斯」+点估计；新 prompt 零黑话+末行区间 55%–80%。
-> 验证：orchestrator typecheck 绿、全量 vitest 874/877（3 个失败是 main 上既有的 provider-runtime 测试，与本次无关，已 spawn task）、`pnpm --filter @autopoly/web exec next build` 绿。**待办**：house-style 方案第 4/5 步（few-shot 反向校准示例、离线 grep eval）未做;上游 SKILL.md 同步;两份新文档英文版待同步翻译。英文版 handoff 此条待同步翻译。
->
-> 最后更新：2026-07-02 by Claude（**Raven Forecasting Engine 网页 app 全量落地**，分支 `claude/amazing-mcnulty-5c3fca`（基于 `feat/iterative-forecaster`），PR 目标 = `feat/iterative-forecaster`）。
-> 按 claude.design 交付稿（Ask → Research → Verdict 三屏，暖棕 #15120c/#ee7130 + Newsreader/IBM Plex Mono）新建 `apps/raven`（端口 3200，`pnpm raven:dev`）：01 提问并起跑真实引擎；02 直播研究过程——证据卡手绘 KEEP/DOUBT 圈注 + 行内笔记 + 分析师假设队列（**真的会注入引擎下一轮 prompt**，消费后打 `consumedRound`/`doubtsHandled` 戳）；03 决策优先档案页（大数字 + 收敛轴 + 置信表 + 三核心信号 + 反向信号 + 带 [NN] 彩色锚点的叙事摘要 + 编号证据书 + 折叠 framing）。GTA6 demo 档案逐字移植（id `gta6-demo`）。
-> 引擎侧（`scripts/forecast/`）：`agent.ts` provider 分发（`FORECAST_PROVIDER=claude|deepseek`）；DeepSeek 适配器（OpenAI 兼容、无搜索，伪造引用守卫降级为**引用存活检查**，403/429 反爬拒绝算活）；证据新增 source_type/credibility；summary 新增 why_sentence/quip/[NN] 引用；`FORECAST_MIN_ROUNDS`（app 设 2，防对冲轮 1 假收敛）；resume 无轮可跑不再卡 `open`。测试 62/62 绿；`pnpm --filter @autopoly/raven build` 绿；桌面+375px 移动、dark+light 截图自评通过、0 console error。
-> **DeepSeek 测试 key 在 repo 根 `.env.deepseek`（gitignored）**——key 在对话中出现过，按惯例视为已泄漏、建议轮换。run-manager 会自动从该文件回填子进程 env。E2E 已实测：GPT-6 问题 45%→25% 两轮 + 分析师假设被 round 1 消费。英文版 handoff 此条待同步翻译。
-> **补充（同日晚）**：① claude provider 解除 API key 硬依赖——支持订阅 token（`claude setup-token` → `CLAUDE_CODE_OAUTH_TOKEN`），已用订阅无头跑通完整 run（Switch 2 问题，4 源全验真，62%→65.5%）；② 全站邀请 token 门（`apps/raven/proxy.ts`，`RAVEN_ACCESS_TOKEN`）；③ `deploy/raven/` Docker 套件（CN/EN runbook）；④ **已正式部署**到用户 GCP 东京实例 `instance-tokyo-0701-predict-raven`（asia-northeast1-b，`http://34.85.97.32`，80 端口走防火墙规则 `allow-raven-http`/tag `raven-http`）；服务器代码在 `~/predict-raven`，env 在 `deploy/raven/.env`，公网验收（门/`?token=`/API/demo 档案/真 run）全通过。无 TLS（裸 IP），后续给域名再上 Caddy。⑤ 用户订阅 token 已装上服务器、provider 已切 **claude**，线上联网研究实测通过（可折叠 iPhone：13 源全验真 → 82%，对照 deepseek 同题 0 源）。⑥ **全部已合 main（PR #55）**。
-> **下一步 P1 = [issue #56](https://github.com/Alchemist-X/predict-raven/issues/56)（用户 2026-07-02 定）**：把 forecasting engine 抽象为独立包 `packages/forecast-engine`——输入任意事件，输出①概率(+判词；**区间只留内部**，用户 2026-07-02 决定校准前不对外提及置信区间) ②分析思路(framing/先验/逐轮 why-changed/summary) ③证据清单(验真+±pp 归因)。方法论保持现有定义不动（贝叶斯逐源归因/审计/簇折扣/验真钳制/disconfirmation/reflection/analyst 钩子），Store 与 provider 可插拔，`scripts/forecast` 留薄壳兼容，raven app 和 CLI 改为消费该包。
->
-> 最后更新：2026-06-29 by Claude（新增 **FIFA 八模型预测引擎** `packages/fifa-models`，基于用户给的 Manus《FIFA 淘汰赛预测模型技术报告》；**改动未提交**，working tree）。要点：
-> ① **引擎已建好 + 验证**：TS 包 `@autopoly/fifa-models` 复用 `@autopoly/sports-model` 实现报告 8 个模型（Dixon-Coles 贝叶斯 / xG-Elo / PRODEGY / 疲劳 Elo / 战术 mElo / 线穿 GBM / 传球网 RF / 堆叠集成）+ 第 9 个「多校准 8 合 1」forecaster（MCBoost，±12pp 锚定共识防翻盘——合成冒烟时发现 MCBoost 会把 86% 大热门翻成平局，已加 bound 修掉）。`tsc` 绿、`vitest` 79/79、合成数据端到端冒烟通过（9 forecasters × 16 R32 → 归档 + 榜）。入口：[`orchestrator.ts`](../packages/fifa-models/src/orchestrator.ts) / [`cli/forecast.ts`](../packages/fifa-models/src/cli/forecast.ts) / [`extract/fifa_extract.py`](../packages/fifa-models/extract/fifa_extract.py)。
-> ② **目标 = 2026 实盘盲测**（用户定，非 2022 回测）：训练用 72 场已公开小组赛 FIFA PMSR PDF，预测 16 场 32 强（封盘后已定、未开打），逐场出结果再打分。9 个 forecaster 全存档（`runtime-artifacts/world-cup/fifa8-forecasts/<fixture>/`：forecasts.json + 中英 forecasting-engine report），未来比较。市场盲测 ✓（只用 FIFA 场上数据 + Elo）。
-> ③ **真实预测已生成 + 验证 ✅**：parser 重写成 `extract_text()` 行解析（页 3 真 xG + 比分 + 体能，页 4 phases）；抽全 72 场（`manifest-2026-group.json`，抽完删 PDF，常驻数据在 `runtime-artifacts/world-cup/fifa/2026/team-match-stats.json` 144 条）。**真实 R32 对阵从真实战绩推导**（`bracket.ts` 套 FIFA 固定槽位）——验证 M73 = 南非 vs 加拿大（=用户说的"加拿大打南非"）✅。跑引擎出 **15 场 R32 预测**（跳过已踢的 M73），9 路归档在 `runtime-artifacts/world-cup/fifa8-forecasts/live/`。**两处校准修复**：MCBoost ±12pp 锚定共识（防翻盘）；8合1 共识改**线性 pool**（原 log-pool 被某个 0% 过自信 ML 模型一票否决，把克罗地亚压到 1%→改后 22%，合理）。`tsc` 绿 + `vitest` 82/82。
-> ④ **发布三件已建好（用户 2026-06-29 指令「1 2 3 都做」）**：**①** Web 视图 `/world-cup/knockout`（`apps/web/app/[locale]/world-cup/knockout/` + `components/world-cup/fifa8-match-card.tsx` + `fifa8-store.ts`，三语 i18n + 移动端，桌面/移动截图自评过、0 console error、每场头条判断 + 9 模型并排对比 + 展开依据）。**②** `scripts/world-cup/fifa8-baseline-prices.ts` 抓预测时刻 Polymarket 隐含概率 **15/15**（按队名+slug 映射，非腿位；**预测生成全程不碰价**）。**③** `fifa8-results.ts` + `fifa8-performance.ts` 复用 `computePerformance` 给 9 个 forecaster 排行（淘汰赛未结算→settled=0，结算后每日刷）。数据桥 `scripts/world-cup/build-fifa8-web.ts` → `apps/web/lib/world-cup/generated/fifa8-r32.generated.json`。
-> ⑤ **关键修正**：自推导的 R32 第三名槽位有 3 场错（推成 德国-波黑/法国-巴拉圭/美国-瑞典），FIFA 官方组合表难复刻（仓库原推导也近似）。改用 **Polymarket 真实对阵结构**（盲测规则允许只取「谁打谁」）→ 真实 德国-巴拉圭/法国-瑞典/美国-波黑；`forecast --data --actual-bracket <file> --skip rsa-can`，用 Polymarket slug 当 fixtureId（baseline/结算直接按 slug 查盘）。**剩**：apps/web build 验证 → PR → **用户确认后部署**（forecasting-agent.com 手动 `gh workflow run wc-results.yml --ref main`）。详见记忆 [[fifa-8model-forecaster]]。
-> ⑥ **部署前审查 + 修复（2026-06-30）**：用户「审查后部署」。跑了 3 路并行代码审查（市场盲测/脚本、web、引擎）——**市场盲测全部 PASS**。修了 2 个发布阻塞项：(a) web「为什么」抽屉的 driver 文案是英文未走 i18n → 加 `knDriverConsensus/knDriverBias/knDriverPp` 三语 + 模板化（不再硬编码英文）；(b) 分项百分比各自取整会显示 99–101% → `pct3` 最大余数法凑 100，verdict 也用同一套数。另修几个非阻塞正确性项：`bracket.ts` H2H 改「全 tied-set 迷你表」（原 pairwise 在 3 队循环时非传递）；`fifa8-baseline-prices.ts` 存**原始** vig 价（原来二次归一会虚增 Mock PNL）+ 重跑不再把已抓价覆盖成 null；`fifa8-performance.ts` 容缺结算文件。**留作后续（已 spawn task）**：tree 模型(6/7)对 ensemble(8)/MCBoost(9) 的样本内泄漏 → 用 k-fold OOF 修。build 绿 + 截图复验（中文 drivers + 凑 100 + 真实对阵）。
-> ⑦ **淘汰赛详情页 + 模型说明 + 预测时间（2026-06-30，用户要求）**：(a) 每场 `/world-cup/knockout/[id]` 详情页复用 forecasting-engine 版式（决策先行 → FIFA 数据**证据卡**：实力/进攻/防守抗压/控球/逼抢/反击/低位/高强度 → **9 个模型各自的读法** + 方法段）；卡片「为什么」抽屉删掉，改成跳详情页的链接（`withLocale` 是**后缀式** locale，靠 `vercel.json` `^/world-cup/(.+?)/(zh-CN|zh-TW)$` 重写到前缀；**dev 下后缀 URL 会 404 属正常**，prod 重写后正常）。(b) 淘汰赛页新增「ⓘ 模型怎么预测」展开（`fifa8-model-guide.tsx`），逐个讲 9 个模型怎么预测 + 用哪些数据。(c) `WcHero` 加 `metaKey`/`predictedAt` 可选 props → 淘汰赛页显示真实预测时间 **2026-06-29**（不再用全站 06-11）+ 详情页方法段也标。数据管线扩展：CLI 写 `team-stats.json`，`build-fifa8-web` 带上 9 模型完整 rationale + 每队 FIFA 证据（`fifa8-store.ts` 加 TeamStats/getFifa8FixtureById/getFifa8FixtureIds）。Polymarket 定价在预测时刻**静默**留档（baseline 15/15，页面从不显示）。build 绿（45 详情页 prerender）、三语 172 键齐、桌面/移动截图自评、0 console error。
->
-> 最后更新：2026-06-21 by Claude（展示界面文案/UX 大精简，面向 decision-maker；dynamic workflow 6 维评审 + 实施。改动**未提交**，working tree）。要点：
-> ① 全站精简 + 去术语：冠军页长句→「谁会拿到最后的冠军？」+ 一行法（Elo 模拟+贝叶斯，保留预测时间）；删「对阵」、「边际概率」→「各队打进每一轮的概率」；顶栏去重（删与 tab 重复的 预测/夺冠之路，仅留 本地部署+GitHub+语言）+ 删 GitHub「predict-raven」标签、aria-label→「View source on GitHub」。
-> ①b **法务页/页脚全删（2026-06-21 用户决定：内测协议已获用户同意）**：删 `apps/web/app/terms/`、`apps/web/app/privacy/`、`components/world-cup/legal-footer.tsx`、`lib/legal-copy.ts`，并从 WC layout / 自助页 / research 控制台卸掉 `LegalFooter`（页脚现已无内容→整块移除）。i18n 删 footerTerms/footerPrivacy/footerResearchTag/footerAgeGate。⚠️ **OAuth 登录配置若曾填 Terms/Privacy URL，需到 provider 后台同步移除/更新**（否则授权可能被拒）；站点已无任何 18+/免责/隐私声明，后续如需重新合规要自行补回。
-> ② 预测效果页重构：4 张精简卡 + 可见「什么时候下注」两行规则（定义 押/反押/跳过/−100%）+ 点击展开「全部预测·32」+ 校准段重命名「校准：概率有多可信」+ 加讲清楚的定义；比分 grid 对称（`minmax(0,1fr) auto` + shrink guard）。
-> ③ `/research` 控制台去术语（遵 forecasting-console-style 记忆）：edge→差距/gap、删 Bayesian/credible-interval/node、状态机→进度、treeTitle/ledgerCaption/ciNote 等改人话。④ 自助页 FormulaCard 改可折叠。i18n 三语各 114 键齐（删 navForecasts/navBracket/footerResearchTag/footerAgeGate；新增 perfRule/perfRuleTerms/perfAllToggle/perfBetsWord）。
-> ⚠️ **顺手发现并修了数据 bug**：`results.generated.json` 两场 winner 反了——eng-hrv(06-17) 实际**英格兰 4-2 克罗地亚**、che-bih(06-18) 实际**瑞士 4-1 波黑**（ESPN/FIFA/Sky 等 5+ 源一致），却记成客胜(b)。**根因**：这两场落进 Polymarket「Any Other Score」桶 → moneyline-only 结算 `resultFromMoneyline` 按**腿的位置**映射 a/b，但 Polymarket 腿序不保证主队在前（实测客队在前）→ 胜负反了；胜负一反又导致 ESPN 回补因「胜负不一致」被拒（比分也丢）。
-> ✅ **已修（结算管线 PR，2026-06-21）**：`settlement.ts` 改为**按队名映射**（用 draw 腿的「(主 vs. 客)」学到朝向，腿序无关）；`espn-results.ts` 的 `norm` 去掉连接词 and（「Bosnia and Herzegovina」=「Bosnia-Herzegovina」）；新增 `scripts/world-cup/results-overrides.json` + `update-results.ts` 末尾应用——**operator 核验结果（搜索为准）覆盖抓取值并跨日重跑持久化**（source=`verified`），实现用户定的「校验不一致以搜索结果为准」。实测整条 `wc:results`：ESPN 7/7 回补、两场 4-2/4-1→a [verified]、settled=32、bestPick 18/32、ECE 10.5%。回归测试 `scripts/world-cup/lib/settlement.test.ts`（注：本机 vitest 配置因 vite7/node20 `ERR_REQUIRE_ESM` 跑不起来，已用 tsx 等价验证 4/4 + 实跑 live Gamma 通过）。
-> 验收：`pnpm --filter @autopoly/web build` 绿；桌面/移动 + zh 预览自评、0 console error。
->
-> 最后更新：2026-06-19 by Claude（世界杯新增「预测效果」页 + 市场盲测规则细化）。
-> 新增第 4 个 WC tab `/world-cup/performance`（预测效果）：把盲测预测对比 Polymarket 预测时刻价格打分——最佳预测命中率、Mock PNL（只显示收益率%）、Brier 技巧分（友好名「相对市场水平」）、校准 ECE，外加逐场「我们 vs 市场」概率条 + 三市场各自的模拟下注（押/反押/跳过，%）。
-> 管线：`fetch-baseline-prices.ts` 一次性抓预测时刻 CLOB 价格（固定历史，已 commit `baseline-prices.generated.json`）；`build-performance.ts` 据「预测+结算+价格」重算 `performance.generated.json`，已链入 `wc:results`，随每日结算刷新。改名（zh）：出线名单/对阵 → **夺冠之路**。
-> ⚠️ **政策细化（已写进 CLAUDE.md CN+EN + 记忆）**：市场盲测只约束预测*生成*；该 performance 页是*事后*基准评测，允许展示市场隐含概率与对比指标。预测本身仍全程不看价格。bug 教训：Polymarket 队腿顺序不固定，必须按队名映射 a/b（按位置错配会虚增 PNL）。
-> typecheck + next build 全绿；桌面/移动 + en/zh 截图自评、0 console error。
-> 最后更新：2026-06-18 by Claude（优化 `/research` Forecasting Engine 结果可视化——decision-maker 信息分层；**改动在分支 `claude/great-wing-b09925`，未提交/未 PR**）。要点：
-> 用「颜色 + 字号」建立 4 级信息层级（决策 / 模型 / 证据 / 元信息），让 PM 5 秒读出结论。Dynamic Workflow 先出方案（3 设计 lens + synthesis），再 10 轮截图迭代收敛。
-> 改动：① 结论卡顶新增 **decision eyebrow**——方向化判定 pill（`Likely No` 等，按 `yesProbability` 5 档派生、非解析文案）+ edge 升为 co-hero（27px，`-57pp 低于市场`）；卡片左侧方向色 5px 边框 + 同色阴影。② **model↔market CI 条**：MODEL/MARKET 标签 + 几何 gap 连接 + "市场落在模型 80% 区间之外＝高把握分歧"读数。③ **条件模型瓶颈标记**：最低概率节点标 amber + ⚠（本例 B|A 15%＝结构性致命点）。④ verdict 首句加粗、edge 升为主卡 / market 降为 ghost、证据账本 top-3 加 rail+底色+影响力条、贝叶斯末点落方向色。
-> review 入口：[`result-charts.tsx`](../apps/web/components/research/result-charts.tsx)、[`research.module.css`](../apps/web/components/research/research.module.css)、新 [`call.ts`](../apps/web/lib/research/call.ts)（方向化判定派生器）、[`i18n.ts`](../apps/web/lib/research/i18n.ts)（en/zh 同补）。
-> 验收：`pnpm --filter @autopoly/web exec next build` 绿（279 页）；EN/中文 + 桌面/移动截图自评通过。注：`/research` 是用户自填问题的研究控制台、可显示市场价（与 WC 公开预测管线的市场盲测规则无关）。
->
-> 最后更新：2026-06-17 by Claude（比分回补 ESPN：补齐 Polymarket 漏给的悬殊比分）。
-> 问题：部分已完场比赛页面显示 "–"。根因：Polymarket exact-score 市场只列 ~16 个常见比分 + "Any Other Score" 桶，悬殊比分（7-1/5-1/4-1）落进该桶 → 只得胜负、不得具体比分（已用 Gamma API 实证）。
-> 修复（**PR #33**，已合并 + 部署）：新增 `scripts/world-cup/lib/espn-results.ts`，对"已结算但 `score=null`"的场次按 日期+队名 从 **ESPN 免费无密钥 scoreboard** 拉真实比分（定向到 team a/b），集成在 `update-results.ts` 的回补 pass。**仅当 ESPN 胜负与 Polymarket settled winner 一致才采用**（`source="espn"`）；查不到/不一致则保持 winner-only（安全降级）。
-> **市场盲测合规**：ESPN 是结果源，代码只读最终进球数 + 完赛状态，**绝不读赔率/价格**（结算映射允许、市场价格禁止）。
-> 线上已验收：ger-kor 7-1 / swe-tun 5-1 / usa-par 4-1，0 已结算场次缺分；forecasting-agent.com/world-cup/groups 显示真实比分。今后若有新场次落进 "Any Other Score" 桶，定时任务会自动回补（队名对不上 ESPN 时退回 winner-only，不会报错）。
->
-> 最后更新：2026-06-16 by Claude（世界杯比分自动更新已全量上线 + 线上验收通过，无遗留用户待办）。要点：
-> ① **已上线**：GitHub Actions `.github/workflows/wc-results.yml`（每日 UTC 07:00/19:00 + 手动触发）跑 `pnpm wc:results`（市场盲测，只取已结算比分）→ 用 `VERCEL_TOKEN` secret 调 `scripts/world-cup/deploy-web.sh`（build + 部署 + `promote` 到 forecasting-agent.com）→ curl 校验线上 200（§8 真实验收）。首次手动触发**全绿**，线上 `/world-cup/groups` 返回 200、16 场 FT 比分在线、无 404。取代原先"Mac `/schedule` 例程、只在 app 开着才跑"。heavy build 跑 GitHub runner（**刻意不在 Hostinger/Manus VPS 构建**——OOM 会拖垮实盘交易容器、违背「web→Vercel」设计；6 方案对抗式评审结论）。
-> ② 配套修复：`vercel.json` 加 `check:true`（catch-all 路由不再 404，线上已验证）；`apps/web/lib/prediction-access.ts`(+测试) import 由 `.js` 改 extensionless（修红构建，279 页绿、`vitest` 8/8）；`deploy-web.sh` 的 `vercel promote` 加 `--scope "$VERCEL_ORG_ID"` + 容错（promote 不认 VERCEL_ORG_ID，否则部署成功但报 "different team" 把 run 染红）。
-> ③ PR #29（构建修复+比分 4→16+初版工作流）→ #30（改 token 直接部署）→ #31（promote scope + 线上验收）均合并 main；`wc-scores` 分支已删（token 直接部署不需要）；旧 Mac 例程 `world-cup-daily-results` 已暂停（一个调度器原则）。
-> ✅ **无遗留用户待办**。调频次/时间改 workflow 的 `cron` 即可；`VERCEL_TOKEN` secret 已配（**安全：凡在对话里出现过的 token 一律视为泄漏，须吊销轮换**）。
-> 注：当前 diff-gate 用整文件 `git diff`，因 `generatedAt` 时间戳每次都变 → 实际每次都部署（2 次/天，成本可接受）；若要"无变化不部署"可改成只比 `.results`（小优化，非必需）。
->
-> 最后更新：2026-07-02 by Codex。本会话按用户要求对 Polymarket `fed-decision-in-july-181` 的 **No change** 分支做只读 Forecasting Engine 预测并生成 PDF：Raven engine 概率 **91.0%**（Polymarket 输入 80.5%，CME/FedWatch 参考 69.0%，engine 解析侧 `Yes`，edge +10.5pp，confidence high）。归档目录：`runtime-artifacts/fed-decision-july-2026-no-change/20260702T092845Z-dd2b1d79-14a7-4cce-8ab3-7581256bec4c/`，PDF：`fed-no-change-forecast-report.pdf`，Pulse 原文：`pulse-report.md`，context：`pulse-context.json`，结果：`forecast-result.json`。本轮使用临时 read-only 脚本调用 `buildFullPulseArchive`，**没有运行 `forecast:live` / `daily:forecast`，没有加载钱包、没有 auto-redeem、没有下单**；临时脚本已移入归档目录 `fed-decision-forecast.ts`。PDF已渲染为 3 页 PNG 并读图验收，版式可读、无遮挡。
->
-> 最后更新：2026-06-15 by Claude（本会话共合并 **PR #18–#27** + 建 **issue #25**；main `ea82839`；全程 typecheck + vitest **713** 全绿）。要点：
-> ① **Forecasting Engine `/research` 全量双语化**（EN 默认 + 一键 `中文` toggle，chrome 与流式研究内容一起切；新增 `apps/web/lib/research/locale.ts` + `i18n.ts`，`locale` 从 composer→SSE→route→driver→`buildPredictionDemoRun`/`replayRun` 全链路打通，服务端按语言生成内容）——**PR #18**，已部署 forecasting-agent.com（web 项目 `prj_kPZRC…`，`scripts/world-cup/deploy-web.sh`）并实测 EN/zh 双语 + toggle live、0 console error。/research beta 入口仍 dormant。
-> ② 清掉 3 个 open issue：AW setup 文档 + `poly:aw/okx` 别名（**#19** closes #7）、持久化 agent-loop 纯库（**#20**，#6，no live-money）、market-intelligence Python 模块作为可选增强落地（**#21**，#5）。
-> ③ 仓库体检（4 维并行审计）后的收尾：统一 3 份分叉 `loadEnvFile`→`@autopoly/contracts/env`（**#22**，**修实盘 ENV_FILE 优先级漂移风险**：ENV_FILE 优先 + override + fail-closed）、加 Prettier 配置（可用）+ 休眠 ESLint flat config（**#23**，ESLint 依赖因沙箱无网未装）、pulse/forecast/autopoly/raven 命名 glossary（**#24**，**未做有风险的全量改名**，artifact 路径迁移会孤立归档）、删 **~5,128 行死 CSS**（**#26**，globals.css 5403→1759，全是 AutoPoly purge 漏删的 preview/bal/dash 族 + 孤儿 module）、apps/web 单测基线 1→4 文件 **+31 测试**（**#27**，把 access-control 纯规则抽到 `prediction-access-rules.ts` 以绕开 next-auth import）。
-> ④ market-intelligence 定性 = **issue #25**（框定为 Forecasting Engine 接入外部信息源的基建，3 阶段路线；模块留在 repo 当种子，不删不硬接）。
-> ⚠️ **待办**：(a) `scripts/world-cup/deploy-web.sh` 的 promote 步在新版 vercel CLI 下有 bug（见 P2）；(b) ESLint 需有网时跑 `pnpm add -Dw eslint @eslint/js typescript-eslint eslint-config-prettier` 激活 + 加 `lint` 脚本；(c) globals.css base 主题块（~850 行）含 auth 在用的 `:root` token，留待逐选择器审计；(d) `replay`/`use-research-stream`/React 组件仍无测试。
-> 此前(2026-06-12)：pulse:_→forecast:_ 改名；MC 淘汰赛点球规则偏高待用户拍板（见下"MC 淘汰赛模型核查"）；catch-all 路由部署需补 check:true。
+> 英文镜像：[`docs/en/agent-handoff.md`](en/agent-handoff.md)。中文为准，中英必须同步更新。
 
----
+## 1. 一分钟现状
 
-## 🏆 世界杯盲测预测冲刺（2026-06-11 · 本分支当前主线，进行中）
+- `origin/main` 当前包含两项 2026-08-29 安全修复：
+  - PR #133：Delta PM 的 feed / sitemap 新闻按标准化 URL 归并，并记录 Gate 1 的 `fallbackReason`。
+  - PR #134：Pulse 不再把“观望 / 名义侧 / 不参与 / no-trade / pass”或明确 `0%` 仓位转换成真钱 entry plan；render-time parseability 与 planner 使用同一安全判断。
+- Forecast Engine 第一阶段研究质量改造已进入 `main`：Research Focus Center、原子事实断言、独立来源组、交叉核验、反证搜索、单一概率权威和 Evidence Book 都已落地。
+- 主工作区仍有未提交 WIP，涉及 Raven Bench / `live-predict-raven` 与 forecast provenance。**不要在主工作区 checkout、reset 或覆盖这些文件；新任务继续使用独立 worktree。**
+- 主工作区的最新 Google Driver 研究交付也尚未全部进入 `main`：`outputs/O1-forecast.{md,html}`、`outputs/M1-3M.{md,html}`，以及 `runtime-artifacts/google-driver-forecasts/` 下的 O1 多期限、M1/C1 与 TPU 主训研究。当前采用口径是 O1 **2% / 4% / 10% / 24%**、M1 **31.0%**、五家 lab TPU 主训 **4%**；不要在 owner 会话保存前重跑或覆盖。
+- `codex/harness-gpt-pro-v2`、旧 `codex/harness-gpt-pro`、`codex/futurex-raven-adapter`、`feat/raven-delta-longport-mcp` 和 `claude/agent-prediction-market-demo-74e018` 包含待提取价值，完成下述提取前不要清理。
+- Raven Managed 与 rough-loop 已从主线删除；不要依据旧文档复活它们。
 
-**目标**：揭幕战开球（2026-06-11 19:00 UTC = 港时 6/12 凌晨 3:00）前发布全部 **87 个问题**的公开预测（72 场小组赛 + 12 个小组头名 + 八强/四强/冠军三个池子），并把 `/world-cup` 网页上线 Vercel。
+## 2. 当前产品面
 
-**铁律（用户 2026-06-11 拍板，永久）**：**市场盲测** —— 预测管线任何环节不得读取/引用/展示任何市场价格或隐含概率（Polymarket / FanDuel / DraftKings / Kalshi 等全在列），市场数据只许用于事件结构与结算映射。规则在 CLAUDE.md「项目执行要点」；缓存写入层已用 `stripPrices` 强制剥离（`scripts/world-cup/cache-markets.ts` / `check-updates.ts`）。**预测 = 纯 Elo / Monte Carlo + 有界证据调整（单场 ±8pp，带来源）**。
+| 产品 | 当前入口 / 代码 | 状态 |
+| --- | --- | --- |
+| Forecast Engine | `packages/forecast-engine`、`apps/raven`、`/engine` | 核心主线；claim-level 研究第一阶段完成 |
+| Forecast API + MCP | `services/forecast-api` | 已提供 JSON / text / PDF 与 MCP 工具 |
+| Paper Agent | `services/paper-agent`、`/live-predict-raven` | 模拟盘；不持有私钥、不发真实订单 |
+| Delta PM | `services/delta-pm`、`apps/delta-pm-console`、`/live-delta-pm` | 新闻→重要性→priced-in→纸面决策审计链 |
+| Raven Delta | `apps/raven-delta`、`/delta` | 美股新闻影响分析、邮件 / WebSocket 推送 |
+| World Cup blind forecast | `scripts/world-cup`、`apps/web/app/world-cup` | 预测生成严禁读取市场价格；事后评分可使用市场基准 |
+| Polymarket live pipeline | `services/orchestrator`、`services/executor` | 真钱路径；任何 live 命令、风控调整或订单测试都需要用户明确确认 |
 
-**已完成（都已 commit）**：
+## 3. 当前最主要的技术 WIP：GPT Pro v2 harness
 
-- 事件清单 87 题含结算定义（无价格）：`pnpm tsx scripts/world-cup/build-event-list.ts` → `runtime-artifacts/world-cup/event-list/`
-- 100k 次纯 Elo Monte Carlo（官方 FIFA 2026 对阵树 + 最佳第三分配）：`runtime-artifacts/world-cup/mc-results.json`。盲测冠军榜：西班牙 37.8% > 阿根廷 24.4% > 法国 12.8% > 英格兰 6.6%
-- Elo 查表（48 队 + 别名）：`runtime-artifacts/world-cup/elo-table.json`
-- `/world-cup` 网页：卡片（事件+概率条）→ 点开 2-3 条带来源理由 → `/world-cup/forecast/<id>` 完整报告页（CN/EN）。空状态视觉 QA 通过（0 pageerror）
-- 导入命令：`pnpm tsx scripts/world-cup/import-predictions.ts`（扫 `runtime-artifacts/world-cup/reports/*/prediction.json` 统一 schema → `apps/web/lib/world-cup/generated/*.json`，**导入后要 commit 这两个生成文件**，Vercel 构建依赖它们）
+工作区：`/Users/Aincrad/dev-proj/predict-raven-harness-gpt-pro-v2`，分支 `codex/harness-gpt-pro-v2`。目前价值主要在未提交 worktree，不在 branch tip。
 
-**进行中（跑在 Aincrad 的 Mac 本地 FleetView 会话里，协作者无法直接接管这个进程）**：
+正在实现：
 
-- Workflow `wf_8db95ecb-dc7`（~160 agents）：71 场比赛（预测+对抗校验流水线）、12 组 + 3 池报告、揭幕战 sample 盲测净化、市场盲测专项校验。约 20:46 起跑，ETA ~22:15 HKT
-- 监控：`ls runtime-artifacts/world-cup/reports | wc -l`（完成时 ≈ 87 个目录，每个含 report.md / report.en.md / prediction.json）
-- ⚠️ `runtime-artifacts/` 是 gitignored：**预测产物只在这台机器上**，直到导入 + commit generated JSON
+- direct OpenAI 与 OpenRouter Responses provider；
+- GPT Pro 显式 opt-in，并可只在 `forecast_round` 使用 Pro，其他阶段使用普通模式控制成本；
+- `organization` research profile：驱动因素→机制→可观察证据、期限曲线、敏感性分析和下一步研究动作；
+- CLI、Raven API、Hosted Forecast API、MCP 的 provider / reasoning / profile 接线；
+- secret-safe provenance：requested/actual model、reasoning mode/effort、token、搜索次数、成本、上游 provider 和 prompt SHA-256。
 
-**✅ 冲刺已完成（2026-06-11 22:45 HKT，开球前 4 小时）**：
+合入前必须完成：
 
-- 87/87 题市场盲测预测全部发布并 commit（`runtime-artifacts/world-cup/reports/`），确定性校验 87/87 通过
-- **线上**：https://web-one-sand-83.vercel.app/world-cup （Vercel 项目 `web`，prebuilt 部署；已修平台路由 bug：catch-all rewrite 缺 `check:true` 导致动态参数路由 404——`vercel build` 产物 `config.json` 需打该补丁，build 脚本化时要带上）
-- 成本账本：`runtime-artifacts/world-cup/run-ledger/`（全部 claude-fable-5；生产 150 万 output tokens；单场中位 264s/14.2k out）
-- 对阵图：`bracket-prediction.json`（模态路径：决赛西班牙 56% 胜阿根廷）
-- 残余 TODO（已于 22:10-23:10 完成 AutoPoly 全站清除：交易面板页面/API/组件/数据文件 60+ 个文件删除，根路由重定向 /world-cup，R1 品牌元数据替换，线上已验证 14 个旧路由 404）；自定义域名未配；OG 卡未做；每晚 Elo 更新后重跑 MC 的自动化未建
+1. 修复空价格 env 被 `Number("")` 解释为 `0`、进而错误标记“成本完整且为 $0”的问题。
+2. 从旧 `codex/harness-gpt-pro` 移植 provider 失败留档、secret redaction、requested/actual 分离等 provenance 测试。
+3. 保留 Claude 的 cache token、WebFetch、runtime version、turn count、measured/priced call 等 telemetry。
+4. 与主工作区现有 provenance WIP 对齐后，从最新 `main` 整理成可 review 的小提交；不要整体合并旧 harness 分支。
+5. OpenRouter 是付费外部 provider；真实 paid smoke 必须另行获得用户授权。
 
-**🔬 MC 淘汰赛模型核查（2026-06-12，协作者质疑 → 已证实，待用户拍板是否修正重发）**：
+## 4. 三个独立产品方向
 
-- **问题确认存在**：淘汰赛 90 分钟 Poisson 出平局后，点球/加时用 **Elo 期望 eA 当 Bernoulli 胜率**（`scripts/world-cup/mc-sim.py` 的 `ko_win_prob`：`win + ea*draw`）→ 强队优势被双重计入（进球模型一次、点球再一次；真实点球大战接近五五开）。叠加 λ 切分（λA=2.6·eA）本身比 Elo 期望分更"果断"，eA=0.70 的强队单轮过关概率被抬到 0.777（**+7.7pp/轮**），五轮淘汰赛复利。
-- **量化**（同 seed=20260611、100k 对照重跑）：西班牙冠军 **37.83%（已发布）→ 30.53%（点球=50/50）→ 27.29%（纯 Elo Bernoulli）**；阿根廷 24.41 → 21.27 → 19.44。协作者"怎么算都 <35%"由此完全解释。
-- **影响范围**：champion / reach-qf / reach-sf 三个池子 + 对阵图（`bracket-prediction.json`）+ 网站冠军页数字；**12 个组头名和 72 场单场预测不受影响**（前者只依赖小组赛，后者走 Davidson 三路模型）。
-- **澄清"平方平均"**：协作者的 Claude 提到的 √ 是单场模型里 Davidson 平局项 ν·√(pA·pB)（几何平均，标准做法，没问题）；MC 点球规则用的是裸 eA，两处是不同公式，别混淆。问题只在后者。
-- **MC 代码已补提交**：规范版 `scripts/world-cup/mc-sim.py`（路径已改仓库相对，**同 seed 逐位复现已发布 `mc-results.json`**，跑一次仅 ~5s）；当时的一次性生成脚本（reach-qf/sf 构建、champion 生成、确定性校验器等 9 个）原样归档在 `runtime-artifacts/world-cup/code-archive/`（注意：内含绝对路径，是出处留档不是可复用工具）。
-- [ ] **待用户决定**：是否改用 点球=50/50（或加时再给小幅 Elo 倾斜）重跑 MC 并重发 champion/reach-qf/reach-sf + 对阵图 + 网页数字。已发布报告的 局限② 其实自己写了"可能高估头号种子"。
+这三项彼此独立，不应塞进 GPT Pro provider PR，也不应作为一个大分支整体合并。
 
-**原计划步骤（已全部执行）**：
+### A. FutureX benchmark adapter
 
-1. 等 workflow 完成（自动通知；或看目录数）
-2. `pnpm tsx scripts/world-cup/import-predictions.ts` → 检查 WARN（被跳过的题要补）→ commit `apps/web/lib/world-cup/generated/`
-3. 视觉 QA（CLAUDE.md §9 强制）：`cd apps/web && pnpm exec next dev -p 3199`；`node scripts/visual-qa.mjs --base http://localhost:3199 --paths /world-cup --out runtime-artifacts/screenshots/<ts>-wc-live`；用 Read 真读 PNG；任何 pageerror = fail
-4. 逐预测 token/耗时/模型统计（用户明确要求）：解析 workflow 转录 `~/.claude/projects/-Users-Aincrad-dev-proj-predict-raven/6367ed0b-*/subagents/workflows/wf_8db95ecb-dc7/agent-*.jsonl`（每条 assistant 消息含 model + usage tokens；首末时间戳差 = 耗时；从 prompt 里抓 slug 归属）+ MC 在 `wf_58799d69-b6b` → 产出 `runtime-artifacts/world-cup/run-ledger/{ledger.csv,summary.md}`
-5. Vercel 上线：先 `pnpm --filter @autopoly/web build` 本地过；查 `apps/web/.vercel/` 是否已 link；上线后**必须真实验收**（打开线上 URL + 截图 + 对照本地）
-6. 清理待办：旧 `/world-cup/[matchId]` 与 leaderboard 路由是市场时代 UI（数据已删、现 404），后续删除或重写
+- 现有原型：`codex/futurex-raven-adapter`。
+- 已完成：FutureX 题目严格解析与 Yes/No / A/B 适配；12 道二元题批量 runner；多模型 profile；token / cost / latency 统计；分片合并；PDF 报告；官方 `{id,prediction}` JSONL submission；默认 dry-run，只有显式 `--allow-paid` 才允许付费运行。
+- 当前问题：基于旧 forecast-engine，直接合并会覆盖新的 claim/source-group 研究语义；历史 cutoff 只进 prompt、没有确定性阻止未来信息；报告仍写死 pilot 数据；A/B 统计和 shard 一致性校验有缺口。
+- 下一步产品判断：如果 FutureX 会长期使用，从最新 `main` 重写 adapter / runner / submission；如果只是一次性 pilot，则归档后清理，不进主线。
 
-## 🔴 P0 — 现在/今天
+### B. Raven Delta LongPort MCP
 
-- [ ] **【P0 · 2026-08-23 用户标记 · 下次重点修】搜索证据质量重建**：DDG CAPTCHA 静默降级污染了历史产物（README 顶部有摘要）。已修部分见 PR #108（Exa backend + DDG 删除 + fail-fast + A/B harness `scripts/forecast/search-backend-compare.ts`）。剩余动作：
-  1. ~~**生产配 key**~~ ✅ 2026-08-23 完成：`EXA_API_KEY` 已入 VM `deploy/raven/.env` 与本地 `.env.pizza`；东京 VM clean-untar 到 merge `1082303`（备份 `~/predict-raven.pre-exa-search.bak`），`raven-suite` 重建 + `up -d --no-deps forecast-api paper-agent`；**容器内实测 Exa HTTP 200 带 publishedDate**、forecast-api /healthz 200、paper-agent 重启正常（bankroll $10000，eval UTC 02/10/18）。delta-pm/raven/delta 容器未动（raven 仍旧镜像，claude provider 不受影响）。首批带 Exa 搜索的评估 = 2026-08-23 10:00 UTC 周期；
-  2. ~~**VM 归档审计**~~ ✅ 2026-08-23 完成，**结论反转**：33 个 paper-agent 引擎档案全部 `provider:"claude"`（原生 WebSearch）——$10k 模拟盘未被 DDG 污染，Brier 分数干净，无需打 caveat；"全生命周期被污染"作废。真正受影响 = deepseek/kimi provider 的 runs + 6/10 实盘 pulse 证据块；
-  3. **pulse 查询语式重写**：`buildPulseWebSearchQueries` 的引号短语 + `site:` 语式是关键词引擎产物，Exa 语义搜索下改自然语言（A/B harness 可直接验证）；
-  4. 决定 Tavily 是留作 fallback 还是删掉；世界杯盲测与 Delta PM 已确认不受影响，不用查。
+- 现有原型：PR #84 / `feat/raven-delta-longport-mcp`。
+- 已完成：给 Raven Delta 的分析器提供实时报价、K 线、盘口、估值与基本面读取工具；默认关闭；临时 MCP 配置权限 `0600`；token 脱敏；读工具清单与已知交易工具 denylist；要求 evidence 带报价和时间戳。
+- 当前问题：分支已与 `main` 冲突；Claude `--allowedTools` 不是严格的唯一安全边界；`longport:live` 目前只表示配置开启，不能证明真实工具调用成功；UI 仍可能显示“无实时价格”。
+- 下一步产品判断：只有继续维护 `/delta` 的实时行情 grounding 才重做。必须使用 quote-only 凭证、隔离全局权限、校验实际 `tools/list`、未知工具 fail closed，并以 execution trace 证明成功读价后才标记 live。
 
-- [x] **【P00 · 已实现】pulse-direct market binding 校验**：2026-05-05 已修复。`pulse-entry-planner` 不再用同 event URL 直接绑定多 strike 市场；`execution-planning` 增加 P00 gate：marketSlug / tokenId / outcomeLabel / rule threshold 严格一致，bestBid / bestAsk / decision price 允许 3% 以内误差；`pulse-live` 遇到 `blocked_by_market_binding` 在 live 模式 fail-fast。覆盖测试：`pulse-entry-planner.test.ts` / `execution-planning.test.ts` / 全量 `pnpm test` 392 pass。
-- [x] **【P0 · v1 已实现】现有仓位独立研究复审**：2026-05-07 `pulse-live` 会在随机 Pulse 候选之外为每个远端持仓生成 `position-research.json`，抓 Gamma event/market payload + held-token orderbook；`Position Review` 优先消费 `positionResearch`，无覆盖仓位不再默认 stale hold，而是标 `fresh-position-research` / `position-research-refreshed`（near stop-loss 仍 reduce）。**残余缺口**：还没有模型级概率重估、评论/外部来源 crawler；当前是 factual refresh + artifact，不要误当完整外部研究 agent。
-- [x] **【P0 · 已实现】已有持仓必须走 position-only Pulse 概率/edge 复审**：2026-05-08 新增 `pnpm forecast:positions`（等价 `forecast:live --recommend-only --positions-only`），只针对当前持仓生成 Pulse 报告，不扫描新市场、不输出新开仓建议；候选 JSON 带当前持仓方向 / 数量 / 均价 / mark / PnL，parser 会保留 Yes/No 两侧概率行（edge 可正可负），`Position Review` 优先用持仓侧 Pulse edge。验证归档：`runtime-artifacts/pulse-live/2026-05-08T020947Z-245b4933-880f-47d7-ae86-75d5ffb8b81e/`，7 仓 hold，0 成交，Pulse 复审计划数 12；Crude 因规则/CL 数据不足由 Pulse 明确拒绝估概率，保留 edge=0。
-- [x] **【P1 · 已实现】逐仓 PnL 快照 + calibration ledger**：2026-05-07 已实现。`pulse-live` / `forecast:recommend` 会写 `position-mark-snapshot.json`、单轮 `calibration-ledger.jsonl`，并追加 `runtime-artifacts/evaluation/pulse-calibration-ledger.jsonl`；run-summary 会展示逐仓 mark 归因和 unexplained equity residual。
-- [x] **【临时限制 · 已实现】Pulse 开仓只推荐 1 个最优仓位且支持固定金额**：2026-05-15 新增 `PULSE_ENTRY_MAX_PLANS` 与 `PULSE_ENTRY_FIXED_NOTIONAL_USD`；临时运行用 inline/env artifact 设置，不写入默认 `.env`。该限制只影响新开仓 entry recommendation；已有仓位 position-only review 不合成新开仓。执行层风控与 Polymarket 最小订单量仍生效，金额太低会被拦截而不是强行下单。
-- [x] **【GitHub issue #2 · 已实现待 PR】OKX Agentic Wallet signer + OpenClaw 兼容**：2026-05-22 当前分支 `codex/aw-agentic-wallet-cap` 已把 OnchainOS/OKX EIP-712 signer、Polymarket signing identity、OnchainOS preflight、OpenClaw `openclaw agent` wrapper、`PULSE_ENTRY_*` 限制与公开 equity history 隔离合入同一 PR 范围。新增 `ONCHAINOS_TIMEOUT_MS` fail-fast，OpenClaw 默认不再调用已不兼容的 `openclaw run`。验证：`pnpm test` 50 files / 419 tests pass；`pnpm typecheck` 9 workspace pass；`pnpm --filter @autopoly/executor build` 与 `pnpm --filter @autopoly/orchestrator build` pass；fake OpenClaw wrapper smoke 输出 `wrapped output`。本轮没有运行 `forecast:live` / `daily:forecast`，没有真实下单。
-- [ ] **【当前阻塞 · 2026-06-07】当前出口被 Polymarket CLOB 订单 API 按地区限制拒单**：`https://polymarket.com/api/geoblock` 探针显示 `blocked=false country=MY`，但真实 `/order` 返回 `403 Trading restricted in your region`。用户授权后对 `will-satoshi-move-any-bitcoin-in-2026` / `NO` 做 `$1` live-check，订单同样到达 `/order` 后 403，事后复核 Satoshi 持仓为空、collateral 仍 `223.961524 USDC`；归档 `run-error/2026-06-07T043859Z-satoshi-geo-live-check/summary.md`。在用户切换到 Polymarket CLOB 可交易地区前，不要重复发送 live order；只读 Pulse / PDF 可以继续跑。复跑时优先用 direct 命令 `pnpm exec tsx scripts/pulse-live.ts ...`，今日 `pnpm forecast:live -- --recommend-only --json` 曾两次在启动阶段返回 `createOrDeriveApiKey` 空 payload，而 direct 入口正常。
-- [ ] **【新主线】Raven Managed Product — Phase 3a 代码全完成，剩 dogfood 启动**。计划全文 [`docs/internal/plan/2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md) + [`mode-a-phase-3a-plan.md`](internal/plan/2026-05-04-mode-a-phase-3a-plan.md)。**当前 branch = `main`**（HEAD ~`4d417a9`）。
-  - ✅ **DB**：Neon PG 17.8 in eu-central-1 (Frankfurt) provisioned 2026-05-05；4 migration 全跑通；连接串写进 `apps/raven-managed/.env.local`（gitignored；密码暴露聊天，dogfood 跑通后 reset）
-  - ✅ **Phase 1 + Phase 2 #1-#4**：apps/raven-managed 独立 app + Privy + Safe 推导 + viem 余额 + session signer UI（stub 模式）+ 4 表 schema
-  - ✅ **Phase 3a.0**：commit `a6513bc` — Builder code wired into services/executor（**Pizza/no1 别开**：自家钱包大概率被 Polymarket Weekly Rewards Pool 过滤，自引规则）
-  - ✅ **Phase 3a.1**：3 commits — `PolymarketRelayerAdapter` 真实现（deploySafe / getBalance / getPositions / placeOrder via session signer + builder code 双重 stamp）
-  - ✅ **Phase 3a.2**：commit `2e81400` — `scripts/managed-pulse.ts` + `proposed-decision-mapper.ts`（pulse 桥）
-  - ✅ **Phase 3a.3**：commit `7e0b956` — `scripts/managed-pulse-archive.ts` + `services/managed-trading/src/{alerts,risk-events}.ts` + `deploy/managed-pulse.cron.example`
-  - ✅ **Tests**：65/65 managed-trading + 全 9 项目 typecheck 绿
-  - **Polymarket builder credentials**（active）：address `0x6664...14e` / code `0x30cf...95e` / api key + secret + passphrase 全在 `.env.local`。**fee rate 0%/0% don't change**（头部 builder 全是 0%）
+### C. Time Machine / forecast trajectory contracts
 
-- [x] ~~**Phase 3a.4 paper-mode 端到端 SMOKE TEST**~~ ✅ 2026-05-07 完成，commit `<pending>`：
-  - no1 (`0xe14e...dff1`) 通过直接 SQL INSERT 注册成 managed_user `74a27990-300a-4d09-8e7b-af52a5c65906`（跳过浏览器 + Privy 模态——签名只能在 wallet 端做，私钥不应该上服务器）
-  - Safe 推导验证：no1 EOA → `0xC78873...2936` ✅ **完全匹配** `.env.no1` 的 FUNDER_ADDRESS，证明 3a.1 PolymarketRelayerAdapter 推导逻辑对
-  - 实测 publicnode RPC 读链上余额：no1 Safe = $3.96 USDC.e（之前充的钱还在）
-  - 用 `2026-04-26T060306Z` pulse recommendation.json 跑 `managed:forecast --json --recommendation <path>`：3 decisions 全 skip（balanced tier 15% cap → $0.59 < $5 min notional）—— **这是正确的风控行为**，bankroll 太小 AI 即使看到 99% conf 的原油单也不强行下
-  - DB 验证：`managed_paper_runs` 写了 1 row（completed，2 秒跑完），`managed_decisions` 写了 3 rows（全 skipped，原因 `blocked_by_min_notional`）
-  - 归档：`runtime-artifacts/managed-pulse/2026-05-07T08-23-06Z-484e1667/`
-  - **关键发现**：`https://polygon-rpc.com` 公共 RPC 现在返回 401（"API key disabled"），切到 `https://polygon-bor-rpc.publicnode.com`（也有 `drpc.org` / `1rpc.io/matic` 备选）。已写进 `.env.local`
+- 现有原型：`claude/agent-prediction-market-demo-74e018` 的未提交 worktree。
+- 已完成：
+  - `forecast-case`：一个事件、多轮 forecast、证据 / tool calls、概率变化、仓位生命周期与结算；
+  - `forecasting-trajectory`：账户级 research→forecast→trade→settlement→equity 时间线；
+  - Zod 校验覆盖事件顺序、唯一 ID、概率 delta 一致性，并明确禁止保存 provider raw reasoning / hidden chain-of-thought。
+- 当前问题：还没有正式 producer / consumer；现有 exporter 从静态 HTML 和重建 archive 取数；根目录 HTML、`.tmp-*` JSON 和手工 demo 不适合进入 `main`。
+- 下一步产品判断：确认要做 Time Machine、统一审计 API 或 benchmark 数据层后，只提取两个 contract + tests，并先定义真实生产写入方和消费方。
 
-- [ ] **【dogfood 下一步 — 看你想走哪条】**：
-  1. **A. 给 no1 Safe 准备 $30+ Polymarket 可用 collateral（V2 之后优先 pUSD / 已迁移余额）** → paper-mode 重跑会真的"keep" 部分 decision，验证完整 happy path（不是只验"被 skip"）。2026-05-15 复查：`.env.no1` 的 CLOB `COLLATERAL balance=0`、onchain pUSD=0，不能直接下单。
-  2. **B. 做 Privy 真 connect-wallet 注册流程**（不是直接 INSERT）→ 验证 onboard 端到端 UX。需要你拿 no1 私钥导入 MetaMask 后浏览器走一遍
-  3. **C. 直接进 live mode**（拿 1 个真单）→ 需要 Privy dashboard 启用 session signers + 拿 `PRIVY_SESSION_SIGNER_PRIVATE_KEY`，把 `MANAGED_TRADING_MODE=live`。最 risky 但最有信息量
-  4. **D. 等几天看 cron 跑通**（搭好 cron 让 paper-mode 每天自动 run）→ 验证 cron 调度 + alert webhook + 归档累积
+## 5. 下一步优先级
 
-- [ ] **【可后做不阻塞 dogfood】review 这一轮新建的 6 个文档**：
-  - `docs/internal/plan/2026-05-04-raven-managed-product-plan.md`（产品计划主文件）
-  - `docs/internal/plan/2026-05-04-mode-a-phase-3a-plan.md`（Mode A 实施计划）
-  - `docs/internal/plan/2026-05-04-design-elements-inventory.md`（设计清单 + 5 待拍板方向）
-  - `docs/internal/review/2026-05-04-betmoar-and-computer-use-research.md`（betmoar 调研 + CU 选型）
-  - `apps/raven-managed/app/page.tsx`（landing 文案 + Lucide icons + raven 品牌 mark）
-  - `packages/db/src/migrations/000{2,3}_*.sql`（DB lifecycle / risk_tier 命名）
-- [ ] **【用户下次会话亲自做】人为 review 所有本轮新建/重写的中间产生分析文档**：检查格式与内容是否合理。范围至少包括：
-  - `docs/agent-onboarding.md` / `docs/agent-handoff.md`（中英）
-  - `docs/internal/plan/2026-04-28-v2-cutover-runbook.md`
-  - `docs/diagrams/dev-reference.md`（中英）
-  - `claude.md` / `AGENTS.md`（中英 4 份）的"项目执行要点"节
-  - 主 README.md（含 Quick Start 重写 + 系统设计）
-  - 用户特别想 review 的是 **格式 + 内容呈现** 是否符合期望
-- [ ] **2026-04-28 11:00 UTC · V2 cutover 当天操作**：暂停所有 cron → 等官方宣布切换完成 → 验证 SDK 连通 → 重启服务。详细步骤见 [`docs/internal/plan/2026-04-28-v2-cutover-runbook.md`](internal/plan/2026-04-28-v2-cutover-runbook.md)
-- [ ] **wrap pizza 钱包的 USDC.e → pUSD**（V2 切换前必做，否则 4/28 之后 preflight 会看到 collateral=0）。手动操作：登 polymarket.com UI 找 "Migrate to pUSD" 入口
+### P0 — 保护并收口当前 WIP
 
-## 🟡 P1 — 本周
+- [ ] 让当前主工作区的 Raven Bench / provenance 会话先保存自己的改动；不要从其他 worktree 覆盖。
+- [ ] 以 `harness-gpt-pro-v2` 为唯一 GPT Pro 集成主线，完成第 3 节的五项合入前工作并开独立 PR。
+- [ ] Raven Bench 的统一主评分使用 **Brier Index**：`100 × (1 − √mean Brier)`；必须先跨题求 mean Brier 再转换。排名同时展示完成题数、置信区间、延迟、整轮墙钟时间、美元成本和 token；并行 arm 的耗时不得相加冒充等待时间。
 
-- [x] **【P1 · 2026-08-23 用户提出·同日上线】fleet 配额水位监控 + 飞书/Slack 告警**（PR #113）：`scripts/fleet/quota-monitor.ts`，raven-labs cron `*/30`（入口 `~/forecast-fleet/monitor-run.sh`，日志 `logs/quota-monitor.log`）。两层水位：**硬**=DeepSeek 真余额快照（实测 ¥195）+ 最小二乘烧钱斜率 → 预计几天用光（<¥30 警告 / <¥10 严重 / 跑道 <5 天警告，env 可调）；**软**=Claude 订阅、Codex 订阅、Kimi Code、Exa **均无余额 API**（实测）→ 增量日志扫描配额/限流错误特征（429/rate limit/usage limit/insufficient/402/overloaded）+ pidfile 存活检查（死进程也告警）。每主题 6h 冷却。**通道调研结论：飞书群自定义机器人 webhook 优先**（团队在用、零审批、POST 即达），Slack incoming webhook 同时支持——**等用户建好飞书机器人把 `FEISHU_WEBHOOK_URL=<url>` 写进 `~/forecast-fleet/env/monitor.env` 即激活推送**；未配置前告警只落 log。**v2（同日，用户追问"其他的真做不了吗"后重探）**：又落地三条真水位——① Codex 订阅：session rollout 里有 `rate_limits` 快照（used_percent + 7 天窗重置时间戳，实测 1.0%），codex-agent 去掉 `--ephemeral` 让每次评估免费留快照，监控读最新 + 太旧时 6h 限频探针；② Claude 订阅：`api.anthropic.com/api/oauth/usage` 端点存在但自身限流狠（429 常态），监控做成拿到就用、429 静默跳过，首个 200 会存原始 payload 供定形；③ Exa：每次响应带精确 `costDollars` → 引擎记账到 `EXA_COST_LEDGER`，对照人工锚点 `EXA_CREDIT_ANCHOR="<dollars>@<ISO>"` 算剩余+烧速跑道（**等用户从 dashboard 报一次当前余额做锚**）。Kimi Code 三路实测（响应头/usage 路径/开放平台）确认无法程序化监听——唯一只剩错误检测的。
+### P1 — Forecast Engine 第二、三阶段
 
-- [x] **【P1 · 2026-08-23 用户提出，同日 7/7 全部上线】多模型 fleet（raven-labs）**：**gpt-5.6-sol / gpt-5.6-terra 已通过 codex provider 上线**（PR #112：`FORECAST_PROVIDER=codex` 走 Codex CLI 订阅，`codex exec --json` + read-only 沙箱 + ephemeral + 强开 web_search；事件流无结果 URL → 引用走 liveness 守卫；e2e 实测真搜索+真 JSON 通过）。**已运行**：fable / opus / sonnet（Claude 订阅 token，实测通）、kimi-k3（Kimi Code key → `ANTHROPIC_BASE_URL=https://api.kimi.com/coding`，Anthropic 兼容，**WebSearch 实测可用**）、ds-flash（`deepseek-v4-flash` + Exa 搜索）。每本 $10k、参数抄东京 book（categories 扫描进场、无 watchlist）、eval 错排：fable 00:30 / opus 01:50 / terra(留) 02:30 / sonnet 03:10 / kimi 04:30 / ds 05:50 / sol(留) 07:10（+8h 循环）。**运维**：`~yishu/forecast-fleet/{env,books,logs,run.sh,start-all.sh}`（home 700、env 600——用户拍板 key 放服务器，sudo 三人可见属接受风险）；@reboot crontab 自启；claude CLI 2.1.241 装在 `~/.npm-global/bin`（claude.ai/install.sh 被 403，走 npm user prefix）。**剩余**：① gpt-5.6-sol / gpt-5.6-terra 等用户给 OpenAI API key（用户另提 codex 订阅方案=写 codex exec 适配器，属代码改动备选）；② Kimi key 在对话中出现过，视为已泄漏，介意就轮换；③ 观察 4 个 claude 书（3 fleet + 东京）共享一个订阅的限流。原始设计（已验证零代码）：Claude Fable / Opus / Sonnet + GPT-5.6 + DeepSeek flash + Kimi K3，各一个独立 paper-agent 账本，同规则比 equity + Brier。**设计已验证零代码改动**：`ARTIFACT_STORAGE_ROOT` 隔离账本；claude 系 `FORECAST_PROVIDER=claude` + `FORECAST_MODEL`（CLI `--model`）；其余三家走 OpenAI 兼容座 `FORECAST_PROVIDER=deepseek` + `DEEPSEEK_BASE_URL`（openai/deepseek/moonshot）+ `FORECAST_DEEPSEEK_MODEL` + 各家 key；搜索统一 `FORECAST_WEB_SEARCH=1` + `EXA_API_KEY`。**开工前置（等用户）**：① OpenAI/Moonshot key、DS key 复用确认、Claude 订阅 token 上服务器；② raven-labs「严禁真实 key 上服务器」规则冲突——改规则（先关 SSH 密码/root 登录，key 放 ~yishu chmod 600）或改跑东京 VM；③ 确认三个模型精确 id；④ 6 个新账本进场方式（共享 watchlist 保可比 vs 各自扫描——现有 VM 账本是 evaluation-only 空 watchlist）。东京 VM 速查卡已建：`~/.claude/rules/tokyo-vm.md`。
+- [ ] 多期限联合预测与单调性校验；最高影响证据簇的 leave-one-cluster-out 敏感性分析；真正的增量更新与搜索预算分配。
+- [ ] 建立结算与离线评测闭环：Brier、校准曲线、来源质量 / 断言权重后验调参，并增加常见结算源的监控适配器。
+- [ ] 对 FutureX、LongPort MCP、Time Machine 三项分别做 go / archive 产品判断；任何一项获批后都从最新 `main` 建独立小 PR。
 
-- [x] ~~**接 Polymarket Builder Code**~~ ✅ commit `a6513bc`（2026-05-04，Phase 3a.0）。executor 现在按 `POLYMARKET_BUILDER_*` 5 个 env 自动给 FOK/GTC 单挂 builderCode。**用户操作**：把 5 个 env vars 抄进 `.env.pizza`（或当前在跑的钱包 env），下次 `forecast:live` 自动开始累积 builder volume
-- [x] **【P1 · 已实现】Polymarket 读取默认 in-process + 订单簿去重预取**：2026-05-07 `POLY_CLI_ENABLED` 改成显式 `true` 才走 `pnpm exec tsx scripts/poly-cli.ts`，默认直接用 in-process SDK；`POLY_CLI_STRICT=true` 仍可强制隔离 bridge。`pulse-live` 新增单轮 `readBook` / `computeAvgCost` Promise cache；`buildExecutionPlan` 对 open/close/reduce 的 unique tokenId 做 bounded-concurrency prefetch，避免同一轮重复读 CLOB / 重复 spawn。
-- [ ] **wrap pizza 钱包 usdce → pUSD**：V2 cutover 后 collateral=0，必须 wrap。手动登 polymarket.com UI 找 "Migrate to pUSD"
-- [ ] **`fees.ts` 接入 V2 SDK 动态费率**：使用已新增的 `fetchDynamicFeeParams(client, conditionID)` helper（见 `services/orchestrator/src/lib/fees.ts:328`），把 sizing 路径里的静态查表替换掉。前置条件：`PlannedExecution` plumb 进 `conditionId` 字段（当前没有）
-- [ ] **Mode A 主线 Phase 3a.4（dogfood）**：见 [`docs/internal/plan/2026-05-04-mode-a-phase-3a-plan.md`](internal/plan/2026-05-04-mode-a-phase-3a-plan.md)。
-  - ✅ 3a.0 Builder Code (commit `a6513bc`) / ✅ 3a.1 PolymarketAdapter 真实现 / ✅ 3a.2 pulse 桥 (`scripts/managed-pulse.ts` + `proposed-decision-mapper.ts`，2026-05-05) / ✅ 3a.3 cron + 观测 + 报警（2026-05-05，65 tests pass）
-  - 下一步：3a.4 dogfood — 用非 Pizza 测试账户走 1 周（用户必须亲自参与）
-  - **观测 / 报警入口**：
-    - alert webhook env: `MANAGED_TRADING_ALERT_WEBHOOK`（未设静默 no-op）
-    - cron 配置 example: [`deploy/managed-pulse.cron.example`](../deploy/managed-pulse.cron.example)（默认 12:30 UTC，artifact-only 不自动启用）
-    - 每用户日志: `runtime-artifacts/managed-pulse/<runBatchId>/<userId>/{decisions.json,summary.md}`
-    - 顶层 run summary: `runtime-artifacts/managed-pulse/<runBatchId>/run-summary.md`
-    - 失败 risk_events: event types `managed_pulse_failure` / `managed_pulse_user_failure`
-  - **本地运行新桥**：`pnpm managed:forecast` (paper 默认) / `pnpm managed:forecast --json` / `pnpm managed:forecast --recommendation <path>` 显式指定 pulse 输出
-  - **live 模式启用条件**：env `MANAGED_TRADING_MODE=live` + 5 个 `POLYMARKET_BUILDER_*` + `PRIVY_SESSION_SIGNER_PRIVATE_KEY`，缺一在 config 加载时立即抛
+### P2 — 已知但不阻塞
 
-## 🟢 P2 — 后续 / 优化项
+- [ ] 将 live Pulse 的结算回填 / 离线评分按当前 ledger 重新设计；不要直接搬 PR #77 的旧实现。
+- [ ] 修 `scripts/world-cup/deploy-web.sh` 在新版 Vercel CLI 下解析 deploy 输出的 promote 步。
+- [ ] World Cup Monte Carlo 淘汰赛点球规则仍有已确认偏差；是否重算并重发需要用户产品决定。
 
-- [ ] **修 `scripts/world-cup/deploy-web.sh` 的 promote 步**（2026-06-14 发现）：vercel CLI 50.35.0 下 `vercel deploy --prebuilt --prod --archive=tgz` 输出**整个 JSON**（不再是裸 URL），导致 `DEPLOY_URL=$(...)` 拿到 JSON、line 44 `vercel promote "$DEPLOY_URL"` 报 `Can't find the deployment "{`。本次部署侥幸成功是因为 `--prod` 这轮直接 alias 了 production（promote 才会撞 `409 already current`）；但只要哪天 production 又被 `vercel rollback` pin 住，promote 就会真失败、线上不更新。修法：用 `--archive=tgz ... | tail -1` 或 `jq -r .deployment.url`（视输出而定）解析出真实 URL，或显式 `vercel promote <dpl_id>`。`/schedule world-cup-daily-results` 例行部署同样受影响。
-- [ ] **Computer Use 集成（监控/事件交易方向）**：用户标注 P2（2026-05-04）。两个候选 pilot 见 [`docs/internal/review/2026-05-04-betmoar-and-computer-use-research.md`](internal/review/2026-05-04-betmoar-and-computer-use-research.md) §D：① UMA 仲裁监控（read-only，比市场早知道 resolution 翻盘 = 提前减仓） ② Privy onboarding QA on testnet。**当前不启动**——等 Mode A 主线跑通再考虑
-- [ ] **申请 Polymarket Verified tier**（优化项，不阻塞 MVP）：mail builder@polymarket.com 附 API key `019df336-1894-76e8-bd11-8582cde25c3a` + Pizza dashboard URL 当业绩证明。批下来后才能拿 Weekly Rewards Pool 的 USDC 分成（约 0.5-1% routed volume）。Unverified 也能正常下单 + 走 builder code，只是不进奖励池
+## 6. 已定规则，不要重复讨论
 
-- [ ] **Vercel 项目改名** `autopoly-pizza-spectator` → `predict-raven`：Vercel dashboard → Project Settings → Name。改完 README 顶部 spectator URL 也要更新成 `predict-raven.vercel.app`
-- [x] **Prediction Engine demo preview + hosted access v1**：2026-06-07 已新增 `/prediction-engine` 自然语言事件概率 demo、`/api/prediction-engine/run` API、Pulse `stage_flow` 机器可读流程字段，以及中英文说明 `docs/diagrams/prediction-engine-stage-flow.{md,en.md}`。API 支持三种模式：本地测试用 `PREDICTION_ENGINE_LOCAL_API_URL` / `PREDICTION_ENGINE_BACKEND_MODE=local` 调本机 host 服务；线上 Vercel 用 `PREDICTION_ENGINE_API_URL` 或 `PREDICTION_ENGINE_API_BASE_URL` 调 VPS；未配置才 fallback demo。前端已加入 Manus-like Run Console，显示 `service`、当前步骤、步骤成果和 artifact label。已接 Auth.js + OIDC 登录骨架、邀请码激活、每日/月度/并发 quota gate、`prediction:invite` 创建脚本和 DB migration `0004_prediction_access.sql`。Vercel preview：`https://web-l6lenq4qs-alchemist-xs-projects.vercel.app`（deployment `dpl_EwPL9EqqVHipQy8mJWpaDdRgeTEw`，Ready）。当前 preview 域名被 Vercel 登录保护拦截，未 promote production；公开验收前需要关闭 preview protection、提供 bypass，或明确切 production。
-- [x] **raven-cloud / raven-web private repos 已创建并写入首版代码**：2026-06-07 用 GitHub 账号 `Alchemist-X` 新建两个 private repo 并推送 `main`。`https://github.com/Alchemist-X/raven-cloud`（本地 `/Users/Aincrad/dev-proj/raven-cloud`，latest `10ee63e`）已包含 Fastify API、demo/pulse-command/http-proxy runner、邀请码、quota、CI 和中英文 README；`https://github.com/Alchemist-X/raven-web`（本地 `/Users/Aincrad/dev-proj/raven-web`，latest `1e0fc28`）已包含 Next.js App Router、OIDC/Auth.js、邀请码页、cloud API proxy、Manus-like Run Console、CI 和中英文 README。两边 visibility=PRIVATE；GitHub Actions 最新 CI 均通过。当前仍是首版独立骨架，尚未从 predict-raven monorepo 搬迁真实 Pulse 生产代码。
-- [x] **promote prophets-profit 复刻页到 production**：2026-05-10 已切正式 `https://autopoly-pizza-spectator.vercel.app`。当前页面保留 prophets-profit 外观，但数据来自 Pizza Polymarket 公开钱包接口 + bundled Pulse position review 摘要，不再使用源站 Kalshi 静态快照。
-- [x] **Pizza snapshot 三套非 production 风格预览**：2026-05-10 已完成，仅部署到 Vercel preview，未 promote production。预览地址：`https://autopoly-pizza-spectator-eixznt54x-alchemist-xs-projects.vercel.app/previews/pizza-ledger-folio`、`/previews/pizza-ledger-terminal`、`/previews/pizza-ledger-exchange`。最终 preview deploy `dpl_D3VdKtc1YZ6YTxXSn2qRg7DGgC1P`，运行时 env 显式指向 Pizza 钱包 `0x6664...614e` + `INITIAL_BANKROLL_USD=500`；中间 preview `dpl_BLwwnqngFevVbmHFSPBQo2LyTyxz` 因 Vercel preview env 指到错误钱包只显示 0 fills，不作为评审入口。
-- [ ] **自动刷新 `pulse-position-review.json`**：当前 `apps/web/public/pulse-position-review.json` 是从 2026-05-08 position-only Pulse 归档手动抽取的公开摘要；下次跑 `pnpm forecast:positions` 后应加脚本自动导出并随部署更新，否则 rationale 可能落后于实时持仓。
-- [ ] **README banner 升级 1200×630 PNG**：当前是 1254×1254 正方形，Twitter 卡片会上下裁剪。做一张横版替换 GitHub Settings → Social Preview
-- [ ] **CONTRIBUTING.md + Google 表单**：用户说后续做
-- [ ] **删 `claude.md` 小写、规范化为 `CLAUDE.md` 大写**：macOS 大小写不敏感视为同一文件。用 `git mv -f claude.md _CLAUDE.md && git mv _CLAUDE.md CLAUDE.md` 二步法
+- Forecast Engine 的概率只由 engine 维护；研究代理不再输出第二套整体概率。
+- GPT Pro 不是独立 model slug：使用 `gpt-5.6` / resolved model，并显式设置 `reasoning.mode=pro`；model、mode、effort 分别归档。
+- World Cup / market-blind 的预测生成禁止读取市场价格；结算后的对照评分允许读取预测时刻市场基准。
+- Delta PM 新闻身份由首条记录和标准化 URL 共同确定；重复 sitemap/feed 条目不得重新跑 gates。
+- Pulse 的观望、名义侧、no-trade、pass 和明确 `0%` 建议不得生成新开仓。
+- 真钱操作默认不可逆；未获明确授权时只能 recommend-only / read-only。
 
-## ⛔ 已完成 / 不要重做（决策已定）
+## 7. 安全与执行边界
 
-- ✅ **Design philosophy §1 重写**（2026-05-04）：[`docs/internal/plan/2026-05-04-design-elements-inventory.md`](internal/plan/2026-05-04-design-elements-inventory.md) §1 由"7 条抽象原则 + 后果列表"改成"4 条具体规则 + ✅长这样/❌不长这样对照"。规则收口为：不做 gamification / 默认展示真数据 / Marketing 和 app 两套规则 / 解释机制不只说 benefit。下游 §2-§9 未动
-- ✅ **Polymarket V2 SDK 迁移**（commit `48181a5`）：执行器侧已切到 `@polymarket/clob-client-v2@1.0.2`，构造改 options 形式，SignatureType 兼容，CTF 地址 unchanged。无回归
-- ✅ **README 大幅瘦身 + Quick Start 提前**（commit `70aa9c1` `8994ad1`）：从 570 → ~290 行，删掉"三条运行链路"和过长的 manifesto
-- ✅ **Repo 重命名 `autonomous-poly-trading` → `predict-raven`** + 本地目录 `~/dev-proj/predict-raven/`（symlink 兼容旧路径）
-- ✅ **Repo 根目录瘦身**（commit `24a9b0a`）：33 → 23 entries。`.en.md` 进 `docs/en/`，build configs 进 `config/`，`docker-compose` 进 `deploy/`，`Illustration/` → `docs/diagrams/`，`Plan/` → `docs/internal/plan/`，`Wasted/` → `docs/archive/`，`E2E Test Driven Development/` → `e2e/`
-- ✅ **CLAUDE.md / AGENTS.md Tier 2 trim**（commit `abb2c60`）：从 181 → 138 行，加了"项目执行要点"专属节
-- ✅ **GitHub Social Preview** 已设成 raven logo
-- ✅ **MIT LICENSE** 已加
-- ✅ **rough-loop.md 留根目录**（B 方案明确取舍）：3 个 ts 硬编码路径，挪走风险高于收益
+- `pnpm daily:forecast` / `pnpm forecast:live` 默认可能发送真实订单；只读必须显式使用 `--recommend-only`。
+- 默认钱包配置是 `.env.pizza`；不得上传 `.env*`、私钥或 API key。
+- 风控默认值可以讨论，但 agent 不得擅自修改、绕过或放宽。
+- 多个 agent / 会话必须使用独立 git worktree；主工作区脏时严禁 checkout / stash / reset。
+- LongPort、OpenRouter、FutureX paid run、任何真钱 probe 都需要各自明确授权；一次授权不扩展到其他外部付费或交易动作。
 
-## 🪵 仍在用的 git worktree（2026-05-10 整理后保留）
+## 8. 按需参考
 
-> 主 worktree 是 `/Users/Aincrad/dev-proj/predict-raven`（branch `main`）。下面是别的实验分支留的 worktree——不要 force-remove，里面有未合并价值代码。
-> 已清理的 2 个废稿 worktree：`spike/karpathy-autoresearch`（8 周前）+ `exp/pulse-timeout-calibration`（7 周前 base 太旧），分支已删
+| 需要了解 | 读取 |
+| --- | --- |
+| 风控完整规则 | [`docs/risk-controls.md`](risk-controls.md) |
+| 命令、部署、依赖矩阵 | [`docs/diagrams/dev-reference.md`](diagrams/dev-reference.md) |
+| Delta PM 运维 | [`docs/delta-pm-operations.md`](delta-pm-operations.md) |
+| Forecasting 成本画像 | [`docs/diagrams/forecasting-cost-profile.md`](diagrams/forecasting-cost-profile.md) |
+| 历史设计 / review | [`docs/internal/review/`](internal/review/) 与 [`docs/internal/plan/`](internal/plan/) |
+| 已完成历史 | git log、merged PR、`docs/archive/` |
 
-- **`/Users/Aincrad/dev-proj/predict-raven-aw`** (1.2GB, branch `raven-aw`, 22fa56f)
-  - 24 个 modified + 4 个 untracked（最大价值：`services/executor/src/lib/okx-agentic-wallet.{ts,test.ts}` + `docs/agentic-wallet-setup.md`）
-  - 状态：**未合并的 OKX agentic-wallet 实验**（独立于 Mode A / Pulse 主线）。2026-05-15 复查：新增 `WALLET_PROVIDER=onchainos`、OnchainOS EIP-712 signer、`poly:aw:check/trade`、root env 搜索修复、`pulse-live` OnchainOS preflight。`pnpm exec vitest run --config config/vitest.config.ts services/executor/src/lib/okx-agentic-wallet.test.ts` 10/10 pass；`pnpm --filter @autopoly/executor typecheck` pass。直接跑 repo `pnpm test -- ...` 会因 AW worktree 缺 `vendor/repos/all-polymarket-skill/.../SKILL.md` 导致 unrelated provider-runtime 3 fail。
-  - 2026-05-15 主 worktree 已用 HYCRPG owner `0xb266...fed6` + deposit wallet `0x70aC...d55a` + `@polymarket/clob-client-v2@1.0.6` 跑通 `$5` England NO FOK：CLOB `success=true`、`status=matched`、order `0xec2c...f5a2`、tx `0x841c...b3d1`。下一步：把 `okx-agentic-wallet.ts`、`polymarket-sdk.ts` identity/POLY_1271 解析、`env-file.ts` root env 搜索、`ops/live-check.ts` 只读 check/trade 入口分批 cherry-pick 到 main；不要直接整包合并 AW worktree。
+## 维护规则
 
-- **`/Users/Aincrad/dev-proj/predict-raven-persistence-plan`** (679MB, branch `codex/persistent-runtime-plan`, d939b6e)
-  - 5 modified + 5 untracked（关键：`services/orchestrator/src/runtime/raven-agent-loop.{ts,test.ts}` + `docs/internal/plan/2026-05-04-persistent-runtime-plan.{md,en.md}`）
-  - 状态：**部分已合并**——`scripts/agent-persistent-runner.ts` 已经在 main（commit `6d1ca6c`）。`raven-agent-loop` 模块还没合
-  - 下一步：把 `raven-agent-loop` 独立 cherry-pick 进 main 或废弃整个 worktree
-
-## 📝 已知踩过的坑（避免重复）
-
-- `claude --print` 子进程偶尔 0 字节挂 5+ 分钟 → 不是失败，等
-- 移动 `vitest.config.ts` 到 `config/` 后必须 `root: REPO_ROOT` 否则找不到 `@autopoly/*` workspace 包
-- `git mv` 整目录时未追踪文件不会被 git 移动，要手动 `mv`
-- 4/24 跑 v2 smoke 时 no1 钱包 USDC.e 有 $3.96 但 pUSD 为 0 → 验证 SDK 接入正常但下单需要先 wrap
-
-## 🔄 上次会话留下的上下文（2026-07-05）
-
-- 用户要求基于 Forecasting Engine 做新产品：X/新闻到来时，不做静态概率展示，而是分析“新闻增量影响了哪些美股、市场可能怎么动、推荐怎么操作”，并通过邮件和 WebSocket 推送。
-- 已实现一个只读 demo 流程：`/stock-news` 页面、`/api/stock-news-impact/run` API、核心分析器 `apps/web/lib/stock-news-impact.ts`、delivery adapter `apps/web/lib/stock-news-delivery.ts`、本地 WS hub `scripts/stock-news-ws-server.ts`（root script：`pnpm stock-news:ws`）。
-- 本轮产品边界：根据新闻 catalyst 识别受影响股票、方向、预期移动区间、概率增量、推荐动作、风险与触发条件；邮件支持 Resend / webhook，未配置时返回 `simulated`；WebSocket 本地默认 `ws://127.0.0.1:8791/ws` + `POST /broadcast`。
-- `apps/web` 新增用户可见页面已按 i18n 走 `apps/web/lib/world-cup/messages/{en,zh-CN,zh-TW.generated}.json`；导航新增 `News Delta`；移动端 header 已调窄，避免新增导航后挤出屏幕。
-- 验证：`stock-news-impact.test.ts` + `prediction-access.test.ts` 共 12 tests pass；`@autopoly/web` typecheck pass；`@autopoly/web` build pass；桌面/移动截图和真实 WS 交互验证通过，归档 `runtime-artifacts/screenshots/20260705-stock-news*`，最终交互截图在 `runtime-artifacts/screenshots/20260705-stock-news-interactive-fixed/`。
-- 本轮没有运行 `forecast:live` / `daily:forecast`，没有加载钱包，没有下单。下一步要接真实产品时，优先补新闻源 ingest（X/新闻 API）、券商或行情价格快照、真实邮件收件人权限与生产 WS 广播服务；demo 当前是确定性规则引擎，不应作为真实证券投资建议直接使用。
-
-## 🔄 上次会话留下的上下文（2026-06-07）
-
-- 用户要求：按图片流程改造 Pulse 主流程，记录未实现缺口和新增 LLM/外部比对成本；抽象成类似 Manus 的前端预测引擎 demo；部署到 Vercel。
-- 已实现：`services/orchestrator/src/pulse/stage-flow.ts` 定义 7 阶段流程、实现状态、缺口、外部请求/LLM/token/耗时估算；`full-pulse.ts` 将 `stage_flow` 写入 research context 并要求 LLM 按阶段输出。
-- 前端：`apps/web/app/prediction-engine/page.tsx` + `apps/web/components/prediction-engine-demo.tsx` + `apps/web/app/api/prediction-engine/run/route.ts`。API route 支持 local/VPS/demo 三档：本地开发可配 `PREDICTION_ENGINE_LOCAL_API_URL` 或 `PREDICTION_ENGINE_LOCAL_API_BASE_URL`；Vercel 线上应配 `PREDICTION_ENGINE_API_URL` 或 `PREDICTION_ENGINE_API_BASE_URL` 调 VPS；未配置才走 read-only demo。`PredictionEngineRun` 已包含 `service` 和 `progress`，前端 Run Console 会显示服务来源、当前步骤、步骤成果和 artifact label；demo 模式不跑真实 Pulse、不联网抓证据、不下单。
-- 文档：新增 `docs/diagrams/prediction-engine-stage-flow.md` 和英文版；`docs/diagrams/pulse-live-flow.{md,en.md}` 已更新跳转。默认 4 候选下，本次 `stage_flow` 预计只新增约 2k-4k input tokens、0 外部请求、0 额外 LLM 调用；严格对齐图片流程预计 +22 到 +46 外部请求、+0 到 +1 LLM 调用、+8.5k 到 +36.2k input tokens、+6.2k 到 +12.8k output tokens、+4 到 +14 分钟。
-- 验证：`stage-flow.test.ts` + `full-pulse.test.ts` 4 tests pass；`pnpm --filter @autopoly/web typecheck` pass；`pnpm --filter @autopoly/web build` pass；此前 `pnpm typecheck` 全 9 workspace pass。浏览器本地验收桌面和 390px 移动端均无横向溢出、console error 0；临时 local mock 服务 `127.0.0.1:8787` 通过 `127.0.0.1:3008` 页面确认显示 `Local host`、后端 endpoint、Run Console 和本地步骤成果。Vercel preview Ready：`https://web-l6lenq4qs-alchemist-xs-projects.vercel.app`，但浏览器访问被 Vercel login/SSO protection 重定向，未完成公开页面验收。预测引擎 demo 工作没有运行 `forecast:live` / `daily:forecast`，没有真钱下单。
-- 用户随后要求先做 social login 和限量。已新增 `next-auth@5.0.0-beta.31`、`apps/web/auth.ts`、`/api/auth/[...nextauth]`、`/sign-in`、`/invite`、`/api/invite/accept`、`apps/web/lib/prediction-access.ts`。DB 新增 `app_users` / `invite_codes` / `prediction_usage_events`，migration `packages/db/src/migrations/0004_prediction_access.sql`；root 新增 `pnpm prediction:invite` 生成邀请码。默认未配置 auth 时 demo 仍开放；生产启用需配置 OIDC env + `DATABASE_URL` + `PREDICTION_AUTH_REQUIRED=true` 并先跑 migration。验证：`pnpm typecheck` 全 9 workspace pass；`pnpm --filter @autopoly/web build` pass；本地 `/sign-in` 200 且配置缺失提示正常，`/api/prediction-engine/run` 在 auth disabled 下仍返回 demo。
-- 用户随后要求先建未来拆分用的两个 private repo，并把对应代码写进去。已创建并推送首版：`raven-cloud` latest `10ee63e`，`raven-web` latest `1e0fc28`。`raven-cloud` 提供 `/healthz`、`/v1/prediction-runs`、`/v1/me/limits`、`/v1/invites/accept`、`/v1/admin/invites`，默认 demo runner 不跑真实 Pulse、不抓实时证据、不下单；`pulse_command` 模式默认拒绝 `forecast:live` / `daily:forecast` / `--trade` / `AUTOPOLY_EXECUTION_MODE=live`。`raven-web` 提供 App Router 控制台、Auth.js OIDC 登录、邀请码页、quota 展示和 cloud proxy。本地验证：cloud `pnpm typecheck` / `pnpm test` / `pnpm build` pass，web `pnpm typecheck` / `pnpm build` pass；启动 `127.0.0.1:8788` + `localhost:3009` 后 Playwright 桌面和 390px 移动端跑通预测，console error 0，移动端无横向溢出；GitHub Actions 最新 CI 两边均 pass。
-- 用户要求“今天推荐两个市场，完成下单，并生成 PDF 报告”。按保守实盘口径使用 `.env.pizza`、`AUTOPOLY_EXECUTION_MODE=live`、`AGENT_DECISION_STRATEGY=pulse-direct`、`PULSE_ENTRY_MAX_PLANS=2`、`PULSE_ENTRY_FIXED_NOTIONAL_USD=5`。
-- 只读推荐成功：`pnpm exec tsx scripts/pulse-live.ts --recommend-only --json`，runId `118013ab-cef5-4565-95a9-676078767be8`，归档 `runtime-artifacts/pulse-live/2026-06-07T025017Z-118013ab-cef5-4565-95a9-676078767be8/`。PDF：`decision-report.pdf`。Pulse：`runtime-artifacts/reports/pulse/2026/06/07/pulse-20260607T025023Z-claude-code-full-118013ab-cef5-4565-95a9-676078767be8.{md,json}`。
-- 推荐出的两个新开仓市场：`will-new-people-nl-gain-the-most-seats-in-the-next-russian-parliamentary-election`（No 侧，AI 估 Yes 25% / No 75%，edge 约 11.65pp，低置信度，$5）和 `will-satoshi-move-any-bitcoin-in-2026`（No 侧，AI 估 No 97%，edge 约 5.05pp，$5）。
-- 两个新开仓均被执行层总敞口风控拦截：当前 exposure 约 `$382.96`，上限约 `$364.15`，headroom `$0.00`。同一轮 Position Review 触发 `will-ethereum-dip-to-1400-in-june-2026` close：止损阈值 30%，计划卖出 `59.6943` shares，约 `$32.35`。
-- 尝试先执行 ETH close 释放敞口：复用同一 Pulse 产物跑 live，runId `602da344-567c-4e03-9ae6-e5d12231e58a`，归档 `runtime-artifacts/pulse-live/2026-06-07T025942Z-602da344-567c-4e03-9ae6-e5d12231e58a/`。CLOB 拒单：`403 Trading restricted in your region`；`orderId=null`，0 成交；失败 run 也已生成 `decision-report.pdf`。
-- 用户随后授权对 `will-satoshi-move-any-bitcoin-in-2026` 做 `$1` 测试。用现有 executor 入口执行：`ENV_FILE=/Users/Aincrad/dev-proj/predict-raven/.env.pizza AUTOPOLY_EXECUTION_MODE=live pnpm --filter @autopoly/executor exec tsx src/ops/live-check.ts --json --slug will-satoshi-move-any-bitcoin-in-2026 --direction no --trade --max-usd 1`。预检读到 `NO` bestAsk `0.920`、`minOrderSize=5`、collateral `223.961524 USDC`；真实 `/order` 仍返回 `403 Trading restricted in your region`，`orderId=null`，0 成交。事后只读复核：`satoshiMatches=[]`，collateral 仍 `223961524` raw。归档：`run-error/2026-06-07T043859Z-satoshi-geo-live-check/summary.md`。
-- 本轮没有完成下单，原因是外部 CLOB 地区限制，不是余额或推荐生成失败。下一步：用户切到 CLOB 订单 API 可交易地区后，先复查 `curl -s https://polymarket.com/api/geoblock`，再复用上述 Pulse artifact 先 close ETH，随后重跑同一 Pulse 产物尝试两个 `$5` 新开仓；不要绕过总敞口硬上限。
-
-## 🔄 上次会话留下的上下文（2026-06-05）
-
-- 用户要求修改 repo：Pulse 必须做 web-search；如果尝试 2 分钟失败/超时就继续流程。
-- 已新增 `services/orchestrator/src/pulse/web-search.ts`，在 full Pulse context 中写入 `web_search`；默认 `PULSE_WEB_SEARCH_ENABLED=true`、`PULSE_WEB_SEARCH_TIMEOUT_SECONDS=120`。搜索失败/超时只记录 `status=failed/timed_out` 和 `failureReason`，不会阻断报告渲染。
-- `full-pulse` prompt 已要求模型必须读取 `web_search`：completed 时纳入证据链/概率/信息源；timed_out/failed/disabled 时明确说明已尝试但失败/超时/关闭，不得写成本次未尝试外部 web-search。
-- 验证：targeted Vitest 7 files / 19 tests pass；`pnpm test` 52 files / 426 tests pass；`pnpm typecheck` 全 9 workspace pass。没有运行 `forecast:live` / `daily:forecast`，没有真实下单。
-- 已新增泛化概率分析 skill：`skills/probability-analysis/`（中英 SKILL + agents metadata）。核心要求：先理清结算定义，按关键节点设计搜索，收集官方/主流/当事方/第三方/政治/军事证据，做条件概率模型；用户要求排除预测市场价格时不得用市场价格更新概率。
-- 本轮按该 skill 重做 US-Iran nuclear deal by 2026-06-30 的只读分析，排除预测市场价格与截图 mock 数据；独立归档：`runtime-artifacts/probability-analysis/2026-06-05-us-iran-nuclear-deal/`，zip：`runtime-artifacts/probability-analysis/2026-06-05-us-iran-nuclear-deal.zip`。结论概率：Yes 24%。按项目规则也跑了 `pnpm forecast:recommend -- --json` 只读 Pulse，归档：`runtime-artifacts/pulse-live/2026-06-04T172726Z-55625808-4a69-46f2-a2d3-82290258042c/`；没有真实下单。
-
-## 🔄 上次会话留下的上下文（2026-06-04）
-
-- 用户明确要求“运行一个新的 pulse 进程，并完成下单”。本轮按真钱 live 路径执行：`pnpm daily:forecast -- --json`，默认 env `/Users/Aincrad/dev-proj/predict-raven/.env.pizza`，`AUTOPOLY_EXECUTION_MODE=live`，`AGENT_DECISION_STRATEGY=pulse-direct`。没有加 `--recommend-only`。
-- 启动前检查显示 worktree 在 `HFT-Raven`，代码 HEAD `abf366d`；运行结束后 reflog 显示已切回 `main`，HEAD 仍是同一 commit。当前只有两份未提交 HFT 计划文档和本轮 handoff/equity-history 运行产物，未改交易代码；因此本轮 live Pulse 使用的交易代码等同 `main@abf366d`。
-- Preflight 通过：collateral reported/onchain 均约 `$335.66`，remote positions `6`，configured min trade `$1.50`，max trade `10%`，max event exposure `15%`。归档：`runtime-artifacts/pulse-live/2026-06-04T125934Z-c6a045aa-606e-407d-a970-0a83b1f9b5b0/`。
-- 成功成交 3 个 FOK BUY / No 订单，CLOB 均返回 `success=true`、`status=matched`：
-  - `will-ethereum-dip-to-1400-in-june-2026` No：filled `$48.829998`，size `59.694375`，order `0xd526...faf9`，tx `0x568d...01df`。
-  - `will-the-carolina-hurricanes-win-the-2026-nhl-stanley-cup` No：filled `$9.019999`，size `15.288134`，order `0x9329...2bc3`，tx `0xc9b7...2a7`。
-  - `will-unrwa-win-the-nobel-peace-prize-in-2026-983` No：filled `$32.289999`，size `35.097825`，order `0xfb85...365`，tx `0x732e...52d`。
-- 事后复核：本地 executor `fetchRemotePositions(.env.pizza)` 重新读取远端后显示 9 个持仓，包含本轮 3 个新仓；Polymarket public `activity` 最新 3 条 BUY 与上述 tx hash 一致。运行后 collateral/cash 约 `$244.65`。
-- 注意：`run-summary.md` 初次汇总里“实际持仓数变化”显示 `+2`，因为当时 post-run position snapshot 没及时包含 UNRWA；随后 public data API / executor 复核确认 UNRWA No 已进入远端持仓。后续若做自动验收，建议在 live run 后增加一次延迟刷新或 retry。
-- 注意：本轮对 Hurricanes 和 UNRWA 打印 fee mismatch warning：本地 estimated feeRate `0`，CLOB `base_fee=1000`；已记录在 `fee-discrepancies.jsonl`。这不阻塞成交，但应推动 `fees.ts` 接入 V2 dynamic fee。
-- 用户随后要求把“分析与决策 PDF 报告”固定进每次 Pulse 运行，并推送远端。已新增 `scripts/pulse-decision-report.ts`，`forecast:live` / `daily:forecast` 在 recommend-only、completed、以及已有 recommendation 的 failed run 后都会写 `decision-report.{md,en.md,html,pdf}`；JSON 输出新增 `decisionReportPath` / `decisionReportPdfPath`。报告不写死“高质量来源”白名单，而是按 market question / category / tags / resolution rule 动态生成 source needs，并展示实际来源覆盖、概率判断、证据链和推理摘录。验证：`pnpm exec vitest run --config config/vitest.config.ts scripts/pulse-decision-report.test.ts scripts/pulse-live.test.ts` pass；`pnpm typecheck` pass；artifact-only smoke 在本轮 archive 成功生成 8 页 PDF。
-
-## 🔄 上次会话留下的上下文（2026-05-22）
-
-- 用户要求“修复 GitHub 上的 issue 并 PR”。GitHub open issue 里只有真正的 issue #2：`Integrate OKX Agentic Wallet signer and harden OpenClaw provider compatibility`；#1 是旧 PR。
-- 当前分支：`codex/aw-agentic-wallet-cap`，基于 `origin/main`，已有 `Add OKX Agentic Wallet live support`，本轮在其上补齐两个缺口：OnchainOS shell-out timeout（`ONCHAINOS_TIMEOUT_MS`，默认 30000ms）与 OpenClaw 2026.5.x 默认 wrapper（`scripts/openclaw-agent-command.mjs`，调用 `openclaw agent --agent main --message ... --json` 并抽取 `payloads[].text`）。
-- 关键文件：`services/executor/src/lib/okx-agentic-wallet.ts`、`services/executor/src/lib/polymarket-sdk.ts`、`services/orchestrator/src/{pulse/full-pulse.ts,pulse/pulse-prescreen.ts,runtime/provider-runtime.ts}`、`scripts/openclaw-agent-command.mjs`、`.env.example`、README 中英。
-- 验证已完成：`pnpm exec vitest run --config config/vitest.config.ts services/executor/src/lib/okx-agentic-wallet.test.ts services/orchestrator/src/runtime/provider-runtime.test.ts services/orchestrator/src/runtime/pulse-entry-planner.test.ts` 36 tests pass；`pnpm test` 50 files / 419 tests pass；`pnpm typecheck` pass；executor/orchestrator build pass；fake OpenClaw wrapper smoke pass。
-- GitHub connector曾因 `chatgpt.com/backend-api/wham/apps` 连接失败，已 fallback 到 `gh`。`gh auth status` 显示账号 `Alchemist-X` 已登录且有 `repo/workflow` scope。issue list 用 REST API 成功。
-- 本轮没有运行 `forecast:live` / `daily:forecast`，没有 recommend/live Pulse，也没有真钱下单。
-
-## 🔄 上次会话留下的上下文（2026-05-15）
-
-- 用户要求重新接手 OKX Onchain OS / Agentic Wallet 适配，先从 No1 链路排查，随后明确改为 HYCRPG Agentic Wallet + Polymarket deposit wallet 路线；最终已用测试资金发出一笔 `$5` England NO live smoke 并成交。
-- worktree 现状：主 worktree `/Users/Aincrad/dev-proj/predict-raven` 在 `main`，本轮改了 handoff 文档、`pnpm-lock.yaml`、`services/{executor,managed-trading}/package.json`（CLOB SDK `1.0.2` → `1.0.6`）。旧 OKX 实验在 `/Users/Aincrad/dev-proj/predict-raven-aw` (`raven-aw`)，未合并但有可用代码。OnchainOS CLI 本机版本 `2.2.7`，checksum 匹配；当前 `onchainos wallet status` 是 `loggedIn=true`，active account 为 HYCRPG `Account 1`。
-- No1 当前状态：`.env.no1` 是 private-key/proxy 配置，signer `0xE14E...dFF1`，funder/Safe `0xc788...2936`，`SIGNATURE_TYPE=2`。`ENV_FILE=.env.no1 pnpm exec tsx scripts/v2-smoke-balance.ts` 能初始化 SDK，但 CLOB 返回 `COLLATERAL balance=0`、allowances 全 0；`forecast:positions` preflight 也显示 `remotePositionCount=0`、reported/onchain pUSD=0。
-- 只读 Raven 链路验证：`ENV_FILE=.env.no1` 直接跑 `pnpm --filter @autopoly/executor ops:check` 会找不到 env，因为 filtered package cwd 在 `services/executor`；改用绝对路径 `ENV_FILE=/Users/Aincrad/dev-proj/predict-raven/.env.no1` 后 check 成功，能读 CLOB、挑市场、读 orderbook，但余额仍为 0，候选还可能是 `restricted=true`。这个 env 解析修复已经在 AW worktree 的 `services/executor/src/lib/env-file.ts`。
-- Pulse 只读验证：`AUTOPOLY_EXECUTION_MODE=live ENV_FILE=.env.no1 pnpm forecast:live -- --recommend-only --positions-only --json` 通过 preflight 后失败在 `provider=none`：`.env.no1` 没有 `AGENT_RUNTIME_PROVIDER` / provider command。归档：`runtime-artifacts/pulse-live/2026-05-15T081723Z-pending/`；第一次没带 `AUTOPOLY_EXECUTION_MODE=live` 的 preflight 失败归档：`runtime-artifacts/pulse-live/2026-05-15T081555Z-pending/`。
-- 目前阻塞真实下单的最小清单：No1 需要可用 pUSD/Polymarket collateral；`.env.no1` 需要补 runtime provider（可参考 `.env.pizza` 的 `AGENT_RUNTIME_PROVIDER=claude-code` / `AGENT_DECISION_STRATEGY=pulse-direct`）；main 需要合入 AW 的 OnchainOS signer/env 搜索/identity preflight；若走 OKX AW，必须先登录 OnchainOS 并确认 active EOA 与 No1/目标 Polymarket deposit wallet 的 signer/funder 关系。
-- 用户随后纠正：不该走 No1 `.env` 私钥路线，应通过 HYCRPG 账号新建 Agentic Wallet 地址来下单。已用 OTP 登录 `hycrpg@gmail.com`，执行 `onchainos wallet add` 新建并自动切到 `Account 2`：accountId `0d3d2176-bea0-468a-b904-774e6321d661`，Polygon/EVM 地址 `0xc8c6af4da50b05f7183418bea68597d3d764b772`，Solana 地址 `Bg3ReK...uJra`。
-- `Account 2` 当前状态：`onchainos wallet balance` 显示 total `$0.00`；Polygon pUSD (`0xc011...2dfb`) balance=0；`https://gamma-api.polymarket.com/public-profile?address=0xc8c6...b772` 返回 `profile not found`。EIP-712 签名 smoke 成功：`onchainos wallet sign-message --chain 137 --from 0xc8c6...b772 --type eip712 ...` 返回 signature。
-- HYCRPG `Account 1` 仍持有约 `$30.01` pUSD，EVM `0xb266dd8d835e3388d0eaf0bf7efff3bb732dfed6`；Polymarket public profile 同样 `profile not found`。不要擅自转 pUSD 到 Account 2；这是资金操作，需要用户明确确认。
-- 用 AW worktree 对 `Account 2` 跑 Raven executor 只读 check（inline `WALLET_PROVIDER=onchainos`, `PRIVATE_KEY=`, `FUNDER_ADDRESS=`, `SIGNATURE_TYPE=0`, `POLY_CLI_ENABLED=false`）能进入 OnchainOS signer 并读到 Polymarket market/orderbook；CLOB 曾打印 `Could not derive api key!`，但 check 最终输出 signer/funder 都是 `0xc8c6...b772`、walletMode=`eoa`、signatureType=0、balance=0。真实下单前仍需解决资金 / Polymarket profile 或 deposit-wallet flow。
-- 用户明确授权用测试资金买 `$5` England World Cup Winner 的 NO。先尝试 `Account 1 -> Account 2` 转 `10 pUSD`，失败：`MATICInsufficient balance for network fee`，无转账。随后改用有 pUSD 的 HYCRPG `Account 1` 直接做 Agentic Wallet 下单 smoke：目标市场 `will-england-win-the-2026-fifa-world-cup-937`，NO token `77121637225348873006259930776623502125079210522997384841464684944292365296940`，preflight 读到 CLOB collateral `30`、NO bestAsk 约 `0.887`、min size 5。真实 `/order` 请求被 Polymarket 拒绝：`403 Trading restricted in your region`，`orderId=null`，无成交。事后复核：Account 1 pUSD 仍 `30`，`data-api.polymarket.com/positions` 和 `activity` 对 `0xb266...fed6` 均为空数组。结论：AW 签名 + CLOB 构单已到 `/order`，当前 blocker 是 Polymarket geoblock / allowed-region 环境，不是 Raven signer 组装。
-- 用户随后要求用 No1 挂一个不会成交的单再取消，以确认是否仍是 geoblock。2026-05-15T08:44Z 用 `.env.no1` 对 England NO 发起 no-cross GTC：`BUY price=0.001 size=5000`（最大 `$5`，当时 bestAsk `0.887`），preflight 显示 No1 CLOB collateral `$0`、allowances 全 `0`，但 orderbook 可读。请求到达 `/order` 后仍先被 Polymarket 拒绝：`403 Trading restricted in your region`，`orderId=null`，因此没有 cancel 对象；事后复核 No1 collateral 仍 `$0`、public positions `[]`、最新 public activity 早于本次 smoke；`https://polymarket.com/api/geoblock` 显示当前执行环境 `blocked=true`、`country=FR`。归档：`runtime-artifacts/okx-aw-smoke/2026-05-15T0844Z-no1-geoblock/summary.md`。结论：当前执行环境的 Polymarket geoblock 发生在余额不足之前；给 No1 转钱仍是后续 accepted-order smoke 的必要条件，但不会单独解决 geoblock。
-- 用户说已切换后要求再测。2026-05-15T09:00Z 复查 `https://polymarket.com/api/geoblock`：`blocked=true`、`country=TW`、`region=TPE`；Polymarket 文档列 `TW Taiwan` 为 close-only，所以 opening BUY 仍不可发。OnchainOS 当前 active 为 HYCRPG `Account 1`（`0xb266...fed6`），Polygon pUSD 约 `$30.01`；AW worktree 只读 check 成功识别 `walletProvider=onchainos`、signer/funder `0xb266...fed6`、walletMode `eoa`、signatureType `0`、CLOB collateral `$30`，England NO book 可读（bestBid `0.886` / bestAsk `0.887`），market `restricted=true`。未重复发真实 opening order。归档：`runtime-artifacts/okx-aw-smoke/2026-05-15T0900Z-hycrpg-tw-close-only-preflight/summary.md`。
-- 用户随后切到 JP 要求再测。2026-05-15T08:57Z `geoblock` 返回 `blocked=true`、`country=JP`、`region=13`，但 Polymarket 文档列 JP 为 frontend-only restriction，不是 API blocked；因此按用户先前授权发起 HYCRPG Account 1 `$5` England NO FOK smoke。请求到达 `/order`，不再是 geoblock，改为 `400 maker address not allowed, please use the deposit wallet flow`；`orderId=null`、无成交。复核：Account 1 Polygon pUSD 仍 `30`，public positions/activity `[]`，public profile not found，relayer deployed checks 对 `0xb266...fed6` 的 `SAFE=false`、`WALLET=false`。结论：Agentic Wallet EOA 直签 `signatureType=0` 不可用于这个新 API 账户；下一步必须接 Polymarket deposit wallet：deploy/derive deposit wallet、把 pUSD 放到 deposit wallet、由 deposit wallet 做 approvals、CLOB sync `signature_type=3`、下单用 `POLY_1271` 且 maker/signer 都是 deposit wallet。归档：`runtime-artifacts/okx-aw-smoke/2026-05-15T0857Z-hycrpg-jp-deposit-wallet-required/summary.md`。
-- 已继续 deposit wallet flow：为 HYCRPG owner EOA `0xb266...fed6` 派生并部署 deposit wallet `0x70aC00EACb8345B209cdc68e830a18874aEFd55a`；relayer transaction ID `019e2ae0-7cb8-7557-adc6-c01ac0450a6b`，hash `0xd958cb81d53bd874f14c441568b4a4270b6a3d3b277e74201aab619bd03f40b8`，observed `STATE_MINED`，`/deployed?type=WALLET` 返回 `true`。归档：`runtime-artifacts/okx-aw-smoke/2026-05-15T0903Z-hycrpg-deposit-wallet-deployed/summary.md`。
-- 用户给 owner EOA 打入 Polygon 原生 gas（当前是 POL；部分钱包仍显示 MATIC）后，按用户确认把 `10 pUSD` 从 owner EOA 转到 deposit wallet。pUSD 转账 hash `0xf2f657f33347472d4294e987a60750f358a411b62d18b62e0f11dfb46358e5f6`；随后通过 relayer 让 deposit wallet 对 3 个 CLOB spender 做 max approve，relayer tx ID `019e2b05-0301-7155-b5aa-34b56a8d2464`，onchain hash `0xb4f861bdb4c791ec51a8deeeb3da60b438c06407dd962206949e9bdcc9f2d1c7`。CLOB `balance-allowance/update?signature_type=3` 后显示 deposit wallet collateral `10000000`，allowance 全 max。
-- 第一次 `POLY_1271` 下单尝试失败在本地 SDK 版本：`@polymarket/clob-client-v2@1.0.2` 生成的订单是 `maker=deposit wallet` 但 `signer=owner EOA`，CLOB 返回 `400 the order signer address has to be the address of the API KEY`，无成交。已将 `services/executor` 与 `services/managed-trading` 的 `@polymarket/clob-client-v2` 升级到 `1.0.6`；该版本会在 `POLY_1271` 下生成 `maker=signer=deposit wallet`，并输出 ERC-7739 wrapped signature。
-- 成功 smoke：2026-05-15T09:55Z 用 HYCRPG Agentic Wallet owner `0xb266...fed6` 签名、deposit wallet `0x70aC...d55a` 出资，对 England World Cup Winner NO 发 `$5` FOK BUY。订单 preview：`maker=signer=0x70aC...d55a`、`signatureType=3`、signature length `636`、`makerAmount=5000000`、`takerAmount=5636970`。CLOB 返回 `success=true`、`status=matched`、order ID `0xec2c54cbc318321068630669f92c531db3cc7b5bc9829d06b977157f781cf5a2`、tx `0x841cc5185ec02cb230ff242bc3931ea6b284c20da015e34cd5f146c61572b3d1`。
-- 事后复核：Polygon receipt `status=0x1`；deposit wallet pUSD `4.983052`、owner EOA pUSD `20`、deposit wallet England NO ERC-1155 balance `5.636977`；Polymarket public positions/activity 均能看到 `Will England win the 2026 FIFA World Cup?` / `No` / size `5.6369` / avgPrice `0.8869`。验证：`pnpm --filter @autopoly/executor typecheck` pass；`pnpm --filter @autopoly/managed-trading typecheck` pass。归档：`runtime-artifacts/okx-aw-smoke/2026-05-15T0955Z-hycrpg-poly1271-smoke/summary.md`。
-- 用户要求临时限制：只推荐一个最优仓位，下单金额先是 `$5`，随后因 15% 单笔上限改为 `$1`。已在主 worktree 实现 `PULSE_ENTRY_MAX_PLANS=1` + `PULSE_ENTRY_FIXED_NOTIONAL_USD=<amount>` 路径，并在 `forecast:live` preflight/归档里显示这两个约束。验证：`pulse-entry-planner.test.ts` / `pulse-direct-runtime.test.ts` / `okx-agentic-wallet.test.ts` 32 tests pass；`pnpm typecheck` 全 9 workspace pass。代码归档：`runtime-artifacts/okx-aw-smoke/2026-05-15T1020Z-pulse-entry-limit/summary.md`。
-- 已用一次性 env `runtime-artifacts/okx-aw-smoke/2026-05-15T1026Z-aw-pulse-one-best/aw-pulse.env` 跑真实 AW `forecast:live`（不是 recommend-only）：`PULSE_ENTRY_MAX_PLANS=1`、`PULSE_ENTRY_FIXED_NOTIONAL_USD=1`、`MIN_TRADE_USD=1`。结果：preflight 通过，signer `0xb266...fed6`、funder `0x70aC...d55a`、signatureType=3、collateral `4.983052 pUSD`、远端持仓 1；Pulse 选出唯一新开仓 `bun-b04-hsv-2026-05-16-hsv` / `No` / `$1`，但 execution plan 被 Polymarket 最小订单量拦截：`5 shares @ $0.92 ask => $4.60 minimum`，所以 `executedOrders=0`，没有下单成交。归档：`runtime-artifacts/pulse-live/2026-05-15T103127Z-8447b494-9a42-4f95-8dab-976c56048f31/`；AW 摘要：`runtime-artifacts/okx-aw-smoke/2026-05-15T1026Z-aw-pulse-one-best/summary.md`。
-- 用户确认临时把 AW 单笔 cap 设为 50%，从 ACC1 `0xb266...fed6` 把全部 `20 pUSD` 转入 deposit wallet `0x70aC...d55a`，并 live 买入 `bun-b04-hsv-2026-05-16-hsv` / `No` / `5 shares`。执行：OKX 先返回 contract-recipient 确认，用户二次确认后用 raw `20000000` pUSD base units 转账，tx `0x42552c...979e`；随后 FOK BUY `5` shares @ `0.92`，notional `$4.60`，order `0x10ec...a093`，tx `0x06b5...13ef`，CLOB status `matched`。事后复核：owner pUSD `0`，deposit wallet CLOB collateral `20.372012 pUSD`，public activity / positions 均显示 HSV No `5` shares。归档：`runtime-artifacts/okx-aw-smoke/2026-05-15T1245Z-aw-hsv-no-5shares/summary.md`。
-- 已修复 public equity history 污染：此前 `forecast:live` 成功路径无条件调用 `appendEquitySnapshot()`，会把 AW 小账户净值追加到 `apps/web/public/equity-history.json`。现在默认只有 active env 文件名是 `.env.pizza` 才会写 Pizza public chart；AW/No1/artifact env 只写 run archive。可用 `PUBLIC_EQUITY_HISTORY_ENABLED=true/false` 明确覆盖。验证：`scripts/equity-snapshot.test.ts` 3 tests pass；`pnpm typecheck` pass。
-
-## 🔄 上次会话留下的上下文（2026-05-10）
-
-- 用户要求“风格和原版网站不一样、信息和布局基本不变、先做三个版本预览、不要直接投 production”。已新增三个 preview route：`/previews/pizza-ledger-folio`（纸面研究简报）、`/previews/pizza-ledger-terminal`（深色 operator terminal）、`/previews/pizza-ledger-exchange`（清爽券商看板）。实现方式是 `ProphetsProfitSnapshot` 支持 `variant="folio" | "terminal" | "exchange"` 和 preview-only `as="div"`，避免在 preview shell 的 `<main>` 内嵌套 `<main>`；首页默认仍是 `variant="original"`。
-- Preview 部署：最终可评审 URL 是 `https://autopoly-pizza-spectator-eixznt54x-alchemist-xs-projects.vercel.app`（deploy `dpl_D3VdKtc1YZ6YTxXSn2qRg7DGgC1P`，`target=preview`，`status=Ready`）。没有执行 `vercel deploy --prod`，正式 alias `https://autopoly-pizza-spectator.vercel.app` 未切换。
-- 验证：`pnpm --filter @autopoly/web typecheck` pass；`pnpm --filter @autopoly/web build` pass；本地 `http://localhost:3007` 和 Vercel preview 三条 route 全部 Playwright 通过，console/page error 为 0，手机宽度 `overflowPx=0`，并确认显示 Pizza 标记 `$500.00` starting capital / `34 fills`。实时 mark 验收时 preview 显示 `ending_nav≈$554.25`、`roi≈+10.85%`。截图：`output/playwright/pizza-preview-{folio,terminal,exchange}.png` 和 `output/playwright/pizza-preview-live-{folio,terminal,exchange}.png`。
-- 用户确认切正式并要求适配自己的数据。`apps/web` 根路径 `/` 仍使用 prophets-profit 的 "Live Trading Snapshot" 外观，但数据源已改为 `GET /api/public/trading-snapshot`，由 `apps/web/lib/trading-snapshot.ts` 聚合 Polymarket public wallet `overview / positions / closed-positions / activity`、`public/equity-history.json`、`public/pulse-position-review.json`。
-- 已删除源站 Kalshi 静态 `paper-trades.json`，避免线上混用。新增 `apps/web/public/trading-snapshot-config.json`，用于 production 环境没有 `INITIAL_BANKROLL_USD` 时把 Pizza 起始资金固定为 `$500`；否则线上会误用 equity history 第一条 `$20` 计算 ROI。
-- 当前 production 数据口径：正式 API 返回 `starting_capital=$500`、`ending_nav≈$556.98`、`net_pnl≈+$56.98`、`roi≈+11.40%`、`34` fills、`20` markets、`7` open。`pulse-position-review.json` 来自 `runtime-artifacts/pulse-live/2026-05-08T020947Z-245b4933-880f-47d7-ae86-75d5ffb8b81e/recommendation.json`，只包含公开 review 摘要和来源链接。
-- Production deploy：`dpl_8is51ocvNuE2H1pxkpBe5UEiEES1`，正式 alias `https://autopoly-pizza-spectator.vercel.app`；中间旧 production `dpl_3uM7bQnMp3p3G6U22wSuKVXvtNLR` 曾暴露过 `$20` 起始资金口径，已由最终部署修正。
-- 验证：`pnpm --filter @autopoly/web typecheck` pass；`pnpm --filter @autopoly/web build` pass；本地 `http://localhost:3007` 和 production Playwright 首屏/筛选/搜索/展开 Delcy rationale 通过；production `/api/public/trading-snapshot` 返回 200；Playwright console error 0。截图：`output/playwright/pizza-adapted-local.png`、`output/playwright/pizza-adapted-production.png`。
-- 本轮没有运行 `forecast:live` / `daily:forecast`，没有真实下单；只读取现有 Pulse 归档和 Polymarket 公开接口。
-
-## 🔄 更早会话留下的上下文（2026-05-08）
-
-- 2026-05-08 用户明确要求：任何事件概率 / fair probability / edge 必须调用 Pulse 流程；review 当前持仓时是“用 Pulse 分析已有持仓”，不是扫市场找新标的。`AGENTS.md` / `claude.md` / `docs/en/AGENTS.md` / `docs/en/CLAUDE.md` 已同步写入这条规则。
-- `pnpm forecast:positions` 已落地：入口在 `scripts/pulse-live.ts`，positions-only 强制 recommend-only；`market-pulse.ts` 生成 existing-position snapshot；`pulse-direct-runtime.ts` 不合成新开仓，只把已有持仓 review 决策写入 final decisions；`pulse-entry-planner.ts` position-only 模式保留所有概率行，不因负 edge / Kelly=0 丢掉。
-- 最近一次只读复审：`ENV_FILE=.env.pizza pnpm forecast:positions -- --json` 成功，归档 `runtime-artifacts/pulse-live/2026-05-08T020947Z-245b4933-880f-47d7-ae86-75d5ffb8b81e/`；Pulse 报告 `runtime-artifacts/reports/pulse/2026/05/08/pulse-20260508T021044Z-claude-code-full-245b4933-880f-47d7-ae86-75d5ffb8b81e.md`。没有下单。
-- 当前 7 仓全部 No / hold；有正 edge 的 6 仓：Delcy +9.5pp、Finland +4.15pp、Measles +4.0pp、France +2.85pp、England +2.05pp、Leclerc +1.45pp；Crude edge=0 是因为 Pulse 明确写“AI 概率未评估，规则/CL 数据不足”，下次优先补抓规则和 WTI/CL 数据。
-- 验证：`pnpm test -- services/orchestrator/src/runtime/pulse-entry-planner.test.ts services/orchestrator/src/runtime/pulse-direct-runtime.test.ts services/orchestrator/src/review/position-review.test.ts` 实际跑完整 suite，48 files / 402 tests pass；`pnpm typecheck` pass。
-
-## 🔄 更早会话留下的上下文（2026-05-07）
-
-- pulse 质量本轮新增：`scripts/pulse-evaluation-ledger.ts` 负责逐仓 mark attribution + calibration ledger；`scripts/pulse-live.ts` 在 recommend-only/live 成功路径写入对应 artifact；`scripts/live-run-summary.ts` 显示逐仓 PnL 归因。
-- 现有仓位复审 v1 已有独立研究入口：`scripts/pulse-position-research.ts` 逐仓抓 Gamma event/market + held-token orderbook，`scripts/pulse-live.ts` 写 `position-research.json`，`position-review` 对未被随机 Pulse 覆盖的仓位标 `fresh-position-research`。仍缺：模型级概率重估、评论/外部来源 crawler。
-- Polymarket 性能本轮改动：默认 in-process SDK；poly-cli 变成显式 opt-in fallback；`pulse-live` 单轮缓存 book/avgCost；`buildExecutionPlan` 对 unique tokenId 并发预取订单簿。
-- 验证：`pnpm typecheck` 通过；`pnpm test -- services/orchestrator/src/review/position-review.test.ts services/orchestrator/src/review/position-research.test.ts services/orchestrator/src/lib/execution-planning.test.ts` 实际跑完整 vitest suite，47 files / 400 tests 通过。没有跑 `forecast:live`，没有真实下单。
-
-## 🔄 更早会话留下的上下文（2026-05-04）
-
-- 用户决策（plan §0 锁定）：Privy / 一路推到 Phase 3 / **MVP 仅靠 Polymarket Weekly Rewards Pool**（不向用户收 builder fee） / 新建独立 app `apps/raven-managed/`（不动 `apps/web`）
-- 营收模型修正：原方案"收 builder fee"是错的。头部 70% 市占率的 betmoar / Based Prediction / Stand.trade 全是 \$0。靠 Polymarket Weekly Rewards Pool（约 0.5-1% of routed volume）赚钱
-- 设计原则锁定：**产品界面内不用 AI 生图**（crypto-native 用户对 Midjourney 出来的东西敏感）；off-product marketing 才用 AI 生图。详见 design-elements-inventory §3
-- 已有 6 commit on `builder-raven`：`c51cea5` Phase 1 / `22fa56f` revenue model / `11a5554` Safe / `40a7678` viem balance / `ec8c15c` managed-trading skeleton / `11e64f5` design inventory / `1a3406b` build+typecheck fixes
-- ⚠️ **worktree 拓扑陷阱**：`/Users/Aincrad/dev-proj/autonomous-poly-trading` 是 `predict-raven` 的 symlink；`/Users/Aincrad/dev-proj/predict-raven-aw` worktree 上有别的 session 的 WIP，**不要强删**
-- 历史上下文（2026-04-26）：实盘跑了 `daily:forecast` 3 单全成（finland eurovision / crude oil / france world cup），net $548 → $529
-
-## 📌 引用速查
-
-| 我想知道...                | 去看                                                          |
-| -------------------------- | ------------------------------------------------------------- |
-| 第一次接手项目（仅一次）   | [`docs/agent-onboarding.md`](agent-onboarding.md)             |
-| 风控完整规则               | [`docs/risk-controls.md`](risk-controls.md)                   |
-| 命令速查 / 部署            | [`docs/diagrams/dev-reference.md`](diagrams/dev-reference.md) |
-| 历史 review / decision     | [`docs/internal/review/`](internal/review/)                   |
-| 最近一次 pulse-live 跑了啥 | `runtime-artifacts/pulse-live/` 下最新目录                    |
+- handoff 只保留当前状态和未完成动作，目标控制在约 150 行以内。
+- wrap-up 时**原地更新**状态和优先级，不要在文件顶部继续追加“上次更新”日记。
+- 完成项从待办移除；值得保留的过程写进 git commit、PR 或 `docs/internal/review/`。
+- 任何新增 / 修改必须同步英文镜像；中文为准。

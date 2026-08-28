@@ -167,11 +167,11 @@
 
 ## 停车场 — 回收的埋没资产（2026-07-03 分支扫描，用户指示存档）
 
-三个已有可观实现、等产品立项的方向（按现成度排序）：
+三个历史方向；第一项已退役，后两项仍需新的产品立项（按原现成度排序）：
 
 | 项 | 现状 | 重启入口 |
 | --- | --- | --- |
-| **Raven Managed 代客交易** | 代码完成度最高的搁置产品线：Privy 登录 + Safe 推导 + builder code + 风险分层 + paper-mode 端到端（65 测试绿），Phase 3a 全部完成，2026-05 起卡在 dogfood 启动 | `apps/raven-managed` + `services/managed-trading`；四个启动选项见 [`agent-handoff.md`](agent-handoff.md) 的 dogfood 节 |
+| **Raven Managed 代客交易（已退役）** | 2026-08 已从主线删除，不再属于当前待办；历史上完成过 Privy / Safe / builder code / 风险分层 / paper-mode 原型 | 仅在重新立项时查历史计划 [`2026-05-04-raven-managed-product-plan.md`](internal/plan/2026-05-04-raven-managed-product-plan.md)，不要从当前 handoff 寻找启动步骤 |
 | **常驻自主 agent（订阅式预测/持仓管家）** | `raven-agent-loop` 纯库已合入 orchestrator（issue #6 / PR #20，刻意 no-live-money）；配合 forecast-api + 每日配额，"存一个问题每天自动重跑、变了推送"只差一层调度 | `services/orchestrator/src/runtime/raven-agent-loop.ts`；产品形态未立项 |
 | **结构化外部信息源层（World Monitor）** | `packages/market-intelligence` 已在 main（issue #21/#25 三阶段路线）：World Monitor 客户端 618 行 + 市场标签库 402 行 + pace strategy，全部未接线。引擎证据目前全靠 WebSearch——结构化信息源是预测质量的差异化 lever | `packages/market-intelligence/`（Python，独立可跑）；接入点 = 引擎 round prompt 的证据源扩展 |
 
