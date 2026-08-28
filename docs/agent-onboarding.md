@@ -1,6 +1,6 @@
-# Agent Onboarding — 第一次接手 predict-raven
+# Agent Onboarding — 按需背景参考
 
-> 🆕 **只有第一次接手这个项目时才需要读这份。** 后续会话直接看 [`docs/agent-handoff.md`](agent-handoff.md) 获取当前状态 + 待办即可。
+> **这份文件不再是新会话启动必读。** 所有 agent 开始工作时只读 [`docs/agent-handoff.md`](agent-handoff.md) 获取当前状态；仅在缺少环境或历史背景时按需查阅本文件。
 >
 > 你是 Claude Code / Codex / OpenClaw 在这个仓库**新启动**的 agent。这份文档让你 **5 分钟**进入工作状态，不踩坑。
 >

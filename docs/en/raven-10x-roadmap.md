@@ -49,11 +49,11 @@ Scoped API keys / multi-user (2/10) · API v1 + HMAC webhooks (4/10) · SQLite l
 
 ## Parking lot — reclaimed buried assets (2026-07-03 branch sweep, archived on user instruction)
 
-Three directions with substantial existing implementation, awaiting a product decision (ordered by readiness):
+Three historical directions; the first is retired and the other two require a new product decision (original readiness order):
 
 | Item | Status | Restart entry |
 | --- | --- | --- |
-| **Raven Managed (managed trading)** | The most code-complete parked product line: Privy login + Safe derivation + builder code + risk tiers + paper-mode end-to-end (65 tests green); Phase 3a fully done, stalled at dogfood since 2026-05 | `apps/raven-managed` + `services/managed-trading`; four launch options in [`agent-handoff.md`](../agent-handoff.md)'s dogfood section |
+| **Raven Managed (retired)** | Removed from the mainline in 2026-08 and no longer a current TODO; the historical prototype covered Privy / Safe / builder code / risk tiers / paper mode | Consult the historical [`2026-05-04-raven-managed-product-plan.md`](../internal/plan/2026-05-04-raven-managed-product-plan.md) only after a new product decision; do not look for restart steps in the current handoff |
 | **Resident autonomous agent (subscription forecasts / position steward)** | `raven-agent-loop` pure lib merged into the orchestrator (issue #6 / PR #20, deliberately no-live-money); combined with forecast-api + daily quotas, "save a question, auto re-run daily, push on change" is one scheduler away | `services/orchestrator/src/runtime/raven-agent-loop.ts`; product shape not yet scoped |
 | **Structured external information layer (World Monitor)** | `packages/market-intelligence` is on main (issue #21/#25 three-phase route): 618-line World Monitor client + 402-line market tag library + pace strategy, all unwired. Engine evidence currently relies on WebSearch alone — a structured source layer is a real forecast-quality lever | `packages/market-intelligence/` (Python, runs standalone); integration point = evidence-source extension of the engine's round prompt |
 

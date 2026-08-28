@@ -137,8 +137,8 @@
 
 | 内容 | 文件 |
 | --- | --- |
-| **每次接手必看** — 当前状态 + 待办（wrap-up 时更新） | [`docs/agent-handoff.md`](docs/agent-handoff.md) |
-| **第一次接手才看**（仅一次） | [`docs/agent-onboarding.md`](docs/agent-onboarding.md) |
+| **新会话唯一状态入口** — 当前状态 + 待办（wrap-up 时原地更新） | [`docs/agent-handoff.md`](docs/agent-handoff.md) |
+| 历史 / 环境背景（按需，不是启动必读） | [`docs/agent-onboarding.md`](docs/agent-onboarding.md) |
 | 风控完整规则 | [`docs/risk-controls.md`](docs/risk-controls.md) |
 | forecasting 流程开销画像 | [`docs/diagrams/forecasting-cost-profile.md`](docs/diagrams/forecasting-cost-profile.md) |
 | 命令速查 / 部署形态 / 依赖矩阵 | [`docs/diagrams/dev-reference.md`](docs/diagrams/dev-reference.md) |
@@ -149,8 +149,8 @@
 
 ### Wrap-up 时必做
 
-- 更新 [`docs/agent-handoff.md`](docs/agent-handoff.md)：勾掉刚完成的 P0/P1，添加新发现的 TODO，更新"上次会话留下的上下文"节，刷新 `最后更新` 行
+- 原地更新 [`docs/agent-handoff.md`](docs/agent-handoff.md) 的当前状态与 P0/P1/P2；删除已完成项，不要追加按日期排列的会话日记
 - 用户说"记一下" / "save this" / "update handoff" 时立刻更新，不要等 wrap-up
-- handoff 文档保持精简：actionable 而不是流水账；细节进 git log 或 `docs/internal/review/`
+- handoff 文档保持精简（目标约 150 行以内）：actionable 而不是流水账；细节进 git log、PR 或 `docs/internal/review/`
 
 > **当前 P0 / P1 / P2 待办均已迁到 [`docs/agent-handoff.md`](docs/agent-handoff.md)**——本节不再维护任务列表，避免双源不一致。

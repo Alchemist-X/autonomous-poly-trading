@@ -137,8 +137,8 @@ For any user-visible change, close out with: **screenshot → read the image →
 
 | Topic | File |
 | --- | --- |
-| **Read every time you take over** — current state + TODOs (updated at wrap-up) | [`docs/en/agent-handoff.md`](agent-handoff.md) |
-| **First contact only** (read once) | [`docs/en/agent-onboarding.md`](agent-onboarding.md) |
+| **Only status entry point for a new session** — current state + TODOs (updated in place at wrap-up) | [`docs/en/agent-handoff.md`](agent-handoff.md) |
+| Historical / environment background (on demand, not startup reading) | [`docs/en/agent-onboarding.md`](agent-onboarding.md) |
 | Full risk-control rules | [`docs/risk-controls.en.md`](../risk-controls.en.md) |
 | Forecasting cost profile | [`docs/diagrams/forecasting-cost-profile.en.md`](../diagrams/forecasting-cost-profile.en.md) |
 | Command cheatsheet / deployment / dependency matrix | [`docs/diagrams/dev-reference.en.md`](../diagrams/dev-reference.en.md) |
@@ -149,8 +149,8 @@ For any user-visible change, close out with: **screenshot → read the image →
 
 ### Wrap-up rituals
 
-- Update [`docs/en/agent-handoff.md`](agent-handoff.md): tick off completed P0/P1 items, add newly discovered TODOs, refresh the "Last session context" section, bump the `Last updated` line.
+- Update current state and P0/P1/P2 in [`docs/en/agent-handoff.md`](agent-handoff.md) in place; remove completed items instead of prepending dated session diaries.
 - Update immediately when the user says "记一下" / "save this" / "update handoff" — do not wait until wrap-up.
-- Keep the handoff doc tight: actionable, not a running log; details belong in `git log` or `docs/internal/review/`.
+- Keep the handoff doc tight (target roughly 150 lines or fewer): actionable, not a running log; details belong in git history, PRs, or `docs/internal/review/`.
 
 > **Current P0 / P1 / P2 TODOs all live in [`docs/en/agent-handoff.md`](agent-handoff.md)** — this section no longer maintains its own task list to avoid two-source drift.

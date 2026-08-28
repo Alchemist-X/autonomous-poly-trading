@@ -1,6 +1,6 @@
-# Agent Onboarding — First time picking up predict-raven
+# Agent Onboarding — Background Reference
 
-> 🆕 **Read this only on your first contact with this project.** For every subsequent session, jump straight to [`docs/agent-handoff.md`](../agent-handoff.md) for current state + pending TODOs.
+> **This file is no longer startup reading.** Every agent starts with [`docs/agent-handoff.md`](../agent-handoff.md) as the sole source of current state and consults this file only when environment or historical background is missing.
 >
 > You are a Claude Code / Codex / OpenClaw agent **freshly started** in this repo. This doc gets you operational in **5 minutes** without stepping on landmines.
 >
