@@ -276,6 +276,9 @@ const MS_PER_DAY = 86_400_000;
 const FALLBACK_DAYS = 180;
 const DEFAULT_MAX_PLANS = 4;
 const DEFAULT_BATCH_CAP_PCT = 0.2;
+// A nominal/watch verdict identifies a researched side, not an instruction to trade it.
+// Keep this guard deterministic because this parser can feed live entry decisions.
+const SKIP_DIRECTION_MARKERS = /观望|不建议|不可交易|不参与|放弃|名义|nominal|\bstay\s+out\b|\bno[-\s]+trade\b|\bdo\s+not\s+trade\b|\bpass\b/i;
 const DIRECTION_LABELS = [
   "方向",
   "Direction",
@@ -287,6 +290,10 @@ const DIRECTION_LABELS = [
 ];
 
 export const PULSE_NO_TRADE_MARKER = "NO-TRADE";
+
+function isExplicitNoEntry(direction: string, reportedSuggestedPct: number | null) {
+  return SKIP_DIRECTION_MARKERS.test(direction) || reportedSuggestedPct === 0;
+}
 
 // Anchored to its own line (optionally bold), exactly as the render prompt
 // instructs. A prose mention ("this is not a NO-TRADE round") must NOT count,
@@ -332,6 +339,12 @@ export function assessPulseReportParseability(
 
     const direction = extractTableValue(section.body, DIRECTION_LABELS)
       ?? extractLabeledValue(section.body, DIRECTION_LABELS);
+    const suggestedRow = extractTableValue(section.body, ["建议仓位", "仓位建议", "Suggested Size", "Position Size", "Sizing"])
+      ?? extractLabeledValue(section.body, ["建议仓位", "仓位建议", "Suggested Size", "Position Size", "Sizing"]);
+    const reportedSuggestedPct = extractPercentValue(suggestedRow);
+    if (direction && isExplicitNoEntry(direction, reportedSuggestedPct)) {
+      continue;
+    }
     const outcomeLabel = direction ? inferOutcomeLabel(direction) : null;
     if (!outcomeLabel) {
       continue;
@@ -666,6 +679,10 @@ export function buildPulseEntryPlans(input: {
     }
 
     if (!direction) {
+      continue;
+    }
+    // Never convert a nominal/watch side or an explicit 0% recommendation into a live entry.
+    if (isExplicitNoEntry(direction, reportedSuggestedPct)) {
       continue;
     }
 
