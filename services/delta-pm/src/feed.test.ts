@@ -1,5 +1,10 @@
-import { describe, expect, it } from "vitest";
-import { parseAtom, stripHtml } from "./feed.js";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import type { NewsItem } from "@autopoly/delta-pm-contracts";
+import { parseAtom, parseSitemap, selectSitemapBackfill, stripHtml } from "./feed.js";
+import { upsertNewsItem } from "./store.js";
 
 const FIXTURE = `<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -59,5 +64,72 @@ describe("parseAtom", () => {
 describe("stripHtml", () => {
   it("converts breaks/paragraphs to newlines and decodes entities", () => {
     expect(stripHtml("a&lt;b<br/>c</p>d &amp; e")).toBe("a<b\nc\nd & e");
+  });
+});
+
+
+const SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://www.theinformation.com/briefings/openai-integrates-chatgpt</loc>
+    <news:news>
+      <news:publication_date>2026-08-21T17:55:36Z</news:publication_date>
+      <news:title>Exclusive: OpenAI Integrates ChatGPT into Apple Messages on Mac</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://www.theinformation.com/articles/meta-hatch-agent-platform</loc>
+    <news:news>
+      <news:publication_date>2026-08-24T22:40:37Z</news:publication_date>
+      <news:title>Meta Plans to Launch Hatch AI Agent Platform</news:title>
+    </news:news>
+  </url>
+</urlset>`;
+
+describe("sitemap backfill", () => {
+  let dir: string;
+
+  beforeEach(() => {
+    dir = mkdtempSync(path.join(tmpdir(), "delta-pm-feed-"));
+    process.env.ARTIFACT_STORAGE_ROOT = dir;
+  });
+
+  afterEach(() => {
+    delete process.env.ARTIFACT_STORAGE_ROOT;
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("parses url blocks into items keyed by a sitemap id", () => {
+    const items = parseSitemap(SITEMAP, "2026-08-25T06:39:00.000Z");
+    expect(items).toHaveLength(2);
+    expect(items[0].id).toBe("sitemap:https://www.theinformation.com/briefings/openai-integrates-chatgpt");
+    expect(items[0].kind).toBe("briefing");
+    expect(items[0].prefix).toBe("exclusive");
+    expect(items[0].publishedUtc).toBe("2026-08-21T17:55:36.000Z");
+    expect(items[0].teaser).toBe("");
+  });
+
+  it("skips a story already archived under its Atom feed id (regression: 2026-08-25 restart re-ingest)", () => {
+    const fromFeed = parseAtom(FIXTURE, "2026-08-22T00:00:00.000Z")[0];
+    expect(fromFeed.url).toBe("https://www.theinformation.com/briefings/openai-integrates-chatgpt");
+    upsertNewsItem(fromFeed);
+
+    const fresh = selectSitemapBackfill(parseSitemap(SITEMAP, "2026-08-25T06:39:00.000Z"), [fromFeed.id]);
+    expect(fresh.map((i) => i.url)).toEqual(["https://www.theinformation.com/articles/meta-hatch-agent-platform"]);
+  });
+
+  it("still recovers stories the feed window missed", () => {
+    const fresh = selectSitemapBackfill(parseSitemap(SITEMAP, "2026-08-25T06:39:00.000Z"), []);
+    expect(fresh).toHaveLength(2);
+  });
+
+  it("ignores trailing-slash and query differences when matching URLs", () => {
+    const archived: NewsItem = {
+      ...parseAtom(FIXTURE, "2026-08-22T00:00:00.000Z")[1],
+      url: "https://www.theinformation.com/articles/meta-hatch-agent-platform/?utm_source=feed"
+    };
+    upsertNewsItem(archived);
+    const fresh = selectSitemapBackfill(parseSitemap(SITEMAP, "2026-08-25T06:39:00.000Z"), []);
+    expect(fresh.map((i) => i.url)).toEqual(["https://www.theinformation.com/briefings/openai-integrates-chatgpt"]);
   });
 });

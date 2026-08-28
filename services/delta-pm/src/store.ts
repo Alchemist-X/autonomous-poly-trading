@@ -72,6 +72,60 @@ export function loadNewsItem(newsId: string): NewsItem | null {
   return parsed.success && parsed.data.id === newsId ? parsed.data : null;
 }
 
+// The same article can arrive under two ids: the Atom entry id from the feed
+// (`tag:...`) and `sitemap:<url>` from the gap backfill. Identity therefore
+// also resolves by URL — the FIRST record to claim a URL owns it, so a second
+// arrival is a re-ingest of the original (t0 preserved), not a second signal.
+// The index is per-root and rebuilt lazily so tests can swap artifact roots.
+interface UrlClaim {
+  id: string;
+  fetchedAtUtc: string;
+}
+
+let urlIndexDir: string | null = null;
+let urlIndex: Map<string, UrlClaim> | null = null;
+
+export function normalizeNewsUrl(url: string): string {
+  return url.trim().replace(/[?#].*$/, "").replace(/\/+$/, "").toLowerCase();
+}
+
+function newsUrlIndex(): Map<string, UrlClaim> {
+  const dir = paths.newsDir();
+  if (urlIndex && urlIndexDir === dir) return urlIndex;
+  const index = new Map<string, UrlClaim>();
+  if (existsSync(dir)) {
+    for (const file of readdirSync(dir)) {
+      if (!file.endsWith(".json")) continue;
+      const parsed = newsItemSchema.safeParse(readJson<unknown>(path.join(dir, file)));
+      if (!parsed.success) continue;
+      claimUrl(index, parsed.data);
+    }
+  }
+  urlIndex = index;
+  urlIndexDir = dir;
+  return index;
+}
+
+// Earliest arrival owns the URL — the same rule the merge uses for identity,
+// applied identically whether the index is rebuilt from disk or updated live.
+function claimUrl(index: Map<string, UrlClaim>, item: NewsItem): void {
+  if (!item.url) return;
+  const key = normalizeNewsUrl(item.url);
+  const incumbent = index.get(key);
+  if (incumbent && incumbent.fetchedAtUtc <= item.fetchedAtUtc) return;
+  index.set(key, { id: item.id, fetchedAtUtc: item.fetchedAtUtc });
+}
+
+function rememberNewsUrl(item: NewsItem): void {
+  claimUrl(newsUrlIndex(), item);
+}
+
+// Canonical news id that already owns this URL, or null when the URL is new.
+export function findNewsIdByUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  return newsUrlIndex().get(normalizeNewsUrl(url))?.id ?? null;
+}
+
 export interface NewsUpsertResult {
   item: NewsItem; // the merged record actually persisted
   existed: boolean; // a record for this id was already on disk (=> this is a re-ingest)
@@ -86,6 +140,7 @@ export function upsertNewsItem(incoming: NewsItem): NewsUpsertResult {
   const existing = loadNewsItem(incoming.id);
   if (!existing) {
     writeJsonAtomic(newsFile(incoming.id), incoming);
+    rememberNewsUrl(incoming);
     return { item: incoming, existed: false, fullTextAttached: Boolean(incoming.fullText) };
   }
   const merged: NewsItem = {
@@ -97,6 +152,7 @@ export function upsertNewsItem(incoming: NewsItem): NewsUpsertResult {
     updatedUtc: incoming.updatedUtc ?? existing.updatedUtc
   };
   writeJsonAtomic(newsFile(incoming.id), merged);
+  rememberNewsUrl(merged);
   return { item: merged, existed: true, fullTextAttached: Boolean(incoming.fullText && !existing.fullText) };
 }
 

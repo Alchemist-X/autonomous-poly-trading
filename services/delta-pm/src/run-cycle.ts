@@ -29,7 +29,7 @@ import { marketState } from "./market.js";
 import { checkHalt, decideEntry, equityOf, reviewPosition, updateTrailingStop, type MarketView } from "./policy.js";
 import { advance, finishRun, setTickers, startRun } from "./progress.js";
 import { push } from "./notify.js";
-import { appendLedger, paths, readJson, upsertNewsItem, writeJsonAtomic } from "./store.js";
+import { appendLedger, findNewsIdByUrl, paths, readJson, upsertNewsItem, writeJsonAtomic } from "./store.js";
 import { fetchCandles } from "./hyperliquid.js";
 
 // --- two-lane writer -------------------------------------------------------
@@ -181,7 +181,13 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
   // identity and timing, so a re-ingest (console 补全原文 paste) only fills
   // gaps and becomes a RERUN of the original signal, driven by the merged
   // record.
-  const upsert = upsertNewsItem(parsed.data);
+  // Identity resolves by URL as well as by id: the feed and the sitemap gap
+  // backfill hand the SAME story two different ids, and only the first one may
+  // own t0. An alias therefore folds into the original record instead of
+  // starting a second signal with a later timestamp.
+  const canonicalId = findNewsIdByUrl(parsed.data.url);
+  const aliasOf = canonicalId && canonicalId !== parsed.data.id ? parsed.data.id : null;
+  const upsert = upsertNewsItem(aliasOf ? { ...parsed.data, id: canonicalId as string } : parsed.data);
   const item: NewsItem = upsert.item;
   appendLedger({
     type: "news_seen",
@@ -191,8 +197,16 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
     kind: item.kind,
     prefix: item.prefix,
     rerun: upsert.existed,
+    aliasOf,
     hasFullText: Boolean(item.fullText)
   });
+  // A cross-path duplicate that carries no new text has nothing to add: the
+  // original already ran the gates under this t0. Paste reruns (which DO carry
+  // full text) still go through.
+  if (aliasOf && !upsert.fullTextAttached) {
+    appendLedger({ type: "news_duplicate_url", newsId: item.id, duplicateId: aliasOf, url: item.url });
+    return;
+  }
   const run = startRun(item.id, item.title);
 
   await withAnalysisSlot(async () => {
@@ -221,7 +235,17 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
       if (!gate1.tradeable || !gate1.tickers.length) {
         const signal = buildSignal(item, gate1, fingerprint, null, null, coverage);
         writeJsonAtomic(path.join(paths.signalsDir(), `${signal.id}.json`), { ...signal, title: item.title });
-        appendLedger({ type: "signal_archived", signalId: signal.id, newsId: item.id, why: gate1.reason, engine: g1.engine });
+        // fallbackReason distinguishes the designed zero-LLM rules path
+        // (out-of-universe items) from a real claude-cli failure that degraded
+        // into it — without it both look identical in the ledger.
+        appendLedger({
+          type: "signal_archived",
+          signalId: signal.id,
+          newsId: item.id,
+          why: gate1.reason,
+          engine: g1.engine,
+          fallbackReason: g1.fallbackReason
+        });
         finishRun(run, `归档:未过重要性闸门(${gate1.reason.slice(0, 80)})`);
         return;
       }
@@ -271,7 +295,8 @@ export async function processNews(rawItem: unknown, deps: PipelineDeps): Promise
         pricedIn: pricedIn.status,
         deltaTMinutes: pricedIn.deltaTMinutes,
         t0Utc: new Date(t0Ms).toISOString(),
-        engine: g1.engine
+        engine: g1.engine,
+        fallbackReason: g1.fallbackReason
       });
 
       if (!["none", "partial", "leaked"].includes(pricedIn.status)) {
