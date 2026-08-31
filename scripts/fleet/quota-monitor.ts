@@ -118,6 +118,16 @@ export function burnCeilingAlertEnabled(
   return !disabled.has(key);
 }
 
+export function burnStatsTokenOnly(
+  key: "claudeBurn" | "kimiBurn",
+  tokenOnlyRaw = process.env.MONITOR_TOKEN_ONLY_BURN_BUCKETS || ""
+): boolean {
+  const tokenOnly = new Set(
+    tokenOnlyRaw.split(",").map((item) => item.trim()).filter(Boolean)
+  );
+  return tokenOnly.has(key);
+}
+
 // ---- Codex subscription waterline -----------------------------------------
 // Every persisted codex session rollout records rate_limits snapshots:
 //   {"rate_limits":{"primary":{"used_percent":1.0,"window_minutes":10080,
@@ -277,16 +287,12 @@ export function buildDailyCard(summary: MonitorSummary, findings: Finding[], now
   } else {
     md.push("Codex（GPT-5.6 两本书）：暂无快照");
   }
-  if (summary.claude && "fields" in summary.claude && summary.claude.fields.length) {
+  if (summary.claudeBurn) {
+    const cb = summary.claudeBurn;
+    md.push(`Claude 订阅（按本机实测消耗，含 fleet 外任务）\n近 5 小时 ${fmtTokens(cb.fiveHourTokens)} tokens · 近 7 天 ${fmtTokens(cb.sevenDayTokens)} tokens`);
+  } else if (summary.claude && "fields" in summary.claude && summary.claude.fields.length) {
     for (const f of summary.claude.fields) {
       md.push(`Claude 订阅（三本书 + 本机其他任务）\n\`${bar(f.percent)}\` ${f.label} 已用 ${f.percent.toFixed(0)}%`);
-    }
-  } else if (summary.claudeBurn) {
-    const cb = summary.claudeBurn;
-    if (cb.usedPercent !== undefined) {
-      md.push(`Claude 订阅（按本机实测消耗）\n\`${bar(cb.usedPercent)}\` 5 小时窗已用约 ${cb.usedPercent.toFixed(0)}%（对照上次撞限水位）· 近 7 天 ${fmtTokens(cb.sevenDayTokens)} tokens`);
-    } else {
-      md.push(`Claude 订阅（按本机实测消耗，含 fleet 外任务）\n近 5 小时 ${fmtTokens(cb.fiveHourTokens)} tokens（${cb.fiveHourCalls} 条消息）· 近 7 天 ${fmtTokens(cb.sevenDayTokens)} tokens · 尚未撞过限，暂无百分比基准`);
     }
   } else {
     md.push("Claude 订阅：本机暂无消耗记录");
@@ -586,13 +592,15 @@ function checkTranscriptBurn(findings: Finding[], lines: string[], summary: Moni
   for (const b of buckets) {
     const stats = aggregateBurn(entries, now.getTime(), b.match);
     const ceiling = ceilings[b.key];
-    if (ceiling && ceiling > 0) {
+    const tokenOnly = burnStatsTokenOnly(b.key);
+    if (ceiling && ceiling > 0 && !tokenOnly) {
       stats.ceilingTokens = ceiling;
       stats.usedPercent = Math.min(100, (stats.fiveHourTokens / ceiling) * 100);
     }
     summary[b.key] = stats;
     const pct = stats.usedPercent !== undefined ? ` | ~${stats.usedPercent.toFixed(0)}% of observed 5h ceiling` : "";
-    lines.push(`${b.label.padEnd(12)} | 5h ${fmtTokens(stats.fiveHourTokens)} tok / ${stats.fiveHourCalls} msg | 7d ${fmtTokens(stats.sevenDayTokens)} tok${pct}`);
+    const calls = tokenOnly ? "" : ` / ${stats.fiveHourCalls} msg`;
+    lines.push(`${b.label.padEnd(12)} | 5h ${fmtTokens(stats.fiveHourTokens)} tok${calls} | 7d ${fmtTokens(stats.sevenDayTokens)} tok${pct}`);
     if (stats.usedPercent !== undefined && burnCeilingAlertEnabled(b.key)) {
       if (stats.usedPercent >= SUB_USED_CRIT_PCT) findings.push({ topic: `${b.key}-ceiling`, severity: "critical", message: `${b.label} 5 小时窗消耗已达上次撞限水位的 ${stats.usedPercent.toFixed(0)}%。` });
       else if (stats.usedPercent >= SUB_USED_WARN_PCT) findings.push({ topic: `${b.key}-ceiling`, severity: "warn", message: `${b.label} 5 小时窗消耗达上次撞限水位的 ${stats.usedPercent.toFixed(0)}%。` });
