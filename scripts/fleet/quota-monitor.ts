@@ -616,6 +616,7 @@ function checkTranscriptBurn(findings: Finding[], lines: string[], summary: Moni
     const book = m[1]!;
     const key = claudeBooks.includes(book) ? "claudeBurn" : book.includes("kimi") ? "kimiBurn" : null;
     if (!key) continue;
+    if (burnStatsTokenOnly(key)) continue;
     const current = (summary[key as "claudeBurn" | "kimiBurn"])?.fiveHourTokens ?? 0;
     if (current > (ceilings[key] ?? 0)) {
       ceilings[key] = current;
