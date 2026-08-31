@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   aggregateBurn,
   bar,
+  burnCeilingAlertEnabled,
   buildDailyCard,
   digestDue,
   extractLatestRateLimits,
@@ -69,6 +70,19 @@ describe("shouldAlert cooldown", () => {
     expect(shouldAlert(state, "deepseek-balance", new Date("2026-08-23T03:00:00Z"), 6)).toBe(false);
     expect(shouldAlert(state, "deepseek-balance", new Date("2026-08-23T06:00:01Z"), 6)).toBe(true);
     expect(shouldAlert(state, "other-topic", t0, 6)).toBe(true);
+  });
+});
+
+describe("burn ceiling alert configuration", () => {
+  it("can mute Claude's empirical ceiling without muting Kimi", () => {
+    const disabled = "claudeBurn";
+    expect(burnCeilingAlertEnabled("claudeBurn", disabled)).toBe(false);
+    expect(burnCeilingAlertEnabled("kimiBurn", disabled)).toBe(true);
+  });
+
+  it("accepts a comma-separated list and defaults to enabled", () => {
+    expect(burnCeilingAlertEnabled("claudeBurn", "")).toBe(true);
+    expect(burnCeilingAlertEnabled("kimiBurn", " claudeBurn, kimiBurn ")).toBe(false);
   });
 });
 

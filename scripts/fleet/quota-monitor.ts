@@ -108,6 +108,16 @@ export function shouldAlert(state: AlertState, topic: string, now: Date, cooldow
   return now.getTime() - Date.parse(last) >= cooldownHours * 3_600_000;
 }
 
+export function burnCeilingAlertEnabled(
+  key: "claudeBurn" | "kimiBurn",
+  disabledRaw = process.env.MONITOR_DISABLED_BURN_CEILING_ALERTS || ""
+): boolean {
+  const disabled = new Set(
+    disabledRaw.split(",").map((item) => item.trim()).filter(Boolean)
+  );
+  return !disabled.has(key);
+}
+
 // ---- Codex subscription waterline -----------------------------------------
 // Every persisted codex session rollout records rate_limits snapshots:
 //   {"rate_limits":{"primary":{"used_percent":1.0,"window_minutes":10080,
@@ -583,7 +593,7 @@ function checkTranscriptBurn(findings: Finding[], lines: string[], summary: Moni
     summary[b.key] = stats;
     const pct = stats.usedPercent !== undefined ? ` | ~${stats.usedPercent.toFixed(0)}% of observed 5h ceiling` : "";
     lines.push(`${b.label.padEnd(12)} | 5h ${fmtTokens(stats.fiveHourTokens)} tok / ${stats.fiveHourCalls} msg | 7d ${fmtTokens(stats.sevenDayTokens)} tok${pct}`);
-    if (stats.usedPercent !== undefined) {
+    if (stats.usedPercent !== undefined && burnCeilingAlertEnabled(b.key)) {
       if (stats.usedPercent >= SUB_USED_CRIT_PCT) findings.push({ topic: `${b.key}-ceiling`, severity: "critical", message: `${b.label} 5 小时窗消耗已达上次撞限水位的 ${stats.usedPercent.toFixed(0)}%。` });
       else if (stats.usedPercent >= SUB_USED_WARN_PCT) findings.push({ topic: `${b.key}-ceiling`, severity: "warn", message: `${b.label} 5 小时窗消耗达上次撞限水位的 ${stats.usedPercent.toFixed(0)}%。` });
     }
