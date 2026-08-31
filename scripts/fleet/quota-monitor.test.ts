@@ -3,6 +3,7 @@ import {
   aggregateBurn,
   bar,
   burnCeilingAlertEnabled,
+  burnStatsTokenOnly,
   buildDailyCard,
   digestDue,
   extractLatestRateLimits,
@@ -83,6 +84,19 @@ describe("burn ceiling alert configuration", () => {
   it("accepts a comma-separated list and defaults to enabled", () => {
     expect(burnCeilingAlertEnabled("claudeBurn", "")).toBe(true);
     expect(burnCeilingAlertEnabled("kimiBurn", " claudeBurn, kimiBurn ")).toBe(false);
+  });
+});
+
+describe("burn statistics presentation", () => {
+  it("can reduce Claude to raw token counts without changing Kimi", () => {
+    const tokenOnly = "claudeBurn";
+    expect(burnStatsTokenOnly("claudeBurn", tokenOnly)).toBe(true);
+    expect(burnStatsTokenOnly("kimiBurn", tokenOnly)).toBe(false);
+  });
+
+  it("accepts a comma-separated list and defaults to detailed output", () => {
+    expect(burnStatsTokenOnly("claudeBurn", "")).toBe(false);
+    expect(burnStatsTokenOnly("kimiBurn", " claudeBurn, kimiBurn ")).toBe(true);
   });
 });
 
@@ -231,11 +245,18 @@ describe("transcript burn accounting", () => {
     expect(fmtTokens(5_320_000)).toBe("5.3M");
   });
 
-  it("burn stats render into the card when the official endpoint is silent", () => {
+  it("Claude burn stats render as token counts only", () => {
     const card = buildDailyCard(
       {
-        claude: { status: "rate-limited" },
-        claudeBurn: { fiveHourTokens: 1_200_000, fiveHourCalls: 40, sevenDayTokens: 9_800_000, sevenDayCalls: 300 },
+        claude: { fields: [{ label: "five_hour", percent: 94 }] },
+        claudeBurn: {
+          fiveHourTokens: 1_200_000,
+          fiveHourCalls: 40,
+          sevenDayTokens: 9_800_000,
+          sevenDayCalls: 300,
+          ceilingTokens: 1_276_596,
+          usedPercent: 94
+        },
         kimiBurn: { fiveHourTokens: 0, fiveHourCalls: 0, sevenDayTokens: 350_000, sevenDayCalls: 12 },
         books: []
       },
@@ -244,7 +265,10 @@ describe("transcript burn accounting", () => {
     );
     const blob = JSON.stringify(card);
     expect(blob).toContain("按本机实测消耗");
-    expect(blob).toContain("近 5 小时 1.2M tokens（40 条消息）");
+    expect(blob).toContain("近 5 小时 1.2M tokens · 近 7 天 9.8M tokens");
+    expect(blob).not.toContain("40 条消息");
+    expect(blob).not.toContain("撞限水位");
+    expect(blob).not.toContain("94%");
     expect(blob).toContain("Kimi Code（kimi-k3 书）");
     expect(blob).toContain("近 7 天 350k tokens");
   });
