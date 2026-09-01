@@ -2,9 +2,10 @@
 // (DeepSeek/Kimi), used by the tool loop in deepseek-agent.ts.
 //
 // Backends, in preference order:
+//   - exa         when EXA_API_KEY is set (neural + keyword search, paid)
 //   - tavily      when TAVILY_API_KEY is set (reliable, 1k free credits/mo)
 //   - duckduckgo  keyless default (HTML endpoint; fine at this call volume)
-// The backend can be pinned via FORECAST_WEB_SEARCH=tavily|duckduckgo.
+// The backend can be pinned via FORECAST_WEB_SEARCH=exa|tavily|duckduckgo.
 
 export interface SearchHit {
   title: string;
@@ -18,11 +19,32 @@ const PAGE_TIMEOUT_MS = 12_000;
 const PAGE_TEXT_CAP = 6_000;
 const UA = "Mozilla/5.0 (X11; Linux x86_64) raven-forecast-research/1.0";
 
-function backendName(): "tavily" | "duckduckgo" {
+function backendName(): "exa" | "tavily" | "duckduckgo" {
   const pin = (process.env.FORECAST_WEB_SEARCH ?? "").trim().toLowerCase();
+  if (pin === "exa") return "exa";
   if (pin === "tavily") return "tavily";
   if (pin === "duckduckgo") return "duckduckgo";
+  if (process.env.EXA_API_KEY) return "exa";
   return process.env.TAVILY_API_KEY ? "tavily" : "duckduckgo";
+}
+
+async function exaSearch(query: string, fetchFn: typeof fetch): Promise<SearchHit[]> {
+  const res = await fetchFn("https://api.exa.ai/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-api-key": process.env.EXA_API_KEY ?? "" },
+    body: JSON.stringify({
+      query,
+      numResults: MAX_HITS,
+      contents: { text: { maxCharacters: 300 } }
+    }),
+    signal: AbortSignal.timeout(SEARCH_TIMEOUT_MS)
+  });
+  if (!res.ok) throw new Error(`exa search ${res.status}`);
+  const data = (await res.json()) as { results?: Array<{ title?: string; url?: string; text?: string }> };
+  return (data.results ?? [])
+    .filter((r) => r.url)
+    .slice(0, MAX_HITS)
+    .map((r) => ({ title: r.title ?? "", url: r.url!, snippet: (r.text ?? "").slice(0, 300) }));
 }
 
 async function tavilySearch(query: string, fetchFn: typeof fetch): Promise<SearchHit[]> {
@@ -78,7 +100,9 @@ async function duckDuckGoSearch(query: string, fetchFn: typeof fetch): Promise<S
 }
 
 export async function webSearch(query: string, fetchFn: typeof fetch = fetch): Promise<SearchHit[]> {
-  return backendName() === "tavily" ? tavilySearch(query, fetchFn) : duckDuckGoSearch(query, fetchFn);
+  const backend = backendName();
+  if (backend === "exa") return exaSearch(query, fetchFn);
+  return backend === "tavily" ? tavilySearch(query, fetchFn) : duckDuckGoSearch(query, fetchFn);
 }
 
 export function stripTags(html: string): string {
