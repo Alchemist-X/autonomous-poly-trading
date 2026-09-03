@@ -27,7 +27,7 @@
 | Delta PM | `services/delta-pm`、`apps/delta-pm-console`、`/live-delta-pm` | 新闻→重要性→priced-in→纸面决策审计链 |
 | Raven Delta | `apps/raven-delta`、`/delta` | 美股新闻影响分析、邮件 / WebSocket 推送 |
 | World Cup blind forecast | `scripts/world-cup`、`apps/web/app/world-cup` | 预测生成严禁读取市场价格；事后评分可使用市场基准 |
-| Investment analysis examples | `apps/web/app/[locale]/investment-analysis`、`/investment-analysis` | 两份公开市场盲测报告：腾讯混元 × WorkBuddy、Hassabis × Alphabet |
+| AI 投研系统案例 | `apps/web/app/[locale]/investment-analysis`、`/investment-analysis` | 两份公开案例：腾讯混元 × WorkBuddy、Hassabis × Alphabet |
 | Polymarket live pipeline | `services/orchestrator`、`services/executor` | 真钱路径；任何 live 命令、风控调整或订单测试都需要用户明确确认 |
 
 ## 3. 当前最主要的技术 WIP：GPT Pro v2 harness

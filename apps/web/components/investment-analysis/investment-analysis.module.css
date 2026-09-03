@@ -126,8 +126,7 @@
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
-  gap: 72px;
+  grid-template-columns: 1fr;
   align-items: end;
   padding-bottom: 64px;
   border-bottom: 1px solid var(--ia-line);
@@ -160,22 +159,9 @@
   text-wrap: balance;
 }
 
-.heroAside {
-  padding-left: 20px;
-  border-left: 3px solid var(--ia-accent);
-}
-
-.heroAside p {
-  margin: 0;
-  color: var(--ia-muted);
-  font-size: 1.05rem;
-  line-height: 1.72;
-  text-wrap: pretty;
-}
-
 .metaStrip {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   border-bottom: 1px solid var(--ia-line);
 }
 
@@ -350,8 +336,6 @@
   }
 
   .hero {
-    grid-template-columns: 1fr;
-    gap: 30px;
     padding-bottom: 42px;
   }
 
