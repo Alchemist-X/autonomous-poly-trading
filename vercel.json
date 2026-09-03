@@ -66,6 +66,26 @@
       "continue": true
     },
     {
+      "src": "^/investment-analysis/(tencent-hunyuan-workbuddy|google-hassabis)/(en|zh-CN|zh-TW)/?$",
+      "dest": "/$2/investment-analysis/$1",
+      "continue": true
+    },
+    {
+      "src": "^/investment-analysis/(en|zh-CN|zh-TW)/?$",
+      "dest": "/$1/investment-analysis",
+      "continue": true
+    },
+    {
+      "src": "^/investment-analysis/(tencent-hunyuan-workbuddy|google-hassabis)/?$",
+      "dest": "/zh-CN/investment-analysis/$1",
+      "continue": true
+    },
+    {
+      "src": "^/investment-analysis/?$",
+      "dest": "/zh-CN/investment-analysis",
+      "continue": true
+    },
+    {
       "src": "^/(?!apps/web/)(.+)$",
       "dest": "/apps/web/$1",
       "check": true

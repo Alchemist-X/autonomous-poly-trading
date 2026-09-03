@@ -1,0 +1,904 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>腾讯混元 × WorkBuddy｜Predict Raven 投资研究</title><meta name="description" content="市场盲测的腾讯混元与 WorkBuddy 能力传导完整预测报告。"><meta name="robots" content="noindex"><link rel="icon" href="/favicon-raven.png">
+<style>
+:root{--ink:#18201d;--muted:#657069;--paper:#fffdf8;--canvas:#eeeae1;--line:#d9d4c8;--accent:#9d3f25;--accent-soft:#f5e7df;--shadow:0 18px 55px rgba(47,42,31,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--canvas);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.72}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,253,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1480px;margin:auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:750;letter-spacing:.02em}.brand span{color:var(--accent)}
+.meta{font-size:13px;color:var(--muted)}
+.layout{max-width:1480px;margin:28px auto 64px;padding:0 24px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px}
+.toc{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding:18px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,253,248,.72)}
+.toc-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.toc a{display:block;color:var(--ink);text-decoration:none;font-size:13.5px;padding:4px 8px;border-radius:8px;margin:1px 0}
+.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+main{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:40px 48px 56px;min-width:0}
+main h1{font-size:26px;line-height:1.35;margin:.2em 0 .6em;letter-spacing:.01em}
+main h2{font-size:21px;margin:2.2em 0 .7em;padding-top:.6em;border-top:1px solid var(--line)}
+main h3{font-size:17px;margin:1.6em 0 .5em;line-height:1.5}
+main h2:first-of-type{border-top:none;padding-top:0;margin-top:1em}
+main a{color:var(--accent)}
+main blockquote{margin:1.2em 0;padding:12px 18px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
+main blockquote p{margin:.3em 0}
+.tablewrap{overflow-x:auto;margin:1.1em 0}
+main table{border-collapse:collapse;font-size:14px;min-width:60%}
+main th{background:var(--accent-soft);color:var(--ink);text-align:left;font-weight:650}
+main th,main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top;line-height:1.65}
+main tr:nth-child(even) td{background:rgba(238,234,225,.35)}
+main code{background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.9em}
+main hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+main li{margin:.25em 0}
+main ul ul,main ol ul{margin-top:.2em}
+main strong{color:#111}
+main u.key{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+main u.minor{text-decoration:underline dotted;text-decoration-color:#9aa39d;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.tag{display:inline-block;font-size:11.5px;line-height:1;padding:3px 6px;border-radius:5px;background:var(--canvas);border:1px solid var(--line);color:var(--muted);margin-right:5px;vertical-align:1px;white-space:nowrap}
+.note{display:block;font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.55;font-weight:400}
+.legend{font-size:13.5px;color:#4d5651;background:rgba(238,234,225,.5);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:.6em 0 1.2em;line-height:1.75}
+.legend p{margin:.2em 0}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"PingFang SC","Hiragino Sans GB",monospace;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:1em 0;line-height:2;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.formula b{color:var(--accent)}
+.org td:first-child,.tight1 td:first-child{white-space:nowrap}
+.org td:first-child{font-weight:650}
+.org td:nth-child(2){width:58%}
+.org td:nth-child(3){min-width:260px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static;max-height:none}main{padding:24px 20px}}
+@media(max-width:640px){.layout{margin:8px auto 32px;padding:0 8px}.toc{display:none}main{padding:24px 18px;border-radius:12px}main h1{font-size:23px}main table{font-size:13px}}</style></head><body>
+
+<div class="layout"><nav class="toc"><div class="toc-title">目录</div><a target="_self" href="#t2-workbuddy">T2｜混元的新一代能力是否真的传导到 WorkBuddy：完整预测报告</a>
+<a target="_self" href="#1">1. 阅读结论</a>
+<a target="_self" href="#2-insight-summary">2. Insight Summary</a>
+<a target="_self" href="#3_1">3. 结算口径</a>
+<a target="_self" href="#4">4. 拆解结构</a>
+<a target="_self" href="#5">5. 概率是怎么一步步算出来的</a>
+<a target="_self" href="#6">6. 关键证据表</a>
+<a target="_self" href="#7">7. 情景与路径</a>
+<a target="_self" href="#8">8. 信息缺口树</a>
+<a target="_self" href="#9">9. 信源梯度反馈</a>
+<a target="_self" href="#10-qa">10. 自检结果（QA）</a>
+<a target="_self" href="#11">11. 最终预测声明</a></nav><main><h1 id="t2-workbuddy">T2｜混元的新一代能力是否真的传导到 WorkBuddy：完整预测报告</h1>
+<p><strong>数据截点：2026-09-01｜结算截止：2027-06-30｜不看预测市场价格（market-blind）</strong></p>
+<blockquote>
+<p><strong>术语约定</strong>：<strong>公开发布</strong> = 腾讯官方的正式版发布（不含预览版、内测、灰度）；<strong>基线日</strong> = 2026-09-01，即题面中的 T0；<strong>工程层</strong> = WorkBuddy 在模型之外的那一层——记忆、重试、技能库、工具调用等（英文 harness）；<strong>个百分点</strong> = 题面中的 pct，成功率从 50% 提到 70% 就是提升 20 个百分点。</p>
+</blockquote>
+<hr />
+<h2 id="1">1. 阅读结论</h2>
+<h3 id="_1">概率表</h3>
+<div class="tablewrap"><table>
+<thead><tr><th style="min-width:46%">命题</th><th style="text-align:right">YES</th><th style="text-align:right">NO</th><th style="text-align:right">YES 合理范围</th><th>主观置信度</th></tr></thead>
+<tbody>
+<tr><td><b>客户原题（逐字）</b>：到 2027-06-30，Hy4 发布后，WorkBuddy 在预先锁定的 5–10 类长程办公任务上，端到端成功率较 T0 提升 ≥20pct，且至少达到国内同类产品第一梯队。<br><span class="note">按第 3 节冻结的严格口径结算：四个门槛全部过线，并且有可复现的测试记录。</span></td><td style="text-align:right"><b>18%</b></td><td style="text-align:right"><b>82%</b></td><td style="text-align:right"><b>8%–35%</b></td><td>中低，2.5/5</td></tr>
+<tr><td><b>附加口径一：产品有没有真的做到</b><br><span class="note">不管最后拿不拿得出可复现的测试记录，只问 WorkBuddy 实际上有没有达到上面的能力门槛。</span></td><td style="text-align:right"><b>27%</b></td><td style="text-align:right"><b>73%</b></td><td style="text-align:right"><b>14%–45%</b></td><td>中低</td></tr>
+<tr><td><b>附加口径二：功劳能不能归到 Hy4</b><br><span class="note">不仅做到了，还能证明提升主要来自 Hy4 本身，而不是别家模型、工程层或者任务挑选。</span></td><td style="text-align:right"><b>6%</b></td><td style="text-align:right"><b>94%</b></td><td style="text-align:right"><b>2%–15%</b></td><td>低</td></tr>
+</tbody></table></div>
+
+<p>三个数字的关系：产品真做到的概率约 27%；其中大约三分之二能拿出可复现的证据，所以严格口径是 18%；再其中大约三分之一能把功劳归到 Hy4，所以是 6%。</p>
+<blockquote>
+<p><strong>客户补充说明（逐字）</strong>：不看纯 LMArena 排名，直接看"跨文件、跨系统、多步骤任务能不能做成"。因为会议里腾讯自己对混元下一代的战略聚焦，本来就是长程 agent / WorkBuddy。</p>
+</blockquote>
+<h3 id="_2">一句话核心判断</h3>
+<p><strong>押 NO。混元和 WorkBuddy 之间的组织传导链是真的，不是宣传；但题目要求"正式公开发布、提升 20 个百分点以上、国内第一梯队、结果可复现"四个门槛同时过线。现在最弱的一环不是腾讯想不想做，而是三件事：起点已经不低，跨系统的执行链还不稳，以及最后能不能拿出可以对账的测试数据。</strong></p>
+<hr />
+<h2 id="2-insight-summary">2. Insight Summary</h2>
+<div class="legend">
+<p><strong>怎么读这一节</strong>：每条洞察分四层——判断、依据、为什么重要、最需要弄清楚的事。依据里的来源用图标区分：🏛️ 官方材料（公告、财报、产品文档、论文）｜📰 新闻报道｜🎙️ 播客｜🗣️ 客户专家访谈。下划线表示证据的分量：<u class="key">实线</u>是承重证据，拿掉它判断就会变；<u class="minor">虚线</u>是辅助证据，只起佐证作用。方括号里的标签是可靠性：<span class="tag">事实</span>可独立核对的公开信息；<span class="tag">来源陈述</span>某个人或媒体这么说，未经独立核实。</p>
+</div>
+<h3 id="1-20">洞察 1：传导链是真的，但"一起研发"离"七类任务提升 20 个百分点"还差一道共同的发布门槛</h3>
+<ul>
+<li><strong>判断</strong>：市场看到腾讯反复强调混元与 WorkBuddy 共研（Co-Design），容易直接推断 Hy4 的能力会自然流到 WorkBuddy。我们看到的是：数据回流和定向适配确实已经在跑，但没有证据表明模型团队和产品团队共享同一套冻结的长程任务指标，也没有证据表明谁对"这个模型版本能不能上线"有一票否决权。</li>
+<li><strong>依据</strong>：<ul>
+<li>📰 <span class="tag">来源陈述</span>晚点 LatePost（2026-07-13）：<u class="key">"新模型上线前，混元会针对 WorkBuddy 的脚手架做定向适配，WorkBuddy 的用户反馈反过来持续指引训练。"</u></li>
+<li>🎙️ <span class="tag">来源陈述</span>WorkBuddy 一号位 Jason 在播客《神经漫游记》（2026-05-20）称，双方在做<u class="minor">"深度的模型层面上的训练和后训练"</u>。</li>
+<li>📰 <span class="tag">来源陈述</span>同一篇晚点报道也如实记录了摩擦：<u class="key">产品侧催的是"这周就能上线"的迭代，模型侧想的是下一个版本的整体能力，两边目标并不完全一致。</u></li>
+</ul>
+</li>
+<li><strong>为什么重要</strong>：如果共同 KPI 真的落到"任务级成功率"，WorkBuddy 会成为混元最重要的真实任务数据飞轮；如果没有，所谓共研可能只是一批临时补丁，沉淀不成稳定的"模型—产品"复利。</li>
+<li><strong>最需要弄清楚的事</strong>：有没有固定的长程任务看板、有没有共同的发布门槛，以及模型版本上线或回滚的最终决定权在谁手里。</li>
+</ul>
+<h3 id="2hy4-hy4">洞察 2：Hy4 最反直觉的风险不是"不够强"，而是起点里已经混进了 Hy4 预览版</h3>
+<ul>
+<li><strong>判断</strong>：市场看的是 Hy4 相对 Hy3 的代际跃升。我们看到的是：题目的基线日是 2026-09-01，而 Hy4 预览版 8 月 28 日就已经在 WorkBuddy 首发。所以正式版要面对的，可能不是"Hy3 → Hy4"这种低起点，而是一个混着 Hy4 预览版、Hy3 备用切换和自动选模型的高噪声起点。</li>
+<li><strong>依据</strong>：<ul>
+<li>🏛️ <span class="tag">事实</span>腾讯官方（2026-08-28）：<u class="key">Hy4 预览版于 2026-08-28 在 WorkBuddy 首发，770B 总参数、49B 激活参数、1M 上下文。</u></li>
+<li>🏛️ <span class="tag">事实</span>腾讯云开发者社区转引官方公告（2026-08-31）：<u class="minor">上线后出现任务排队和扩容，官方建议高峰期切回 Hy3。</u></li>
+<li>🏛️ <span class="tag">事实</span>腾讯云企业版文档（2026-07-20）：<u class="key">WorkBuddy 支持自动选模型（Auto）、内置模型和第三方模型；基线日实际用的是哪个模型，不能从产品名推定。</u></li>
+</ul>
+</li>
+<li><strong>为什么重要</strong>：这决定了能力曲线到底是真正的代际突破，还是高起点之后的边际优化。如果连模型版本和路由都无法归一，组织的数据飞轮也很难学到"到底修对了什么"。</li>
+<li><strong>最需要弄清楚的事</strong>：2026-09-01 当天，每个基线任务实际用了哪个模型（model ID）、有没有切到备用模型、工程层是哪个版本、推理预算是多少。</li>
+</ul>
+<h3 id="3">洞察 3：腾讯生态不是天然护城河，"能连接"和"能可靠写回"之间隔着中层权责和接口稳定性</h3>
+<ul>
+<li><strong>判断</strong>：市场看到的是腾讯文档、会议、企业微信、ima、iwiki 这一整套生态。我们看到的是：腾讯文档的读写闭环已经是实锤，其余链路仍处在分产品、分权限、分事业群逐项谈判的状态。</li>
+<li><strong>依据</strong>：<ul>
+<li>🏛️ <span class="tag">事实</span>WorkBuddy 官方文档（证据包记录更新于 2026-07-19）：<u class="key">WorkBuddy 对腾讯文档已具备读取、编辑、创建、管理和产物回写权限。</u></li>
+<li>🏛️ <span class="tag">事实</span>WorkBuddy 官方文档（2026 年 6–7 月）：<u class="minor">QQ 邮箱已支持代发，企微助理可下发任务和批准敏感操作，但依赖用户电脑在线运行 WorkBuddy。</u></li>
+<li>📰 <span class="tag">来源陈述</span>汤道生署名复盘（钛媒体整理，2026-08-26）：<u class="key">他用的词是"正在推动"企业微信、腾讯文档、会议、ima、iwiki 与 WorkBuddy 打通，而不是"已经完成"。</u></li>
+</ul>
+</li>
+<li><strong>为什么重要</strong>：长程任务的成功率是一连串乘法。一次权限过期、一次接口超时、一次状态写回失败，就会让前面十几步的模型推理全部归零。真正的护城河是可靠的"动手"层，不是一排产品 Logo。</li>
+<li><strong>最需要弄清楚的事</strong>：会议、ima、iwiki、企微后台动作能不能写入；接口响应时间和失败后的恢复率是多少；跨团队出了问题，多久能上报到有人拍板。</li>
+</ul>
+<h3 id="4martin">洞察 4：Martin—姚顺雨这条线是绿灯，但再往下一两层的执行密度还是黄灯</h3>
+<ul>
+<li><strong>判断</strong>：市场看到的是姚顺雨直接向 Martin（刘炽平）汇报、算力和人员优先级高。我们看到的是：顶层授权确实成立，但预训练、后训练、评测、基础设施四条线的实名发布负责人仍不透明，多模态线又刚经历负责人更替。</li>
+<li><strong>依据</strong>：<ul>
+<li>🗣️ <span class="tag">来源陈述</span>客户专家访谈（2026-02-27）：<u class="key">姚顺雨"直接汇报给 Martin，这种汇报关系让他在调配底层资源时拥有极高的权限，绕过了复杂的层级"</u>；📰 晚点（2026-07-13）印证了这条汇报线。</li>
+<li>📰 <span class="tag">来源陈述</span>晚点（2026-07-13）：<u class="key">姚顺雨入职后数月内替换了预训练、后训练、评测、基础设施四条线的负责人，并成立 AI Infra、AI Data 部门。</u></li>
+<li>📰 <span class="tag">事实＋来源陈述</span>2026 年 7 月大语言模型与多模态部门合并，多模态负责人调整（财经、观察者网转述）；<u class="minor">Hy4 预览版本身仍是纯文本模型。</u></li>
+</ul>
+</li>
+<li><strong>为什么重要</strong>：顶层授权决定有没有资源；直接下属层和再下一层决定资源能不能变成按周交付、事故恢复和"训练—评测"闭环。后者才是可持续的能力。</li>
+<li><strong>最需要弄清楚的事</strong>：四条主线的实名负责人是谁、任期稳不稳、评测负责人有没有一票否决权、模型出事故后能不能跨团队快速复盘。</li>
+</ul>
+<h3 id="5workbuddy-hy4">洞察 5：WorkBuddy 越成功，越难证明成功来自 Hy4</h3>
+<ul>
+<li><strong>判断</strong>：市场看到 WorkBuddy 成功，容易把它当成混元能力的直接验证。我们看到的是：WorkBuddy 的优势恰恰来自多模型、工程层、技能库、记忆和工具层——这让"产品做到了"有机会兑现，却让"功劳归 Hy4"更难证明。</li>
+<li><strong>依据</strong>：<ul>
+<li>🏛️ <span class="tag">来源陈述</span>腾讯 2026 年二季度业绩材料（2026-08-12）：<u class="key">官方把 WorkBuddy 的领先归因于"强大的 harness 工程能力、丰富的模型选择和行业领先的技能库"。</u></li>
+<li>🏛️ <span class="tag">事实</span>腾讯云文档（2026-07-20）：<u class="key">企业版支持自动选模型、内置模型，以及 OpenAI、Anthropic、Gemini 等自定义模型。</u></li>
+<li>🏛️ <span class="tag">事实</span>WorkBuddy 更新日志（2026-08）：<u class="minor">8 月持续修复上下文恢复、内存、连接器掉线和产物丢失等问题，工程层本身还在高速变化。</u></li>
+</ul>
+</li>
+<li><strong>为什么重要</strong>：产品团队如果能在不同模型之间自由切换，长期看产品价值可能高于单一模型价值；但投资者不能把产品份额简单等同于混元底座的份额。</li>
+<li><strong>最需要弄清楚的事</strong>：同一工程层下，强制指定 Hy3、Hy4、第三方模型各跑一遍的对照结果；以及同一模型下，新旧工程层的对照结果。</li>
+</ul>
+<h3 id="6-no">洞察 6：缺评测集不是普通的信息缺口，而是会把"实际做到了"直接结算成 NO</h3>
+<ul>
+<li><strong>判断</strong>：市场看到的是"暂时没有公开横评"。我们看到的是：题目要求预先锁定任务、基线日记录、竞品横评和人工介入规则，缺任何一项都不能事后补故事。</li>
+<li><strong>依据</strong>：🏛️ <span class="tag">事实</span>截至基线日，<u class="key">不存在 WorkBuddy、豆包工作、千问办公三家的独立量化端到端横评</u>；现有的 WorkBuddy Bench 的 Office 子集，也不是为本题设计的长程跨系统任务。</li>
+<li><strong>为什么重要</strong>：没有版本化的评测，不仅投资者无法结算，公司内部也可能把访问量、演示和局部评测分数当成能力改善，导致资源错配。</li>
+<li><strong>最需要弄清楚的事</strong>：基线日的原始任务、模型路由、权限和输出，有没有完成哈希封存。</li>
+</ul>
+<hr />
+<h2 id="3_1">3. 结算口径</h2>
+<h3 id="31-yes">3.1 什么算 YES</h3>
+<p>截至 <strong>2027-06-30</strong>，以下四条必须同时满足：</p>
+<ol>
+<li>Hy4 已按 3.2 的标准正式公开发布；</li>
+<li>在预先冻结的七类长程办公任务上（跨文件数据与财务分析、跨格式报告包交付、会议到项目执行、对账与后台状态操作、长流程审批与异常恢复、合规与证据组织、持续研究与知识库更新），WorkBuddy 在公开发布后的平均端到端成功率，比基线日（2026-09-01）提升 <strong>20 个百分点以上</strong>；</li>
+<li>在同样的任务、权限和人工介入口径下，WorkBuddy 达到国内同类产品第一梯队（定义见 3.3）；</li>
+<li>基线日与发布后的测试都保留原始输入、产物、工具调用记录、模型与路由版本、评分结果，第三方可以独立复现。</li>
+</ol>
+<p>任何一条缺失，严格口径结算为 NO。</p>
+<h3 id="32-hy4">3.2 什么算"Hy4 发布"</h3>
+<p><strong>只有正式版触发，预览版不触发。</strong> 满足以下任一条件即可：腾讯官方明确使用"正式版""正式发布"或等价说法；或者官方把 Hy4 / Hy4.x 移出预览版生命周期，同时提供稳定的生产 API，且 WorkBuddy 可以稳定选用该模型。</p>
+<p>不计入：预览版、灰度、内测、限免体验；只说"下一批模型近期上线"但仍挂预览标签；只发布了 Hy5、没有可识别的 Hy4 正式版。</p>
+<p>截止日前没有合格的正式版，直接 NO；正式版赶在截止日前发布、但来不及完成有效的复测，也计 NO。</p>
+<h3 id="33">3.3 什么算"国内第一梯队"</h3>
+<p>比较对象冻结为 <strong>WorkBuddy、豆包工作、千问办公</strong> 三家，使用同一套平台中立的任务、功能等价的账号权限和一致的人工介入规则。第一梯队定义为：WorkBuddy 的平均成功率与最好的产品相差 <strong>不超过 5 个百分点</strong>，且 95% 置信区间不显示它显著落后于最好的产品。不以访问量、官方宣传或单个演示代替横评；竞品拿不到等价权限或无法复测时，按"缺测不算命中"处理。</p>
+<hr />
+<h2 id="4">4. 拆解结构</h2>
+<h3 id="41">4.1 拆解树</h3>
+<p><strong>总命题 = 五个门槛同时过线</strong>：公开发布 × 组织传导 × 执行链 × 能力达标（+20 个百分点且第一梯队）× 可核销。这是"全部都要满足"的合取题，不是"Hy4 有没有变强"的单一问题。下面每一块后面的"研究权重"，是它在拆解和取证上分到的注意力占比，不是概率；每块对应的概率记号见 4.4。</p>
+<ul>
+<li><strong>一、公开发布与顶层资源｜研究权重 25%</strong>｜对应 P(公开发布)<ul>
+<li>Hy4 能否在截止日前从预览版走到正式版？Hy3 用了约 74 天，是利好；但 Hy4 没有公开的正式版时间表，不能上调太多。</li>
+<li>正式版能否进入 WorkBuddy 的默认生产路由？发布不等于被默认使用；成本、排队、时延和备用切换都会稀释传导。</li>
+<li>顶层授权能否穿透到执行层？Martin—姚顺雨这条线决定卡、人和发布优先级；换血提升了人才密度，但四条主线的实名负责人、任期和发布负责人还没验证。</li>
+<li>推理资源够不够长任务用？长上下文、多次重试和工具执行都很烧算力；训练优先，不等于产品的推理预算无限。</li>
+</ul>
+</li>
+<li><strong>二、模型与产品的共研、反馈与评测闭环｜研究权重 35%</strong>｜对应 P(组织传导)<ul>
+<li>WorkBuddy 的使用数据能否变成训练信号？任务是否完成、哪一步失败、人工怎么改、工具报什么错——都要结构化之后才能进后训练。<ul>
+<li>全公司的强化学习平台还没大规模推开；"种子用户"意味着优先级，不意味着 WorkBuddy 已经能按周自助训练和回滚。</li>
+<li>企业私域数据、合同和权限限制，会让最有价值的失败轨迹进不了训练。</li>
+</ul>
+</li>
+<li>双方有没有共同的、任务级的发布门槛？只有共同指标才能解决"本周上线"和"下一代泛化"之间的节奏拉扯。<ul>
+<li>WorkBuddy Bench 提供了可复现的底座，但 Office 子集交互轮数较短，不能直接替代本题。</li>
+<li>有没有保留"模型不变换工程层、工程层不变换模型"的对照实验？没有版本化对照，就分不清 Hy4、技能库、路由和工具修复各自的贡献。</li>
+</ul>
+</li>
+<li>姚顺雨与 Betty、Jason（WorkBuddy 团队）的关系：目前是"方向一致、节奏有拉扯"，不是单向服从。</li>
+</ul>
+</li>
+<li><strong>三、工作流、数据权限与跨产品执行链｜研究权重 20%</strong>｜对应 P(执行链)<ul>
+<li>"能连接"能否升级为"能执行"？读取上下文只能改善总结，写入和状态确认才决定任务能否闭环。<ul>
+<li>腾讯文档、QQ 邮箱的写入已部分闭合；会议、ima、iwiki 的深度还待验证。</li>
+<li>异常恢复和接口稳定性：就算单步成功率 95%，一个 20 步的任务如果没有恢复机制，全链成功率也会明显下降。</li>
+</ul>
+</li>
+<li>私域知识与安全边界：领域数据缺失、权限拒绝和监管确认，不是把参数做大就能解决的。WorkBuddy 偏半自动化，必须预先区分"合规确认"和"人工补救"。</li>
+</ul>
+</li>
+<li><strong>四、Hy4 本体能力与 WorkBuddy 工程层｜研究权重 12%</strong>｜对应 P(能力达标) 的模型侧<ul>
+<li>长上下文、规划和工具调用是否代际提升？Terminal Bench 等显示显著改善，但那不是完整的办公链路。</li>
+<li>多模态与跨文件理解：Hy4 预览版是纯文本模型，多模态只能寄望后续正式版。</li>
+<li>稳定性和延迟：预览版的长思考、排队和限流报错，会直接压低端到端成功率。</li>
+<li>工程层能否放大模型增量？记忆、重试、上下文工程和技能库可以独立带来提升——这同时会削弱"功劳归 Hy4"的归因。</li>
+</ul>
+</li>
+<li><strong>五、基线、竞争与可结算性｜研究权重 8%</strong>｜对应 P(能力达标) 的起点侧与 P(可核销)<ul>
+<li>基线日的起点还留有多少提升空间？WorkBuddy Bench 上 HY-3 的 Office 分数约 80–82，内部口径甚至报过 90%；如果任务分布相同，+20 个百分点接近或超过数学上限。</li>
+<li>第一梯队的门槛会不会被对手抬高？豆包工作通过组织合并拿到飞书上下文，千问办公整合桌面、云和企业协作，门槛一直在动。</li>
+<li>能否独立复测？没有基线日记录、运行日志或竞品数据时，就算真的改善了，也按 NO 核销。</li>
+</ul>
+</li>
+</ul>
+<h3 id="42">4.2 关键人关系</h3>
+<p>"打灯"是客户自己的用法：给每条关系的当前状态打一个分（5 分制）。绿灯 = 顺畅，黄灯 = 方向一致但执行待验证，红灯 = 有结构性摩擦。"关键-1"指某人的直接下属层，"关键-2"指再往下一层。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>关系链条</th>
+<th>打灯（5 分制）</th>
+<th>目前关系</th>
+<th>对本题意味着什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Martin → 姚顺雨</td>
+<td>🟢 4/5</td>
+<td>授权型支持，没有明显拉扯</td>
+<td>公开发布、训练资源和跨部门优先级有保障</td>
+</tr>
+<tr>
+<td>姚顺雨 → 预训练 / 后训练 / 评测 / 基础设施四条线的关键-1、关键-2</td>
+<td>🟡 3/5</td>
+<td>换血已完成，执行密度待验证</td>
+<td>决定能不能把预览版的反馈变成稳定的正式版</td>
+</tr>
+<tr>
+<td>姚顺雨 ↔ Betty、Jason（WorkBuddy 团队）</td>
+<td>🟡🟢 3.5/5</td>
+<td>战略一致，但"产品周更"和"模型泛化"之间有节奏拉扯</td>
+<td>决定共同 KPI 和任务级发布门槛能否成立</td>
+</tr>
+<tr>
+<td>WorkBuddy ↔ 文档 / 会议 / 企微 / ima / iwiki 各产品负责人</td>
+<td>🟡 2.5/5</td>
+<td>方向上合作，实际能不能调动对方的资源不清楚</td>
+<td>决定"连接器清单"能否变成稳定的执行链</td>
+</tr>
+<tr>
+<td>Martin / CSIG ↔ WXG（微信）</td>
+<td>🔴🟡 2/5</td>
+<td>历史上存在模型、数据和组织边界</td>
+<td>涉及微信链路的任务，风险明显高于腾讯文档链路</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="43">4.3 组织要素快照</h3>
+<p>只写两栏：当前事实（尽量带时间、出处和原话）和正在发生的变化。要素框架沿用客户的"组织要素总表"。</p>
+<div class="org">
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>要素</th>
+<th>当前事实</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>创始人与顶层</td>
+<td>2025 年 9 月，管理层开会拍板"All in 做 Agent，公司进入赛马阶段"，会上强调 Agent 集群和公司生态打通两点（🗣️ Codebuddy 研发专家访谈，2026-03-11）。<br>2026 年 8 月中旬的二季度业绩电话会上，管理层把算力优先级排为：训练下一代更大的混元模型第一，WorkBuddy 推理第二；James Mitchell 称公司一旦确认 WorkBuddy 起量，就果断把资源转向它，并调低了一些其他新 AI 项目的优先级。刘炽平的口径是：混元如果能高性价比地解决大多数用户问题，可以成为 WorkBuddy 的主模型，但不必是唯一模型（📰 电话会内容，经 AI Proem 转述，2026-08-14）。</td>
+<td>从各团队分散试验（2025 年 11 月前后各自启动、内部赛马）转向集团级投入。顶层的评价标准也在变：姚顺雨入职时向刘炽平提出，新模型发布后至少一年内总办不看榜单排名，"Martin 同意了"（📰 晚点 LatePost，2026-07-13）。</td>
+</tr>
+<tr>
+<td>决策与信息流</td>
+<td>姚顺雨直接向刘炽平（Martin）汇报，同时向 TEG 总裁卢山汇报；腾讯的算力由卢山与林璟骅协商决定，两条线往上都是 Martin；2025 年起 Pony 要求 AI / 混元相关总监或 GM 以上负责人每周汇报（🎙️ 晚点聊，2026-07-31）。<br>专家原话："他是总裁办目前唯一在列的人才，直接汇报给 Martin，这种汇报关系让他在调配底层资源时拥有极高的权限，绕过了复杂的层级"（🗣️ 腾讯 AI 访谈·投资员工，2026-02-27）。</td>
+<td>模型与业务从"接口式合作"转向共研：新模型上线前混元针对 WorkBuddy 的脚手架做定向适配，WorkBuddy 的用户反馈反过来指引训练（📰 晚点，2026-07-13）。同一篇报道也记录了摩擦：产品侧催"这周就能上线"的迭代，模型侧在想下一个版本怎么提升整体能力。</td>
+</tr>
+<tr>
+<td>结构与权责</td>
+<td>混元、WorkBuddy、腾讯文档等更多集中在 CSIG（云与智慧产业事业群）。WorkBuddy 出身 CodeBuddy 团队，现负责人为 Betty；元宝负责人吴祖荣兼管腾讯会议；姚顺雨与两个团队沟通紧密（🎙️ 晚点聊，2026-07-31）。</td>
+<td>QClaw 等资源继续向 WorkBuddy 收拢（多家媒体称 7 月 20 日并入，尚无腾讯官方公告佐证）。同一事业群降低了协调成本，但跨事业群、尤其涉及微信的权限，仍要逐项谈判。</td>
+</tr>
+<tr>
+<td>考核与激励</td>
+<td>① 电话会上 James Mitchell："我们可以通过 WorkBuddy 售卖 Token 变现，这就是我们选定的发展路线"；"我们大力投入 WorkBuddy 的核心战略目的，是推动这款具备战略意义的核心应用普及"（🏛️ 腾讯 2026 年二季度业绩电话会实录，2026-08-16）。<br>② 专家："Martin 现在想推分账模式，谁用了我这模型成长了 15%，是要分钱的……这些都是产品之间在掰扯的东西"；目标是"所有的业务都用混元，这样模型才能有反馈"；进度是"有了意识，也已经开始有一些技术上的动作的状态，但是还没有形成一个内部标准方案"；"中层产品经理和研发人员的驱动力依然受限于'下半年 KPI 能否完成'"（🗣️ 腾讯 CDG 专家访谈，2026-02-27）。<br>③ 专家："Martin 甚至给各业务部下了 KPI，要求大家为模型贡献力量，但推行难度极大，因为各 BG 仍受困于自己的利润和 OKR"（🗣️ 腾讯 AI 访谈·投资员工，2026-02-27）。<br>④ 同门产品的口径可作参照：微信官方 Agent 项目组"早期核心指标是渗透率和使用时长，而不是 DAU"（🗣️ 微信专家·联合项目组，2026-03-13）。</td>
+<td>产品侧的考核正从"普及、Token"往"真实任务"走，模型侧仍以通用能力为主；到目前为止，没有看到两边共同背负的"任务成功率"指标——这是本题最关键的待验证点。</td>
+</tr>
+<tr>
+<td>人才与招聘</td>
+<td>姚顺雨入职后数月内替换了预训练、后训练、评测、基础设施四条线的负责人，并成立 AI Infra、AI Data 部门（📰 晚点，2026-07-13）。2026 年 7 月大语言模型与多模态部门合并，多模态负责人调整（📰 财经、观察者网转述，2026-07）。</td>
+<td>从旧的工程派向新的基础设施 / 研究班底演进，新负责人在搭训练与评测平台。代价是知识迁移和磨合损耗；关键岗位的实名、任期和流失仍需跟踪。</td>
+</tr>
+<tr>
+<td>文化</td>
+<td>战时节奏、高频发版。WorkBuddy 在 8 月持续修复上下文恢复、连接器掉线、任务状态和产物丢失等问题（🏛️ WorkBuddy 更新日志，2026-08）。</td>
+<td>从"慢半拍"转向快速试错、日更或周更收反馈。副作用是技术债、回滚和稳定性风险。</td>
+</tr>
+<tr>
+<td>工作流与迭代</td>
+<td>新模型上线前针对 WorkBuddy 的脚手架做定向适配（📰 晚点，2026-07-13）。姚顺雨"正在去做一个整个公司都能用到的强化学习的一个平台"，进度"应该是还没有大规模的推开"，首批种子用户"核心就是 WorkBuddy 和元宝这些产品"（🎙️ 晚点聊，2026-07-31）。</td>
+<td>在建全公司强化学习平台、向产品派后训练小队，目标链路是"任务数据 → 训练 → 产品版本"。数据不完整会造成局部过拟合；有没有长程任务的发布门槛，仍未证实。</td>
+</tr>
+<tr>
+<td>使命与战略</td>
+<td>刘炽平："WorkBuddy 本质是一个全新平台，是适配通用人工智能、高度灵活的工作台，核心价值是落地执行任务"（🏛️ 电话会实录，2026-08-16）。Hy4 预览版的官方定位是"为生产力而生"，主攻软件工程、办公分析、游戏开发、科学研究四条线（📰 媒体对官方发布信息的整理，2026-08-28）。</td>
+<td>从聊天排名转向"能做事"，资源向 Agent 和工具调用集中。战略正确不等于接口可用。</td>
+</tr>
+<tr>
+<td>能力获取与演进</td>
+<td>重建基础设施、数据和评测体系；到 2026 年 7 月，姚顺雨的管辖范围已从大语言模型和基础设施扩展到多模态（📰 AI Proem，2026-08-10；36Kr 2026-08 下旬报道其重整多模态路线）。Hy4 预览版 770B 总参数、49B 激活参数、1M 上下文，2026-08-28 在 WorkBuddy 首发并同步开源（🏛️ 腾讯官方）。</td>
+<td>从旧的 600B 路线转向"小模型试错再放大"。重构期有容量波动和关键人更替；正式版的稳定性和推理成本待观察。</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<h3 id="44">4.4 概率公式与数值代入</h3>
+<p>把总命题拆成几个条件概率相乘。P(·) 表示概率，竖线后面是前提条件。</p>
+<div class="tight1">
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>记号</th>
+<th>含义</th>
+<th>取值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P(公开发布)</td>
+<td>Hy4 正式公开发布，并进入可测试的生产环境</td>
+<td>76%</td>
+</tr>
+<tr>
+<td>P(组织传导｜公开发布)</td>
+<td>在已发布的前提下，模型与产品的共研、数据回流和任务级评测闭环真正运转</td>
+<td>70%</td>
+</tr>
+<tr>
+<td>P(执行链｜前两项成立)</td>
+<td>冻结任务所需的接口、权限和异常恢复能力足够</td>
+<td>60%</td>
+</tr>
+<tr>
+<td>P(能力达标｜前三项成立)</td>
+<td>在此基础上同时做到 +20 个百分点和第一梯队</td>
+<td>64%</td>
+</tr>
+<tr>
+<td>P(旁路达标｜公开发布)</td>
+<td>主路径没有完全成立，但靠工程层、技能库和低起点任务仍然达标；与主路径互斥</td>
+<td>9%</td>
+</tr>
+<tr>
+<td>P(可核销｜实际达成)</td>
+<td>结果证据可复现、可对账</td>
+<td>67%</td>
+</tr>
+<tr>
+<td>P(因果成立｜严格达成)</td>
+<td>能证明主要增量来自 Hy4</td>
+<td>33%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="formula">
+主路径 = P(组织传导) × P(执行链) × P(能力达标) = 70% × 60% × 64% ≈ 27%<br>
+实际达成 = P(公开发布) × [ 主路径 + 旁路 ] = 76% × ( 27% + 9% ) ≈ <b>27%</b><br>
+严格可核销 = 实际达成 × P(可核销) = 27% × 67% ≈ <b>18%</b><br>
+Hy4 因果可核销 = 严格可核销 × P(因果成立) = 18% × 33% ≈ <b>6%</b>
+</div>
+
+<p>说明：组织传导、执行链、能力达标三者明显正相关，上面是按"路径"估的条件概率，不是把几个独立的边际概率硬乘起来。旁路路径定义为主路径不成立时的互斥结果，避免重复计数。</p>
+<hr />
+<h2 id="5">5. 概率是怎么一步步算出来的</h2>
+<h3 id="51">5.1 起点：可比案例</h3>
+<p>本题没有可以直接套用的公开历史频率，起点概率来自下面这些可比案例的结构化判断：</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>可比案例</th>
+<th>和本题像在哪</th>
+<th>和本题差在哪</th>
+<th>对起点概率的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hy3 从预览版到正式版约 74 天</td>
+<td>同一组织、同一模型家族</td>
+<td>Hy4 更大，服务压力更高</td>
+<td>提高"正式发布"的概率</td>
+</tr>
+<tr>
+<td>WorkBuddy 任务成功率曾被报为 72% → 90%</td>
+<td>同一产品、同样是共研</td>
+<td>官方内部口径，任务分布不明</td>
+<td>说明一代模型带来接近 20 个百分点的提升并非不可能</td>
+</tr>
+<tr>
+<td>Hy4 预览版在 Terminal Bench 上比 Hy3 高 14.6 分</td>
+<td>真实的 Agent / 终端任务</td>
+<td>不是跨系统的办公任务</td>
+<td>提高"技术跃迁"的先验，但不能直接映射</td>
+</tr>
+<tr>
+<td>WorkBuddy Bench 上 HY-3 的 Office 分数约 80–82</td>
+<td>同一体系、办公任务</td>
+<td>交互轮数较短，不是本题的长程任务集</td>
+<td>强化"数学天花板"的风险</td>
+</tr>
+<tr>
+<td>豆包工作、千问办公的组织整合</td>
+<td>同一竞争窗口</td>
+<td>各家生态权限不同</td>
+<td>下调"第一梯队"的静态先验</td>
+</tr>
+</tbody>
+</table></div>
+<p>综合以上，起点定为：<strong>实际达成约 29%，严格可核销约 17%</strong>。</p>
+<h3 id="52">5.2 五轮更新</h3>
+<p>我们不是一次给出数字，而是分五轮更新：先定起点，再分别只看对 YES 有利和对 NO 有利的证据，最后自查纠错。这样做是为了防止先入为主。</p>
+<div class="tight1">
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>轮次</th>
+<th>这一轮做什么</th>
+<th>实际达成 / 严格可核销</th>
+<th>一句话解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 0 轮</td>
+<td>定起点（可比案例）</td>
+<td>29% / <strong>17%</strong></td>
+<td>模型代际升级有中等先验，但四重门槛叠加、缺少可测数据，严格口径偏低</td>
+</tr>
+<tr>
+<td>第 1 轮</td>
+<td>只看对 YES 有利的证据</td>
+<td>49% / <strong>36%</strong></td>
+<td>官方确认 Hy4 与 WorkBuddy 共研、Hy3 交付先例、顶层资源和共研组织链，显著上调</td>
+</tr>
+<tr>
+<td>第 2 轮</td>
+<td>加入 Hy4 以外也能达标的路径</td>
+<td>56% / <strong>42%</strong></td>
+<td>腾讯文档写回、强制指定模型、技能库与记忆、高速迭代的工程层，增加了非主路径的达成机会</td>
+</tr>
+<tr>
+<td>第 3 轮</td>
+<td>只看对 NO 有利的证据</td>
+<td>34% / <strong>24%</strong></td>
+<td>起点已经不低、基线日已含预览版、接口稳定性、竞品生态整合和多模态缺口，集中下调</td>
+</tr>
+<tr>
+<td>第 4 轮</td>
+<td>自查纠错，扣除结算风险</td>
+<td><strong>27% / 18%</strong></td>
+<td>合并晚点系列的同源叙事，纠正 Hy3 / Hy4 预览版、多模态和 Bench 的表述，并扣除运行日志缺失和竞品缺测的风险</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>题面所附另一模型给出的 29%（实际达成口径），只在本报告定稿后做了一次对照，<strong>没有作为概率输入或证据使用</strong>。</p>
+<hr />
+<h2 id="6">6. 关键证据表</h2>
+<div class="legend">
+<p><strong>怎么读这张表</strong>：调整幅度以第 0 轮的严格口径 17% 为起点，按分析轮次一次性计入，单位是个百分点；每条调整都是条件化判断，不是把报道篇数当作独立样本。来源层级：<strong>A</strong> 官方或可复现的一手材料；<strong>B</strong> 经转述的官方内容或主流媒体；<strong>C</strong> 原创采访、当事人陈述、专家访谈；斜线表示介于两者之间。<strong>【自采】</strong>指研究过程中自行检索补充、不在客户提供材料里的来源。</p>
+</div>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>事实或说法</th>
+<th>倾向</th>
+<th>来源、日期、链接</th>
+<th>层级与可靠性</th>
+<th>信息簇</th>
+<th>调整幅度与理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hy4 预览版为 770B / 49B / 1M 上下文，首发 WorkBuddy，官方称与 WorkBuddy 共研，并称"预览版先行、正式版跟进"</td>
+<td>YES</td>
+<td>🏛️【自采】腾讯官方，2026-08-28，<a target="_blank" rel="noopener noreferrer" href="https://www.tencent.com/zh-cn/tencent-releases-and-open-sources-tencent-hy4-preview/">链接</a></td>
+<td>A；事实可靠，能力评价有宣传偏差</td>
+<td>Hy4 发布</td>
+<td><strong>+6</strong>。直接确认模型存在、生产力方向和产品接入；没有给到 +12，因为盲测是内部样本，且"下一批模型"不等于正式公开发布</td>
+</tr>
+<tr>
+<td>Hy3 从预览版到正式版约 74 天；WorkBuddy 内部口径称任务成功率约 72% → 90%</td>
+<td>YES</td>
+<td>🏛️ 腾讯云转引 WorkBuddy 官方号，2026-07-06，<a target="_blank" rel="noopener noreferrer" href="https://cloud.tencent.com/developer/news/4205407">链接</a>；📰 钛媒体，2026-07-08，<a target="_blank" rel="noopener noreferrer" href="https://www.tmtpost.com/8056549.html">链接</a></td>
+<td>B/C；官方自报，任务集未披露</td>
+<td>Hy3 先例</td>
+<td><strong>+5</strong>。同组织同产品的先例最接近本案；没有给到 +10，因为提升只有约 18 个百分点，且不确定是否长程、是否可复现</td>
+</tr>
+<tr>
+<td>混元上线前适配 WorkBuddy 脚手架，WorkBuddy 数据回流；强化学习平台首批种子用户含 WorkBuddy</td>
+<td>YES</td>
+<td>📰 晚点全文，2026-07-13，<a target="_blank" rel="noopener noreferrer" href="https://finance.sina.com.cn/stock/t/2026-07-13/doc-inihspyr7450684.shtml">链接</a>；🎙️ Jason 访谈，2026-05-20，<a target="_blank" rel="noopener noreferrer" href="https://www.xiaoyuzhoufm.com/episode/6a0d82f8320934609402a637">链接</a></td>
+<td>C；原创采访加当事人，存在自我陈述偏差</td>
+<td>共研机制</td>
+<td><strong>+5</strong>。证明组织闭环不是纯规划；没有给到 +10，因为强化学习平台"尚未大规模推开"，且晚点与播客部分同源，只计一簇</td>
+</tr>
+<tr>
+<td>训练下一代混元模型及 WorkBuddy 推理处于腾讯高优先级，二季度 AI 投入显著</td>
+<td>YES</td>
+<td>🏛️【自采】腾讯二季度业绩，2026-08-12，<a target="_blank" rel="noopener noreferrer" href="https://www.tencent.com/wp-content/uploads/2026/08/Tencent-Announces-2026-Second-Quarter-Results.pdf">PDF</a>；🏛️ 电话会实录，2026-08-16，<a target="_blank" rel="noopener noreferrer" href="https://finance.sina.cn/2026-08-16/detail-ininpmti7609397.d.html">链接</a></td>
+<td>A/B；财务投入可靠，未来效果不确定</td>
+<td>顶层资源</td>
+<td><strong>+3</strong>。提高公开发布和产品推理资源的确定性；没有给到 +6，因为钱和卡替代不了跨系统权限与评测</td>
+</tr>
+<tr>
+<td>腾讯文档已支持读取、编辑、创建、管理和产物回写；邮箱等连接器包含写动作</td>
+<td>YES</td>
+<td>🏛️ WorkBuddy 官方文档，证据包记录更新 2026-07-19，<a target="_blank" rel="noopener noreferrer" href="https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Knowledge-Base/Tencent-Doc">腾讯文档</a>、<a target="_blank" rel="noopener noreferrer" href="https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Connector">连接器</a></td>
+<td>A；产品权限事实可靠</td>
+<td>连接器权限</td>
+<td><strong>+3</strong>。关掉了"腾讯生态全部只读"这条最强反证；没有给到 +6，因为会议、ima、iwiki 和跨事业群的后台权限仍未闭合</td>
+</tr>
+<tr>
+<td>WorkBuddy 持续修复上下文恢复、连接器掉线、任务状态和产物问题，并具备记忆与技能库</td>
+<td>YES</td>
+<td>🏛️ WorkBuddy 更新日志，2026-08，<a target="_blank" rel="noopener noreferrer" href="https://www.workbuddy.cn/docs/workbuddy/Changelog">链接</a>；📰 人人都是产品经理，2026-08-25，<a target="_blank" rel="noopener noreferrer" href="https://www.woshipm.com/ai/6441979.html">链接</a></td>
+<td>A/C；功能存在可靠，效果幅度未知</td>
+<td>工程层迭代</td>
+<td><strong>+3</strong>。增加了不依赖完整强化学习平台的旁路路径；没有给到 +6，因为高速变更同样增加版本漂移和回归风险</td>
+</tr>
+<tr>
+<td>WorkBuddy Bench 上 HY-3 的 Office 分数已约 80–82；Office 是四个领域里交互轮数较少的一类</td>
+<td>NO</td>
+<td>🏛️【自采】arXiv，提交于 2026-07-23，<a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2607.20911">链接</a></td>
+<td>A；可复现论文，但由腾讯团队构建</td>
+<td>评测基线</td>
+<td><strong>-5</strong>。直接揭示 +20 个百分点的数学天花板；没有给到 -10，因为本报告冻结的是更长、起点更低的任务类别，不直接套用 Office 总分</td>
+</tr>
+<tr>
+<td>汤道生称仍在"推动"企微、文档、ima、会议、iwiki 与 WorkBuddy 打通</td>
+<td>NO</td>
+<td>📰 钛媒体整理的署名复盘，2026-08-26，<a target="_blank" rel="noopener noreferrer" href="https://www.tmtpost.com/8117433.html">链接</a></td>
+<td>B/C；高管陈述可信，但缺能力矩阵</td>
+<td>生态整合</td>
+<td><strong>-2</strong>。说明生态整合尚未完成；没有给到 -4，因为腾讯文档、邮箱等部分写入能力已经上线</td>
+</tr>
+<tr>
+<td>兄弟团队的接口曾出现标称每分钟 8000 万 token、实际不足 100 万；受访者称存在内部恶性竞争</td>
+<td>NO</td>
+<td>🗣️ 客户私有专家访谈，2026-03-20，无公网链接</td>
+<td>C；当事人一手，但主体是 Qclaw 线</td>
+<td>中层接口</td>
+<td><strong>-3</strong>。说明中层和接口稳定性是组织级风险；没有给到 -6，因为不能把 Qclaw 的单个案例完全外推到 WorkBuddy</td>
+</tr>
+<tr>
+<td>Hy4 预览版出现排队、长思考、限流报错、备用切换和扩容</td>
+<td>NO</td>
+<td>🏛️ 腾讯云开发者社区转引官方公告，2026-08-31，<a target="_blank" rel="noopener noreferrer" href="https://cloud.tencent.com/developer/news/4533104">链接</a>；📰 凤凰网实测，2026-08-29，<a target="_blank" rel="noopener noreferrer" href="https://tech.ifeng.com/c/8vxgEIlSwvp">链接</a></td>
+<td>C；官方容量事实加独立实测</td>
+<td>推理容量</td>
+<td><strong>-3</strong>。长任务对单次超时极敏感；没有给到 -6，因为预览版的目的就是暴露问题，正式版之前有修复窗口</td>
+</tr>
+<tr>
+<td>豆包工作通过组织合并获得飞书上下文；千问办公整合多个 Agent</td>
+<td>NO</td>
+<td>📰 京报网，2026-08-25，<a target="_blank" rel="noopener noreferrer" href="https://news.bjd.com.cn/2026/08/25/11931441.shtml">链接</a>；📰 澎湃，2026-08-03，<a target="_blank" rel="noopener noreferrer" href="https://m.thepaper.cn/newsDetail_forward_33738470">链接</a></td>
+<td>B/C；组织和产品事实可靠</td>
+<td>竞品动态</td>
+<td><strong>-3</strong>。第一梯队是移动的门槛，竞品用组织合并解决权限问题；没有给到 -6，因为尚无同任务的量化横评</td>
+</tr>
+<tr>
+<td>Hy4 预览版是纯文本模型；腾讯多模态线在 7 月发生负责人调整</td>
+<td>NO</td>
+<td>📰 凤凰网，2026-08-29，<a target="_blank" rel="noopener noreferrer" href="https://tech.ifeng.com/c/8vxgEIlSwvp">链接</a>；📰 财经、观察者网转述组织调整，2026-07</td>
+<td>B/C；模态事实较可靠，人事影响需判断</td>
+<td>多模态</td>
+<td><strong>-2</strong>。图表、截图和跨格式任务仍有缺口；没有给到 -4，因为 WorkBuddy 可以通过 OCR、工具和外部模型补偿</td>
+</tr>
+<tr>
+<td>WorkBuddy 支持自动选模型、内置及第三方模型，企业管理员可配置模型</td>
+<td>NO / 因果</td>
+<td>🏛️【自采】腾讯云文档，更新于 2026-07-20，<a target="_blank" rel="noopener noreferrer" href="https://cloud.tencent.com/document/product/1831/134445">链接</a></td>
+<td>A；产品配置事实可靠</td>
+<td>模型路由</td>
+<td><strong>-2</strong>。产品结果不等于 Hy4 的结果，基线日的默认模型不透明；没有给到 -4，因为强制指定模型和白名单也让受控测试在技术上可行</td>
+</tr>
+<tr>
+<td>基线日前四天 Hy4 预览版已上线 WorkBuddy，且公开域没有运行日志或基线原始数据</td>
+<td>NO</td>
+<td>🏛️ 腾讯官方，2026-08-28，<a target="_blank" rel="noopener noreferrer" href="https://www.tencent.com/zh-cn/tencent-releases-and-open-sources-tencent-hy4-preview/">链接</a>；🏛️【自采】TokenHub 模型列表，更新于 2026-08-28，<a target="_blank" rel="noopener noreferrer" href="https://cloud.tencent.com/document/product/1823/130051">链接</a></td>
+<td>A；时间与产品状态可靠，缺失陈述经搜索核验</td>
+<td>结算数据</td>
+<td><strong>-4</strong>。直接改变起点并增加结算失败的可能；没有给到 -8，因为客户仍可能在基线日当天完成任务运行和日志封存</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>合计：第 0 轮 17% + 净 1 个百分点 = 最终严格口径 18%。</strong></p>
+<h3 id="_3">同源合并说明</h3>
+<ol>
+<li>晚点 7 月 13 日的文章、7 月 31 日的播客、多份 newsletter 的翻译，围绕的是同一轮组织重构采访，归为"共研机制"一簇，只更新一次。</li>
+<li>关于 Hy4 参数、盲测和共研的媒体报道，底层都是腾讯 8 月 28 日的官方稿，归为"Hy4 发布"一簇。</li>
+<li>"WorkBuddy 留存 / 访问量领先"一类材料不进入本题的能力概率，因为访问量、月活、日活和任务成功率不是同一个变量。</li>
+<li>专家关于 Qclaw 的接口问题，只作为腾讯跨部门机制的样本，不直接当作 WorkBuddy 的事实。</li>
+<li>自查纠正了三处：4 月的预览版是 Hy3 而不是 Hy4；论文没有明确写"Office 不是长程任务"，只能由轮数和任务结构推断；Hy4 预览版不是多模态模型。</li>
+</ol>
+<hr />
+<h2 id="7">7. 情景与路径</h2>
+<h3 id="_4">互斥路径表</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>路径</th>
+<th>概率</th>
+<th>触发条件</th>
+<th>结算</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. 严格 YES，且功劳确属 Hy4</td>
+<td><strong>6%</strong></td>
+<td>公开发布、共研闭环、执行链、+20 个百分点、第一梯队全部成立，并有强制指定模型的对照实验</td>
+<td>YES；可以说"Hy4 真的传导了"</td>
+</tr>
+<tr>
+<td>B. 严格 YES，但主要来自工程层或外部模型</td>
+<td><strong>12%</strong></td>
+<td>产品结果和横评达标，但 Hy4 不是主要增量，或无法独立归因</td>
+<td>题面结果 YES；因果口径 NO</td>
+</tr>
+<tr>
+<td>C. 实际做到了，但拿不出可复现证据</td>
+<td><strong>9%</strong></td>
+<td>产品真的改善了，但缺基线日记录、运行日志、竞品横评或原始任务记录</td>
+<td>严格口径 NO</td>
+</tr>
+<tr>
+<td>D. Hy4 正式发布了，但没过 +20 个百分点或第一梯队</td>
+<td><strong>49%</strong></td>
+<td>正式版上线，但起点高、接口失败、稳定性或竞品进步导致未过双门槛</td>
+<td>NO</td>
+</tr>
+<tr>
+<td>E. 没有合格的正式版，或没进入可测的稳定路由</td>
+<td><strong>24%</strong></td>
+<td>截止日仍是预览版、正式版太晚，或来不及完成有效复测</td>
+<td>NO</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>100%</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="_5">最容易误判的情景</h3>
+<p><strong>路径 B 最容易被市场误判。</strong> 如果 WorkBuddy 的成功率明显提高，舆论会自然归因于 Hy4；但 WorkBuddy 同期会一直在改模型路由、技能库、记忆、重试、连接器和推理预算。产品结果 YES，并不自动等于 Hy4 因果 YES。</p>
+<p>最强的反方不是"Hy4 没变强"，而是：</p>
+<blockquote>
+<p><strong>Hy4 确实变强了，共研也确实存在，但本题仍然 NO——因为起点已经不低、跨系统的失败不由模型主导、竞品同步升级，而且最后没有可复现的实证。</strong></p>
+</blockquote>
+<hr />
+<h2 id="8">8. 信息缺口树</h2>
+<p>按预期信息价值排序。每个节点是一类应该去访谈的人：先写岗位画像，再写可以直接拿去问的问题，最后写问清楚之后能改变多少概率、以及好不好约。</p>
+<h3 id="1workbuddy">1）WorkBuddy 评测、运行系统、模型路由与质量负责人</h3>
+<ul>
+<li><strong>岗位画像</strong>：Agent 运行系统 / 工程层技术负责人、任务评测负责人、模型路由负责人、QA 负责人，或近一年离职的同级人员。</li>
+<li><strong>直接问法</strong>：<ul>
+<li>"2026-09-01 的默认自动路由里，Hy4 预览版、Hy3 和第三方模型各占什么量级？发生备用切换时日志是否保留？"</li>
+<li>"内部长程办公任务的基线成功率是 20%–40%、40%–60% 还是 60%–80%？"</li>
+<li>"最常见的十类失败原因里，模型推理、工具、权限、超时、上下文和人工接管分别占多少？"</li>
+<li>"有没有做过同一工程层下 Hy3 / Hy4 的强制模型对照，以及同一模型下新旧工程层的对照？"</li>
+<li>"任务、模型、工具和评分是否共享同一个实验编号？"</li>
+</ul>
+</li>
+<li><strong>能改变什么</strong>：共同发布门槛、工程层放大效应、起点空间、可核销与因果归因；对总概率约 <strong>±20–25 个百分点</strong>。</li>
+<li><strong>好不好约</strong>：<strong>中高</strong>。前 CodeBuddy / WorkBuddy 工程人员和生态合作方相对可达。</li>
+</ul>
+<h3 id="2-1-2">2）混元后训练、强化学习、评测、发布线的关键-1 / 关键-2</h3>
+<ul>
+<li><strong>岗位画像</strong>：后训练负责人、强化学习平台负责人、评测负责人、Hy4 发布质量负责人、负责 WorkBuddy 专项适配的研究工程师。</li>
+<li><strong>直接问法</strong>：<ul>
+<li>"WorkBuddy 的失败轨迹是按天、按周还是按月进入训练？多少轨迹带有可用的奖励信号？"</li>
+<li>"WorkBuddy 有没有专项的 SFT / RL 数据集、奖励模型和固定的发布门槛？"</li>
+<li>"Hy4 正式版当前真正的阻碍是能力、稳定性、成本、基础设施还是审批？谁有一票否决权？"</li>
+<li>"强化学习平台是人工服务式的，还是业务团队可以自助训练、评测和回滚？"</li>
+<li>"Hy4 的主要增量来自哪些失败类型，哪些类型明确没有改善？"</li>
+</ul>
+</li>
+<li><strong>能改变什么</strong>：公开发布、数据回流、共同发布门槛、模型本体能力；约 <strong>±15–20 个百分点</strong>。</li>
+<li><strong>好不好约</strong>：<strong>中低</strong>。在职核心的关键-1 较难，近期离职的关键-2 更现实。</li>
+</ul>
+<h3 id="3imaiwiki">3）腾讯文档、会议、企微、ima、iwiki 的接口 / 安全负责人</h3>
+<ul>
+<li><strong>岗位画像</strong>：连接器产品经理、开放平台负责人、权限与审计负责人、接口运维、跨产品项目的中层。</li>
+<li><strong>直接问法</strong>：<ul>
+<li>"WorkBuddy 对你负责的产品是只读、草稿、写回，还是可以改变业务状态？"</li>
+<li>"令牌过期、权限变化、接口超时之后，能不能重试并跨会话恢复？"</li>
+<li>"接口响应时间、超时率、格式错误和重试成功率分别在哪个量级？"</li>
+<li>"2027-06-30 前最可能上线的写入动作是什么，最容易被安全或法务卡住的是什么？"</li>
+<li>"发生跨产品故障后，谁能改变优先级，平均多久能上报到有人拍板？"</li>
+</ul>
+</li>
+<li><strong>能改变什么</strong>：执行链的写入能力与安全边界；约 <strong>±15–20 个百分点</strong>。</li>
+<li><strong>好不好约</strong>：<strong>中高</strong>。中层、前员工和 ISV 合作方都有机会约到。</li>
+</ul>
+<h3 id="4-it">4）企业客户的 IT 管理员与业务流程负责人</h3>
+<ul>
+<li><strong>岗位画像</strong>：已部署 WorkBuddy 的 CIO / IT 管理员、知识管理负责人、财务运营、法务合规或销售运营的流程负责人。</li>
+<li><strong>直接问法</strong>：<ul>
+<li>"哪些任务已经能跑到最后一步，哪些仍然只能产出草稿？"</li>
+<li>"你们是否允许 Agent 写回文档、发送邮件、创建任务、更新审批状态？"</li>
+<li>"失败主要来自内容错误、权限、工具、数据缺失，还是安全团队不允许？"</li>
+<li>"Hy4 预览版相对旧模型，在哪些具体任务上能感知到变强，哪些没有变化？"</li>
+<li>"Agent 完成之后，人还需要花多少时间检查和修正？"</li>
+</ul>
+</li>
+<li><strong>能改变什么</strong>：安全边界、模型本体能力、能力达标、可核销；约 <strong>±10–15 个百分点</strong>。</li>
+<li><strong>好不好约</strong>：<strong>高</strong>。可通过被投企业、腾讯云伙伴和 CIO 网络覆盖多个行业。</li>
+</ul>
+<h3 id="5csig-ai">5）CSIG AI 产品治理 / 项目管理中层</h3>
+<ul>
+<li><strong>岗位画像</strong>：WorkBuddy 项目 PMO、算力协调负责人、AI 产品线中层、跨事业群联合项目成员。</li>
+<li><strong>直接问法</strong>：<ul>
+<li>"Hy4—WorkBuddy 的发布委员会由谁组成？"</li>
+<li>"姚顺雨、Betty、卢山、汤道生、Martin 分别有什么决策权？"</li>
+<li>"产品本周上线和模型下一版发生冲突时，通常谁来仲裁？"</li>
+<li>"WorkBuddy 的 OKR 是日活 / Token，还是端到端任务成功率？"</li>
+<li>"文档、会议、企微团队是否被纳入共同 KPI？"</li>
+</ul>
+</li>
+<li><strong>能改变什么</strong>：顶层授权穿透、姚顺雨与 WorkBuddy 团队的关系、连接是否升级为执行；约 <strong>±10–15 个百分点</strong>。</li>
+<li><strong>好不好约</strong>：<strong>中</strong>。在职核心难，近期离职的项目负责人相对可行。</li>
+</ul>
+<h3 id="6-agent">6）独立办公 Agent 评测维护者，以及竞品的前产品 / 工程人员</h3>
+<ul>
+<li><strong>岗位画像</strong>：企业自动化评测者、长期深测三家产品的研究员、豆包工作 / 千问办公的前产品经理或连接器工程师。</li>
+<li><strong>直接问法</strong>：<ul>
+<li>"三家在同一跨文件、跨系统任务中的失败点分别是什么？"</li>
+<li>"豆包工作的飞书权限优势是只读上下文，还是包含稳定写回？"</li>
+<li>"千问办公整合之后，桌面、云端和企业协作的状态是否真正衔接？"</li>
+<li>"怎样设计不会偏袒任何生态的七类任务？"</li>
+<li>"第一梯队应该按什么分差和置信区间定义？"</li>
+</ul>
+</li>
+<li><strong>能改变什么</strong>：第一梯队门槛、可核销；约 <strong>±15–20 个百分点</strong>。</li>
+<li><strong>好不好约</strong>：<strong>中高</strong>。</li>
+</ul>
+<h3 id="7tokenhub">7）混元推理运维、TokenHub 容量与成本负责人</h3>
+<ul>
+<li><strong>岗位画像</strong>：Hy4 推理集群运维、WorkBuddy 容量规划、长上下文调度、推理成本或备用切换策略负责人。</li>
+<li><strong>直接问法</strong>：<ul>
+<li>"预览版排队的主要瓶颈是算力、KV cache、长上下文还是调度？"</li>
+<li>"正式版之后，允不允许长任务多次重试和大上下文，还是会因为成本降级？"</li>
+<li>"WorkBuddy 的备用切换优先级如何在成功率、时延和成本之间排序？"</li>
+<li>"哪些服务指标会阻止 Hy4 进入默认路由？"</li>
+</ul>
+</li>
+<li><strong>能改变什么</strong>：正式版进入默认路由、推理资源、稳定性和延迟；约 <strong>±10–15 个百分点</strong>。</li>
+<li><strong>好不好约</strong>：<strong>低</strong>。近期离职的运维、供应商和云生态人员更现实。</li>
+</ul>
+<hr />
+<h2 id="9">9. 信源梯度反馈</h2>
+<h3 id="_6">专家访谈库</h3>
+<ul>
+<li><strong>本题贡献最大</strong>：揭示了顶层授权与中层执行之间的断层、内部接口问题、微信数据边界和关键人关系。</li>
+<li><strong>明显缺失</strong>：现有访谈多截至 2026 年 3 月，早于 Hy4；缺 WorkBuddy 运行系统 / 评测、Hy4 发布、连接器负责人和真实企业管理员。</li>
+<li><strong>建议</strong>：从"泛腾讯 AI 员工"转向"任务日志直接持有人"，优先建立 WorkBuddy 评测 / 运行系统的离职员工面板。</li>
+</ul>
+<h3 id="newsletter">Newsletter</h3>
+<ul>
+<li><strong>贡献</strong>：快速发现晚点、电话会、易观、模型发布和竞品组织整合的线索。</li>
+<li><strong>问题</strong>：大量信息是同一篇底层报道的翻译和二次解读；访问量、月活、日活、留存的口径混用严重。</li>
+<li><strong>建议</strong>：newsletter 只用来找线索，不单独承担概率；凡涉及数字，必须回到原始财报、论文、模型卡或数据机构的口径。</li>
+</ul>
+<h3 id="_7">播客</h3>
+<ul>
+<li><strong>贡献</strong>：Jason 的当事人访谈和晚点记者的复盘，对关键人、共研流程、节奏拉扯很有价值。</li>
+<li><strong>问题</strong>：语音转写对"混元 3 / 4"、人名和模型名的误差明显；晚点的文章与播客属于同一簇。</li>
+<li><strong>建议</strong>：承重引语必须回听音频片段并人工校对，不能直接用转写出来的数字更新概率。</li>
+</ul>
+<h3 id="_8">公开数据与官方文档</h3>
+<ul>
+<li><strong>本题最可审计的部分</strong>：Hy4 发布、模型生命周期、WorkBuddy 模型配置、连接器权限、更新日志及 WorkBuddy Bench。</li>
+<li><strong>明显缺失</strong>：产品路由占比、任务成功率、失败原因分布、客户环境权限和竞品同任务结果。</li>
+<li><strong>建议</strong>：建立自己的版本化任务测试环境，而不是等厂商主动披露。</li>
+</ul>
+<h3 id="_9">最值得新建的三类信源</h3>
+<ol>
+<li><strong>WorkBuddy 评测 / 运行系统 / 路由的季度面板</strong>：3–5 名在职边缘或近期离职的工程人员。</li>
+<li><strong>办公生态接口与安全中层面板</strong>：腾讯文档、会议、企微、ima、iwiki 各至少一名。</li>
+<li><strong>独立、可复现的办公 Agent 长程评测</strong>：保留输入、工具调用记录、权限、产物和竞品横评，形成机构自己的能力时间序列。</li>
+</ol>
+<hr />
+<h2 id="10-qa">10. 自检结果（QA）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>校验项</th>
+<th>结果</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不看市场价格</td>
+<td><strong>通过</strong></td>
+<td>未访问或引用预测市场、博彩赔率；题面所附的外部模型概率未作为输入</td>
+</tr>
+<tr>
+<td>时间截点</td>
+<td><strong>通过</strong></td>
+<td>仅采用发布日期不晚于 2026-09-01 的材料；日期不明的材料未进入概率更新</td>
+</tr>
+<tr>
+<td>结算口径</td>
+<td><strong>通过</strong></td>
+<td>冻结了公开发布、七类任务、人工介入、+20 个百分点、第一梯队和缺测规则</td>
+</tr>
+<tr>
+<td>来源层级</td>
+<td><strong>通过</strong></td>
+<td>官方、论文优先；匿名、专家和媒体材料均标明偏差</td>
+</tr>
+<tr>
+<td>链接可追踪</td>
+<td><strong>通过</strong></td>
+<td>公网承重材料提供完整链接；客户私有访谈注明无公网链接</td>
+</tr>
+<tr>
+<td>同源去重</td>
+<td><strong>通过</strong></td>
+<td>晚点文章、播客和 newsletter 翻译归为同一簇；Hy4 媒体稿回归官方主锚</td>
+</tr>
+<tr>
+<td>正反证覆盖</td>
+<td><strong>通过</strong></td>
+<td>正方覆盖资源、共研、技术、写权限；反方覆盖起点、接口、稳定性、竞争和结算</td>
+</tr>
+<tr>
+<td>确认偏误</td>
+<td><strong>通过</strong></td>
+<td>最强反方按"能力变强但题目仍 NO"构造，而不是否认所有正面事实</td>
+</tr>
+<tr>
+<td>概率单调性</td>
+<td><strong>通过</strong></td>
+<td>单一截止日，无多期限逆序；实际达成 27% ≥ 严格 18% ≥ 因果 6%</td>
+</tr>
+<tr>
+<td>路径加总</td>
+<td><strong>通过</strong></td>
+<td>互斥情景 6% + 12% + 9% + 49% + 24% = 100%</td>
+</tr>
+<tr>
+<td>精度约束</td>
+<td><strong>通过</strong></td>
+<td>最终概率均为整数百分点，并给出宽区间</td>
+</tr>
+<tr>
+<td>口径混用</td>
+<td><strong>通过</strong></td>
+<td>未用访问量、月活、日活、调用成功率或单功能生成率替代任务成功率</td>
+</tr>
+<tr>
+<td>历史校准</td>
+<td><strong>有限</strong></td>
+<td>无完全同构的公开样本，只能用 Hy3 交付、WorkBuddy Bench、Agent 工具链和竞品组织整合做结构化先验</td>
+</tr>
+<tr>
+<td>自采证据审计</td>
+<td><strong>通过</strong></td>
+<td>自采材料均标记【自采】，并核对官方日期不晚于基线日</td>
+</tr>
+<tr>
+<td>关键事实校正</td>
+<td><strong>通过</strong></td>
+<td>已纠正三处：4 月预览版为 Hy3、Bench"非长程"措辞过强、Hy4 预览版非多模态</td>
+</tr>
+<tr>
+<td>基线日可复现性</td>
+<td><strong>有限</strong></td>
+<td>本报告未取得 2026-09-01 的隐藏实例哈希、原始运行结果和运行日志，这是最终折扣的核心</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="11">11. 最终预测声明</h2>
+<p><strong>最终预测：严格口径 YES 18%，NO 82%；合理区间 8%–35%，押 NO。</strong></p>
+<p>最可能的现实图景是：Hy4 在截止日前发布某种正式版本，并在 WorkBuddy 中获得较高优先级；混元与 WorkBuddy 的共研、数据回流和脚手架适配会继续加深，部分跨文件分析、报告包和知识整理任务也会明显改善。但是，七类任务的平均提升大概率不到 20 个百分点，或者其中审批、后台状态、企微 / 会议写回等任务仍被权限和接口可靠性拖累；与此同时，豆包工作和千问办公凭各自的生态继续抬高第一梯队的门槛。即使 WorkBuddy 最终的产品结果达到门槛，也更可能是 Hy4、外部模型、工程层、技能库和连接器共同作用的结果，只有约 6% 的概率能严格证明"主要是 Hy4 的能力真的传导了过去"。</p>
+<p><strong>不构成投资建议。</strong></p></main></div>
+</body></html>
