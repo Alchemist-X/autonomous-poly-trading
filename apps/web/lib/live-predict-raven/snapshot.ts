@@ -211,11 +211,11 @@ export interface PaperSnapshot {
   };
 }
 
-// Effective VM config as of 2026-07-25 (env values + code defaults); the live
+// Effective VM config as of 2026-09-04 (env values + code defaults); the live
 // payload carries the current values read from the VM env each request.
 export const PAPER_PARAMS_FALLBACK: PaperParams = {
   bankrollUsd: 10000,
-  evalTimesUtc: ["02:00", "10:00", "18:00"],
+  evalTimesUtc: ["02:00"],
   entryNotionalUsd: 500,
   entryEdgePp: 8,
   exitEdgePp: 0,

@@ -12,7 +12,7 @@
   - PR #133：Delta PM 的 feed / sitemap 新闻按标准化 URL 归并，并记录 Gate 1 的 `fallbackReason`。
   - PR #134：Pulse 不再把“观望 / 名义侧 / 不参与 / no-trade / pass”或明确 `0%` 仓位转换成真钱 entry plan；render-time parseability 与 planner 使用同一安全判断。
 - Forecast Engine 第一阶段研究质量改造已进入 `main`：Research Focus Center、原子事实断言、独立来源组、交叉核验、反证搜索、单一概率权威和 Evidence Book 都已落地。
-- 东京 VM `instance-tokyo-0701-predict-raven` 在 2026-09-02 被 GCE 维护控制服务停止；原配置 `onHostMaintenance=TERMINATE` 且 `automaticRestart=false`，导致 `/live-predict-raven` 回退到 8 月 5 日内置快照。实例已在 2026-09-03 16:27 UTC 恢复，调度改为 `MIGRATE` + 自动重启；公网 `/paper/snapshot` 与线上页面均已恢复读取东京模拟盘。
+- 东京 VM `instance-tokyo-0701-predict-raven` 在 2026-09-02 被 GCE 维护控制服务停止；原配置 `onHostMaintenance=TERMINATE` 且 `automaticRestart=false`，导致 `/live-predict-raven` 回退到 8 月 5 日内置快照。实例已在 2026-09-03 16:27 UTC 恢复，调度改为 `MIGRATE` + 自动重启；公网 `/paper/snapshot` 与线上页面均已恢复读取东京模拟盘。模拟盘评估现为每日一次，固定在 `02:00 UTC`（新加坡/北京时间 `10:00`）。
 - 主工作区仍有未提交 WIP，涉及 Raven Bench / `live-predict-raven` 与 forecast provenance。**不要在主工作区 checkout、reset 或覆盖这些文件；新任务继续使用独立 worktree。**
 - 主工作区的最新 Google Driver 研究交付也尚未全部进入 `main`：`outputs/O1-forecast.{md,html}`、`outputs/M1-3M.{md,html}`，以及 `runtime-artifacts/google-driver-forecasts/` 下的 O1 多期限、M1/C1 与 TPU 主训研究。当前采用口径是 O1 **2% / 4% / 10% / 24%**、M1 **31.0%**、五家 lab TPU 主训 **4%**；不要在 owner 会话保存前重跑或覆盖。
 - `codex/harness-gpt-pro-v2`、旧 `codex/harness-gpt-pro`、`codex/futurex-raven-adapter`、`feat/raven-delta-longport-mcp` 和 `claude/agent-prediction-market-demo-74e018` 包含待提取价值，完成下述提取前不要清理。

@@ -36,8 +36,8 @@ const MESSAGES = {
   },
   pageTitle: { zh: "Polymarket 模拟盘复盘", en: "Polymarket Paper Book Review" },
   metaLine1: {
-    zh: "$10,000 本金 · Claude evaluator（联网搜索）· 每日 UTC 02/10/18 三轮评估 · 单仓 $500 · 仅 finance / geopolitics / tech 三类市场",
-    en: "$10,000 bankroll · Claude evaluator (web search) · three eval cycles daily at 02/10/18 UTC · $500 per position · finance / geopolitics / tech markets only"
+    zh: "$10,000 本金 · Claude evaluator（联网搜索）· 每日 UTC 02:00 一轮评估 · 单仓 $500 · 仅 finance / geopolitics / tech 三类市场",
+    en: "$10,000 bankroll · Claude evaluator (web search) · one eval cycle daily at 02:00 UTC · $500 per position · finance / geopolitics / tech markets only"
   },
   liveNote: {
     zh: "实时数据（每个评估周期后自动更新）",
