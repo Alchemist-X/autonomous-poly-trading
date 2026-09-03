@@ -1,6 +1,6 @@
 # Agent Handoff — 当前状态与下一步
 
-> 最后更新：2026-09-03 by Codex。
+> 最后更新：2026-09-04 by Codex。
 >
 > **新 agent 的启动约定：只读这份文件了解项目当前状态。** 不要在启动时读取旧 handoff 或按日期回放历史；需要背景时再查 git log、PR、[`docs/internal/review/`](internal/review/) 或 [`docs/agent-onboarding.md`](agent-onboarding.md)。
 >
@@ -12,6 +12,7 @@
   - PR #133：Delta PM 的 feed / sitemap 新闻按标准化 URL 归并，并记录 Gate 1 的 `fallbackReason`。
   - PR #134：Pulse 不再把“观望 / 名义侧 / 不参与 / no-trade / pass”或明确 `0%` 仓位转换成真钱 entry plan；render-time parseability 与 planner 使用同一安全判断。
 - Forecast Engine 第一阶段研究质量改造已进入 `main`：Research Focus Center、原子事实断言、独立来源组、交叉核验、反证搜索、单一概率权威和 Evidence Book 都已落地。
+- 东京 VM `instance-tokyo-0701-predict-raven` 在 2026-09-02 被 GCE 维护控制服务停止；原配置 `onHostMaintenance=TERMINATE` 且 `automaticRestart=false`，导致 `/live-predict-raven` 回退到 8 月 5 日内置快照。实例已在 2026-09-03 16:27 UTC 恢复，调度改为 `MIGRATE` + 自动重启；公网 `/paper/snapshot` 与线上页面均已恢复读取东京模拟盘。
 - 主工作区仍有未提交 WIP，涉及 Raven Bench / `live-predict-raven` 与 forecast provenance。**不要在主工作区 checkout、reset 或覆盖这些文件；新任务继续使用独立 worktree。**
 - 主工作区的最新 Google Driver 研究交付也尚未全部进入 `main`：`outputs/O1-forecast.{md,html}`、`outputs/M1-3M.{md,html}`，以及 `runtime-artifacts/google-driver-forecasts/` 下的 O1 多期限、M1/C1 与 TPU 主训研究。当前采用口径是 O1 **2% / 4% / 10% / 24%**、M1 **31.0%**、五家 lab TPU 主训 **4%**；不要在 owner 会话保存前重跑或覆盖。
 - `codex/harness-gpt-pro-v2`、旧 `codex/harness-gpt-pro`、`codex/futurex-raven-adapter`、`feat/raven-delta-longport-mcp` 和 `claude/agent-prediction-market-demo-74e018` 包含待提取价值，完成下述提取前不要清理。
@@ -94,6 +95,7 @@
 
 ### P2 — 已知但不阻塞
 
+- [ ] 东京 VM 根盘使用率 82%（约 8.6 GiB 可用）；继续监控，并在部署新镜像前先做可恢复的缓存 / 旧镜像清理。
 - [ ] 将 live Pulse 的结算回填 / 离线评分按当前 ledger 重新设计；不要直接搬 PR #77 的旧实现。
 - [ ] 修 `scripts/world-cup/deploy-web.sh` 在新版 Vercel CLI 下解析 deploy 输出的 promote 步。
 - [ ] World Cup Monte Carlo 淘汰赛点球规则仍有已确认偏差；是否重算并重发需要用户产品决定。

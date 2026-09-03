@@ -1,6 +1,6 @@
 # Agent Handoff — Current State and Next Actions
 
-> Last updated: 2026-09-03 by Codex.
+> Last updated: 2026-09-04 by Codex.
 >
 > **Startup contract for a new agent: read only this file for current project state.** Do not replay dated handoffs or historical notes at startup. Consult git history, merged PRs, [`docs/internal/review/`](../internal/review/), or [`docs/agent-onboarding.md`](../agent-onboarding.md) only when background is needed.
 >
@@ -12,6 +12,7 @@
   - PR #133: Delta PM feed and sitemap stories converge on normalized URL identity, and Gate 1 records `fallbackReason`.
   - PR #134: Pulse no longer converts watch-only, nominal, no-trade, pass, or explicit `0%` recommendations into real-money entry plans; render-time parseability and the planner share the same guard.
 - Forecast Engine research-quality phase one is on `main`: Research Focus Center, atomic factual claims, independent-origin groups, cross-checks, disconfirmation, one probability authority, and the Evidence Book.
+- The Tokyo VM `instance-tokyo-0701-predict-raven` was stopped by GCE's maintenance control service on 2026-09-02. Its previous `onHostMaintenance=TERMINATE` and `automaticRestart=false` settings left `/live-predict-raven` on the August 5 baked fallback. The instance was restored at 2026-09-03 16:27 UTC and changed to `MIGRATE` with automatic restart; the authenticated, internet-reachable `/paper/snapshot` endpoint and production page now read the Tokyo paper book again.
 - The primary worktree still contains uncommitted Raven Bench / `live-predict-raven` and forecast-provenance WIP. **Do not checkout, reset, or overwrite it. Continue new work in an independent worktree.**
 - The latest Google Driver research deliverables are also not fully on `main`: `outputs/O1-forecast.{md,html}`, `outputs/M1-3M.{md,html}`, plus O1 multi-horizon, M1/C1, and TPU-primary-training research under `runtime-artifacts/google-driver-forecasts/`. Current adopted values are O1 **2% / 4% / 10% / 24%**, M1 **31.0%**, and five-lab TPU primary training **4%**. Do not rerun or overwrite them before the owner session saves its work.
 - `codex/harness-gpt-pro-v2`, old `codex/harness-gpt-pro`, `codex/futurex-raven-adapter`, `feat/raven-delta-longport-mcp`, and `claude/agent-prediction-market-demo-74e018` contain value pending extraction. Do not delete them before the extractions below are complete.
@@ -94,6 +95,7 @@ These are independent products. Do not bundle them into the GPT Pro provider PR 
 
 ### P2 — Known, non-blocking
 
+- [ ] The Tokyo VM root disk is 82% used (about 8.6 GiB free). Keep monitoring it and perform recoverable cache / old-image cleanup before the next image deployment.
 - [ ] Redesign live Pulse settlement backfill / offline scoring against the current ledger; do not raw-port PR #77.
 - [ ] Fix `scripts/world-cup/deploy-web.sh` promotion output parsing for the newer Vercel CLI.
 - [ ] The World Cup Monte Carlo knockout shootout rule has a confirmed bias; recalculation and republication require a user product decision.
