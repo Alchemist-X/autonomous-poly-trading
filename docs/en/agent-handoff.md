@@ -27,7 +27,7 @@
 | Delta PM | `services/delta-pm`, `apps/delta-pm-console`, `/live-delta-pm` | News → importance → priced-in → paper-decision audit chain |
 | Raven Delta | `apps/raven-delta`, `/delta` | US-equity news-impact analysis with email / WebSocket delivery |
 | World Cup blind forecast | `scripts/world-cup`, `apps/web/app/world-cup` | Generation may not read prices; post-hoc scoring may use a market benchmark |
-| Investment analysis examples | `apps/web/app/[locale]/investment-analysis`, `/investment-analysis` | Two public market-blind reports: Tencent Hunyuan × WorkBuddy and Hassabis × Alphabet |
+| AI investment research cases | `apps/web/app/[locale]/investment-analysis`, `/investment-analysis` | Two public cases: Tencent Hunyuan × WorkBuddy and Hassabis × Alphabet |
 | Polymarket live pipeline | `services/orchestrator`, `services/executor` | Real-money path; live runs, risk changes, and order probes require explicit user approval |
 
 ## 3. Primary technical WIP: GPT Pro v2 harness

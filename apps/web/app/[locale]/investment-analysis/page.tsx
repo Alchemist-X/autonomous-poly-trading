@@ -45,9 +45,6 @@ export default async function InvestmentAnalysisPage({ params }: { params: Promi
           <p className={styles.eyebrow}>{t(locale, "iaEyebrow")}</p>
           <h1 id="investment-analysis-title">{t(locale, "iaTitle")}</h1>
         </div>
-        <div className={styles.heroAside}>
-          <p>{t(locale, "iaIntro")}</p>
-        </div>
       </section>
 
       <section className={styles.metaStrip} aria-label={t(locale, "iaCollectionMetaLabel")}>
@@ -58,10 +55,6 @@ export default async function InvestmentAnalysisPage({ params }: { params: Promi
         <div className={styles.metaItem}>
           <span>{t(locale, "iaAsOfLabel")}</span>
           <strong>2026-09-01</strong>
-        </div>
-        <div className={styles.metaItem}>
-          <span>{t(locale, "iaMethodLabel")}</span>
-          <strong>{t(locale, "iaMarketBlind")}</strong>
         </div>
       </section>
 
@@ -94,7 +87,6 @@ export default async function InvestmentAnalysisPage({ params }: { params: Promi
 
       <footer className={styles.footer}>
         <p>{t(locale, "iaDisclaimer")}</p>
-        <p>{t(locale, "iaFooterMethod")}</p>
       </footer>
     </main>
   );
