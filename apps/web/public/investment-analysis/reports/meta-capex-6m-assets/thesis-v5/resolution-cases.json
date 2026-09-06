@@ -1,0 +1,565 @@
+{
+  "purpose": "Read-only rule correction audit; no new research round or independent empirical model.",
+  "history_input_sha256": "0a52758421fbcbaa518c7625467bcdd46707659f8c38fb141aae0011c6d322bf",
+  "units": "USD billion for hypothetical and historical amounts",
+  "frozen_or_rule": "First next-fiscal-year midpoint below comparable prior-fiscal-year final guidance midpoint OR actual; either satisfied comparison is sufficient.",
+  "arithmetic_domain": "Formal in-window next-year first plan; comparable reference values known for settlement. Incomparable or missing evidence is unresolved, not automatically NO.",
+  "historical_windows": [
+    {
+      "start": "2018-09-06",
+      "end": "2019-03-06",
+      "same_fy_cut_dates": [
+        "2018-10-30"
+      ],
+      "same_fy_cut_fiscal_years": [
+        2018
+      ],
+      "prior_fy_final_guidance_midpoint": 14.25,
+      "prior_fy_final_guidance_url": "https://investor.atmeta.com/files/doc_financials/2018/Q3/Earnings-call-prepared-remarks.pdf",
+      "prior_fy_actual": 13.92,
+      "actual_publication_date": "2019-01-30",
+      "next_fy_first_midpoint": 19,
+      "first_date": "2018-10-30",
+      "first_source_url": "https://investor.atmeta.com/files/doc_financials/2018/Q3/Earnings-call-prepared-remarks.pdf",
+      "actual_known_on_first_date": false,
+      "first_below_guidance": false,
+      "first_below_eventual_actual": false,
+      "old_cross_year_result": false,
+      "or_cross_year_result": false,
+      "old_window_yes": true,
+      "or_window_yes": true,
+      "comparability_note": "2018 early cash-PPE terminology differs; window is independently YES from a same-FY revision."
+    },
+    {
+      "start": "2019-09-06",
+      "end": "2020-03-06",
+      "same_fy_cut_dates": [
+        "2019-10-30"
+      ],
+      "same_fy_cut_fiscal_years": [
+        2019
+      ],
+      "prior_fy_final_guidance_midpoint": 16,
+      "prior_fy_final_guidance_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2019/q3/Q3-2019-FB-Earnings-Transcript.pdf",
+      "prior_fy_actual": 15.65,
+      "actual_publication_date": "2020-01-29",
+      "next_fy_first_midpoint": 18,
+      "first_date": "2019-10-30",
+      "first_source_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2019/q3/Q3-2019-FB-Earnings-Transcript.pdf",
+      "actual_known_on_first_date": false,
+      "first_below_guidance": false,
+      "first_below_eventual_actual": false,
+      "old_cross_year_result": false,
+      "or_cross_year_result": false,
+      "old_window_yes": true,
+      "or_window_yes": true,
+      "comparability_note": "Same published cash-capex convention as the existing source ledger; no balance-sheet stock comparison."
+    },
+    {
+      "start": "2020-09-06",
+      "end": "2021-03-06",
+      "same_fy_cut_dates": [],
+      "same_fy_cut_fiscal_years": [],
+      "prior_fy_final_guidance_midpoint": 16,
+      "prior_fy_final_guidance_url": "https://investor.atmeta.com/investor-news/press-release-details/2020/Facebook-Reports-Third-Quarter-2020-Results/default.aspx",
+      "prior_fy_actual": 15.72,
+      "actual_publication_date": "2021-01-27",
+      "next_fy_first_midpoint": 22,
+      "first_date": "2020-10-29",
+      "first_source_url": "https://investor.atmeta.com/investor-news/press-release-details/2020/Facebook-Reports-Third-Quarter-2020-Results/default.aspx",
+      "actual_known_on_first_date": false,
+      "first_below_guidance": false,
+      "first_below_eventual_actual": false,
+      "old_cross_year_result": false,
+      "or_cross_year_result": false,
+      "old_window_yes": false,
+      "or_window_yes": false,
+      "comparability_note": "Same published cash-capex convention as the existing source ledger; no balance-sheet stock comparison."
+    },
+    {
+      "start": "2021-09-06",
+      "end": "2022-03-06",
+      "same_fy_cut_dates": [
+        "2021-10-25"
+      ],
+      "same_fy_cut_fiscal_years": [
+        2021
+      ],
+      "prior_fy_final_guidance_midpoint": 19,
+      "prior_fy_final_guidance_url": "https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Third-Quarter-2021-Results/default.aspx",
+      "prior_fy_actual": 19.24,
+      "actual_publication_date": "2022-02-02",
+      "next_fy_first_midpoint": 31.5,
+      "first_date": "2021-10-25",
+      "first_source_url": "https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Third-Quarter-2021-Results/default.aspx",
+      "actual_known_on_first_date": false,
+      "first_below_guidance": false,
+      "first_below_eventual_actual": false,
+      "old_cross_year_result": false,
+      "or_cross_year_result": false,
+      "old_window_yes": true,
+      "or_window_yes": true,
+      "comparability_note": "Same published cash-capex convention as the existing source ledger; no balance-sheet stock comparison."
+    },
+    {
+      "start": "2022-09-06",
+      "end": "2023-03-06",
+      "same_fy_cut_dates": [
+        "2022-11-09",
+        "2023-02-01"
+      ],
+      "same_fy_cut_fiscal_years": [
+        2023,
+        2023
+      ],
+      "prior_fy_final_guidance_midpoint": 32.5,
+      "prior_fy_final_guidance_url": "https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Third-Quarter-2022-Results/default.aspx",
+      "prior_fy_actual": 32.04,
+      "actual_publication_date": "2023-02-01",
+      "next_fy_first_midpoint": 36.5,
+      "first_date": "2022-10-26",
+      "first_source_url": "https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Third-Quarter-2022-Results/default.aspx",
+      "actual_known_on_first_date": false,
+      "first_below_guidance": false,
+      "first_below_eventual_actual": false,
+      "old_cross_year_result": false,
+      "or_cross_year_result": false,
+      "old_window_yes": true,
+      "or_window_yes": true,
+      "comparability_note": "Same published cash-capex convention as the existing source ledger; no balance-sheet stock comparison."
+    },
+    {
+      "start": "2023-09-06",
+      "end": "2024-03-06",
+      "same_fy_cut_dates": [
+        "2023-10-25"
+      ],
+      "same_fy_cut_fiscal_years": [
+        2023
+      ],
+      "prior_fy_final_guidance_midpoint": 28,
+      "prior_fy_final_guidance_url": "https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Third-Quarter-2023-Results/default.aspx",
+      "prior_fy_actual": 28.1,
+      "actual_publication_date": "2024-02-01",
+      "next_fy_first_midpoint": 32.5,
+      "first_date": "2023-10-25",
+      "first_source_url": "https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Third-Quarter-2023-Results/default.aspx",
+      "actual_known_on_first_date": false,
+      "first_below_guidance": false,
+      "first_below_eventual_actual": false,
+      "old_cross_year_result": false,
+      "or_cross_year_result": false,
+      "old_window_yes": true,
+      "or_window_yes": true,
+      "comparability_note": "Same published cash-capex convention as the existing source ledger; no balance-sheet stock comparison."
+    },
+    {
+      "start": "2024-09-06",
+      "end": "2025-03-06",
+      "same_fy_cut_dates": [],
+      "same_fy_cut_fiscal_years": [],
+      "prior_fy_final_guidance_midpoint": 39,
+      "prior_fy_final_guidance_url": "https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-Third-Quarter-2024-Results/default.aspx",
+      "prior_fy_actual": 39.23,
+      "actual_publication_date": "2025-01-29",
+      "next_fy_first_midpoint": 62.5,
+      "first_date": "2025-01-29",
+      "first_source_url": "https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-Fourth-Quarter-and-Full-Year-2024-Results/default.aspx",
+      "actual_known_on_first_date": true,
+      "first_below_guidance": false,
+      "first_below_eventual_actual": false,
+      "old_cross_year_result": false,
+      "or_cross_year_result": false,
+      "old_window_yes": false,
+      "or_window_yes": false,
+      "comparability_note": "Same published cash-capex convention as the existing source ledger; no balance-sheet stock comparison."
+    },
+    {
+      "start": "2025-09-06",
+      "end": "2026-03-06",
+      "same_fy_cut_dates": [],
+      "same_fy_cut_fiscal_years": [],
+      "prior_fy_final_guidance_midpoint": 71,
+      "prior_fy_final_guidance_url": "https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-Third-Quarter-2025-Results/default.aspx",
+      "prior_fy_actual": 72.22,
+      "actual_publication_date": "2026-01-28",
+      "next_fy_first_midpoint": 125,
+      "first_date": "2026-01-28",
+      "first_source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx",
+      "actual_known_on_first_date": true,
+      "first_below_guidance": false,
+      "first_below_eventual_actual": false,
+      "old_cross_year_result": false,
+      "or_cross_year_result": false,
+      "old_window_yes": false,
+      "or_window_yes": false,
+      "comparability_note": "Same published cash-capex convention as the existing source ledger; no balance-sheet stock comparison."
+    }
+  ],
+  "old_yes_windows": 5,
+  "or_yes_windows": 5,
+  "window_count": 8,
+  "smoothed_prior": 0.6,
+  "named_cases": [
+    {
+      "name": "between_actual_and_higher_guidance",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 135,
+      "final_guidance_midpoint": 137.5,
+      "actual": 134,
+      "old_yes": false,
+      "or_yes": true,
+      "expected_old": false,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "Only newly added OR region; next year can grow versus actual yet still qualify."
+    },
+    {
+      "name": "equal_actual_below_guidance",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 134,
+      "final_guidance_midpoint": 137.5,
+      "actual": 134,
+      "old_yes": false,
+      "or_yes": true,
+      "expected_old": false,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "Lower bound of the added region is inclusive."
+    },
+    {
+      "name": "equal_guidance_above_actual",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 137.5,
+      "final_guidance_midpoint": 137.5,
+      "actual": 134,
+      "old_yes": false,
+      "or_yes": false,
+      "expected_old": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "Upper bound is exclusive; equal is not lower."
+    },
+    {
+      "name": "below_both",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 133,
+      "final_guidance_midpoint": 137.5,
+      "actual": 134,
+      "old_yes": true,
+      "or_yes": true,
+      "expected_old": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "Already counted under the old event; do not add again."
+    },
+    {
+      "name": "actual_higher_than_guidance",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 139,
+      "final_guidance_midpoint": 137.5,
+      "actual": 140,
+      "old_yes": true,
+      "or_yes": true,
+      "expected_old": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "OR does not require being below BOTH references."
+    },
+    {
+      "name": "equal_both",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 137.5,
+      "final_guidance_midpoint": 137.5,
+      "actual": 137.5,
+      "old_yes": false,
+      "or_yes": false,
+      "expected_old": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "Equality alone is not a nominal decline."
+    },
+    {
+      "name": "above_both",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 145,
+      "final_guidance_midpoint": 137.5,
+      "actual": 140,
+      "old_yes": false,
+      "or_yes": false,
+      "expected_old": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "Growth slowing is not a nominal budget decline."
+    },
+    {
+      "name": "actual_not_published",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 135,
+      "final_guidance_midpoint": 137.5,
+      "actual": null,
+      "old_yes": true,
+      "or_yes": true,
+      "expected_old": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "A known guidance comparison is sufficient; do not wait for actuals to reject a valid YES."
+    },
+    {
+      "name": "guidance_unavailable_actual_available",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 135,
+      "final_guidance_midpoint": null,
+      "actual": 136,
+      "old_yes": true,
+      "or_yes": true,
+      "expected_old": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "Known comparable actuals can independently establish YES."
+    },
+    {
+      "name": "no_comparable_reference",
+      "type": "cross_year_arithmetic",
+      "new_midpoint": 135,
+      "final_guidance_midpoint": null,
+      "actual": null,
+      "old_yes": null,
+      "or_yes": null,
+      "expected_old": null,
+      "expected_or": null,
+      "passed": true,
+      "explanation": "Unresolved evidence is not an asserted NO."
+    },
+    {
+      "name": "window_start_included",
+      "type": "event_boundary",
+      "event": {
+        "channel": "same_fy_revision",
+        "n": 135,
+        "previous": 137.5,
+        "published": "2026-09-06T00:00:00-04:00"
+      },
+      "or_yes": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "Official disclosure exactly at the opening is in the window."
+    },
+    {
+      "name": "window_deadline_included",
+      "type": "event_boundary",
+      "event": {
+        "channel": "same_fy_revision",
+        "n": 135,
+        "previous": 137.5,
+        "published": "2027-03-06T23:59:00-05:00"
+      },
+      "or_yes": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "Official disclosure at the stated deadline qualifies."
+    },
+    {
+      "name": "after_deadline_excluded",
+      "type": "event_boundary",
+      "event": {
+        "channel": "same_fy_revision",
+        "n": 135,
+        "previous": 137.5,
+        "published": "2027-03-07T00:00:00-05:00"
+      },
+      "or_yes": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "A later announcement cannot be backdated to the internal approval."
+    },
+    {
+      "name": "before_window_excluded",
+      "type": "event_boundary",
+      "event": {
+        "channel": "same_fy_revision",
+        "n": 135,
+        "previous": 137.5,
+        "published": "2026-09-05T23:59:59-04:00"
+      },
+      "or_yes": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "A pre-window cut is part of the baseline, not a new event."
+    },
+    {
+      "name": "private_or_anonymous_plan",
+      "type": "event_boundary",
+      "event": {
+        "channel": "first_next_fy",
+        "n": 135,
+        "g": 137.5,
+        "a": 134,
+        "formal": false
+      },
+      "or_yes": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "A media rumour or internal discussion alone is not formal company disclosure."
+    },
+    {
+      "name": "unrestated_accounting_change",
+      "type": "event_boundary",
+      "event": {
+        "channel": "first_next_fy",
+        "n": 135,
+        "g": 137.5,
+        "a": 134,
+        "comparable": false
+      },
+      "or_yes": null,
+      "expected_or": null,
+      "passed": true,
+      "explanation": "Resolve comparability before declaring YES or NO."
+    },
+    {
+      "name": "actual_shortfall_only",
+      "type": "event_boundary",
+      "event": {
+        "channel": "actual_only",
+        "n": 134,
+        "previous": 137.5
+      },
+      "or_yes": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "Actual below plan alone is not a plan revision."
+    },
+    {
+      "name": "lower_upper_endpoint",
+      "type": "event_boundary",
+      "event": {
+        "channel": "same_fy_revision",
+        "n": 135,
+        "previous": 137.5
+      },
+      "or_yes": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "130–145 to 130–140: the midpoint falls."
+    },
+    {
+      "name": "wider_interval_same_midpoint",
+      "type": "event_boundary",
+      "event": {
+        "channel": "same_fy_revision",
+        "n": 137.5,
+        "previous": 137.5
+      },
+      "or_yes": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "130–145 to 125–150: no midpoint fall absent an explicit quantified net cut."
+    },
+    {
+      "name": "raise_then_cut_above_baseline",
+      "type": "event_boundary",
+      "event": {
+        "channel": "same_fy_revision",
+        "n": 140,
+        "previous": 145
+      },
+      "or_yes": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "An intervening 145 plan cut to 140 qualifies even though above the initial 137.5 baseline."
+    },
+    {
+      "name": "quantified_approved_later_cash_cut",
+      "type": "event_boundary",
+      "event": {
+        "channel": "approved_quantified_plan",
+        "approved": true,
+        "net_cut": 5,
+        "cash_year": 2028
+      },
+      "or_yes": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "An approved net plan cut publicly announced within the window qualifies even if most cash was scheduled for 2028."
+    },
+    {
+      "name": "project_cut_fully_reallocated",
+      "type": "event_boundary",
+      "event": {
+        "channel": "approved_quantified_plan",
+        "approved": true,
+        "net_cut": 0
+      },
+      "or_yes": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "A project cancellation offset by equal spending elsewhere has no company-plan net cut."
+    },
+    {
+      "name": "announcement_of_discussion_only",
+      "type": "event_boundary",
+      "event": {
+        "channel": "approved_quantified_plan",
+        "approved": false,
+        "net_cut": 5
+      },
+      "or_yes": false,
+      "expected_or": false,
+      "passed": true,
+      "explanation": "Even official discussion does not establish an approved quantified cut."
+    },
+    {
+      "name": "later_2027_plan_is_same_fy_revision",
+      "type": "event_boundary",
+      "event": {
+        "channel": "same_fy_revision",
+        "n": 135,
+        "previous": 140
+      },
+      "or_yes": true,
+      "expected_or": true,
+      "passed": true,
+      "explanation": "A second 2027 plan is tested against its first 2027 plan, not relabelled as a new first disclosure."
+    }
+  ],
+  "named_case_count": 24,
+  "finite_grid_assertions": 1029,
+  "old_evidence_replay_probability": 0.3220132847825528,
+  "unchanged_input_mechanical_result": 0.3220132847825528,
+  "added_region": "No old-rule YES elsewhere in window AND comparable known G>A AND A<=N<G, where G=prior-year final guidance midpoint, A=prior-year actual, N=next-year first midpoint.",
+  "probability_identity": "P(new)=P(old)+P(new-only region); equality is possible, decrease is not, holding the information/judgment fixed.",
+  "subjective_sensitivity_not_fitted": [
+    {
+      "added_unconditional_probability": 0,
+      "new_probability": 0.3220132847825528,
+      "headline_rounded_percent": 32
+    },
+    {
+      "added_unconditional_probability": 0.005,
+      "new_probability": 0.3270132847825528,
+      "headline_rounded_percent": 33
+    },
+    {
+      "added_unconditional_probability": 0.01,
+      "new_probability": 0.3320132847825528,
+      "headline_rounded_percent": 33
+    },
+    {
+      "added_unconditional_probability": 0.02,
+      "new_probability": 0.34201328478255283,
+      "headline_rounded_percent": 34
+    },
+    {
+      "added_unconditional_probability": 0.03,
+      "new_probability": 0.3520132847825528,
+      "headline_rounded_percent": 35
+    },
+    {
+      "added_unconditional_probability": 0.04,
+      "new_probability": 0.3620132847825528,
+      "headline_rounded_percent": 36
+    }
+  ],
+  "status": "All named and grid assertions passed. Probability sensitivity values are assumptions, not measured frequencies."
+}

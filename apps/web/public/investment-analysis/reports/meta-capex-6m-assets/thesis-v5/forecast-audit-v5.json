@@ -1,0 +1,77 @@
+{
+  "version": "v5",
+  "cutoff": "2026-09-06",
+  "question": "从 2026-09-06 起至 2027-03-06 23:59（美国东部时间）止，Meta Platforms, Inc. 是否会通过正式公开渠道，明确下调其可比口径下的名义资本开支计划？",
+  "originalReplayProbability": 0.3220132847825528,
+  "originalReplayInputSha256": "a6bce3edee250ba057b6989979ec4f78f7b64158fbf84d495b5ce0cc61abbce3",
+  "originalReplayRounds": 4,
+  "newIndependentModelRun": false,
+  "newEvidenceLikelihoodWeights": false,
+  "resolutionRule": "The first next-year midpoint is lower than either the comparable prior-year final guidance midpoint or officially disclosed actual. Preserve public timestamps and compare available official information within the window.",
+  "addedSet": "G > A and A <= N < G, with no other YES under the previous rule anywhere in the observation window",
+  "subjectiveAddedProbability": 0.02,
+  "addedProbabilitySensitivity": [
+    0,
+    0.04
+  ],
+  "unroundedProbability": 0.34201328478255283,
+  "headlineYes": 34,
+  "headlineNo": 66,
+  "subjectiveRange": [
+    20,
+    45
+  ],
+  "historicalWindowsYes": 5,
+  "historicalWindowsCount": 8,
+  "paths": [
+    {
+      "label": "主动战略削减",
+      "result": "YES",
+      "percent": 6
+    },
+    {
+      "label": "需求或财务压力",
+      "result": "YES",
+      "percent": 6
+    },
+    {
+      "label": "供给施工付款跨期",
+      "result": "YES",
+      "percent": 20
+    },
+    {
+      "label": "仅恢复的跨年边界",
+      "result": "YES",
+      "percent": 2
+    },
+    {
+      "label": "转鸽但不削减",
+      "result": "NO",
+      "percent": 28
+    },
+    {
+      "label": "维持",
+      "result": "NO",
+      "percent": 14
+    },
+    {
+      "label": "上调或更高次年预算且无边界触发",
+      "result": "NO",
+      "percent": 24
+    }
+  ],
+  "pathReallocationNote": "Two subjective points are moved from the previous higher-next-year-budget NO row to a new exclusive cross-year boundary row. No cause is assigned; not independently estimated from order data.",
+  "overlap": {
+    "formalAndSubstantial": 14,
+    "formalOnly": 20,
+    "substantialOnly": 4,
+    "neither": 62
+  },
+  "sourceGrouping": "Verified Q1/Q2 business metrics describe the existing capacity-demand cluster; no repeated likelihood update.",
+  "proProbabilityUsedAsInput": false,
+  "limitations": [
+    "Rule delta is subjective, not sample-calibrated.",
+    "The 20–45 range is not a statistical confidence interval.",
+    "Existing v2 replay remains an archive of the narrower rule, not a current valid settlement specification."
+  ]
+}

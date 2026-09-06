@@ -1,0 +1,769 @@
+{
+  "checks": [
+    {
+      "name": "frozen_question_verbatim",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "original_question_verbatim",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "main_sections",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "appendices",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "five_insights",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "source_refs_resolve",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "all_reference_ids_defined",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "rendered_percentages_and_dates_match",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "headline_matches_replay_plus_rule_delta",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "headline_sections_match",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "yes_no_total",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "yes_paths_match",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "path_values_appear_in_html",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "probability_recomputed",
+      "status": "PASS",
+      "detail": {
+        "llr": -1.15,
+        "probability": 0.322013284782553
+      }
+    },
+    {
+      "name": "same_cluster_discount",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "round_count",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "source_provenance",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no_post_cutoff_counted_source",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "input_hash",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "replay_transparency",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "historical_record_count",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "historical_counts",
+      "status": "PASS",
+      "detail": {
+        "首次": 9,
+        "上调": 13,
+        "维持": 10,
+        "下调": 11
+      }
+    },
+    {
+      "name": "historical_arithmetic",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "historical_windows",
+      "status": "PASS",
+      "detail": [
+        {
+          "start_year": 2018,
+          "yes": true,
+          "events": [
+            "2018-10-30"
+          ]
+        },
+        {
+          "start_year": 2019,
+          "yes": true,
+          "events": [
+            "2019-10-30"
+          ]
+        },
+        {
+          "start_year": 2020,
+          "yes": false,
+          "events": []
+        },
+        {
+          "start_year": 2021,
+          "yes": true,
+          "events": [
+            "2021-10-25"
+          ]
+        },
+        {
+          "start_year": 2022,
+          "yes": true,
+          "events": [
+            "2022-11-09",
+            "2023-02-01"
+          ]
+        },
+        {
+          "start_year": 2023,
+          "yes": true,
+          "events": [
+            "2023-10-25"
+          ]
+        },
+        {
+          "start_year": 2024,
+          "yes": false,
+          "events": []
+        },
+        {
+          "start_year": 2025,
+          "yes": false,
+          "events": []
+        }
+      ]
+    },
+    {
+      "name": "cash_lease_bridge",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "h2_cash_bounds",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "fcf_bridge",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "all_tables_wrapped",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "evidence_table_20_rows",
+      "status": "PASS",
+      "detail": 20
+    },
+    {
+      "name": "asset_structure_replaces_attention_root",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "substantial_cut_overlap",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sensitivity_math",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "local_artifact_links",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "toc_targets",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "probability_location_review",
+      "status": "PASS",
+      "detail": [
+        {
+          "line": 130,
+          "section": "2",
+          "text": "内容推荐已披露产出与证明限度管理层称 Q1 排序改进使 Instagram Reels 观看时长提升 10%。管理层对改进效果的归因，不是全部时长的同比增长，也不是利润增长。Q1 第 5 页 · 2026-04-29可支持的预算申请可支持继续优化推荐模型、申请训练与推理资源。扩大设备预算还要证明新增参与度能变现，追加收益高于计算成本。"
+        },
+        {
+          "line": 131,
+          "section": "2",
+          "text": "广告创意工具已披露产出与证明限度超过 900 万家小企业使用至少一种 AI 创意工具；另有 Q1 视频生成测试，广告主转化率相对提升超过 3%。采用规模与测试效果来自不同人群，不能相乘；超过 3% 不是增加 3 个百分点。Q2 第 7 页；测试见 Q1 第 7 页 · 2026-07-29 · Q1 测试原文可支持的预算申请采用数据支持服务容量，测试结果支持扩大试验。新增设备申请仍需持续调用量、增量广告收益与单位生成成本。"
+        },
+        {
+          "line": 132,
+          "section": "2",
+          "text": "企业代理已披露产出与证明限度Meta 转述 Movida 个案：一个月观察期内，WhatsApp 日均预订同比增加 44%，85% 对话由 AI 独立处理。单一客户、单一渠道的效果，不是 Meta 收入，也不证明全体客户可复制。Q2 第 8 页 · 2026-07-29可支持的预算申请可支持试点扩展、客户接入和稳定服务。大规模商业容量申请还需多个客户复现、持续付费及正毛利。"
+        },
+        {
+          "line": 133,
+          "section": "2",
+          "text": "Meta AI 助手已披露产出与证明限度管理层称重建助手并整合 Muse Spark 后，每日互动人数增加 60%。用量变化；该段未给精确对照日期和绝对人数，不能解释为付费用户或收入增长。Q2 第 2 页 · 2026-07-29可支持的预算申请可支持满足真实推理需求、改善响应。能否增加自有设备，取决于留存、服务成本及现有或外部容量是否足够。"
+        },
+        {
+          "line": 205,
+          "section": "2",
+          "text": "| 顶层治理 | 🏛️ 2026-04-16 代理声明显示，4 月 1 日 Zuckerberg 拥有 **60.8%** 总投票权；公司已设置风险与战略委员会、审计与隐私委员会。[来源][proxy] | 委员会重组发生在 2025 年六月，属于本次十二个月窗口之前；本期文件确认新结构延续。旧“审计与风险监督委员会”名称不再照搬。 |"
+        },
+        {
+          "line": 317,
+          "section": "4",
+          "text": "“至少减少 5%”只属于敏感性口径。它比较**同一未来十二个月**与基线版本的计划，不能用 2026 全年中点直接替代跨年的十二个月基准。基线日没有公开的完整滚动十二个月预算，因此这项判断的证据要求更高、置信度更低。"
+        }
+      ]
+    },
+    {
+      "name": "repository_linter",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "browser_review_recorded",
+      "status": "PASS",
+      "detail": {
+        "url": "http://127.0.0.1:3109/meta-capex-6m-report-v5.html",
+        "phase": "local-v5",
+        "interaction_tests": {
+          "checks": [
+            {
+              "name": "HTTP 200",
+              "pass": true
+            },
+            {
+              "name": "No sandbox",
+              "pass": true
+            },
+            {
+              "name": "No customer brand",
+              "pass": true
+            },
+            {
+              "name": "Fifth edition",
+              "pass": true
+            },
+            {
+              "name": "Explicit stance",
+              "pass": true
+            },
+            {
+              "name": "Current probability",
+              "pass": true
+            },
+            {
+              "name": "Six business rows",
+              "pass": true
+            },
+            {
+              "name": "Delivery payment steps",
+              "pass": true
+            },
+            {
+              "name": "Default timing case",
+              "pass": true
+            },
+            {
+              "name": "Select timing",
+              "pass": true
+            },
+            {
+              "name": "Old chart explanation timing",
+              "pass": true
+            },
+            {
+              "name": "Select demand",
+              "pass": true
+            },
+            {
+              "name": "Old chart explanation demand",
+              "pass": true
+            },
+            {
+              "name": "Select price",
+              "pass": true
+            },
+            {
+              "name": "Old chart explanation price",
+              "pass": true
+            },
+            {
+              "name": "Select reallocate",
+              "pass": true
+            },
+            {
+              "name": "Old chart explanation reallocate",
+              "pass": true
+            },
+            {
+              "name": "Keyboard selection",
+              "pass": true
+            },
+            {
+              "name": "Asset evidence opens",
+              "pass": true
+            },
+            {
+              "name": "Mobile selection",
+              "pass": true
+            },
+            {
+              "name": "No fabricated calculator",
+              "pass": true
+            },
+            {
+              "name": "All anchors resolve",
+              "pass": true
+            },
+            {
+              "name": "No console errors",
+              "pass": true,
+              "detail": []
+            },
+            {
+              "name": "Responsive fit",
+              "pass": true
+            }
+          ],
+          "all_passed": true
+        },
+        "viewports": [
+          {
+            "innerWidth": 1440,
+            "docWidth": 1425,
+            "figures": [
+              {
+                "id": "forecast-priorities",
+                "width": 1005,
+                "scroll": 1005
+              },
+              {
+                "id": "capex-structure",
+                "width": 1005,
+                "scroll": 1005
+              },
+              {
+                "id": "capex-forecast",
+                "width": 1005,
+                "scroll": 1005
+              },
+              {
+                "id": "business-evidence",
+                "width": 1005,
+                "scroll": 1005
+              },
+              {
+                "id": "capex-scenarios",
+                "width": 1005,
+                "scroll": 1005
+              },
+              {
+                "id": "delivery-payment",
+                "width": 1005,
+                "scroll": 1005
+              }
+            ]
+          },
+          {
+            "innerWidth": 390,
+            "docWidth": 375,
+            "figures": [
+              {
+                "id": "forecast-priorities",
+                "width": 313,
+                "scroll": 313
+              },
+              {
+                "id": "capex-structure",
+                "width": 313,
+                "scroll": 313
+              },
+              {
+                "id": "capex-forecast",
+                "width": 313,
+                "scroll": 313
+              },
+              {
+                "id": "business-evidence",
+                "width": 313,
+                "scroll": 313
+              },
+              {
+                "id": "capex-scenarios",
+                "width": 313,
+                "scroll": 313
+              },
+              {
+                "id": "delivery-payment",
+                "width": 313,
+                "scroll": 313
+              }
+            ]
+          },
+          {
+            "innerWidth": 360,
+            "docWidth": 345,
+            "figures": [
+              {
+                "id": "forecast-priorities",
+                "width": 283,
+                "scroll": 283
+              },
+              {
+                "id": "capex-structure",
+                "width": 283,
+                "scroll": 283
+              },
+              {
+                "id": "capex-forecast",
+                "width": 283,
+                "scroll": 283
+              },
+              {
+                "id": "business-evidence",
+                "width": 283,
+                "scroll": 283
+              },
+              {
+                "id": "capex-scenarios",
+                "width": 283,
+                "scroll": 283
+              },
+              {
+                "id": "delivery-payment",
+                "width": 283,
+                "scroll": 283
+              }
+            ]
+          }
+        ],
+        "errors": [],
+        "visual_review": "PASS",
+        "visual_notes": "Viewed desktop business matrix and delivery chain plus 390px business and financing views. Text is readable, rows stack with labels, no clipping or overflow."
+      }
+    },
+    {
+      "name": "eight_caption_programs",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "caption_files_and_hashes",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "caption_metadata_before_cutoff",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "six_recent_caption_programs",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "caption_duration_report",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "caption_end_coverage_review",
+      "status": "PASS",
+      "detail": "Dwarkesh publisher captions end at the spoken closing thanks (01:15:18.762); video duration 01:15:49. Remaining tail not transcribed. Other tracks end within 25 seconds of video end."
+    },
+    {
+      "name": "candidate_program_count",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "two_additional_full_texts",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "social_original_count",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "x_gap_disclosed",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "forum_bodies_and_comments",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "six_new_zero_weight_records",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "v1_probabilities_and_paths_preserved",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "original_eight_weights_preserved",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "insights_connected_paragraphs",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "each_insight_load_bearing_evidence",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "generic_market_strawman_removed",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "three_figures",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "four_assets_one_cash_bridge",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "five_component_forecasts",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "complete_component_reasoning",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "component_sources_resolve",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "undisclosed_allocations_not_fabricated",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "unknown_category_preserved",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "cash_chart_reconciles",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no_stock_flow_confusion",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "cloud_opex_correction",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "historical_share_scope",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "four_explanatory_cases",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "calculator_retired",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "case_sources_resolve",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "nonprobabilistic_case_scope",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "forecast_framework_present",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "all_case_panels_readable_without_js",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "all_local_anchor_targets",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no_duplicate_ids",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "probability_reuse_transparent",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "historical_appendix_unchanged",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "browser_interaction_suite",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "desktop_mobile_no_overflow",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "restored_original_or_rule",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "five_asset_forecasts_unchanged",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no_new_research_claim",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "explicit_stance",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "six_business_evidence_rows",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "business_budget_chain",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "financing_not_roi",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "delivery_payment_distinction",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "four_cash_transmission_steps",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "rule_delta_transparent",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "exclusive_paths_include_boundary",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no_client_brand",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "pass": 89,
+  "fail": 0,
+  "html_sha256": "3d205061cdc8c476090b77a37523796c7e431802ee15e75042ae1dc10305a720",
+  "markdown_sha256": "cda7b531a83d312abcaa5764d98c0062d205a5b43b359f91c23fb7a1b8fe883a",
+  "unique_external_urls": 95,
+  "notes": [
+    "Source-date checks cover weighted evidence; citation dates and future planned dates were separately reviewed.",
+    "Local links and reference resolution are checked; this is not a blanket network availability test.",
+    "All financial/factual percentages outside conclusion and appendices are listed for review."
+  ],
+  "publicExportNote": "Checks and hashes refer to the canonical local v5 report. The public copy changes link destinations and new-tab attributes only; its hash is in publication-manifest.json."
+}
