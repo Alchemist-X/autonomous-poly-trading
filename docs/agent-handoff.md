@@ -31,7 +31,7 @@
 | AI 投研系统案例 | `apps/web/app/[locale]/investment-analysis`、`/investment-analysis` | 三份公开案例：腾讯混元 × WorkBuddy、Hassabis × Alphabet、[Meta 半年资本开支](https://forecasting-agent.com/investment-analysis/meta-capex-6m)（v3，截点 2026-09-06） |
 | Polymarket live pipeline | `services/orchestrator`、`services/executor` | 真钱路径；任何 live 命令、风控调整或订单测试都需要用户明确确认 |
 
-后续投资资料统一去除客户品牌标签。Meta v3 公开经过复核的来源摘要与审计附件，完整字幕留在本地；仅该报告 iframe 开放脚本用于金额演算，并允许用户下载历史 CSV，仍不授予 `allow-same-origin`。
+后续投资资料统一去除客户品牌标签。Meta v3 公开经过复核的来源摘要与审计附件，完整字幕留在本地；按用户要求，本站报告 iframe 统一不设置 `sandbox`，脚本交互与附件下载正常启用；新报告沿用同一容器，不再按公司单独放行。
 
 ## 3. 当前最主要的技术 WIP：GPT Pro v2 harness
 
