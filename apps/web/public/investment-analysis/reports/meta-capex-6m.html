@@ -1,0 +1,2085 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meta 半年内下调资本开支的概率 · 第三版</title><link rel="icon" href="data:,">
+<style>
+:root{--ink:#18201d;--muted:#657069;--paper:#fffdf8;--canvas:#eeeae1;--line:#d9d4c8;--accent:#9d3f25;--accent-soft:#f5e7df;--shadow:0 18px 55px rgba(47,42,31,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--canvas);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.72}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,253,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1480px;margin:auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:750;letter-spacing:.02em}.brand span{color:var(--accent)}
+.meta{font-size:13px;color:var(--muted)}
+.layout{max-width:1480px;margin:28px auto 64px;padding:0 24px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px}
+.toc{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding:18px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,253,248,.72)}
+.toc-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.toc a{display:block;color:var(--ink);text-decoration:none;font-size:13.5px;padding:4px 8px;border-radius:8px;margin:1px 0}
+.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+main{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:40px 48px 56px;min-width:0}
+main h1{font-size:26px;line-height:1.35;margin:.2em 0 .6em;letter-spacing:.01em}
+main h2{font-size:21px;margin:2.2em 0 .7em;padding-top:.6em;border-top:1px solid var(--line)}
+main h3{font-size:17px;margin:1.6em 0 .5em;line-height:1.5}
+main h2:first-of-type{border-top:none;padding-top:0;margin-top:1em}
+main a{color:var(--accent)}
+main blockquote{margin:1.2em 0;padding:12px 18px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
+main blockquote p{margin:.3em 0}
+.tablewrap{overflow-x:auto;margin:1.1em 0}
+main table{border-collapse:collapse;font-size:14px;min-width:60%}
+main th{background:var(--accent-soft);color:var(--ink);text-align:left;font-weight:650}
+main th,main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top;line-height:1.65}
+main tr:nth-child(even) td{background:rgba(238,234,225,.35)}
+main code{background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.9em}
+main hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+main li{margin:.25em 0}
+main ul ul,main ol ul{margin-top:.2em}
+main strong{color:#111}
+main u.key{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+main u.minor{text-decoration:underline dotted;text-decoration-color:#9aa39d;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.tag{display:inline-block;font-size:11.5px;line-height:1;padding:3px 6px;border-radius:5px;background:var(--canvas);border:1px solid var(--line);color:var(--muted);margin-right:5px;vertical-align:1px;white-space:nowrap}
+.note{display:block;font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.55;font-weight:400}
+.legend{font-size:13.5px;color:#4d5651;background:rgba(238,234,225,.5);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:.6em 0 1.2em;line-height:1.75}
+.legend p{margin:.2em 0}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"PingFang SC","Hiragino Sans GB",monospace;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:1em 0;line-height:2;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.formula b{color:var(--accent)}
+.org td:first-child,.tight1 td:first-child{white-space:nowrap}
+.org td:first-child{font-weight:650}
+.org td:nth-child(2){width:58%}
+.org td:nth-child(3){min-width:260px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static;max-height:none}main{padding:24px 20px}}
+</style></head><body>
+<div class="topbar"><div class="topbar-inner"><div class="brand">Predict-Raven</div><div class="meta">Meta 半年内下调资本开支的概率 · 第三版｜生成 2026-09-06｜research-only / market-blind</div></div></div>
+<div class="layout"><nav class="toc"><div class="toc-title">目录</div><a href="#meta">Meta 会在半年内下调资本开支吗？</a>
+<a href="#1">1. 阅读结论</a>
+<a href="#2">2. 资本开支结构与分项预测</a>
+<a href="#3-insight-summary">3. Insight Summary</a>
+<a href="#4">4. 结算口径</a>
+<a href="#5">5. 情景与路径</a>
+<a href="#6">6. 关键证据表</a>
+<a href="#7">7. 信息缺口树</a>
+<a href="#8">8. 信源梯度反馈</a>
+<a href="#9-qa">9. 自检结果（QA）</a>
+<a href="#10">10. 最终预测声明</a>
+<a href="#a1">A1. 概率模型与数值代入</a>
+<a href="#a2">A2. 基准率与可比案例</a>
+<a href="#a3">A3. 口径敏感性</a>
+<a href="#a4">A4. 下一次更新清单</a></nav><main><h1 id="meta">Meta 会在半年内下调资本开支吗？</h1>
+<p class="report-kicker">Predict-Raven · 深度研究 · 2026-09-06 · 第三版 · 资本开支结构与分项预测</p>
+<p class="note">窄屏阅读时，表格可以左右滑动。</p>
+
+<style>
+.report-kicker{color:var(--muted);font-size:13px;margin-bottom:26px}
+main{font-size:15px}main h2{scroll-margin-top:85px}
+main table{width:100%}main td,main th{overflow-wrap:break-word}
+main td{min-width:100px}.org td:first-child{min-width:100px}
+.org td:nth-child(3){min-width:190px}.org td:nth-child(2){min-width:290px}
+.hero{padding:22px 24px;border-left:4px solid var(--accent);background:var(--accent-soft);margin:24px 0}
+.hero .number{font-size:48px;font-weight:750;line-height:1.1;color:var(--accent)}
+.hero .caption{font-size:14px;color:var(--muted);margin-top:10px}
+.history td:first-child{min-width:65px}.history td:nth-child(2){white-space:nowrap;min-width:115px}.history td:nth-child(6){min-width:65px}
+@media(max-width:700px){.layout{margin-top:14px;padding:0 12px;gap:14px}.topbar-inner{padding:10px 14px;align-items:flex-start}.topbar .meta{font-size:10px;max-width:48%}.topbar .brand{font-size:12px}main{padding:22px 18px}.toc{padding:12px;max-height:225px}.hero{padding:18px}main table{min-width:700px}main h1{font-size:24px}.formula{font-size:12px}}
+</style>
+
+<style>
+.cx-figure{margin:24px 0 18px;padding:22px 0;border-top:2px solid var(--ink);border-bottom:1px solid var(--line);color:var(--ink);scroll-margin-top:72px}
+.cx-title{font-size:19px;font-weight:700;line-height:1.5;margin:0 0 6px}
+.cx-sub{font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 18px}
+.cx-figure p{margin:8px 0}.cx-figure strong{color:inherit}
+.cx-total{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid var(--line);padding:14px 0 20px}
+.cx-total b{font-size:34px;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.cx-total span{display:block;font-size:13px;color:var(--muted)}
+.cx-cash{display:grid;grid-template-columns:minmax(0,3fr) minmax(180px,1fr);gap:18px;margin-top:22px}
+.cx-cash-head{padding:12px 14px;background:#e7ece6;border-top:3px solid #44604b;line-height:1.65}
+.cx-cash-head b{font-size:23px;font-variant-numeric:tabular-nums;display:block}
+.cx-lease .cx-cash-head{background:var(--accent-soft);border-color:var(--accent)}
+.cx-asset-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:18px 0 0;list-style:none!important;margin:0!important}
+.cx-asset-list li{padding:12px;border:1px solid var(--line);margin:0;line-height:1.7;position:relative}
+.cx-asset-list small{display:block;color:var(--muted);font-size:12px}
+.cx-asset-list b{font-size:14px}.cx-asset-list .cx-no-amount{font-size:12px;color:var(--accent);margin-top:8px}
+.cx-lease p{font-size:13px;line-height:1.8;padding:6px 10px}
+.cx-use{border-top:1px dashed var(--line);padding-top:14px;margin-top:20px;display:flex;gap:9px 18px;flex-wrap:wrap;font-size:13px}
+.cx-use span:first-child{font-weight:700}.cx-use span+span{border-left:2px solid var(--line);padding-left:12px}
+.cx-row{display:grid;grid-template-columns:minmax(120px,1.2fr) minmax(190px,2fr) minmax(82px,.75fr) minmax(82px,.75fr) minmax(65px,.6fr);gap:14px;align-items:center;padding:16px 4px;border-top:1px solid var(--line)}
+.cx-header{font-size:12px;color:var(--muted);border-top:0;padding-top:4px;padding-bottom:10px}
+.cx-row .cx-name{font-size:15px;font-weight:700}.cx-row .cx-name small{font-size:11px;font-weight:400;display:block;color:var(--muted)}
+.cx-direction{font-size:14px;line-height:1.7}.cx-direction i{font-style:normal;color:#44604b;font-size:19px;margin-right:7px}
+.cx-risk{display:inline-block;padding:5px 9px;font-size:13px;line-height:1.5;min-width:42px;text-align:center;border:1px solid transparent}
+.cx-risk-low{color:#34523c;background:#e7ece6}.cx-risk-midlow{color:#4b5146;background:#eeeee5}.cx-risk-mid{color:#704619;background:#f3e8d7}.cx-risk-high{color:#8a3321;background:#f4dfd6}.cx-risk-unknown{color:var(--muted);background:transparent;border:1px dashed var(--line)}
+.cx-confidence{font-size:13px;color:var(--muted)}.cx-mobile-label{display:none}
+.cx-detail{border-bottom:1px solid var(--line);padding:13px 0;margin:0}
+.cx-detail summary{cursor:pointer;font-weight:650;line-height:1.7;padding:5px 3px}
+.cx-detail summary span{font-size:12px;font-weight:400;color:var(--muted);margin-left:10px}
+.cx-detail div{padding:5px 3px 8px}.cx-detail p{margin:12px 0;line-height:1.9}
+.cx-presets{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.cx-presets button{border:1px solid var(--line);background:transparent;color:var(--ink);padding:9px 13px;border-radius:3px;cursor:pointer;font:inherit;font-size:13px;min-height:40px}
+.cx-presets button[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.cx-figure :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.cx-scenario-note{font-size:13px;line-height:1.8;min-height:47px;padding:10px 0;color:var(--muted)}
+.cx-sim-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:30px}
+.cx-input-row{padding:12px 0;border-top:1px solid var(--line)}
+.cx-input-label{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+.cx-input-row input[type=range]{display:block;width:100%;margin:13px 0 5px;accent-color:var(--accent);min-height:24px;cursor:pointer}
+.cx-input-row output{font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent)}
+.cx-axis{display:grid;grid-template-columns:1fr 1fr;color:var(--muted);font-size:12px;padding-bottom:12px}.cx-axis span:last-child{text-align:right}
+.cx-delta-line{display:grid;grid-template-columns:76px minmax(0,1fr) 44px;gap:8px;align-items:center;padding:14px 0;font-size:12px}
+.cx-delta-track{height:17px;position:relative;background:#f0eee7}
+.cx-delta-track::before{content:"";position:absolute;top:-5px;bottom:-5px;left:50%;width:1px;background:var(--muted);z-index:1}
+.cx-delta-bar{position:absolute;height:100%;background:var(--accent);right:50%;width:0}
+.cx-delta-bar.cx-positive{background:#44604b;left:50%;right:auto}
+.cx-delta-line output{text-align:right;font-variant-numeric:tabular-nums}
+.cx-summary{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;padding-top:18px;border-top:2px solid var(--ink)}
+.cx-summary span{display:block;font-size:12px;color:var(--muted)}
+.cx-summary output{font-size:31px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.6}
+.cx-formality{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.8;margin:20px 0 8px}
+.cx-formality input{margin-top:5px;min-width:17px;min-height:17px;accent-color:var(--accent)}
+.cx-result{font-size:14px;line-height:1.9;padding:12px 14px;background:#e7ece6;border-left:3px solid #44604b}
+.cx-result[data-negative=true]{background:var(--accent-soft);border-color:var(--accent)}
+.cx-static{font-size:13px;color:var(--muted);margin-top:18px;padding-top:12px;border-top:1px dashed var(--line)}
+@media(max-width:1000px){.cx-row{gap:10px;grid-template-columns:1.15fr 1.65fr .7fr .7fr .6fr}.cx-sim-grid{gap:22px}.cx-delta-line{grid-template-columns:65px minmax(0,1fr) 37px;gap:5px}}
+@media(max-width:780px){.cx-cash{grid-template-columns:1fr}.cx-asset-list{grid-template-columns:repeat(2,minmax(0,1fr))}.cx-row{grid-template-columns:1fr 1fr;gap:10px 16px;padding:18px 0}.cx-header{display:none}.cx-row .cx-name{grid-column:1/-1}.cx-direction{grid-column:1/-1}.cx-confidence{grid-column:1/-1}.cx-mobile-label{display:block;font-size:12px;color:var(--muted);margin:0 0 5px}.cx-confidence .cx-mobile-label{display:inline;margin-right:8px}.cx-sim-grid{grid-template-columns:1fr;gap:24px}.cx-total{align-items:flex-start}.cx-total b{font-size:28px}.cx-title{font-size:17px}.cx-detail summary span{display:block;margin-left:0}.cx-presets button{min-height:44px}.cx-formality{padding:6px 0}.cx-delta-line{grid-template-columns:76px minmax(0,1fr) 42px}.cx-scenario-note{min-height:0}}
+@media print{.cx-sim-controls,.cx-presets,.cx-formality{display:none}.cx-figure,.cx-detail{break-inside:avoid}.cx-detail:not([open])>div{display:block}.cx-static{display:block!important}}
+
+</style>
+
+<h2 id="1">1. 阅读结论</h2>
+<p>客户原始问题：</p>
+<blockquote>
+<p>半年内 Meta 会下调 capex 的概率？</p>
+</blockquote>
+<p>冻结后的主预测题：</p>
+<blockquote>
+<p><strong>从 2026-09-06 起至 2027-03-06 23:59（美国东部时间）止，Meta Platforms, Inc. 是否会通过正式公开渠道，明确下调其可比口径下的名义资本开支计划？</strong></p>
+</blockquote>
+<div class="hero">
+<div class="number">32%</div>
+<div class="caption">正式下调的主观概率 · 倾向 NO · 合理范围 20–45% · 主观置信度：中低</div>
+</div>
+
+<p>资本开支（capex）指用于服务器、网络、数据中心等长期资产的投入；本题沿用 Meta 含融资租赁本金偿还的现金口径。<strong>押 NO。</strong> 近两年的容量扩张意愿、法律冲击后维持预算的行动，共同压低正式下调的可能；最容易推翻判断的是年底交付、验收或付款集中后移，进而进入正式全年指引。长期看好 AI 和短期下修现金预算，可以同时成立。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>预测口径</th>
+<th>截止日（美国东部时间）</th>
+<th style="text-align: right;">YES</th>
+<th style="text-align: right;">NO</th>
+<th>YES 合理范围</th>
+<th>主观置信度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>半年内 Meta 会下调 capex 的概率？</strong><span class="note">主口径：正式下调可比名义计划，按第 4 节结算。</span></td>
+<td>2027-03-06 23:59</td>
+<td style="text-align: right;"><strong>32%</strong></td>
+<td style="text-align: right;"><strong>68%</strong></td>
+<td><strong>20–45%</strong></td>
+<td>中低</td>
+</tr>
+<tr>
+<td>实质削减：可比未来十二个月计划较基线减少至少 5%<span class="note">正式披露或高可信证据均可；必须核对相同十二个月及相同会计范围。</span></td>
+<td>同上</td>
+<td style="text-align: right;">18%</td>
+<td style="text-align: right;">82%</td>
+<td>10–30%</td>
+<td>低</td>
+</tr>
+<tr>
+<td>转鸽但不削减<span class="note">整个窗口没有主口径下调，但正式放缓扩张、推迟主要项目或降低增量预算。</span></td>
+<td>同上</td>
+<td style="text-align: right;">28%</td>
+<td style="text-align: right;">72%</td>
+<td>17–42%</td>
+<td>中低</td>
+</tr>
+</tbody>
+</table></div>
+<p>主口径允许小幅下修，因此高于“至少减少 5%”的实质削减判断；两者并非严格包含关系，因为后者还接受可靠的内部计划证据。“转鸽但不削减”与主口径互斥，其 NO 也包括正式下调。附录 A3 给出交叉关系，三个 YES 不能相加。</p>
+<p><strong>基线口径卡</strong>（以下金额以十亿美元计；1 十亿美元＝10 亿美元）：</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>已核验基线</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最新量化年度指引</td>
+<td><strong>2026 财年 130–145，中点 137.5</strong>，即 1,300–1,450 亿美元。2026-07-29 官方新闻稿原文金额为“$130-145 billion”。<a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">Q2 公告</a></td>
+</tr>
+<tr>
+<td>最近一次再次确认</td>
+<td><strong>2026-08-26</strong> 和解公告，8 月 27 日更新：新增法律费用之外，七月其余指引区间不变。短句为“the guidance ranges provided in our July earnings release remain unchanged”。因此截至基线日仍采用七月区间。<a href="https://about.fb.com/news/2026/08/agreement-with-state-attorneys-general-supporting-teens/" target="_blank" rel="noopener noreferrer">和解公告</a></td>
+</tr>
+<tr>
+<td>正式定义与桥接</td>
+<td>新闻稿：“including principal payments on finance leases”，即包含融资租赁本金。上半年购建物业设备现金 49.113，加租赁本金 1.805，合计 <strong>50.918</strong>；不把取得融资租赁资产的非现金增加额重复加入。<a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">Q2 公告</a></td>
+</tr>
+<tr>
+<td>相对前次</td>
+<td>4 月 29 日为 <strong>125–145，中点 135</strong>；7 月下限升 5，上限不变，中点升 2.5，属于上调。4 月那次上调主要因组件价格上涨，另有部分未来容量投入。<a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-First-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">Q1 公告</a>、<a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">Q2 公告</a></td>
+</tr>
+<tr>
+<td>下一财年方向</td>
+<td>7 月正式电话会强调“maximizing 2026 and 2027 capacity”，即尽可能增加这两年的可用容量；<strong>这不是已发布的 2027 年美元预算</strong>。2028 年以后更强调提前准备土地、电力、网络并保留设备选择。<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">主电话会</a></td>
+</tr>
+<tr>
+<td>合同与融资约束</td>
+<td>半年末不可取消合同义务 349.31；尚未开始的租赁义务 278.99，另在七月签订 68 的未来租赁安排。它们混合年份与会计分类，<strong>不能相加成半年资本开支底线</strong>。<a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">Q2 季报</a></td>
+</tr>
+<tr>
+<td>下一次披露</td>
+<td>预计 2026 年 10 月下旬披露 Q3，2027 年 1 月下旬至 2 月初披露全年及下一年展望；截至本次检索未确认具体日期，属于惯例推定。<a href="https://investor.atmeta.com/" target="_blank" rel="noopener noreferrer">Meta IR</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>信息截点为 2026-09-06 本次检索；第二轮补漏与第三版结构核对仍严格使用该日及以前的材料。尽可能覆盖会改变结论的公开信息；付费墙后全文、未公开预算和未开展的专家访谈不在已掌握证据之内。全文把公告事实、公司判断、媒体消息和我们的推断分开。</p>
+<p><strong>第三版变化：</strong> 第 2 节改为按现有资产投向拆解，加入现金结构图、分项预测图和金额抵消演算。每项分别解释预算方向、主动缩量与付款后移风险；公司未披露的年度分项金额保留未知。主概率仍为 <strong>32%</strong>，合理范围 <strong>20–45%</strong>。此次细分的是已有证据如何作用于各类资产，没有新增独立的削减决定，因而不重复计权。第二版已采集的字幕、原帖、论坛证据继续保留，覆盖与缺口见第 8 节。</p>
+<p>快速阅读：<a href="#capex-structure">资本开支结构</a> · <a href="#capex-forecast">各项预测</a> · <a href="#capex-simulator">金额抵消演算</a>。</p>
+<h2 id="2">2. 资本开支结构与分项预测</h2>
+<h3 id="21">2.1 先按钱花在哪里拆，再按谁使用拆</h3>
+<p><strong>主结构是服务器与芯片、数据中心建设、网络，以及其他资本化资产。</strong> 前三项沿用 Meta 正式电话会的投向；“其他”用于覆盖其余资本化资产。融资租赁本金单独桥接到公司现金口径。广告、模型训练和产品推理属于用途：它们会共用服务器、网络与机房，不能再与资产类别相加。<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2024/q4/META-Q4-2024-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">历史结构说明</a>、<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2024/q4/META-Q4-2024-Follow-Up-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">用途定义</a></p>
+<figure class="cx-figure" id="capex-structure" aria-labelledby="cx-structure-title">
+<figcaption class="cx-title" id="cx-structure-title">资本开支结构：现金口径 → 资产投向 → 业务用途</figcaption>
+<p class="cx-sub">已披露现金金额与研究分类分开呈现；单位：十亿美元。</p>
+<div class="cx-total"><div><strong>2026 上半年实际资本现金</strong><span>官方现金口径，非全年预算</span></div><b>50.918</b></div>
+<div class="cx-cash"><div class="cx-ppe"><div class="cx-cash-head">购建物业与设备现金<b>49.113</b></div><ul class="cx-asset-list"><li><b>服务器与芯片</b><small>AI 与通用服务器、GPU／CPU／MTIA、内存及存储；嵌入服务器的部件随服务器归类。</small><div class="cx-no-amount">年度分项金额未披露</div></li><li><b>数据中心建设</b><small>购建土地、机房、资本化的供配电与冷却配套。运营电费、第三方能源采购和合资股权投入另按会计性质处理。</small><div class="cx-no-amount">年度分项金额未披露</div></li><li><b>网络基础设施</b><small>独立交换、路由、机房互联及跨区域光纤资产；与服务器捆绑计价的部件只计一次。</small><div class="cx-no-amount">年度分项金额未披露</div></li><li><b>其他资本化资产</b><small>未归入上述投向的办公、租赁改良及其他资本化设备。只计资本项目，不纳入整个 Reality Labs 的亏损或人员费用。</small><div class="cx-no-amount">年度分项金额未披露</div></li></ul></div>
+<div class="cx-lease"><div class="cx-cash-head">＋ 融资租赁本金<b>1.805</b></div><p>对应上述实物资产的另一种现金支付方式。</p><p><strong>不是第五种资产。</strong><br>租赁资产取得时的非现金增加不再重复计入。</p></div></div>
+<div class="cx-use"><span>跨资产用途</span><span>核心 AI：推荐、广告</span><span>生成式 AI：训练、推理</span><span>非 AI：基础服务</span></div>
+<p class="cx-sub">49.113 ＋ 1.805 ＝ 50.918；各资产框面积不表示金额占比。</p>
+</figure>
+
+<p>🏛️ 现金金额来自 2026-07-30 <a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">Q2 季报现金流量表</a>；资产分类依据 2025-01-29 <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2024/q4/META-Q4-2024-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">正式电话会</a>，并由 2026-07-29 <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">最新电话会</a>确认主要投向。公司在历史电话会将服务器称为最大支出项，但<strong>没有在本次核验的材料中披露完整的 2026 年分项预算</strong>。图中各资产框等宽，仅表示分类。</p>
+<p>三个用途层分别是：<strong>核心 AI</strong>（广告排序与内容推荐）、<strong>生成式 AI</strong>（模型训练、产品推理）、<strong>非 AI</strong>（例如视频传输及基础服务）。2025 年“多数资本开支投向核心业务”的表述有明确年份，不能直接当作 2026 年占比。用途变化首先可能带来同一资产内部的调拨。<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2024/q4/META-Q4-2024-Follow-Up-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2024 Q4 后续电话会</a></p>
+<p><strong>会计边界决定这棵树能不能相加。</strong> 已计入服务器的 GPU、内存等部件不再另设一个金额桶；在建工程是资产所处阶段，可能同时包含机房、服务器和网络，不能全部归为土建。季报里的服务器和网络资产原值 119.683、在建工程 80.345，都是六月末存量，不能代替年度支出。新取得租赁资产的非现金入账，也不能再加到融资租赁本金上。<a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">Q2 季报 Note 6</a></p>
+<p>普通云服务费、外部模型调用费、电费和研发人员费用通常属于运营费用；股权投资与合资出资需另核会计分类。它们会影响自建需求、现金承受力和经济风险，却不自动成为本题资本开支的一部分。<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q1/META-Q1-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">Q1 电话会</a>、<a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">Q2 季报</a></p>
+<h3 id="22">2.2 每个部分，未来半年更可能怎么变？</h3>
+<p><strong>基准判断是：服务器继续买，机房继续建；当年预算最容易出现的裂口在付款时间，其次是设备交付和价格。</strong> 以下考察 2026-09-06 至 2027-03-06 期间可能发生的预算修订，参照同一资产的当前计划，而非简单预测同比增速。2027 年尚无量化分项基线，不能把扩容目标转换为已公布的美元预算。</p>
+<figure class="cx-figure" id="capex-forecast" aria-labelledby="cx-forecast-title">
+<figcaption class="cx-title" id="cx-forecast-title">分项预测：建设意愿与现金时点分开判断</figcaption>
+<p class="cx-sub">未来半年内对当前计划的修订方向。风险是作者的相对判断，颜色不代表数值概率。</p>
+<div role="table" aria-label="分项预算修订预测"><div class="cx-row cx-header" role="row"><div role="columnheader">支出部分</div><div role="columnheader">基准判断</div><div role="columnheader">主动缩量</div><div role="columnheader">付款后移</div><div role="columnheader">置信度</div></div>
+<div class="cx-row" role="row" data-component="servers"><div class="cx-name" role="rowheader">服务器与芯片<small>资产投向</small></div><div class="cx-direction" role="cell"><i aria-hidden="true">↗</i>维持或增加采购</div><div role="cell" aria-label="主动缩量：中"><span class="cx-mobile-label" aria-hidden="true">主动缩量</span><span class="cx-risk cx-risk-mid">中</span></div><div role="cell" aria-label="付款后移：中"><span class="cx-mobile-label" aria-hidden="true">付款后移</span><span class="cx-risk cx-risk-mid">中</span></div><div class="cx-confidence" role="cell" aria-label="置信度：中"><span class="cx-mobile-label" aria-hidden="true">置信度</span>中</div></div><div class="cx-row" role="row" data-component="datacenters"><div class="cx-name" role="rowheader">数据中心建设<small>资产投向</small></div><div class="cx-direction" role="cell"><i aria-hidden="true">→</i>建设继续，付款可后移</div><div role="cell" aria-label="主动缩量：中低"><span class="cx-mobile-label" aria-hidden="true">主动缩量</span><span class="cx-risk cx-risk-midlow">中低</span></div><div role="cell" aria-label="付款后移：较高"><span class="cx-mobile-label" aria-hidden="true">付款后移</span><span class="cx-risk cx-risk-high">较高</span></div><div class="cx-confidence" role="cell" aria-label="置信度：中"><span class="cx-mobile-label" aria-hidden="true">置信度</span>中</div></div><div class="cx-row" role="row" data-component="network"><div class="cx-name" role="rowheader">网络基础设施<small>资产投向</small></div><div class="cx-direction" role="cell"><i aria-hidden="true">↗</i>随集群建设，长期网络先行</div><div role="cell" aria-label="主动缩量：中低"><span class="cx-mobile-label" aria-hidden="true">主动缩量</span><span class="cx-risk cx-risk-midlow">中低</span></div><div role="cell" aria-label="付款后移：中"><span class="cx-mobile-label" aria-hidden="true">付款后移</span><span class="cx-risk cx-risk-mid">中</span></div><div class="cx-confidence" role="cell" aria-label="置信度：中低"><span class="cx-mobile-label" aria-hidden="true">置信度</span>中低</div></div><div class="cx-row" role="row" data-component="other"><div class="cx-name" role="rowheader">其他资本化资产<small>资产投向</small></div><div class="cx-direction" role="cell"><i aria-hidden="true">?</i>方向暂不可判</div><div role="cell" aria-label="主动缩量：不明"><span class="cx-mobile-label" aria-hidden="true">主动缩量</span><span class="cx-risk cx-risk-unknown">不明</span></div><div role="cell" aria-label="付款后移：不明"><span class="cx-mobile-label" aria-hidden="true">付款后移</span><span class="cx-risk cx-risk-unknown">不明</span></div><div class="cx-confidence" role="cell" aria-label="置信度：低"><span class="cx-mobile-label" aria-hidden="true">置信度</span>低</div></div><div class="cx-row" role="row" data-component="lease"><div class="cx-name" role="rowheader">融资租赁本金<small>现金桥接项</small></div><div class="cx-direction" role="cell"><i aria-hidden="true">→</i>按合同偿还为主</div><div role="cell" aria-label="主动缩量：较低"><span class="cx-mobile-label" aria-hidden="true">主动缩量</span><span class="cx-risk cx-risk-low">较低</span></div><div role="cell" aria-label="付款后移：较低"><span class="cx-mobile-label" aria-hidden="true">付款后移</span><span class="cx-risk cx-risk-low">较低</span></div><div class="cx-confidence" role="cell" aria-label="置信度：中低"><span class="cx-mobile-label" aria-hidden="true">置信度</span>中低</div></div>
+</div>
+<p class="cx-sub">付款后移风险以数据中心较高；其他资产缺少足以判断方向的预算资料。</p>
+</figure>
+
+<p>图中风险为我们的<strong>相对判断</strong>。“主动缩量”看是否减少原计划采购或建设；“付款后移”看原计划现金是否顺延。它们可以同时发生，也受共同因素影响。“较高”不表示概率超过一半；“不明”保留信息缺口。这些标签不参加总概率计算。公开材料不足以支持可信的分项金额分布，因而不提供貌似精确的独立分项概率。</p>
+<details class="cx-detail" id="detail-servers"><summary>服务器与芯片<span>优先核验大额采购 · 展开依据与改判条件</span></summary><div><p><strong>判断：</strong>最可能看到的是供应商组合、芯片型号和交付批次调整。单家供应商订单减少，可能被另一家或自研芯片补上；只有全公司同口径采购净额减少，才会传到总计划。</p><p><strong>依据：</strong>2026 年七月仍以最大化 2026、2027 年容量为目标；四月上调主要由内存等组件涨价推动。</p><p><strong>什么会让本项下修：</strong>同一批设备的价格、数量或验收付款下修，且未被其他设备采购抵补。</p><p><strong>什么可能抵消：</strong>供给仍紧、推荐与推理吸收释放的容量；价格上升也可能抵消效率节省。</p><p><strong>沿着谁查：</strong>采购与基础设施负责人：新旧订单的数量、单价、验收日及替代采购净额。</p><p><strong>证据边界：</strong>公司未披露 2026 年服务器预算金额；2025 年“最大支出项”仅作历史结构依据。</p><p>原始来源：<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2026-07-29 正式电话会</a> · <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q1/META-Q1-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2026-04-29 正式电话会</a> · <a href="https://ir.amd.com/financial-information/sec-filings/content/0000002488-26-000045/amd-20260223.htm" target="_blank" rel="noopener noreferrer">2026-02-24 AMD 文件</a> · <a href="https://nvidianews.nvidia.com/news/meta-builds-ai-infrastructure-with-nvidia" target="_blank" rel="noopener noreferrer">2026-02-17 NVIDIA 公告</a> · <a href="https://ai.meta.com/blog/meta-mtia-scale-ai-chips-for-billions/" target="_blank" rel="noopener noreferrer">2026-03-11 Meta 芯片说明</a></p></div></details>
+
+<details class="cx-detail" id="detail-datacenters"><summary>数据中心建设<span>优先核验年度付款 · 展开依据与改判条件</span></summary><div><p><strong>判断：</strong>长期选址和建设仍获支持，但现金花多少取决于工程进度和合同付款节点。因此，这是最值得寻找当年指引下修信号的支出项；发生跨期不等于园区取消。</p><p><strong>依据：</strong>七月明确先铺设长期数据中心基础；六月基础设施负责人提到熟练工人约束。</p><p><strong>什么会让本项下修：</strong>原定纳入当前年度预算的工程款随验收跨年，其他工程又未提前付款补上。</p><p><strong>什么可能抵消：</strong>合作融资、施工调整或其他项目提前付款可能维持总额；不少远期电力工程本来就不影响 2026 年付款。</p><p><strong>沿着谁查：</strong>项目控制与财务负责人：原定现金计划、实际完成比例、验收里程碑及顺延款项。</p><p><strong>证据边界：</strong>没有取得具体延期付款金额；“较高”是相对其他分项的时点风险判断，不表示已经延期。</p><p>原始来源：<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2026-07-29 正式电话会</a> · <a href="https://www.linkedin.com/posts/sjanardhan_americas-workforce-academy-the-future-is-activity-7469869698331922432-JYIA" target="_blank" rel="noopener noreferrer">2026-06-08 Janardhan 原帖</a> · <a href="https://www.business-standard.com/companies/people/we-want-to-be-part-of-india-s-growth-story-meta-s-santosh-janardhan-126061801239_1.html" target="_blank" rel="noopener noreferrer">2026-06-19 本人采访</a> · <a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx" target="_blank" rel="noopener noreferrer">2026-07-28 合资公告</a></p></div></details>
+
+<details class="cx-detail" id="detail-network"><summary>网络基础设施<span>与服务器、园区联动 · 展开依据与改判条件</span></summary><div><p><strong>判断：</strong>机房内网络可能随服务器交付一起后移，跨区域网络却可能提前多年建设。把二者全部当成随 GPU 同步可砍的采购，会高估短期可调整量。</p><p><strong>依据：</strong>公司把网络与数据中心并列为支撑未来服务器决策的基础；历史披露同时包含集群网络和跨区域光纤。</p><p><strong>什么会让本项下修：</strong>集群排期后移并带动网络设备付款下修，或明确缩减长期互联计划。</p><p><strong>什么可能抵消：</strong>为后续扩容提前建设网络；网络升级可能在服务器批次调整时照常推进。</p><p><strong>沿着谁查：</strong>网络工程与采购负责人：集群内设备和跨区域网络分别对应哪些现金付款。</p><p><strong>证据边界：</strong>季报将服务器和网络合并列作资产存量，不能据此拆出年度网络资本预算。</p><p>原始来源：<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2026-07-29 正式电话会</a> · <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2024/q4/META-Q4-2024-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2025-01-29 历史电话会</a></p></div></details>
+
+<details class="cx-detail" id="detail-other"><summary>其他资本化资产<span>总额影响尚不可量化 · 展开依据与改判条件</span></summary><div><p><strong>判断：</strong>这些项目可能被重新排序，但“比较容易砍”不能替代金额证据。现有资料不足以让它承担解释公司总资本开支下调的主要任务。</p><p><strong>依据：</strong>季报披露租赁改良、设备及其他等资产存量，未提供可比年度支出计划或本期削减安排。</p><p><strong>什么会让本项下修：</strong>取得经批准的具体取消项目与净节省金额，并确认没有转投同类或其他资产。</p><p><strong>什么可能抵消：</strong>AI 眼镜等业务扩张也可能增加资本化设备需求，不能从某业务裁员直接推出本项下降。</p><p><strong>沿着谁查：</strong>各业务财务与固定资产会计：项目清单、资本化边界、原预算与修订净额。</p><p><strong>证据边界：</strong>保留未知，不虚构“小项”占比，也不按业务亏损大小分摊资本开支。</p><p>原始来源：<a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">2026-07-30 季报</a></p></div></details>
+
+<details class="cx-detail" id="detail-lease"><summary>融资租赁本金<span>以现金计划核对 · 展开依据与改判条件</span></summary><div><p><strong>判断：</strong>已经开始的合同通常比未下单设备难以主动压缩；新增租赁开始时间仍可能改变未来本金现金。判断需要逐项合同，不能把全部未来租赁义务当成当年付款。</p><p><strong>依据：</strong>上半年现金本金偿还为 1.805 十亿美元；付款义务与资产非现金入账分开披露。</p><p><strong>什么会让本项下修：</strong>新租赁开始时间后移、合同变更等确实降低可比期间本金现金，并获财务确认。</p><p><strong>什么可能抵消：</strong>已有合同付款延续；新设施开始使用也可能增加本金偿还。</p><p><strong>沿着谁查：</strong>租赁会计与资金负责人：起租日、偿还表、变更条款及经营/融资租赁分类。</p><p><strong>证据边界：</strong>此项不得与同一租赁资产取得时的非现金金额重复相加；未披露全年分项指引。</p><p>原始来源：<a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">2026-07-30 季报</a> · <a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">2026-07-29 业绩公告</a></p></div></details>
+
+<p><strong>按用途再看一次：</strong> 核心 AI 的推荐与广告回报，支撑追加服务器和配套网络；生成式 AI 的训练排期、产品调用量，更容易影响服务器批次及型号；非 AI 基础服务仍有容量和更新需求。三者都使用机房与网络。某个模型少训练，只有在释放的容量未被其他用途接走、后续采购因此减少时，才会压低服务器总计划。<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q1/META-Q1-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">Q1 电话会</a>、<a href="https://cheekypint.transistor.fm/2/transcript" target="_blank" rel="noopener noreferrer">Li 访谈</a>、<a href="https://stripe.com/br/sessions/2026/a-conversation-with-daniel" target="_blank" rel="noopener noreferrer">Gross 访谈</a></p>
+<h3 id="23">2.3 分项变动怎样汇成总计划？</h3>
+<p><strong>先加金额，再判断是否正式下调；不要平均分项风险。</strong> 以下用 2026 年指引中点 137.5 十亿美元作演算基准。所有输入均是同一年度、同一现金口径下的假设增减；负数为少花，正数为多花。它们不是公司实际分项预算，也不是本报告的金额预测。</p>
+<figure class="cx-figure" id="capex-simulator" aria-labelledby="cx-sim-title">
+<figcaption class="cx-title" id="cx-sim-title">金额演算：一个部分少花，不一定降低总额</figcaption>
+<p class="cx-sub"><strong>纯假设情景，不是分项金额预测。</strong>基准为 2026 年年度中点 137.5；单位：十亿美元。</p>
+<div class="cx-presets" role="group" aria-label="选择假设场景"><button type="button" data-scenario="offset" aria-pressed="true">一减一增</button><button type="button" data-scenario="delay" aria-pressed="false">付款跨年</button><button type="button" data-scenario="price" aria-pressed="false">设备降价</button><button type="button" data-scenario="network_delay" aria-pressed="false">集群交付后移</button><button type="button" data-scenario="unchanged" aria-pressed="false">全部归零</button></div>
+<p class="cx-scenario-note" id="cx-scenario-note">假设数据中心少付 5、服务器多付 5：单项减少被抵消，总计划中点不变。</p>
+<div class="cx-sim-grid"><div class="cx-sim-controls"><div class="cx-input-row"><div class="cx-input-label"><label for="cx-input-servers">服务器与芯片</label><output id="cx-value-servers" for="cx-input-servers">+5.0</output></div><input type="range" id="cx-input-servers" data-component="servers" min="-20" max="20" step="0.5" value="5" aria-describedby="cx-input-help" aria-valuetext="+5.0 十亿美元"></div><div class="cx-input-row"><div class="cx-input-label"><label for="cx-input-datacenters">数据中心建设</label><output id="cx-value-datacenters" for="cx-input-datacenters">-5.0</output></div><input type="range" id="cx-input-datacenters" data-component="datacenters" min="-20" max="20" step="0.5" value="-5" aria-describedby="cx-input-help" aria-valuetext="-5.0 十亿美元"></div><div class="cx-input-row"><div class="cx-input-label"><label for="cx-input-network">网络基础设施</label><output id="cx-value-network" for="cx-input-network">0.0</output></div><input type="range" id="cx-input-network" data-component="network" min="-10" max="10" step="0.5" value="0" aria-describedby="cx-input-help" aria-valuetext="0.0 十亿美元"></div><div class="cx-input-row"><div class="cx-input-label"><label for="cx-input-other">其他资本化资产</label><output id="cx-value-other" for="cx-input-other">0.0</output></div><input type="range" id="cx-input-other" data-component="other" min="-5" max="5" step="0.5" value="0" aria-describedby="cx-input-help" aria-valuetext="0.0 十亿美元"></div><div class="cx-input-row"><div class="cx-input-label"><label for="cx-input-lease">融资租赁本金</label><output id="cx-value-lease" for="cx-input-lease">0.0</output></div><input type="range" id="cx-input-lease" data-component="lease" min="-2" max="2" step="0.5" value="0" aria-describedby="cx-input-help" aria-valuetext="0.0 十亿美元"></div><p class="cx-sub" id="cx-input-help">拖动可调整；键盘方向键也可操作。输入范围仅供演算，不表示已知预算或可削减额度。</p></div>
+<div><div class="cx-axis"><span>← 少花 · 最左 −20</span><span>多花 → 最右 ＋20</span></div><div class="cx-delta-line"><span>服务器</span><div class="cx-delta-track" aria-hidden="true"><div class="cx-delta-bar cx-positive" id="cx-bar-servers" style="width:12.5%;"></div></div><output id="cx-bar-value-servers">+5.0</output></div><div class="cx-delta-line"><span>数据中心</span><div class="cx-delta-track" aria-hidden="true"><div class="cx-delta-bar " id="cx-bar-datacenters" style="width:12.5%;"></div></div><output id="cx-bar-value-datacenters">-5.0</output></div><div class="cx-delta-line"><span>网络</span><div class="cx-delta-track" aria-hidden="true"><div class="cx-delta-bar " id="cx-bar-network" style="width:0.0%;"></div></div><output id="cx-bar-value-network">0.0</output></div><div class="cx-delta-line"><span>其他资产</span><div class="cx-delta-track" aria-hidden="true"><div class="cx-delta-bar " id="cx-bar-other" style="width:0.0%;"></div></div><output id="cx-bar-value-other">0.0</output></div><div class="cx-delta-line"><span>租赁本金</span><div class="cx-delta-track" aria-hidden="true"><div class="cx-delta-bar " id="cx-bar-lease" style="width:0.0%;"></div></div><output id="cx-bar-value-lease">0.0</output></div>
+<div class="cx-summary" aria-live="polite" aria-atomic="true"><div><span>净变化</span><output id="cx-net">0.0</output></div><div><span>演算后的年度中点</span><output id="cx-midpoint">137.5</output></div></div>
+<label class="cx-formality" for="cx-formal"><input type="checkbox" id="cx-formal">假设 Meta 已在观察窗内正式公布上述同年、同口径修订</label>
+<p class="cx-result" id="cx-result" data-negative="false" role="status">净额不变：本演算没有构成公司总计划下调。</p></div></div>
+<div class="cx-static">预设例：数据中心 −5、服务器 ＋5 → 净额 0；只将数据中心 −5 → 中点 132.5；服务器 −8、数据中心 ＋5 → 中点 134.5。均为假设金额。</div>
+<noscript><p>当前未启用脚本，图示保留“一减一增”的静态情景；预设例与各分项判断仍可阅读。</p></noscript>
+</figure>
+
+<p>这个演算只覆盖同一年度计划中点修订。它没有假设公司会把区间上下限等额平移，也不能替代 2027 年首次预算与上一年可比基准的比较。单项目改由合作方持有、租赁分类变化或付款转为其他会计类别，先按第 4 节还原，再输入可比净额。</p>
+<p>各部分会相互抵消，也会一起变化：同一集群延期可能同时影响服务器和网络；某项目少花可能被其他项目补上。因而不能把“任意分项减少”的可能性当作公司正式下调的概率。总额减少以后，还要经过财务确认和窗口内的正式公开。</p>
+<h3 id="24">2.4 关键人关系表</h3>
+<p>“穿透”在这里指沿着预算提出、批准和执行的链条找具体负责人。“关键-1”指直接下属，“关键-2”指再下一层。本表的“打灯”衡量<strong>公开证据对关系状态的可见度</strong>：5 分有近期正式资料且能交叉验证，3 分主要依赖报道，1 分仅有零散线索；它不是个人能力、关系好坏或预算否决力的评分。没有依据的审批权不补写。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>关系链条</th>
+<th>打灯</th>
+<th>正式权责</th>
+<th>目前关系</th>
+<th>对资本开支决策意味着什么</th>
+<th>证据与日期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zuckerberg ↔ 董事会</td>
+<td>5/5</td>
+<td>董事长、CEO；董事会及风险与战略委员会监督战略和资产使用</td>
+<td>创始人控制；Dina 回忆董事会会讨论挑战并作出决定，但这是管理层自述</td>
+<td>总方向集中，但可以快速重排。不能推出预算永不下降</td>
+<td>🏛️ <a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026025532/meta-20260416.htm" target="_blank" rel="noopener noreferrer">2026-04-16 代理声明</a>；持股基准为 4 月 1 日；🎙️ <a href="https://www.youtube.com/watch?v=jbP2hYbJYJk" target="_blank" rel="noopener noreferrer">2026-05-14 本人访谈</a> 06:43 起</td>
+</tr>
+<tr>
+<td>Zuckerberg ↔ Susan Li</td>
+<td>5/5</td>
+<td>CFO 负责财务评估、规划、融资和对外指引；未披露单方面否决权</td>
+<td>公开表态同向，财务评估仍存在</td>
+<td>业务压力需变成 CFO 可量化的总额修订并获管理层认可</td>
+<td>🏛️ <a href="https://s21.q4cdn.com/399680738/files/doc_events/META-Conference-Call-on-Agreement-with-Bipartisan-Attorneys-General-Transcript.pdf" target="_blank" rel="noopener noreferrer">2026-08-26 电话会</a>；🎙️ <a href="https://cheekypint.transistor.fm/2/transcript" target="_blank" rel="noopener noreferrer">2025-06-18 原节目</a></td>
+</tr>
+<tr>
+<td>Zuckerberg ↔ Santosh Janardhan / Daniel Gross</td>
+<td>4/5</td>
+<td>前者负责基础设施技术及执行；后者侧重长期容量与合作规划</td>
+<td>计算资源规划被提升到更靠近 CEO 的位置</td>
+<td>工程延期能快速上报；组织位置加强也可能让团队更容易争取资源</td>
+<td>🏛️ <a href="https://about.fb.com/news/2026/04/meta-partners-with-aws-on-graviton-chips-to-power-agentic-ai/" target="_blank" rel="noopener noreferrer">2026-04-24 Meta/AWS 公告</a>；📰 <a href="https://www.theinformation.com/articles/meta-reshaping-organization-ai-computing-blitz" target="_blank" rel="noopener noreferrer">2026-01-23 组织报道</a>，后者仅索引可见</td>
+</tr>
+<tr>
+<td>Zuckerberg ↔ Dina Powell McCormick</td>
+<td>5/5</td>
+<td>President and Vice Chairman，参与战略及重大基础设施投资、资本合作</td>
+<td>授权发展长期投资能力</td>
+<td>本人明确介绍主权基金、机构与能源合作；说明融资工作方向，未披露预算否决权限</td>
+<td>🏛️ <a href="https://about.fb.com/news/2026/01/dina-powell-mccormick-joins-meta-as-president-and-vice-chairman/" target="_blank" rel="noopener noreferrer">2026-01-12 任命公告</a>及<a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026025532/meta-20260416.htm" target="_blank" rel="noopener noreferrer">代理声明</a>；📰 <a href="https://www.linkedin.com/posts/dina-powell-mccormick_with-meta-compute-were-uniting-capital-activity-7448071525326401536-Mzeh" target="_blank" rel="noopener noreferrer">2026-04-09 本人原帖</a></td>
+</tr>
+<tr>
+<td>Wang ↔ Friedman / 模型与产品团队</td>
+<td>3/5</td>
+<td>Wang 为 Chief AI Officer，领导 Meta Superintelligence Labs（MSL，超级智能实验室）；Friedman 负责 AI 产品</td>
+<td>模型与产品继续交付，具体资源审批线部分依赖媒体</td>
+<td>产品受挫先影响资源申请与排期；是否降低公司总预算另需财务决定</td>
+<td>📰 <a href="https://www.axios.com/2026/09/02/meta-debuts-muse-spark-13-as-personal-agent-work-continues" target="_blank" rel="noopener noreferrer">2026-09-02 Wang 采访</a>、<a href="https://www.theinformation.com/articles/inside-metas-efforts-ensure-upcoming-hatch-ai-agent-go-rogue/" target="_blank" rel="noopener noreferrer">2026-09-03 产品报道</a>；🏛️ <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Follow-Up-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2025-10-29 组织说明</a></td>
+</tr>
+<tr>
+<td>Olivan / Cox ↔ 广告与业务 AI 团队</td>
+<td>3/5</td>
+<td>COO、CPO 为现任高管；Bocking、Gleit 承接 Hegeman 离任后的部分职责</td>
+<td>业务继续由不同负责人分担；不能套用旧 CRO 全权结构</td>
+<td>推荐与广告需求可吸收部分算力；谁拥有最终资本额度仍不透明</td>
+<td>🏛️ <a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026025532/meta-20260416.htm" target="_blank" rel="noopener noreferrer">代理声明</a>；📰 <a href="https://www.investing.com/news/stock-market-news/metas-chief-revenue-officer-hegeman-leaves-to-launch-startup-4365957" target="_blank" rel="noopener noreferrer">2025-11-18 Reuters 交接报道</a></td>
+</tr>
+<tr>
+<td>Olivan ↔ Alex Schultz</td>
+<td>4/5</td>
+<td>Schultz 七月由 CMO 转任首任 CDO，负责决策所需的数据与研究</td>
+<td>将分析反馈放在更明确的位置</td>
+<td>可能提高对真实产出和投入回报的可见度；不能仅凭职位推定其能砍预算</td>
+<td>📰 <a href="https://www.axios.com/2026/07/01/meta-alex-schultz-chief-data-officer" target="_blank" rel="noopener noreferrer">2026-07-01 本人采访</a></td>
+</tr>
+<tr>
+<td>Bosworth ↔ 内部 AI 转型团队</td>
+<td>3/5</td>
+<td>CTO；参与内部工作方式转型</td>
+<td>推进中出现纠错；具体原因不能归为个人冲突</td>
+<td>说明效率承诺可以被现实反馈打断，但与资本计划仍隔着一步</td>
+<td>📰 <a href="https://m.economictimes.com/ai/ai-insights/mark-zuckerberg-had-a-bold-plan-to-replace-meta-staff-with-ai-heres-how-it-imploded-/amp_articleshow/133538291.cms" target="_blank" rel="noopener noreferrer">2026-08-26 Reuters 调查</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>上述职责分工拼成的是<strong>分析图</strong>：业务及研究提出需求 → 财务评估回报与规模 → CEO 和董事会战略权衡与监督 → Meta Compute、基础设施和资本合作团队组织执行。Meta 没有公开一张完整的金额审批表。</p>
+<h3 id="25">2.5 组织要素快照</h3>
+<div class="org">
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>要素</th>
+<th>截至基线日的事实</th>
+<th>过去十二个月的变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶层治理</td>
+<td>🏛️ 2026-04-16 代理声明显示，4 月 1 日 Zuckerberg 拥有 <strong>60.8%</strong> 总投票权；公司已设置风险与战略委员会、审计与隐私委员会。<a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026025532/meta-20260416.htm" target="_blank" rel="noopener noreferrer">来源</a></td>
+<td>委员会重组发生在 2025 年六月，属于本次十二个月窗口之前；本期文件确认新结构延续。旧“审计与风险监督委员会”名称不再照搬。</td>
+</tr>
+<tr>
+<td>资本预算</td>
+<td>🎙️ Susan Li 访谈页发布于 2025-06-18：核心业务看回报，长期项目讨论所需终局价值；算力可跨用途调拨。<a href="https://cheekypint.transistor.fm/2/transcript" target="_blank" rel="noopener noreferrer">来源</a> 🏛️ 2026-08-26 仍公开维持资本区间。<a href="https://about.fb.com/news/2026/08/agreement-with-state-attorneys-general-supporting-teens/" target="_blank" rel="noopener noreferrer">来源</a></td>
+<td>访谈是机制的历史依据，不能冒充本期新制度；近期可见变化是资本需求扩大，同时采用更多融资安排。</td>
+</tr>
+<tr>
+<td>AI 组织</td>
+<td>🏛️ 2025-10-29 正式说明 MSL 分工。<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Follow-Up-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">来源</a> 📰 2026-09-02 Wang 仍以负责人身份解释产品路线。<a href="https://www.axios.com/2026/09/02/meta-debuts-muse-spark-13-as-personal-agent-work-continues" target="_blank" rel="noopener noreferrer">来源</a></td>
+<td>LeCun 已于 2025 年底离开；Ramani 离任的 2026 年四月报道原文受限。不能继续使用完整的旧四部门人员图。<a href="https://apnews.com/article/313159512bb9961f324e0c93bccf4cf5" target="_blank" rel="noopener noreferrer">AP</a>、<a href="https://www.theinformation.com/briefings/exclusive-meta-ai-infrastructure-executive-departs" target="_blank" rel="noopener noreferrer">原创摘要</a></td>
+</tr>
+<tr>
+<td>基础设施执行</td>
+<td>🏛️ 2026-04-24 官方公告确认 Janardhan 为基础设施负责人。<a href="https://about.fb.com/news/2026/04/meta-partners-with-aws-on-graviton-chips-to-power-agentic-ai/" target="_blank" rel="noopener noreferrer">来源</a> 📰 2026-01-12 公开成立 Meta Compute，Gross 聚焦长期容量与合作。<a href="https://techcrunch.com/2026/01/12/mark-zuckerberg-says-meta-is-launching-its-own-ai-infrastructure-initiative/" target="_blank" rel="noopener noreferrer">来源</a></td>
+<td>计算资源成为单独强化的组织方向；1 月 23 日两人向 CEO 直接汇报的变化属于媒体报道，并非 SEC 确认的完整汇报图。<a href="https://www.theinformation.com/articles/meta-reshaping-organization-ai-computing-blitz" target="_blank" rel="noopener noreferrer">报道</a></td>
+</tr>
+<tr>
+<td>业务反馈</td>
+<td>📰 2026-07-01 Schultz 转任 CDO；2025-11-18 Hegeman 宣布离任后出现 Bocking、Gleit 的职责交接。<a href="https://www.axios.com/2026/07/01/meta-alex-schultz-chief-data-officer" target="_blank" rel="noopener noreferrer">来源</a>、<a href="https://www.investing.com/news/stock-market-news/metas-chief-revenue-officer-hegeman-leaves-to-launch-startup-4365957" target="_blank" rel="noopener noreferrer">来源</a></td>
+<td>决策分析与业务 AI 的负责人发生变化。Robinhood 2026 代理声明进一步确认 Hegeman 在 Meta 的任期截至 2026 年二月。<a href="https://robinhood.gcs-web.com/static-files/a6ba55a8-bc9d-4321-98b5-eef15a3758a1" target="_blank" rel="noopener noreferrer">来源</a></td>
+</tr>
+<tr>
+<td>考核与激励</td>
+<td>① 🏛️ 2026-04-16 代理声明采用以股权为重要组成的高管薪酬安排。<a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026025532/meta-20260416.htm" target="_blank" rel="noopener noreferrer">来源</a><br>② 🎙️ 2026-04-30 Gross 讨论按生成物的经济价值分配调用预算，属于正在探索的办法。<a href="https://stripe.com/br/sessions/2026/a-conversation-with-daniel" target="_blank" rel="noopener noreferrer">来源</a><br>③ 🎙️ 2025-06-18 Li 说明算力能被调走，团队不愿拿稳定的人员名额交换。<a href="https://cheekypint.transistor.fm/2/transcript" target="_blank" rel="noopener noreferrer">来源</a><br>④ 📰 2026-08-26 Reuters 报道第二轮重组撤回；具体转向原因未确定。<a href="https://m.economictimes.com/ai/ai-insights/mark-zuckerberg-had-a-bold-plan-to-replace-meta-staff-with-ai-heres-how-it-imploded-/amp_articleshow/133538291.cms" target="_blank" rel="noopener noreferrer">来源</a></td>
+<td>从推动员工采用 AI，进一步讨论哪些调用有经济价值、如何分配额度。尚未公开把任务节省直接转成资本总额削减的制度。</td>
+</tr>
+<tr>
+<td>融资与合作</td>
+<td>🏛️ 2026-01-12 Dina 获任命；2026-07-28 宣布 BlackRock El Paso 合资建设。<a href="https://about.fb.com/news/2026/01/dina-powell-mccormick-joins-meta-as-president-and-vice-chairman/" target="_blank" rel="noopener noreferrer">任命</a>、<a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx" target="_blank" rel="noopener noreferrer">项目公告</a></td>
+<td>从既有自建与云采购，进一步扩展合作持有长期资产。经济担保仍存在，不能把合作融资理解为风险消失。</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<h2 id="3-insight-summary">3. Insight Summary</h2>
+<div class="legend">
+<p>这一节解释五件事：创始人为什么继续买、团队如何分配算力、机房与服务器为何分阶段决定、工程进度怎样进入年度预算、融资如何吸收现金压力。每条保留“判断／依据／为什么重要／最需要弄清楚的事”四层。🏛️ 为正式文件，📰 为新闻或公开原帖，🎙️ 为本人访谈；本次没有自采专家访谈。实线标出支撑判断的关键事实，虚线为补充。判断是我们的推断，管理层的说法不等于已经兑现的结果。</p>
+</div>
+<h3 id="31-zuckerberg">3.1 【本质驱动】Zuckerberg 已经把“买早了”列为可以承担的损失</h3>
+<ul>
+<li><strong>判断：</strong> AI 回报晚两年出现，未必足以让 Zuckerberg 改变投入方向。他把提前建设可能造成的损失，与错过下一代技术的代价放在一起比较，并选择承担前一种风险。这个选择有一个条件：Meta 的主营业务和融资能力足以支持它等下去。因此，真正能迫使他降低总投入的，应是承受损失的能力恶化，或他不再相信提前占有算力有价值。</li>
+<li><strong>依据：</strong><ul>
+<li>🎙️ <span class="tag">来源陈述</span> <a href="https://www.youtube.com/watch?v=23FyskyFoP8" target="_blank" rel="noopener noreferrer">Access 长访谈</a>（2025-09-18，原视频 01:09:10–01:13:55）：Zuckerberg 承认 AI 基建可能出现泡沫；比较三年与五年才实现超级智能的两种情形后，<u class="key">他说即使提前投入造成巨额浪费，建设太慢、到时没有准备好的风险仍更大</u>。他紧接着以 Meta 不至于因此倒闭解释这一选择。已读取完整上下文，未只引用开场剪辑。</li>
+<li>🏛️ <span class="tag">事实</span> <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">七月业绩会</a>和<a href="https://about.fb.com/news/2026/08/agreement-with-state-attorneys-general-supporting-teens/" target="_blank" rel="noopener noreferrer">八月和解公告</a>（2026-07-29、2026-08-26）分别强调近期容量扩张、维持其余指引区间；<u class="minor">今年的正式行动仍与这项风险取舍一致</u>。</li>
+</ul>
+</li>
+<li><strong>为什么重要：</strong> “AI 可能过度投资”并不是一条他尚未考虑的反对理由。用这个理由预测六个月内削减预算，容易低估其坚持程度。但他的选择也不是无条件的：持续广告恶化与融资收紧若同时发生，就会直接冲击他认为自己能够承担风险的前提。小幅年度付款下修则无需改变这套战略判断。</li>
+<li><strong>最需要弄清楚的事：</strong> 在新年度预算评审中，管理层是否明确设定了最低现金储备或最高负债约束；触及它时，哪一批基础设施投入会被停止？</li>
+</ul>
+<h3 id="32">3.2 【传导路径】团队省下来的算力，要经过第二次决策才会变成少买设备</h3>
+<ul>
+<li><strong>判断：</strong> Meta 已经在讨论哪些 AI 任务不值得花那么多钱。问题在于，停止低价值任务之后，空出的资源可能交给别的团队。要形成公司资本开支下降，还需要财务和基础设施负责人进一步决定：不再把这部分容量用于其他工作，并减少后续采购。这是“效率提高”到“总预算下降”之间最容易被省略的一步。</li>
+<li><strong>依据：</strong><ul>
+<li>🎙️ <span class="tag">来源陈述</span> Gross 在 <a href="https://www.youtube.com/watch?v=l9wzs_QIyp0" target="_blank" rel="noopener noreferrer">Stripe Sessions</a>（会期 2026-04-30，视频 5 月 19 日上传，20:34–22:35）讨论员工调用 AI 的预算：<u class="key">有些任务可以由较小的模型完成，有些生成物本身没有足够的经济价值</u>。他把分配预算类比为评估不同投资策略；<a href="https://stripe.com/br/sessions/2026/a-conversation-with-daniel" target="_blank" rel="noopener noreferrer">发布方实录</a>与字幕可交叉核对。这是正在研究的管理办法，不是已宣布的资本削减制度。</li>
+<li>🎙️ <span class="tag">来源陈述</span> Susan Li 在 <a href="https://cheekypint.transistor.fm/2/transcript" target="_blank" rel="noopener noreferrer">Cheeky Pint</a>（原节目 2025-06-18，24:16 起）说明，<u class="key">GPU 可以被中央重新调配，团队因此不愿轻易拿稳定的人员名额换取未必能一直保有的算力</u>。同一访谈也承认，广告吸收额外算力的能力有上限。</li>
+<li>🎙️ <span class="tag">来源陈述</span> Li 在 <a href="https://ca.investing.com/news/transcripts/meta-at-morgan-stanley-conference-ai-strategy-and-financial-insights-93CH-4495629" target="_blank" rel="noopener noreferrer">Morgan Stanley 访谈</a>（2026-03-04，第三方完整转录）描述核心业务按实验结果申请预算，并评估多个项目叠加后的回报；<u class="minor">财务评估关注的已是追加投入的收益，而非单纯的使用量</u>。</li>
+<li>🎙️ <span class="tag">来源陈述</span> Bosworth 的 <a href="https://www.youtube.com/watch?v=qZhCeV6XATw" target="_blank" rel="noopener noreferrer">Big Technology 原视频</a>（2026-07-08，08:20–11:00；<a href="https://www.bigtechnology.com/p/metas-path-to-ai-relevance-according" target="_blank" rel="noopener noreferrer">编辑实录</a>于 7 月 9 日发布）解释自研模型也有约束外部供应商价格的作用。外购与自研因而可能并存，不能仅凭外部模型合作就断言下一批服务器不买了。</li>
+</ul>
+</li>
+<li><strong>为什么重要：</strong> 节省模型调用费用、缩短训练、减少某团队资源，都可能改善经营效率，却不一定减少设备总订单。更有判断力的信号是：退回的容量长期没有其他用途接手，或者财务主动收回额度。反过来，不能把广告称为无限的“兜底需求”；当核心业务追加算力的收益也下降时，调拨这层缓冲才会失效。</li>
+<li><strong>最需要弄清楚的事：</strong> 最近一次大训练取消或延期后，释放了多少容量、被谁接走、下一批设备采购因此减少了多少？外购模型增加后，被替代的自建服务器采购是否真正取消？</li>
+</ul>
+<h3 id="33">3.3 【本质驱动】先建机房、以后再买服务器，让投资规模仍有调整余地</h3>
+<ul>
+<li><strong>判断：</strong> Meta 对基础设施的承诺分阶段落地。它先投入建设周期长的数据中心和网络，让未来有地方接入更多算力；服务器买多少、何时买，仍可以在后续阶段决定。由此看，远期园区规模很大，不能证明所有配套设备预算都已锁死。但在本题的半年窗口内，公司仍强调尽可能增加近两年的容量，因此更可能先调整采购批次，而不是撤回整个扩建方向。</li>
+<li><strong>依据：</strong><ul>
+<li>🏛️ <span class="tag">来源陈述</span> <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">Q2 正式电话会</a>（2026-07-29，PDF 第 8 页）明确区分两个时间段：近期争取更多容量；面向 2028 年以后，<u class="key">先建设数据中心和网络基础，以容纳未来的服务器投资决定</u>。公司将长期资产与后续投资选择的灵活性联系起来。</li>
+<li>🎙️ <span class="tag">来源陈述</span> Janardhan 的<a href="https://www.business-standard.com/companies/people/we-want-to-be-part-of-india-s-growth-story-meta-s-santosh-janardhan-126061801239_1.html" target="_blank" rel="noopener noreferrer">本人采访</a>（2026-06-19）介绍先建设基础、保留以后扩容选择；<u class="minor">一个项目的阶段安排与上述资本策略一致</u>，但不提供全公司的可撤销设备金额。</li>
+</ul>
+</li>
+<li><strong>为什么重要：</strong> 对服务器供应商，要查的是后续订单何时转为不可取消；对机房与电力项目，要查的是建设和付款是否继续。两者可以出现不同方向。若 AI 需求转弱，最早的调整可能发生在下一批设备，而已经启动的长期建设仍然继续；仅盯着园区是否停工，会漏掉这一变化。</li>
+<li><strong>最需要弄清楚的事：</strong> 原定 2027 年交付的服务器中，多少已签不可取消订单，多少仍只是容量预留？设备选择推迟时，数据中心和网络的付款计划会不会同步改变？</li>
+</ul>
+<h3 id="34">3.4 【传导路径】最可能造成小幅下修的，是建设现场赶不上财务日历</h3>
+<ul>
+<li><strong>判断：</strong> 管理层可以决定继续扩建，却不能仅靠批准预算让电工、设备和验收同时到位。今年资本付款明显集中在下半年；如果部分关键节点跨到次年，而其他项目又无法补上，这种执行差额就可能进入全年指引。它不要求 Zuckerberg 承认 AI 投资方向错了。</li>
+<li><strong>依据：</strong><ul>
+<li>📰 <span class="tag">来源陈述</span> Janardhan 的<a href="https://www.linkedin.com/posts/sjanardhan_americas-workforce-academy-the-future-is-activity-7469869698331922432-JYIA" target="_blank" rel="noopener noreferrer">本人原帖</a>（2026-06-08）在推出施工人才培训计划时指出，<u class="key">没有足够的熟练工人，再大的基础设施投资也无法落地</u>。这是负责人的公开风险判断；他同时披露了缓解措施，不能据此认定某座 Meta 园区已经延期。</li>
+<li>🏛️ <span class="tag">事实</span> <a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">Q2 公告</a>（2026-07-29）显示，上半年资本现金支付为 50.918 十亿美元。全年区间减去已付金额，<u class="key">下半年需要支付 79.082–94.082 十亿美元</u>。该数值为算术推导，不是公司单独发布的半年指引；六月的用工风险在七月指引形成前已公开，不能当作七月以后突发的坏消息。</li>
+<li>🎙️ <span class="tag">来源陈述</span> Janardhan 在<a href="https://www.business-standard.com/companies/people/we-want-to-be-part-of-india-s-growth-story-meta-s-santosh-janardhan-126061801239_1.html" target="_blank" rel="noopener noreferrer">面对面采访</a>（2026-06-19）解释，Jamnagar 先建设 168MW 基础，扩至 1GW 是后续选择；<u class="minor">十多年寿命的基础设施与后续扩建，可以分阶段决定</u>。这一项目的安排不能直接外推为今年全公司的可取消金额。</li>
+</ul>
+</li>
+<li><strong>为什么重要：</strong> 合同与扩建公告说明公司想获得什么，现金指引还要取决于何时能够交付、验收和付款。预测半年内是否下调，应该把采购与财务之间的进度更新看得比远期总 GW 愿景更重。反向风险同样存在：公司可能通过替代设备采购或提前支付其他资本项目填补差额，最终保持年度区间。普通云服务运营费用不能直接填补资本开支现金缺口；若转向云采购，需另核资本口径与总经济支出的变化。</li>
+<li><strong>最需要弄清楚的事：</strong> 哪些原定今年验收的设备或机房已接近跨年，付款是否随之延后，财务有没有可提前支付的其他项目抵补？</li>
+</ul>
+<h3 id="35">3.5 【传导路径】现金压力先改变融资和股东回报，才可能压到建设预算</h3>
+<ul>
+<li><strong>判断：</strong> Meta 正在增加筹资手段，以维持建设速度。Dina 的职责说明了组织方向，停止回购、发债和合资项目则说明这一方向已经变成行动。只要这些资金来源仍可用，自由现金流变薄就不会立刻迫使资本预算下降；代价可能先体现为股东少收到现金，以及公司承担更多未来付款责任。</li>
+<li><strong>依据：</strong><ul>
+<li>📰 <span class="tag">来源陈述</span> Dina 的 <a href="https://www.linkedin.com/posts/dina-powell-mccormick_with-meta-compute-were-uniting-capital-activity-7448071525326401536-Mzeh" target="_blank" rel="noopener noreferrer">FII 本人原帖及视频转录</a>（2026-04-09）将 Meta Compute 描述为财务、基础设施与人才的协作，<u class="key">明确提到用公司资产负债表、主权基金、机构投资者和能源伙伴共同支持建设</u>。这证明她公开阐述的工作方向，不证明每个资金来源均已落实。</li>
+<li>🏛️ <span class="tag">事实</span> <a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">Q2 季报</a>（2026-07-30）显示上半年没有回购、五月发行 25 十亿美元债券；<a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx" target="_blank" rel="noopener noreferrer">El Paso 公告</a>（2026-07-28）宣布合作开发约 14 十亿美元长期资产。<u class="key">公司已实际使用回购之外的现金安排和外部融资渠道</u>；合资安排仍附带 Meta 的租赁及担保责任。</li>
+<li>🏛️ <span class="tag">事实</span> <a href="https://about.fb.com/news/2026/08/agreement-with-state-attorneys-general-supporting-teens/" target="_blank" rel="noopener noreferrer">八月和解公告</a>与<a href="https://s21.q4cdn.com/399680738/files/doc_events/META-Conference-Call-on-Agreement-with-Bipartisan-Attorneys-General-Transcript.pdf" target="_blank" rel="noopener noreferrer">电话会</a>说明多年付款，并维持七月其余指引区间；<u class="minor">这次可分期的冲击被吸收后，资本计划仍保留</u>。</li>
+</ul>
+</li>
+<li><strong>为什么重要：</strong> 对本题，这些措施延后了“缺钱所以必须砍”的时点。对股东，资本预算维持却未必是好消息：投入回报仍待兑现，未来租金、担保和债务并未消失。真正需要提高警惕的是融资条件与主营业务同时转差，使继续建设的代价超过管理层愿意接受的范围。</li>
+<li><strong>最需要弄清楚的事：</strong> 下一批项目融资若达不到原定成本或担保条件，公司会提高自有资金投入，还是先缩减已批准的项目规模？</li>
+</ul>
+<h2 id="4">4. 结算口径</h2>
+<h3 id="41-yes">4.1 什么算 YES？</h3>
+<p>观察窗按美国东部时间从 <strong>2026-09-06 00:00</strong> 到 <strong>2027-03-06 23:59</strong>。任一合格下调一经正式公开，即锁定 YES，之后再上调也不撤销。只考察名义美元计划，不做通胀调整。</p>
+<ul>
+<li><strong>同一财年修订：</strong> 新区间中点低于紧接此前的有效区间中点；或公司明确宣布下调，并给出可比的量化计划。先上调再下调，只要后一步合格，即使仍高于基线也算。</li>
+<li><strong>跨财年首次预算：</strong> 下一财年首次区间中点低于上一财年的可比基准，算 YES。为避免事后挑选，本报告优先使用宣布当时已经公布的上一年实际值；尚无实际值时使用上一年最后有效指引中点。</li>
+<li><strong>单独批准的方案：</strong> 公司正式宣布已批准、可量化、能还原为公司可比资本计划净减少的方案，算 YES。减少的现金支出可以主要发生在截止日以后。取消单项目后等额转投其他项目、不降低同一计划总额，不按公司计划下调处理。</li>
+</ul>
+<p>NO 指整个窗口都没有上述事件；它不意味着资金紧张、项目延期或内部讨论从未发生。</p>
+<h3 id="42">4.2 什么算正式公开、可比计划？</h3>
+<p>正式渠道包括 Meta 的投资者关系公告、公司正式新闻稿、SEC 文件、公开业绩会和有可追踪记录的正式投资者活动。具有明确代表公司披露预算性质的管理层原始公开声明可以采用；个人随口评论、转述、分析师猜测或匿名内部讨论不能代替公司决定。</p>
+<p>以<strong>首次公开的时间</strong>判断是否落在窗口内。截止后补发文件，只有存在可复现的截止前正式公开记录，才使用较早时间；会计上的批准日或生效日不能倒填公告日期。</p>
+<p>统一到原有资本开支范围，保留融资租赁本金的处理；区分现金购建资产、租赁资产非现金增加、云服务运营费用和并购价款。若合作持有、并表或租赁分类变化导致表面下降，先还原；还原后没有下降，不算 YES。金额下降来自设备降价，只要可比名义预算正式下降，仍然算 YES。</p>
+<h3 id="43">4.3 五个容易出现的边界案例</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>假设披露</th>
+<th>主口径结果</th>
+<th>判定理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>130–145 改为 130–140</td>
+<td>YES</td>
+<td>中点降低；下限不变并不妨碍成立。</td>
+</tr>
+<tr>
+<td>130–145 改为 125–150</td>
+<td>NO</td>
+<td>中点未变；若无明确、量化的总计划下降，只是扩大区间。</td>
+</tr>
+<tr>
+<td>2026 实际花 125，但此前从未改指引</td>
+<td>NO</td>
+<td>实际少花不自动构成“计划下调”。它可以成为下一年首次预算的比较基准。</td>
+</tr>
+<tr>
+<td>数据中心延期，但全年资本区间不变；或 2027 预算继续增加而增速放缓</td>
+<td>NO</td>
+<td>前者没有正式净下修，后者没有年度名义下降。</td>
+</tr>
+<tr>
+<td>正式披露自建支出减少，但同一资产改为合作持有，旧口径重述后持平</td>
+<td>NO</td>
+<td>会计与融资结构移动不能冒充可比计划净减少；若可比净额确实下降，则重新按 YES 规则判断。</td>
+</tr>
+</tbody>
+</table></div>
+<p>“至少减少 5%”只属于敏感性口径。它比较<strong>同一未来十二个月</strong>与基线版本的计划，不能用 2026 全年中点直接替代跨年的十二个月基准。基线日没有公开的完整滚动十二个月预算，因此这项判断的证据要求更高、置信度更低。</p>
+<h2 id="5">5. 情景与路径</h2>
+<p>分类顺序先看窗口内是否出现合格下调。出现后按<strong>首次合格决定的主导原因</strong>分类；若混合原因同样重要，依次归入需求/财务约束、主动战略、工程支付，避免重复。没有合格下调时，先识别相对既有计划的明确放缓，再识别上调或更高的新财年预算，最后归入维持。一般性的风险提示不叫“转鸽”。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>相对排序</th>
+<th>现实图景</th>
+<th>主导触发</th>
+<th>最早可见信号</th>
+<th>正式披露节点</th>
+<th>结算</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最可能的单一路径</td>
+<td>明确放缓或延期，但名义计划未下调</td>
+<td>管理层重排节奏，仍保留总体投入</td>
+<td>扩张速度或投用日期变保守</td>
+<td>Q3、全年业绩会或项目公告</td>
+<td>NO</td>
+</tr>
+<tr>
+<td>接近的另一主路径</td>
+<td>再次上调，或新财年预算进一步增加</td>
+<td>多用途需求和融资继续支撑投入</td>
+<td>新采购、新容量、预算上限扩大</td>
+<td>Q3 或新年指引</td>
+<td>NO</td>
+</tr>
+<tr>
+<td>YES 中最主要的路径</td>
+<td>供给、施工、验收或付款跨期，并正式下修</td>
+<td>现金执行达不到原年度计划</td>
+<td>交付和支付日程整体后移</td>
+<td>Q3 指引、临时公告或全年更新</td>
+<td>YES</td>
+</tr>
+<tr>
+<td>次要路径</td>
+<td>按现有节奏维持计划</td>
+<td>需求和执行基本相抵</td>
+<td>区间不变、没有实质放缓</td>
+<td>定期披露</td>
+<td>NO</td>
+</tr>
+<tr>
+<td>尾部路径之一</td>
+<td>主动降低长期战略投入</td>
+<td>内部回报评估或路线重新选择</td>
+<td>正式退出容量或净取消订单</td>
+<td>预算重排公告、业绩会</td>
+<td>YES</td>
+</tr>
+<tr>
+<td>尾部路径之一</td>
+<td>需求或财务压力迫使下调</td>
+<td>广告恶化、融资约束与现金消耗形成共同压力</td>
+<td>回报恶化并触及总额约束</td>
+<td>指引修订、融资或业务公告</td>
+<td>YES</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最容易误判的图景：</strong> 训练延期以后把设备调给推荐系统；自研芯片减少单位成本但增加总调用；运营费用和招聘被砍而资本计划继续增加；项目改由合作方持有；实际单季支付下降。这些都要再走一步：有没有公司正式、可比、净额的计划下修？</p>
+<p><strong>支持 YES 的最强论证。</strong> 历史上 Meta 确实在年末修改过预算；今年下半年支付规模明显大于上半年，硬件、验收、供电中的任何延误都可能迫使现金指引下修。若广告或融资再受打击，管理层也存在快速纠错先例。最薄弱的一环是：执行压力可能通过跨项目调拨、替代供应或融资吸收，最后没有降低正式计划。</p>
+<p><strong>支持 NO 的最强论证。</strong> 正式近年容量目标仍强，推荐与广告提供较成熟的需求，合同和合作安排增加撤销成本；八月真实法律冲击后仍保留资本区间。最薄弱的一环是：这些证据主要说明投资意愿，不保证设备、验收和付款能在原财年完成；小幅下修不需要管理层承认 AI 战略错误。</p>
+<h2 id="6">6. 关键证据表</h2>
+<p>A 为 Meta 或政府正式披露及 SEC 文件；B 为主流原创报道；C 为供应链公告、地方或行业媒体、当事人访谈；D 为匿名单一消息和二手转述；E 为社交转载。文件能确认“公司这样说过”，不等于能保证预测兑现。下表限定为二十条，完整历史逐次记录在附录。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>事实或说法</th>
+<th>倾向</th>
+<th>来源、日期与链接</th>
+<th>层级与可靠性</th>
+<th>信息簇</th>
+<th>支撑哪条路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最新年度区间 130–145，中点上调；上半年资本现金支付 50.918</td>
+<td>意愿偏 NO；执行偏 YES</td>
+<td>🏛️ <a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">Q2 公告</a>，2026-07-29</td>
+<td>A／事实；相减为分析</td>
+<td>当年预算与支付</td>
+<td>继续投入、跨期下修</td>
+</tr>
+<tr>
+<td>2026、2027 尽量增加容量；2028 后保留选择；逐字稿把错误的 demand 更正为 supply constrained</td>
+<td>偏 NO，同时保留供应风险</td>
+<td>🏛️ <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">主电话会</a>，2026-07-29，尤其末页更正</td>
+<td>A／来源陈述</td>
+<td>近期容量意愿</td>
+<td>维持、上调</td>
+</tr>
+<tr>
+<td>上调下限来自新增可见度；云采购用于填补近期容量；推荐系统也有增量需求</td>
+<td>偏 NO</td>
+<td>🏛️ <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Follow-Up-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">后续电话会</a>，2026-07-29</td>
+<td>A／来源陈述</td>
+<td>近期容量意愿，与上一条不独立</td>
+<td>资源调拨、上调</td>
+</tr>
+<tr>
+<td>新增和解费用后七月其余指引区间不变；网页已更新法院批准</td>
+<td>偏 NO</td>
+<td>🏛️ <a href="https://about.fb.com/news/2026/08/agreement-with-state-attorneys-general-supporting-teens/" target="_blank" rel="noopener noreferrer">和解公告</a>，2026-08-26／27 更新</td>
+<td>A／事实</td>
+<td>近期容量意愿</td>
+<td>维持资本计划</td>
+</tr>
+<tr>
+<td>Zuckerberg 接受过早建设的财务损失，认为建设太慢的风险更高；以公司承受能力为前提</td>
+<td>偏 NO，历史机制</td>
+<td>🎙️ <a href="https://www.youtube.com/watch?v=23FyskyFoP8" target="_blank" rel="noopener noreferrer">Access 原视频</a>，2025-09-18，01:09:10 起</td>
+<td>C／本人陈述；字幕已存</td>
+<td>近期容量意愿，不另加权</td>
+<td>战略持续、财务压力阈值</td>
+</tr>
+<tr>
+<td>不可取消义务 349.31；未开始租赁 278.99，七月新增未来租赁 68；类别与年份混合</td>
+<td>温和偏 NO</td>
+<td>🏛️ <a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">Q2 季报</a>，2026-07-30</td>
+<td>A／事实；不是资本开支下限</td>
+<td>已承诺容量</td>
+<td>取消成本、继续交付</td>
+</tr>
+<tr>
+<td>半年没有回购，五月发债 25；总债务与现金规模均大，需看支付期限</td>
+<td>偏 NO</td>
+<td>🏛️ <a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">Q2 季报</a>，2026-07-30</td>
+<td>A／事实；与合同条款同源</td>
+<td>资金缓冲</td>
+<td>压力先被其他工具吸收</td>
+</tr>
+<tr>
+<td>BlackRock El Paso 合作开发约 14 长期资产，Meta 保留租赁及担保；Dina 本人也阐述外部资本合作</td>
+<td>偏 NO</td>
+<td>🏛️ <a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx" target="_blank" rel="noopener noreferrer">官方公告</a>，2026-07-28；📰 <a href="https://www.linkedin.com/posts/dina-powell-mccormick_with-meta-compute-were-uniting-capital-activity-7448071525326401536-Mzeh" target="_blank" rel="noopener noreferrer">Dina 原帖</a>，2026-04-09</td>
+<td>A／已宣布；未单独验证交割完成</td>
+<td>替代融资</td>
+<td>延续建设</td>
+</tr>
+<tr>
+<td>Hyperion 合作开发约 27；七月官方又披露当地更广范围投资和扩容</td>
+<td>偏 NO</td>
+<td>🏛️ <a href="https://about.fb.com/news/2025/10/meta-blue-owl-capital-develop-hyperion-data-center/" target="_blank" rel="noopener noreferrer">合资公告</a>，2025-10-21；<a href="https://datacenters.atmeta.com/2026/07/deepening-our-investment-in-richland-parish-louisiana/" target="_blank" rel="noopener noreferrer">Richland 更新</a>，2026-07-13</td>
+<td>A／计划；不同范围不能相加</td>
+<td>替代融资与长期容量</td>
+<td>延续建设</td>
+</tr>
+<tr>
+<td>AMD 初始 1GW 有约束，扩至 6GW 附条件；不能按全部容量已锁定付款计算</td>
+<td>温和偏 NO</td>
+<td>🏛️ <a href="https://ir.amd.com/financial-information/sec-filings/content/0000002488-26-000045/amd-20260223.htm" target="_blank" rel="noopener noreferrer">AMD 8-K</a>，2026-02-24；<a href="https://ir.amd.com/news-events/press-releases/detail/1279/amd-and-meta-announce-expanded-strategic-partnership-to-deploy-6-gigawatts-of-amd-gpus" target="_blank" rel="noopener noreferrer">合作公告</a></td>
+<td>A／合同披露；C／供应商计划</td>
+<td>芯片采购</td>
+<td>交付与替代</td>
+</tr>
+<tr>
+<td>NVIDIA 多代芯片合作、Broadcom 与 Meta 自研芯片路线并行</td>
+<td>偏 NO；亦有节省路径</td>
+<td>🏛️ <a href="https://nvidianews.nvidia.com/news/meta-builds-ai-infrastructure-with-nvidia" target="_blank" rel="noopener noreferrer">NVIDIA</a>，2026-02-17；<a href="https://investors.broadcom.com/node/64236/pdf" target="_blank" rel="noopener noreferrer">Broadcom</a>，2026-04-14；<a href="https://ai.meta.com/blog/meta-mtia-scale-ai-chips-for-billions/" target="_blank" rel="noopener noreferrer">MTIA</a>，2026-03-11</td>
+<td>C／供应商陈述；A／Meta 计划</td>
+<td>架构选择</td>
+<td>替代供应、效率再投入</td>
+</tr>
+<tr>
+<td>CoreWeave 及 Nebius 多年容量合作，部分金额取决于交付或备用采购条件</td>
+<td>温和偏 NO</td>
+<td>🏛️ <a href="https://www.sec.gov/Archives/edgar/data/1769628/000176962826000154/crwv-20260331.htm" target="_blank" rel="noopener noreferrer">CoreWeave 季报</a>，2026 Q1；<a href="https://nebius.com/newsroom/nebius-signs-new-ai-infrastructure-agreement-with-meta" target="_blank" rel="noopener noreferrer">Nebius 公告</a>，2026-03-16</td>
+<td>A／SEC；C／供应商陈述</td>
+<td>外部容量，非全部资本开支</td>
+<td>填补近期缺口</td>
+</tr>
+<tr>
+<td>七座新燃气电厂仍待审批；8 月 12 日委员会免除部分资料调取，推进程序</td>
+<td>双向，弱支持延期尾部</td>
+<td>📰 <a href="https://www.wwno.org/politics/2026-08-12/louisiana-psc-kills-ruling-that-would-force-meta-to-turn-over-key-data-center-information" target="_blank" rel="noopener noreferrer">WWNO 原创</a>，2026-08-12</td>
+<td>C／现场报道；非最终许可</td>
+<td>工程约束</td>
+<td>延期、维持建设</td>
+</tr>
+<tr>
+<td>CEO 多数投票权、董事会委员会监督及 Meta Compute 组织加强</td>
+<td>偏 NO，但非不会纠错</td>
+<td>🏛️ <a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026025532/meta-20260416.htm" target="_blank" rel="noopener noreferrer">代理声明</a>，2026-04-16；<a href="https://about.fb.com/news/2026/01/dina-powell-mccormick-joins-meta-as-president-and-vice-chairman/" target="_blank" rel="noopener noreferrer">任命</a>，2026-01-12</td>
+<td>A／正式职责；完整审批权未知</td>
+<td>决策权与融资</td>
+<td>战略持续、快速纠错</td>
+</tr>
+<tr>
+<td>Gross 讨论低价值调用与预算分配；Li 说明算力可被调拨且广告吸收能力有上限</td>
+<td>总额方向取决于再分配</td>
+<td>🎙️ <a href="https://stripe.com/br/sessions/2026/a-conversation-with-daniel" target="_blank" rel="noopener noreferrer">Stripe 原文</a>，2026-04-30；<a href="https://cheekypint.transistor.fm/2/transcript" target="_blank" rel="noopener noreferrer">Li 原节目</a>，2025-06-18</td>
+<td>C／本人机制陈述，非预算净额</td>
+<td>预算分配</td>
+<td>资源调拨、效率节省</td>
+</tr>
+<tr>
+<td>第二轮组织转型安排撤回，确切原因未确定；不是资本削减公告</td>
+<td>弱支持可纠错</td>
+<td>📰 <a href="https://m.economictimes.com/ai/ai-insights/mark-zuckerberg-had-a-bold-plan-to-replace-meta-staff-with-ai-heres-how-it-imploded-/amp_articleshow/133538291.cms" target="_blank" rel="noopener noreferrer">Reuters 调查授权全文</a>，2026-08-26</td>
+<td>B／多源调查，公司确认部分事实</td>
+<td>组织可逆性</td>
+<td>主动转向</td>
+</tr>
+<tr>
+<td>Bosworth 明确自研模型可以改善外购议价，内部同时使用外部模型</td>
+<td>不支持由外购直接推断退出</td>
+<td>🎙️ <a href="https://www.youtube.com/watch?v=qZhCeV6XATw" target="_blank" rel="noopener noreferrer">原视频</a>，2026-07-08，08:20–11:00</td>
+<td>C／本人陈述；公开编辑稿交叉核对</td>
+<td>模型采购与研发</td>
+<td>继续投入、外购替代</td>
+</tr>
+<tr>
+<td>历史存在主动与时点下修；2023 年改变下一年首次指引的披露习惯</td>
+<td>历史偏 YES；日历修正偏 NO</td>
+<td>🏛️ <a href="https://www.sec.gov/Archives/edgar/data/1326801/000132680122000116/meta-20221109.htm" target="_blank" rel="noopener noreferrer">2022-11-09 8-K</a>、<a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Second-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">2023 Q2</a>、<a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Third-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">2023 Q3</a>及附录全表</td>
+<td>A／事实；制度不可直接外推</td>
+<td>历史与披露日历</td>
+<td>年末修订</td>
+</tr>
+<tr>
+<td>Janardhan 本人承认技能工人短缺，推出培训缓解</td>
+<td>支持施工时点风险</td>
+<td>📰 <a href="https://www.linkedin.com/posts/sjanardhan_americas-workforce-academy-the-future-is-activity-7469869698331922432-JYIA" target="_blank" rel="noopener noreferrer">本人原帖</a>，2026-06-08</td>
+<td>C／负责人陈述；没有确认具体延期</td>
+<td>工程约束；早于七月指引</td>
+<td>跨期下修、缓解瓶颈</td>
+</tr>
+<tr>
+<td>供应商披露 A100 合同延至 2029；通电与在建资产投用可跨季</td>
+<td>反驳普遍报废；保留时差</td>
+<td>🏛️ <a href="https://s205.q4cdn.com/133937190/files/doc_financials/2026/q2/CRWV-US-CORRECTED-TRANSCRIPT-CoreWeave-Q2-2026-Earnings-Call-11August2026.pdf" target="_blank" rel="noopener noreferrer">CoreWeave 更正稿</a>，2026-08-11，第 8、9、11 页</td>
+<td>C／供应商经营陈述；不是 Meta 利用率</td>
+<td>供应商执行</td>
+<td>设备再利用、交付时点</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>同源合并。</strong> 电话会、公告及 Reuters 对其复述不是三票证据；将七月容量方向与八月维持指引归为同一决策簇，后者折减计入。合作项目公告与报道也合并。资金缓冲、合同增长和管理层意愿存在残余相关性，附录对总体权重做敏感性检验。</p>
+<p><strong>访问边界。</strong> NYT 与部分 The Information 只核验到标题或索引摘录，不作为大幅概率调整的独立证据。LPSC 部分网页复访失败，精确会议日期不当作已锁定事实；使用公开电台可读正文确认审批状态。未把搜索结果显示的抓取日期当新闻发生日。</p>
+<h2 id="7">7. 信息缺口树</h2>
+<p>以下按预期信息价值排序。只询问受访者可以合法公开讨论的经验和已公开事项；涉及未披露预算时，以流程、阈值类型及事后实例替代具体内幕数字。本次没有实际约访或发送消息。</p>
+<p><strong>按分项安排访谈：</strong> 服务器先找采购和容量规划；机房先找工程控制与项目财务；网络先拆集群设备和跨区域建设；其他资产找各业务财务；融资租赁找租赁会计。共同底稿应包含原预算、修订净额、付款年度、替代支出及审批人，再核验下列组织传导问题。</p>
+<h3 id="71-meta">7.1 曾直接参与 Meta 年度资本预算的财务规划负责人</h3>
+<p><strong>岗位画像：</strong> 近两年服务基础设施业务、参加过年度及季度资本评审的财务规划与分析负责人；优先已离职、能解释流程的人。</p>
+<ol>
+<li>业务团队提交的是设备金额、算力需求，还是年度现金支付表？</li>
+<li>哪一级负责人能退回新增预算，哪些情况必须由 CEO 决定？</li>
+<li>年底交付推迟时，财务会优先改全年指引，还是寻找别的项目提前支付？</li>
+<li>怎样判断团队省下的调用费用应交给其他团队，还是从下一批采购中扣除？</li>
+<li>回购、发债、合作融资与资本削减之间，通常按什么顺序权衡？</li>
+</ol>
+<p><strong>能改变什么：</strong> 直接改变“批准总量下修”和“执行调整进入正式指引”，可能大幅改变主概率。若财务存在已执行的总额约束，YES 增强；若延期常被其他项目抵补，NO 增强。</p>
+<p><strong>好不好约：</strong> 中低。一般财务员工容易找到，参加资本评审的岗位少；需先核对其真实职责。</p>
+<h3 id="72">7.2 负责加速器、服务器或云容量订单的采购负责人</h3>
+<p><strong>岗位画像：</strong> Meta 基础设施采购、供应商管理或合同商务人员，接触设备交付、变更订单和取消条款。</p>
+<ol>
+<li>已签框架协议与不可取消采购订单之间还有哪些审批步骤？</li>
+<li>订单改期是否影响价格、预付款或最低采购额？</li>
+<li>合同以发货、安装、验收还是上线作为付款触发？</li>
+<li>一家供应商延期时，替代采购会增加还是减少本年总现金需求？</li>
+<li>哪种订单变化会直接送入季度对外指引评审？</li>
+</ol>
+<p><strong>能改变什么：</strong> 改变“执行调整进入正式指引”，幅度大。关键是确认可撤销部分与现金日期，而不是重复宣布的总合同额。</p>
+<p><strong>好不好约：</strong> 中。供应商侧销售或交付负责人更好找，但可能只看到自己的订单。</p>
+<h3 id="73">7.3 负责数据中心交付的项目总监或主承包商负责人</h3>
+<p><strong>岗位画像：</strong> 接触 Richland、El Paso 或近期投用项目的工程总监、机电承包商、调试和验收负责人。</p>
+<ol>
+<li>今年余下的关键路径是在供电、设备、施工还是调试？</li>
+<li>公布的园区投用日期对应首批容量还是完整园区？</li>
+<li>哪些设施可以用临时方案先运行，哪些必须等待永久电力？</li>
+<li>若关键设备晚到一个月，付款和资本化日期分别怎样变化？</li>
+<li>变更施工进度时，谁把影响合并进公司的全年资本现金计划？</li>
+</ol>
+<p><strong>能改变什么：</strong> 改变工程支付下修路径，幅度中到大。能够映射到财务年度的延误，比笼统“项目落后”更有价值。</p>
+<p><strong>好不好约：</strong> 中高。承包商可访问性较好，但必须确认项目、阶段及知情边界。</p>
+<h3 id="74">7.4 负责训练集群排期或推荐算力分配的工程管理人员</h3>
+<p><strong>岗位画像：</strong> 模型训练资源规划、集群调度、推荐基础设施容量规划负责人；优先掌握跨团队调拨的人。</p>
+<ol>
+<li>一次大训练延期后，空出的设备能否立即转给推荐或推理？</li>
+<li>哪些网络和芯片配置不能有效跨用途使用？</li>
+<li>Gross 提到的任务价值评估怎样落实到团队额度，退回的 GPU 是否仍由中央重新分配？</li>
+<li>效率提高后，团队通常扩大任务，还是退回资源？</li>
+<li>外购模型价格和自研替代价值怎样共同影响下一轮训练采购？</li>
+</ol>
+<p><strong>能改变什么：</strong> 改变“业务反馈改变总需求”和“效率节省留在总预算”，幅度中到大。</p>
+<p><strong>好不好约：</strong> 中低。岗位专门，且个人通常只看到局部容量。</p>
+<h3 id="75-ai">7.5 负责广告 AI 收益评估的产品或数据科学负责人</h3>
+<p><strong>岗位画像：</strong> 广告推荐、竞价、转化归因或生成式广告工具团队，参与投入回报实验与资源申请。</p>
+<ol>
+<li>收益实验如何剔除季节、广告需求和其他产品改动？</li>
+<li>新一代模型的收入增量能否覆盖训练与推理的边际成本？</li>
+<li>更高参与度与广告利润之间是否存在近期权衡？</li>
+<li>如果下一批模型收益变小，通常减少训练、降低推理频率，还是继续投入？</li>
+<li>哪一级财务和业务负责人共同认可“应当减少总容量”的结论？</li>
+</ol>
+<p><strong>能改变什么：</strong> 改变“回报不足触发预算约束”，幅度中。多轮边际回报下降比一次实验不及预期更有分量。</p>
+<p><strong>好不好约：</strong> 中。能做实验的人较多，掌握跨项目预算的人更少。</p>
+<h3 id="76">7.6 电力、变压器与融资合作方的项目商务负责人</h3>
+<p><strong>岗位画像：</strong> 服务 Meta 项目的电力开发、设备交付、项目融资或资产租赁商务人员。</p>
+<ol>
+<li>项目还缺哪些许可，哪些已进入不可撤销施工？</li>
+<li>供电时间变化是否触发补偿、替代安排或重新谈判？</li>
+<li>预付款、最低使用量和残值担保分别覆盖什么风险？</li>
+<li>合作持有长期资产后，Meta 是否仍承担类似自建的最低现金义务？</li>
+<li>哪些项目进度可以独立验证，哪些只来自客户口头目标？</li>
+</ol>
+<p><strong>能改变什么：</strong> 改变“执行调整进入正式指引”和“外部冲击迫使总预算变化”，幅度中；难以独立证明公司整体预算。</p>
+<p><strong>好不好约：</strong> 中高。公开项目多，但要防止把单个环节的信息误当全局。</p>
+<h2 id="8">8. 信源梯度反馈</h2>
+<p><strong>第三版结构核对：</strong> 回到 2024 Q4 与 2026 Q1/Q2 正式电话会及 Q2 季报，核对资产类别、现金与存量、组件价格及长期建设与服务器决策的时序。核验记录及分项判断见<a href="/investment-analysis/reports/meta-capex-6m-assets/capex-structure/index.html" target="_blank" rel="noopener noreferrer">结构研究台账</a>与<a href="/investment-analysis/reports/meta-capex-6m-assets/capex-structure/components.json" target="_blank" rel="noopener noreferrer">结构数据</a>。这次是有针对性的原文核对，未把它计作新一轮视频或社交采集。</p>
+<p><strong>第二轮补上了第一版明显不足的视频与社交覆盖，但仍不能称为穷尽。</strong> 第一版有 Susan Li 的文字访谈及正式电话会，却没有保存视频字幕，没有读取 X 原帖，也没有实际展开 Reddit 评论。本版把候选、正文、字幕和访问失败分别登记。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>通道</th>
+<th>本轮实际完成</th>
+<th>对判断的贡献与剩余限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原视频与播客</td>
+<td>16 个去重后的节目候选；保存 <strong>8 场英文字幕，约 378 分钟</strong>，其中 6 场在最近十二个月内</td>
+<td>涵盖 Zuckerberg、Li、Gross、Friedman、Janardhan、Dina、Bosworth、Wang；字幕完整采集，围绕关键议题阅读全文段落，不代表逐秒听校。两场更早节目明确作为历史机制。</td>
+</tr>
+<tr>
+<td>其他节目文字</td>
+<td>另保存 <strong>2 场完整文字</strong>：Li 高盛访谈、Dylan Patel；Li 摩根士丹利访谈网页文字已读，但本地完整导出失败</td>
+<td>第三方转录与官方音频入口分开登记。Gross 有发布方全文；Bosworth 的关键段有公开编辑稿，后半篇有付费墙。节目镜像不重复计数。</td>
+</tr>
+<tr>
+<td>本人社交原帖</td>
+<td>14 个候选中，<strong>12 条 LinkedIn 原帖正文已读</strong>；作者为 Janardhan 与 Dina</td>
+<td>补出施工用工瓶颈、资本合作与供应选择。多数项目帖重复公司公告；本人复述不再加一票。公开评论只读可见部分，未核验评论者项目接触权限。</td>
+</tr>
+<tr>
+<td>X、Facebook、Threads</td>
+<td>已检索并定位若干原址；<strong>X 原帖正文仍为零</strong>，Zuckerberg 的 FB／Threads 帖原页不可达</td>
+<td>原帖目录、媒体引用或搜索摘要只用于发现线索。不能把 LinkedIn 的覆盖算成 X 已充分覆盖，也不推断没有相关发言。</td>
+</tr>
+<tr>
+<td>Reddit、Hacker News、Blind</td>
+<td><strong>14 个讨论正文</strong>：Reddit 12、HN 1、Blind 1；其中 <strong>11 个深读可见评论</strong>；另 2 个失败种子未计入</td>
+<td>提供会计、设备寿命、云出租与交付错位的反方假说。作者身份均未核验，匿名自称员工不升级为内部事实。</td>
+</tr>
+<tr>
+<td>财报、SEC、正式电话会</td>
+<td>延续第一版的基线和 43 条历史序列，补查 CoreWeave 合同与更正稿、Black Hills 公告</td>
+<td>负责检验社交说法。供应商合同和经营情况不能当作 Meta 全部设备利用率、年度付款日程或资本预算。</td>
+</tr>
+<tr>
+<td>付费原创媒体与专家</td>
+<td>Reuters 原创调查可读；部分 NYT、The Information、Sources 内容仅导言或索引；自采专家访谈为零</td>
+<td>预算审批门槛、删节合同、真实验收日期仍未取得。第 7 节保留可执行的访谈问题。</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>几个经回溯后改变了含义的说法：</strong></p>
+<ul>
+<li>论坛的 2025 年资本开支 69.7 十亿美元，漏掉融资租赁本金；按本题口径应为 72.22，自由现金流为 43.59。<a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">Meta 年度业绩</a></li>
+<li>“GPU 三年后全部报废”不成立。CoreWeave 披露 A100 新合同延至 2029，但这也不能证明 Meta 全部设备的寿命与回报，更不代表同一台 2020 年设备一直运行到 2029。<a href="https://s205.q4cdn.com/133937190/files/doc_financials/2026/q2/CRWV-US-CORRECTED-TRANSCRIPT-CoreWeave-Q2-2026-Earnings-Call-11August2026.pdf" target="_blank" rel="noopener noreferrer">官方更正稿</a></li>
+<li>HN 把未交付合同当成已经确认的收入；公司季报将尚未满足的履约义务与已确认收入分开。<a href="https://www.sec.gov/Archives/edgar/data/1769628/000176962826000366/crwv-20260630.htm" target="_blank" rel="noopener noreferrer">CoreWeave 季报</a></li>
+<li>“Meta 可以随意转卖所有外购算力”没有得到合同支持。公开 CoreWeave 合同要求转租事先获书面批准；这也不是永远不能批准的绝对禁令。<a href="https://www.sec.gov/Archives/edgar/data/1769628/000176962825000050/redactedmetamsa929finald.htm" target="_blank" rel="noopener noreferrer">合同正文</a></li>
+<li>Reddit 将 Crusoe 退出开发推演为 Wyoming 项目暂停。Black Hills 随后正式说明项目未暂停；客户未公开，不能归为 Meta 停建。<a href="https://www.globenewswire.com/news-release/2026/06/10/3309709/0/en/black-hills-corp-provides-an-update-on-1-8-gigawatt-project-in-cheyenne.html" target="_blank" rel="noopener noreferrer">正式公告</a></li>
+</ul>
+<p>完整的<a href="/investment-analysis/reports/meta-capex-6m-assets/media-social/index.html" target="_blank" rel="noopener noreferrer">字幕、节目与原帖台账</a>逐项列出原始链接、日期、访问状态、关键时间码与失败记录。自动字幕保留原始文件，机器清理仅去除滚动重复；本次没有下载音频或另做语音识别。Susan Li 原节目日期已由转载页的 2025-07-25 更正为 <strong>2025-06-18</strong>；Dina 的视频含较长开场，视频与播客时间码未混用。</p>
+<p>第一版的其他纠错继续有效：2022 年 Kuna／Temple 暂停建设没有被算作 2026 年新事件；Q2 电话会末页更正为供给受限；八月和解的费用确认不等于同额现金立即流出；已离职人员不再被列作现任审批人。原始出处保留在<a href="/investment-analysis/reports/meta-capex-6m-assets/source-coverage.html" target="_blank" rel="noopener noreferrer">第一版来源记录</a>。</p>
+<p><strong>充分性判断：</strong> 本轮已能比较主要管理层的预算逻辑，并用原始文件检验论坛反方；它仍不足以观察公司内部已经批准、尚未公开的计划。下一份最有可能改变判断的材料，是具体订单或验收日程如何进入财务预算，而非另一篇关于 AI 泡沫的观点。X、付费全文和自采访谈的缺口明确保留，不能用来源数量或检查通过数来替代。</p>
+<h2 id="9-qa">9. 自检结果（QA）</h2>
+<p>本次工程层指模型之外管理检索记录、来源、去重和概率计算的程序。实际调用已有 Predict-Raven 预测引擎，把本会话核验的证据按四轮回放；判断与权重来自本次研究，没有把回放包装成额外模型独立研究。原始检索记录与引擎回放日志分别保存。第三版沿用第二版四轮计算审计；本次资产拆分与可视化没有新增独立计权项，也没有把重复执行相同输入当成新一轮研究。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>结果</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基线与截止</td>
+<td>PASS</td>
+<td>原题逐字保留；观察窗采用美国东部时间，公告时间决定归属。</td>
+</tr>
+<tr>
+<td>最新官方指引</td>
+<td>PASS</td>
+<td>核对七月量化区间，并追索八月和解后的再次确认。</td>
+</tr>
+<tr>
+<td>会计可比性</td>
+<td>PASS / LIMITED</td>
+<td>上半年现金桥接已算；未来合资或租赁变化需逐案还原。</td>
+</tr>
+<tr>
+<td>历史避免选样</td>
+<td>PASS / LIMITED</td>
+<td>列出 2018 起全部已识别定期及相关临时量化披露，含上调和维持；早期公开材料形式不同，不能保证不存在遗漏的临时个人声明。</td>
+</tr>
+<tr>
+<td>来源追踪</td>
+<td>PASS</td>
+<td>关键证据链接、历史逐条链接和引擎八条原有计权证据及六条零增量补充材料均可追踪；访问受限材料显式标注。</td>
+</tr>
+<tr>
+<td>同源去重</td>
+<td>PASS / LIMITED</td>
+<td>转载合并，同管理层意愿簇折减；融资、承诺和意愿的残余相关性保留为模型限制。</td>
+</tr>
+<tr>
+<td>正反证</td>
+<td>PASS</td>
+<td>对称检验执行下修、主动纠错和需求恶化，也检验替代融资及容量调拨。</td>
+</tr>
+<tr>
+<td>不看事件市场赔率</td>
+<td>PASS</td>
+<td>不使用预测市场、博彩赔率或他人对本事件的概率；引擎相应开关开启。</td>
+</tr>
+<tr>
+<td>三种口径</td>
+<td>PASS / LIMITED</td>
+<td>正式下调、实质削减与转鸽分别定义；滚动十二个月基线不公开，第二项只能低置信估计。</td>
+</tr>
+<tr>
+<td>路径互斥和加总</td>
+<td>PASS</td>
+<td>程序实际相加，并核对主结果路径总额与四舍五入后的引擎结果一致。</td>
+</tr>
+<tr>
+<td>概率位置</td>
+<td>PASS</td>
+<td>概率只在第 1 节与附录；依模板要求第 10 节重复主结论。正文财务百分比和股权比例不属于事件概率；分项风险采用定性判断，演算金额不构成预测。</td>
+</tr>
+<tr>
+<td>精度与范围</td>
+<td>PASS</td>
+<td>主结论使用整数和主观合理范围；不采用引擎自动生成的狭窄区间，不声称统计校准。</td>
+</tr>
+<tr>
+<td>洞察准入</td>
+<td>PASS</td>
+<td>五条围绕具体资本决策因果链重写，均有承重来源；没有将访问缺失、结算口径或泛泛市场叙事充作洞察。</td>
+</tr>
+<tr>
+<td>视频与社交获取</td>
+<td>PASS / LIMITED</td>
+<td>字幕、原帖、论坛正文与评论分别计数；X 原帖与部分付费内容仍缺失，未声称全网穷尽。</td>
+</tr>
+<tr>
+<td>组织信息</td>
+<td>LIMITED</td>
+<td>正式高管和关键岗位已核验；部分当前汇报线依赖媒体，完整审批权限未公开。</td>
+</tr>
+<tr>
+<td>资产结构</td>
+<td>PASS / LIMITED</td>
+<td>官方现金桥接与主要投向已核验；年度分项金额未披露，不以资产存量或研究注意力分摊预算。</td>
+</tr>
+<tr>
+<td>分项与演算</td>
+<td>PASS / LIMITED</td>
+<td>每项方向、触发与反证均可展开；抵消演算明确为假设，不参与总概率计算。</td>
+</tr>
+<tr>
+<td>文稿与视觉</td>
+<td>PASS</td>
+<td>Markdown 为唯一正文源；已执行用词检查、数字与路径校验，并检查桌面和窄屏 HTML。验收细节见随附记录。</td>
+</tr>
+</tbody>
+</table></div>
+<p>研究文件：<a href="/investment-analysis/reports/meta-capex-6m-assets/history.csv" target="_blank" rel="noopener noreferrer">历史明细</a>、<a href="/investment-analysis/reports/meta-capex-6m-assets/source-coverage.html" target="_blank" rel="noopener noreferrer">来源与覆盖记录</a>、<a href="/investment-analysis/reports/meta-capex-6m-assets/forecast-audit-v2.json" target="_blank" rel="noopener noreferrer">计算审计</a>、<a href="/investment-analysis/reports/meta-capex-6m-assets/qa-results-v3.json" target="_blank" rel="noopener noreferrer">验收记录</a>。正文能独立阅读，附属文件用于复核计算及访问边界。</p>
+<h2 id="10">10. 最终预测声明</h2>
+<p><strong>Meta 在 2027-03-06 23:59（美国东部时间）前正式下调可比口径名义资本开支计划的概率：32%；合理范围 20–45%；倾向 NO；主观置信度中低。</strong></p>
+<p>最可能看到的现实是，Meta 继续争取近两年的计算资源，同时在部分项目上调整节奏、融资结构或交付安排。正式削减仍是值得认真对待的少数情景，其中最现实的是年度付款和工程进度导致指引下修；即使发生，也需要再判断是否代表长期需求减少。不构成投资建议。</p>
+<h2 id="a1">A1. 概率模型与数值代入</h2>
+<p><strong>第三版说明：</strong> 主模型继续使用第二版四轮证据回放。第 2 节按资产拆开同一决策链，未形成新的独立概率输入；分项风险不能平均或相乘得到总概率。交互金额仅展示净额抵消。所有原计权、历史窗口与六条结果路径均维持。</p>
+<h3 id="a11">A1.1 从经验频率到本次判断</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>记号</th>
+<th>中文含义</th>
+<th>估计值</th>
+<th>依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P（历史同日历窗口下调）</td>
+<td>八个完整历史观察窗的经验频率</td>
+<td>5/8＝约 63%</td>
+<td>A2 逐窗清点；非独立同分布样本</td>
+</tr>
+<tr>
+<td>P（校准起点）</td>
+<td>小样本平滑后的参考起点</td>
+<td>60%</td>
+<td>给 YES、NO 各加一个虚拟样本，避免直接照搬极少数观察</td>
+</tr>
+<tr>
+<td>P（正式下调）</td>
+<td>当前事实修正后的主答案</td>
+<td>32%</td>
+<td>前三轮计权、第四轮补漏复核，整数呈现</td>
+</tr>
+<tr>
+<td>P（不正式下调）</td>
+<td>主答案的补集</td>
+<td>68%</td>
+<td>与 YES 互斥且穷尽</td>
+</tr>
+<tr>
+<td>P（实质削减）</td>
+<td>同一未来十二个月计划至少减少 5%</td>
+<td>18%</td>
+<td>独立敏感性判断，公开基准不足</td>
+</tr>
+<tr>
+<td>P（转鸽但不削减）</td>
+<td>无正式下调且明确放缓</td>
+<td>28%</td>
+<td>六条结果路径中的一条</td>
+</tr>
+</tbody>
+</table></div>
+<p>计算用“YES 相对 NO 的几率”，即概率除以它的补集。每条证据赋一个带正负号的<strong>对数几率调整值</strong>：正数支持 YES，负数支持 NO；这些是研究者对证据分量的主观编码，不是从样本拟合出的真实似然比。</p>
+<div class="formula">
+校准起点＝(5＋1) ÷ (8＋2)＝60%<br>
+起点几率＝0.60 ÷ 0.40＝1.5<br>
+有效调整合计＝−0.35＋0.35−0.70−0.25−0.25＋0.10＋0.10−0.15＝−1.15<br>
+更新后几率＝1.5 × exp(−1.15)<br>
+P（正式下调）＝更新后几率 ÷ (1＋更新后几率) ≈ <b>32%</b><br>
+主观合理范围＝<b>20–45%</b>
+</div>
+
+<p>exp 表示把对数调整转回乘数。模型做了 URL 去重和同信息簇折减，没有假设六条路径的触发因素彼此独立。范围不是统计置信区间；它涵盖权重、历史类比和内部预算信息不足的共同不确定性。</p>
+<h3 id="a12">A1.2 每条调整为何给这个量级？</h3>
+<p>表内“调整”以<strong>百分点</strong>计，由整数端点之差计算，因此可逐行相加。程序保存未舍入结果，细微差异来自四舍五入；权重值本身不是概率。</p>
+<div class="tight1">
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>本轮证据</th>
+<th style="text-align: right;">有效对数调整</th>
+<th>概率端点</th>
+<th style="text-align: right;">整数调整</th>
+<th>分量解释与为何不取两倍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>披露日历改变</td>
+<td style="text-align: right;">−0.35</td>
+<td>60% → 51%</td>
+<td style="text-align: right;">−9</td>
+<td>旧窗口中有一次 YES 源自提前公布的下一财年预算再下修，如今首次量化更晚，减少一次机会。不给两倍，是因为其他四个 YES 主要来自当年 Q3 修订，该机会仍在；近两个新日历窗口也已包含在历史样本中，故不完全剔除旧样本。</td>
+</tr>
+<tr>
+<td>当年支付明显后置</td>
+<td style="text-align: right;">＋0.35</td>
+<td>51% → 60%</td>
+<td style="text-align: right;">＋9</td>
+<td>本年下半年所需支付显著高于上半年，支持时点下修。不给两倍，因为公司本来就知道后置安排，尚无证据证明无法完成；没有把高投入额再当独立资金危机加分。</td>
+</tr>
+<tr>
+<td>近两年容量意愿与多用途需求</td>
+<td style="text-align: right;">−0.70</td>
+<td>60% → 43%</td>
+<td style="text-align: right;">−17</td>
+<td>最强个案证据是当前正式经营方向；把 YES 对 NO 的几率大约减半。不给两倍，因为“想拿到容量”不能保证“按期花完”，也不是锁定的 2027 美元计划。</td>
+</tr>
+<tr>
+<td>已承诺容量与取消摩擦</td>
+<td style="text-align: right;">−0.25</td>
+<td>43% → 37%</td>
+<td style="text-align: right;">−6</td>
+<td>SEC 义务和租赁说明撤销总容量有摩擦，给温和负向调整。不给两倍，因为总额混有运营费用、远期支出及未开始租赁，不能证明半年不可动。</td>
+</tr>
+<tr>
+<td>新的合作融资选择</td>
+<td style="text-align: right;">−0.25</td>
+<td>37% → 31%</td>
+<td style="text-align: right;">−6</td>
+<td>El Paso 安排让现金压力不必立即变成少建项目。不给两倍，因为只是一个项目，担保与未来付款仍在；它能延长缓冲，不能创造业务回报。</td>
+</tr>
+<tr>
+<td>组织计划可以突然撤回</td>
+<td style="text-align: right;">＋0.10</td>
+<td>31% → 33%</td>
+<td style="text-align: right;">＋2</td>
+<td>纠正“创始人不可能转向”的过强判断；人事与资本预算之间有距离，只给弱调整。</td>
+</tr>
+<tr>
+<td>工程许可仍有待决事项</td>
+<td style="text-align: right;">＋0.10</td>
+<td>33% → 36%</td>
+<td style="text-align: right;">＋3</td>
+<td>保留工程尾部风险；八月程序决定同时有利推进，多数项目较远，不能据此给强看空权重。</td>
+</tr>
+<tr>
+<td>和解后维持资本区间</td>
+<td style="text-align: right;">−0.15</td>
+<td>36% → 32%</td>
+<td style="text-align: right;">−4</td>
+<td>原始权重 −0.30，与近年容量意愿同簇折半。实际冲击后的选择有信息，但不应重复计算管理层偏好；不给两倍，因为多年分期与收入骤降不同。</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td style="text-align: right;"><strong>−1.15</strong></td>
+<td><strong>60% → 32%</strong></td>
+<td style="text-align: right;"><strong>−28</strong></td>
+<td><strong>60% − 28 个百分点＝32%。调整排序影响逐行百分点，不改变对数总和与最终值。</strong></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>前三个计权回放轮次依次为：历史与支付进度（60% → 60%）、容量意愿与合同（60% → 37%）、融资与反向线索及最新确认（37% → 32%）。这是一种把正反证摊开检查的顺序，<strong>不是说这些消息在三个时间点依次发布，也不是四份独立模型预测</strong>。</p>
+<h3 id="a12a">A1.2a 第二轮新增材料为何没有改变概率？</h3>
+<p>第一版为 <strong>32%（20–45%）</strong>，第二版仍为 <strong>32%（20–45%）</strong>。新增字幕和原帖提高了对决策过程的理解，没有提供新的可比年度削减计划。尤其六月用工短缺的说法早于七月最新指引，不能当作后来发生的执行事故。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>新增材料</th>
+<th>对因果判断的作用</th>
+<th style="text-align: right;">本轮增量对数调整</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zuckerberg 承担买早风险的长访谈</td>
+<td>解释现有扩张政策，与近期意愿同簇</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Gross 的任务价值与调用预算</td>
+<td>补出节省到设备采购之间的再分配环节</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Bosworth 的自研与外购议价</td>
+<td>防止由外购模型直接推断退出自研</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Janardhan 的用工原帖</td>
+<td>强化施工约束机制，但没有当年具体延误</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Dina 的资本合作原帖</td>
+<td>解释已有融资行动，同簇不重复</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>CoreWeave 更正稿</td>
+<td>纠正普遍报废论及交付时点误读，不外推 Meta 利用率</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table></div>
+<p>工程层实际执行第四轮，六项均进入来源日志，结果为 <strong>32.2% → 32.2%</strong>，仍按整数呈现为 <strong>32%</strong>。零增量表示不再增加概率权重，不表示材料没有研究价值。没有因来源更多而缩窄主观范围。原始八项权重、历史频率和情景分摊均保持不变。</p>
+<h3 id="a13">A1.3 六条互斥结果的分配</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>结果路径</th>
+<th>YES / NO</th>
+<th style="text-align: right;">无条件概率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正式主动战略削减</td>
+<td>YES</td>
+<td style="text-align: right;">6%</td>
+</tr>
+<tr>
+<td>需求或财务压力迫使下调</td>
+<td>YES</td>
+<td style="text-align: right;">6%</td>
+</tr>
+<tr>
+<td>供给、施工或付款跨期并正式下修</td>
+<td>YES</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>转鸽但不削减</td>
+<td>NO</td>
+<td style="text-align: right;">28%</td>
+</tr>
+<tr>
+<td>维持计划</td>
+<td>NO</td>
+<td style="text-align: right;">14%</td>
+</tr>
+<tr>
+<td>再次上调或开启更高新财年预算</td>
+<td>NO</td>
+<td style="text-align: right;">26%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>YES 32%；NO 68%</strong></td>
+<td style="text-align: right;"><strong>100%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这是对主答案的情景分摊，不是额外六个独立模型。大类按第 5 节的优先级互斥；含有若干触发的现实事件只进入一行。</p>
+<h3 id="a14">A1.4 财务与承诺如何进入判断</h3>
+<p>以下金额仍为十亿美元。<a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">Q2 公告</a>与<a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">Q2 季报</a>给出的关键检查是：上半年经营现金流 <strong>64.088</strong>，减资本支付 <strong>50.918</strong>，得到自由现金流 <strong>13.170</strong>；Q2 自由现金流为 <strong>0.784</strong>。不能用这个单季数字直接年化。</p>
+<p>六月末现金、现金等价物及有价证券 <strong>90.260</strong>，债务 <strong>83.664</strong>；它们不是都可自由支配、同日到期的对称头寸。单独列示的受限资金不再从前述现金数字重复扣除。2026 年没有披露到期债务本金，2027 年为 <strong>2.75</strong>；五月融资增加了缓冲，同时增加以后利息成本。</p>
+<p>不可取消合同中 <strong>53.52</strong> 列为 2026 年、<strong>81.65</strong> 为 2027 年，包含云服务及其他类别，不能用它们直接计算资本开支锁定比例。未开始租赁的启动时间跨越多年；七月额外租赁也主要服务以后容量。真正缺的是“未来六个月、属于本定义、可取消与不可取消”的交叉表。</p>
+<p>法律和解公司口径约 <strong>18</strong>，其中约 <strong>12.7</strong> 为保证支付、约 <strong>5.3</strong> 取决于其他平台的条件安排；十年支付与 Q3 约 <strong>10</strong> 的费用确认不同。管理层未在该次电话会明确重申“全年营业利润高于上一年”的原承诺，不能从资本区间维持无限外推到利润。<a href="https://s21.q4cdn.com/399680738/files/doc_events/META-Conference-Call-on-Agreement-with-Bipartisan-Attorneys-General-Transcript.pdf" target="_blank" rel="noopener noreferrer">和解电话会</a></p>
+<h2 id="a2">A2. 基准率与可比案例</h2>
+<h3 id="a21-meta-2018">A2.1 Meta 从 2018 年起的逐次年度指引记录</h3>
+<p>单位为<strong>十亿美元</strong>。区间中点只用于比较；“约某数”按点值记录。“首次”指首次已核验的量化年度指引，前一区间为同一财年的上一次有效披露；同日不同财年各占一行。表内不把上一年实际支出冒充下一年的旧指引。</p>
+<p>共 <strong>43 条</strong>：首次 9、上调 13、维持 10、下调 11。含全部已识别的季度数值披露和相关正式临时更新；第 43 条是八月和解后的再次确认。同一新闻稿与电话会不重复占行。原始数据可下载 <a href="/investment-analysis/reports/meta-capex-6m-assets/history.csv" target="_blank" rel="noopener noreferrer">CSV</a>。</p>
+<div class="history">
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>披露日期</th>
+<th>前一区间</th>
+<th>新区间</th>
+<th style="text-align: right;">中点变化</th>
+<th>分类</th>
+<th>公司理由或可确认范围</th>
+<th>原始依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2018</td>
+<td>2018-01-31</td>
+<td>—</td>
+<td>14–15</td>
+<td style="text-align: right;">—</td>
+<td>首次</td>
+<td>初始数值；此前仅表示大约翻倍</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2017/Q4/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2018</td>
+<td>2018-04-25</td>
+<td>14–15</td>
+<td>约 15</td>
+<td style="text-align: right;">+0.5</td>
+<td>上调</td>
+<td>达到原区间高端；支持业务所需基础设施</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2018/Q1/Q1-18-Earnings-call-transcript.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2018</td>
+<td>2018-07-25</td>
+<td>约 15</td>
+<td>约 15</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>维持约150亿美元</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2018/Q2/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2018</td>
+<td>2018-10-30</td>
+<td>约 15</td>
+<td>14–14.5</td>
+<td style="text-align: right;">-0.75</td>
+<td>下调</td>
+<td>下修原因未单独明确</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2018/Q3/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2019</td>
+<td>2018-10-30</td>
+<td>—</td>
+<td>18–20</td>
+<td style="text-align: right;">—</td>
+<td>首次</td>
+<td>提前建设容量</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2018/Q3/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2019</td>
+<td>2019-01-30</td>
+<td>18–20</td>
+<td>18–20</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>维持；原PDF首页年份笔误以IR日期为准</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2018/Q4/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2019</td>
+<td>2019-04-24</td>
+<td>18–20</td>
+<td>17–19</td>
+<td style="text-align: right;">-1</td>
+<td>下调</td>
+<td>同日问答说明为工程付款时点可见性</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2019/Q1/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2019</td>
+<td>2019-07-24</td>
+<td>17–19</td>
+<td>16–18</td>
+<td style="text-align: right;">-1</td>
+<td>下调</td>
+<td>本次原因未单独明确</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2019/Q2/Q2%2719-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2019</td>
+<td>2019-10-30</td>
+<td>16–18</td>
+<td>约 16</td>
+<td style="text-align: right;">-1</td>
+<td>下调</td>
+<td>本次原因未单独明确；约160亿美元</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2019/q3/Q3-2019-FB-Earnings-Transcript.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2020</td>
+<td>2019-10-30</td>
+<td>—</td>
+<td>17–19</td>
+<td style="text-align: right;">—</td>
+<td>首次</td>
+<td>初始指引仍高于上年</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2019/q3/Q3-2019-FB-Earnings-Transcript.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2020</td>
+<td>2020-01-29</td>
+<td>17–19</td>
+<td>17–19</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>维持</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2019/q4/Q4%2719-FB-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2020</td>
+<td>2020-04-29</td>
+<td>17–19</td>
+<td>14–16</td>
+<td style="text-align: right;">-3</td>
+<td>下调</td>
+<td>疫情停工：延期至2021，不是节省</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2020/Facebook-Reports-First-Quarter-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2020</td>
+<td>2020-07-30</td>
+<td>14–16</td>
+<td>约 16</td>
+<td style="text-align: right;">+1</td>
+<td>上调</td>
+<td>建设恢复早于预期</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2020/Facebook-Reports-Second-Quarter-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2020</td>
+<td>2020-10-29</td>
+<td>约 16</td>
+<td>约 16</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>维持</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2020/Facebook-Reports-Third-Quarter-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2021</td>
+<td>2020-10-29</td>
+<td>—</td>
+<td>21–23</td>
+<td style="text-align: right;">—</td>
+<td>首次</td>
+<td>增长并承接疫情后移支出</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2020/Facebook-Reports-Third-Quarter-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2021</td>
+<td>2021-01-27</td>
+<td>21–23</td>
+<td>21–23</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>维持</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Fourth-Quarter-and-Full-Year-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2021</td>
+<td>2021-04-28</td>
+<td>21–23</td>
+<td>19–21</td>
+<td style="text-align: right;">-2</td>
+<td>下调</td>
+<td>原因未在新闻稿中明确</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-First-Quarter-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2021</td>
+<td>2021-07-28</td>
+<td>19–21</td>
+<td>19–21</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>维持</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Second-Quarter-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2021</td>
+<td>2021-10-25</td>
+<td>19–21</td>
+<td>约 19</td>
+<td style="text-align: right;">-1</td>
+<td>下调</td>
+<td>原因未在新闻稿中明确</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Third-Quarter-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2022</td>
+<td>2021-10-25</td>
+<td>—</td>
+<td>29–34</td>
+<td style="text-align: right;">—</td>
+<td>首次</td>
+<td>推荐与广告机器学习投资</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Third-Quarter-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2022</td>
+<td>2022-02-02</td>
+<td>29–34</td>
+<td>29–34</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>维持</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Fourth-Quarter-and-Full-Year-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2022</td>
+<td>2022-04-27</td>
+<td>29–34</td>
+<td>29–34</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>维持</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-First-Quarter-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2022</td>
+<td>2022-07-27</td>
+<td>29–34</td>
+<td>30–34</td>
+<td style="text-align: right;">+0.5</td>
+<td>上调</td>
+<td>下限上移；本次未拆具体原因</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Second-Quarter-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2022</td>
+<td>2022-10-26</td>
+<td>30–34</td>
+<td>32–33</td>
+<td style="text-align: right;">+0.5</td>
+<td>上调</td>
+<td>区间收窄但中点上升</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Third-Quarter-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2023</td>
+<td>2022-10-26</td>
+<td>—</td>
+<td>34–39</td>
+<td style="text-align: right;">—</td>
+<td>首次</td>
+<td>增量主要用于AI容量</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Third-Quarter-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2023</td>
+<td>2022-11-09</td>
+<td>34–39</td>
+<td>34–37</td>
+<td style="text-align: right;">-1</td>
+<td>下调</td>
+<td>重整与裁员同期；具体资本开支原因未拆</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1326801/000132680122000116/meta-20221109.htm" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2023</td>
+<td>2023-02-01</td>
+<td>34–37</td>
+<td>30–33</td>
+<td style="text-align: right;">-4</td>
+<td>下调</td>
+<td>成本更低的新数据中心架构，减少当年施工支出</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Fourth-Quarter-and-Full-Year-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2023</td>
+<td>2023-04-26</td>
+<td>30–33</td>
+<td>30–33</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>维持，仍投入广告、推荐和生成式AI</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-First-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2023</td>
+<td>2023-07-26</td>
+<td>30–33</td>
+<td>27–30</td>
+<td style="text-align: right;">-3</td>
+<td>下调</td>
+<td>非AI服务器节约＋项目和设备交付后移2024</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Second-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2023</td>
+<td>2023-10-25</td>
+<td>27–30</td>
+<td>27–29</td>
+<td style="text-align: right;">-0.5</td>
+<td>下调</td>
+<td>本次原因未单独明确</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Third-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2024</td>
+<td>2023-10-25</td>
+<td>—</td>
+<td>30–35</td>
+<td style="text-align: right;">—</td>
+<td>首次</td>
+<td>AI和非AI服务器、新架构数据中心</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Third-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2024</td>
+<td>2024-02-01</td>
+<td>30–35</td>
+<td>30–37</td>
+<td style="text-align: right;">+1</td>
+<td>上调</td>
+<td>扩充AI能力</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-Fourth-Quarter-and-Full-Year-2023-Results-Initiates-Quarterly-Dividend/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2024</td>
+<td>2024-04-24</td>
+<td>30–37</td>
+<td>35–40</td>
+<td style="text-align: right;">+4</td>
+<td>上调</td>
+<td>加速AI基础设施路线图</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-First-Quarter-2024-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2024</td>
+<td>2024-07-31</td>
+<td>35–40</td>
+<td>37–40</td>
+<td style="text-align: right;">+1</td>
+<td>上调</td>
+<td>下限上移；本次原因未单独明确</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-Second-Quarter-2024-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2024</td>
+<td>2024-10-30</td>
+<td>37–40</td>
+<td>38–40</td>
+<td style="text-align: right;">+0.5</td>
+<td>上调</td>
+<td>下限上移</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-Third-Quarter-2024-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2025</td>
+<td>2025-01-29</td>
+<td>—</td>
+<td>60–65</td>
+<td style="text-align: right;">—</td>
+<td>首次</td>
+<td>首次业绩指引；1/24社媒先公布同数值</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-Fourth-Quarter-and-Full-Year-2024-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2025</td>
+<td>2025-04-30</td>
+<td>60–65</td>
+<td>64–72</td>
+<td style="text-align: right;">+5.5</td>
+<td>上调</td>
+<td>AI数据中心新增投入与硬件成本</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-First-Quarter-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2025</td>
+<td>2025-07-30</td>
+<td>64–72</td>
+<td>66–72</td>
+<td style="text-align: right;">+1</td>
+<td>上调</td>
+<td>下限上移</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-Second-Quarter-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2025</td>
+<td>2025-10-29</td>
+<td>66–72</td>
+<td>70–72</td>
+<td style="text-align: right;">+2</td>
+<td>上调</td>
+<td>下限上移；预告2026更大增量</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-Third-Quarter-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2026</td>
+<td>2026-01-28</td>
+<td>—</td>
+<td>115–135</td>
+<td style="text-align: right;">—</td>
+<td>首次</td>
+<td>超级智能实验室与核心业务</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2026</td>
+<td>2026-04-29</td>
+<td>115–135</td>
+<td>125–145</td>
+<td style="text-align: right;">+10</td>
+<td>上调</td>
+<td>主要组件涨价，其次未来容量的数据中心成本</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-First-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2026</td>
+<td>2026-07-29</td>
+<td>125–145</td>
+<td>130–145</td>
+<td style="text-align: right;">+2.5</td>
+<td>上调</td>
+<td>可见度提高，区间下限上移</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+<tr>
+<td>2026</td>
+<td>2026-08-26</td>
+<td>130–145</td>
+<td>130–145</td>
+<td style="text-align: right;">0</td>
+<td>维持</td>
+<td>新增和解费用，但其余7月指引区间维持</td>
+<td><a href="https://about.fb.com/news/2026/08/agreement-with-state-attorneys-general-supporting-teens/" target="_blank" rel="noopener noreferrer">官方原文</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>早期口径提示：2018 年部分材料使用净现金购建资产表述，后续更明确包含融资租赁本金。历史主统计只在同一财年内比较当时口径一致的计划，没有将所有年度绝对值当成完全同口径。2017 年“约翻倍”的方向性说法不硬编码成精确金额。2025 年一月较早的管理层社交声明未完整核验，以同月正式财报确认的区间入表，不人为增加一次修订。</p>
+<p>动因分类严格跟随可见原话：2019 年四月与 2020 年四月属于付款或施工时点；2023 年二月属于架构与建设成本调整；2023 年七月是非 AI 节省和交付后移的混合。其他下修没有足够明确的单独解释时标为未明确，不因当时有裁员或广告压力就强行归为战略削减。</p>
+<p>历年实际资本支出依次为：2018 年 <a href="https://investor.atmeta.com/files/doc_financials/2018/Q4/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">13.92</a>、2019 年 <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2019/q4/Q4%2719-FB-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">15.65</a>、2020 年 <a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Fourth-Quarter-and-Full-Year-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">15.72</a>、2021 年 <a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Fourth-Quarter-and-Full-Year-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">19.24</a>、2022 年 <a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Fourth-Quarter-and-Full-Year-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">32.04</a>、2023 年 <a href="https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-Fourth-Quarter-and-Full-Year-2023-Results-Initiates-Quarterly-Dividend/default.aspx" target="_blank" rel="noopener noreferrer">28.10</a>、2024 年 <a href="https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-Fourth-Quarter-and-Full-Year-2024-Results/default.aspx" target="_blank" rel="noopener noreferrer">39.23</a>、2025 年 <a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">72.22</a>，取自各年随后公布的全年结果。它们用于检查“实际与指引”的区别，不计作新的计划下调事件。2018 与后续定义提示仍适用。</p>
+<p><strong>三个纠偏：</strong> 2022 年十月当年区间收窄但中点上升，不是当年下调；十一月真正下调的是已经给出的 2023 年计划。2023 年三月正式裁员公告修订的是运营费用，不额外记为资本削减。2023 年七月下调包含非 AI 服务器节省和支出移至下一年，不能全部归为战略撤退。<a href="https://www.sec.gov/Archives/edgar/data/1326801/000132680122000116/meta-20221109.htm" target="_blank" rel="noopener noreferrer">2022 十一月文件</a>、<a href="https://www.sec.gov/Archives/edgar/data/1326801/000132680123000035/meta-20230314.htm" target="_blank" rel="noopener noreferrer">2023 三月文件</a>、<a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Second-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">2023 Q2</a></p>
+<h3 id="a22">A2.2 与本题同日历位置的八个完整观察窗</h3>
+<p>每一窗固定为当年 9 月 6 日至下一年 3 月 6 日，只计“至少一次合格事件”，因此同一窗两次下修仍是一票。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>起始年</th>
+<th>结果</th>
+<th>窗口内的决定性事实</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2018</td>
+<td>YES</td>
+<td>10 月 30 日当年计划由约 15 降至 14–14.5。</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>YES</td>
+<td>10 月 30 日当年计划由 16–18 降至约 16。</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>NO</td>
+<td>窗口内没有同财年中点下修；新一年首次预算也未低于上一年。</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>YES</td>
+<td>10 月 25 日当年计划由 19–21 降至约 19。</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>YES</td>
+<td>11 月 9 日对 2023 年计划由 34–39 降至 34–37，次年二月又下修。</td>
+</tr>
+<tr>
+<td>2023</td>
+<td>YES</td>
+<td>10 月 25 日当年计划由 27–30 降至 27–29。</td>
+</tr>
+<tr>
+<td>2024</td>
+<td>NO</td>
+<td>后续继续上调；没有合格的年度名义下降。</td>
+</tr>
+<tr>
+<td>2025</td>
+<td>NO</td>
+<td>窗口内维持或上调；2026 年首次预算高于上一年。</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5 个 YES / 8 个窗口</strong></td>
+<td><strong>经验频率约 63%，小样本平滑后的校准起点 60%。</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>五个 YES 中，四个来自当年 Q3 附近的修订，一个来自旧披露习惯下提前给出下一年预算后再修订。2018 以来首次给出的下一年全年预算，未在本表核验到低于上一年最终水平的案例。这支持当前 YES 主要来自当年修订，而不是押注明年首次预算同比下降。</p>
+<p>样本很小，存在同一家公司的治理延续、宏观共同冲击、AI 周期改变和披露制度改变。它不是“任意半年都会有相同概率”的统计规律。不能只选 2022–2023 的下调，也不能只选 2024–2026 的上调。</p>
+<h3 id="a23">A2.3 四个可比的大型科技基础设施周期</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>案例</th>
+<th>已核验事实</th>
+<th>像在哪里</th>
+<th>不像在哪里</th>
+<th>对本题起点的方向性影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alphabet 2023 预算</td>
+<td>二月预计全年资本开支接近上一年、技术基础设施增加而办公投入减少；四月改为略高。<a href="https://abc.xyz/investor/events/event-details/2023/2022-Q4-Earnings-Call/" target="_blank" rel="noopener noreferrer">Q4 官方电话会</a>、<a href="https://abc.xyz/assets/investor/static/pdf/2023_Q1_Earnings_Transcript.pdf" target="_blank" rel="noopener noreferrer">Q1 文字稿</a></td>
+<td>广告现金流与 AI 投资可以共存；削减人员与办公不等于削减 AI</td>
+<td>控制权、投资组成及披露措辞不同；不是本题的严格事件样本</td>
+<td>防止把裁员新闻直接加为 YES；不合并计算频率</td>
+</tr>
+<tr>
+<td>Microsoft 2025 Q3</td>
+<td>当季含租赁资本投入略低于预期，解释为项目与现金时点；下半年展望没有因此削减。<a href="https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q3" target="_blank" rel="noopener noreferrer">官方业绩页</a></td>
+<td>工程时点能制造季度波动</td>
+<td>商业云需求更直接；含租赁的资产增加口径不等于 Meta 现金本金口径；无相同创始人控制</td>
+<td>支持区分季度少花与正式年度削减</td>
+</tr>
+<tr>
+<td>Amazon 2023 现金支出</td>
+<td>2023 年现金资本支出低于 2022 年，物流与 AWS 投资结构同时变化。<a href="https://www.sec.gov/Archives/edgar/data/1018724/000101872424000008/amzn-20231231.htm" target="_blank" rel="noopener noreferrer">2023 年报</a></td>
+<td>大型基础设施企业可以经历真正的支出下降</td>
+<td>混合仓储与云业务；此处核验的是实际值，不是相同窗口内的指引下调</td>
+<td>证明投入可下行，但不能把实际下降加入本题 YES 基准率</td>
+</tr>
+<tr>
+<td>Microsoft 2026 Q3</td>
+<td>官方讨论 2026 年资本规模受组件价格推动，供给约束持续。<a href="https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q3" target="_blank" rel="noopener noreferrer">2026 Q3 业绩页</a></td>
+<td>同一 AI 供给周期，名义投入会受价格而非纯需求数量驱动</td>
+<td>外部云订单、财年与融资租赁口径不同</td>
+<td>支持暂时保持投入，也提醒组件降价可能降低名义计划；不给机械权重</td>
+</tr>
+</tbody>
+</table></div>
+<p>这些案例用于辨认机制，没有直接平均公司的下调频率或继承其他研究者的概率。</p>
+<h3 id="a24">A2.4 供给与合同逐项核对</h3>
+<p>GW 为吉瓦，表示功率或容量尺度，<strong>不是资金金额</strong>；公布的园区上限、初始容量和可选扩容必须分开。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>已披露内容</th>
+<th>对六个月的实际意义与边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AMD</td>
+<td>初始 1GW 有约束，扩大到 6GW 与采购里程碑等条件有关；首批新平台计划于 2026 下半年交付。<a href="https://ir.amd.com/financial-information/sec-filings/content/0000002488-26-000045/amd-20260223.htm" target="_blank" rel="noopener noreferrer">8-K</a>、<a href="https://ir.amd.com/news-events/press-releases/detail/1279/amd-and-meta-announce-expanded-strategic-partnership-to-deploy-6-gigawatts-of-amd-gpus" target="_blank" rel="noopener noreferrer">公告</a></td>
+<td>初始交付能影响近期现金；不能把全部潜在扩容视作已锁定。</td>
+</tr>
+<tr>
+<td>NVIDIA 与自研芯片</td>
+<td>多代加速器合作；Meta 的 MTIA 自研路线分代部署，后续型号覆盖 2027。<a href="https://nvidianews.nvidia.com/news/meta-builds-ai-infrastructure-with-nvidia" target="_blank" rel="noopener noreferrer">NVIDIA</a>、<a href="https://ai.meta.com/blog/meta-mtia-scale-ai-chips-for-billions/" target="_blank" rel="noopener noreferrer">Meta</a></td>
+<td>供应多元化增加替代能力；单价或单位效率改善不等于总采购下降。</td>
+</tr>
+<tr>
+<td>Broadcom</td>
+<td>合作延伸至 2029，初始部署规模超过 1GW。<a href="https://investors.broadcom.com/node/64236/pdf" target="_blank" rel="noopener noreferrer">官方材料</a></td>
+<td>属多年执行方向，不能全部归入本年资本预算。</td>
+</tr>
+<tr>
+<td>CoreWeave</td>
+<td>四月披露约 21 十亿美元新合作安排，交付有条件，期限延至后续年份。<a href="https://www.sec.gov/Archives/edgar/data/1769628/000176962826000154/crwv-20260331.htm" target="_blank" rel="noopener noreferrer">供应商季报</a></td>
+<td>云服务可能进入运营费用；合同的取消与未交付处理有条件，不能全部当自建资本锁定。</td>
+</tr>
+<tr>
+<td>Nebius</td>
+<td>三月披露固定容量安排约 12 十亿美元，以及最高约 15 的额外备用安排。<a href="https://nebius.com/newsroom/nebius-signs-new-ai-infrastructure-agreement-with-meta" target="_blank" rel="noopener noreferrer">公告</a>、<a href="https://www.sec.gov/Archives/edgar/data/1513845/000110465926052948/nbis-20251231xex4d3.htm" target="_blank" rel="noopener noreferrer">合同文件</a></td>
+<td>固定部分与可选或备用部分分开；不可直接相加为确定采购或 Meta 资本开支。</td>
+</tr>
+<tr>
+<td>Hyperion / Richland</td>
+<td>Blue Owl 合作开发约 27 的长期资产；七月披露园区扩至 5GW、当地更广范围投资超过 50。<a href="https://about.fb.com/news/2025/10/meta-blue-owl-capital-develop-hyperion-data-center/" target="_blank" rel="noopener noreferrer">合资</a>、<a href="https://datacenters.atmeta.com/2026/07/deepening-our-investment-in-richland-parish-louisiana/" target="_blank" rel="noopener noreferrer">园区更新</a></td>
+<td>项目、地域投入及不同时点口径不同，不能把 27 与 50 相加；主要投用在较远年份。</td>
+</tr>
+<tr>
+<td>El Paso</td>
+<td>BlackRock 合作开发约 14；初始租约四年，有延长选择，保留残值保证；目标 2028 投用。<a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx" target="_blank" rel="noopener noreferrer">官方公告</a></td>
+<td>主要改变融资与远期义务；本次只确认已宣布，没有把预计交割写成已完成。</td>
+</tr>
+<tr>
+<td>电力许可</td>
+<td>七座新增燃气电厂仍待程序处理；八月部分程序决定有利推进。<a href="https://www.wwno.org/politics/2026-08-12/louisiana-psc-kills-ruling-that-would-force-meta-to-turn-over-key-data-center-information" target="_blank" rel="noopener noreferrer">现场报道</a></td>
+<td>需要映射到具体建设和付款节点，单凭争议不判断 2026 指引会降。</td>
+</tr>
+<tr>
+<td>核电</td>
+<td>一月公布组合项目规划，容量和启动时间覆盖更远年份。<a href="https://about.fb.com/news/2026/01/meta-nuclear-energy-projects-power-american-ai-leadership/" target="_blank" rel="noopener noreferrer">Meta 公告</a></td>
+<td>解释长期土地与电力选择，不能作未来半年可用电力保障。</td>
+</tr>
+<tr>
+<td>临时建设和过渡方案</td>
+<td>Meta 公开讨论 AI 基础设施的模块化、快速建设与过渡设计。<a href="https://engineering.fb.com/2025/09/29/data-infrastructure/metas-infrastructure-evolution-and-the-advent-of-ai/" target="_blank" rel="noopener noreferrer">工程说明</a></td>
+<td>表明公司会尝试绕过瓶颈；未独立核验所有项目已按期满负荷投用。</td>
+</tr>
+</tbody>
+</table></div>
+<p>另外核验了 Reuters 关于自研芯片 Iris 及容量计划的报道：原报道后有数字更正，下半年增量是 <strong>2.5GW</strong>，不沿用错误的 5.5GW。该消息来自内部备忘录而非公司正式美元预算，只用于检查供给路径，不单独计入概率。<a href="https://www.marketscreener.com/news/meta-to-put-ai-chip-into-production-in-september-as-it-looks-to-double-computing-capacity-memo-show-ce7f5eded988f422" target="_blank" rel="noopener noreferrer">更正后的 Reuters 授权报道</a></p>
+<h2 id="a3">A3. 口径敏感性</h2>
+<h3 id="a31">A3.1 三个问题为什么得到不同答案？</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th style="text-align: right;">概率</th>
+<th>合理范围</th>
+<th>与主答案不同的原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正式下调任意幅度的可比名义计划</td>
+<td style="text-align: right;"><strong>32%</strong></td>
+<td><strong>20–45%</strong></td>
+<td>小幅年末时点修订也可以成立，但必须正式公开。</td>
+</tr>
+<tr>
+<td>可比未来十二个月计划至少减少 5%</td>
+<td style="text-align: right;">18%</td>
+<td>10–30%</td>
+<td>数量门槛更高，固定十二个月基准也更难重建；允许可靠的非公告证据。</td>
+</tr>
+<tr>
+<td>没有正式下调，但明确转鸽</td>
+<td style="text-align: right;">28%</td>
+<td>17–42%</td>
+<td>项目放缓和更低增量可以在名义预算继续增加时发生。</td>
+</tr>
+<tr>
+<td>放宽到“项目延期导致当期实际资本开支下降”</td>
+<td style="text-align: right;">44%</td>
+<td>30–58%</td>
+<td>主口径之外再纳入 12 个百分点的实际支出下降情景；必须有延期导致下降的证据，不只看季节性。<strong>这不是主答案。</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>为说明重叠，一种与上述数字一致的主观交叉分配是：正式下调且达到实质削减 14%，正式下调但未达到实质削减 18%，实质削减证据充分但未正式下调 4%，两者均无 64%。于是主口径为 32%，实质口径为 18%；不是把 18% 简单称为 32% 的全部子集。</p>
+<p>“转鸽但不削减”占所有结果 28%；在最终没有正式下调的条件下，约占 41%。这是同一情景表的条件表达，并不是另一个新增风险。</p>
+<h3 id="a32">A3.2 更换主观校准力度会怎样？</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>改动</th>
+<th>保持不变的部分</th>
+<th style="text-align: right;">主口径结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>历史起点改为 50%</td>
+<td>总对数调整仍为 −1.15</td>
+<td style="text-align: right;">24%</td>
+</tr>
+<tr>
+<td>本报告起点 60%</td>
+<td>本报告证据权重</td>
+<td style="text-align: right;">32%</td>
+</tr>
+<tr>
+<td>历史起点改为 70%</td>
+<td>总对数调整仍为 −1.15</td>
+<td style="text-align: right;">42%</td>
+</tr>
+<tr>
+<td>所有个案调整只取原分量的七成</td>
+<td>起点仍为 60%</td>
+<td style="text-align: right;">40%</td>
+</tr>
+<tr>
+<td>所有个案调整取原分量的一点三倍</td>
+<td>起点仍为 60%</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td>去掉“近期容量意愿”这一最强调整</td>
+<td>其他有效调整固定，作压力检验</td>
+<td style="text-align: right;">49%</td>
+</tr>
+<tr>
+<td>去掉当年支付后置这一正向调整</td>
+<td>其他有效调整固定</td>
+<td style="text-align: right;">25%</td>
+</tr>
+</tbody>
+</table></div>
+<p>删除一项的检验只是暴露模型依赖，不是重新进行全部相关性估计。其中去掉容量意愿后，和解确认的折减仍固定，故不能把 49% 当作严密的新预测。</p>
+<p>结论的真正分歧点是<strong>当前管理层表态对未来预算约束有多强</strong>，而非公式的小数。合理范围没有机械取敏感性最小值和最大值；它反映中低置信的判断范围，内部预算或执行证据一旦出现，需要重新计算。</p>
+<h2 id="a4">A4. 下一次更新清单</h2>
+<p>以下为研究更新日历，不是已创建的自动监控或提醒。预计日期都标明为时间窗，不冒充已正式排期。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>日期 / 时间窗</th>
+<th>要核对的原文或数字</th>
+<th>会改变哪条路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026 年九月至年底</td>
+<td>AMD 首批新平台交付、验收与付款是否按约；自研芯片的生产计划是否变成实际投用</td>
+<td>供给施工或付款跨期</td>
+</tr>
+<tr>
+<td>2026 年十月下旬，预计</td>
+<td>Q3 新闻稿的资本区间、含租赁本金定义；前三季支付与全年余额；2027 初步方向</td>
+<td>当年正式修订、明年预算</td>
+</tr>
+<tr>
+<td>Q3 披露后的 SEC 文件</td>
+<td>采购义务、租赁起始时间、取消条款、法律款项现金计划与债务</td>
+<td>合同刚性、财务压力</td>
+</tr>
+<tr>
+<td>2026 年四季度</td>
+<td>Louisiana 新电厂审批进展、项目调试与实际供电时间；以委员会最新排期为准</td>
+<td>工程延期与替代建设</td>
+</tr>
+<tr>
+<td>2026 年四季度至 2027 年初</td>
+<td>大模型和个人 AI 产品的实际发布、算力用途变化；不以单次榜单推导削减</td>
+<td>业务反馈、资源调拨</td>
+</tr>
+<tr>
+<td>2027 年一月下旬至二月初，预计</td>
+<td>2026 实际资本支出、最终有效区间与 2027 首次预算；先按结算规则锁定比较基准</td>
+<td>跨年度名义下降或继续增长</td>
+</tr>
+<tr>
+<td>全年结果之后的年度 SEC 文件</td>
+<td>新合同、租赁、担保、资产分类或合作持有改变，完成可比重述</td>
+<td>表面下降与真实下降的区别</td>
+</tr>
+<tr>
+<td>窗口内任何时候</td>
+<td>临时资本预算公告、正式项目净削减、重大融资变化、法院或监管的最终决定</td>
+<td>主动战略或被迫下调</td>
+</tr>
+<tr>
+<td>2027-03-06 23:59 美国东部时间</td>
+<td>逐项检查是否已有正式合格事件；保留首次公告时间与原文件</td>
+<td>最终结算，禁止以后见信息改写先前预测</td>
+</tr>
+</tbody>
+</table></div>
+<script>
+(function(){
+  'use strict';
+  const state = {"midpoint":137.5,"components":[{"id":"servers","short":"服务器"},{"id":"datacenters","short":"数据中心"},{"id":"network","short":"网络"},{"id":"other","short":"其他资产"},{"id":"lease","short":"租赁本金"}],"scenarios":[{"id":"offset","name":"一减一增","deltas":{"servers":5,"datacenters":-5,"network":0,"other":0,"lease":0},"explanation":"假设数据中心少付 5、服务器多付 5：单项减少被抵消，总计划中点不变。"},{"id":"delay","name":"付款跨年","deltas":{"servers":0,"datacenters":-5,"network":0,"other":0,"lease":0},"explanation":"假设数据中心的 5 顺延到下一年，且没有其他项目补上：当前年度中点减少 5。长期建设规模可以不变。"},{"id":"price","name":"设备降价","deltas":{"servers":-8,"datacenters":5,"network":0,"other":0,"lease":0},"explanation":"假设服务器少花 8、数据中心多花 5：净额减少 3；即使算力不减少，也可能形成名义计划下调。"},{"id":"network_delay","name":"集群交付后移","deltas":{"servers":-5,"datacenters":2,"network":-1,"other":0,"lease":0},"explanation":"假设服务器与配套网络合计少付 6、建设多付 2：同一交付原因产生两项变化，净额减少 4。"},{"id":"unchanged","name":"全部归零","deltas":{"servers":0,"datacenters":0,"network":0,"other":0,"lease":0},"explanation":"所有输入归零。金额输入只用于理解同一年度预算加总，不代表已知的分项预算或可削减额度。"}]};
+  const root = document.getElementById('capex-simulator');
+  if (!root) return;
+  const byId = id => document.getElementById(id);
+  const inputs = state.components.map(c => byId('cx-input-' + c.id));
+  const buttons = Array.from(root.querySelectorAll('button[data-scenario]'));
+  const signed = value => (value > 0 ? '+' : '') + value.toFixed(1);
+  function update(){
+    let net = 0;
+    state.components.forEach((c, index) => {
+      const value = Number(inputs[index].value);
+      net += value;
+      inputs[index].setAttribute('aria-valuetext', signed(value) + ' 十亿美元');
+      byId('cx-value-' + c.id).textContent = signed(value);
+      byId('cx-bar-value-' + c.id).textContent = signed(value);
+      const bar = byId('cx-bar-' + c.id);
+      bar.style.width = (Math.abs(value) / 20 * 50) + '%';
+      bar.classList.toggle('cx-positive', value > 0);
+    });
+    net = Math.round(net * 10) / 10;
+    byId('cx-net').textContent = signed(net);
+    byId('cx-midpoint').textContent = (state.midpoint + net).toFixed(1);
+    const formal = byId('cx-formal').checked;
+    const result = byId('cx-result');
+    result.dataset.negative = String(net < 0);
+    if (net < 0) {
+      result.textContent = formal ? '在这些假设下，符合主口径 YES：公司在窗口内正式下调同年可比计划。' : '净额减少，金额条件满足；仍需 Meta 在观察窗内正式公布这项可比修订，才构成 YES。';
+    } else if (net > 0) {
+      result.textContent = '净额增加：本次假设修订属于上调，不能凭其中某一项减少结算 YES。';
+    } else {
+      result.textContent = '净额不变：本演算没有构成公司总计划下调。';
+    }
+  }
+  buttons.forEach(button => button.addEventListener('click', () => {
+    const scenario = state.scenarios.find(s => s.id === button.dataset.scenario);
+    state.components.forEach((c, index) => { inputs[index].value = scenario.deltas[c.id]; });
+    buttons.forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+    byId('cx-scenario-note').textContent = scenario.explanation;
+    byId('cx-formal').checked = false;
+    update();
+  }));
+  inputs.forEach(input => input.addEventListener('input', () => {
+    buttons.forEach(b => b.setAttribute('aria-pressed', 'false'));
+    byId('cx-scenario-note').textContent = '自定义假设：请确保所有增减都属于同一年度、同一现金口径，没有重复计入同一资产。';
+    byId('cx-formal').checked = false;
+    update();
+  }));
+  byId('cx-formal').addEventListener('change', update);
+  update();
+})();
+</script></main></div>
+</body></html>

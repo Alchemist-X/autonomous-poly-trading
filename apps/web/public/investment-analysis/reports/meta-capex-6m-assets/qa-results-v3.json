@@ -1,0 +1,720 @@
+{
+  "checks": [
+    {
+      "name": "frozen_question_verbatim",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "original_question_verbatim",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "main_sections",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "appendices",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "five_insights",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "source_refs_resolve",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "all_reference_ids_defined",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "rendered_percentages_and_dates_match",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "headline_matches_engine",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "headline_sections_match",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "yes_no_total",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "yes_paths_match",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "path_values_appear_in_html",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "probability_recomputed",
+      "status": "PASS",
+      "detail": {
+        "llr": -1.15,
+        "probability": 0.322013284782553
+      }
+    },
+    {
+      "name": "same_cluster_discount",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "round_count",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "source_provenance",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no_post_cutoff_counted_source",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "input_hash",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "replay_transparency",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "historical_record_count",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "historical_counts",
+      "status": "PASS",
+      "detail": {
+        "首次": 9,
+        "上调": 13,
+        "维持": 10,
+        "下调": 11
+      }
+    },
+    {
+      "name": "historical_arithmetic",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "historical_windows",
+      "status": "PASS",
+      "detail": [
+        {
+          "start_year": 2018,
+          "yes": true,
+          "events": [
+            "2018-10-30"
+          ]
+        },
+        {
+          "start_year": 2019,
+          "yes": true,
+          "events": [
+            "2019-10-30"
+          ]
+        },
+        {
+          "start_year": 2020,
+          "yes": false,
+          "events": []
+        },
+        {
+          "start_year": 2021,
+          "yes": true,
+          "events": [
+            "2021-10-25"
+          ]
+        },
+        {
+          "start_year": 2022,
+          "yes": true,
+          "events": [
+            "2022-11-09",
+            "2023-02-01"
+          ]
+        },
+        {
+          "start_year": 2023,
+          "yes": true,
+          "events": [
+            "2023-10-25"
+          ]
+        },
+        {
+          "start_year": 2024,
+          "yes": false,
+          "events": []
+        },
+        {
+          "start_year": 2025,
+          "yes": false,
+          "events": []
+        }
+      ]
+    },
+    {
+      "name": "cash_lease_bridge",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "h2_cash_bounds",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "fcf_bridge",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "all_tables_wrapped",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "evidence_table_20_rows",
+      "status": "PASS",
+      "detail": 20
+    },
+    {
+      "name": "asset_structure_replaces_attention_root",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "substantial_cut_overlap",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sensitivity_math",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "local_artifact_links",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "toc_targets",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "probability_location_review",
+      "status": "PASS",
+      "detail": [
+        {
+          "line": 150,
+          "section": "2",
+          "text": "| 顶层治理 | 🏛️ 2026-04-16 代理声明显示，4 月 1 日 Zuckerberg 拥有 **60.8%** 总投票权；公司已设置风险与战略委员会、审计与隐私委员会。[来源][proxy] | 委员会重组发生在 2025 年六月，属于本次十二个月窗口之前；本期文件确认新结构延续。旧“审计与风险监督委员会”名称不再照搬。 |"
+        },
+        {
+          "line": 248,
+          "section": "4",
+          "text": "“至少减少 5%”只属于敏感性口径。它比较**同一未来十二个月**与基线版本的计划，不能用 2026 全年中点直接替代跨年的十二个月基准。基线日没有公开的完整滚动十二个月预算，因此这项判断的证据要求更高、置信度更低。"
+        }
+      ]
+    },
+    {
+      "name": "repository_linter",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "browser_review_recorded",
+      "status": "PASS",
+      "detail": {
+        "date": "2026-09-06",
+        "url": "http://127.0.0.1:8766/outputs/meta-capex-6m-report-v3.html",
+        "visual_review": "PASS",
+        "viewports": [
+          {
+            "innerWidth": 1440,
+            "docWidth": 1425,
+            "figures": [
+              {
+                "id": "capex-structure",
+                "width": 1005,
+                "scroll": 1005
+              },
+              {
+                "id": "capex-forecast",
+                "width": 1005,
+                "scroll": 1005
+              },
+              {
+                "id": "capex-simulator",
+                "width": 1005,
+                "scroll": 1005
+              }
+            ],
+            "tables": 20,
+            "name": "desktop"
+          },
+          {
+            "innerWidth": 390,
+            "docWidth": 375,
+            "figures": [
+              {
+                "id": "capex-structure",
+                "width": 313,
+                "scroll": 313
+              },
+              {
+                "id": "capex-forecast",
+                "width": 313,
+                "scroll": 313
+              },
+              {
+                "id": "capex-simulator",
+                "width": 313,
+                "scroll": 313
+              }
+            ],
+            "tables": 20,
+            "name": "mobile"
+          },
+          {
+            "innerWidth": 360,
+            "docWidth": 345,
+            "figures": [
+              {
+                "id": "capex-structure",
+                "width": 283,
+                "scroll": 283
+              },
+              {
+                "id": "capex-forecast",
+                "width": 283,
+                "scroll": 283
+              },
+              {
+                "id": "capex-simulator",
+                "width": 283,
+                "scroll": 283
+              }
+            ],
+            "tables": 20,
+            "name": "narrow"
+          }
+        ],
+        "interaction_tests": {
+          "checks": [
+            {
+              "name": "preset_一减一增",
+              "pass": true,
+              "actual": {
+                "net": 0,
+                "midpoint": 137.5,
+                "formal": false,
+                "result": "净额不变：本演算没有构成公司总计划下调。",
+                "selected": [
+                  "offset"
+                ]
+              }
+            },
+            {
+              "name": "preset_付款跨年",
+              "pass": true,
+              "actual": {
+                "net": -5,
+                "midpoint": 132.5,
+                "formal": false,
+                "result": "净额减少，金额条件满足；仍需 Meta 在观察窗内正式公布这项可比修订，才构成 YES。",
+                "selected": [
+                  "delay"
+                ]
+              }
+            },
+            {
+              "name": "preset_设备降价",
+              "pass": true,
+              "actual": {
+                "net": -3,
+                "midpoint": 134.5,
+                "formal": false,
+                "result": "净额减少，金额条件满足；仍需 Meta 在观察窗内正式公布这项可比修订，才构成 YES。",
+                "selected": [
+                  "price"
+                ]
+              }
+            },
+            {
+              "name": "preset_集群交付后移",
+              "pass": true,
+              "actual": {
+                "net": -4,
+                "midpoint": 133.5,
+                "formal": false,
+                "result": "净额减少，金额条件满足；仍需 Meta 在观察窗内正式公布这项可比修订，才构成 YES。",
+                "selected": [
+                  "network_delay"
+                ]
+              }
+            },
+            {
+              "name": "preset_全部归零",
+              "pass": true,
+              "actual": {
+                "net": 0,
+                "midpoint": 137.5,
+                "formal": false,
+                "result": "净额不变：本演算没有构成公司总计划下调。",
+                "selected": [
+                  "unchanged"
+                ]
+              }
+            },
+            {
+              "name": "unannounced_is_not_yes",
+              "pass": true,
+              "actual": {
+                "net": -5,
+                "midpoint": 132.5,
+                "formal": false,
+                "result": "净额减少，金额条件满足；仍需 Meta 在观察窗内正式公布这项可比修订，才构成 YES。",
+                "selected": [
+                  "delay"
+                ]
+              }
+            },
+            {
+              "name": "formal_comparable_cut_is_yes",
+              "pass": true,
+              "actual": {
+                "net": -5,
+                "midpoint": 132.5,
+                "formal": true,
+                "result": "在这些假设下，符合主口径 YES：公司在窗口内正式下调同年可比计划。",
+                "selected": [
+                  "delay"
+                ]
+              }
+            },
+            {
+              "name": "keyboard_slider_updates_and_clears_assumption",
+              "pass": true,
+              "actual": {
+                "net": -4.5,
+                "midpoint": 133,
+                "formal": false,
+                "result": "净额减少，金额条件满足；仍需 Meta 在观察窗内正式公布这项可比修订，才构成 YES。",
+                "selected": []
+              }
+            },
+            {
+              "name": "positive_total_not_cut",
+              "pass": true,
+              "actual": {
+                "net": 0.5,
+                "midpoint": 138,
+                "formal": false,
+                "result": "净额增加：本次假设修订属于上调，不能凭其中某一项减少结算 YES。",
+                "selected": []
+              }
+            },
+            {
+              "name": "lease_principal_included_once",
+              "pass": true,
+              "actual": {
+                "net": -0.5,
+                "midpoint": 137,
+                "formal": false,
+                "result": "净额减少，金额条件满足；仍需 Meta 在观察窗内正式公布这项可比修订，才构成 YES。",
+                "selected": []
+              }
+            },
+            {
+              "name": "evidence_details_open",
+              "pass": true,
+              "actual": "服务器与芯片优先核验大额采购 · 展开依据与改判条件\n\n判断：最可能看到的是供应商组合、芯片型号和交付批次调整。单家供应商订单减少，可能被另一家或自研芯片补上；只有全公司同口径采购净额减少，才会传到总计划。\n\n依据：2026 年七月仍以最大化 2026、2027 年容量为目标；四月上调主要由内存等组件涨价推动。\n\n什么会让本项下修：同一批设备的价格、数量或验收付款下修，且未被其他设备采购抵补。\n\n什么可能抵消：供给仍紧、推荐与推理吸收释放的容量；价格上升也可能抵消效率节省。\n\n沿着谁查：采购与基础设施负责人：新旧订单的数量、单价、验收日及替代采购净额。\n\n证据边界：公司未披露 2026 年服务器预算金额；2025 年“最大支出项”仅作历史结构依据。\n\n原始来源：2026-07-29 正式电话会 · 2026-04-29 正式电话会 · 2026-02-24 AMD 文件 · 2026-02-17 NVIDIA 公告 · 2026-03-11 Meta 芯片说明"
+            }
+          ],
+          "all_passed": true
+        },
+        "console_errors": 0,
+        "screenshots": [
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-structure-desktop.png",
+            "sha256": "855286ff804de8dd8cc07cf41b5379286b90147a23bd6e9303771ec4c3ed99d4"
+          },
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-forecast-desktop.png",
+            "sha256": "2af528cb543987afbacfff68cfad47e15c76cea85d125692483e383d46bd37f3"
+          },
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-simulator-desktop.png",
+            "sha256": "d58fcae54069f54305048122ed6114c54eaff4c834e46ef01f96c7e8336f8217"
+          },
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-insight-desktop.png",
+            "sha256": "0038b230b5b8902259e611efca38fb90ac2081798532195083869cff06a914ed"
+          },
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-structure-mobile.png",
+            "sha256": "b7759cadd39d82813dea7521466cbfac152822f29e707eeb26a2955e2db1d47e"
+          },
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-forecast-mobile.png",
+            "sha256": "a2391d7c499c8555332f432862a6451db4468cc330f951f6f949bc643cb6089b"
+          },
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-simulator-mobile.png",
+            "sha256": "b229a811c0b3bbb05ff5310967835cb43d1bc2841dc8717a2a5e30b1125b7cd1"
+          },
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-structure-bottom-mobile.png",
+            "sha256": "8b79ef556210d0bb1c76070d30d1d6b200e971e9495b644a62a857ab2885ad57"
+          },
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-forecast-bottom-mobile.png",
+            "sha256": "b5d500320c918dbbd27f418fbbe0bb5b0234a02c10b3944e03eb8e0650553f81"
+          },
+          {
+            "path": "output/playwright/meta-capex-20260906/v3-simulator-result-mobile.png",
+            "sha256": "6a6b9555d53ebd237733e5d0bb7fcf4758837ee1b6cd9e9515755f810063cb2a"
+          }
+        ],
+        "review_notes": [
+          "人工检查三张桌面图、移动端顶部与底部截图，以及新的第 3.3 条洞察。",
+          "390 与 360 像素宽度测量无页面或图表横向溢出；原有大表在独立容器横向滚动。",
+          "11 项浏览器交互测试覆盖五个情景、正式公开条件、键盘调整、金额抵消、正向净额、租赁本金只计一次和证据展开。",
+          "最初整元素移动截图因滚动捕获产生裁切，未作为通过依据并已删除；改用实际视口上下段截图逐项检查。",
+          "检查记录不代表来源事实已得到额外独立核验。"
+        ]
+      }
+    },
+    {
+      "name": "eight_caption_programs",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "caption_files_and_hashes",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "caption_metadata_before_cutoff",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "six_recent_caption_programs",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "caption_duration_report",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "caption_end_coverage_review",
+      "status": "PASS",
+      "detail": "Dwarkesh publisher captions end at the spoken closing thanks (01:15:18.762); video duration 01:15:49. Remaining tail not transcribed. Other tracks end within 25 seconds of video end."
+    },
+    {
+      "name": "candidate_program_count",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "two_additional_full_texts",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "social_original_count",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "x_gap_disclosed",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "forum_bodies_and_comments",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "six_new_zero_weight_records",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "v1_probabilities_and_paths_preserved",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "original_eight_weights_preserved",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "insights_four_layers",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "each_insight_load_bearing_evidence",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "generic_market_strawman_removed",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "three_figures",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "four_assets_one_cash_bridge",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "five_component_forecasts",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "complete_component_reasoning",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "component_sources_resolve",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "undisclosed_allocations_not_fabricated",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "unknown_category_preserved",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "cash_chart_reconciles",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no_stock_flow_confusion",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "cloud_opex_correction",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "historical_share_scope",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "scenario_math",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "scenario_inputs_complete",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "simulator_scope_disclosed",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "native_controls_labelled",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "all_local_anchor_targets",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "no_duplicate_ids",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "probability_reuse_transparent",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "history_sensitivity_calendar_unchanged",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "browser_interaction_suite",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "desktop_mobile_no_overflow",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "pass": 75,
+  "fail": 0,
+  "html_sha256": "0f467f8458140e45ad3e78dad1295986e6a17992d39365d75b3d23d2de5295e6",
+  "markdown_sha256": "6a0f8bb4093c01a54a496ee7173b1ca4f6ae40eb4191cc1cf3f49dcc68673e43",
+  "unique_external_urls": 95,
+  "notes": [
+    "Source-date checks cover weighted evidence; citation dates and future planned dates were separately reviewed.",
+    "Local links and reference resolution are checked; this is not a blanket network availability test.",
+    "All financial/factual percentages outside conclusion and appendices are listed for review."
+  ],
+  "publicExportNote": "Checks and hashes refer to the canonical local v3 report. The public copy changes link destinations and new-tab attributes only; its hash is in publication-manifest.json."
+}

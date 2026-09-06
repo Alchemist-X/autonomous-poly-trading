@@ -1,6 +1,6 @@
 # Agent Handoff — Current State and Next Actions
 
-> Last updated: 2026-09-04 by Codex.
+> Last updated: 2026-09-06 by Codex.
 >
 > **Startup contract for a new agent: read only this file for current project state.** Do not replay dated handoffs or historical notes at startup. Consult git history, merged PRs, [`docs/internal/review/`](../internal/review/), or [`docs/agent-onboarding.md`](../agent-onboarding.md) only when background is needed.
 >
@@ -28,8 +28,10 @@
 | Delta PM | `services/delta-pm`, `apps/delta-pm-console`, `/live-delta-pm` | News → importance → priced-in → paper-decision audit chain |
 | Raven Delta | `apps/raven-delta`, `/delta` | US-equity news-impact analysis with email / WebSocket delivery |
 | World Cup blind forecast | `scripts/world-cup`, `apps/web/app/world-cup` | Generation may not read prices; post-hoc scoring may use a market benchmark |
-| AI investment research cases | `apps/web/app/[locale]/investment-analysis`, `/investment-analysis` | Two public cases: Tencent Hunyuan × WorkBuddy and Hassabis × Alphabet |
+| AI investment research cases | `apps/web/app/[locale]/investment-analysis`, `/investment-analysis` | Three public cases: Tencent Hunyuan × WorkBuddy, Hassabis × Alphabet, and [Meta six-month capex](https://forecasting-agent.com/investment-analysis/meta-capex-6m) (v3, as of 2026-09-06) |
 | Polymarket live pipeline | `services/orchestrator`, `services/executor` | Real-money path; live runs, risk changes, and order probes require explicit user approval |
+
+Investment reports omit customer branding from now on. Meta v3 publishes reviewed source summaries and audit attachments; full transcripts remain local. Only its iframe permits scripts, without `allow-same-origin`, for the spending calculator.
 
 ## 3. Primary technical WIP: GPT Pro v2 harness
 

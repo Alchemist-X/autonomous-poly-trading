@@ -1,6 +1,6 @@
 # Agent Handoff — 当前状态与下一步
 
-> 最后更新：2026-09-04 by Codex。
+> 最后更新：2026-09-06 by Codex。
 >
 > **新 agent 的启动约定：只读这份文件了解项目当前状态。** 不要在启动时读取旧 handoff 或按日期回放历史；需要背景时再查 git log、PR、[`docs/internal/review/`](internal/review/) 或 [`docs/agent-onboarding.md`](agent-onboarding.md)。
 >
@@ -28,8 +28,10 @@
 | Delta PM | `services/delta-pm`、`apps/delta-pm-console`、`/live-delta-pm` | 新闻→重要性→priced-in→纸面决策审计链 |
 | Raven Delta | `apps/raven-delta`、`/delta` | 美股新闻影响分析、邮件 / WebSocket 推送 |
 | World Cup blind forecast | `scripts/world-cup`、`apps/web/app/world-cup` | 预测生成严禁读取市场价格；事后评分可使用市场基准 |
-| AI 投研系统案例 | `apps/web/app/[locale]/investment-analysis`、`/investment-analysis` | 两份公开案例：腾讯混元 × WorkBuddy、Hassabis × Alphabet |
+| AI 投研系统案例 | `apps/web/app/[locale]/investment-analysis`、`/investment-analysis` | 三份公开案例：腾讯混元 × WorkBuddy、Hassabis × Alphabet、[Meta 半年资本开支](https://forecasting-agent.com/investment-analysis/meta-capex-6m)（v3，截点 2026-09-06） |
 | Polymarket live pipeline | `services/orchestrator`、`services/executor` | 真钱路径；任何 live 命令、风控调整或订单测试都需要用户明确确认 |
+
+后续投资资料统一去除客户品牌标签。Meta v3 公开经过复核的来源摘要与审计附件，完整字幕留在本地；仅该报告 iframe 开放脚本用于金额演算，仍不授予 `allow-same-origin`。
 
 ## 3. 当前最主要的技术 WIP：GPT Pro v2 harness
 
