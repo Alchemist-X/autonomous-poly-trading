@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { investmentHref, stripInvestmentLocale } from "../../lib/investment-analysis/routes";
 import { LOCALES, t, type Locale } from "../../lib/world-cup/i18n";
@@ -16,32 +15,33 @@ export function InvestmentHeader({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const currentPath = stripInvestmentLocale(pathname);
 
+  // Public document URLs use Vercel rewrites; navigate with full HTML requests.
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
-        <Link className={styles.brand} href={investmentHref("/investment-analysis", locale)}>
+        <a className={styles.brand} href={investmentHref("/investment-analysis", locale)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/raven-icon.png" alt="" className={styles.brandMark} />
           <span>Predict Raven</span>
           <span className={styles.brandSection}>{t(locale, "iaBrand")}</span>
-        </Link>
+        </a>
 
         <nav className={styles.headerNav} aria-label={t(locale, "iaPrimaryNavLabel")}>
-          <Link className={styles.headerLink} href={WORLD_CUP_HREF[locale]}>
+          <a className={styles.headerLink} href={WORLD_CUP_HREF[locale]}>
             {t(locale, "iaNavWorldCup")}
-          </Link>
+          </a>
           <details className={styles.languageMenu}>
             <summary>{t(locale, "langLabel")}</summary>
             <div className={styles.languageList}>
               {LOCALES.map((option) => (
-                <Link
+                <a
                   key={option.code}
                   href={investmentHref(currentPath, option.code)}
                   className={option.code === locale ? styles.languageActive : undefined}
                   aria-current={option.code === locale ? "page" : undefined}
                 >
                   {option.label}
-                </Link>
+                </a>
               ))}
             </div>
           </details>

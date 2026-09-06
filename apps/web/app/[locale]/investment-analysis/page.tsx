@@ -1,4 +1,3 @@
-import Link from "next/link";
 import styles from "../../../components/investment-analysis/investment-analysis.module.css";
 import { investmentHref } from "../../../lib/investment-analysis/routes";
 import { localeOf, t, type Locale, type StrKey } from "../../../lib/world-cup/i18n";
@@ -81,14 +80,14 @@ export default async function InvestmentAnalysisPage({ params }: { params: Promi
             <div className={styles.caseSignal}>
               <span className={styles.signalLabel}>{t(locale, caseStudy.signalLabelKey)}</span>
               <strong className={styles.signalValue}>{t(locale, caseStudy.signalKey)}</strong>
-              <Link
+              <a
                 className={styles.caseLink}
                 href={investmentHref(`/investment-analysis/${caseStudy.slug}`, locale)}
                 aria-label={`${t(locale, "iaViewReport")}: ${t(locale, caseStudy.titleKey)}`}
               >
                 <span>{t(locale, "iaViewReport")}</span>
                 <span aria-hidden="true">↗</span>
-              </Link>
+              </a>
             </div>
           </article>
         ))}
