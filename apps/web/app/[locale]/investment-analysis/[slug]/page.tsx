@@ -98,7 +98,7 @@ export default async function InvestmentReportPage({
         src={report.src}
         title={t(locale, report.iframeTitleKey)}
         sandbox={report.interactive
-          ? "allow-scripts allow-popups allow-popups-to-escape-sandbox"
+          ? "allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox"
           : "allow-popups allow-popups-to-escape-sandbox"}
       />
     </main>

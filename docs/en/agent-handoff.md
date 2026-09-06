@@ -31,7 +31,7 @@
 | AI investment research cases | `apps/web/app/[locale]/investment-analysis`, `/investment-analysis` | Three public cases: Tencent Hunyuan × WorkBuddy, Hassabis × Alphabet, and [Meta six-month capex](https://forecasting-agent.com/investment-analysis/meta-capex-6m) (v3, as of 2026-09-06) |
 | Polymarket live pipeline | `services/orchestrator`, `services/executor` | Real-money path; live runs, risk changes, and order probes require explicit user approval |
 
-Investment reports omit customer branding from now on. Meta v3 publishes reviewed source summaries and audit attachments; full transcripts remain local. Only its iframe permits scripts, without `allow-same-origin`, for the spending calculator.
+Investment reports omit customer branding from now on. Meta v3 publishes reviewed source summaries and audit attachments; full transcripts remain local. Only its iframe permits scripts, without `allow-same-origin`, for the spending calculator and permits user-initiated historical CSV downloads.
 
 ## 3. Primary technical WIP: GPT Pro v2 harness
 
@@ -96,6 +96,8 @@ These are independent products. Do not bundle them into the GPT Pro provider PR 
 - [ ] Make independent go/archive decisions for FutureX, LongPort MCP, and Time Machine. Any approved direction starts as its own small PR from current `main`.
 
 ### P2 — Known, non-blocking
+
+- [ ] Two fixed-date `paper-agent` tests in `market-scan.test.ts` expired on 2026-09-01 and now fail CI; both the tests and implementation match the pre-publication baseline. Pin the test clock in a follow-up without changing the actual expiry filter to satisfy fixtures.
 
 - [ ] The Tokyo VM root disk is 82% used (about 8.6 GiB free). Keep monitoring it and perform recoverable cache / old-image cleanup before the next image deployment.
 - [ ] Redesign live Pulse settlement backfill / offline scoring against the current ledger; do not raw-port PR #77.
