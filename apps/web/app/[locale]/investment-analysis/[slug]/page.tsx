@@ -13,7 +13,7 @@ const ORIGIN = "https://forecasting-agent.com";
 
 const REPORTS: Record<
   InvestmentCaseSlug,
-  { titleKey: StrKey; descriptionKey: StrKey; iframeTitleKey: StrKey; src: string; interactive?: boolean }
+  { titleKey: StrKey; descriptionKey: StrKey; iframeTitleKey: StrKey; src: string }
 > = {
   "tencent-hunyuan-workbuddy": {
     titleKey: "iaTencentMetaTitle",
@@ -31,8 +31,7 @@ const REPORTS: Record<
     titleKey: "iaMetaCapexMetaTitle",
     descriptionKey: "iaMetaCapexMetaDescription",
     iframeTitleKey: "iaMetaCapexFrameTitle",
-    src: "/investment-analysis/reports/meta-capex-6m.html",
-    interactive: true
+    src: "/investment-analysis/reports/meta-capex-6m.html"
   }
 };
 
@@ -97,9 +96,6 @@ export default async function InvestmentReportPage({
         className={styles.reportFrame}
         src={report.src}
         title={t(locale, report.iframeTitleKey)}
-        sandbox={report.interactive
-          ? "allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox"
-          : "allow-popups allow-popups-to-escape-sandbox"}
       />
     </main>
   );

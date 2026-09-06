@@ -31,7 +31,7 @@
 | AI investment research cases | `apps/web/app/[locale]/investment-analysis`, `/investment-analysis` | Three public cases: Tencent Hunyuan × WorkBuddy, Hassabis × Alphabet, and [Meta six-month capex](https://forecasting-agent.com/investment-analysis/meta-capex-6m) (v3, as of 2026-09-06) |
 | Polymarket live pipeline | `services/orchestrator`, `services/executor` | Real-money path; live runs, risk changes, and order probes require explicit user approval |
 
-Investment reports omit customer branding from now on. Meta v3 publishes reviewed source summaries and audit attachments; full transcripts remain local. Only its iframe permits scripts, without `allow-same-origin`, for the spending calculator and permits user-initiated historical CSV downloads.
+Investment reports omit customer branding from now on. Meta v3 publishes reviewed source summaries and audit attachments; full transcripts remain local. Per the user request, first-party report iframes omit `sandbox`, so scripts and attachment downloads work normally. Future reports use the same container without company-specific exceptions.
 
 ## 3. Primary technical WIP: GPT Pro v2 harness
 
