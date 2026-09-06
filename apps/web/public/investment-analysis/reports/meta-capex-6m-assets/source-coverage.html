@@ -1,0 +1,598 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meta 资本开支研究：来源与覆盖记录</title><link rel="icon" href="data:,">
+<style>
+:root{--ink:#18201d;--muted:#657069;--paper:#fffdf8;--canvas:#eeeae1;--line:#d9d4c8;--accent:#9d3f25;--accent-soft:#f5e7df;--shadow:0 18px 55px rgba(47,42,31,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--canvas);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.72}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,253,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1480px;margin:auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:750;letter-spacing:.02em}.brand span{color:var(--accent)}
+.meta{font-size:13px;color:var(--muted)}
+.layout{max-width:1480px;margin:28px auto 64px;padding:0 24px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px}
+.toc{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding:18px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,253,248,.72)}
+.toc-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.toc a{display:block;color:var(--ink);text-decoration:none;font-size:13.5px;padding:4px 8px;border-radius:8px;margin:1px 0}
+.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+main{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:40px 48px 56px;min-width:0}
+main h1{font-size:26px;line-height:1.35;margin:.2em 0 .6em;letter-spacing:.01em}
+main h2{font-size:21px;margin:2.2em 0 .7em;padding-top:.6em;border-top:1px solid var(--line)}
+main h3{font-size:17px;margin:1.6em 0 .5em;line-height:1.5}
+main h2:first-of-type{border-top:none;padding-top:0;margin-top:1em}
+main a{color:var(--accent)}
+main blockquote{margin:1.2em 0;padding:12px 18px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
+main blockquote p{margin:.3em 0}
+.tablewrap{overflow-x:auto;margin:1.1em 0}
+main table{border-collapse:collapse;font-size:14px;min-width:60%}
+main th{background:var(--accent-soft);color:var(--ink);text-align:left;font-weight:650}
+main th,main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top;line-height:1.65}
+main tr:nth-child(even) td{background:rgba(238,234,225,.35)}
+main code{background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.9em}
+main hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+main li{margin:.25em 0}
+main ul ul,main ol ul{margin-top:.2em}
+main strong{color:#111}
+main u.key{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+main u.minor{text-decoration:underline dotted;text-decoration-color:#9aa39d;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.tag{display:inline-block;font-size:11.5px;line-height:1;padding:3px 6px;border-radius:5px;background:var(--canvas);border:1px solid var(--line);color:var(--muted);margin-right:5px;vertical-align:1px;white-space:nowrap}
+.note{display:block;font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.55;font-weight:400}
+.legend{font-size:13.5px;color:#4d5651;background:rgba(238,234,225,.5);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:.6em 0 1.2em;line-height:1.75}
+.legend p{margin:.2em 0}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"PingFang SC","Hiragino Sans GB",monospace;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:1em 0;line-height:2;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.formula b{color:var(--accent)}
+.org td:first-child,.tight1 td:first-child{white-space:nowrap}
+.org td:first-child{font-weight:650}
+.org td:nth-child(2){width:58%}
+.org td:nth-child(3){min-width:260px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static;max-height:none}main{padding:24px 20px}}
+</style></head><body>
+<div class="topbar"><div class="topbar-inner"><div class="brand">Predict-Raven</div><div class="meta">Meta 资本开支研究：来源与覆盖记录｜生成 2026-09-06｜research-only / market-blind</div></div></div>
+<div class="layout"><nav class="toc"><div class="toc-title">目录</div><a href="#meta">Meta 资本开支研究：来源与覆盖记录</a>
+<a href="#_1">检索覆盖矩阵</a>
+<a href="#_2">补漏与排除</a>
+<a href="#_3">来源登记</a></nav><main><div class="legend"><p>公开附件：保留来源链接、获取状态与研究归纳。完整字幕及内部工作文件保存在本地；请通过节目或原帖链接阅读原文。</p></div><div class="legend"><p>本页为第一版覆盖记录，保留其原始更正。第二轮的实际完成量见<a href="/investment-analysis/reports/meta-capex-6m-assets/media-social/index.html">媒体与社交证据台账</a>。</p></div><blockquote>
+<p>第二版已补做视频字幕与社交/论坛原文研究，详见 <a href="/investment-analysis/reports/meta-capex-6m-assets/media-social/index.html" target="_blank" rel="noopener noreferrer">新增台账</a>。以下保留第一版来源目录，不把旧目录的URL数量当作第二版完成量。</p>
+</blockquote>
+<h1 id="meta">Meta 资本开支研究：来源与覆盖记录</h1>
+<blockquote>
+<p><strong>覆盖复核更正（2026-09-06）：</strong> 本轮未完成系统视频/播客字幕收集与 X、Reddit 深度检索。以下“闭合/完成”仅描述对应的官方及文字材料通道，不代表整个信息空间已充分覆盖。详见<span>音视频与社交覆盖审计（本地研究归档）</span>。原报告的检查通过数量不构成信息充分性的证明。</p>
+</blockquote>
+<ul>
+<li>研究基线：2026-09-06；关键来源末轮复核 04:34 UTC。</li>
+<li>题面：2027-03-06 23:59 美国东部时间前，正式下调可比名义资本计划。</li>
+<li>公开检索在本会话完成；本地 forecast engine 使用已核验证据回放，执行成功。</li>
+<li>没有额外调用 ChatGPT Pro 模型，没有付费专家访谈，没有购买研究资料，没有使用预测市场或第三方事件概率。</li>
+<li>引擎的 source trace 是把研究已核验 URL 与回放输入对齐；不是引擎独立上网再次证明正文真实。</li>
+<li>模型 8 条计权证据不是全部参考文献；正文有更多用于定义、反证、组织与背景的材料。</li>
+<li>原始工具输出在 raw/，历史研究逐项数据在 history.json 和 history.csv。部分分支资料保留的是研究回报及正文引用，不宣称所有网页都有完整本地镜像。</li>
+<li>主体规范：仓库 CLAUDE.md、Meta 专用预测题 prompt；研究流程：deep-research 技能的发现、缺口追索、综合、反证审查。</li>
+<li>三个独立分支：Meta 历史序列、当前组织与决策人、供给工程与合同。主会话负责最新官方基线、现金与法律冲击、来源复核、概率、渲染与验收。</li>
+</ul>
+<h2 id="_1">检索覆盖矩阵</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>研究通道</th>
+<th>重点事实</th>
+<th>状态</th>
+<th>保留限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最新官方预算</td>
+<td>Q2 130–145，八月和解后再次确认</td>
+<td>闭合</td>
+<td>2027 美元预算未公布</td>
+</tr>
+<tr>
+<td>现金会计</td>
+<td>资本现金购建加融资租赁本金；H1 50.918</td>
+<td>闭合</td>
+<td>不能逐笔重建全部项目付款日</td>
+</tr>
+<tr>
+<td>历史基准率</td>
+<td>2018 起 43 条年度指导记录，8 个同日历窗口</td>
+<td>闭合</td>
+<td>小样本，早期口径与披露制度有变化</td>
+</tr>
+<tr>
+<td>控制与治理</td>
+<td>CEO 投票控制、委员会、CFO 长访谈</td>
+<td>可用</td>
+<td>公开文件无完整授权金额和否决权表</td>
+</tr>
+<tr>
+<td>现任组织</td>
+<td>MSL、Meta Compute、广告、数据负责人及离职更正</td>
+<td>可用</td>
+<td>部分正式汇报线依赖媒体索引</td>
+</tr>
+<tr>
+<td>模型与产品反馈</td>
+<td>最新 Spark 1.3、开放模型、延期与外购费用线索</td>
+<td>可用</td>
+<td>未公开按产品分摊的算力利润</td>
+</tr>
+<tr>
+<td>合同与采购</td>
+<td>最新 SEC 义务、AMD、CoreWeave、Nebius</td>
+<td>可用</td>
+<td>混合资本与运营，部分约款删节</td>
+</tr>
+<tr>
+<td>电力与数据中心</td>
+<td>Hyperion、Richland、El Paso、地方审批</td>
+<td>可用</td>
+<td>精确日程需后续更新；LPSC 网页复访失败</td>
+</tr>
+<tr>
+<td>架构与效率</td>
+<td>NVIDIA、MTIA、Broadcom、多代部署</td>
+<td>可用</td>
+<td>效率能否降低总预算未证实</td>
+</tr>
+<tr>
+<td>融资与现金缓冲</td>
+<td>回购、债务、Blue Owl、BlackRock</td>
+<td>闭合到披露值</td>
+<td>合作融资担保不等于零风险</td>
+</tr>
+<tr>
+<td>外部约束</td>
+<td>法律和解、欧盟初步认定、FTC 上诉</td>
+<td>可用</td>
+<td>未来裁决或现金日期未定</td>
+</tr>
+<tr>
+<td>反证与停搜</td>
+<td>专搜暂停、取消、削减、模型受挫、现金压力</td>
+<td>完成</td>
+<td>不把没有查到等同不存在</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_2">补漏与排除</h2>
+<p>Exa 进行了三组主题检索，每组请求十条候选。回到原文纠正日期后，Kuna 和 Temple 的暂停是 2022 年事件。搜索引擎的近年日期不作为新事实依据。不同网站报道同一电话会归一簇。Anthropic 成本/Watermelon 延期的 NYT 原站，以及部分 The Information 原创，仅核验索引或摘要，未进入模型强权重。</p>
+<p>Iris 供给报道已按 Reuters 更正使用下半年增量 2.5GW；并非原误写的 5.5GW。Meta Q2 文字稿已使用末页修订的 supply constrained。和解 PDF 封面 8 月 26 日与活动索引一天差异在正文披露。</p>
+<p>不追求用搜索命中数量代替信息完整性。新增检索已主要重复，尚缺的是内部审批、订单可取消性和验收付款时间，适宜访谈而非继续堆网页。</p>
+<h2 id="_3">来源登记</h2>
+<p>下列是报告引用的唯一 URL 清单，不是每条均以全文访问。受限项标明；历史文献的逐条日期和核验者另见 history.json。来源日期以正文中引用为准，检索日不替代发布日期。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>来源</th>
+<th>访问说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">q2</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-First-Quarter-2026-Results/default.aspx" target="_blank" rel="noopener noreferrer">q1</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="https://about.fb.com/news/2026/08/agreement-with-state-attorneys-general-supporting-teens/" target="_blank" rel="noopener noreferrer">settlement</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">call</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Follow-Up-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">follow</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">q2sec</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>7</td>
+<td><a href="https://investor.atmeta.com/" target="_blank" rel="noopener noreferrer">ir</a></td>
+<td>官方导航入口，不作为单独事实证据</td>
+</tr>
+<tr>
+<td>8</td>
+<td><a href="https://cheekypint.substack.com/p/a-cheeky-pint-with-meta-cfo-susan" target="_blank" rel="noopener noreferrer">li</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>9</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026025532/meta-20260416.htm" target="_blank" rel="noopener noreferrer">proxy</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>10</td>
+<td><a href="https://m.economictimes.com/ai/ai-insights/mark-zuckerberg-had-a-bold-plan-to-replace-meta-staff-with-ai-heres-how-it-imploded-/amp_articleshow/133538291.cms" target="_blank" rel="noopener noreferrer">ot</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>11</td>
+<td><a href="https://ir.amd.com/financial-information/sec-filings/content/0000002488-26-000045/amd-20260223.htm" target="_blank" rel="noopener noreferrer">amd</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>12</td>
+<td><a href="https://nvidianews.nvidia.com/news/meta-builds-ai-infrastructure-with-nvidia" target="_blank" rel="noopener noreferrer">nv</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>13</td>
+<td><a href="https://ai.meta.com/blog/meta-mtia-scale-ai-chips-for-billions/" target="_blank" rel="noopener noreferrer">mtia</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>14</td>
+<td><a href="https://www.wwno.org/politics/2026-08-12/louisiana-psc-kills-ruling-that-would-force-meta-to-turn-over-key-data-center-information" target="_blank" rel="noopener noreferrer">wwno</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>15</td>
+<td><a href="https://research.meta.ai/blog/introducing-muse-spark-1-3" target="_blank" rel="noopener noreferrer">spark</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>16</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_events/META-Conference-Call-on-Agreement-with-Bipartisan-Attorneys-General-Transcript.pdf" target="_blank" rel="noopener noreferrer">settlecall</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>17</td>
+<td><a href="https://digital-strategy.ec.europa.eu/en/news/commission-preliminarily-finds-addictive-design-instagram-and-facebook-breach-digital-services-act" target="_blank" rel="noopener noreferrer">eu</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>18</td>
+<td><a href="https://about.fb.com/news/2026/04/meta-partners-with-aws-on-graviton-chips-to-power-agentic-ai/" target="_blank" rel="noopener noreferrer">aws</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>19</td>
+<td><a href="https://www.theinformation.com/articles/meta-reshaping-organization-ai-computing-blitz" target="_blank" rel="noopener noreferrer">computeorg</a></td>
+<td>部分索引可见；付费原文受限</td>
+</tr>
+<tr>
+<td>20</td>
+<td><a href="https://about.fb.com/news/2026/01/dina-powell-mccormick-joins-meta-as-president-and-vice-chairman/" target="_blank" rel="noopener noreferrer">dina</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>21</td>
+<td><a href="https://www.axios.com/2026/09/02/meta-debuts-muse-spark-13-as-personal-agent-work-continues" target="_blank" rel="noopener noreferrer">wang</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>22</td>
+<td><a href="https://www.theinformation.com/articles/inside-metas-efforts-ensure-upcoming-hatch-ai-agent-go-rogue/" target="_blank" rel="noopener noreferrer">hatch</a></td>
+<td>部分索引可见；付费原文受限</td>
+</tr>
+<tr>
+<td>23</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Follow-Up-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">q325follow</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>24</td>
+<td><a href="https://www.investing.com/news/stock-market-news/metas-chief-revenue-officer-hegeman-leaves-to-launch-startup-4365957" target="_blank" rel="noopener noreferrer">hegeman</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>25</td>
+<td><a href="https://www.axios.com/2026/07/01/meta-alex-schultz-chief-data-officer" target="_blank" rel="noopener noreferrer">schultz</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>26</td>
+<td><a href="https://apnews.com/article/313159512bb9961f324e0c93bccf4cf5" target="_blank" rel="noopener noreferrer">lecun</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>27</td>
+<td><a href="https://www.theinformation.com/briefings/exclusive-meta-ai-infrastructure-executive-departs" target="_blank" rel="noopener noreferrer">ramani</a></td>
+<td>原创摘要；付费原文受限</td>
+</tr>
+<tr>
+<td>28</td>
+<td><a href="https://techcrunch.com/2026/01/12/mark-zuckerberg-says-meta-is-launching-its-own-ai-infrastructure-initiative/" target="_blank" rel="noopener noreferrer">compute</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>29</td>
+<td><a href="https://robinhood.gcs-web.com/static-files/a6ba55a8-bc9d-4321-98b5-eef15a3758a1" target="_blank" rel="noopener noreferrer">rhproxy</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>30</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx" target="_blank" rel="noopener noreferrer">blackrock</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>31</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Second-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">q223</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>32</td>
+<td><a href="https://about.fb.com/news/2025/10/meta-blue-owl-capital-develop-hyperion-data-center/" target="_blank" rel="noopener noreferrer">blueowl</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>33</td>
+<td><a href="https://datacenters.atmeta.com/2026/07/deepening-our-investment-in-richland-parish-louisiana/" target="_blank" rel="noopener noreferrer">richland</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>34</td>
+<td><a href="https://ir.amd.com/news-events/press-releases/detail/1279/amd-and-meta-announce-expanded-strategic-partnership-to-deploy-6-gigawatts-of-amd-gpus" target="_blank" rel="noopener noreferrer">amdnews</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>35</td>
+<td><a href="https://investors.broadcom.com/node/64236/pdf" target="_blank" rel="noopener noreferrer">broadcom</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>36</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1769628/000176962826000154/crwv-20260331.htm" target="_blank" rel="noopener noreferrer">cw</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>37</td>
+<td><a href="https://nebius.com/newsroom/nebius-signs-new-ai-infrastructure-agreement-with-meta" target="_blank" rel="noopener noreferrer">nebius</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>38</td>
+<td><a href="https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model" target="_blank" rel="noopener noreferrer">glimmer</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>39</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1326801/000132680122000116/meta-20221109.htm" target="_blank" rel="noopener noreferrer">nov22</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>40</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Third-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">q323</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>41</td>
+<td><a href="https://www.nytimes.com/2026/08/27/technology/meta-anthropic-frenemies.html" target="_blank" rel="noopener noreferrer">nyt</a></td>
+<td>仅标题与索引摘要；原站受限</td>
+</tr>
+<tr>
+<td>42</td>
+<td><a href="https://www.ftc.gov/news-events/news/press-releases/2026/01/ftc-appeals-ruling-meta-monopolization-case" target="_blank" rel="noopener noreferrer">ftc</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>43</td>
+<td><a href="https://www.datacenterdynamics.com/en/news/metas-kuna-idaho-data-center-latest-to-be-paused-in-ai-redesign-rethink/" target="_blank" rel="noopener noreferrer">kuna</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>44</td>
+<td><a href="https://www.datacenterdynamics.com/en/news/meta-pauses-construction-of-temple-texas-data-center-as-part-of-ai-rescope/" target="_blank" rel="noopener noreferrer">temple</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>45</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1326801/000132680123000035/meta-20230314.htm" target="_blank" rel="noopener noreferrer">mar23</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>46</td>
+<td><a href="https://abc.xyz/investor/events/event-details/2023/2022-Q4-Earnings-Call/" target="_blank" rel="noopener noreferrer">googleq4</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>47</td>
+<td><a href="https://abc.xyz/assets/investor/static/pdf/2023_Q1_Earnings_Transcript.pdf" target="_blank" rel="noopener noreferrer">googleq1</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>48</td>
+<td><a href="https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q3" target="_blank" rel="noopener noreferrer">ms25</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>49</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1018724/000101872424000008/amzn-20231231.htm" target="_blank" rel="noopener noreferrer">amzn</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>50</td>
+<td><a href="https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q3" target="_blank" rel="noopener noreferrer">ms26</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>51</td>
+<td><a href="https://www.sec.gov/Archives/edgar/data/1513845/000110465926052948/nbis-20251231xex4d3.htm" target="_blank" rel="noopener noreferrer">nebiuscontract</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>52</td>
+<td><a href="https://about.fb.com/news/2026/01/meta-nuclear-energy-projects-power-american-ai-leadership/" target="_blank" rel="noopener noreferrer">nuclear</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>53</td>
+<td><a href="https://engineering.fb.com/2025/09/29/data-infrastructure/metas-infrastructure-evolution-and-the-advent-of-ai/" target="_blank" rel="noopener noreferrer">infra</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>54</td>
+<td><a href="https://www.marketscreener.com/news/meta-to-put-ai-chip-into-production-in-september-as-it-looks-to-double-computing-capacity-memo-show-ce7f5eded988f422" target="_blank" rel="noopener noreferrer">iris</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>55</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2017/Q4/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>56</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2018/Q1/Q1-18-Earnings-call-transcript.pdf" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>57</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2018/Q2/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>58</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2018/Q3/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>59</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2018/Q4/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>60</td>
+<td><a href="https://investor.atmeta.com/files/doc_financials/2019/Q1/Earnings-call-prepared-remarks.pdf" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>61</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2019/Q2/Q2%2719-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>62</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2019/q3/Q3-2019-FB-Earnings-Transcript.pdf" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>63</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2019/q4/Q4%2719-FB-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>64</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2020/Facebook-Reports-First-Quarter-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>65</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2020/Facebook-Reports-Second-Quarter-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>66</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2020/Facebook-Reports-Third-Quarter-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>67</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Fourth-Quarter-and-Full-Year-2020-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>68</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-First-Quarter-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>69</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Second-Quarter-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>70</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2021/Facebook-Reports-Third-Quarter-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>71</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Fourth-Quarter-and-Full-Year-2021-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>72</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-First-Quarter-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>73</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Second-Quarter-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>74</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Reports-Third-Quarter-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>75</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Fourth-Quarter-and-Full-Year-2022-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>76</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-First-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>77</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-Fourth-Quarter-and-Full-Year-2023-Results-Initiates-Quarterly-Dividend/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>78</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-First-Quarter-2024-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>79</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-Second-Quarter-2024-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>80</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2024/Meta-Reports-Third-Quarter-2024-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>81</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-Fourth-Quarter-and-Full-Year-2024-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>82</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-First-Quarter-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>83</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-Second-Quarter-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>84</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2025/Meta-Reports-Third-Quarter-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+<tr>
+<td>85</td>
+<td><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">历史官方文件</a></td>
+<td>正文/有关段落已由主会话或对应研究分支核验；不保证完整本地镜像</td>
+</tr>
+</tbody>
+</table></div></main></div>
+</body></html>

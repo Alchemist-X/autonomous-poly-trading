@@ -1,0 +1,292 @@
+{
+  "mode": "researcher-curated-evidence-replay",
+  "engine": "packages/forecast-engine/src/engine.ts",
+  "inputSha256": "a6bce3edee250ba057b6989979ec4f78f7b64158fbf84d495b5ce0cc61abbce3",
+  "engineSha256": "208fb429870e0553a17f0fda14f15b5608de22ce935bee3acdc8dd745b7d8819",
+  "cutoff": "2026-09-06",
+  "rounds": 4,
+  "sources": 14,
+  "probability": 0.3220132847825528,
+  "headline": 32,
+  "subjectiveRange": [
+    0.2,
+    0.45
+  ],
+  "engineHeuristicIntervalNotUsedInReport": [
+    0.28250885465123715,
+    0.36151771491386847
+  ],
+  "pathsTotal": 100,
+  "yesPathsTotal": 32,
+  "sourceProvenance": [
+    {
+      "url": "https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Third-Quarter-2023-Results/default.aspx",
+      "date": "2023-10-25",
+      "access": "body_verified",
+      "title": "首次下一财年量化指引改至第四季度业绩披露",
+      "tier": "A"
+    },
+    {
+      "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx",
+      "date": "2026-07-29",
+      "access": "body_verified",
+      "title": "2026 下半年需支付 79.082–94.082 十亿美元才能达到全年区间",
+      "tier": "A"
+    },
+    {
+      "url": "https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf",
+      "date": "2026-07-29",
+      "access": "body_verified",
+      "title": "正式电话会仍把 2026、2027 年容量最大化列为目标",
+      "tier": "A"
+    },
+    {
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm",
+      "date": "2026-07-30",
+      "access": "body_verified",
+      "title": "合同义务快速扩大，近期取消整批容量的摩擦上升",
+      "tier": "A"
+    },
+    {
+      "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx",
+      "date": "2026-07-28",
+      "access": "body_verified",
+      "title": "BlackRock El Paso 合资安排扩展建设融资选择",
+      "tier": "A"
+    },
+    {
+      "url": "https://m.economictimes.com/ai/ai-insights/mark-zuckerberg-had-a-bold-plan-to-replace-meta-staff-with-ai-heres-how-it-imploded-/amp_articleshow/133538291.cms",
+      "date": "2026-08-26",
+      "access": "body_verified",
+      "title": "Project OT 第二轮重组计划被撤回，创始人可以突然修正计划",
+      "tier": "B"
+    },
+    {
+      "url": "https://www.wwno.org/politics/2026-08-12/louisiana-psc-kills-ruling-that-would-force-meta-to-turn-over-key-data-center-information",
+      "date": "2026-08-12",
+      "access": "body_verified",
+      "title": "路易斯安那仍有七座新燃气电厂待审批，工程链保留延期风险",
+      "tier": "C"
+    },
+    {
+      "url": "https://about.fb.com/news/2026/08/agreement-with-state-attorneys-general-supporting-teens/",
+      "date": "2026-08-26",
+      "access": "body_verified",
+      "title": "新增和解费用后，Meta 明确维持七月其余指引区间",
+      "tier": "A"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=23FyskyFoP8",
+      "date": "2025-09-18",
+      "access": "body_verified",
+      "title": "Zuckerberg 明确承担过早建设风险",
+      "tier": "C",
+      "use": "supplementary_zero_incremental_weight"
+    },
+    {
+      "url": "https://stripe.com/br/sessions/2026/a-conversation-with-daniel",
+      "date": "2026-04-30",
+      "access": "body_verified",
+      "title": "Gross 讨论按任务价值分配模型调用预算",
+      "tier": "C",
+      "use": "supplementary_zero_incremental_weight"
+    },
+    {
+      "url": "https://www.bigtechnology.com/p/metas-path-to-ai-relevance-according",
+      "date": "2026-07-09",
+      "access": "body_verified",
+      "title": "Bosworth 解释自研模型对外购谈判的价值",
+      "tier": "C",
+      "use": "supplementary_zero_incremental_weight"
+    },
+    {
+      "url": "https://www.linkedin.com/posts/sjanardhan_americas-workforce-academy-the-future-is-activity-7469869698331922432-JYIA",
+      "date": "2026-06-08",
+      "access": "body_verified",
+      "title": "Janardhan 本人承认建设技能工人短缺",
+      "tier": "C",
+      "use": "supplementary_zero_incremental_weight"
+    },
+    {
+      "url": "https://www.linkedin.com/posts/dina-powell-mccormick_with-meta-compute-were-uniting-capital-activity-7448071525326401536-Mzeh",
+      "date": "2026-04-09",
+      "access": "body_verified",
+      "title": "Dina 阐述资本形成与外部伙伴安排",
+      "tier": "C",
+      "use": "supplementary_zero_incremental_weight"
+    },
+    {
+      "url": "https://s205.q4cdn.com/133937190/files/doc_financials/2026/q2/CRWV-US-CORRECTED-TRANSCRIPT-CoreWeave-Q2-2026-Earnings-Call-11August2026.pdf",
+      "date": "2026-08-11",
+      "access": "body_verified",
+      "title": "供应商旧代GPU续约与跨季投用纠正论坛推论",
+      "tier": "C",
+      "use": "supplementary_zero_incremental_weight"
+    }
+  ],
+  "limitations": [
+    "研究权重非统计估计，区间为主观合理范围而非置信区间。",
+    "回放使用本会话人工核验来源，不另调用模型或实时搜索；原始检索与引擎回放日志分开。",
+    "同簇折半是引擎启发式，融资/承诺/管理层意愿仍有残余相关性。",
+    "没有内部预算、付费原文完整覆盖或自采专家访谈。",
+    "未使用引擎自动生成的窄可信区间。",
+    "第二轮覆盖改善没有形成统计校准；自动字幕未逐秒听校，X原帖正文仍不足。"
+  ],
+  "updates": [
+    {
+      "title": "首次下一财年量化指引改至第四季度业绩披露",
+      "url": "https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Third-Quarter-2023-Results/default.aspx",
+      "llr": -0.35,
+      "cluster": "disclosure-calendar",
+      "factor": 1,
+      "before": 0.6,
+      "after": 0.5138627232942494,
+      "deltaPp": -8.613727670575056,
+      "verified": true
+    },
+    {
+      "title": "2026 下半年需支付 79.082–94.082 十亿美元才能达到全年区间",
+      "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx",
+      "llr": 0.35,
+      "cluster": "cash-conversion",
+      "factor": 1,
+      "before": 0.5138627232942494,
+      "after": 0.6,
+      "deltaPp": 8.613727670575056,
+      "verified": true
+    },
+    {
+      "title": "正式电话会仍把 2026、2027 年容量最大化列为目标",
+      "url": "https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf",
+      "llr": -0.7,
+      "cluster": "near-term-budget-policy",
+      "factor": 1,
+      "before": 0.6,
+      "after": 0.4268940147127879,
+      "deltaPp": -17.31059852872121,
+      "verified": true
+    },
+    {
+      "title": "合同义务快速扩大，近期取消整批容量的摩擦上升",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm",
+      "llr": -0.25,
+      "cluster": "committed-capacity",
+      "factor": 1,
+      "before": 0.4268940147127879,
+      "after": 0.3671332828508366,
+      "deltaPp": -5.97607318619513,
+      "verified": true
+    },
+    {
+      "title": "BlackRock El Paso 合资安排扩展建设融资选择",
+      "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx",
+      "llr": -0.25,
+      "cluster": "alternative-financing",
+      "factor": 1,
+      "before": 0.3671332828508366,
+      "after": 0.3111957705682371,
+      "deltaPp": -5.593751228259947,
+      "verified": true
+    },
+    {
+      "title": "Project OT 第二轮重组计划被撤回，创始人可以突然修正计划",
+      "url": "https://m.economictimes.com/ai/ai-insights/mark-zuckerberg-had-a-bold-plan-to-replace-meta-staff-with-ai-heres-how-it-imploded-/amp_articleshow/133538291.cms",
+      "llr": 0.1,
+      "cluster": "organization-reversibility",
+      "factor": 1,
+      "before": 0.3111957705682371,
+      "after": 0.33302502439413606,
+      "deltaPp": 2.1829253825898953,
+      "verified": true
+    },
+    {
+      "title": "路易斯安那仍有七座新燃气电厂待审批，工程链保留延期风险",
+      "url": "https://www.wwno.org/politics/2026-08-12/louisiana-psc-kills-ruling-that-would-force-meta-to-turn-over-key-data-center-information",
+      "llr": 0.1,
+      "cluster": "engineering-contingency",
+      "factor": 1,
+      "before": 0.33302502439413606,
+      "after": 0.3555950173551954,
+      "deltaPp": 2.2569992961059326,
+      "verified": true
+    },
+    {
+      "title": "新增和解费用后，Meta 明确维持七月其余指引区间",
+      "url": "https://about.fb.com/news/2026/08/agreement-with-state-attorneys-general-supporting-teens/",
+      "llr": -0.15,
+      "cluster": "near-term-budget-policy",
+      "factor": 0.5,
+      "before": 0.3555950173551954,
+      "after": 0.3220132847825528,
+      "deltaPp": -3.3581732572642577,
+      "verified": true
+    },
+    {
+      "title": "Zuckerberg 明确承担过早建设风险",
+      "url": "https://www.youtube.com/watch?v=23FyskyFoP8",
+      "llr": 0,
+      "cluster": "near-term-budget-policy",
+      "factor": 0.25,
+      "before": 0.3220132847825528,
+      "after": 0.3220132847825528,
+      "deltaPp": 0,
+      "verified": true
+    },
+    {
+      "title": "Gross 讨论按任务价值分配模型调用预算",
+      "url": "https://stripe.com/br/sessions/2026/a-conversation-with-daniel",
+      "llr": 0,
+      "cluster": "resource-allocation",
+      "factor": 1,
+      "before": 0.3220132847825528,
+      "after": 0.3220132847825528,
+      "deltaPp": 0,
+      "verified": true
+    },
+    {
+      "title": "Bosworth 解释自研模型对外购谈判的价值",
+      "url": "https://www.bigtechnology.com/p/metas-path-to-ai-relevance-according",
+      "llr": 0,
+      "cluster": "resource-allocation",
+      "factor": 0.5,
+      "before": 0.3220132847825528,
+      "after": 0.3220132847825528,
+      "deltaPp": 0,
+      "verified": true
+    },
+    {
+      "title": "Janardhan 本人承认建设技能工人短缺",
+      "url": "https://www.linkedin.com/posts/sjanardhan_americas-workforce-academy-the-future-is-activity-7469869698331922432-JYIA",
+      "llr": 0,
+      "cluster": "engineering-contingency",
+      "factor": 0.5,
+      "before": 0.3220132847825528,
+      "after": 0.3220132847825528,
+      "deltaPp": 0,
+      "verified": true
+    },
+    {
+      "title": "Dina 阐述资本形成与外部伙伴安排",
+      "url": "https://www.linkedin.com/posts/dina-powell-mccormick_with-meta-compute-were-uniting-capital-activity-7448071525326401536-Mzeh",
+      "llr": 0,
+      "cluster": "alternative-financing",
+      "factor": 0.5,
+      "before": 0.3220132847825528,
+      "after": 0.3220132847825528,
+      "deltaPp": 0,
+      "verified": true
+    },
+    {
+      "title": "供应商旧代GPU续约与跨季投用纠正论坛推论",
+      "url": "https://s205.q4cdn.com/133937190/files/doc_financials/2026/q2/CRWV-US-CORRECTED-TRANSCRIPT-CoreWeave-Q2-2026-Earnings-Call-11August2026.pdf",
+      "llr": 0,
+      "cluster": "supplier-execution",
+      "factor": 1,
+      "before": 0.3220132847825528,
+      "after": 0.3220132847825528,
+      "deltaPp": 0,
+      "verified": true
+    }
+  ],
+  "publicExportNote": "Local machine paths and tool-internal source IDs removed; source URLs, weights and probabilities retained."
+}

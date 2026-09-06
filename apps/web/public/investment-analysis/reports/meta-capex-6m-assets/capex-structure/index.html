@@ -1,0 +1,82 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第三版结构核对与判断边界</title><link rel="icon" href="data:,">
+<style>
+:root{--ink:#18201d;--muted:#657069;--paper:#fffdf8;--canvas:#eeeae1;--line:#d9d4c8;--accent:#9d3f25;--accent-soft:#f5e7df;--shadow:0 18px 55px rgba(47,42,31,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--canvas);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.72}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,253,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1480px;margin:auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:750;letter-spacing:.02em}.brand span{color:var(--accent)}
+.meta{font-size:13px;color:var(--muted)}
+.layout{max-width:1480px;margin:28px auto 64px;padding:0 24px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px}
+.toc{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding:18px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,253,248,.72)}
+.toc-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.toc a{display:block;color:var(--ink);text-decoration:none;font-size:13.5px;padding:4px 8px;border-radius:8px;margin:1px 0}
+.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+main{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:40px 48px 56px;min-width:0}
+main h1{font-size:26px;line-height:1.35;margin:.2em 0 .6em;letter-spacing:.01em}
+main h2{font-size:21px;margin:2.2em 0 .7em;padding-top:.6em;border-top:1px solid var(--line)}
+main h3{font-size:17px;margin:1.6em 0 .5em;line-height:1.5}
+main h2:first-of-type{border-top:none;padding-top:0;margin-top:1em}
+main a{color:var(--accent)}
+main blockquote{margin:1.2em 0;padding:12px 18px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
+main blockquote p{margin:.3em 0}
+.tablewrap{overflow-x:auto;margin:1.1em 0}
+main table{border-collapse:collapse;font-size:14px;min-width:60%}
+main th{background:var(--accent-soft);color:var(--ink);text-align:left;font-weight:650}
+main th,main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top;line-height:1.65}
+main tr:nth-child(even) td{background:rgba(238,234,225,.35)}
+main code{background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.9em}
+main hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+main li{margin:.25em 0}
+main ul ul,main ol ul{margin-top:.2em}
+main strong{color:#111}
+main u.key{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+main u.minor{text-decoration:underline dotted;text-decoration-color:#9aa39d;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.tag{display:inline-block;font-size:11.5px;line-height:1;padding:3px 6px;border-radius:5px;background:var(--canvas);border:1px solid var(--line);color:var(--muted);margin-right:5px;vertical-align:1px;white-space:nowrap}
+.note{display:block;font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.55;font-weight:400}
+.legend{font-size:13.5px;color:#4d5651;background:rgba(238,234,225,.5);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:.6em 0 1.2em;line-height:1.75}
+.legend p{margin:.2em 0}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"PingFang SC","Hiragino Sans GB",monospace;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:1em 0;line-height:2;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.formula b{color:var(--accent)}
+.org td:first-child,.tight1 td:first-child{white-space:nowrap}
+.org td:first-child{font-weight:650}
+.org td:nth-child(2){width:58%}
+.org td:nth-child(3){min-width:260px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static;max-height:none}main{padding:24px 20px}}
+</style></head><body>
+<div class="topbar"><div class="topbar-inner"><div class="brand">Predict-Raven</div><div class="meta">第三版结构核对与判断边界｜生成 2026-09-06｜research-only / market-blind</div></div></div>
+<div class="layout"><nav class="toc"><div class="toc-title">目录</div><a href="#_1">第三版结构核对与判断边界</a>
+<a href="#_2">核验的原始文件</a>
+<a href="#_3">如何展示分项预测</a>
+<a href="#_4">概率与回放</a>
+<a href="#_5">文件</a>
+<a href="#_6">完成与验收</a></nav><main><div class="legend"><p>公开附件：保留来源链接、获取状态与研究归纳。完整字幕及内部工作文件保存在本地；请通过节目或原帖链接阅读原文。</p></div><h1 id="_1">第三版结构核对与判断边界</h1>
+<p>本轮是按资产结构修订预测报告，沿用第二轮原始字幕、社交与论坛研究。不计为新一轮全网补搜，不改变其覆盖计数。信息截点仍为 2026-09-06。</p>
+<h2 id="_2">核验的原始文件</h2>
+<ul>
+<li><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2024/q4/META-Q4-2024-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2024 Q4 正式电话会</a>，2025-01-29，PDF 第 14–15 页：服务器为最大资本开支项；数据中心、网络均增长；业务用途分为生成式 AI、核心 AI、非 AI，共用基础设施。仅作历史结构依据，未外推 2026 年金额或占比。</li>
+<li><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2024/q4/META-Q4-2024-Follow-Up-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2024 Q4 后续电话会</a>，2025-01-29，第 6 页：核心 AI 指推荐、排序与广告；非 AI 含视频流服务。用途并非互斥的资产桶。</li>
+<li><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q1/META-Q1-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2026 Q1 电话会</a>，2026-04-29，第 2 页：当次上调主要由组件尤其内存价格推动。价格下降只是对称的可能机制，本轮没有取得已经降价的证据。</li>
+<li><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf" target="_blank" rel="noopener noreferrer">2026 Q2 电话会</a>，2026-07-29，第 8–9 页：近两年最大化容量；为 2028 年以后先建数据中心及网络基础，再作服务器决策。不同资产投资的承诺时点不能混为一谈。</li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm" target="_blank" rel="noopener noreferrer">2026 Q2 SEC 季报</a>，2026-07-30：现金流量表与 Note 6；49.113+1.805=50.918。服务器及网络资产原值 119.683、在建工程 80.345 都是期末存量，不是本年支出；在建工程同时含服务器、网络与数据中心。</li>
+</ul>
+<h2 id="_3">如何展示分项预测</h2>
+<p>资产投向采用服务器与芯片、数据中心建设、网络、其他资本化资产。第四项用于覆盖其余资产，不假称它是官方独立预算表的一行。融资租赁本金是现金桥接项；其对应的实物资产不能以非现金增加额再计一次。业务用途作为跨资产第二层。</p>
+<p>各分项均提供基准方向、主动缩量/付款后移相对风险、正反证、触发条件、责任岗位和局限。其他资产没有足够证据判断方向，保留未知。风险标签不是暗含数值概率，不参加总概率计算。</p>
+<p>未取得公司完整年度分项现金支出与预算金额，故不用期末资产存量填饼图，不套用 Google 或 Microsoft 的设备占比，也不按研究注意力分摊钱。图中的结构框等宽，不编码金额。</p>
+<p>第三幅交互图按十亿美元的假设变动加总，以 2026 年年度中点 137.5 演算，明确不代表分项预测金额。可测试抵消、付款跨年、组件价格、集群交付等不同机制；正式下调仍需观察窗内公司披露。2027 年首次预算的跨财年规则在第 4 节另行保留，计算器不覆盖所有结算路径。</p>
+<h2 id="_4">概率与回放</h2>
+<p>本轮继续使用 v2/forecast-input.json 与 v2/harness-audit.json 的四轮回放：14 条登记、8 条原计权、6 条零增量机制证据。没有重新运行相同输入并将其当成新独立研究。七月长期基础与后续设备选择来自已有容量策略证据，同一说法细分后不再次计权；32% 维持，主观范围 20–45%。</p>
+<h2 id="_5">文件</h2>
+<ul>
+<li>components.json：现金基线、分项判断、证据索引、演算场景。</li>
+<li>structure-section.md：结构、分项解释与图注正文。</li>
+<li>structure-visuals.html：独立可复用的图形片段，由构建程序生成并嵌入报告。</li>
+<li>raw/：本轮工具结果；所有文件均为研究留档，网页摘要与原文核对状态分别说明。</li>
+</ul>
+<h2 id="_6">完成与验收</h2>
+<p>第三版输出、问题入口和运行目录链接已更新。75 项脚本检查通过，11 项实际浏览器交互通过；三种宽度无图表横向溢出。桌面三幅图、改写洞察以及手机上下段截图均已查看。</p>
+<p>原始数字差异工具会把 CSS 的百分比宽度也计入；number-token-diff.txt 留原始结果，version-diff-audit.json 对可见数字单独比较并解释。主概率和原计权未变；删去原注意力权重，新增来源日期、存量示例、图中重复现金基线和显式假设金额。Bosworth 的视频日期仍为 2026-07-08，编辑稿于 7 月 9 日发布。</p></main></div>
+</body></html>

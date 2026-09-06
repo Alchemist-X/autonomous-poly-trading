@@ -1,0 +1,436 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第二轮媒体与社交证据台账</title><link rel="icon" href="data:,">
+<style>
+:root{--ink:#18201d;--muted:#657069;--paper:#fffdf8;--canvas:#eeeae1;--line:#d9d4c8;--accent:#9d3f25;--accent-soft:#f5e7df;--shadow:0 18px 55px rgba(47,42,31,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--canvas);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.72}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,253,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1480px;margin:auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:750;letter-spacing:.02em}.brand span{color:var(--accent)}
+.meta{font-size:13px;color:var(--muted)}
+.layout{max-width:1480px;margin:28px auto 64px;padding:0 24px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px}
+.toc{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding:18px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,253,248,.72)}
+.toc-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.toc a{display:block;color:var(--ink);text-decoration:none;font-size:13.5px;padding:4px 8px;border-radius:8px;margin:1px 0}
+.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+main{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:40px 48px 56px;min-width:0}
+main h1{font-size:26px;line-height:1.35;margin:.2em 0 .6em;letter-spacing:.01em}
+main h2{font-size:21px;margin:2.2em 0 .7em;padding-top:.6em;border-top:1px solid var(--line)}
+main h3{font-size:17px;margin:1.6em 0 .5em;line-height:1.5}
+main h2:first-of-type{border-top:none;padding-top:0;margin-top:1em}
+main a{color:var(--accent)}
+main blockquote{margin:1.2em 0;padding:12px 18px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
+main blockquote p{margin:.3em 0}
+.tablewrap{overflow-x:auto;margin:1.1em 0}
+main table{border-collapse:collapse;font-size:14px;min-width:60%}
+main th{background:var(--accent-soft);color:var(--ink);text-align:left;font-weight:650}
+main th,main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top;line-height:1.65}
+main tr:nth-child(even) td{background:rgba(238,234,225,.35)}
+main code{background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.9em}
+main hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+main li{margin:.25em 0}
+main ul ul,main ol ul{margin-top:.2em}
+main strong{color:#111}
+main u.key{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+main u.minor{text-decoration:underline dotted;text-decoration-color:#9aa39d;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.tag{display:inline-block;font-size:11.5px;line-height:1;padding:3px 6px;border-radius:5px;background:var(--canvas);border:1px solid var(--line);color:var(--muted);margin-right:5px;vertical-align:1px;white-space:nowrap}
+.note{display:block;font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.55;font-weight:400}
+.legend{font-size:13.5px;color:#4d5651;background:rgba(238,234,225,.5);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:.6em 0 1.2em;line-height:1.75}
+.legend p{margin:.2em 0}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"PingFang SC","Hiragino Sans GB",monospace;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:1em 0;line-height:2;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.formula b{color:var(--accent)}
+.org td:first-child,.tight1 td:first-child{white-space:nowrap}
+.org td:first-child{font-weight:650}
+.org td:nth-child(2){width:58%}
+.org td:nth-child(3){min-width:260px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static;max-height:none}main{padding:24px 20px}}
+</style></head><body>
+<div class="topbar"><div class="topbar-inner"><div class="brand">Predict-Raven</div><div class="meta">第二轮媒体与社交证据台账｜生成 2026-09-06｜research-only / market-blind</div></div></div>
+<div class="layout"><nav class="toc"><div class="toc-title">目录</div><a href="#_1">第二轮媒体与社交证据台账</a>
+<a href="#_2">可复核的完成量</a>
+<a href="#16">视频与播客候选（16个节目，平台镜像不重复）</a>
+<a href="#_3">本人社交原帖</a>
+<a href="#_4">论坛正文与评论</a>
+<a href="#_5">回溯到原始披露</a>
+<a href="#_6">检索如何收口</a>
+<a href="#_7">文件与审计</a></nav><main><div class="legend"><p>公开附件：保留来源链接、获取状态与研究归纳。完整字幕及内部工作文件保存在本地；请通过节目或原帖链接阅读原文。</p></div><h1 id="_1">第二轮媒体与社交证据台账</h1>
+<p>基线：2026-09-06。本台账记录实际获得了什么，不把候选数、镜像数或质量检查数当作研究充分性。</p>
+<h2 id="_2">可复核的完成量</h2>
+<ul>
+<li>8场原视频完整英文字幕，合计377.78分钟；2场为2025年4/6月历史机制材料。</li>
+<li>另保存2场节目全文：Susan Li高盛访谈（第三方）及Dylan Patel（发布方）。Morgan Stanley访谈网页文字已读，但完整导出失败。</li>
+<li>社交14候选，12条本人LinkedIn原帖正文已读；X原帖正文0条。</li>
+<li>论坛14篇正文，其中11篇深读可见评论；另2个失败种子没有计入。</li>
+<li>本次没有音频下载或新语音识别；使用公开字幕及已有逐字稿。自动字幕没有逐秒听校，专有名词及承重语句优先与发布方文字交叉核对。</li>
+</ul>
+<h2 id="16">视频与播客候选（16个节目，平台镜像不重复）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>日期</th>
+<th>节目</th>
+<th>实际获取</th>
+<th>阅读定位与限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V01</td>
+<td>2025-04-29</td>
+<td><a href="https://www.youtube.com/watch?v=rYXeQbTuVl0" target="_blank" rel="noopener noreferrer">Zuckerberg / Dwarkesh</a></td>
+<td>captions_saved; <span>本地文字（本地研究归档）</span></td>
+<td>历史机制；01:07:56起生产率预期；建设与研究反馈不可机械对应。</td>
+</tr>
+<tr>
+<td>V02</td>
+<td>2025-06-18</td>
+<td><a href="https://www.youtube.com/watch?v=z6PHZJLo2Sk" target="_blank" rel="noopener noreferrer">Susan Li / Cheeky Pint</a></td>
+<td>captions_saved; <span>本地文字（本地研究归档）</span></td>
+<td>历史机制；24:16起GPU调配。旧报告7/25是转载日期。</td>
+</tr>
+<tr>
+<td>V03</td>
+<td>2025-09-18</td>
+<td><a href="https://www.youtube.com/watch?v=23FyskyFoP8" target="_blank" rel="noopener noreferrer">Zuckerberg / Access</a></td>
+<td>captions_saved; <span>本地文字（本地研究归档）</span></td>
+<td>01:09:10–01:13:55过早建设与落后风险。开头也有剪辑，同一段不算两份。</td>
+</tr>
+<tr>
+<td>V04</td>
+<td>2026-04-30会期；2026-05-19上传</td>
+<td><a href="https://www.youtube.com/watch?v=l9wzs_QIyp0" target="_blank" rel="noopener noreferrer">Gross、Friedman / Stripe</a></td>
+<td>captions_saved; <span>本地文字（本地研究归档）</span></td>
+<td>20:34–22:35任务经济价值；32分起试验周期。另有发布方全文。</td>
+</tr>
+<tr>
+<td>V05</td>
+<td>2026-04-30会期；2026-05-11上传</td>
+<td><a href="https://www.youtube.com/watch?v=IA9EoAXxw44" target="_blank" rel="noopener noreferrer">Janardhan / TiEcon</a></td>
+<td>captions_saved; <span>本地文字（本地研究归档）</span></td>
+<td>主办方原视频；已采集并检索建设、存储、电力相关段落。</td>
+</tr>
+<tr>
+<td>V06</td>
+<td>2026-05-14发布</td>
+<td><a href="https://www.youtube.com/watch?v=jbP2hYbJYJk" target="_blank" rel="noopener noreferrer">Dina、Bosworth / Washington AI Network</a></td>
+<td>captions_saved; <span>本地文字（本地研究归档）</span></td>
+<td>视频含开场；06:43–07:10董事会反馈；与播客02:13不同时钟。</td>
+</tr>
+<tr>
+<td>V07</td>
+<td>2026-07-08</td>
+<td><a href="https://www.youtube.com/watch?v=qZhCeV6XATw" target="_blank" rel="noopener noreferrer">Bosworth / Big Technology</a></td>
+<td>captions_saved; <span>本地文字（本地研究归档）</span></td>
+<td>08:20–11:00自研与外购议价；发布方编辑稿后半付费。</td>
+</tr>
+<tr>
+<td>V08</td>
+<td>2026-07-29视频；2026-07-31播客</td>
+<td><a href="https://www.youtube.com/watch?v=sJ4VJWycX9M" target="_blank" rel="noopener noreferrer">Wang / Y Combinator</a></td>
+<td>captions_saved; <span>本地文字（本地研究归档）</span></td>
+<td>13分起研究组织；27分起反馈循环。专有名词自动识别有误，不引用未经核对的模型名。</td>
+</tr>
+<tr>
+<td>V09</td>
+<td>2025-09-09</td>
+<td><a href="https://earningscalls.dev/transcripts/meta-platforms-inc_meta_earnings_call_transcript_2025-09-09" target="_blank" rel="noopener noreferrer">Susan Li / Goldman Sachs</a></td>
+<td>full_text_saved; <span>本地文字（本地研究归档）</span></td>
+<td>#6、#16、#20；第三方全文，官方音频入口已核验，未逐句听校。</td>
+</tr>
+<tr>
+<td>V10</td>
+<td>2026-03-13</td>
+<td><a href="https://www.dwarkesh.com/p/dylan-patel" target="_blank" rel="noopener noreferrer">Dylan Patel / Dwarkesh</a></td>
+<td>full_text_saved; <span>本地文字（本地研究归档）</span></td>
+<td>发布方全文；01:16:01存储、01:42:34电力与劳工约束。行业观点不等于Meta项目实况。</td>
+</tr>
+<tr>
+<td>V11</td>
+<td>2026-03-04</td>
+<td><a href="https://ca.investing.com/news/transcripts/meta-at-morgan-stanley-conference-ai-strategy-and-financial-insights-93CH-4495629" target="_blank" rel="noopener noreferrer">Susan Li / Morgan Stanley</a></td>
+<td>web_text_read_export_failed</td>
+<td>网页完整文字读取；HTTP导出403、Exa超时。无本地完整逐字稿，不把自动摘要当本人原话。</td>
+</tr>
+<tr>
+<td>V12</td>
+<td>2026-01-29</td>
+<td><a href="https://sources.news/p/metas-cto-on-vr-layoffs-glasses-and" target="_blank" rel="noopener noreferrer">Bosworth / Sources Live</a></td>
+<td>intro_only</td>
+<td>原视频-M5Gz0xQd8c已识别，未采集；付费文字仅导言。</td>
+</tr>
+<tr>
+<td>V13</td>
+<td>2026-04-20</td>
+<td><a href="https://www.foxbusiness.com/video/6393477169112" target="_blank" rel="noopener noreferrer">Dina / Mornings with Maria</a></td>
+<td>description_only</td>
+<td>原视频说明可见，未得整场字幕；本人LinkedIn分享片段见S09，不计完整节目。</td>
+</tr>
+<tr>
+<td>V14</td>
+<td>2026-06-09</td>
+<td><a href="https://podcasts.apple.com/us/podcast/can-metas-new-%24115m-academy-fix-the-american-workforce/id219258773?i=1000771906448" target="_blank" rel="noopener noreferrer">Dina、Mike Rowe / Brian Kilmeade</a></td>
+<td>description_only</td>
+<td>仅节目说明及广播章节，未取得可核验逐字稿。</td>
+</tr>
+<tr>
+<td>V15</td>
+<td>2026-08-10</td>
+<td><a href="https://sources.news/p/zuckerberg-pro-ai-manifesto" target="_blank" rel="noopener noreferrer">Zuckerberg / Alex Heath</a></td>
+<td>intro_only; <span>本地文字（本地研究归档）</span></td>
+<td>付费文章仅导言；原始公开宣言另读，不能代替采访全文。</td>
+</tr>
+<tr>
+<td>V16</td>
+<td>2026-06-23候选日期未独立核实</td>
+<td><a href="https://ceointerviews.ai/interview/ibLH75rOqk4gxTOYw4bsC-rX9fykEB4%3D/" target="_blank" rel="noopener noreferrer">Zuckerberg / Idea Generation</a></td>
+<td>discovery_only</td>
+<td>第三方索引命中，未闭合原节目与全文，不进入判断。</td>
+</tr>
+</tbody>
+</table></div>
+<p><span>原始字幕与元数据清单（本地研究归档）</span>保留节目ID、上传日、字幕类型、时长、末条时间码、SHA-256。原文件位于transcripts/；normalize只删除滚动字幕重复，不补写缺失话语。</p>
+<p>文字访谈补充：W01 <a href="https://www.business-standard.com/companies/people/we-want-to-be-part-of-india-s-growth-story-meta-s-santosh-janardhan-126061801239_1.html" target="_blank" rel="noopener noreferrer">Janardhan，Business Standard，2026-06-19</a>，<span>全文存档（本地研究归档）</span>。它不计作视频/播客。</p>
+<h2 id="_3">本人社交原帖</h2>
+<p>日期采用America/New_York，来源为原页/本人公开档案datePublished。已编辑帖子没有修订历史，因此只能说明本次读取的版本。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>日期</th>
+<th>作者与原址</th>
+<th>访问</th>
+<th>信息增量及边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S01</td>
+<td>2026-01-12</td>
+<td><a href="https://www.threads.com/@zuck/post/DTa3-B1EbTp" target="_blank" rel="noopener noreferrer">Zuckerberg</a></td>
+<td>original_unavailable</td>
+<td>Meta Compute 原址已核验；正文仅媒体转引，FB/Threads 不计独立全文。</td>
+</tr>
+<tr>
+<td>S02</td>
+<td>2026-01-09</td>
+<td><a href="https://www.linkedin.com/posts/sjanardhan_meta-announces-nuclear-energy-projects-unlocking-activity-7415550640900272128-DyOX" target="_blank" rel="noopener noreferrer">Janardhan</a></td>
+<td>body_read</td>
+<td>核电为远期供能；不能计入半年资本支付。</td>
+</tr>
+<tr>
+<td>S03</td>
+<td>2026-02-11</td>
+<td><a href="https://www.linkedin.com/posts/sjanardhan_breaking-ground-in-lebanon-indiana-meta-activity-7427486807019302913-e2E-" target="_blank" rel="noopener noreferrer">Janardhan</a></td>
+<td>body_read</td>
+<td>Lebanon 1GW/$10bn 开工；项目总额不等于年度预算。</td>
+</tr>
+<tr>
+<td>S04</td>
+<td>2026-02-24</td>
+<td><a href="https://www.linkedin.com/posts/sjanardhan_today-im-excited-to-share-that-meta-is-activity-7432094526778986497-CACz" target="_blank" rel="noopener noreferrer">Janardhan</a></td>
+<td>body_read</td>
+<td>AMD 最高6GW；初始约束与后续条件需看SEC。</td>
+</tr>
+<tr>
+<td>S05</td>
+<td>2026-03-11</td>
+<td><a href="https://www.linkedin.com/posts/sjanardhan_this-morning-we-shared-an-update-on-our-activity-7437544927632306176-IuCC" target="_blank" rel="noopener noreferrer">Janardhan</a></td>
+<td>body_read</td>
+<td>MTIA机架兼容，可减部署摩擦；效率不自动转成削减总预算。原帖显示Edited，编辑时点未披露。</td>
+</tr>
+<tr>
+<td>S06</td>
+<td>2026-03-25</td>
+<td><a href="https://www.linkedin.com/posts/sjanardhan_yesterday-we-shared-that-meta-is-partnering-activity-7442654748270505984-AEM4" target="_blank" rel="noopener noreferrer">Janardhan</a></td>
+<td>body_read</td>
+<td>Arm多代CPU，提高供应与架构选择；原帖没有每GW省$10bn。</td>
+</tr>
+<tr>
+<td>S07</td>
+<td>2026-04-09</td>
+<td><a href="https://www.linkedin.com/posts/dina-powell-mccormick_with-meta-compute-were-uniting-capital-activity-7448071525326401536-Mzeh" target="_blank" rel="noopener noreferrer">Dina</a></td>
+<td>body_read</td>
+<td>FII：主权基金、机构和能源资本；含视频自动转录，$600bn非可比capex指引。</td>
+</tr>
+<tr>
+<td>S08</td>
+<td>2026-04-10</td>
+<td><a href="https://www.linkedin.com/posts/dina-powell-mccormick_arpae26-activity-7448462721508859904-NxGW" target="_blank" rel="noopener noreferrer">Dina</a></td>
+<td>body_read</td>
+<td>统筹资本部署与人才；正文可读，视频自动转录仅搜索索引可见。</td>
+</tr>
+<tr>
+<td>S09</td>
+<td>2026-04-20</td>
+<td><a href="https://www.linkedin.com/posts/dina-powell-mccormick_im-proud-to-co-head-meta-compute-a-new-activity-7452144133252591617-yxSG" target="_blank" rel="noopener noreferrer">Dina</a></td>
+<td>body_read</td>
+<td>本人明确co-head Meta Compute；电视采访片段与Fox整场不重复。</td>
+</tr>
+<tr>
+<td>S10</td>
+<td>2026-04-24</td>
+<td><a href="https://www.linkedin.com/posts/sjanardhan_meta-partners-with-aws-on-graviton-chips-activity-7453489561533485056-1zXU" target="_blank" rel="noopener noreferrer">Janardhan</a></td>
+<td>body_read</td>
+<td>外购CPU云算力；需合同会计分类才能推断资本转运营支出。</td>
+</tr>
+<tr>
+<td>S11</td>
+<td>2026-06-08</td>
+<td><a href="https://www.linkedin.com/posts/sjanardhan_americas-workforce-academy-the-future-is-activity-7469869698331922432-JYIA" target="_blank" rel="noopener noreferrer">Janardhan</a></td>
+<td>body_read</td>
+<td>建设技能工人短缺，培训缓解；不证明某个Meta园区已经延误。</td>
+</tr>
+<tr>
+<td>S12</td>
+<td>2026-06-10</td>
+<td><a href="https://www.linkedin.com/posts/sjanardhan_meta-partners-with-reliance-on-ai-enabled-activity-7470522744435036160-3DOA" target="_blank" rel="noopener noreferrer">Janardhan</a></td>
+<td>body_read</td>
+<td>Jamnagar地区与合作模式选择；并非总资本预算下降。</td>
+</tr>
+<tr>
+<td>S13</td>
+<td>2026-07-13</td>
+<td><a href="https://www.linkedin.com/posts/sjanardhan_if-you-want-to-get-a-sense-of-how-fast-the-activity-7482485922039607297-vKhB" target="_blank" rel="noopener noreferrer">Janardhan</a></td>
+<td>body_read</td>
+<td>Hyperion由2GW扩到5GW；项目投资逾$50bn非已支出数。Edited时点未知。</td>
+</tr>
+<tr>
+<td>S14</td>
+<td>2025-09-22</td>
+<td><a href="https://x.com/shanumathew93/status/1970295152062115874" target="_blank" rel="noopener noreferrer">Shanu Mathew</a></td>
+<td>original_unavailable</td>
+<td>引用链仅定位Zuck访谈传播，原帖及身份未核验；不加权。</td>
+</tr>
+</tbody>
+</table></div>
+<p>身份以Meta任命、代理声明及正式基础设施公告交叉核对。S14身份未独立核验。Gross、Wang、Bosworth、Li未补出可独立计入的相关原帖；不代表他们没有发言。</p>
+<h2 id="_4">论坛正文与评论</h2>
+<p>所有作者身份未经核验。深读指多条有实质内容的公开可见评论，不是全部评论。相对时间无法还原时保留不确定性。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>日期及精度</th>
+<th>原帖/作者</th>
+<th>评论范围</th>
+<th>回溯结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F01</td>
+<td>2026-07-03</td>
+<td><a href="https://www.reddit.com/r/ValueInvesting/comments/1umbmng/the_meta_version_of_my_microsoft_capex_breakdown/" target="_blank" rel="noopener noreferrer">stockoscope</a></td>
+<td>深读可见评论</td>
+<td>2025 capex 69.7/FCF46.1漏融资租赁本金；回溯官方72.22/43.59。</td>
+</tr>
+<tr>
+<td>F02</td>
+<td>约2026-02，具体日未核验</td>
+<td><a href="https://www.reddit.com/r/ValueInvesting/comments/1qxc8so/can_meta_amzn_and_googl_afford_this_level_of/" target="_blank" rel="noopener noreferrer">GainifyAI</a></td>
+<td>深读可见评论</td>
+<td>旧2026E 122不是最新指引；GPU三年全部报废论需纠正。</td>
+</tr>
+<tr>
+<td>F03</td>
+<td>2026-07，具体日未核验</td>
+<td><a href="https://www.reddit.com/r/MetaAI/comments/1uuysqx/the_14gw_reality_check_deconstructing_metas_shift/" target="_blank" rel="noopener noreferrer">Dolphin_research</a></td>
+<td>正文；可见评论无研究增量或为零</td>
+<td>14GW重复Reuters备忘录；2027预算和出租收入均作者假设，另有单位错。</td>
+</tr>
+<tr>
+<td>F04</td>
+<td>评论可核2026-07-10，帖日未独立核验</td>
+<td><a href="https://www.reddit.com/r/stocks/comments/1usysby/mark_zuckerberg_said_ai_was_behind_schedule_last/" target="_blank" rel="noopener noreferrer">aperartnft</a></td>
+<td>深读可见评论</td>
+<td>云出租不能单独证明模型失败；匿名自称员工不作为内部事实。</td>
+</tr>
+<tr>
+<td>F05</td>
+<td>2026-07-30</td>
+<td><a href="https://www.reddit.com/r/ValueInvesting/comments/1vaonjo/meta_why_did_the_income_stop_growing/" target="_blank" rel="noopener noreferrer">AceStrikeer</a></td>
+<td>深读可见评论</td>
+<td>OCF环比与同比混淆；设备等电1–2年未证实。</td>
+</tr>
+<tr>
+<td>F06</td>
+<td>2026-04-23</td>
+<td><a href="https://news.ycombinator.com/item?id=47879986" target="_blank" rel="noopener noreferrer">Vaslo</a></td>
+<td>深读可见评论</td>
+<td>未交付CoreWeave合同不等于已经确认收入；RPO及资产归属回溯SEC。</td>
+</tr>
+<tr>
+<td>F07</td>
+<td>2026-07-02</td>
+<td><a href="https://www.teamblind.com/kr/post/%EB%A9%94%ED%83%80%EC%9D%98-2027%EB%85%84-Capex-%EC%A0%84%EB%A7%9D%EC%9D%84-%EB%91%98%EB%9F%AC%EC%8B%BC-%EC%8B%9C%EC%9E%A5%EC%9D%98-%EB%86%92%EC%9D%80-%EB%B6%88%ED%99%95%EC%8B%A4%EC%84%B1%EA%B3%BC-%EC%B0%A8%EC%84%B8%EB%8C%80-%EC%9D%B8%ED%94%84%EB%9D%BC-%ED%99%95%EB%B3%B4-%EB%B0%8F-%EA%B5%AC%ED%98%95-%EC%9E%90%EC%9B%90-%EB%A6%AC%EC%85%80%EC%9D%84-%ED%86%B5%ED%95%9C-%ED%9A%A8%EC%9C%A8%ED%99%94-%EC%A0%84%EB%9E%B5-6ixp6jid" target="_blank" rel="noopener noreferrer">l<strong><em>*</em></strong>**（Samsung SDS标签未核验身份）</a></td>
+<td>正文；可见评论无研究增量或为零</td>
+<td>称转述JPM、只出租H100/A100，原研报未得；不能视为Meta内部消息。</td>
+</tr>
+<tr>
+<td>F08</td>
+<td>2026-07-08</td>
+<td><a href="https://www.reddit.com/r/TradingEdge/comments/1uqs2wm/is_ai_capex_about_to_collapse_off_the_back_of_the/" target="_blank" rel="noopener noreferrer">TearRepresentative56</a></td>
+<td>深读可见评论</td>
+<td>GDP重要性不是公司预算保底；循环融资是机制争论，无预算新事实。</td>
+</tr>
+<tr>
+<td>F09</td>
+<td>2026-08-18</td>
+<td><a href="https://www.reddit.com/r/stocks/comments/1vrbdq0/investors_are_looking_at_the_wrong_number_metas/" target="_blank" rel="noopener noreferrer">thelastsubject123</a></td>
+<td>深读可见评论</td>
+<td>FCF下降与capex扩大；不能把全部新增投入归因广告回报。</td>
+</tr>
+<tr>
+<td>F10</td>
+<td>转引Reuters2026-03-13/14，帖日未另核验</td>
+<td><a href="https://www.reddit.com/r/stocks/comments/1rt64g0/meta_planning_sweeping_layoffs_as_ai_costs_mount/" target="_blank" rel="noopener noreferrer">JGuilherme02</a></td>
+<td>深读可见评论</td>
+<td>早期20%裁员传闻不得覆盖后续事实；裁员不等于capex下调。</td>
+</tr>
+<tr>
+<td>F11</td>
+<td>2026-08-25</td>
+<td><a href="https://www.reddit.com/r/stocks/comments/1vxkdo5/is_coreweave_smart_financing_or_are_we_at_2008/" target="_blank" rel="noopener noreferrer">Novel-Lifeguard6491</a></td>
+<td>深读可见评论</td>
+<td>交付、抵押与续约风险；A100续至2029回溯官方。</td>
+</tr>
+<tr>
+<td>F12</td>
+<td>2026-07-01</td>
+<td><a href="https://www.reddit.com/r/CRWV/comments/1ukl4w5/all_neoclouds_are_down_on_the_latest_meta_news/" target="_blank" rel="noopener noreferrer">Lucid_Dreamer5</a></td>
+<td>深读可见评论</td>
+<td>云出租新闻是条件性计划；转租需合同许可，不能直接推断取消采购。</td>
+</tr>
+<tr>
+<td>F13</td>
+<td>2026-08-11</td>
+<td><a href="https://www.reddit.com/r/CRWV/comments/1vlxj67/coreweave_q2_2026_strong_results_margin/" target="_blank" rel="noopener noreferrer">Lucid_Dreamer5</a></td>
+<td>正文；可见评论无研究增量或为零</td>
+<td>A100合同、通电及在建资产回溯官方；两条交易评论无研究增量。</td>
+</tr>
+<tr>
+<td>F14</td>
+<td>2026-06-09</td>
+<td><a href="https://www.reddit.com/r/AMD_Technology_Bets/comments/1u1ir85/crusoe_touts_5_gigawatts_worth_of_data_centre/" target="_blank" rel="noopener noreferrer">TOMfromYahoo</a></td>
+<td>深读可见评论</td>
+<td>Crusoe退出开发非项目暂停；Black Hills翌日纠正，Meta客户身份未知。</td>
+</tr>
+</tbody>
+</table></div>
+<p>失败种子：singularity 1nlt2v1正文不可达；HN45730227元数据/429，未计入。</p>
+<h2 id="_5">回溯到原始披露</h2>
+<ol>
+<li><a href="https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" target="_blank" rel="noopener noreferrer">Meta 2025年度业绩</a>：资本现金72.22、经营现金115.80、自由现金43.59（十亿美元）；不能漏掉租赁本金。</li>
+<li><a href="https://s205.q4cdn.com/133937190/files/doc_financials/2026/q2/CRWV-US-CORRECTED-TRANSCRIPT-CoreWeave-Q2-2026-Earnings-Call-11August2026.pdf" target="_blank" rel="noopener noreferrer">CoreWeave 2026-08-11官方更正稿</a>：A100新合同延至2029，旧代价格仍有支撑；不代表同一台2020年设备运行九年。Q2末在建资产11.9、部分Q3初投用说明时差，也显示其近期交付加速。</li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1769628/000176962826000366/crwv-20260630.htm" target="_blank" rel="noopener noreferrer">CoreWeave Q2 SEC Note2</a>：未满足履约义务不是已经确认的收入。</li>
+<li><a href="https://www.sec.gov/Archives/edgar/data/1769628/000176962825000050/redactedmetamsa929finald.htm" target="_blank" rel="noopener noreferrer">Meta–CoreWeave MSA</a>：§3(c)(iii)转租需事先书面批准，§6设备归供应商；不是绝对不能批准转租。<a href="https://www.sec.gov/Archives/edgar/data/1513845/000110465926052948/nbis-20251231xex4d3.htm" target="_blank" rel="noopener noreferrer">Nebius MSA</a>删节订单不足以证明绝对禁令。</li>
+<li><a href="https://www.globenewswire.com/news-release/2026/06/10/3309709/0/en/black-hills-corp-provides-an-update-on-1-8-gigawatt-project-in-cheyenne.html" target="_blank" rel="noopener noreferrer">Black Hills 2026-06-10公告</a>：Cheyenne项目未暂停，只更换开发安排；未确认客户是Meta。</li>
+</ol>
+<h2 id="_6">检索如何收口</h2>
+<p>按决策者、模型与产品、基建交付、财务口径四类问题检查新增材料。视频/播客、本人社交、论坛反证由三条独立研究线处理；协调者统一采集字幕、复核承重来源、写作和计算。没有新增可核验的资本削减决定或当年具体验收延误，因此六项补充材料在引擎中记零增量权重，主概率保持原值。</p>
+<p>X的公开可见度仍低；付费节目、内部预算/审批矩阵、合同删节和项目付款节点没有补齐。本次可以称为有记录的第二轮补漏，不能称为穷尽所有信息。</p>
+<h2 id="_7">文件与审计</h2>
+<p><span>结构化台账（本地研究归档）</span> · <span>抓取状态（本地研究归档）</span> · <span>字幕元数据（本地研究归档）</span> · <span>新增洞察稿（本地研究归档）</span>。raw/保存原始网页、工具结果、下载日志。原始语料仅用于研究核对，报告以短引和归纳呈现。</p></main></div>
+</body></html>

@@ -1,0 +1,18 @@
+{
+  "publishedReportVersion": "v3",
+  "researchCutoff": "2026-09-06",
+  "canonicalHtmlSha256": "0f467f8458140e45ad3e78dad1295986e6a17992d39365d75b3d23d2de5295e6",
+  "reportTextAndNumbersPreserved": true,
+  "stylesAndScriptsPreserved": true,
+  "fullTranscriptsPublished": false,
+  "files": {
+    "meta-capex-6m.html": "5af17fb9a588daa4afb437f1135fbd2517be02bd1a6f1f9052e4ea6362c00997",
+    "meta-capex-6m-assets/capex-structure/index.html": "c078cf6377a2881ba0473ea3e74d41457bd8925d060bcfc4fc410a46cfba0149",
+    "meta-capex-6m-assets/capex-structure/components.json": "67c246b98fce6c82bce83fab278f1b0146217ff3f444d25bf2d587617cf761c2",
+    "meta-capex-6m-assets/media-social/index.html": "42745f83b3b07620847653484525bbb435b6be079e0bdcdfa5340e2313334131",
+    "meta-capex-6m-assets/source-coverage.html": "2bf2fc0be139522cd2581349709048a9ee14f1610dda491926f43aa32304cf72",
+    "meta-capex-6m-assets/history.csv": "cc2dedc3c0fdc08ac299cbf9ffd905277c73dd807c7e279f0013c35b74387efb",
+    "meta-capex-6m-assets/forecast-audit-v2.json": "133d23770067dbf9b2ee9f9c96b99a2e2ca124944da9130fe0a6a6647ff87adf",
+    "meta-capex-6m-assets/qa-results-v3.json": "5b7b69dccf9971c61076822eadba72a082ca06cf2508ae38c7466f22b620c8bb"
+  }
+}
