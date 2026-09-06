@@ -14,6 +14,7 @@ export function investmentHref(path: string, locale: Locale): string {
 }
 
 export function stripInvestmentLocale(pathname: string): string {
-  const withoutTrailingLocale = pathname.replace(/\/(en|zh-CN|zh-TW)\/?$/, "");
+  const withoutAppPrefix = pathname.replace(/^\/apps\/web(?=\/|$)/, "");
+  const withoutTrailingLocale = withoutAppPrefix.replace(/\/(en|zh-CN|zh-TW)\/?$/, "");
   return withoutTrailingLocale.replace(/^\/(en|zh-CN|zh-TW)(?=\/)/, "") || "/investment-analysis";
 }
