@@ -31,7 +31,7 @@
 | AI 投研系统案例 | `apps/web/app/[locale]/investment-analysis`、`/investment-analysis` | 三份公开案例：腾讯混元 × WorkBuddy、Hassabis × Alphabet、[Meta 半年资本开支](https://forecasting-agent.com/investment-analysis/meta-capex-6m)（v3，截点 2026-09-06） |
 | Polymarket live pipeline | `services/orchestrator`、`services/executor` | 真钱路径；任何 live 命令、风控调整或订单测试都需要用户明确确认 |
 
-后续投资资料统一去除客户品牌标签。Meta v3 公开经过复核的来源摘要与审计附件，完整字幕留在本地；仅该报告 iframe 开放脚本用于金额演算，仍不授予 `allow-same-origin`。
+后续投资资料统一去除客户品牌标签。Meta v3 公开经过复核的来源摘要与审计附件，完整字幕留在本地；仅该报告 iframe 开放脚本用于金额演算，并允许用户下载历史 CSV，仍不授予 `allow-same-origin`。
 
 ## 3. 当前最主要的技术 WIP：GPT Pro v2 harness
 
@@ -96,6 +96,8 @@
 - [ ] 对 FutureX、LongPort MCP、Time Machine 三项分别做 go / archive 产品判断；任何一项获批后都从最新 `main` 建独立小 PR。
 
 ### P2 — 已知但不阻塞
+
+- [ ] `paper-agent` 的 `market-scan.test.ts` 有两项固定日期测试于 2026-09-01 过期，当前 CI 因此失败；测试和实现与发布前主线一致。后续应固定测试时钟，勿修改实际到期过滤规则来迎合测试。
 
 - [ ] 东京 VM 根盘使用率 82%（约 8.6 GiB 可用）；继续监控，并在部署新镜像前先做可恢复的缓存 / 旧镜像清理。
 - [ ] 将 live Pulse 的结算回填 / 离线评分按当前 ledger 重新设计；不要直接搬 PR #77 的旧实现。
