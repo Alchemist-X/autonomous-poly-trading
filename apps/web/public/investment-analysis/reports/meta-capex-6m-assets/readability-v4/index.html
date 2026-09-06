@@ -1,0 +1,71 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meta 第四版：预测主线与可读性修订</title><link rel="icon" href="data:,">
+<style>
+:root{--ink:#18201d;--muted:#657069;--paper:#fffdf8;--canvas:#eeeae1;--line:#d9d4c8;--accent:#9d3f25;--accent-soft:#f5e7df;--shadow:0 18px 55px rgba(47,42,31,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--canvas);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.72}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,253,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1480px;margin:auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:750;letter-spacing:.02em}.brand span{color:var(--accent)}
+.meta{font-size:13px;color:var(--muted)}
+.layout{max-width:1480px;margin:28px auto 64px;padding:0 24px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px}
+.toc{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding:18px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,253,248,.72)}
+.toc-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.toc a{display:block;color:var(--ink);text-decoration:none;font-size:13.5px;padding:4px 8px;border-radius:8px;margin:1px 0}
+.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+main{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:40px 48px 56px;min-width:0}
+main h1{font-size:26px;line-height:1.35;margin:.2em 0 .6em;letter-spacing:.01em}
+main h2{font-size:21px;margin:2.2em 0 .7em;padding-top:.6em;border-top:1px solid var(--line)}
+main h3{font-size:17px;margin:1.6em 0 .5em;line-height:1.5}
+main h2:first-of-type{border-top:none;padding-top:0;margin-top:1em}
+main a{color:var(--accent)}
+main blockquote{margin:1.2em 0;padding:12px 18px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
+main blockquote p{margin:.3em 0}
+.tablewrap{overflow-x:auto;margin:1.1em 0}
+main table{border-collapse:collapse;font-size:14px;min-width:60%}
+main th{background:var(--accent-soft);color:var(--ink);text-align:left;font-weight:650}
+main th,main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top;line-height:1.65}
+main tr:nth-child(even) td{background:rgba(238,234,225,.35)}
+main code{background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.9em}
+main hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+main li{margin:.25em 0}
+main ul ul,main ol ul{margin-top:.2em}
+main strong{color:#111}
+main u.key{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+main u.minor{text-decoration:underline dotted;text-decoration-color:#9aa39d;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.tag{display:inline-block;font-size:11.5px;line-height:1;padding:3px 6px;border-radius:5px;background:var(--canvas);border:1px solid var(--line);color:var(--muted);margin-right:5px;vertical-align:1px;white-space:nowrap}
+.note{display:block;font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.55;font-weight:400}
+.legend{font-size:13.5px;color:#4d5651;background:rgba(238,234,225,.5);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:.6em 0 1.2em;line-height:1.75}
+.legend p{margin:.2em 0}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"PingFang SC","Hiragino Sans GB",monospace;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:1em 0;line-height:2;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.formula b{color:var(--accent)}
+.org td:first-child,.tight1 td:first-child{white-space:nowrap}
+.org td:first-child{font-weight:650}
+.org td:nth-child(2){width:58%}
+.org td:nth-child(3){min-width:260px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static;max-height:none}main{padding:24px 20px}}
+</style></head><body>
+<div class="topbar"><div class="topbar-inner"><div class="brand">Predict-Raven</div><div class="meta">Meta 第四版：预测主线与可读性修订｜生成 2026-09-06｜research-only / market-blind</div></div></div>
+<div class="layout"><nav class="toc"><div class="toc-title">目录</div><a href="#meta">Meta 第四版：预测主线与可读性修订</a>
+<a href="#_1">修改了什么</a>
+<a href="#insights">前次信息更新有没有进入 Insights</a>
+<a href="#_2">保持不变</a>
+<a href="#_3">研究边界</a></nav><main><div class="legend"><p>公开附件：保留来源链接、获取状态与研究归纳。完整字幕及内部工作文件保存在本地；请通过节目或原帖链接阅读原文。</p></div><h1 id="meta">Meta 第四版：预测主线与可读性修订</h1>
+<p>信息截点仍为 2026-09-06。此次为已有研究的综合与表达修订，未新增采集轮次或重新计权。</p>
+<h2 id="_1">修改了什么</h2>
+<ul>
+<li>阅读结论先解释预测任务：资产数量、单价、现金支付年度、跨项目抵消，最后核验正式计划。</li>
+<li>优先跟踪年末交付与付款，其次验证需求变化是否导致净订单减少；价格、承诺、意愿和融资作为具体约束。</li>
+<li>撤下第三版的假设金额计算器。以工程与交付延期、需求减少、设备降价、预算转投四种情形解释总额变化的条件，每种保留证据边界和下一步核验方向。</li>
+<li>四种情形是可能并存的机制，不是第 5 节互斥结果路径；不赋予情形概率或虚构分项金额。</li>
+<li>五条 Insights 改为完整段落，按预测优先级重排。保留判断、关键依据、影响与边界，但不再机械重复四层标签。</li>
+</ul>
+<h2 id="insights">前次信息更新有没有进入 Insights</h2>
+<p>第二版已据视频字幕、访谈和社交材料重写全部五条。第三版改写机房先建、设备后决的机制，并补充外购与自研并存、资本与运营现金边界。问题在于缺少总领与优先级，而非完全没有更新。本版将这些信息连接到预测任务，并突出既有 Q1 组件价格证据。</p>
+<h2 id="_2">保持不变</h2>
+<p>主概率 YES 32%、NO 68%，主观合理范围 20–45%。冻结题、官方财务基线、分项定性数据、计权输入、历史记录、六条互斥路径及敏感性分析沿用前版。新增文字中的价格下降等均为条件推演，未声称已发生。</p>
+<p>第三版及其图表、验证记录完整保留。第四版的源稿为 <span>Markdown（本地研究归档）</span>，阅读版为 <a href="/investment-analysis/reports/meta-capex-6m.html" target="_blank" rel="noopener noreferrer">HTML</a>，校验记录见 <a href="/investment-analysis/reports/meta-capex-6m-assets/qa-results-v4.json" target="_blank" rel="noopener noreferrer">第四版验收</a>。</p>
+<h2 id="_3">研究边界</h2>
+<p>继续沿用第二轮媒体与社交台账。X 原帖正文缺口未补齐，字幕也未逐秒听校；本次编辑没有被计为新的联网研究或新一轮模型预测。</p></main></div>
+</body></html>

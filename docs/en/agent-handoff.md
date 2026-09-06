@@ -28,10 +28,10 @@
 | Delta PM | `services/delta-pm`, `apps/delta-pm-console`, `/live-delta-pm` | News → importance → priced-in → paper-decision audit chain |
 | Raven Delta | `apps/raven-delta`, `/delta` | US-equity news-impact analysis with email / WebSocket delivery |
 | World Cup blind forecast | `scripts/world-cup`, `apps/web/app/world-cup` | Generation may not read prices; post-hoc scoring may use a market benchmark |
-| AI investment research cases | `apps/web/app/[locale]/investment-analysis`, `/investment-analysis` | Three public cases: Tencent Hunyuan × WorkBuddy, Hassabis × Alphabet, and [Meta six-month capex](https://forecasting-agent.com/investment-analysis/meta-capex-6m) (v3, as of 2026-09-06) |
+| AI investment research cases | `apps/web/app/[locale]/investment-analysis`, `/investment-analysis` | Three public cases: Tencent Hunyuan × WorkBuddy, Hassabis × Alphabet, and [Meta six-month capex](https://forecasting-agent.com/investment-analysis/meta-capex-6m) (v4, as of 2026-09-06) |
 | Polymarket live pipeline | `services/orchestrator`, `services/executor` | Real-money path; live runs, risk changes, and order probes require explicit user approval |
 
-Investment reports omit customer branding from now on. Meta v3 publishes reviewed source summaries and audit attachments; full transcripts remain local. Per the user request, first-party report iframes omit `sandbox`, so scripts and attachment downloads work normally. Future reports use the same container without company-specific exceptions.
+Investment reports omit customer branding from now on. Meta v4 publishes reviewed source summaries and audit attachments; full transcripts remain local. Version 4 replaces the arbitrary-dollar calculator with four conditional scenarios and prioritizes payment timing, demand-to-order conversion, prices, commitments and financing. Per the user request, first-party report iframes omit `sandbox`, so scripts and attachment downloads work normally. Future reports use the same container without company-specific exceptions.
 
 ## 3. Primary technical WIP: GPT Pro v2 harness
 
