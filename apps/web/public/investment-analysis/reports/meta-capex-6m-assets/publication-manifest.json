@@ -1,19 +1,24 @@
 {
-  "publishedReportVersion": "v4",
+  "publishedReportVersion": "v5",
   "researchCutoff": "2026-09-06",
-  "canonicalHtmlSha256": "cbe2ce46a00e2429d0d9cd8aa87019c69e5677aa1e198f836eb973c78773312a",
+  "canonicalHtmlSha256": "3d205061cdc8c476090b77a37523796c7e431802ee15e75042ae1dc10305a720",
   "reportTextAndNumbersPreserved": true,
   "stylesAndScriptsPreserved": true,
   "fullTranscriptsPublished": false,
   "files": {
-    "meta-capex-6m.html": "2042bfcc2d7794ed3ec49e65bcaad5ce3a403d30de2d7f013b836a0d8408f709",
-    "meta-capex-6m-assets/readability-v4/index.html": "83d7b6ad46c77d07ffbd6cb036e7a51ac3246ef1e4ab55a14c42ca4216151374",
+    "meta-capex-6m.html": "b5cbead1a09757c8d23b68b5f02c6f66a8d66347a08946fecb518c971ec09eb7",
+    "meta-capex-6m-assets/thesis-v5/index.html": "dae4a5a7055ef6ef72dd7c42b1d2d33a6051b6347935c236b01233fb8795a91d",
+    "meta-capex-6m-assets/thesis-v5/business-evidence.html": "d9b48112f360f0a975ce8f0641930f44663e65bf5efd6d53e5d9f50bc3050fe7",
+    "meta-capex-6m-assets/thesis-v5/resolution-review.html": "0eb2eef354d748792d0b6fb39877150f5ef2553699f876018395bc7b5cb16349",
+    "meta-capex-6m-assets/thesis-v5/forecast-audit-v5.json": "5645c12b0fadff92e67c6e427322a1d1dc548309869447e5cb5eaa31147d24bc",
+    "meta-capex-6m-assets/thesis-v5/resolution-cases.json": "cbaead483f71c246a32ed2fcae6e8c2f4c459df99b89cbab1759297ad1ff32ac",
+    "meta-capex-6m-assets/readability-v4/index.html": "e899daf7644552b6d601a6c269418e32e1284a6fe2f3873f2be6be1d7d425286",
     "meta-capex-6m-assets/capex-structure/index.html": "7acaf61ef017094331b8c74c878274fdce22a5024e38a35d95eacfd53303b0a6",
     "meta-capex-6m-assets/capex-structure/components.json": "67c246b98fce6c82bce83fab278f1b0146217ff3f444d25bf2d587617cf761c2",
     "meta-capex-6m-assets/media-social/index.html": "42745f83b3b07620847653484525bbb435b6be079e0bdcdfa5340e2313334131",
     "meta-capex-6m-assets/source-coverage.html": "2bf2fc0be139522cd2581349709048a9ee14f1610dda491926f43aa32304cf72",
     "meta-capex-6m-assets/history.csv": "cc2dedc3c0fdc08ac299cbf9ffd905277c73dd807c7e279f0013c35b74387efb",
     "meta-capex-6m-assets/forecast-audit-v2.json": "133d23770067dbf9b2ee9f9c96b99a2e2ca124944da9130fe0a6a6647ff87adf",
-    "meta-capex-6m-assets/qa-results-v4.json": "9b2dd4c60eff32305e77c76e36b5d1203f8fdda7c0765bed2d63995cff873955"
+    "meta-capex-6m-assets/qa-results-v5.json": "b0d8769fb311b30cd4019a0d7c2263fcfd7752eee8fea4d1d56493b301922d8e"
   }
 }

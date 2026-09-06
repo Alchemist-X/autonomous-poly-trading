@@ -1,0 +1,185 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meta v5：跨财年结算规则与概率影响的独立复核</title><link rel="icon" href="data:,">
+<style>
+:root{--ink:#18201d;--muted:#657069;--paper:#fffdf8;--canvas:#eeeae1;--line:#d9d4c8;--accent:#9d3f25;--accent-soft:#f5e7df;--shadow:0 18px 55px rgba(47,42,31,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--canvas);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.72}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,253,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1480px;margin:auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:750;letter-spacing:.02em}.brand span{color:var(--accent)}
+.meta{font-size:13px;color:var(--muted)}
+.layout{max-width:1480px;margin:28px auto 64px;padding:0 24px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px}
+.toc{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding:18px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,253,248,.72)}
+.toc-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.toc a{display:block;color:var(--ink);text-decoration:none;font-size:13.5px;padding:4px 8px;border-radius:8px;margin:1px 0}
+.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+main{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:40px 48px 56px;min-width:0}
+main h1{font-size:26px;line-height:1.35;margin:.2em 0 .6em;letter-spacing:.01em}
+main h2{font-size:21px;margin:2.2em 0 .7em;padding-top:.6em;border-top:1px solid var(--line)}
+main h3{font-size:17px;margin:1.6em 0 .5em;line-height:1.5}
+main h2:first-of-type{border-top:none;padding-top:0;margin-top:1em}
+main a{color:var(--accent)}
+main blockquote{margin:1.2em 0;padding:12px 18px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
+main blockquote p{margin:.3em 0}
+.tablewrap{overflow-x:auto;margin:1.1em 0}
+main table{border-collapse:collapse;font-size:14px;min-width:60%}
+main th{background:var(--accent-soft);color:var(--ink);text-align:left;font-weight:650}
+main th,main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top;line-height:1.65}
+main tr:nth-child(even) td{background:rgba(238,234,225,.35)}
+main code{background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.9em}
+main hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+main li{margin:.25em 0}
+main ul ul,main ol ul{margin-top:.2em}
+main strong{color:#111}
+main u.key{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+main u.minor{text-decoration:underline dotted;text-decoration-color:#9aa39d;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.tag{display:inline-block;font-size:11.5px;line-height:1;padding:3px 6px;border-radius:5px;background:var(--canvas);border:1px solid var(--line);color:var(--muted);margin-right:5px;vertical-align:1px;white-space:nowrap}
+.note{display:block;font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.55;font-weight:400}
+.legend{font-size:13.5px;color:#4d5651;background:rgba(238,234,225,.5);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:.6em 0 1.2em;line-height:1.75}
+.legend p{margin:.2em 0}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"PingFang SC","Hiragino Sans GB",monospace;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:1em 0;line-height:2;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.formula b{color:var(--accent)}
+.org td:first-child,.tight1 td:first-child{white-space:nowrap}
+.org td:first-child{font-weight:650}
+.org td:nth-child(2){width:58%}
+.org td:nth-child(3){min-width:260px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static;max-height:none}main{padding:24px 20px}}
+</style></head><body>
+<div class="topbar"><div class="topbar-inner"><div class="brand">Predict-Raven</div><div class="meta">Meta v5：跨财年结算规则与概率影响的独立复核｜生成 2026-09-06｜research-only / market-blind</div></div></div>
+<div class="layout"><nav class="toc"><div class="toc-title">目录</div><a href="#meta-v5">Meta v5：跨财年结算规则与概率影响的独立复核</a>
+<a href="#_1">结论</a>
+<a href="#_2">新增区域究竟是什么</a>
+<a href="#_3">八个历史窗口：同时检查同年修订和首次次年预算</a>
+<a href="#32">现有 32% 模型已经包含哪些跨年内容</a>
+<a href="#_4">披露日历权重已经核对，暂不因本次修复改变</a>
+<a href="#_5">为什么只建议小幅提高</a>
+<a href="#_6">边界与复核产物</a></nav><main><div class="legend"><p>公开附件：保留来源链接、获取状态与研究归纳。完整字幕及内部工作文件保存在本地；请通过节目或原帖链接阅读原文。</p></div><div class="legend"><p>独立复核原始记录。最终版本采纳主概率 34%、NO 66%、范围 20–45%；新增跨年区域单列为 2 个百分点，不全部归于工程支付。下文建议与历史检查保留用于审计。</p></div><h1 id="meta-v5">Meta v5：跨财年结算规则与概率影响的独立复核</h1>
+<p>复核范围：只审查冻结规则、已有历史台账、v2 概率回放和 v4 报告之间的一致性。没有重新采集一轮市场信息，没有读取预测市场概率，没有以 GPT Pro 的 30% 作为输入。主报告、概率输入和网站均未修改。</p>
+<h2 id="_1">结论</h2>
+<p><strong>应恢复原题的“或”：下一年首次全年 capex 指引中点，低于上一年最终指引中点或实际值，任一可比比较成立即 YES。</strong> v4 第 4.1 节及 v2 <code>framing</code> 写成“实际优先，缺失时才看指引”，不是原题的同义表达。</p>
+<p>恢复后，已核验的 8 个历史窗口仍为 <strong>5 个 YES / 8 个窗口</strong>，加一平滑起点仍为 <strong>60%</strong>。但“历史频率没变”不能推出“当前概率必然不变”：新规则确实新增了一个原规则没有覆盖的事件区域，只是它未出现在这 8 个历史窗口里。</p>
+<p>我建议将当前判断温和上移至约 <strong>34%（YES）/ 66%（NO）</strong>，而不是因为规则修复大幅提高概率。这里约增加 2 个百分点是对新增区域的<strong>主观留量</strong>，并非历史样本估计或新证据似然。合理的额外留量可以在 0–4 个百分点之间争论，约 33–34% 都处于相同判断精度。现有 20–45% 主观范围本来很宽，若主会话保留该范围，应说明未因这次编辑增加统计确定性。</p>
+<h2 id="_2">新增区域究竟是什么</h2>
+<p>令 G 为上一年最终指引中点，A 为上一年实际值，N 为下一年首次指引中点；所有数字均须按同一资本开支范围比较。</p>
+<ul>
+<li>旧规则在两项均已知时要求 N &lt; A。</li>
+<li>恢复的规则要求 N &lt; G <strong>或</strong> N &lt; A；两项均已知时，数学上等于 N &lt; max(G, A)。报告正文最好保留“分别比较、任一成立”的直观表达。</li>
+<li><strong>新旧差集仅为：G &gt; A，且 A ≤ N &lt; G。</strong> 也就是上一年实际少于最终指引，而下一年虽比实际持平或增长，仍低于上一年的最终计划。</li>
+</ul>
+<p>例：G = 137.5、A = 134、N = 135。旧规则为 NO，原题为 YES。只出现 A = 134 而没有新的可比计划，仍不构成 YES。</p>
+<p>要增加的是这个差集在<strong>整个窗口此前没有任何旧规则 YES</strong>的概率。若公司已在 Q3 正式下调当年指引，再在次年首次预算触发另一项条件，同一观察窗仍只算一次；不能重复增加两个 YES。</p>
+<p>因此，保持信息和判断不变时：</p>
+<p><code>P（新规则）＝P（旧规则）＋P（新增区域，且窗口内无其他旧规则 YES）</code></p>
+<p>新规则不能机械降低当前概率。它也不要求所有情况下都严格上升：若新增区域概率为零，可以相等；但现有历史资料并不足以证明该区域概率为零。</p>
+<h2 id="_3">八个历史窗口：同时检查同年修订和首次次年预算</h2>
+<p>单位：十亿美元。G、N 和发布日期来自 <code>research/history.json</code>；实际值 A 及其出处已载于 v4 附录 A2.1。这里没有把次年第二次指引冒充“首次”，也没有把实际少花记为一次指引削减。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>窗口起始年</th>
+<th style="text-align: right;">上年最终指引中点 G</th>
+<th style="text-align: right;">上年实际 A</th>
+<th style="text-align: right;">次年首次中点 N</th>
+<th>首次发布日期</th>
+<th>跨年 OR 单独触发？</th>
+<th>完整窗口结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2018</td>
+<td style="text-align: right;">14.25</td>
+<td style="text-align: right;">13.92</td>
+<td style="text-align: right;">19</td>
+<td>2018-10-30</td>
+<td>否</td>
+<td>YES：2018 年同年下修</td>
+</tr>
+<tr>
+<td>2019</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">15.65</td>
+<td style="text-align: right;">18</td>
+<td>2019-10-30</td>
+<td>否</td>
+<td>YES：2019 年同年下修</td>
+</tr>
+<tr>
+<td>2020</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">15.72</td>
+<td style="text-align: right;">22</td>
+<td>2020-10-29</td>
+<td>否</td>
+<td>NO</td>
+</tr>
+<tr>
+<td>2021</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">19.24</td>
+<td style="text-align: right;">31.5</td>
+<td>2021-10-25</td>
+<td>否</td>
+<td>YES：2021 年同年下修</td>
+</tr>
+<tr>
+<td>2022</td>
+<td style="text-align: right;">32.5</td>
+<td style="text-align: right;">32.04</td>
+<td style="text-align: right;">36.5</td>
+<td>2022-10-26</td>
+<td>否</td>
+<td>YES：已公布的 2023 年计划后来下修</td>
+</tr>
+<tr>
+<td>2023</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">28.10</td>
+<td style="text-align: right;">32.5</td>
+<td>2023-10-25</td>
+<td>否</td>
+<td>YES：2023 年同年下修</td>
+</tr>
+<tr>
+<td>2024</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">39.23</td>
+<td style="text-align: right;">62.5</td>
+<td>2025-01-29</td>
+<td>否</td>
+<td>NO</td>
+</tr>
+<tr>
+<td>2025</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">72.22</td>
+<td style="text-align: right;">125</td>
+<td>2026-01-28</td>
+<td>否</td>
+<td>NO</td>
+</tr>
+</tbody>
+</table></div>
+<p>所有 N 都高于 G 和 A。无论只使用首次公告当时已知的实际值，还是复查截至各窗口结束前已正式公布的实际值，都没有新增历史 YES。</p>
+<p>2018 年存在早期现金购建资产定义与后续含租赁本金表达的可比性提示，不能把跨年金额当作已完全重述的严格样本。但这一窗口本就因同财年正式修订独立满足 YES，故该定义边界不影响 5/8 结果。其余年份也不能由这张表进一步推导“不同财年所有资产/会计口径绝对完全一致”。</p>
+<p>尤其注意 2023 年 2 月的 2023 年预算 30–33：这不是首次 2023 年预算。它是此前 34–39、34–37 之后的同财年下修，属于已有的 2022 起始窗口 YES；不能再次当作新跨年首次事件。</p>
+<h2 id="32">现有 32% 模型已经包含哪些跨年内容</h2>
+<p>v2 <code>forecast-input.json</code> 的预测题、结算描述和不确定性列表都包含 2027 年首次预算。资本意愿证据明确覆盖 2026 与 2027，需求/战略路径也可以通过较低的 2027 年计划实现。因此，现有 32% <strong>不是只预测 2026 年 Q3 下修</strong>；应避免把整个跨年渠道作为新增事件重新计入。</p>
+<p>旧回放从 60% 出发，有效对数调整总和为 −1.15，结果是 0.3220132847825528。六条路径只按原因分组，没有单列“同年修订”和“跨年首次预算”的互斥概率，更没有量化上述 G/A 之间的新区域。因此，无法从现有日志直接抽出一个已校准的“新增 2%”。</p>
+<p>只替换输入中的结算文字、保留全部旧权重，再运行同一引擎，仍会得到相同的 32.2013%。这种机械不变只能说明输入权重没有变，<strong>不能作为新旧事件概率相同的证据</strong>。若主会话采用 34%，建议在 v5 审计明确记录：旧证据回放约 32.2%，修复结算差集的主观增量约 2 个百分点，最终按整数报 34%；不要伪装成一条新的市场证据或第五轮独立研究。</p>
+<h2 id="_4">披露日历权重已经核对，暂不因本次修复改变</h2>
+<p>曾疑问：为什么“未来首次下一年指引移至 Q4”的证据指向 2023 年 Q3 公告，而同一份公告仍给出 2024 年 30–35 区间？重新打开官方原文后确认两者不矛盾：2023 年这一份仍给了次年初步区间，同时说明<strong>未来</strong>首次下一年展望改在 Q4 业绩会给出。见 <a href="https://investor.atmeta.com/investor-news/press-release-details/2023/Meta-Reports-Third-Quarter-2023-Results/default.aspx" target="_blank" rel="noopener noreferrer">Meta 2023 年 Q3 官方公告</a> CFO 展望结尾。</p>
+<p>原 −0.35 调整针对的是“秋季先给出下一年区间，随后在窗口内再下修”的机会减少。跨年首次预算仍可能在一月低于前一年的可比基准，所以这个权重不应被解释成整个跨年渠道消失。本次规则修复并未证明应将该权重删除。</p>
+<h2 id="_5">为什么只建议小幅提高</h2>
+<p>新增区域需要几个条件同时满足：2026 年实际低于最终指引；公司此前没有通过正式下修触发旧规则 YES；2027 年首次计划落在实际与最终指引之间。现有 8 个窗口的次年首次预算都没有接近这一区域，当前已核验的容量意愿也覆盖 2027 年。这些因素支持新增留量较小。</p>
+<p>它仍不能被排除：年度现金支出可因交付或付款跨年而低于最终计划，而管理层并未承诺 2027 年名义美元预算必须超过 2026 年最终指引。量、单价和付款年份不同，容量增长也不等于现金资本开支必然增加。所以留约 2 个百分点比武断记零更审慎，且不足以改变“倾向不下调、YES 主要来自执行时点”的主判断。</p>
+<p>这不是新增独立工程延期证据。如果原路径中的工程支付类保留 20 个百分点，即使主答案提高到 34%，它仍占 YES 的约 59%，可支持“若出现下调，更可能出在交付与付款时点”这种带条件判断。不能把全部新增差集自动分给工程类：较低的次年首次计划也可能由价格、资源重配或需求驱动。若必须维持六条互斥路径，主会话应明确重新分配，而不能只将 2 加到一行、忘记减少 NO 或重复计入其他 YES。</p>
+<h2 id="_6">边界与复核产物</h2>
+<p>已写入 <code>resolution-cases.json</code>：8 个完整历史窗口、24 个命名边界案例、1,029 个有限网格数学断言，全部通过。覆盖差集两端的等号、实际高于指引、两项均低于/高于、缺失参考、正式渠道、可比性待定、窗口起止、实际少花、先上调再下调、区间只动端点、计划批准但支付在窗口外、项目削减后等额转投，以及次年第二次指引按同财年修订比较。</p>
+<p>缺少可比重述或缺少参考值时，记录“待判定”，不直接写成 NO。原题没有要求两项参考必须同时存在，故已知的最终指引比较已经满足时，不得因实际尚未公布而拒绝 YES。对于先公布次年计划、稍后才公布上年实际的罕见时序，应使用观察窗内可核验的正式材料分别比较，保留各自公开日期；不要再次悄悄加入“必须首次公告同日已知实际”的新限制。截止之后的新计划不能倒填为观察窗内公告。</p>
+<p>可复现命令：</p>
+<p><code>bash
+/tmp/meta-report-venv/bin/python invest_targets/meta/runs/20260906/research/thesis-v5/check-resolution.py</code></p>
+<p>以上是研究审计建议，最终概率及主文由主会话负责选择和同步；本文件没有修改旧版报告或旧回放的历史记录。</p></main></div>
+</body></html>

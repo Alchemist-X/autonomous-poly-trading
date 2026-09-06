@@ -1,0 +1,123 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meta v5：业务产出证据核验</title><link rel="icon" href="data:,">
+<style>
+:root{--ink:#18201d;--muted:#657069;--paper:#fffdf8;--canvas:#eeeae1;--line:#d9d4c8;--accent:#9d3f25;--accent-soft:#f5e7df;--shadow:0 18px 55px rgba(47,42,31,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--canvas);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.72}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,253,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1480px;margin:auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:750;letter-spacing:.02em}.brand span{color:var(--accent)}
+.meta{font-size:13px;color:var(--muted)}
+.layout{max-width:1480px;margin:28px auto 64px;padding:0 24px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px}
+.toc{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding:18px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,253,248,.72)}
+.toc-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.toc a{display:block;color:var(--ink);text-decoration:none;font-size:13.5px;padding:4px 8px;border-radius:8px;margin:1px 0}
+.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+main{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:40px 48px 56px;min-width:0}
+main h1{font-size:26px;line-height:1.35;margin:.2em 0 .6em;letter-spacing:.01em}
+main h2{font-size:21px;margin:2.2em 0 .7em;padding-top:.6em;border-top:1px solid var(--line)}
+main h3{font-size:17px;margin:1.6em 0 .5em;line-height:1.5}
+main h2:first-of-type{border-top:none;padding-top:0;margin-top:1em}
+main a{color:var(--accent)}
+main blockquote{margin:1.2em 0;padding:12px 18px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
+main blockquote p{margin:.3em 0}
+.tablewrap{overflow-x:auto;margin:1.1em 0}
+main table{border-collapse:collapse;font-size:14px;min-width:60%}
+main th{background:var(--accent-soft);color:var(--ink);text-align:left;font-weight:650}
+main th,main td{border:1px solid var(--line);padding:8px 12px;vertical-align:top;line-height:1.65}
+main tr:nth-child(even) td{background:rgba(238,234,225,.35)}
+main code{background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.9em}
+main hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+main li{margin:.25em 0}
+main ul ul,main ol ul{margin-top:.2em}
+main strong{color:#111}
+main u.key{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+main u.minor{text-decoration:underline dotted;text-decoration-color:#9aa39d;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.tag{display:inline-block;font-size:11.5px;line-height:1;padding:3px 6px;border-radius:5px;background:var(--canvas);border:1px solid var(--line);color:var(--muted);margin-right:5px;vertical-align:1px;white-space:nowrap}
+.note{display:block;font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.55;font-weight:400}
+.legend{font-size:13.5px;color:#4d5651;background:rgba(238,234,225,.5);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:.6em 0 1.2em;line-height:1.75}
+.legend p{margin:.2em 0}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"PingFang SC","Hiragino Sans GB",monospace;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:1em 0;line-height:2;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.formula b{color:var(--accent)}
+.org td:first-child,.tight1 td:first-child{white-space:nowrap}
+.org td:first-child{font-weight:650}
+.org td:nth-child(2){width:58%}
+.org td:nth-child(3){min-width:260px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static;max-height:none}main{padding:24px 20px}}
+</style></head><body>
+<div class="topbar"><div class="topbar-inner"><div class="brand">Predict-Raven</div><div class="meta">Meta v5：业务产出证据核验｜生成 2026-09-06｜research-only / market-blind</div></div></div>
+<div class="layout"><nav class="toc"><div class="toc-title">目录</div><a href="#meta-v5">Meta v5：业务产出证据核验</a>
+<a href="#_1">一、逐项核验及预算含义</a>
+<a href="#_2">二、怎样把“多个内部买方”讲清楚</a>
+<a href="#_3">三、表格之外必须说明的预算链条</a>
+<a href="#_4">四、本轮边界与纠错清单</a></nav><main><div class="legend"><p>公开附件：保留来源链接、获取状态与研究归纳。完整字幕及内部工作文件保存在本地；请通过节目或原帖链接阅读原文。</p></div><h1 id="meta-v5">Meta v5：业务产出证据核验</h1>
+<p>核验日期：2026-09-06。截止日：2026-09-06。仅核验官方 2026 年 Q1、Q2 财报电话会；Word 文件仅提供待核对线索，没有作为事实来源。已联网打开两份官方 PDF 并核对相关正文。以下页码是 PDF 印刷页码，从 1 开始；行号为本次网页解析定位，长期定位以页码和段落主题为准。</p>
+<p><strong>结论：Word 所列的六项具体业务数字与官方电话会相符，但它们处于不同的证据层级。它们说明多项业务有理由争取计算资源，不能相加成“AI 收入”，也不能直接换算成获批资本开支。</strong></p>
+<h2 id="_1">一、逐项核验及预算含义</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>业务与证据</th>
+<th>来源与定位</th>
+<th>能支持到哪一步预算申请（研究判断）</th>
+<th>不能据此推出什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>广告优化：Q2 管理层称 Advantage+ 端到端方案的收入年化运行率超过 <strong>750 亿美元</strong>。</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf#page=7" target="_blank" rel="noopener noreferrer">2026-07-29 Q2 官方电话会</a>，第 7 页，Susan Li 关于广告工具的段落；解析行 247–249。性质：公司披露的产品收入指标，非独立核验的 AI 因果收益。</td>
+<td>产品已被用于大规模商业活动，使广告团队申请模型实验和线上推理资源时，有成熟收入渠道可承接结果。若额外计算确实提高扣除服务成本后的广告利润，申请新增设备的理由才进一步成立。</td>
+<td>不是 AI 额外创造了 750 亿美元收入，不是已实现全年收入，更不是 Meta AI／模型 API 收入。原有广告预算可能迁入这些方案；该数字没有披露边际利润或新增算力回报。</td>
+</tr>
+<tr>
+<td>内容推荐：管理层称 Q1 的排序改进使 Instagram Reels 观看时长提升 <strong>10%</strong>。</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q1/META-Q1-2026-Earnings-Call-Transcript.pdf#page=5" target="_blank" rel="noopener noreferrer">2026-04-29 Q1 官方电话会</a>，第 5 页，推荐效果段落；解析行 157–188。性质：管理层对产品效果的归因。</td>
+<td>可以支持继续验证推荐模型，并争取相应训练和推理资源。若增加的参与度能转成广告收入且覆盖计算成本，才更有理由扩大容量。</td>
+<td>不是 Reels 全部观看时长的同比增长口径，不是收入或利润同步增加 10%。单次改进不能证明今后每批算力都有相同收益。</td>
+</tr>
+<tr>
+<td>生成式广告创意：Q2 称超过 <strong>900 万家小企业</strong>使用至少一种 AI 创意工具；Q1 称使用视频生成功能的广告主在测试中转化率提高 <strong>超过 3%</strong>。</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf#page=7" target="_blank" rel="noopener noreferrer">Q2 电话会第 7 页</a>，解析行 255–264；<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q1/META-Q1-2026-Earnings-Call-Transcript.pdf#page=7" target="_blank" rel="noopener noreferrer">Q1 电话会第 7 页</a>，解析行 233–235。性质：公司披露的使用覆盖及测试效果，二者人群与观察期不同。</td>
+<td>使用覆盖可支持服务容量和继续产品投入；测试结果可支持下一轮扩大试验。增加设备还需确认持续调用量、增量付费或广告收益，以及生成内容的单位计算成本。</td>
+<td>不能把两项数字相乘；900 万用户并非都使用视频生成功能。超过 3% 是相对提升，并非增加 3 个百分点，也不代表所有广告主的可复制收益。Q1 的超过 800 万“广告主”与 Q2 的超过 900 万“小企业”口径不同，不能机械计算采用人数增长率。</td>
+</tr>
+<tr>
+<td>企业代理：Meta 转述租车公司 Movida 的个案，在一个月观察期内，WhatsApp 渠道日均预订较上年同期增加 <strong>44%</strong>；该渠道 <strong>85%</strong> 的对话由 AI 独立处理。</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf#page=8" target="_blank" rel="noopener noreferrer">Q2 电话会第 8 页</a>，解析行 272–277。性质：公司转述客户个案，不是 Meta 整体业务的独立因果实验。</td>
+<td>可以支持企业代理产品试点、客户接入和稳定服务容量。若更多客户重复出现效果、愿意持续付费，且服务毛利为正，才支持更广的商业部署和相应设备申请。</td>
+<td>不是 Meta 企业代理收入增长 44%，也不是全体客户都能自动处理 85% 对话；预订变化还可能受到渠道迁移、促销和其他因素影响。没有披露该个案给 Meta 带来多少利润。</td>
+</tr>
+<tr>
+<td>Meta AI：Q2 管理层称重建助手并整合 Muse Spark 后，每天与助手互动的人数增加 <strong>60%</strong>。</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf#page=2" target="_blank" rel="noopener noreferrer">Q2 电话会第 2 页</a>，解析行 69–77。性质：公司披露的使用变化；未在该段给出精确对照日期和绝对人数。</td>
+<td>可以支持满足正在增长的推理服务需求、改善响应速度，并继续验证留存和付费。它为消化部分可兼容容量提供了用途线索。</td>
+<td>不是付费用户或收入增长 60%，也不能推断未来用量会一直同速增加。满足需求可能依靠现有设备、效率优化或外部服务，未必立即增加自有资本开支。</td>
+</tr>
+<tr>
+<td>模型 API：Q2 确认 Muse Spark 1.1 已通过公开 API 提供，并提到向美国开发者扩展 OpenRouter 分发。</td>
+<td><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf#page=2" target="_blank" rel="noopener noreferrer">Q2 电话会第 2 页</a>，解析行 73–77；<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf#page=8" target="_blank" rel="noopener noreferrer">第 8 页</a>，解析行 278–288。性质：公司确认的上线与渠道进展。</td>
+<td>可以支持接口运维、开发者接入和按真实请求量扩展服务；若有持续付费使用、续用和正毛利，再支持更大商业容量。</td>
+<td>上线不等于已取得规模收入。Q1/Q2 原文没有提供可单独核验的该 API 收入、利润或付费留存，不能写成它已经填补广告以外的大额资本回报。</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_2">二、怎样把“多个内部买方”讲清楚</h2>
+<p><strong>“内部买方”是一个解释资源申请的比喻：广告、推荐、助手和企业产品团队都可能向公司争取算力，并非这些团队各自拥有独立采购合同或能够单独批准公司资本预算。</strong></p>
+<p>上表说明，不同业务手里有不同成熟度的申请依据。广告有商业规模，推荐有产品效果，创意工具有采用和试验结果，企业代理有客户个案，助手有用量变化，API 有上线进展。多个用途并存，意味着某项模型或产品效果不佳时，公司未必需要放弃全部对应容量，可以先评估是否转给其他需求。</p>
+<p>这项推论还要经过两道检验：第一，设备、网络和工作负载是否兼容，转用需要多少时间和改造成本；第二，承接方的净需求是否足够，转用后是否真的减少或替代下一批采购。现有设备调拨本身既不会产生新的资本开支，也不必然保住原计划中的每一笔新采购。不能把“存在其他用途”写成“任何算力都可无成本转用”。</p>
+<p>Q2 第 8 页的资本规划段落支持这种多用途解释：管理层把现有产品、基础模型和其他产品机会放在共同容量规划下，并将 2026、2027 年的容量作为近期重点。这属于正式意向，仍需后续订单、交付和预算检验，不能视为不会下调的保证。<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf#page=8" target="_blank" rel="noopener noreferrer">官方原文，2026-07-29，第 8 页</a></p>
+<h2 id="_3">三、表格之外必须说明的预算链条</h2>
+<p>业务出现产出，只是申请资源的第一步。较完整的推理应当是：<strong>产品效果或客户使用增加 → 证明额外计算值得投入 → 判断现有设备与效率优化是否足够 → 出现仍未被满足的净容量需求 → 决定购置或采用外部服务 → 把设备和项目的现金付款列入年度计划。</strong> 任何一环发生变化，都可能让“产品很好”与“公司 capex 增长”脱钩。</p>
+<p>融资缓冲解决的是这条链末端的资金安排，不能替代前面的回报证明。Q2 第 9 页称外部资本可补充经营现金流；这种选择减少了短期现金压力直接迫使项目取消的可能性。但是借款有偿付成本，合资和租赁可能改变付款方、现金流分类和时点，均需与报告采用的资本开支口径对齐。<a href="https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/META-Q2-2026-Earnings-Call-Transcript.pdf#page=9" target="_blank" rel="noopener noreferrer">官方原文，2026-07-29，第 9 页</a></p>
+<h2 id="_4">四、本轮边界与纠错清单</h2>
+<ul>
+<li>未发现上述六项指定数字与官方正文直接冲突；需要纠正的是概念外推与口径混用。</li>
+<li>业务效果均明确标为公司披露、管理层归因或客户个案转述，不升级为独立验证的投资回报。</li>
+<li>“预算能支持到哪一步”全部是研究分析，官方没有逐项公开内部投资门槛和实际审批结果。</li>
+<li>不新增概率权重，不把同一财报的多个业务指标重复计为相互独立的证据。</li>
+<li>本任务限定 Q1/Q2 正式来源，因此未使用 2026-09-02 Muse Spark 1.3 发布稿；不代表其内容已经在本轮复核。</li>
+<li>仅写入本说明和配套 JSON；未修改报告正文、网站或概率。</li>
+</ul></main></div>
+</body></html>

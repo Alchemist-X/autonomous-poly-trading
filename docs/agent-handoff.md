@@ -28,10 +28,10 @@
 | Delta PM | `services/delta-pm`、`apps/delta-pm-console`、`/live-delta-pm` | 新闻→重要性→priced-in→纸面决策审计链 |
 | Raven Delta | `apps/raven-delta`、`/delta` | 美股新闻影响分析、邮件 / WebSocket 推送 |
 | World Cup blind forecast | `scripts/world-cup`、`apps/web/app/world-cup` | 预测生成严禁读取市场价格；事后评分可使用市场基准 |
-| AI 投研系统案例 | `apps/web/app/[locale]/investment-analysis`、`/investment-analysis` | 三份公开案例：腾讯混元 × WorkBuddy、Hassabis × Alphabet、[Meta 半年资本开支](https://forecasting-agent.com/investment-analysis/meta-capex-6m)（v4，截点 2026-09-06） |
+| AI 投研系统案例 | `apps/web/app/[locale]/investment-analysis`、`/investment-analysis` | 三份公开案例：腾讯混元 × WorkBuddy、Hassabis × Alphabet、[Meta 半年资本开支](https://forecasting-agent.com/investment-analysis/meta-capex-6m)（v5，截点 2026-09-06） |
 | Polymarket live pipeline | `services/orchestrator`、`services/executor` | 真钱路径；任何 live 命令、风控调整或订单测试都需要用户明确确认 |
 
-后续投资资料统一去除客户品牌标签。Meta v4 公开经过复核的来源摘要与审计附件，完整字幕留在本地；第四版用四种条件情形替代假设金额演算，先概括付款、需求转订单、价格、承诺与融资，再展开 Insights；按用户要求，本站报告 iframe 统一不设置 `sandbox`，脚本交互与附件下载正常启用；新报告沿用同一容器，不再按公司单独放行。
+后续投资资料统一去除客户品牌标签。Meta v5 增加“我们判断”的立场，以多个内部业务需求、资源重配、融资缓冲解释预算支撑，单列六类产出与预算申请证据，并解释交付/付款跨年。恢复首次次年预算与上年最终指引或实际值分别比较的原规则，主概率由 32% 调至 34%（范围仍 20–45%）；约 2 个百分点为新增事件差集的主观估计，不是新证据权重。公开摘要与审计附件，完整字幕留在本地。本站报告 iframe 统一不设置 `sandbox`，脚本与附件下载保持可用。
 
 ## 3. 当前最主要的技术 WIP：GPT Pro v2 harness
 
