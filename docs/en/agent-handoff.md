@@ -17,6 +17,7 @@
 - The latest Google Driver research deliverables are also not fully on `main`: `outputs/O1-forecast.{md,html}`, `outputs/M1-3M.{md,html}`, plus O1 multi-horizon, M1/C1, and TPU-primary-training research under `runtime-artifacts/google-driver-forecasts/`. Current adopted values are O1 **2% / 4% / 10% / 24%**, M1 **31.0%**, and five-lab TPU primary training **4%**. Do not rerun or overwrite them before the owner session saves its work.
 - `codex/harness-gpt-pro-v2`, old `codex/harness-gpt-pro`, `codex/futurex-raven-adapter`, `feat/raven-delta-longport-mcp`, and `claude/agent-prediction-market-demo-74e018` contain value pending extraction. Do not delete them before the extractions below are complete.
 - Raven Managed and rough-loop were removed from the mainline. Do not revive them from stale documentation.
+- The `services/paper-agent` fee model switched on 2026-09-08 to Polymarket's documented formula `C × rate × p × (1 − p)`: takers only, makers pay 0, rate looked up by Gamma category (see [`docs/diagrams/paper-agent-fee-model.en.md`](../diagrams/paper-agent-fee-model.en.md)). **Earlier Huginn 7-book paper ledgers (including 2026-08-23 → 09-07) were charged under the old `bps × min(p, 1−p)` model — total fees about 2.9× too high and limit fills wrongly charged; recompute fees with the new formula before comparing PnL across the change.**
 
 ## 2. Current product surfaces
 

@@ -28,3 +28,5 @@
 - [Repository Slimming And Refactor Draft](./repo-slimming-plan.en.md)
 - [SSH 连通性复盘（2026-03-23）](./ssh-connectivity-postmortem-2026-03-23.md)
 - [SSH Connectivity Postmortem (2026-03-23)](./ssh-connectivity-postmortem-2026-03-23.en.md)
+- [Paper Agent 手续费模型](./paper-agent-fee-model.md)
+- [Paper Agent Fee Model](./paper-agent-fee-model.en.md)

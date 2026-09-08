@@ -29,3 +29,5 @@ This directory is the single archive location for human-readable collaboration a
 - [Repository Slimming And Refactor Draft (EN)](./repo-slimming-plan.en.md)
 - [SSH Connectivity Postmortem (ZH)](./ssh-connectivity-postmortem-2026-03-23.md)
 - [SSH Connectivity Postmortem (EN)](./ssh-connectivity-postmortem-2026-03-23.en.md)
+- [Paper Agent Fee Model (ZH)](./paper-agent-fee-model.md)
+- [Paper Agent Fee Model (EN)](./paper-agent-fee-model.en.md)

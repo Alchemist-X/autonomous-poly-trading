@@ -31,6 +31,13 @@ export interface MarketInfo {
   // question at different expiries — under one event). Used to cap exposure to
   // a single underlying bet. Falls back to the market slug when absent.
   eventSlug: string;
+  eventId: string | null;
+  // Category signals for the fee model (fees.ts): Gamma's `category` field
+  // (often empty) first, then tag slugs from the market row and its embedded
+  // parent event, in Gamma's order. Empty when the row carried neither —
+  // marketFeeTags() then fills it from /events/<eventId>.
+  category: string | null;
+  tags: string[];
 }
 
 export interface BookLevel {
@@ -71,6 +78,13 @@ function parseJsonArray(raw: unknown): string[] {
   return [];
 }
 
+interface GammaEvent {
+  slug?: string;
+  id?: string | number;
+  category?: string;
+  tags?: unknown; // Array<{ id, label, slug }> on /events; may be absent on embedded rows
+}
+
 interface GammaMarket {
   slug?: string;
   conditionId?: string;
@@ -83,7 +97,37 @@ interface GammaMarket {
   outcomes?: unknown;
   outcomePrices?: unknown;
   clobTokenIds?: unknown;
-  events?: Array<{ slug?: string; id?: string }>;
+  category?: string;
+  tags?: unknown;
+  events?: GammaEvent[];
+}
+
+// Gamma tag objects ({ id, label, slug }) → slugs (label as a fallback);
+// tolerates a bare string list. Order preserved — the first tag is primary.
+function parseTagSlugs(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  const out: string[] = [];
+  for (const t of raw) {
+    if (typeof t === "string") {
+      if (t.trim()) out.push(t.trim());
+      continue;
+    }
+    if (t && typeof t === "object") {
+      const o = t as { slug?: unknown; label?: unknown };
+      const slug = typeof o.slug === "string" && o.slug.trim() ? o.slug.trim() : typeof o.label === "string" ? o.label.trim() : "";
+      if (slug) out.push(slug);
+    }
+  }
+  return out;
+}
+
+function dedupe(values: readonly string[]): string[] {
+  return [...new Set(values)];
+}
+
+function categoryTags(category: string | undefined, ...tagLists: unknown[]): string[] {
+  const c = category?.trim();
+  return dedupe([...(c ? [c] : []), ...tagLists.flatMap((l) => parseTagSlugs(l))]);
 }
 
 // Terminal settlement detection: winner needs a >0.99 leg; a ~50/50 close is
@@ -120,6 +164,8 @@ export async function fetchMarket(slug: string, conditionId?: string): Promise<M
   const outcomePrices = priceStrings.length ? priceStrings.map(Number) : null;
   const closed = Boolean(m.closed);
   const { state, winner } = resolutionOf(closed, outcomePrices);
+  const event = m.events?.[0];
+  const category = m.category?.trim() || event?.category?.trim() || null;
   return {
     slug: m.slug ?? slug,
     conditionId: m.conditionId ?? "",
@@ -133,8 +179,35 @@ export async function fetchMarket(slug: string, conditionId?: string): Promise<M
     outcomePrices,
     resolvedOutcomeIndex: winner,
     resolution: state,
-    eventSlug: m.events?.[0]?.slug ?? m.events?.[0]?.id ?? m.slug ?? slug
+    eventSlug: event?.slug ?? (event?.id !== undefined ? String(event.id) : undefined) ?? m.slug ?? slug,
+    eventId: event?.id !== undefined && event?.id !== null ? String(event.id) : null,
+    category,
+    tags: categoryTags(category ?? undefined, m.tags, event?.tags)
   };
+}
+
+// Tag slugs of a Gamma event (`/events/<id>` always carries `tags`, unlike
+// the event stub embedded in a market row).
+export async function fetchEventTags(eventId: string): Promise<string[]> {
+  const ev = await fetchJson<GammaEvent>(`${GAMMA}/events/${encodeURIComponent(eventId)}`);
+  return categoryTags(ev.category, ev.tags);
+}
+
+// Category signals for fee resolution (fees.buildFeeParams): the market row's
+// own tags when present, else ONE extra GET for the parent event's. `extra`
+// carries lower-priority hints (e.g. the scan category that surfaced the
+// market). Best-effort — a Gamma failure yields only the hints, so the fee
+// lookup falls to its default rate instead of throwing.
+export async function marketFeeTags(market: Pick<MarketInfo, "tags" | "eventId">, extra: readonly string[] = []): Promise<string[]> {
+  let tags = market.tags;
+  if (!tags.length && market.eventId) {
+    try {
+      tags = await fetchEventTags(market.eventId);
+    } catch {
+      tags = [];
+    }
+  }
+  return dedupe([...tags, ...extra]);
 }
 
 interface RawBook {

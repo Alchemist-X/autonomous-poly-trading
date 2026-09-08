@@ -9,9 +9,10 @@
 import { simulateMarketBuy } from "./book-sim";
 import { loadPaperConfig } from "./config";
 import { isYesNoMarket } from "./evaluator";
-import { DEFAULT_FEES, fetchMarketFees } from "./fees";
+import { DEFAULT_FEES, describeFees, fetchMarketFees } from "./fees";
+import { log } from "./log";
 import { applyBuy, loadPortfolio, positionId, savePortfolio, type PaperPosition } from "./portfolio";
-import { fetchBook, fetchMarket } from "./polymarket";
+import { fetchBook, fetchMarket, marketFeeTags } from "./polymarket";
 import { writeReflectionReport } from "./reflect";
 import { runEvaluationCycle, runFillTick } from "./run-cycle";
 import { acquireBookLock, appendLedger, releaseBookLock } from "./store";
@@ -39,7 +40,9 @@ async function seedBuy(slug: string, side: number, usd: number, market: Awaited<
   if (portfolio.positions.some((p) => p.id === id)) throw new Error(`position ${id} already open`);
   if (portfolio.cashUsd < usd) throw new Error(`insufficient paper cash (${portfolio.cashUsd.toFixed(2)} < ${usd})`);
   const book = await fetchBook(market.tokenIds[side]!);
-  const fees = (await fetchMarketFees(market.conditionId)) ?? DEFAULT_FEES;
+  const liveFees = await fetchMarketFees(market.conditionId, await marketFeeTags(market));
+  if (!liveFees) log.warn(`fee lookup failed for ${slug} — falling back to ${describeFees(DEFAULT_FEES)}`);
+  const fees = liveFees ?? DEFAULT_FEES;
   const fill = simulateMarketBuy(book, usd, fees);
   if (fill.shares <= 0) throw new Error("no ask liquidity to fill against");
   const pos: PaperPosition = {
@@ -68,10 +71,13 @@ async function seedBuy(slug: string, side: number, usd: number, market: Awaited<
     shares: fill.shares,
     avgPrice: fill.avgPrice,
     feeUsd: fill.feeUsd,
+    feeRate: fees.feeRate,
+    feeCategory: fees.category,
+    feeRateSource: fees.rateSource,
     reason: "manual_seed"
   });
   process.stdout.write(
-    `bought ${fill.shares.toFixed(2)} ${pos.outcomeLabel} @ ${fill.avgPrice.toFixed(3)} (fee $${fill.feeUsd.toFixed(3)}${fill.liquidityExhausted ? ", book thinner than budget" : ""})\n`
+    `bought ${fill.shares.toFixed(2)} ${pos.outcomeLabel} @ ${fill.avgPrice.toFixed(3)} (fee $${fill.feeUsd.toFixed(3)} — ${describeFees(fees)}${fill.liquidityExhausted ? "; book thinner than budget" : ""})\n`
   );
 }
 

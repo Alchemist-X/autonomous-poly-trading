@@ -13,8 +13,10 @@ import {
 import type { OrderBook } from "./polymarket";
 
 const cfg = loadPaperConfig({} as NodeJS.ProcessEnv);
-const feeFree: MarketFeeParams = { takerBps: 0, makerBps: 0, tickSize: 0.01 };
-const feed: MarketFeeParams = { takerBps: 500, makerBps: 0, tickSize: 0.001 };
+const feeFree: MarketFeeParams = { takerBps: 0, makerBps: 0, tickSize: 0.01, feeRate: 0, category: null, rateSource: "clob_fee_free" };
+// Fee-enabled market (CLOB taker_base_fee=1000 is a flag, not a rate) in the
+// Sports bucket: taker fee = shares × 0.05 × p × (1 − p), makers pay 0.
+const feed: MarketFeeParams = { takerBps: 1000, makerBps: 1000, tickSize: 0.001, feeRate: 0.05, category: "sports", rateSource: "category" };
 
 const book = (bid: number, ask: number, size = 1000): OrderBook => ({
   bids: [{ price: bid, size }],
@@ -74,7 +76,7 @@ describe("applySaturatedHold", () => {
   });
 
   it("a taker fee can pull a 0.999 bid back under the full-value line", () => {
-    // 500 bps taker on bid 0.999: fee = 0.05 × min(0.999, 0.001) = 0.00005 →
+    // 0.05 rate on bid 0.999: fee = 0.05 × 0.999 × 0.001 ≈ 0.00005 →
     // net 0.99895 < 0.999 → veto applies.
     const raw = negEdge(0.99, book(0.999, 1), feed);
     expect(raw.reason).toBe("negative_edge");
@@ -141,8 +143,8 @@ describe("holdNetEdgePp", () => {
 
   it("taker fee reduces exit value, RAISING the edge of holding", () => {
     const withFee = holdNetEdgePp(0.6, book(0.5, 0.52), feed)!;
-    // per-share fee = 0.05 × min(0.5, 0.5) = 0.025 → edge 12.5pp
-    expect(withFee.edgePp).toBeCloseTo(12.5, 5);
+    // per-share fee = 0.05 × 0.5 × (1 − 0.5) = 0.0125 → edge 11.25pp
+    expect(withFee.edgePp).toBeCloseTo(11.25, 5);
   });
 
   it("null when the book has no bids", () => {

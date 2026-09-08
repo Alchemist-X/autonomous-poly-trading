@@ -1,8 +1,9 @@
 // Fill simulation against a live order book snapshot. Market orders walk the
 // visible book level by level (realistic slippage); resting limit orders fill
-// when the opposite side crosses their price. Fees follow the live per-market
-// params (fees.ts). Market buys carve the fee OUT of the USD budget so cash
-// can never go negative.
+// when the opposite side crosses their price. Fees follow the per-market
+// params (fees.ts): market (taker) fills pay C × rate × p × (1 − p), resting
+// limit (maker) fills pay nothing. Market buys carve the fee OUT of the USD
+// budget so cash can never go negative.
 
 import { feeUsd, makerFeeUsd, takerFeeUsd, type MarketFeeParams } from "./fees";
 import type { BookLevel, OrderBook } from "./polymarket";
@@ -77,6 +78,7 @@ export function simulateMarketBuy(book: OrderBook, spendUsd: number, fees: Marke
 
 // A resting SELL limit fills (as maker) when the best bid reaches its price.
 // Conservative model: fill capped by the size visible at-or-above the limit.
+// Maker fills are fee-free on Polymarket (makerFeeUsd is always 0).
 export function limitSellFilled(
   book: OrderBook,
   limitPrice: number,

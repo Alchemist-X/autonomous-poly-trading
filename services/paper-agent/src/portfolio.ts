@@ -9,7 +9,7 @@
 // - Voided markets refund at $0.50/share.
 
 import { loadPaperConfig } from "./config";
-import { DEFAULT_FEES, type MarketFeeParams } from "./fees";
+import { normalizeFeeParams, type MarketFeeParams } from "./fees";
 import { portfolioPath, readJson, writeJsonAtomic } from "./store";
 
 export interface RestingLimit {
@@ -69,10 +69,11 @@ export function loadPortfolio(): Portfolio {
   if (existing) {
     return {
       ...existing,
-      // Back-compat for books created before fee params lived on positions.
+      // Back-compat for books created before fee params lived on positions,
+      // and for rows written under the pre-2026-09 bps fee model (no feeRate).
       positions: existing.positions.map((p) => ({
         ...p,
-        fees: p.fees ?? DEFAULT_FEES,
+        fees: normalizeFeeParams(p.fees),
         entryFeePerShare: p.entryFeePerShare ?? 0,
         eventSlug: p.eventSlug ?? p.slug
       }))

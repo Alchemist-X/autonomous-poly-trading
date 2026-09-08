@@ -17,6 +17,7 @@
 - 主工作区的最新 Google Driver 研究交付也尚未全部进入 `main`：`outputs/O1-forecast.{md,html}`、`outputs/M1-3M.{md,html}`，以及 `runtime-artifacts/google-driver-forecasts/` 下的 O1 多期限、M1/C1 与 TPU 主训研究。当前采用口径是 O1 **2% / 4% / 10% / 24%**、M1 **31.0%**、五家 lab TPU 主训 **4%**；不要在 owner 会话保存前重跑或覆盖。
 - `codex/harness-gpt-pro-v2`、旧 `codex/harness-gpt-pro`、`codex/futurex-raven-adapter`、`feat/raven-delta-longport-mcp` 和 `claude/agent-prediction-market-demo-74e018` 包含待提取价值，完成下述提取前不要清理。
 - Raven Managed 与 rough-loop 已从主线删除；不要依据旧文档复活它们。
+- `services/paper-agent` 手续费模型于 2026-09-08 改为 Polymarket 官方公式 `C × rate × p × (1 − p)`：只有 taker 付费、maker 为 0、费率按 Gamma 分类查表（见 [`docs/diagrams/paper-agent-fee-model.md`](diagrams/paper-agent-fee-model.md)）。**此前的 Huginn 7 本模拟盘账本（含 2026-08-23 → 09-07）是用旧的 `bps × min(p, 1−p)` 模型记的费——总费用高估约 2.9×、limit 成交被错误收费；跨越这次改动比较 PnL 时必须按新公式重算。**
 
 ## 2. 当前产品面
 

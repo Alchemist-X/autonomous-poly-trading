@@ -17,7 +17,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { limitSellFilled, simulateMarketBuy, simulateMarketSell } from "./book-sim";
 import type { PaperConfig } from "./config";
 import { evaluateMarket, isYesNoMarket, makeEventId, probForOutcome } from "./evaluator";
-import { fetchMarketFees, DEFAULT_FEES } from "./fees";
+import { DEFAULT_FEES, describeFees, fetchMarketFees } from "./fees";
 import { scanMarkets, DEFAULT_SCAN_OPTIONS } from "./market-scan";
 import { log } from "./log";
 import {
@@ -33,17 +33,24 @@ import {
   type RestingLimit
 } from "./portfolio";
 import { applySaturatedHold, decideEntry, decideExit, planHybridExit, stopLossBreached } from "./policy";
-import { fetchBook, fetchMarket, type MarketInfo, type OrderBook } from "./polymarket";
+import { fetchBook, fetchMarket, marketFeeTags, type MarketInfo, type OrderBook } from "./polymarket";
 import { acquireBookLock, appendLedger, releaseBookLock } from "./store";
 
 function nowIso(): string {
   return new Date().toISOString();
 }
 
-// Refresh live fee/tick params onto the position (best-effort).
-async function refreshFees(pos: PaperPosition): Promise<PaperPosition> {
-  const live = await fetchMarketFees(pos.conditionId);
-  return live ? { ...pos, fees: live } : pos;
+// Refresh live fee/tick params onto the position (best-effort). The category
+// tags come from the Gamma row already fetched for this position, so the
+// refresh costs one CLOB GET (plus one Gamma event GET only when the row
+// carried no tags). A CLOB failure keeps the stored params — and says so.
+async function refreshFees(pos: PaperPosition, market: MarketInfo): Promise<PaperPosition> {
+  const live = await fetchMarketFees(pos.conditionId, await marketFeeTags(market));
+  if (!live) {
+    log.warn(`fee refresh failed for ${pos.id} — keeping stored params (${describeFees(pos.fees)})`);
+    return pos;
+  }
+  return { ...pos, fees: live };
 }
 
 // ---- Settlement --------------------------------------------------------------
@@ -188,7 +195,7 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
         continue;
       }
 
-      let pos = await refreshFees(current);
+      let pos = await refreshFees(current, market);
       portfolio = { ...portfolio, positions: portfolio.positions.map((x) => (x.id === posId ? pos : x)) };
 
       // Pre-LLM stop-loss: the rule that outranks the model must not wait for
@@ -334,6 +341,9 @@ async function runEvaluationCycleLocked(cfg: PaperConfig): Promise<void> {
 
 async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: number): Promise<Portfolio> {
   const slugs: string[] = [];
+  // Scan category that surfaced a slug — a low-priority fee-category hint for
+  // markets whose Gamma row carries no tags.
+  const scanCategory = new Map<string, string>();
   if (cfg.watchlistPath && existsSync(cfg.watchlistPath)) {
     for (const l of readFileSync(cfg.watchlistPath, "utf8").split("\n")) {
       const t = l.trim();
@@ -355,7 +365,10 @@ async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: 
       found: scanned.length,
       top: scanned.slice(0, 10).map((c) => `${c.category}:${c.slug}`)
     });
-    for (const c of scanned) if (!slugs.includes(c.slug)) slugs.push(c.slug);
+    for (const c of scanned) {
+      if (!slugs.includes(c.slug)) slugs.push(c.slug);
+      if (!scanCategory.has(c.slug)) scanCategory.set(c.slug, c.category);
+    }
   }
   if (!slugs.length) return portfolio;
   let evals = evalsUsed;
@@ -376,7 +389,10 @@ async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: 
         appendLedger({ type: "entry_skipped", slug, reason: "event_cap", eventSlug: market.eventSlug, held: eventCount });
         continue;
       }
-      const fees = (await fetchMarketFees(market.conditionId)) ?? DEFAULT_FEES;
+      const hint = scanCategory.get(slug);
+      const liveFees = await fetchMarketFees(market.conditionId, await marketFeeTags(market, hint ? [hint] : []));
+      if (!liveFees) log.warn(`fee lookup failed for ${slug} — falling back to ${describeFees(DEFAULT_FEES)}`);
+      const fees = liveFees ?? DEFAULT_FEES;
       // Entry budget must cover notional + fee.
       const budget = cfg.entryNotionalUsd;
       if (next.cashUsd < budget) break;
@@ -443,10 +459,16 @@ async function scanWatchlist(cfg: PaperConfig, portfolio: Portfolio, evalsUsed: 
         shares: fill.shares,
         avgPrice: fill.avgPrice,
         feeUsd: fill.feeUsd,
+        // Fee provenance so ledger audits can re-derive the charge.
+        feeRate: fees.feeRate,
+        feeCategory: fees.category,
+        feeRateSource: fees.rateSource,
         reason: "watchlist_entry",
         edgePp: entry.edgePp
       });
-      log.info(`ENTER ${pos.id}: ${fill.shares.toFixed(1)} shares @ ${fill.avgPrice.toFixed(3)} (${entry.detail})`);
+      log.info(
+        `ENTER ${pos.id}: ${fill.shares.toFixed(1)} shares @ ${fill.avgPrice.toFixed(3)} (${entry.detail}; fee ${describeFees(fees)})`
+      );
     } catch (error) {
       log.error(`watchlist entry failed for ${slug}: ${error instanceof Error ? error.message : String(error)}`);
     }

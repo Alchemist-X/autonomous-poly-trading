@@ -34,6 +34,9 @@ const market = (over: Partial<MarketInfo> = {}): MarketInfo => ({
   resolvedOutcomeIndex: null,
   resolution: "open",
   eventSlug: "m",
+  eventId: null,
+  category: null,
+  tags: [],
   ...over
 });
 
@@ -61,7 +64,7 @@ const position = (over: Partial<PaperPosition> = {}): PaperPosition => ({
   avgEntryPrice: 0.8,
   entryFeePerShare: 0,
   openedAtUtc: "2026-07-01T00:00:00.000Z",
-  fees: { takerBps: 0, makerBps: 0, tickSize: 0.01 },
+  fees: { takerBps: 0, makerBps: 0, tickSize: 0.01, feeRate: 0, category: null, rateSource: "clob_fee_free" },
   ...over
 });
 
